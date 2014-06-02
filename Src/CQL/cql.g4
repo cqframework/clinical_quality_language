@@ -55,7 +55,7 @@ statement:
     operatorDefinition |
     retrieveDefinition;
 
-letStatement: 'let' IDENTIFIER '=' setExpression;
+letStatement: 'let' IDENTIFIER '=' query;
 
 operatorDefinition:
     'define' 'operator' IDENTIFIER '(' (operandDefinition (',' operandDefinition)*)? ')' operatorBody;
@@ -75,30 +75,24 @@ retrieveDefinition:
  * Expressions
  */
 
-//setExpression:
-//    expression |
-//    retrieve |
-//    setExpression 'with' setExpression |
-//    setExpression 'where' expression |
-//    'combine' '(' setExpression (',' setExpression)+ ')' |
-//    'union' '(' setExpression (',' setExpression)+ ')' |
-//    'intersect' '(' setExpression (',' setExpression)+ ')' |
-//    setExpression 'except' setExpression;
-
-setExpression:
-    querySource queryInclusionClause* ('where' expression)? |
-    'union' '(' setExpression (',' setExpression)+ ')' |
-    'intersect' '(' setExpression (',' setExpression)+ ')' |
-    setExpression 'except' setExpression;
+query:
+    querySource |
+    aliasedQuerySource queryInclusionClause* ('where' expression)? |
+    'union' '(' query (',' query)+ ')' |
+    'intersect' '(' query (',' query)+ ')' |
+    query 'except' query;
 
 querySource:
-    (retrieve | IDENTIFIER) alias?;
+    retrieve | IDENTIFIER;
+
+aliasedQuerySource:
+    querySource alias;
 
 alias: IDENTIFIER;
 
 queryInclusionClause:
-    'with' querySource 'where' expression |
-    'combine' querySource 'where' expression
+    'with' aliasedQuerySource 'where' expression |
+    'combine' aliasedQuerySource 'where' expression
 ;
 
 retrieve: existenceModifier? '[' topicType (',' activityType)? (':' concept)? ']';
@@ -158,7 +152,7 @@ term:
     intervalSelector |
     tupleSelector |
     listSelector |
-    '('setExpression')';
+    '(' query ')';
 
 intervalSelector: // TODO: Consider this as an alternative syntax for intervals... (would need to be moved up to expression to make it work)
     //expression ( '..' | '*.' | '.*' | '**' ) expression;

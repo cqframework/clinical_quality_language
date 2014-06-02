@@ -24,38 +24,6 @@ let InDemographic =
 		and Gender = "female"
 
 let SexuallyActive =
-	exists ([Condition: "Other Female Reproductive Conditions"] where effectiveTime overlaps before MeasurementPeriod)
-		or exists ([Condition: "Genital Herpes"] where effectiveTime overlaps before MeasurementPeriod)
-		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] where effectiveTime overlaps before MeasurementPeriod)
-		or exists ([Condition: "Inflammatory Diseases of Female Reproductive Organs"] where effectiveTime overlaps before MeasurementPeriod)
-		or exists ([Condition: "Chlamydia"] where effectiveTime overlaps before MeasurementPeriod)
-		or exists ([Condition: "HIV"] where effectiveTime overlaps before MeasurementPeriod)
-		or exists ([Condition: "Syphilis"] where effectiveTime overlaps before MeasurementPeriod)
-		or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] where effectiveTime overlaps before MeasurementPeriod)
-		or exists ([ObservationResult: "Pregnancy"] where effectiveTime during MeasurementPeriod)
-		or exists ([ObservationResult: "Pap"] where effectiveTime during MeasurementPeriod)
-		or exists ([ObservationResult: "Lab Tests During Pregnancy"] where effectiveTime during MeasurementPeriod)
-		or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"] where observedAtTime during MeasurementPeriod)
-
-let InInitialPopulation =
-	InDemographic and SexuallyActive
-
-let InDenominator =
-	InInitialPopulation
-
-let InNumerator =
-	InDenominator
-		and exists ([ObservationResult: "Chlamydia Screening"] where effectiveTime during MeasurementPeriod)
-
-
-/*************** Claused version *********************/
-
-let InDemographic =
-	AgeAt(start of MeasurementPeriod) >= 16
-		and AgeAt(start of MeasurementPeriod) < 24
-		and Gender = "female"
-
-let SexuallyActive =
 	exists ([Condition: "Other Female Reproductive Conditions"] C where C.effectiveTime overlaps before MeasurementPeriod)
 		or exists ([Condition: "Genital Herpes"] C where C.effectiveTime overlaps before MeasurementPeriod)
 		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where C.effectiveTime overlaps before MeasurementPeriod)
@@ -78,5 +46,4 @@ let InDenominator =
 let InNumerator =
 	InDenominator
 		and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod)
-
 

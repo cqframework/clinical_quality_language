@@ -35,36 +35,9 @@ let SexuallyActive =
 	or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"])
 		
 let NoScreening =
-	not exists ([ObservationResult: "Chlamydia Screening"] where effectiveTime during interval[today - 1 years, now])
-	and not exists ([Procedure, Planned: "Chlamydia Screening"] where effectiveTime >= now)
-	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
-
-let NeedScreening = InDemographic and SexuallyActive and NoScreening
-
-
-/****************************** Claused version *****************************/
-
-let InDemographic = 
-	Age() >= 16 and Age() < 24 and Gender = "female"
-
-let SexuallyActive =
-	exists ([Condition: "Other Female Reproductive Conditions"] C)
-	or exists ([Condition: "Genital Herpes"] C)
-	or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C)
-	or exists ([Condition: "Inflammatory Diseases of Female Reproductive Organs"] C)
-	or exists ([Condition: "Chlamydia"] C)
-	or exists ([Condition: "HIV"] C)
-	or exists ([Condition: "Syphilis"] C)
-	or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] C)
-	or exists ([ObservationResult: "Pregnancy Test"] C)
-	or exists ([ObservationResult: "Pap Test"] C)
-	or exists ([ObservationResult: "Lab Tests During Pregnancy"] C)
-	or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"] C)
-		
-let NoScreening =
 	not exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during interval[today - 1 years, now])
-	and not exists ([Procedure, Planned: "Chlamydia Screening"] P where P.effectiveTime >= now)
-	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"] R)
+	and not exists ([Procedure, Planned: "Chlamydia Screening"] R where R.effectiveTime >= now)
+	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
 
