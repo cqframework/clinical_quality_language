@@ -48,3 +48,35 @@ let InNumerator =
 		and exists ([ObservationResult: "Chlamydia Screening"] where effectiveTime during MeasurementPeriod)
 
 
+/*************** Claused version *********************/
+
+let InDemographic =
+	AgeAt(start of MeasurementPeriod) >= 16
+		and AgeAt(start of MeasurementPeriod) < 24
+		and Gender = "female"
+
+let SexuallyActive =
+	exists ([Condition: "Other Female Reproductive Conditions"] C where C.effectiveTime overlaps before MeasurementPeriod)
+		or exists ([Condition: "Genital Herpes"] C where C.effectiveTime overlaps before MeasurementPeriod)
+		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where C.effectiveTime overlaps before MeasurementPeriod)
+		or exists ([Condition: "Inflammatory Diseases of Female Reproductive Organs"] C where C.effectiveTime overlaps before MeasurementPeriod)
+		or exists ([Condition: "Chlamydia"] C where C.effectiveTime overlaps before MeasurementPeriod)
+		or exists ([Condition: "HIV"] C where C.effectiveTime overlaps before MeasurementPeriod)
+		or exists ([Condition: "Syphilis"] C where C.effectiveTime overlaps before MeasurementPeriod)
+		or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] C where C.effectiveTime overlaps before MeasurementPeriod)
+		or exists ([ObservationResult: "Pregnancy"] R where R.effectiveTime during MeasurementPeriod)
+		or exists ([ObservationResult: "Pap"] R where R.effectiveTime during MeasurementPeriod)
+		or exists ([ObservationResult: "Lab Tests During Pregnancy"] R where R.effectiveTime during MeasurementPeriod)
+		or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"] R where R.observedAtTime during MeasurementPeriod)
+
+let InInitialPopulation =
+	InDemographic and SexuallyActive
+
+let InDenominator =
+	InInitialPopulation
+
+let InNumerator =
+	InDenominator
+		and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod)
+
+

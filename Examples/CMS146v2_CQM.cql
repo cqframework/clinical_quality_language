@@ -75,6 +75,34 @@ let TargetEncounters =
 		with Pharyngitis where Pharyngitis.effectiveTime overlaps after performedAtTime
 		with Antibiotics where Antibiotics.orderedAtTime starts within 3 days after start performedAtTime
 
+let TargetEncounters =
+    [Encounter, Performed: "Ambulatory/ED Visit"] E
+		where E.performedAtTime during MeasurementPeriod
+		with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
+		with Antibiotics A where A.orderedAtTime starts within 3 days after start A.performedAtTime
+
+let EncountersDuringMP =
+    [Encounter, Performed: "Ambulatory/ED Visit"] 
+		where performedAtTime during MeasurementPeriod
+
+let TargetEncounters =
+	EncountersDuringMP
+		with Pharyngitis where Pharyngitis.effectiveTime overlaps after EncountersDuringMP.performedAtTime
+		with Antibiotics where Antibiotics.orderedAtTime starts within 3 days after start EncountersDuringMP.performedAtTime
+
+let TargetEncounters =
+	EncountersDuringMP
+		where any Pharyngitis.effectiveTime overlaps after EncountersDuringMP.performedAtTime
+			and any Antibiotics.orderedAtTime starts within 3 days after start EncountersDuringMP.performedAtTime
+
+let TargetEncounters =
+	EncountersDuringMP E
+		with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
+		with Antibiotics A where A.orderedAtTime starts within 3 days after start E.performedAtTime
+
+let TargetEncounters =
+	[Encounter, Performed: "Ambulatory/ED Visit"] E
+
 let TargetDiagnoses =
     Pharyngitis where effectiveTime overlaps after TargetEncounters.performedAtTime
 

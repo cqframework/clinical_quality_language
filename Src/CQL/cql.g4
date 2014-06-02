@@ -75,15 +75,31 @@ retrieveDefinition:
  * Expressions
  */
 
+//setExpression:
+//    expression |
+//    retrieve |
+//    setExpression 'with' setExpression |
+//    setExpression 'where' expression |
+//    'combine' '(' setExpression (',' setExpression)+ ')' |
+//    'union' '(' setExpression (',' setExpression)+ ')' |
+//    'intersect' '(' setExpression (',' setExpression)+ ')' |
+//    setExpression 'except' setExpression;
+
 setExpression:
-    expression |
-    retrieve |
-    setExpression 'with' setExpression |
-    setExpression 'where' expression |
-    'combine' '(' setExpression (',' setExpression)+ ')' |
+    querySource queryInclusionClause* ('where' expression)? |
     'union' '(' setExpression (',' setExpression)+ ')' |
     'intersect' '(' setExpression (',' setExpression)+ ')' |
     setExpression 'except' setExpression;
+
+querySource:
+    (retrieve | IDENTIFIER) alias?;
+
+alias: IDENTIFIER;
+
+queryInclusionClause:
+    'with' querySource 'where' expression |
+    'combine' querySource 'where' expression
+;
 
 retrieve: existenceModifier? '[' topicType (',' activityType)? (':' concept)? ']';
 
