@@ -35,9 +35,30 @@ let SexuallyActive =
 	or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"])
 		
 let NoScreening =
-	not exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during interval[today - 1 years, now])
-	and not exists ([Procedure, Planned: "Chlamydia Screening"] R where R.effectiveTime >= now)
+	not exists ([ObservationResult: "Chlamydia Screening", during interval[today - 1 years, now]])
+	and not exists ([Procedure, Planned: "Chlamydia Screening", during interval[now, null]])
 	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
+
+using QLIM
+
+context PATIENT
+
+include "ChlamydiaScreening_Common.cql"
+
+let InDemographic =
+    Age() >= 16 and Age() < 24 and Gender = "female"
+
+let SexuallyActive =
+    exists (conditionsIndicatingSexualActivity)
+    or exists (resultsIndicatingSexualActivity)
+
+let NoScreening =
+    not exists (chlamydiaScreening S where S.effectiveTime during interval[today - 1 years, now])
+    and not exists ([Procedure, Planned: "Chlamydia Screening"] P where P.effectiveTime >= now)
+    and not exists (reasonForNoScreening)
+
+let NeedScreening = InDemographic and SexuallyActive and NoScreening
+
 

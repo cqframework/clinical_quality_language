@@ -63,13 +63,21 @@ operatorDefinition:
 operandDefinition: IDENTIFIER ':' typeSpecifier;
 
 operatorBody:
-    '{' letStatement* returnStatement '}';
+    '{' returnStatement '}';
 
 returnStatement:
     'return' expression;
 
 retrieveDefinition:
-    'define' 'retrieve' existenceModifier? '[' topicType (',' activityType)? (':' concept)? ']' operatorBody;
+    'define' 'retrieve' existenceModifier? '[' topicType (',' activityType)? (':' conceptPathIdentifier 'in' conceptIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' operatorBody;
+
+conceptPathIdentifier: IDENTIFIER;
+
+conceptIdentifier: IDENTIFIER;
+
+duringPathIdentifier: IDENTIFIER;
+
+duringIdentifier: IDENTIFIER;
 
 /*
  * Expressions
@@ -80,7 +88,8 @@ query:
     aliasedQuerySource queryInclusionClause* ('where' expression)? |
     'union' '(' query (',' query)+ ')' |
     'intersect' '(' query (',' query)+ ')' |
-    query 'except' query;
+    query 'except' query |
+    expression;
 
 querySource:
     retrieve | IDENTIFIER;
@@ -95,7 +104,7 @@ queryInclusionClause:
     'combine' aliasedQuerySource 'where' expression
 ;
 
-retrieve: existenceModifier? '[' topicType (',' activityType)? (':' concept)? ']';
+retrieve: existenceModifier? '[' topicType (',' activityType)? (':' (IDENTIFIER 'in')? concept)? (',' IDENTIFIER? 'during' expression)? ']';
 
 existenceModifier: 'no' | 'unknown';
 
@@ -103,7 +112,7 @@ topicType: IDENTIFIER;
 
 activityType: IDENTIFIER;
 
-concept: STRING;
+concept: STRING | IDENTIFIER;
 
 expression:
     term |
@@ -116,6 +125,9 @@ expression:
     ('+' | '-') expression |
     ('not' | 'exists') expression |
     ('start' | 'end') 'of' expression |
+    ('date' | 'time' | 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond') 'of' expression |
+    //expression 'between' expression 'and' expression |
+    //('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'between' expression 'and' expression |
     expression '^' expression |
     expression ('*' | '/' | 'div' | 'mod') expression |
     expression ('+' | '-') expression |
@@ -123,19 +135,31 @@ expression:
     expression intervalOperatorPhrase expression |
     expression ('=' | '<>') expression |
     expression 'and' expression |
-    expression ('or' | 'in' | 'like') expression |
+    expression ('or' | 'xor' | 'in' | 'contains' | 'like') expression |
     'if' expression 'then' expression 'else' expression |
 	'case' expression? caseExpressionItem+ 'else' expression 'end' |
-	'coalesce' '(' expression (',' expression)+ ')';
+	'coalesce' '(' expression (',' expression)+ ')' |
+	'with' expression alias? 'return' expression |
+	'convert' expression 'to' typeSpecifier |
+	'expand' expression |
+	'foreach' IDENTIFIER 'in' query 'return' expression |
+	'sort' query 'by' sortByItem (',' sortByItem)*;
 
 caseExpressionItem:
     'when' expression 'then' expression;
+
+sortByItem:
+    qualifiedIdentifier ('asc' | 'desc');
+
+qualifiedIdentifier:
+    IDENTIFIER ('.' IDENTIFIER)*;
 
 intervalOperatorPhrase:
     ('starts' | 'ends')? 'concurrent with' ('start' | 'end')? |
     'properly'? 'includes' ('start' | 'end')? |
     ('starts' | 'ends')? 'properly'? 'during' |
-    ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')? | // TODO: within 3 days of start...
+    ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')? |
+    ('starts' | 'ends') 'within' quantityLiteral 'of' ('start' | 'end') |
     'meets' (quantityOffset? ('before' | 'after'))? |
     'overlaps' (quantityOffset? ('before' | 'after'))? |
     'starts' |
@@ -165,7 +189,7 @@ tupleElementSelector:
     IDENTIFIER ':' expression;
 
 listSelector:
-    'list'('<' typeSpecifier '>')? '{' expression (',' expression)* '}';
+    ('list' ('<' typeSpecifier '>')?)? '{' expression (',' expression)* '}';
 
 literal:
     NULL |
@@ -184,6 +208,7 @@ unit:
     'hours' |
     'minutes' |
     'seconds' |
+    'milliseconds' |
     'u'STRING; // UCUM syntax for units of measure
 
 /*

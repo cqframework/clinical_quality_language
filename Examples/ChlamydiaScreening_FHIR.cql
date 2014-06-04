@@ -1,9 +1,11 @@
 using FHIR
 
-define retrieve [Condition: Concept]
+context PATIENT
+
+define retrieve [Condition: code in Concept, effectiveTime during Range]
 {
 	foreach element in
-		[FHIR.Condition: Concept]
+		[FHIR.Condition: Concept, during Range]
 			where status in { "provisional", "working", "confirmed" }
 		return
 			tuple
@@ -26,10 +28,10 @@ define retrieve [Condition: Concept]
 			}
 }
 
-define retrieve no [Condition: Concept]
+define retrieve no [Condition: code in Concept, effectiveTime during Range]
 {
 	foreach element in
-		[FHIR.Condition : Concept]
+		[FHIR.Condition : Concept, during Range]
 			where status = "refuted"
 		return
 			tuple
@@ -52,10 +54,10 @@ define retrieve no [Condition: Concept]
 			}
 }
 
-define retrieve [ObservationResult: Concept]
+define retrieve [ObservationResult: name in Concept, observedAtTime during Range]
 {
 	foreach element in 
-		[FHIR.Observation: Concept]
+		[FHIR.Observation: Concept, during Range]
 			where status in { "final", "amended" }
 		return
 			tuple
