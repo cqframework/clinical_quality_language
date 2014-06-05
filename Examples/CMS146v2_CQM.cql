@@ -73,15 +73,13 @@ let HasTargetEncounter =
     exists (TargetEncounters)
 
 let InInitialPopulation =
-  InDemographic and HasTargetEncounter
+    InDemographic and HasTargetEncounter
 
 let InDenominator =
-    InInitialPopulation
+    true
 
 let InDenominatorExclusions =
-    InDenominator and HasPriorAntibiotics
+    HasPriorAntibiotics
 
 let InNumerator =
-    InDenominator
-        and not InDenominatorExclusions
-        and exists ([ObservationResult: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod)
+    exists ([ObservationResult: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod)
