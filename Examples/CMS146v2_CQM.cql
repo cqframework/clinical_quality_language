@@ -49,7 +49,7 @@ concept "Antibiotic Medications" = ValueSet("2.16.840.1.113883.3.464.1003.196.12
 concept "Group A Streptococcus Test" = ValueSet("2.16.840.1.113883.3.464.1003.198.12.1012")
 
 let InDemographic =
-	AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
+    AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
 
 let Pharyngitis =
     union ([Condition: "Acute Pharyngitis"], [Condition: "Acute Tonsilitis"])
@@ -58,100 +58,28 @@ let Antibiotics =
     [MedicationPrescription: "Antibiotic Medications"]
 
 let TargetEncounters =
-    [Encounter, Performed: "Ambulatory/ED Visit"] 
-		where performedAtTime during MeasurementPeriod
-	        and Pharyngitis.effectiveTime overlaps after performedAtTime
-		    and Antibiotics.orderedAtTime starts within 3 days after start performedAtTime
-
-let TargetEncounters =
-	[Encounter, Performed: "Ambulatory/ED Visit"]
-		where performedAtTime during MeasurementPeriod
-			and exists (Pharyngitis where Pharyngitis.effectiveTime overlaps after performedAtTime)
-			and exists (Antibiotics where Antibiotics.orderedAtTime starts within 3 days after start performedAtTime)
-
-let TargetEncounters =
-    [Encounter, Performed: "Ambulatory/ED Visit"] 
-		where performedAtTime during MeasurementPeriod
-		with Pharyngitis where Pharyngitis.effectiveTime overlaps after performedAtTime
-		with Antibiotics where Antibiotics.orderedAtTime starts within 3 days after start performedAtTime
-
-let TargetEncounters =
     [Encounter, Performed: "Ambulatory/ED Visit"] E
-		where E.performedAtTime during MeasurementPeriod
-		with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
-		with Antibiotics A where A.orderedAtTime starts within 3 days after start A.performedAtTime
-
-let EncountersDuringMP =
-    [Encounter, Performed: "Ambulatory/ED Visit"] 
-		where performedAtTime during MeasurementPeriod
-
-let TargetEncounters =
-	EncountersDuringMP
-		with Pharyngitis where Pharyngitis.effectiveTime overlaps after EncountersDuringMP.performedAtTime
-		with Antibiotics where Antibiotics.orderedAtTime starts within 3 days after start EncountersDuringMP.performedAtTime
-
-let TargetEncounters =
-	EncountersDuringMP
-		where any Pharyngitis.effectiveTime overlaps after EncountersDuringMP.performedAtTime
-			and any Antibiotics.orderedAtTime starts within 3 days after start EncountersDuringMP.performedAtTime
-
-let TargetEncounters =
-	EncountersDuringMP E
-		with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
-		with Antibiotics A where A.orderedAtTime starts within 3 days after start E.performedAtTime
-
-let TargetEncounters =
-	[Encounter, Performed: "Ambulatory/ED Visit"] E
+        with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
+        with Antibiotics A where A.orderedAtTime starts within 3 days after start E.performedAtTime
+        where E.performedAtTime during MeasurementPeriod
 
 let TargetDiagnoses =
-    Pharyngitis where effectiveTime overlaps after TargetEncounters.performedAtTime
-
-let TargetDiagnoses =
-	Pharyngitis where exists (TargetEncounters where Pharyngitis.effectiveTime overlaps after TargetEncounters.performedAtTime)
-
-let TargetDiagnoses =
-	Pharyngitis P
-		with TargetEncounters E where P.effectiveTime overlaps after E.performedAtTime
+    Pharyngitis P with TargetEncounters E where P.effectiveTime overlaps after E.performedAtTime
 
 let HasPriorAntibiotics =
-    exists (Antibiotics where orderedAtTime starts within 30 days before start TargetDiagnoses.effectiveTime)
-
-let HasPriorAntibiotics =
-	exists (Antibiotics where exists (TargetDiagnoses where Antibiotics.orderedAtTime starts within 30 days before start TargetDiagnoses.effectiveTime))
-
-let HasPriorAntibiotics =
-	exists (
-		Antibiotics A
-			with TargetDiagnoses D where A.orderedAtTime starts within 30 days before start D.effectiveTime
-	)
-
-// Assumes previous definition of Antibiotics and TargetDiagnoses
-let HasPriorAntibiotics =
-	exists (
-		Antibiotics A
-			with TargetDiagnoses D where A.orderedAtTime starts within 30 days before start D.effectiveTime
-	)
-
-// Equivalent QDM
-AND: "Medication, Active: Antibiotic Medications" <= 30 day(s) starts before start of
-	OR: "Occurrence A of Diagnosis, Active: Acute Pharyngitis"
-	OR: "Occurrence A of Diagnosis, Active: Acute Tonsillitis"
-
+    exists (Antibiotics A with TargetDiagnoses D where A.orderedAtTime starts within 30 days before start D.effectiveTime)
 
 let HasTargetEncounter =
     exists (TargetEncounters)
 
 let InInitialPopulation =
-	InDemographic and HasTargetEncounter
+    InDemographic and HasTargetEncounter
 
 let InDenominator =
-    InInitialPopulation
+    true
 
 let InDenominatorExclusions =
-    InDenominator and HasPriorAntibiotics
+    HasPriorAntibiotics
 
 let InNumerator =
-    InDenominator
-        and not InDenominatorExclusions
-        and exists ([ObservationResult: "Group A Streptococcus Test"] where observedAtTime during MeasurementPeriod)
-
+    exists ([ObservationResult: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod)
