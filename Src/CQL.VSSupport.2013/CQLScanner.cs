@@ -107,7 +107,7 @@ namespace ONC.CQL_VSSupport_2013
 				case "'/'" : return TokenType.Operator;
 				case "'day'" : return TokenType.Keyword;
 				case "'like'" : return TokenType.Keyword;
-				case "'concept'" : return TokenType.Keyword;
+				case "'valueset'" : return TokenType.Keyword;
 				case "'retrieve'" : return TokenType.Keyword;
 				case "'or'" : return TokenType.Keyword;
 				case "'['" : return TokenType.Text;
@@ -179,7 +179,7 @@ namespace ONC.CQL_VSSupport_2013
 			//	case 0 : return TokenType.Unknown; // "<INVALID>",
 			//	case 1 : return TokenType.Keyword; // "'except'", 
 			//	case 2 : return TokenType.Keyword; // "'like'", 
-			//	case 3 : return TokenType.Keyword; // "'concept'", 
+			//	case 3 : return TokenType.Keyword; // "'valueset'", 
 			//	case 4 : return TokenType.Keyword; // "'retrieve'", 
 			//	case 5 : return TokenType.Literal; // "'u'", 
 			//	case 6 : return TokenType.Keyword; // "'combine'", 
@@ -328,7 +328,7 @@ namespace ONC.CQL_VSSupport_2013
 				case "'/'" : return TokenColor.Text;
 				case "'day'" : return TokenColor.Keyword;
 				case "'like'" : return TokenColor.Keyword;
-				case "'concept'" : return TokenColor.Keyword;
+				case "'valueset'" : return TokenColor.Keyword;
 				case "'retrieve'" : return TokenColor.Keyword;
 				case "'or'" : return TokenColor.Keyword;
 				case "'['" : return TokenColor.Text;
@@ -400,7 +400,7 @@ namespace ONC.CQL_VSSupport_2013
 			//	case 0 : return TokenColor.Text; // "<INVALID>",
 			//	case 1 : return TokenColor.Keyword; // "'except'", 
 			//	case 2 : return TokenColor.Keyword; // "'like'", 
-			//	case 3 : return TokenColor.Keyword; // "'concept'", 
+			//	case 3 : return TokenColor.Keyword; // "'valueset'", 
 			//	case 4 : return TokenColor.Keyword; // "'retrieve'", 
 			//	case 5 : return TokenColor.Number; // "'u'", 
 			//	case 6 : return TokenColor.Keyword; // "'combine'", 
@@ -549,7 +549,7 @@ namespace ONC.CQL_VSSupport_2013
 				case "'/'" : return TokenTriggers.None;
 				case "'day'" : return TokenTriggers.None;
 				case "'like'" : return TokenTriggers.None;
-				case "'concept'" : return TokenTriggers.None;
+				case "'valueset'" : return TokenTriggers.None;
 				case "'retrieve'" : return TokenTriggers.None;
 				case "'or'" : return TokenTriggers.None;
 				case "'['" : return TokenTriggers.None;
@@ -621,7 +621,7 @@ namespace ONC.CQL_VSSupport_2013
 			//	case 0 : return TokenTriggers.None; // "<INVALID>",
 			//	case 1 : return TokenTriggers.None; // "'except'", 
 			//	case 2 : return TokenTriggers.None; // "'like'", 
-			//	case 3 : return TokenTriggers.None; // "'concept'", 
+			//	case 3 : return TokenTriggers.None; // "'valueset'", 
 			//	case 4 : return TokenTriggers.None; // "'retrieve'", 
 			//	case 5 : return TokenTriggers.None; // "'u'", 
 			//	case 6 : return TokenTriggers.None; // "'combine'", 

@@ -27,9 +27,9 @@ namespace CQL
 			return base.VisitActivityType(context);
 		}
 
-		public override string VisitConcept(cqlParser.ConceptContext context)
-		{
-			return base.VisitConcept(context);
-		}
+        public override string VisitValueset(cqlParser.ValuesetContext context)
+        {
+            return base.VisitValueset(context);
+        }
 	}
 }

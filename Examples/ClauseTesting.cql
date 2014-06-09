@@ -21,6 +21,9 @@ let CodedRetrieve =
 let ExplicitlyCodedRetrieve =
 	[Encounter, Performed: serviceType in "Ambulatory/ED Visit"]
 
+let WhereExplicitlyCodedRetrieve =
+	[Encounter, Performed where serviceType in "Ambulatory/ED Visit"]
+
 let CodedWhere =
 	[Encounter, Performed] E where E.serviceType in ValueSet("Ambulatory/ED Visit")
 
@@ -30,6 +33,9 @@ let RangedRetrieve =
 let ExplicitlyRangedRetrieve =
 	[Encounter, Performed, performedAtTime during MeasurementPeriod]
 
+let WhereExplicitlyRangedRetrieve =
+	[Encounter, Performed where performedAtTime during MeasurementPeriod]
+
 let RangedWhere =
 	[Encounter, Performed] E where E.performedAtTime during MeasurementPeriod
 
@@ -38,6 +44,9 @@ let CodedRangedRetrieve =
 
 let ExplicitlyCodedRangedRetrieve =
 	[Encounter, Performed: serviceType in "Ambulatory/ED Visit", performedAtTime during MeasurementPeriod]
+
+let WhereExplicitlyCodedRangedRetrieve =
+	[Encounter, Performed where serviceType in "Ambulatory/ED Visit" and performedAtTime during MeasurementPeriod]
 
 let CodedRangedWhere =
 	[Encounter, Performed] E 

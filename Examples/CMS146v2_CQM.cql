@@ -110,7 +110,8 @@ let TargetDiagnoses =
 	Pharyngitis where exists (TargetEncounters where Pharyngitis.effectiveTime overlaps after TargetEncounters.performedAtTime)
 
 let TargetDiagnoses =
-	Pharyngitis with TargetEncounters where Pharyngitis.effectiveTime overlaps after TargetEncounters.performedAtTime
+	Pharyngitis P
+		with TargetEncounters E where P.effectiveTime overlaps after E.performedAtTime
 
 let HasPriorAntibiotics =
     exists (Antibiotics where orderedAtTime starts within 30 days before start TargetDiagnoses.effectiveTime)
@@ -120,9 +121,22 @@ let HasPriorAntibiotics =
 
 let HasPriorAntibiotics =
 	exists (
-		Antibiotics with TargetDiagnoses 
-			where Antibiotics.orderedAtTime starts within 30 days before start TargetDiagnoses.effectiveTime 
+		Antibiotics A
+			with TargetDiagnoses D where A.orderedAtTime starts within 30 days before start D.effectiveTime
 	)
+
+// Assumes previous definition of Antibiotics and TargetDiagnoses
+let HasPriorAntibiotics =
+	exists (
+		Antibiotics A
+			with TargetDiagnoses D where A.orderedAtTime starts within 30 days before start D.effectiveTime
+	)
+
+// Equivalent QDM
+AND: "Medication, Active: Antibiotic Medications" <= 30 day(s) starts before start of
+	OR: "Occurrence A of Diagnosis, Active: Acute Pharyngitis"
+	OR: "Occurrence A of Diagnosis, Active: Acute Tonsillitis"
+
 
 let HasTargetEncounter =
     exists (TargetEncounters)

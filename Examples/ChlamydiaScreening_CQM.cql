@@ -4,24 +4,24 @@ context PATIENT // TODO: Look at turning this into a parameter with a 'with' sta
 
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
-concept "Other Female Reproductive Conditions" = ValueSet("2.16.840.1.113883.3.464.1003.111.12.1006")
-concept "Genital Herpes" = ValueSet("2.16.840.1.113883.3.464.1003.110.12.1049")
-concept "Genococcal Infections and Venereal Diseases" = ValueSet("2.16.840.1.113883.3.464.1003.112.12.1001")
-concept "Inflammatory Diseases of Female Reproductive Organs" = ValueSet("2.16.840.1.113883.3.464.1003.112.12.1004")
-concept "Chlamydia" = ValueSet("2.16.840.1.113883.3.464.1003.112.12.1003")
-concept "HIV" = ValueSet("2.16.840.1.113883.3.464.1003.120.12.1003")
-concept "Syphilis" = ValueSet("2.16.840.1.113883.3.464.1003.112.12.1002")
-concept "Complications of Pregnancy, Childbirth and the Puerperium" = ValueSet("2.16.840.1.113883.3.464.1003.111.12.1012")
-concept "Pregnancy Test" = ValueSet("2.16.840.1.113883.3.464.1003.111.12.1011")
-concept "Pap Test" = ValueSet("2.16.840.1.113883.3.464.1003.108.12.1017")
-concept "Lab Tests During Pregnancy" = ValueSet("2.16.840.1.113883.3.464.1003.111.12.1007")
-concept "Lab Tests for Sexually Transmitted Infections" = ValueSet("2.16.840.1.113883.3.464.1003.110.12.1051")
-concept "Chlamydia Screening" = ValueSet("2.16.840.1.113883.3.464.1003.110.12.1052")
+valueset "Other Female Reproductive Conditions" = ValueSet('2.16.840.1.113883.3.464.1003.111.12.1006')
+valueset "Genital Herpes" = ValueSet("2.16.840.1.113883.3.464.1003.110.12.1049")
+valueset "Genococcal Infections and Venereal Diseases" = ValueSet("2.16.840.1.113883.3.464.1003.112.12.1001")
+valueset "Inflammatory Diseases of Female Reproductive Organs" = ValueSet("2.16.840.1.113883.3.464.1003.112.12.1004")
+valueset "Chlamydia" = ValueSet("2.16.840.1.113883.3.464.1003.112.12.1003")
+valueset "HIV" = ValueSet("2.16.840.1.113883.3.464.1003.120.12.1003")
+valueset "Syphilis" = ValueSet("2.16.840.1.113883.3.464.1003.112.12.1002")
+valueset "Complications of Pregnancy, Childbirth and the Puerperium" = ValueSet("2.16.840.1.113883.3.464.1003.111.12.1012")
+valueset "Pregnancy Test" = ValueSet("2.16.840.1.113883.3.464.1003.111.12.1011")
+valueset "Pap Test" = ValueSet("2.16.840.1.113883.3.464.1003.108.12.1017")
+valueset "Lab Tests During Pregnancy" = ValueSet("2.16.840.1.113883.3.464.1003.111.12.1007")
+valueset "Lab Tests for Sexually Transmitted Infections" = ValueSet("2.16.840.1.113883.3.464.1003.110.12.1051")
+valueset "Chlamydia Screening" = ValueSet("2.16.840.1.113883.3.464.1003.110.12.1052")
 
-let InDemographic =
+let InDemographic = 
 	AgeAt(start of MeasurementPeriod) >= 16
 		and AgeAt(start of MeasurementPeriod) < 24
-		and Gender = "female"
+		and Gender = 'female'
 
 let SexuallyActive =
 	exists ([Condition: "Other Female Reproductive Conditions"] C where C.effectiveTime overlaps before MeasurementPeriod)
@@ -46,33 +46,5 @@ let InDenominator =
 let InNumerator =
 	InDenominator
 		and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod)
-
-
-
-using QLIM
-
-context PATIENT
-
-include "ChlamydiaScreening_Common.cql"
-
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-
-let InDemographic =
-    AgeAt(start of MeasurementPeriod) >= 16
-        and AgeAt(start of MeasurementPeriod) < 24
-        and Gender = "female"
-
-let SexuallyActive =
-    exists(conditionsIndicatingSexualActivity C where C.effectiveTime overlaps before MeasurementPeriod)
-        or exists(resultsIndicatingSexualActivity R where R.effectiveTime during MeasurementPeriod)
-
-let InInitialPopulation =
-    InDemographic and SexuallyActive
-
-let InDenominator =
-    InInitialPopulation
-
-let InNumerator =
-    InDenominator and exists (chlamydiaScreening S where S.effectiveTime during MeasurementPeriod)
 
 

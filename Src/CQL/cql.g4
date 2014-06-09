@@ -9,7 +9,7 @@ logic:
 	contextDefinition?
 	includeDefinition*
 	parameterDefinition*
-	conceptDefinition*
+	valuesetDefinition*
 	statement+;
 
 /*
@@ -24,7 +24,7 @@ includeDefinition: 'include' IDENTIFIER ('version' STRING)?;
 
 parameterDefinition: 'parameter' IDENTIFIER (':' typeSpecifier)? ('default' expression)?;
 
-conceptDefinition: 'concept' STRING '=' expression;
+valuesetDefinition: 'valueset' STRING '=' expression;
 
 /*
  * Type Specifiers
@@ -69,11 +69,11 @@ returnStatement:
     'return' expression;
 
 retrieveDefinition:
-    'define' 'retrieve' existenceModifier? '[' topicType (',' activityType)? (':' conceptPathIdentifier 'in' conceptIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' operatorBody;
+    'define' 'retrieve' existenceModifier? '[' topicType (',' activityType)? (':' valuesetPathIdentifier 'in' valuesetIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' operatorBody;
 
-conceptPathIdentifier: IDENTIFIER;
+valuesetPathIdentifier: IDENTIFIER;
 
-conceptIdentifier: IDENTIFIER;
+valuesetIdentifier: IDENTIFIER;
 
 duringPathIdentifier: IDENTIFIER;
 
@@ -104,7 +104,7 @@ queryInclusionClause:
     'combine' aliasedQuerySource 'where' expression
 ;
 
-retrieve: existenceModifier? '[' topicType (',' activityType)? (':' (IDENTIFIER 'in')? concept)? (',' IDENTIFIER? 'during' expression)? ']';
+retrieve: existenceModifier? '[' topicType (',' activityType)? (':' (IDENTIFIER 'in')? valueset)? (',' IDENTIFIER? 'during' expression)? ']';
 
 existenceModifier: 'no' | 'unknown';
 
@@ -112,7 +112,7 @@ topicType: IDENTIFIER;
 
 activityType: IDENTIFIER;
 
-concept: STRING | IDENTIFIER;
+valueset: STRING | IDENTIFIER;
 
 expression:
     term |
@@ -126,8 +126,8 @@ expression:
     ('not' | 'exists') expression |
     ('start' | 'end') 'of' expression |
     ('date' | 'time' | 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond') 'of' expression |
-    //expression 'between' expression 'and' expression |
-    //('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'between' expression 'and' expression |
+    expression 'between' expression 'and' expression |
+    ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'between' expression 'and' expression |
     expression '^' expression |
     expression ('*' | '/' | 'div' | 'mod') expression |
     expression ('+' | '-') expression |
@@ -140,8 +140,7 @@ expression:
 	'case' expression? caseExpressionItem+ 'else' expression 'end' |
 	'coalesce' '(' expression (',' expression)+ ')' |
 	'with' expression alias? 'return' expression |
-	'convert' expression 'to' typeSpecifier |
-	'expand' expression |
+	('collapse' | 'expand') expression |
 	'foreach' IDENTIFIER 'in' query 'return' expression |
 	'sort' query 'by' sortByItem (',' sortByItem)*;
 

@@ -2,7 +2,7 @@ using QLIM
 
 context PATIENT
 
-concept "Other Female Reproductive Conditions" = ValueSet("2.1...")
+valueset "Other Female Reproductive Conditions" = ValueSet("2.1...")
 
 let conditionsIndicatingSexualActivity =
     union(
