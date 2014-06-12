@@ -32,14 +32,12 @@ let ActiveWarfarinDuringLookback =
 	WarfarinMedications M where M.administeredTime overlaps LookbackInterval
 
 let WarfarinUsageIntervals =
-	foreach M in ActiveWarfarinDuringLookback
-		return
-			tuple
-			{
-				usageWithinLookback: M.administeredTime intersect LookbackInterval
-			}
+	ActiveWarfarinDuringLookback M 
+		return tuple { usageWithinLookback: M.administeredTime intersect LookbackInterval }
 
 let WarfarinUsage = Sum(foreach I in WarfarinUsageIntervals return duration in days of I)
+
+//let WarfarinUsage = Sum(WarfarinUsageIntervals I return duration in days of I)
 
 let INROutpatientLabResult = 
 	INRLabResults R 
@@ -56,8 +54,10 @@ let INRResultsByDay =
 			}
 
 let INRResultsPerDay =
-	foreach D in distinct (foreach X in INRResultsByDay return X.resultDate) 
-		return First(INRResultsByDay R where R.resultDate = D sort by D.distanceFromMidpoint) X
+	(
+	    foreach D in distinct (foreach X in INRResultsByDay return X.resultDate) 
+		    return First(INRResultsByDay R where R.resultDate = D sort by D.distanceFromMidpoint)
+    ) X
 	sort by X.resultDate
 
 let TherapeuticRange = interval[2.0, 3.0]
@@ -101,7 +101,7 @@ let TherapeuticDays =
 				daysInRange : 
 					if I.resultsWithinBounds 
 						then I.resultDays 
-						else IfNull(I.resultDays * Abs(I.boundedDifference / (if I.resultDays = 0 then null else i.resultDays))), 0)
+						else IfNull(I.resultDays * Abs(I.boundedDifference / (if I.resultDays = 0 then null else I.resultDays)), 0)
 			}
 
 let TherapeuticTimeInRange =

@@ -20,18 +20,3 @@ let NoScreening =
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
 
-
-
-// Data Model Reference
-using CQLM
-
-// Establish PATIENT context
-context PATIENT
-
-// Include common library
-include "ChlamydiaScreening_Common.cql"
-
-// Define additional value sets for use within this artifact
-valueset "Reason for not performing Chlamydia Screening" = ValueSet("TBD")
-
-
