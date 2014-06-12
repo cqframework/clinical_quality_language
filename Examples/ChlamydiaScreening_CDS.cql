@@ -35,7 +35,7 @@ let SexuallyActive =
 	or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"])
 		
 let NoScreening =
-	not exists ([ObservationResult: "Chlamydia Screening", during interval[today - 1 years, now]])
+	not exists ([ObservationResult: "Chlamydia Screening", during interval[today - 1 years, today]])
 	and not exists ([Procedure, Planned: "Chlamydia Screening", during interval[now, null]])
 	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 

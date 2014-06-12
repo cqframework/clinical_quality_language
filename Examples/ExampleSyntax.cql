@@ -18,7 +18,7 @@ let TupleLiteral = tuple { Name: "Patrick", DOB: Date(2014, 1, 1) }
 let ListLiteral = { 1, 2, 3, 4, 5 }
 
 // Interval Types
-let IntervalLiteral = interval[today - 1 years, now]
+let IntervalLiteral = interval[today - 1 years, today]
 
 // Simple Expressions
 let LogicalAnd = A and B
@@ -52,8 +52,113 @@ let Now = now
 let Today = today
 let ConvertedDate = convert "20140101120000-0600" to Timestamp
 let DateAdd = today + 3 months - 2 days
-let DateDiff = months between start of effectiveTime and end of effectiveTime // TODO: Still working on this.... between ... and is tricky...
-let Months = month of start of effectiveTime
+let DateDiff = months between start of X and end of X // TODO: Still working on this.... between ... and is tricky...
+let Duration = duration in months of X
+let DateComponent = date of start of X
+let Months = month of start of X
+
+// Retrieve
+let SimpleRetrieve =
+	[Encounter, Performed]
+
+let CodedRetrieve =
+	[Encounter, Performed: "Ambulatory/ED Visit"]
+
+let ExplicitlyCodedRetrieve =
+	[Encounter, Performed: serviceType in "Ambulatory/ED Visit"]
+
+let WhereExplicitlyCodedRetrieve =
+	[Encounter, Performed where serviceType in "Ambulatory/ED Visit"]
+
+let CodedWhere =
+	[Encounter, Performed] E where E.serviceType in ValueSet("Ambulatory/ED Visit")
+
+let RangedRetrieve =
+	[Encounter, Performed, during MeasurementPeriod]
+
+let ExplicitlyRangedRetrieve =
+	[Encounter, Performed, performedAtTime during MeasurementPeriod]
+
+let WhereExplicitlyRangedRetrieve =
+	[Encounter, Performed where performedAtTime during MeasurementPeriod]
+
+let RangedWhere =
+	[Encounter, Performed] E where E.performedAtTime during MeasurementPeriod
+
+let CodedRangedRetrieve =
+	[Encounter, Performed: "Ambulatory/ED Visit", during MeasurementPeriod]
+
+let ExplicitlyCodedRangedRetrieve =
+	[Encounter, Performed: serviceType in "Ambulatory/ED Visit", performedAtTime during MeasurementPeriod]
+
+let WhereExplicitlyCodedRangedRetrieve =
+	[Encounter, Performed where serviceType in "Ambulatory/ED Visit" and performedAtTime during MeasurementPeriod]
+
+let CodedRangedWhere =
+	[Encounter, Performed] E 
+		where E.serviceType in ValueSet("Ambulatory/ED Visit") 
+			and E.performedAtTime during MeasurementPeriod
+
+// With
+let TargetEncounters =
+	[Encounter, Performed: "Ambulatory/ED Visit"] E
+		with [Condition: "Acute Pharyngitis"] P
+			where P.effectiveTime overlaps after E.performedAtTime
+
+let TargetEncounters =
+	[Encounter, Performed: "Ambulatory/ED Visit"] E 
+		with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
+		with Antibiotics A where A.orderedAtTime starts within 3 days after start E.performedAtTime 
+	    where E.performedAtTime during MeasurementPeriod
+
+let EncountersAndConditions =
+	[Encounter, Performed: "Ambulatory/ED Visit"] E
+		combine [Condition: "Acute Pharyngitis"] P 
+			where P.effectiveTime overlaps after E.performedAtTime
+
+let FilteredEncountersAndConditions =
+	EncountersAndConditions E where E.E.providerType in ValueSet("Provider Types")
+
+let EncountersAndConditionsAndAntibiotics =
+	FilteredEncountersAndConditions F combine [MedicationPrescription: "Antibiotic Medications"] A 
+		where A.orderedAtTime within 3 days after start F.E.effectiveTime
+
+let FilteredEncountersAndConditionsAndAntibiotics =
+	EncountersWithConditionsAndAntibiotics E where E.A.quantity > 1
+
+let EncountersAndConditions =
+	[Encounter, Performed: "Ambulatory/ED Visit"] E
+		combine [Condition: "Acute Pharyngitis"] P 
+			where P.effectiveTime overlaps after E.performedAtTime
+		return tuple { Encounter: E, Pharyngitis: P }
+
+let EncountersAndConditions =
+	[Encounter, Performed: "Ambulatory/ED Visit"] E
+		combine [Condition: "Acute Pharyngitis"] P 
+			where P.effectiveTime overlaps after E.performedAtTime
+		return tuple { EncounterId: E.Id, EncounterEffectiveTime: E.effectiveTime, PharyngitisCode: P.Code }
+
+// This combine
+let EncountersAndConditions =
+	[Encounter, Performed: "Ambulatory/ED Visit"] E
+		combine [Condition: "Acute Pharyngitis"] P 
+			where P.effectiveTime overlaps after E.performedAtTime
+
+// Is equivalent to nested foreach invocations
+let CombinedEncountersAndConditions =
+	expand
+	(
+		foreach E in [Encounter, Performed: "Ambulatory/ED Visit"]
+			return
+				foreach P in [Condition: "Acute Pharyngitis"]
+					return tuple { Encounter: E, Condition: P }
+	)
+
+// followed by a filter
+let EncountersAndConditions =
+	CombinedEncountersAndConditions EC 
+		where EC.Condition.effectiveTime overlaps after EC.Encounter.performedAtTime
+
 
 // Operator definition
 operator CumulativeDuration(Intervals: list<interval<Timestamp>>)
@@ -65,4 +170,25 @@ operator CumulativeDuration(Intervals: list<interval<Timestamp>>)
 				return days between start of Interval and end of Interval
 		)
 }
+
+let CombinedValueSet = "Ambulatory/ED Visit" union "Inpatient Visit"
+
+let XYZCode = First(CombinedValueSet VS where VS.code = 'XYZ')
+let XYZCode = tuple { code: 'XYZ' }
+
+Sum({ 1, 2, 3, 4, 5 })
+Count([Encounter, Performed])
+
+Sum(result from [ObservationResult])
+
+
+Sum(foreach R in [ObservationResult] return R.result)
+Min(foreach E in [Encounter, Performed] return R.effectiveTime)
+
+
+foreach R in [ObservationResult] return R.result
+
+
+
+
 

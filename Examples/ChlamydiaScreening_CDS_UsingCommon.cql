@@ -4,6 +4,8 @@ context PATIENT
 
 include "ChlamydiaScreening_Common.cql"
 
+valueset "Reason for not performing Chlamydia Screening" = ValueSet("TBD") // Not used in the measure, need a value set for this
+
 let InDemographic =
     Age() >= 16 and Age() < 24 and Gender = "female"
 
@@ -19,45 +21,17 @@ let NoScreening =
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
 
 
-true, 16, "female"
 
-3 months, 6 u"gm/cm3"
+// Data Model Reference
+using CQLM
 
-[Encounter, Performed]
-tuple { Name: "Patrick", DOB: Date(2014, 1, 1) }
+// Establish PATIENT context
+context PATIENT
 
-{ 1, 2, 3, 4, 5 }
+// Include common library
+include "ChlamydiaScreening_Common.cql"
 
-starts before start, starts concurrent with 
+// Define additional value sets for use within this artifact
+valueset "Reason for not performing Chlamydia Screening" = ValueSet("TBD")
 
-starts 3 days before start
-starts within 3 days before start
-starts within 3 days of start
-
-meets, overlaps, during
-
-start of MeasurementPeriod
-
-X in { 1, 2, 3, 4, 5 }
-
-A and B
-A and not (B or C)
-
-A >= B
-A <> B
-
-A + B
-A + B * C
-
-[Encounter, Performed]
-no [Procedure, Proposal]
-unknown [DeviceUse]
-
-let InpatientEncounters = [Encounter, Performed: serviceType in "Inpatient"]
-[Encounter, Performed: during MeasurementPeriod]
-
-[Encounter, Performed: "Inpatient"] E 
-	where E.lengthOfStay > 120 days
-
-concept "Inpatient" = ValueSet("2.1.6....")
 

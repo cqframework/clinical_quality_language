@@ -10,13 +10,13 @@ define retrieve [Condition: code in Concept, effectiveTime during Range]
 		return
 			tuple
 			{
-				code: code,
+				code: element.code,
 				effectiveTime: 
 					interval
 					[
-						if onsetAge is not null 
+						if element.onsetAge is not null 
 							then Date(today.Year - (Age() - onsetAge), null, null) 
-							else onsetDate,
+							else element.onsetDate,
 						case
 							when abatement is not null then null
 							when abatementAge is not null

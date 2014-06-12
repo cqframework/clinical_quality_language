@@ -10,6 +10,7 @@ logic:
 	includeDefinition*
 	parameterDefinition*
 	valuesetDefinition*
+	dataAccessStatement*
 	statement+;
 
 /*
@@ -50,6 +51,9 @@ tupleElementDefinition: IDENTIFIER ':' typeSpecifier;
  * Statements
  */
 
+dataAccessStatement:
+    'let' IDENTIFIER '=' retrieve;
+
 statement:
     letStatement |
     operatorDefinition |
@@ -69,7 +73,7 @@ returnStatement:
     'return' expression;
 
 retrieveDefinition:
-    'define' 'retrieve' existenceModifier? '[' topicType (',' activityType)? (':' valuesetPathIdentifier 'in' valuesetIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' operatorBody;
+    'define' 'retrieve' existenceModifier? '[' topic (',' modality)? (':' valuesetPathIdentifier 'in' valuesetIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' operatorBody;
 
 valuesetPathIdentifier: IDENTIFIER;
 
@@ -104,13 +108,13 @@ queryInclusionClause:
     'combine' aliasedQuerySource 'where' expression
 ;
 
-retrieve: existenceModifier? '[' topicType (',' activityType)? (':' (IDENTIFIER 'in')? valueset)? (',' IDENTIFIER? 'during' expression)? ']';
+retrieve: existenceModifier? '[' topic (',' modality)? (':' (IDENTIFIER 'in')? valueset)? (',' IDENTIFIER? 'during' expression)? ']';
 
 existenceModifier: 'no' | 'unknown';
 
-topicType: IDENTIFIER;
+topic: IDENTIFIER;
 
-activityType: IDENTIFIER;
+modality: IDENTIFIER;
 
 valueset: STRING | IDENTIFIER;
 
@@ -118,8 +122,9 @@ expression:
     term |
     expression '.' IDENTIFIER |
     expression '[' expression ']' |
-    expression '(' (expression (',' expression)*)? ')' |
-    expression 'is' 'not'? 'null' |
+    expression '(' (query (',' query)*)? ')' |
+    expression '(' IDENTIFIER 'from' query ')' |
+    expression 'is' 'not'? ( 'null' | 'true' | 'false' ) |
     expression ('is' | 'as') typeSpecifier |
     'convert' expression 'to' typeSpecifier |
     ('+' | '-') expression |
@@ -128,6 +133,7 @@ expression:
     ('date' | 'time' | 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond') 'of' expression |
     expression 'between' expression 'and' expression |
     ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'between' expression 'and' expression |
+    'duration' 'in' ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'of' expression |
     expression '^' expression |
     expression ('*' | '/' | 'div' | 'mod') expression |
     expression ('+' | '-') expression |
@@ -170,8 +176,8 @@ quantityOffset:
     'within'? quantityLiteral;
 
 term:
-    literal |
     IDENTIFIER |
+    literal |
     intervalSelector |
     tupleSelector |
     listSelector |
@@ -191,10 +197,19 @@ listSelector:
     ('list' ('<' typeSpecifier '>')?)? '{' expression (',' expression)* '}';
 
 literal:
-    NULL |
-    BOOLEAN |
-    STRING |
+    nullLiteral |
+    booleanLiteral |
+    stringLiteral |
     quantityLiteral;
+
+nullLiteral:
+    'null';
+
+booleanLiteral:
+    'true' | 'false';
+
+stringLiteral:
+    STRING;
 
 quantityLiteral:
     QUANTITY unit?;
@@ -215,10 +230,6 @@ unit:
  */
 
 IDENTIFIER: [A-Za-z]+;
-
-NULL: 'null';
-
-BOOLEAN: 'true' | 'false';
 
 QUANTITY: [0-9]+('.'[0-9]+)?;
 

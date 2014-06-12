@@ -17,16 +17,6 @@ namespace CQL
 			return base.VisitExistenceModifier(context);
 		}
 
-		public override string VisitTopicType(cqlParser.TopicTypeContext context)
-		{
-			return base.VisitTopicType(context);
-		}
-
-		public override string VisitActivityType(cqlParser.ActivityTypeContext context)
-		{
-			return base.VisitActivityType(context);
-		}
-
         public override string VisitValueset(cqlParser.ValuesetContext context)
         {
             return base.VisitValueset(context);
