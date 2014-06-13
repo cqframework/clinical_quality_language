@@ -52,22 +52,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cql.g4.lexer.cs">
-      <DependentUpon>cql.g4</DependentUpon>
-    </Compile>
-    <Compile Include="cql.g4.parser.cs">
-      <DependentUpon>cql.g4</DependentUpon>
-    </Compile>
     <Compile Include="cqlVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Antlr4 Include="cql.g4">
+    <Antlr4 Include="..\..\grammar\cql.g4">
+      <Link>cql.g4</Link>
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>CQL</CustomToolNamespace>
     </Antlr4>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>
