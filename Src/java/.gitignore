@@ -1,6 +1,5 @@
 .gradle
-build
-cql.iws
-cql.iml
-cql.ipr
+cql-all.iws
+cql-all.iml
+cql-all.ipr
 out

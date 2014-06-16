@@ -1,56 +1,4 @@
-apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin:'application'
-
-group = 'org.cqframework'
-version = '0.1'
-sourceCompatibility = '1.7'
-
-mainClassName = 'org.cqframework.cql.Main'
-run.args = ["${projectDir}/../../Examples/ChlamydiaScreening_CQM.cql"]
-
-ext.antlr = [
-    package: 'org.cqframework.cql.gen',
-    srcDir:  '../grammar',
-    destDir: 'src/generated/java'
-]
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile group: 'org.antlr', name: 'antlr4', version: '4.2.2'
-    testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
-}
-
-test {
-    useTestNG()
-}
-
-// Loosely based on https://github.com/ae6rt/gradle-antlr4-template
-task antlrTool(type: JavaExec) {
-    description = 'Generates Java sources from ANTLR4 grammars.'
-
-    mkdir(antlr.destDir)
-    inputs.dir file(antlr.srcDir)
-    outputs.dir file(antlr.destDir)
-
-    def grammars = fileTree(antlr.srcDir).include('**/*.g4')
-
-    main = 'org.antlr.v4.Tool'
-    classpath = configurations.compile
-    def pkg = antlr.package.replaceAll("\\.", "/")
-    args = ["-o", "${antlr.destDir}/${pkg}", "-visitor", "-package", antlr.package, grammars.files].flatten()
-}
-
-compileJava.dependsOn antlrTool
-sourceSets.main.java.srcDirs += antlr.destDir
-
-clean {
-    delete antlr.destDir
-}
 
 idea {
   project {
@@ -74,7 +22,7 @@ idea {
         def props = provider.node.component.find { it.@name == 'PropertiesComponent' }
         
         def propMap = [
-          '$PROJECT_DIR$/../grammar/cql.g4::/output-dir' : '$PROJECT_DIR$/src/generated/java',
+          '$PROJECT_DIR$/../grammar/cql.g4::/output-dir' : '$PROJECT_DIR$/cql/src/generated/java',
           '$PROJECT_DIR$/../grammar/cql.g4::/lib-dir' : '$PROJECT_DIR$/../grammar',
           '$PROJECT_DIR$/../grammar/cql.g4::/package' : 'org.cqframework.cql.gen',
           '$PROJECT_DIR$/../grammar/cql.g4::/gen-listener' : 'true',
