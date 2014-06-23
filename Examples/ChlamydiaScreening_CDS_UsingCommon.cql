@@ -1,22 +1,24 @@
-using QLIM
+library CMS153_CDS version '2'
+
+using QUICK
 
 context PATIENT
 
-include "ChlamydiaScreening_Common.cql"
+include Common
 
-valueset "Reason for not performing Chlamydia Screening" = ValueSet("TBD") // Not used in the measure, need a value set for this
+valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
 
 let InDemographic =
-    Age() >= 16 and Age() < 24 and Gender = "female"
+    Age() >= 16 and Age() < 24 and Gender in Common."Female Administrative Sex"
 
 let SexuallyActive =
-    exists (conditionsIndicatingSexualActivity)
-    or exists (resultsIndicatingSexualActivity)
+    exists (Common.ConditionsIndicatingSexualActivity)
+    or exists (Common.ResultsIndicatingSexualActivity)
 
 let NoScreening =
-    not exists (chlamydiaScreening S where S.effectiveTime during interval[today - 1 years, now])
-    and not exists ([Procedure, Planned: "Chlamydia Screening"] P where P.effectiveTime >= now)
-    and not exists (reasonForNoScreening)
+    not exists (Common.ChlamydiaScreening S where S.effectiveTime during interval[today - 1 years, today])
+    and not exists ([Procedure, Planned: Common."Chlamydia Screening"] P where P.effectiveTime >= now)
+    and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
 

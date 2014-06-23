@@ -1,3 +1,5 @@
+library FHIRMap
+
 using FHIR
 
 context PATIENT
@@ -6,7 +8,7 @@ define retrieve [Condition: code in Concept, effectiveTime during Range]
 {
 	foreach element in
 		[FHIR.Condition: Concept, during Range]
-			where status in { "provisional", "working", "confirmed" }
+			where status in { 'provisional', 'working', 'confirmed' }
 		return
 			tuple
 			{
@@ -32,7 +34,7 @@ define retrieve no [Condition: code in Concept, effectiveTime during Range]
 {
 	foreach element in
 		[FHIR.Condition : Concept, during Range]
-			where status = "refuted"
+			where status = 'refuted'
 		return
 			tuple
 			{
@@ -58,7 +60,7 @@ define retrieve [ObservationResult: name in Concept, observedAtTime during Range
 {
 	foreach element in 
 		[FHIR.Observation: Concept, during Range]
-			where status in { "final", "amended" }
+			where status in { 'final', 'amended' }
 		return
 			tuple
 			{

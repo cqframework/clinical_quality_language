@@ -5,16 +5,18 @@ grammar cql;
  */
 
 logic:
+    libraryDefinition
 	usingDefinition*
 	contextDefinition?
 	includeDefinition*
-	parameterDefinition*
-	valuesetDefinition*
+	(parameterDefinition | valuesetDefinition)*
 	statement+;
 
 /*
  * Definitions
  */
+
+libraryDefinition: 'library' IDENTIFIER ('version' STRING)?;
 
 usingDefinition: 'using' IDENTIFIER ('version' STRING)?;
 
@@ -24,7 +26,7 @@ includeDefinition: 'include' IDENTIFIER ('version' STRING)?;
 
 parameterDefinition: 'parameter' IDENTIFIER (':' typeSpecifier)? ('default' expression)?;
 
-valuesetDefinition: 'valueset' STRING '=' expression;
+valuesetDefinition: 'valueset' VALUESET '=' expression;
 
 /*
  * Type Specifiers
@@ -84,7 +86,7 @@ duringIdentifier: IDENTIFIER;
  */
 
 querySource:
-    retrieve | IDENTIFIER | '(' expression ')';
+    retrieve | optionallyQualifiedIdentifier | '(' expression ')';
 
 aliasedQuerySource:
     querySource alias;
@@ -100,11 +102,11 @@ retrieve: existenceModifier? '[' topic (',' modality)? (':' (IDENTIFIER 'in')? v
 
 existenceModifier: 'no' | 'unknown';
 
-topic: IDENTIFIER;
+topic: optionallyQualifiedIdentifier;
 
 modality: IDENTIFIER;
 
-valueset: STRING | IDENTIFIER;
+valueset: (IDENTIFIER '.')? (VALUESET | IDENTIFIER);
 
 expression
     : expressionTerm                                                     # termExpression
@@ -128,10 +130,9 @@ expression
 
 expressionTerm
     : term                                                               # termExpressionTerm
-    | expressionTerm '.' IDENTIFIER                                      # accessorExpressionTerm
+    | expressionTerm '.' (IDENTIFIER | VALUESET)                         # accessorExpressionTerm
     | expressionTerm '[' expression ']'                                  # indexedExpressionTerm
     | expressionTerm '(' (expression (',' expression)*)? ')'             # methodExpressionTerm
-    | expressionTerm '(' IDENTIFIER 'from' expression ')'                # methodFromExpressionTerm
     | 'convert' expression 'to' typeSpecifier                            # conversionExpressionTerm
     | ('+' | '-') expressionTerm                                         # polarityExpressionTerm
     | ('start' | 'end') 'of' expressionTerm                              # timeBoundaryExpressionTerm
@@ -145,11 +146,9 @@ expressionTerm
     | 'if' expression 'then' expression 'else' expression                # ifThenElseExpressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     # caseExpressionTerm
     | 'coalesce' '(' expression (',' expression)+ ')'                    # coalesceExpressionTerm
-    | 'with' expression alias? 'return' expression                       # withExpressionTerm
     | ('distinct' | 'collapse' | 'expand') expression                    # aggregateExpressionTerm
     | ('union' | 'intersect') '(' expression (',' expression)+ ')'       # prefixSetExpressionTerm
     | expressionTerm ('union' | 'intersect' | 'except') expressionTerm   # inFixSetExpressionTerm
-    | 'foreach' IDENTIFIER 'in' expression 'return' expression           # foreachExpressionTerm
     ;
 
 caseExpressionItem:
@@ -160,6 +159,9 @@ sortByItem:
 
 qualifiedIdentifier:
     IDENTIFIER '.' IDENTIFIER;
+
+optionallyQualifiedIdentifier:
+    (IDENTIFIER '.')? IDENTIFIER;
 
 intervalOperatorPhrase:
     ('starts' | 'ends')? 'concurrent with' ('start' | 'end')? |
@@ -202,6 +204,7 @@ literal:
     nullLiteral |
     booleanLiteral |
     stringLiteral |
+    valuesetLiteral |
     quantityLiteral;
 
 nullLiteral:
@@ -212,6 +215,9 @@ booleanLiteral:
 
 stringLiteral:
     STRING;
+
+valuesetLiteral:
+    VALUESET;
 
 quantityLiteral:
     QUANTITY unit?;
@@ -231,11 +237,13 @@ unit:
  * Lexer Rules
  */
 
-IDENTIFIER: [A-Za-z]+;
+IDENTIFIER: ([A-Za-z] | '_')([A-Za-z0-9] | '_')*;
 
 QUANTITY: [0-9]+('.'[0-9]+)?;
 
-STRING: ('"'|'\'') ( ~[\\"]  )* ('"'|'\'');
+VALUESET: '"' ( ~[\\"] )* '"';
+
+STRING: ('\'') ( ~[\\'] )* ('\'');
 
 WS: (' ' | '\r' | '\t') -> channel(HIDDEN);
 

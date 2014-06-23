@@ -60,10 +60,15 @@ namespace ONC.CQL_VSSupport_2013
 			switch (cqlLexer.tokenNames[tokenType])
 			{
 				case "<INVALID>" : return TokenType.Unknown;
+				case "'library'" : return TokenType.Keyword;
 				case "'except'" : return TokenType.Keyword;
 				case "'u'" : return TokenType.Literal;
 				case "'*'" : return TokenType.Operator;
 				case "'combine'" : return TokenType.Keyword;
+				case "'collapse'" : return TokenType.Keyword;
+				case "'distinct'" : return TokenType.Keyword;
+				case "'false'" : return TokenType.Keyword;
+				case "'true'" : return TokenType.Keyword;
 				case "'before'" : return TokenType.Keyword;
 				case "'between'" : return TokenType.Keyword;
 				case "'to'" : return TokenType.Keyword;
@@ -171,6 +176,7 @@ namespace ONC.CQL_VSSupport_2013
 				case "BOOLEAN" : return TokenType.Literal;
 				case "QUANTITY" : return TokenType.Literal;
 				case "STRING" : return TokenType.Literal;
+				case "VALUESET" : return TokenType.Literal;
 				case "WS" : return TokenType.WhiteSpace;
 				case "NEWLINE" : return TokenType.WhiteSpace;
 				case "COMMENT" : return TokenType.Comment;
@@ -184,10 +190,15 @@ namespace ONC.CQL_VSSupport_2013
 			switch (cqlLexer.tokenNames[tokenType])
 			{
 				case "<INVALID>" : return TokenColor.Text;
+				case "'library'" : return TokenColor.Keyword;
 				case "'except'" : return TokenColor.Keyword;
 				case "'u'" : return TokenColor.Number;
 				case "'*'" : return TokenColor.Text;
 				case "'combine'" : return TokenColor.Keyword;
+				case "'collapse'" : return TokenColor.Keyword;
+				case "'distinct'" : return TokenColor.Keyword;
+				case "'false'" : return TokenColor.Keyword;
+				case "'true'" : return TokenColor.Keyword;
 				case "'before'" : return TokenColor.Keyword;
 				case "'between'" : return TokenColor.Keyword;
 				case "'to'" : return TokenColor.Keyword;
@@ -291,10 +302,11 @@ namespace ONC.CQL_VSSupport_2013
 				case "'end'" : return TokenColor.Keyword;
 				case "'hour'" : return TokenColor.Keyword;
 				case "IDENTIFIER" : return TokenColor.Identifier;
-				case "'null'" : return TokenColor.Number;
+				case "'null'" : return TokenColor.Keyword;
 				case "BOOLEAN" : return TokenColor.Number;
 				case "QUANTITY" : return TokenColor.Number;
 				case "STRING" : return TokenColor.String;
+				case "VALUESET" : return TokenColor.String;
 				case "WS" : return TokenColor.Text;
 				case "NEWLINE" : return TokenColor.Text;
 				case "COMMENT" : return TokenColor.Comment;
@@ -308,10 +320,15 @@ namespace ONC.CQL_VSSupport_2013
 			switch (cqlLexer.tokenNames[tokenType])
 			{
 				case "<INVALID>" : return TokenTriggers.None;
+				case "'library'" : return TokenTriggers.None;
 				case "'except'" : return TokenTriggers.None;
 				case "'u'" : return TokenTriggers.None;
 				case "'*'" : return TokenTriggers.None;
 				case "'combine'" : return TokenTriggers.None;
+				case "'collapse'" : return TokenTriggers.None;
+				case "'distinct'" : return TokenTriggers.None;
+				case "'false'" : return TokenTriggers.None;
+				case "'true'" : return TokenTriggers.None;
 				case "'before'" : return TokenTriggers.None;
 				case "'between'" : return TokenTriggers.None;
 				case "'to'" : return TokenTriggers.None;
@@ -419,6 +436,7 @@ namespace ONC.CQL_VSSupport_2013
 				case "BOOLEAN" : return TokenTriggers.None;
 				case "QUANTITY" : return TokenTriggers.None;
 				case "STRING" : return TokenTriggers.None;
+				case "VALUESET" : return TokenTriggers.None;
 				case "WS" : return TokenTriggers.None;
 				case "NEWLINE" : return TokenTriggers.None;
 				case "COMMENT" : return TokenTriggers.None;

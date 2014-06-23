@@ -1,16 +1,18 @@
 // Warfarin time in therapeutic range
-using QLIM
+library CMS179 version '2'
+
+using QUICK
 
 context PATIENT
 
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
-valueset "Flutter Diagnosis" = ValueSet("2.16.840.1.113883.3.117.1.7.1.202")
-valueset "Warfarin Medication" = ValueSet("2.16.840.1.113883.3.117.1.7.1.232")
-valueset "Face-to-face Encounter" = ValueSet("2.16.840.1.113883.3.464.1003.101.12.1048")
-valueset "Office Visit" = ValueSet("2.16.840.1.113883.3.464.1003.101.12.1001")
-valueset "Valvular Heart Disease" = ValueSet("2.16.840.1.113883.3.464.1003.104.12.1017")
-valueset "INR Lab Result" = ValueSet("2.16.840.1.113883.3.117.1.7.1.213")
+valueset "Flutter Diagnosis" = ValueSet('2.16.840.1.113883.3.117.1.7.1.202')
+valueset "Warfarin Medication" = ValueSet('2.16.840.1.113883.3.117.1.7.1.232')
+valueset "Face-to-face Encounter" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1048')
+valueset "Office Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
+valueset "Valvular Heart Disease" = ValueSet('2.16.840.1.113883.3.464.1003.104.12.1017')
+valueset "INR Lab Result" = ValueSet('2.16.840.1.113883.3.117.1.7.1.213')
 
 let FlutterDiagnoses = [Condition: "Flutter Diagnosis"]
 let WarfarinMedications = [Medication, Administered: "Warfarin Medication"]
@@ -32,30 +34,30 @@ let ActiveWarfarinDuringLookback =
 	WarfarinMedications M where M.administeredTime overlaps LookbackInterval
 
 let WarfarinUsageIntervals =
-	ActiveWarfarinDuringLookback M 
-		return tuple { usageWithinLookback: M.administeredTime intersect LookbackInterval }
+	collapse 
+		ActiveWarfarinDuringLookback M 
+			return tuple { usageWithinLookback: M.administeredTime intersect LookbackInterval }
 
-let WarfarinUsage = Sum(foreach I in WarfarinUsageIntervals return duration in days of I)
-
-//let WarfarinUsage = Sum(WarfarinUsageIntervals I return duration in days of I)
+let WarfarinUsage = Sum(WarfarinUsageIntervals I return duration in days of I)
 
 let INROutpatientLabResult = 
 	INRLabResults R 
 		where not exists (InpatientEncounters E where duration in hours of E.effectiveTime > 23 and L.observedAtTime starts during E.effectiveTime)
 
 let INRResultsByDay =
-	foreach R in INROutpatientLabResult L where L.result > 0.8 
+	INROutpatientLabResult L 
+		where L.result > 0.8 
 		return 
 			tuple 
 			{ 
-				resultDate: date of R.observedAtTime,
+				resultDate: date of L.observedAtTime,
 				result: if L.result > 10.0 then 10.0 else L.result,
 				distanceFromMidpoint: Abs(2.5 - L.result)
 			}
 
 let INRResultsPerDay =
 	(
-	    foreach D in distinct (foreach X in INRResultsByDay return X.resultDate) 
+	    (distinct INRResultsByDay X return X.resultDate) D
 		    return First(INRResultsByDay R where R.resultDate = D sort by D.distanceFromMidpoint)
     ) X
 	sort by X.resultDate
@@ -63,7 +65,7 @@ let INRResultsPerDay =
 let TherapeuticRange = interval[2.0, 3.0]
 
 let INRIntervals =
-	foreach X in (foreach S in INRResultsPerDay return tuple { startResult: S, endResult: First(INRResultsPerDay E where S.resultDate > E.resultDate) })
+	(INRResultsPerDay S return tuple { startResult: S, endResult: First(INRResultsPerDay E where S.resultDate > E.resultDate) }) X
 		return
 			tuple
 			{
@@ -90,7 +92,7 @@ let INRIntervals =
 			}
 
 let TherapeuticDays =
-	foreach I in INRIntervals
+	INRIntervals I
 		return
 			tuple
 			{
@@ -105,7 +107,7 @@ let TherapeuticDays =
 			}
 
 let TherapeuticTimeInRange =
-	Round(100 * (Sum(foreach X in TherapeuticDays return daysInRange) / Sum(foreach X in TherapeuticDays return resultDays)))
+	Round(100 * (Sum(TherapeuticDays X return X.daysInRange) / Sum(TherapeuticDays X return X.resultDays)))
 
 let NumberOfValidIntervals = Count(TherapeuticDays D where D.isValid)
 
