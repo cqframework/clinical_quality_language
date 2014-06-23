@@ -1,0 +1,39 @@
+apply plugin: 'idea'
+
+idea {
+  project {
+    ipr {
+      withXml { provider ->
+        provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+      }
+
+      whenMerged { project ->
+        def examples = new org.gradle.plugins.ide.idea.model.Path('file://$PROJECT_DIR$/examples.iml', 'file://$PROJECT_DIR$/examples.iml', '$PROJECT_DIR$/examples.iml')
+        if ((project.modulePaths.findAll { p -> p.url == examples.url }).empty) project.modulePaths.add(examples)
+
+        def grammar = new org.gradle.plugins.ide.idea.model.Path('file://$PROJECT_DIR$/grammar.iml', 'file://$PROJECT_DIR$/grammar.iml', '$PROJECT_DIR$/grammar.iml')
+        if ((project.modulePaths.findAll { p -> p.url == grammar.url }).empty) project.modulePaths.add(grammar)
+      }
+    }
+  }
+  workspace {
+    iws {
+      withXml { provider ->
+        def props = provider.node.component.find { it.@name == 'PropertiesComponent' }
+        
+        def propMap = [
+          '$PROJECT_DIR$/../grammar/cql.g4::/output-dir' : '$PROJECT_DIR$/cql/src/generated/java',
+          '$PROJECT_DIR$/../grammar/cql.g4::/lib-dir' : '$PROJECT_DIR$/../grammar',
+          '$PROJECT_DIR$/../grammar/cql.g4::/package' : 'org.cqframework.cql.gen',
+          '$PROJECT_DIR$/../grammar/cql.g4::/gen-listener' : 'true',
+          '$PROJECT_DIR$/../grammar/cql.g4::/gen-visitor' : 'true'
+        ]
+
+        propMap.each() { key, value ->
+          if (! props.property.find { it.@name == key })
+            props.appendNode('property', ['name' : key, 'value' : value])
+        }
+      }
+    }
+  }
+}
