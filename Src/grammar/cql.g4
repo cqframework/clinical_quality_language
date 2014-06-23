@@ -106,43 +106,51 @@ modality: IDENTIFIER;
 
 valueset: STRING | IDENTIFIER;
 
-expression:
-    expressionTerm |
-    retrieve |
-    aliasedQuerySource queryInclusionClause* ('where' expression)? ('return' expression)? ('sort' 'by' sortByItem (',' sortByItem)*)? |
-    expression 'is' 'not'? ( 'null' | 'true' | 'false' ) |
-    expression ('is' | 'as') typeSpecifier |
-    ('not' | 'exists') expression |
-    expression 'between' expressionTerm 'and' expressionTerm |
-    ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'between' expressionTerm 'and' expressionTerm |
-    expression ('<=' | '<' | '>' | '>=') expression |
-    expression intervalOperatorPhrase expression |
-    expression ('=' | '<>') expression |
-    expression 'and' expression |
-    expression ('or' | 'xor' | 'in' | 'contains' | 'like') expression;
+expression
+    : expressionTerm                                                     # termExpression
+    | retrieve                                                           # retrieveExpression
+    | aliasedQuerySource queryInclusionClause* ('where' expression)? ('return' expression)? ('sort' 'by' sortByItem (',' sortByItem)*)?
+                                                                         # queryExpression
+    | expression 'is' 'not'? ( 'null' | 'true' | 'false' )               # booleanExpression
+    | expression ('is' | 'as') typeSpecifier                             # typeExpression
+    | ('not' | 'exists') expression                                      # existenceExpression
+    | expression 'between' expressionTerm 'and' expressionTerm           # rangeExpression
+    | ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'between' expressionTerm 'and' expressionTerm
+                                                                         # timeRangeExpression
+    | expression ('<=' | '<' | '>' | '>=') expression                    # inequalityExpression
+    | expression intervalOperatorPhrase expression                       # timingExpression
+    | expression ('=' | '<>') expression                                 # equalityExpression
+    | expression 'and' expression                                        # andExpression
+    | expression ('or' | 'xor') expression                               # orExpression
+    | expression ('in' | 'contains' | 'like') expression                 # membershipExpression
+    | expression 'like' expression                                       # likeExpression
+    ;
 
-expressionTerm:
-    term |
-    expressionTerm '.' IDENTIFIER |
-    expressionTerm '[' expression ']' |
-    expressionTerm '(' (expression (',' expression)*)? ')' |
-    expressionTerm '(' IDENTIFIER 'from' expression ')' |
-    'convert' expression 'to' typeSpecifier |
-    ('+' | '-') expressionTerm |
-    ('start' | 'end') 'of' expressionTerm |
-    ('date' | 'time' | 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond') 'of' expressionTerm |
-    'duration' 'in' ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'of' expressionTerm |
-    expressionTerm '^' expressionTerm |
-    expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm |
-    expressionTerm ('+' | '-') expressionTerm |
-    'if' expression 'then' expression 'else' expression |
-	'case' expression? caseExpressionItem+ 'else' expression 'end' |
-	'coalesce' '(' expression (',' expression)+ ')' |
-	'with' expression alias? 'return' expression |
-	('distinct' | 'collapse' | 'expand') expression |
-    ('union' | 'intersect') '(' expression (',' expression)+ ')' |
-    expressionTerm ('union' | 'intersect' | 'except') expressionTerm |
-	'foreach' IDENTIFIER 'in' expression 'return' expression;
+expressionTerm
+    : term                                                               # termExpressionTerm
+    | expressionTerm '.' IDENTIFIER                                      # accessorExpressionTerm
+    | expressionTerm '[' expression ']'                                  # indexedExpressionTerm
+    | expressionTerm '(' (expression (',' expression)*)? ')'             # methodExpressionTerm
+    | expressionTerm '(' IDENTIFIER 'from' expression ')'                # methodFromExpressionTerm
+    | 'convert' expression 'to' typeSpecifier                            # conversionExpressionTerm
+    | ('+' | '-') expressionTerm                                         # polarityExpressionTerm
+    | ('start' | 'end') 'of' expressionTerm                              # timeBoundaryExpressionTerm
+    | ('date' | 'time' | 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond') 'of' expressionTerm
+                                                                         # timeUnitExpressionTerm
+    | 'duration' 'in' ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'of' expressionTerm
+                                                                         # durationExpressionTerm
+    | expressionTerm '^' expressionTerm                                  # powerExpressionTerm
+    | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm          # multiplicationExpressionTerm
+    | expressionTerm ('+' | '-') expressionTerm                          # additionExpressionTerm
+    | 'if' expression 'then' expression 'else' expression                # ifThenElseExpressionTerm
+    | 'case' expression? caseExpressionItem+ 'else' expression 'end'     # caseExpressionTerm
+    | 'coalesce' '(' expression (',' expression)+ ')'                    # coalesceExpressionTerm
+    | 'with' expression alias? 'return' expression                       # withExpressionTerm
+    | ('distinct' | 'collapse' | 'expand') expression                    # aggregateExpressionTerm
+    | ('union' | 'intersect') '(' expression (',' expression)+ ')'       # prefixSetExpressionTerm
+    | expressionTerm ('union' | 'intersect' | 'except') expressionTerm   # inFixSetExpressionTerm
+    | 'foreach' IDENTIFIER 'in' expression 'return' expression           # foreachExpressionTerm
+    ;
 
 caseExpressionItem:
     'when' expression 'then' expression;
@@ -227,7 +235,7 @@ IDENTIFIER: [A-Za-z]+;
 
 QUANTITY: [0-9]+('.'[0-9]+)?;
 
-STRING: '"' ( ~[\\"]  )* '"';
+STRING: ('"'|'\'') ( ~[\\"]  )* ('"'|'\'');
 
 WS: (' ' | '\r' | '\t') -> channel(HIDDEN);
 

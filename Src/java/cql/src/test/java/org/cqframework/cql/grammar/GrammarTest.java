@@ -25,14 +25,16 @@ public class GrammarTest {
         LetStatementContext let = logic.statement(0).letStatement();
         assertEquals("inIPP", let.IDENTIFIER().toString());
 
-        ExpressionContext cmpExpr = let.expression();
+        InequalityExpressionContext cmpExpr = (InequalityExpressionContext) let.expression();
         assertEquals("<", cmpExpr.getChild(1).getText());
 
-        ExpressionContext fncExpr = cmpExpr.expression(0);
-        assertEquals("AgeAt", fncExpr.expressionTerm(0).expressionTerm(0).getText());
-        ExpressionTermContext argExpr = fncExpr.expressionTerm(0).expression(0).expressionTerm(0);
-        assertEquals("start", argExpr.getChild(0).getText());
-        assertEquals("MeasurementPeriod", argExpr.expressionTerm(0).getText());
+        TermExpressionContext methodExpr = (TermExpressionContext) cmpExpr.expression(0);
+        MethodExpressionTermContext methodEpressionTerm = (MethodExpressionTermContext) methodExpr.expressionTerm();
+        assertEquals("AgeAt", methodEpressionTerm.expressionTerm().getText());
+        TermExpressionContext argExpression = (TermExpressionContext) methodEpressionTerm.expression(0);
+        TimeBoundaryExpressionTermContext argExpressionTerm = (TimeBoundaryExpressionTermContext) argExpression.expressionTerm();
+        assertEquals("start", argExpressionTerm.getChild(0).getText());
+        assertEquals("MeasurementPeriod", argExpressionTerm.expressionTerm().getText());
 
         ExpressionContext termExpr = cmpExpr.expression(1);
         assertEquals("18", termExpr.getText());
