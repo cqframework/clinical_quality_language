@@ -1,5 +1,3 @@
-library FHIRMap
-
 using FHIR
 
 context PATIENT

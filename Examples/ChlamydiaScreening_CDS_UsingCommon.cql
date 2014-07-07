@@ -1,5 +1,3 @@
-library CMS153_CDS version '2'
-
 using QUICK
 
 context PATIENT
@@ -16,8 +14,8 @@ let SexuallyActive =
     or exists (Common.ResultsIndicatingSexualActivity)
 
 let NoScreening =
-    not exists (Common.ChlamydiaScreening S where S.effectiveTime during interval[today - 1 years, today])
-    and not exists ([Procedure, Planned: Common."Chlamydia Screening"] P where P.effectiveTime >= now)
+    not exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during interval[today - 1 years, today])
+    and not exists ([Procedure, Plan: Common."Chlamydia Screening"] P where P.effectiveTime >= now)
     and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening

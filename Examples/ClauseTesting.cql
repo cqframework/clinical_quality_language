@@ -1,4 +1,4 @@
-using QLIM
+using QUICK
 
 let SimpleQuery =
 	[ObservationResult: "Lab Tests for Sexually Transmitted Infections"]
@@ -7,50 +7,50 @@ let WhereClause =
 	[ObservationResult: "Pregnancy"] R where R.effectiveTime during MeasurementPeriod
 
 let TargetEncounters =
-	[Encounter, Performed: "Ambulatory/ED Visit"] E 
-		with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
-		with Antibiotics A where A.orderedAtTime starts within 3 days after start E.performedAtTime 
-	    where E.performedAtTime during MeasurementPeriod
+	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+		with Pharyngitis P where P.effectiveTime overlaps after E.PerformanceAtTime
+		with Antibiotics A where A.orderedAtTime starts within 3 days after start E.PerformanceAtTime 
+	    where E.PerformanceAtTime during MeasurementPeriod
 
 let SimpleRetrieve =
-	[Encounter, Performed]
+	[Encounter, Performance]
 
 let CodedRetrieve =
-	[Encounter, Performed: "Ambulatory/ED Visit"]
+	[Encounter, Performance: "Ambulatory/ED Visit"]
 
 let ExplicitlyCodedRetrieve =
-	[Encounter, Performed: serviceType in "Ambulatory/ED Visit"]
+	[Encounter, Performance: serviceType in "Ambulatory/ED Visit"]
 
 let WhereExplicitlyCodedRetrieve =
-	[Encounter, Performed where serviceType in "Ambulatory/ED Visit"]
+	[Encounter, Performance where serviceType in "Ambulatory/ED Visit"]
 
 let CodedWhere =
-	[Encounter, Performed] E where E.serviceType in ValueSet("Ambulatory/ED Visit")
+	[Encounter, Performance] E where E.serviceType in ValueSet("Ambulatory/ED Visit")
 
 let RangedRetrieve =
-	[Encounter, Performed, during MeasurementPeriod]
+	[Encounter, Performance, during MeasurementPeriod]
 
 let ExplicitlyRangedRetrieve =
-	[Encounter, Performed, performedAtTime during MeasurementPeriod]
+	[Encounter, Performance, PerformanceAtTime during MeasurementPeriod]
 
 let WhereExplicitlyRangedRetrieve =
-	[Encounter, Performed where performedAtTime during MeasurementPeriod]
+	[Encounter, Performance where PerformanceAtTime during MeasurementPeriod]
 
 let RangedWhere =
-	[Encounter, Performed] E where E.performedAtTime during MeasurementPeriod
+	[Encounter, Performance] E where E.PerformanceAtTime during MeasurementPeriod
 
 let CodedRangedRetrieve =
-	[Encounter, Performed: "Ambulatory/ED Visit", during MeasurementPeriod]
+	[Encounter, Performance: "Ambulatory/ED Visit", during MeasurementPeriod]
 
 let ExplicitlyCodedRangedRetrieve =
-	[Encounter, Performed: serviceType in "Ambulatory/ED Visit", performedAtTime during MeasurementPeriod]
+	[Encounter, Performance: serviceType in "Ambulatory/ED Visit", PerformanceAtTime during MeasurementPeriod]
 
 let WhereExplicitlyCodedRangedRetrieve =
-	[Encounter, Performed where serviceType in "Ambulatory/ED Visit" and performedAtTime during MeasurementPeriod]
+	[Encounter, Performance where serviceType in "Ambulatory/ED Visit" and PerformanceAtTime during MeasurementPeriod]
 
 let CodedRangedWhere =
-	[Encounter, Performed] E 
+	[Encounter, Performance] E 
 		where E.serviceType in ValueSet("Ambulatory/ED Visit") 
-			and E.performedAtTime during MeasurementPeriod
+			and E.PerformanceAtTime during MeasurementPeriod
 
 

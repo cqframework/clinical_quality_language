@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQL.VSSupport.2013_UnitTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQL", "CQL\CQL.csproj", "{5D78895D-AF62-4057-93FA-079F1B77EAD3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQL.Translation", "CQL.Translation\CQL.Translation.csproj", "{8E212062-44E4-4A0C-B730-D472F98F5563}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQL.Translation_UnitTests", "CQL.Translation_UnitTests\CQL.Translation_UnitTests.csproj", "{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{5D78895D-AF62-4057-93FA-079F1B77EAD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D78895D-AF62-4057-93FA-079F1B77EAD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D78895D-AF62-4057-93FA-079F1B77EAD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E212062-44E4-4A0C-B730-D472F98F5563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E212062-44E4-4A0C-B730-D472F98F5563}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E212062-44E4-4A0C-B730-D472F98F5563}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E212062-44E4-4A0C-B730-D472F98F5563}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

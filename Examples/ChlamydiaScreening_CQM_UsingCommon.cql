@@ -1,5 +1,3 @@
-library CMS153_CQM version '2'
-
 using QUICK
 
 context PATIENT
@@ -24,6 +22,6 @@ let InDenominator =
     InInitialPopulation
 
 let InNumerator =
-    InDenominator and exists (Common.ChlamydiaScreening S where S.effectiveTime during MeasurementPeriod)
+    InDenominator and exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during MeasurementPeriod)
 
 

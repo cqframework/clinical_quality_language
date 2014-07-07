@@ -1,5 +1,3 @@
-library CMS153_CQM version '2'
-
 using QUICK
 
 context PATIENT // TODO: Look at turning this into a parameter
@@ -48,6 +46,8 @@ let InDenominator =
 
 let InNumerator =
 	InDenominator
-		and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod)
+		and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
 
+context POPULATION
 
+let MeasureScore = (Count(PATIENT P where InNumerator) / Count(PATIENT P where InDenominator)) * 100

@@ -36,7 +36,7 @@
  * ============================================================================
  */
 
-using QLIM
+using QUICK
 
 context PATIENT
 
@@ -58,7 +58,7 @@ let Antibiotics =
     [MedicationPrescription: "Antibiotic Medications"]
 
 let TargetEncounters =
-    [Encounter, Performed: "Ambulatory/ED Visit"] E
+    [Encounter, Performance: "Ambulatory/ED Visit"] E
         with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
         with Antibiotics A where A.orderedAtTime starts within 3 days after start E.performedAtTime
         where E.performedAtTime during MeasurementPeriod
@@ -82,4 +82,5 @@ let InDenominatorExclusions =
     HasPriorAntibiotics
 
 let InNumerator =
-    exists ([ObservationResult: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod)
+    exists ([ObservationResult: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod and R.result is not null)
+

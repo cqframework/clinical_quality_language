@@ -4,128 +4,213 @@ grammar cql;
  * Parser Rules
  */
 
-logic:
-    libraryDefinition
-	usingDefinition*
+logic
+    : usingDefinition*
 	contextDefinition?
 	includeDefinition*
 	(parameterDefinition | valuesetDefinition)*
-	statement+;
+	statement+
+	;
 
 /*
  * Definitions
  */
 
-libraryDefinition: 'library' IDENTIFIER ('version' STRING)?;
+usingDefinition
+    : 'using' IDENTIFIER ('version' STRING)?
+    ;
 
-usingDefinition: 'using' IDENTIFIER ('version' STRING)?;
+contextDefinition
+    : 'context' IDENTIFIER
+    ;
 
-contextDefinition: 'context' IDENTIFIER;
+includeDefinition
+    : 'include' STRING ('version' STRING)? 'as' IDENTIFIER
+    ;
 
-includeDefinition: 'include' IDENTIFIER ('version' STRING)?;
+parameterDefinition
+    : 'parameter' IDENTIFIER (':' typeSpecifier)? ('default' expression)?
+    ;
 
-parameterDefinition: 'parameter' IDENTIFIER (':' typeSpecifier)? ('default' expression)?;
-
-valuesetDefinition: 'valueset' VALUESET '=' expression;
+valuesetDefinition
+    : 'valueset' VALUESET '=' expression
+    ;
 
 /*
  * Type Specifiers
  */
 
-typeSpecifier:
-    atomicTypeSpecifier |
-    listTypeSpecifier |
-    intervalTypeSpecifier |
-    tupleTypeSpecifier;
+typeSpecifier
+    : atomicTypeSpecifier
+    | listTypeSpecifier
+    | intervalTypeSpecifier
+    | tupleTypeSpecifier
+    ;
 
-atomicTypeSpecifier: IDENTIFIER; // TODO: specify atomic type names as part of the grammar?
+atomicTypeSpecifier
+    : IDENTIFIER // TODO: specify atomic type names as part of the grammar?
+    ;
 
-listTypeSpecifier: 'list' '<' typeSpecifier '>';
+listTypeSpecifier
+    : 'list' '<' typeSpecifier '>'
+    ;
 
-intervalTypeSpecifier: 'interval' '<' typeSpecifier '>';
+intervalTypeSpecifier
+    : 'interval' '<' typeSpecifier '>'
+    ;
 
-tupleTypeSpecifier: 'tuple' '{' tupleElementDefinition (',' tupleElementDefinition)* '}';
+tupleTypeSpecifier
+    : 'tuple' '{' tupleElementDefinition (',' tupleElementDefinition)* '}'
+    ;
 
-tupleElementDefinition: IDENTIFIER ':' typeSpecifier;
+tupleElementDefinition
+    : IDENTIFIER ':' typeSpecifier
+    ;
 
 /*
  * Statements
  */
 
-statement:
-    letStatement |
-    functionDefinition |
-    retrieveDefinition;
+statement
+    : letStatement
+    | functionDefinition
+    | retrieveDefinition
+    ;
 
-letStatement: 'let' IDENTIFIER '=' expression;
+letStatement
+    : 'let' IDENTIFIER '=' expression
+    ;
 
-functionDefinition:
-    'define' 'function' IDENTIFIER '(' (operandDefinition (',' operandDefinition)*)? ')' functionBody;
+functionDefinition
+    : 'define' 'function' IDENTIFIER '(' (operandDefinition (',' operandDefinition)*)? ')' functionBody
+    ;
 
-operandDefinition: IDENTIFIER ':' typeSpecifier;
+operandDefinition
+    : IDENTIFIER ':' typeSpecifier
+    ;
 
-functionBody:
-    '{' returnStatement '}';
+functionBody
+    : '{' returnStatement '}'
+    ;
 
-returnStatement:
-    'return' expression;
+returnStatement
+    : 'return' expression
+    ;
 
-retrieveDefinition:
-    'define' 'retrieve' existenceModifier? '[' topic (',' modality)? (':' valuesetPathIdentifier 'in' valuesetIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' functionBody;
+retrieveDefinition
+    : 'define' 'retrieve' existenceModifier? '[' topic (',' modality)? (':' valuesetPathIdentifier 'in' valuesetIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' functionBody
+    ;
 
-valuesetPathIdentifier: IDENTIFIER;
+valuesetPathIdentifier
+    : IDENTIFIER
+    ;
 
-valuesetIdentifier: IDENTIFIER;
+valuesetIdentifier
+    : IDENTIFIER
+    ;
 
-duringPathIdentifier: IDENTIFIER;
+duringPathIdentifier
+    : IDENTIFIER
+    ;
 
-duringIdentifier: IDENTIFIER;
+duringIdentifier
+    : IDENTIFIER
+    ;
 
 /*
  * Expressions
  */
 
-querySource:
-    retrieve | optionallyQualifiedIdentifier | '(' expression ')';
+querySource
+    : retrieve
+    | qualifiedIdentifier
+    | '(' expression ')'
+    ;
 
-aliasedQuerySource:
-    querySource alias;
+aliasedQuerySource
+    : querySource alias
+    ;
 
-alias: IDENTIFIER;
+alias
+    : IDENTIFIER
+    ;
 
-queryInclusionClause:
-    'with' aliasedQuerySource 'where' expression |
-    'combine' aliasedQuerySource 'where' expression
-;
+queryInclusionClause
+    : 'with' aliasedQuerySource 'where' expression
+    //| 'combine' aliasedQuerySource 'where' expression // TODO: Determine whether combine should be allowed
+    ;
 
-retrieve: existenceModifier? '[' topic (',' modality)? (':' (IDENTIFIER 'in')? valueset)? (',' IDENTIFIER? 'during' expression)? ']';
+retrieve
+    : existenceModifier? '[' topic (',' modality)? (':' (valuesetPathIdentifier 'in')? valueset)? (',' duringPathIdentifier? 'during' expression)? ']'
+    ;
 
-existenceModifier: 'no' | 'unknown';
+existenceModifier
+    : 'no'
+    | 'unknown'
+    ;
 
-topic: optionallyQualifiedIdentifier;
+topic
+    : qualifiedIdentifier
+    ;
 
-modality: IDENTIFIER;
+modality
+    : IDENTIFIER
+    ;
 
-valueset: (IDENTIFIER '.')? (VALUESET | IDENTIFIER);
+valueset
+    : (qualifier '.')? (VALUESET | IDENTIFIER)
+    ;
+
+qualifier
+    : IDENTIFIER
+    ;
+
+query
+    : aliasedQuerySource queryInclusionClause* whereClause? returnClause? sortClause?
+    ;
+
+whereClause
+    : 'where' expression
+    ;
+
+returnClause
+    : 'return' expression
+    ;
+
+sortClause
+    : 'sort' ( sortDirection | ('by' sortByItem (',' sortByItem)*) )
+    ;
+
+sortDirection // TODO: use full words instead of abbreviations?
+    : 'asc'
+    | 'desc'
+    ;
+
+sortByItem
+    : qualifiedIdentifier sortDirection?
+    ;
+
+qualifiedIdentifier
+    : (qualifier '.')? IDENTIFIER
+    ;
 
 expression
     : expressionTerm                                                     # termExpression
     | retrieve                                                           # retrieveExpression
-    | aliasedQuerySource queryInclusionClause* ('where' expression)? ('return' expression)? ('sort' 'by' sortByItem (',' sortByItem)*)?
-                                                                         # queryExpression
+    | query                                                              # queryExpression
     | expression 'is' 'not'? ( 'null' | 'true' | 'false' )               # booleanExpression
     | expression ('is' | 'as') typeSpecifier                             # typeExpression
     | ('not' | 'exists') expression                                      # existenceExpression
-    | expression 'between' expressionTerm 'and' expressionTerm           # rangeExpression
+    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm
+                                                                         # rangeExpression
     | ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'between' expressionTerm 'and' expressionTerm
                                                                          # timeRangeExpression
     | expression ('<=' | '<' | '>' | '>=') expression                    # inequalityExpression
     | expression intervalOperatorPhrase expression                       # timingExpression
     | expression ('=' | '<>') expression                                 # equalityExpression
+    | expression ('in' | 'contains' | 'like') expression                 # membershipExpression
     | expression 'and' expression                                        # andExpression
     | expression ('or' | 'xor') expression                               # orExpression
-    | expression ('in' | 'contains' | 'like') expression                 # membershipExpression
-    | expression 'like' expression                                       # likeExpression
     ;
 
 expressionTerm
@@ -140,6 +225,9 @@ expressionTerm
                                                                          # timeUnitExpressionTerm
     | 'duration' 'in' ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'of' expressionTerm
                                                                          # durationExpressionTerm
+    | 'width' 'of' expressionTerm                                        # widthExpressionTerm
+    | 'successor' 'of' expressionTerm                                    # successorExpressionTerm
+    | 'predecessor' 'of' expressionTerm                                  # predecessorExpressionTerm
     | expressionTerm '^' expressionTerm                                  # powerExpressionTerm
     | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm          # multiplicationExpressionTerm
     | expressionTerm ('+' | '-') expressionTerm                          # additionExpressionTerm
@@ -147,108 +235,131 @@ expressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     # caseExpressionTerm
     | 'coalesce' '(' expression (',' expression)+ ')'                    # coalesceExpressionTerm
     | ('distinct' | 'collapse' | 'expand') expression                    # aggregateExpressionTerm
-    | ('union' | 'intersect') '(' expression (',' expression)+ ')'       # prefixSetExpressionTerm
     | expressionTerm ('union' | 'intersect' | 'except') expressionTerm   # inFixSetExpressionTerm
     ;
 
-caseExpressionItem:
-    'when' expression 'then' expression;
+caseExpressionItem
+    : 'when' expression 'then' expression
+    ;
 
-sortByItem:
-    qualifiedIdentifier ('asc' | 'desc')?;
+intervalOperatorPhrase
+    : ('starts' | 'ends')? 'concurrent with' ('start' | 'end')?                             #concurrentWithIntervalOperatorPhrase
+    | 'properly'? 'includes' ('start' | 'end')?                                             #includesIntervalOperatorPhrase
+    | ('starts' | 'ends')? 'properly'? ('during' | 'included in')                           #includedInIntervalOperatorPhrase
+    | ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')?          #beforeOrAfterIntervalOperatorPhrase
+    | ('starts' | 'ends')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?     #withinIntervalOperatorPhrase
+    | 'meets' (quantityOffset? ('before' | 'after'))?                                       #meetsIntervalOperatorPhrase
+    | 'overlaps' (quantityOffset? ('before' | 'after'))?                                    #overlapsIntervalOperatorPhrase
+    | 'starts'                                                                              #startsIntervalOperatorPhrase
+    | 'started by'                                                                          #startedByIntervalOperatorPhrase
+    | 'ends'                                                                                #endsIntervalOperatorPhrase
+    | 'ended by'                                                                            #endedByIntervalOperatorPhrase
+    ;
 
-qualifiedIdentifier:
-    IDENTIFIER '.' IDENTIFIER;
+quantityOffset
+    : 'within'? quantityLiteral
+    ;
 
-optionallyQualifiedIdentifier:
-    (IDENTIFIER '.')? IDENTIFIER;
+term
+    : IDENTIFIER            #identifierTerm
+    | literal               #literalTerm
+    | intervalSelector      #intervalSelectorTerm
+    | tupleSelector         #tupleSelectorTerm
+    | listSelector          #listSelectorTerm
+    | '(' expression ')'    #parenthesizedTerm
+    ;
 
-intervalOperatorPhrase:
-    ('starts' | 'ends')? 'concurrent with' ('start' | 'end')? |
-    'properly'? 'includes' ('start' | 'end')? |
-    ('starts' | 'ends')? 'properly'? 'during' |
-    ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')? |
-    ('starts' | 'ends')? 'within' quantityLiteral 'of' ('start' | 'end')? |
-    'meets' (quantityOffset? ('before' | 'after'))? |
-    'overlaps' (quantityOffset? ('before' | 'after'))? |
-    'starts' |
-    'started by' |
-    'ends' |
-    'ended by';
-
-quantityOffset:
-    'within'? quantityLiteral;
-
-term:
-    IDENTIFIER |
-    literal |
-    intervalSelector |
-    tupleSelector |
-    listSelector |
-    '(' expression ')';
-
-intervalSelector: // TODO: Consider this as an alternative syntax for intervals... (would need to be moved up to expression to make it work)
+intervalSelector
+    : // TODO: Consider this as an alternative syntax for intervals... (would need to be moved up to expression to make it work)
     //expression ( '..' | '*.' | '.*' | '**' ) expression;
-    'interval' ('['|'(') expression ',' expression (']'|')');
+    'interval' ('['|'(') expression ',' expression (']'|')')
+    ;
 
-tupleSelector:
-    'tuple' '{' tupleElementSelector (',' tupleElementSelector)* '}';
+tupleSelector
+    : 'tuple'? '{' (':' | (tupleElementSelector (',' tupleElementSelector)*)) '}'
+    ;
 
-tupleElementSelector:
-    IDENTIFIER ':' expression;
+tupleElementSelector
+    : IDENTIFIER ':' expression
+    ;
 
-listSelector:
-    ('list' ('<' typeSpecifier '>')?)? '{' expression (',' expression)* '}';
+listSelector
+    : ('list' ('<' typeSpecifier '>')?)? '{' expression? (',' expression)* '}'
+    ;
 
-literal:
-    nullLiteral |
-    booleanLiteral |
-    stringLiteral |
-    valuesetLiteral |
-    quantityLiteral;
+literal
+    : nullLiteral
+    | booleanLiteral
+    | stringLiteral
+    | valuesetLiteral
+    | quantityLiteral
+    ;
 
-nullLiteral:
-    'null';
+nullLiteral
+    : 'null'
+    ;
 
-booleanLiteral:
-    'true' | 'false';
+booleanLiteral
+    : 'true'
+    | 'false'
+    ;
 
-stringLiteral:
-    STRING;
+stringLiteral
+    : STRING
+    ;
 
-valuesetLiteral:
-    VALUESET;
+valuesetLiteral
+    : VALUESET
+    ;
 
-quantityLiteral:
-    QUANTITY unit?;
+quantityLiteral
+    : QUANTITY unit?
+    ;
 
-unit:
-    'years' | // NOTE: Using plurals here because that's the most common case, we could add singulars, but that would allow "within 5 day"
-    'months' |
-    'weeks' |
-    'days' |
-    'hours' |
-    'minutes' |
-    'seconds' |
-    'milliseconds' |
-    'u'STRING; // UCUM syntax for units of measure
+unit // NOTE: Using plurals here because that's the most common case, we could add singulars, but that would allow "within 5 day"
+    : 'years'
+    | 'months'
+    | 'weeks'
+    | 'days'
+    | 'hours'
+    | 'minutes'
+    | 'seconds'
+    | 'milliseconds'
+    | 'u'STRING // UCUM syntax for units of measure
+    ;
 
 /*
  * Lexer Rules
  */
 
-IDENTIFIER: ([A-Za-z] | '_')([A-Za-z0-9] | '_')*;
+IDENTIFIER
+    : ([A-Za-z] | '_')([A-Za-z0-9] | '_')*
+    ;
 
-QUANTITY: [0-9]+('.'[0-9]+)?;
+QUANTITY
+    : [0-9]+('.'[0-9]+)?
+    ;
 
-VALUESET: '"' ( ~[\\"] )* '"';
+VALUESET
+    : '"' ( ~[\\"] )* '"'
+    ;
 
-STRING: ('\'') ( ~[\\'] )* ('\'');
+STRING
+    : ('\'') ( ~[\\'] )* ('\'')
+    ;
 
-WS: (' ' | '\r' | '\t') -> channel(HIDDEN);
+WS
+    : (' ' | '\r' | '\t') -> channel(HIDDEN)
+    ;
 
-NEWLINE: ('\n') -> channel(HIDDEN);
+NEWLINE
+    : ('\n') -> channel(HIDDEN)
+    ;
 
-COMMENT: '/*' .*? '*/' -> skip;
+COMMENT
+    : '/*' .*? '*/' -> skip
+    ;
 
-LINE_COMMENT:   '//' ~[\r\n]* -> skip;
+LINE_COMMENT
+    :   '//' ~[\r\n]* -> skip
+    ;

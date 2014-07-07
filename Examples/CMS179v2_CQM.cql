@@ -1,5 +1,4 @@
 // Warfarin time in therapeutic range
-library CMS179 version '2'
 
 using QUICK
 
@@ -16,13 +15,13 @@ valueset "INR Lab Result" = ValueSet('2.16.840.1.113883.3.117.1.7.1.213')
 
 let FlutterDiagnoses = [Condition: "Flutter Diagnosis"]
 let WarfarinMedications = [Medication, Administered: "Warfarin Medication"]
-let FaceToFaceEncounters = [Encounter, Performed: "Face-to-face Encounter"]
-let OfficeVisitEncounters = [Encounter, Performed: "Office Visit"]
+let FaceToFaceEncounters = [Encounter, Performance: "Face-to-face Encounter"]
+let OfficeVisitEncounters = [Encounter, Performance: "Office Visit"]
 let ValvularHeartDiseaseDiagnoses = [Condition: "Valvular Heart Disease"]
 let INRLabResults = [ObservationResult: "INR Lab Result"]
 
 let InDemographic =
-	AgeAt(start of MeasurementPeriod) >= 18
+	AgeAt(start of MeasurementPeriod) >= 18 years
 
 let InpatientEncounters = union ( FaceToFaceEncounters, OfficeVisitEncounters )
 let ActiveFlutterDiagnoses = FlutterDiagnoses F where F.effectiveTime overlaps before MeasurementPeriod
@@ -42,27 +41,27 @@ let WarfarinUsage = Sum(WarfarinUsageIntervals I return duration in days of I)
 
 let INROutpatientLabResult = 
 	INRLabResults R 
-		where not exists (InpatientEncounters E where duration in hours of E.effectiveTime > 23 and L.observedAtTime starts during E.effectiveTime)
+		where not exists (InpatientEncounters E where duration in hours of E.effectiveTime > 23 and R.observedAtTime starts during E.effectiveTime)
 
 let INRResultsByDay =
 	INROutpatientLabResult L 
-		where L.result > 0.8 
+		where L.result > 0.8 // TODO: Units?
 		return 
 			tuple 
 			{ 
 				resultDate: date of L.observedAtTime,
-				result: if L.result > 10.0 then 10.0 else L.result,
-				distanceFromMidpoint: Abs(2.5 - L.result)
+				result: if L.result > 10.0 then 10.0 else L.result, // TODO: Units?
+				distanceFromMidpoint: Abs(2.5 - L.result) // TODO: Units?
 			}
 
 let INRResultsPerDay =
 	(
 	    (distinct INRResultsByDay X return X.resultDate) D
-		    return First(INRResultsByDay R where R.resultDate = D sort by D.distanceFromMidpoint)
+		    return First(INRResultsByDay R where R.resultDate = D sort by R.distanceFromMidpoint)
     ) X
 	sort by X.resultDate
 
-let TherapeuticRange = interval[2.0, 3.0]
+let TherapeuticRange = interval[2.0, 3.0] // TODO: Units?
 
 let INRIntervals =
 	(INRResultsPerDay S return tuple { startResult: S, endResult: First(INRResultsPerDay E where S.resultDate > E.resultDate) }) X
@@ -126,5 +125,9 @@ let MeasurePopulation =
 let MeasureObservation =
 	TherapeuticTimeInRange
 
-let MeasureScore = Avg(TherapeuticTimeInRange) // TODO: Manage context switching here...
+context POPULATION
+
+let MeasureScore = Avg(MeasureObservation)
+
+
 	

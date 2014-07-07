@@ -1,5 +1,3 @@
-library Common version '1'
-
 using QUICK
 
 context PATIENT
@@ -39,7 +37,10 @@ let ResultsIndicatingSexualActivity =
         [ObservationResult: "Lab Tests for Sexually Transmitted Infections"]
     )
 
-let ChlamydiaScreening = 
-    [ObservationResult: "Chlamydia Screening"]
+let TestsPerformedForChlamydia =
+	[Procedure, Performance: "Chlamydia Screening"]
+
+let ResultsPresentForChlamydiaScreening = 
+    [ObservationResult: "Chlamydia Screening"] R where R.result is not null
 
 
