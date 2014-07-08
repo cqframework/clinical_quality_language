@@ -179,14 +179,18 @@ Note that this property could potentially be specified elsewhere as part of an i
 		<xs:annotation>
 			<xs:documentation>The ValueSetDef type defines a value set identifier that can be referenced by name anywhere within an expression. ValueSetDefs are defined at the library level</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="valueSet" type="Expression" minOccurs="1" maxOccurs="1">
-				<xs:annotation>
-					<xs:documentation>An expression of type List of Code that returns the ValueSet. Note that this does not imply that an implementation would be required to materialize all ValueSet references, they may be preserved as ValueSets and a terminology server may be used to perform the required value set testing operations.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="valueSet" type="Expression" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>An expression of type List of Code that returns the ValueSet. Note that this does not imply that an implementation would be required to materialize all ValueSet references, they may be preserved as ValueSets and a terminology server may be used to perform the required value set testing operations.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ValueSetRef">
 		<xs:annotation>

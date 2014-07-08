@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This file is a direct copy of the CDS KAS expression.xsd with the following changes:
+		namespace changed to urn:hl7-org:elm:r1
+		Added the context attribute to ExpressionDef
+		Added FunctionDef as an extension of ExpressionDef
+		Added FunctionRef as an extension of ExpressionRef
+		Added Element as an abstract base class for Expression, ExpressionDef, and ParameterDef
+-->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
-	<!-- This file is a direct copy of the CDS KAS expression.xsd with the following changes:
-			namespace changed to urn:hl7-org:elm:r1
-			Added the context attribute to ExpressionDef
-			Added FunctionDef as an extension of ExpressionDef
-			Added FunctionRef as an extension of ExpressionRef
-	-->
 	<xs:annotation>
 		<xs:documentation>This file defines the core expression components used throughout knowledge artifacts. The core expression components defined here are intended to be general purpose, and beyond the datatypes in the cdsdt namespace, do not reference anything specific to the clinical decision support domain. This layering is intended to isolate the syntactic elements of a general purpose expression language from the more frequently varying elements of clinical decision support.</xs:documentation>
 	</xs:annotation>
+	<xs:complexType name="Element" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The Element type defines the abstract base type for all library elements in ELM.</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
 	<xs:complexType name="Expression" abstract="true">
 		<xs:annotation>
-			<xs:documentation>The Expression type defines the abstract base type for all expressions used in the HeDS expression language.</xs:documentation>
+			<xs:documentation>The Expression type defines the abstract base type for all expressions used in the ELM expression language.</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="annotation" type="xs:anyType" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>The annotation element provides a mechanism for decorating expressions with application-specific information such as translation hints, visual designer information, or debug symbols.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="annotation" type="xs:anyType" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>The annotation element provides a mechanism for decorating expressions with application-specific information such as translation hints, visual designer information, or debug symbols.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="UnaryExpression" abstract="true">
 		<xs:annotation>
@@ -74,11 +84,15 @@
 		<xs:annotation>
 			<xs:documentation>The ExpressionDef type defines an expression and an associated name that can be referenced by any expression in the artifact. The name must be unique within the artifact.</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="expression" type="Expression"/>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="context" type="xs:string" use="optional"/>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="expression" type="Expression"/>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="context" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="FunctionDef">
 		<xs:annotation>
@@ -119,11 +133,15 @@
 		<xs:annotation>
 			<xs:documentation>The ParameterDef type defines a parameter that can be referenced by name anywhere within an expression. Parameters are defined at the artifact level, and may be provided as part of the payload for an evaluation request. If no parameter value is provided, the default element is used to provide the value for the parameter. If no parameter or default is provided, the parameter is defined to be null.</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="default" type="Expression" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="parameterType" type="xs:QName"/>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="default" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="parameterType" type="xs:QName"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ParameterRef">
 		<xs:annotation>

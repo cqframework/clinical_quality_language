@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQL.Translation", "CQL.Tran
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQL.Translation_UnitTests", "CQL.Translation_UnitTests\CQL.Translation_UnitTests.csproj", "{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQL.ELM", "CQL.ELM\CQL.ELM.csproj", "{7810749B-DCDB-4CF7-AF70-D8176B003969}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QUICK.Model", "QUICK.Model\QUICK.Model.csproj", "{C376123B-C521-4DD4-B92E-48499798A367}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5876DF1-E393-4218-BBD1-8C9E4BDE17F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7810749B-DCDB-4CF7-AF70-D8176B003969}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7810749B-DCDB-4CF7-AF70-D8176B003969}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7810749B-DCDB-4CF7-AF70-D8176B003969}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7810749B-DCDB-4CF7-AF70-D8176B003969}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C376123B-C521-4DD4-B92E-48499798A367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C376123B-C521-4DD4-B92E-48499798A367}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C376123B-C521-4DD4-B92E-48499798A367}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C376123B-C521-4DD4-B92E-48499798A367}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
