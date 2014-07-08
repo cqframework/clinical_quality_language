@@ -5,8 +5,9 @@ grammar cql;
  */
 
 logic
-    : usingDefinition*
-	contextDefinition?
+    :
+    libraryDefinition?
+    usingDefinition*
 	includeDefinition*
 	(parameterDefinition | valuesetDefinition)*
 	statement+
@@ -16,12 +17,12 @@ logic
  * Definitions
  */
 
-usingDefinition
-    : 'using' IDENTIFIER ('version' STRING)?
+libraryDefinition
+    : 'library' IDENTIFIER ('version' STRING)?
     ;
 
-contextDefinition
-    : 'context' IDENTIFIER
+usingDefinition
+    : 'using' IDENTIFIER ('version' STRING)?
     ;
 
 includeDefinition
@@ -73,12 +74,17 @@ tupleElementDefinition
 
 statement
     : letStatement
+    | contextDefinition
     | functionDefinition
     | retrieveDefinition
     ;
 
 letStatement
     : 'let' IDENTIFIER '=' expression
+    ;
+
+contextDefinition
+    : 'context' IDENTIFIER
     ;
 
 functionDefinition
@@ -137,6 +143,7 @@ alias
 
 queryInclusionClause
     : 'with' aliasedQuerySource 'where' expression
+    | 'without' aliasedQuerySource 'where' expression
     //| 'combine' aliasedQuerySource 'where' expression // TODO: Determine whether combine should be allowed
     ;
 

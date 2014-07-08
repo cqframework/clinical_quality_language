@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- edited with XMLSpy v2013 sp1 (http://www.altova.com) by Bryn Rhodes (Database Consulting Group) -->
+<!-- This file is a direct copy of clinicalexpression.xsd from the CDS KAS with the following changes
+		Namespace changed to urn:hl7-org:elm:r1
+		dt namespace changed to http://hl7.org/fhir
+		EventType and DataEventType enum references removed
+		timeOffset element removed from RequestBase
+		triggerType attribute removed from RequestBase
+		ClinicalRequestDef type added
+		ValueSetDef added
+		ValueSetRef added
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:dt="http://hl7.org/fhir" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
+	<xs:annotation>
+		<xs:documentation>
+			This file defines the RequestBase extensions that introduce clinically relevant dependencies such as terminology, relevant time, and value set considerations.
+		</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://hl7.org/fhir" schemaLocation="../common/quick-datatypes.xsd"/>
+	<xs:include schemaLocation="expression.xsd"/>
+	<xs:simpleType name="RequestCardinality">
+		<xs:annotation>
+			<xs:documentation>RequestCardinality defines the expected cardinality of the request, single or multiple.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Single"/>
+			<xs:enumeration value="Multiple"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="RequestBase" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The request expression defines the data that will be used by the artifact.
+			
+The result of a request is defined to return the same data for subsequent invocations within the same evaluation request. This means in particular that patient data updates made during the evaluation request are not visible to the artifact. In effect, the patient data is a snapshot of the data as of the start of the evaluation. This ensures strict deterministic and functional behavior of the artifact, and allows the implementation engine freedom to cache intermediate results in order to improve performance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<!--xs:element name="timeOffset" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The timeOffset element optionally specifies an amount of time to delay execution of the artifact if it was triggered as a data event. This element is only valid when used on a request that is specified as the request for a data changed event trigger.</xs:documentation>
+						</xs:annotation>
+					</xs:element-->
+				</xs:sequence>
+				<xs:attribute name="scope" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The scope attribute optionally specifies a name for the scope for this operator that can be used within expressions to reference the current element.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="cardinality" type="RequestCardinality" use="required">
+					<xs:annotation>
+						<xs:documentation>The cardinality attribute defines the expected result cardinality for the expression. If cardinality is Single, the result will be a singleton value of the type specified by the dataType attribute. If cardinality is Multiple, the result will be a list of values of the type specified by the dataType attribute. If a request results in a cardinality higher than expected, a run-time exception should be thrown.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dataType" type="xs:QName" use="required">
+					<xs:annotation>
+						<xs:documentation>The dataType attribute specifies the type of clinical data being requested.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="templateId" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The templateId attribute specifies an optional template to be used. If specified, the request is defined to return only objects that conform to the template.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="idProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The idProperty attribute specifies which property of the model contains the Id for the clinical statement.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="isInitial" type="xs:boolean" use="optional" default="true">
+					<xs:annotation>
+						<xs:documentation>The isInitial attribute determines whether the request is part of the initial data requirements for the artifact.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+			<!--xs:attribute name="triggerType" type="DataEventType" use="optional">
+					<xs:annotation>
+						<xs:documentation>The triggerType attribute optionally specifies whether this request should only include data that was accessed or updated as a result of some event that is triggering the evaluation of the artifact. This attribute is only valid on a request that is specified as the request for a data changed event trigger.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute-->
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DataRequest">
+		<xs:annotation>
+			<xs:documentation>The DataRequest expression provides basic data access.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="RequestBase"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ClinicalRequest">
+		<xs:annotation>
+			<xs:documentation>The clinical request expression defines clinical data that will be used by the artifact. This expression expands on the functionality provided by the RequestBase to provide clinically relevant filtering criteria in a well-defined and computable way. This operation defines the integration boundary for artifacts.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="RequestBase">
+				<xs:sequence>
+					<xs:element name="codes" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The codes element optionally allows a set of codes to be provided. The codes list restricts the set of clinical statements returned to only those clinical statements that matched some code in the set.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dateRange" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The dateRange element optionally allows a date range to be provided. The clinical statements returned would be only those clinical statements whose date fell within the range specified.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="subject" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The subject element specifies	how the data in the request is related to the subject of the artifact. For a typical clinical decision support artifact, the subject is assumed to be a single patient, and the use of these properties (subject and subjectProperty) is optional, meaning that the engine is assuming a single-patient context and is already managing the per-patient relationships of the data requests involved in the artifact. However, making this relationship between the subject and the related data requests explicit adds more flexibility, potentially allowing an artifact to range over something other than patient; encounters, for example.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="codeProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The codeProperty attribute optionally specifies which property of the model contains the Code or Codes for the clinical statement.
+						
+Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Request expression, but allowing them at the request expression level gives the most flexibility.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateProperty attribute optionally specifies which property of the model contains the clinically relevant date for the clinical statement.
+
+Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Request expression, but allowing them at the request expression level gives the most flexibility.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="subjectProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The subjectProperty optionally specifies which property of the model contains the related value for the subject of the clinical request.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="useValueSets" type="xs:boolean" use="optional" default="false">
+					<xs:annotation>
+						<xs:documentation>The useValueSets attribute determines whether references to value sets in the Codes element will be expanded, or left as value set references for the purposes of communicating across the data boundary.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="useSubsumption" type="xs:boolean" use="optional" default="false">
+					<xs:annotation>
+						<xs:documentation>The useSubsumption attribute determines whether subsumption should be used to determine whether or not a given data item should be included in the result.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ClinicalRequestDef">
+		<xs:complexContent>
+			<xs:extension base="ExpressionDef">
+				<xs:attribute name="dataType" type="xs:QName" use="required">
+					<xs:annotation>
+						<xs:documentation>The dataType attribute specifies the type of clinical data being requested.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="templateId" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The templateId attribute specifies an optional template to be used. If specified, the request is defined to return only objects that conform to the template.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codeParameterName" type="xs:string" use="optional"/>
+				<xs:attribute name="codeProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The codeProperty attribute optionally specifies which property of the model contains the Code or Codes for the clinical statement.
+						
+Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Request expression, but allowing them at the request expression level gives the most flexibility.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateParameterName" type="xs:string" use="optional"/>
+				<xs:attribute name="dateProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateProperty attribute optionally specifies which property of the model contains the clinically relevant date for the clinical statement.
+
+Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Request expression, but allowing them at the request expression level gives the most flexibility.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ValueSetDef">
+		<xs:annotation>
+			<xs:documentation>The ValueSetDef type defines a value set identifier that can be referenced by name anywhere within an expression. ValueSetDefs are defined at the library level</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="valueSet" type="Expression" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>An expression of type List of Code that returns the ValueSet. Note that this does not imply that an implementation would be required to materialize all ValueSet references, they may be preserved as ValueSets and a terminology server may be used to perform the required value set testing operations.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ValueSetRef">
+		<xs:annotation>
+			<xs:documentation>The ValueSetRef expression allows a previously defined named value set to be referenced within an expression.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ValueSet">
+		<xs:annotation>
+			<xs:documentation>The ValueSet operator returns a list of codes whose elements are defined by the given value set authority for the given value set id and version. If version is an asterisk (*), the current version of the value set is returned.
+			
+Note that the id, version, and authority for the value set are specified by attributes, rather than as expression elements. This is deliberately done to ensure that the value sets involved in an artifact can be determined by static analysis.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="id" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The unique identifier of the value set to be retrieved. This identifier is evaluated within the context of the authority.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="version" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The version of the value set to be retrieved. If an asterisk (*) is used, the current version of the value set is returned.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="authority" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The authority for the value set to be retrieved. This value represents a conceptual identifier for the steward of the value set. An integration would need to be able to map this to a specific service providing the value sets maintained by this authority.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InValueSet">
+		<xs:annotation>
+			<xs:documentation>The InValueSet operator returns true if the given code, or list of codes, is in the given value set.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression">
+				<xs:attribute name="id" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The unique identifier of the value set to be retrieved. This identifier is evaluated within the context of the authority.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="version" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The version of the value set to be retrieved. If an asterisk (*) is used, the current version of the value set is returned.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="authority" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The authority for the value set to be retrieved. This value represents a conceptual identifier for the steward of the value set. An integration would need to be able to map this to a specific service providing the value sets maintained by this authority.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- Subsumption Operators -->
+	<xs:complexType name="Subsumes">
+		<xs:annotation>
+			<xs:documentation>The Subsumes operator returns true if the operands were of the same code system, and the ancestor operand subsumed the descendant operand in the hierarchy of the code system. If the codes are the same code, the operator returns true.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="ancestor" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The code that will be tested for the ancestor relationship.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="descendent" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The code that will be tested for the descendent relationship.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SetSubsumes">
+		<xs:annotation>
+			<xs:documentation>The SetSubsumes operator returns the list of descendants that were subsumed by some code in the list of ancestors.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="ancestors" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The codes that will be tested for the ancestor relationship.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="descendents" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The codes that will be tested for the descendent relationship.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- TODO: SubsumedSet operator? Given a code, returns the set of codes for which Subsumes would return true? -->
+</xs:schema>

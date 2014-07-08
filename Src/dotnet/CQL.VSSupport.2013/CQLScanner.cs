@@ -164,6 +164,7 @@ namespace ONC.CQL_VSSupport_2013
 				case "'return'" : return TokenType.Keyword;
 				case "'start'" : return TokenType.Keyword;
 				case "'with'" : return TokenType.Keyword;
+				case "'without'" : return TokenType.Keyword;
 				case "'include'" : return TokenType.Keyword;
 				case "'started by'" : return TokenType.Keyword;
 				case "'year'" : return TokenType.Keyword;
@@ -294,6 +295,7 @@ namespace ONC.CQL_VSSupport_2013
 				case "'return'" : return TokenColor.Keyword;
 				case "'start'" : return TokenColor.Keyword;
 				case "'with'" : return TokenColor.Keyword;
+				case "'without'" : return TokenColor.Keyword;
 				case "'include'" : return TokenColor.Keyword;
 				case "'started by'" : return TokenColor.Keyword;
 				case "'year'" : return TokenColor.Keyword;
@@ -424,6 +426,7 @@ namespace ONC.CQL_VSSupport_2013
 				case "'return'" : return TokenTriggers.None;
 				case "'start'" : return TokenTriggers.None;
 				case "'with'" : return TokenTriggers.None;
+				case "'without'" : return TokenTriggers.None;
 				case "'include'" : return TokenTriggers.None;
 				case "'started by'" : return TokenTriggers.None;
 				case "'year'" : return TokenTriggers.None;
