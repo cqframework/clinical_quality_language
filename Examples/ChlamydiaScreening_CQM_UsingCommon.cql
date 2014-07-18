@@ -1,8 +1,10 @@
+library CMS153_CQM version '2'
+
 using QUICK
 
 context PATIENT
 
-include Common version '1'
+include CMS153_Common version '2' as Common
 
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 

@@ -1,3 +1,5 @@
+library ClauseTesting
+
 using QUICK
 
 let SimpleQuery =

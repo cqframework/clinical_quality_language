@@ -540,7 +540,7 @@ using QUICK
 
 context PATIENT
 
-include 'ChlamydiaScreening_Common.cql' as Common
+include ChlamydiaScreening_Common as Common
 
 valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
 

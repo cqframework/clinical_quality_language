@@ -1,8 +1,10 @@
+library CMS153_CDS version '2'
+
 using QUICK
 
 context PATIENT
 
-include Common
+include CMS153_Common version '2' as Common
 
 valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
 

@@ -26,7 +26,7 @@ usingDefinition
     ;
 
 includeDefinition
-    : 'include' STRING ('version' STRING)? 'as' IDENTIFIER
+    : 'include' IDENTIFIER ('version' STRING)? 'as' IDENTIFIER
     ;
 
 parameterDefinition

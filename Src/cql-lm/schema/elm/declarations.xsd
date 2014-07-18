@@ -7,7 +7,7 @@
 			This file defines the base types used in defining knowledge artifacts.
 		</xs:documentation>
 	</xs:annotation>
-	<xs:import namespace="http://hl7.org/fhir" schemaLocation="../common/quick-datatypes.xsd"/>
+	<xs:import namespace="http://hl7.org/fhir" schemaLocation="../common/fhir-datatypes.xsd"/>
 	<xs:complexType name="VersionedIdentifier">
 		<xs:annotation>
 			<xs:documentation>VersionedIdentifier is composed of two parts: (1)

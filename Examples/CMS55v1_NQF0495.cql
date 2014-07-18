@@ -1,3 +1,5 @@
+library CMS55 version '1'
+
 /*
 	CMS55v1 NQF0495
 	Median Time from ED Arrival to ED Departure for Admitted ED Patients
