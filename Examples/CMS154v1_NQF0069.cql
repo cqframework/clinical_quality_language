@@ -1,3 +1,5 @@
+library CMS154 version '1'
+
 /*
 	CMS154v1 - NQF0069
 	Appropriate Treatment for Children with Upper Respiratory Infection (URI)
