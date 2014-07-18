@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="HQMFR2.xsl"?>
+
+<!-- ************************************************************************************************ 
+This "Illustration Pupose Only" sample measure is based on the HQMF R2 Implementation Guide.
+*****************************************************************************************************-->
+<QualityMeasureDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="urn:hl7-org:v3 ../../../../Desktop/HQMF_R2.1_DSTU%2020140516/domains/uvqm/HQMF_SampleFiles/HQMF_R2.1_XSD/schemas/EMeasure.xsd"
+ xmlns="urn:hl7-org:v3" xmlns:ex="urn:hl7-org/v3-example" xmlns:mif="urn:hl7-org:v3/mif2"
+ xmlns:sch="http://www.ascc.net/xml/schematron">
+	<!-- Measure Header Section -->
+	<typeId root="2.16.840.1.113883.1.3" extension="POQM_HD000001UV02"/>
+	<id root="8a4d92b2-35fb-4aa7-0136-1df6d8c70252"/>
+	<code code="57024-2" codeSystem="2.16.840.1.113883.6.1">
+		<displayName value="Health Quality Measure Document"/>
+	</code>
+	<title
+	    value="Chlamydia Screening for Women"/>
+	<text
+	    value="Percentage of women 16-24 years of age who were identified as sexually active and who had at least one test for chlamydia during the measurement period."/>
+	<statusCode code="Complete"/>
+	<setId root="ebfa203e-acc1-4228-906c-855c4bf11310"/>
+	<versionNumber value="3"/>
+	<author typeCode="AUT">
+		<responsibleParty classCode="ASSIGNED">
+		</responsibleParty>
+	</author>
+	<custodian>
+		<responsibleParty classCode="ASSIGNED">
+		</responsibleParty>
+	</custodian>
+    
+    <!-- 
+        HQMF R2.1: Reference an external document containing expressions that will be 
+        used by the measure populations. The id/@root value associate an identifier for
+        the included document as a whole. criteriaReferences with this id/@root target
+        constructs defined within the referenced document via their @extension value.
+    -->
+    <relatedDocument typeCode="COMP">
+        <expressionDocument>
+            <id root="22688A59-B73C-4276-9E83-778214E1CA3C"/>
+            <text mediaType="application/cql">
+                <reference value="ChlamydiaScreening_CQM.cql"/>
+            </text>
+        </expressionDocument>
+    </relatedDocument>
+    
+    <controlVariable>
+		<measurePeriod>
+			<id root="2.16.840.1.113883.3.100.100.123" extension="MeasurePeriod"/>
+			<code code="MSRTP" codeSystem="2.16.840.1.113883.3.560">
+				<displayName value="Measurement period"/>
+			</code>
+			<!-- measure period defined as: Starting at Jan 1, 2012, for a period of 1 year, repeated every year" -->
+			<value xsi:type="PIVL_TS">
+				<phase lowClosed="true" highClosed="true">
+					<low value="201201010000"/>
+					<width xsi:type="PQ" value="1" unit="a"/>
+				</phase>
+				<period value="1" unit="a"/>
+			</value>
+		</measurePeriod>
+	</controlVariable>
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="COPYRIGHT"/>
+            <code code="COPY">
+                <displayName value="Copyright"/>
+            </code>
+            <value xsi:type="ED"
+                value="Physician Performance Measure (Measures) and related data specifications were developed by the National Committee for Quality Assurance (NCQA). The Measuare copyrighted but can be reproduced and distributed, without modification, for noncommercial purposes (e.g., use by healthcare providers in connection with their practices). Commercial use is defined as the sale, licensing, or distribution of the Measures for commercial gain, or incorporation of the Measures into a product or service that is sold, licensed or distributed for commercial gain. Commercial use of the Measures requires a license agreement between the user and NCQA. NCQA is not responsible for any use of the Measures. (c) 2008-2013 National Committee for Quality Assurance. All Rights Reserved. Limited proprietary coding is contained in the Measure specifications for user convenience. Users of proprietary code sets should obtain all necessary licenses from the owners of the code sets.  NCQA disclaims all liability for use or accuracy of any CPT or other codes contained in the specifications.CPT(R) contained in the Measure specifications is copyright 2004-2012 American Medical Association. LOINC(R) copyright 2004-2012 Regenstrief Institute, Inc. This material contains SNOMED Clinical Terms(R) (SNOMED CT[R]) copyright 2004-2012 International Health Terminology Standards Development Organisation. ICD-10 copyright 2012 World Health Organization. All Rights Reserved."
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="MEASURE_SCORING"/>
+            <code code="MSRSCORE">
+                <displayName value="Measure Scoring"/>
+            </code>
+            <value xsi:type="CD" code="PROPOR" codeSystem="2.16.840.1.113883.1.11.20367">
+                <displayName value="Proportion"/>
+            </value>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="MEASURE_TYPE"/>
+            <code code="MSRTYPE">
+                <displayName value="Measure Type"/>
+            </code>
+            <value xsi:type="CD" code="PROCESS" codeSystem="2.16.840.1.113883.1.11.20368">
+                <displayName value="Process"/>
+            </value>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="STRATIFICATION"/>
+            <code code="STRAT">
+                <displayName value="Stratification"/>
+            </code>
+            <value xsi:type="ED"
+                value="Report a total score, and each of the following strata: Stratum 1: Patients age 16-20, Stratum 2: Patients age 21-24"
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="RISK_ADJUSTMENT"/>
+            <code code="MSRADJ">
+                <displayName value="Risk Adjustment"/>
+            </code>
+            <value xsi:type="ED" value="None"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="RATE_AGGREGATION"/>
+            <code code="MSRAGG">
+                <displayName value="Rate Aggregation"/>
+            </code>
+            <value xsi:type="ED" value="None"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="RATIONALE"/>
+            <code code="RAT">
+                <displayName value="Rationale"/>
+            </code>
+            <value xsi:type="ED"
+                value="Chlamydia trachomatis is the most common sexually transmitted bacterial infection in the U.S., resulting in over 2.8 million new cases each year (Centers for Disease Control and Prevention 2011 - Chlamydia).  It is often known as a “silent” disease because most infected people have no symptoms and therefore are unaware they have an infection (United States Preventive Services Task Force, 2007; Centers for Disease Control and Prevention 2011- Chlamydia). Although chlamydia symptoms are usually mild or nonexistent, untreated infections can lead to serious and irreversible complications (United States Preventive Services Task Force 2007).Women are particularly vulnerable when infected with chlamydia. Left untreated, chlamydia can cause pelvic inflammatory disease (PID), permanent damage to a woman's fallopian tubes, uterus and surrounding tissue, or Reiter Syndrome, which includes pink eye (conjunctivitis) and skin lesions affecting the lower extremities. Between 10 and 15 percent of untreated chlamydia infections result in PID, which can lead to ectopic pregnancy and infertility (Centers for Disease Control and Prevention 2011 – Chlamydia). As many as 15 percent of women with PID will become infertile (Centers for Disease Control and Prevention 2011 – Pelvic Inflammatory Disease). Additionally, pregnant women might experience premature delivery, miscarriage, low birth weight, infant mortality, or they may pass conjunctivitis or chlamydia pneumonia to their infants (United States Preventive Services Task Force, 2007; Centers for Disease Control and Prevention 2011- Chlamydia). Chlamydia is the leading cause of preventable infertility and, among other adverse pregnancy related problems, can cause preterm birth, miscarriages, infant mortality, and neonatal chlamydia infections (United States Preventive Services Task Force 2007). Over 900,000 chlamydia infections were reported to the Centers for Disease Control and Prevention (CDC) from 50 states and the District of Columbia in 2004. Since many cases are not reported or even diagnosed, it is estimated that there are actually 2.8 million new cases of chlamydia each year (Centers for Disease Control and Prevention 2010). From 1987 through 2004, the reported rate of chlamydia infection in women increased from 78.5 cases to 485 cases per 100,000 people, though a portion of the increase in prevalence is attributed to continued expansion of chlamydia screening programs (Centers for Disease Control and Prevention 2005). A significant proportion of sexually active individuals, both male and female, continue to go undiagnosed due to the disease's asymptomatic nature (Wilson et al. 2009). Approximately 75 percent of chlamydia infections in women and 95 percent in men are asymptomatic, resulting in delayed medical care and treatment (Centers for Disease Control and Prevention 2011 – Pelvic Inflammatory Disease). Women whose sexual partners are not screened and appropriately treated are at high risk for re-infection. Multiple chlamydia infections increase a woman’s risk of serious reproductive health complications (Centers for Disease Control and Prevention 2010)."
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="CLINICAL_RECOMMENDATION_STATEMENT"/>
+            <code code="CRS">
+                <displayName value="Clinical Recommendation Statement"/>
+            </code>
+            <value xsi:type="ED"
+                value="U.S. Preventive Services Task Force (2007): All sexually active nonpregnant young women age 24 years or younger and older women (pregnant or not) who are at increased risk should be screened for a chlamydial infection. The USPSTF found fair evidence that nucleic acid amplification tests (NAATs) can identify chlamydial infection in asymptomatic men and women, including asymptomatic pregnant women, with high test specificity. If clinicians have not concurrently screened for chlamydial infection, the CDC recommends presumptive treatment for chlamydia at the time of treatment for gonorrhea. In order to prevent recurrent transmission, partners of infected individuals should be tested and treated if infected, or treated presumptively. American Academy of Family Physicians (2009): The AAFP strongly recommends screening for chlamydia infection for all sexually active non-pregnant young women aged 24 and younger and for older non-pregnant women who are at increased risk. The AAFP recommends screening for chlamydia infection for all pregnant women aged 24 younger and for older pregnant women who are at increased risk."
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="IMPROVEMENT_NOTATION"/>
+            <code code="IDUR">
+                <displayName value="Improvement Notation"/>
+            </code>
+            <value xsi:type="ED" value="Higher score indicates better quality"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="NQF_ID_NUMBER"/>
+            <code code="OTH">
+                <displayName value="NQF ID Number"/>
+            </code>
+            <value xsi:type="ED" value="0033"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="DISCLAIMER"/>
+            <code code="DISC">
+                <displayName value="Disclaimer"/>
+            </code>
+            <value xsi:type="ED"
+                value="These performance Measures are not clinical guidelines and do not establish a standard of medical care, and have not been tested for all potential applications. THE MEASURES AND SPECIFICATIONS ARE PROVIDED “AS IS” WITHOUT WARRANTY OF ANY KIND. Due to technical limitations, registered trademarks are indicated by (R) or [R] and unregistered trademarks are indicated by (TM) or [TM]."
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="EMEASURE_IDENTIFIER"/>
+            <code code="OTH">
+                <displayName value="eMeasure Identifier"/>
+            </code>
+            <value xsi:type="ED" value="153"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="REFERENCE"/>
+            <code code="REF">
+                <displayName value="Reference"/>
+            </code>
+            <value xsi:type="ED"
+                value="American Academy of Family Physicians (AAFP). 2009. Summary of recommendations for clinical preventive services. Revision 6.8. Leawood: American Academy of Family Physicians (AAFP)."
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="DEFINITION"/>
+            <code code="DEF">
+                <displayName value="Definition"/>
+            </code>
+            <value xsi:type="ED" value="None"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="GUIDANCE"/>
+            <code code="GUIDE">
+                <displayName value="Guidance"/>
+            </code>
+            <value xsi:type="ED"
+                value="Codes to identify sexually active women include codes for: pregnancy, sexually transmitted infections, contraceptives or contraceptive devices, and infertility treatments. The denominator exclusion does not apply to patients who qualify for the initial patient population based on services other than the pregnancy test alone."
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="TRANSMISSION_FORMAT"/>
+            <code code="OTH">
+                <displayName value="Transmission Format"/>
+            </code>
+            <value xsi:type="ED" value="None"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="INITIAL_PATIENT_POPULATION"/>
+            <code code="IPP">
+                <displayName value="Initial Patient Population"/>
+            </code>
+            <value xsi:type="ED"
+                value="Women 16 to 24 years of age who are sexually active and who had a visit in the measurement period"
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="DENOMINATOR"/>
+            <code code="DENOM">
+                <displayName value="Denominator"/>
+            </code>
+            <value xsi:type="ED" value="Equals Initial Patient Population"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="DENOMINATOR_EXCLUSIONS"/>
+            <code code="OTH">
+                <displayName value="Denominator Exclusions"/>
+            </code>
+            <value xsi:type="ED"
+                value="Women who received a pregnancy test solely as a safety precaution before ordering an x-ray or specified medications"
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="NUMERATOR"/>
+            <code code="NUMER">
+                <displayName value="Numerator"/>
+            </code>
+            <value xsi:type="ED"
+                value="Women with at least one chlamydia test during the measurement period"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="NUMERATOR_EXCLUSIONS"/>
+            <code code="OTH">
+                <displayName value="Numerator Exclusions"/>
+            </code>
+            <value xsi:type="ED" value="Not applicable"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="DENOMINATOR_EXCEPTIONS"/>
+            <code code="DENEXCEP">
+                <displayName value="Denominator Exceptions"/>
+            </code>
+            <value xsi:type="ED" value="None"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="MEASURE_POPULATION"/>
+            <code code="MSRPOPL">
+                <displayName value="Measure Population"/>
+            </code>
+            <value xsi:type="ED" value="Not applicable"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="MEASURE_OBSERVATIONS"/>
+            <code code="OTH">
+                <displayName value="Measure Observations"/>
+            </code>
+            <value xsi:type="ED" value="Not applicable"/>
+        </measureAttribute>
+    </subjectOf>
+    
+    <subjectOf>
+        <measureAttribute>
+            <id root="2.16.840.1.113883.3.100.1" extension="SUPPLEMENTAL_DATA_ELEMENTS"/>
+            <code code="OTH">
+                <displayName value="Supplemental Data Elements"/>
+            </code>
+            <value xsi:type="ED"
+                value="For every patient evaluated by this measure also identify payer, race, ethnicity and sex."
+            />
+        </measureAttribute>
+    </subjectOf>
+    
+    <!-- Measure Body Section -->
+	<!-- Measure Population Criteria Section -->
+	<component>
+		<populationCriteriaSection>
+			<code code="57026-7" codeSystem="2.16.840.1.113883.6.1">
+				<displayName value="Population criteria"/>
+			</code>
+			<title value="Population Criteria Section"/>
+			<text>
+				<xml>
+					<list>
+						<item>
+							<content styleCode="Bold">Initial Patient Population:</content>
+							<list>
+								<caption>All true</caption>
+								<item>"Patient Characteristic Birthdate: birth date" &gt;= 18
+									year(s) starts before start of "Encounter, Performed: Encounter
+									Inpatient (admission datetime)"</item>
+								<item>"Diagnosis, Active: AMI (ordinality: 'Principal Diagnosis')"
+									during "Encounter, Performed: Encounter Inpatient"</item>
+								<item>"Encounter, Performed: Encounter Inpatient (length of stay
+									&lt;= 120 day(s))"</item>
+								<item>"Encounter, Performed: Encounter Inpatient (admission
+									datetime)"</item>
+							</list>
+						</item>
+						<item>
+							<content styleCode="Bold">Denominator:</content>
+							<list>
+								<caption>All true</caption>
+								<item>"Initial Patient Population"</item>
+							</list>
+						</item>
+						<item>
+							<content styleCode="Bold">Denominator Exclusions</content>
+							<list>
+								<caption>At least one true</caption>
+								<item>"Patient Characteristic Clinical Trial Participant: Clinical
+									Trial Participant" during "Encounter, Performed: Encounter
+									Inpatient"</item>
+								<item>"Intervention, Performed: Hospital Measures - Comfort Measure
+									Only Intervention" starts after start of "Encounter, Performed:
+									Encounter Inpatient"</item>
+								<item>"Encounter, Performed: Encounter Inpatient (discharge status:
+									'Patient Expired')"</item>
+								<item>"Encounter, Performed: Encounter Inpatient (discharge status:
+									'Discharge To Another Hospital')"</item>
+								<item>"Encounter, Performed: Encounter Inpatient (discharge status:
+									'Home Hospice Care')"</item>
+								<item>"Encounter, Performed: Encounter Inpatient (discharge status:
+									'Inpatient Hospice Care')"</item>
+								<item>"Encounter, Performed: Encounter Inpatient (discharge status:
+									'Left Against Medical Advice')"</item>
+								<item>
+									<list>
+										<caption>All true</caption>
+										<item>"Not Done: Medication, Order: Statins" ends concurrent
+											with "Encounter, Performed: Encounter Inpatient
+											(discharge datetime)"</item>
+										<item>"Nod Done: Medication, Active: Statins (Health Record
+											Field: 'Discharge Medication')" during "Encounter,
+											Performed: Encounter Inpatient"</item>
+										<item>
+											<list>
+												<caption>At least one true</caption>
+												<item>"Laboratory Test, Result: LDL-c Test (result
+												&lt; 100 mg/dL)" &lt;= 24 hour(s) starts after
+												start of "Encounter, Performed: Encounter
+												Inpatient (facility location arrival
+												datetime)"</item>
+												<item>"Laboratory Test, Result: LDL-c Test (result
+												&lt; 100 mg/dL)" &lt;= 30 day(s) starts before
+												start of "Encounter, Performed: Encounter
+												Inpatient (facility location arrival
+												datetime)"</item>
+												<item>"Medication, Order not done: Medical Reasons
+												AMI" for "Statins RxNorm Value Set" during
+												"Encounter, Performed: Encounter Inpatient"</item>
+												<item>"Medication, Order not done: Patient Reasons
+												AMI" for "Statins RxNorm Value Set" during
+												"Encounter, Performed: Encounter Inpatient"</item>
+												<item>"Medication, Order not done: System Reasons
+												AMI" for "Statins RxNorm Value Set" during
+												"Encounter, Performed: Encounter Inpatient"</item>
+											</list>
+										</item>
+									</list>
+								</item>
+							</list>
+						</item>
+						<item>
+							<content styleCode="Bold">Numerator</content>
+							<list>
+								<item>
+									<list>
+										<caption>At least one true</caption>
+										<item>"Medication, Order: Statins" ends concurrent with
+											"Encounter, Performed: Encounter Inpatient (discharge
+											datetime)"</item>
+										<item>"Medication, Active: Statins (Health Record Field:
+											'Discharge Medication')" during "Encounter, Performed:
+											Encounter Inpatient"</item>
+									</list>
+								</item>
+							</list>
+						</item>
+						<item>
+							<content styleCode="Bold">Denominator Exceptions</content>
+							<list>
+								<item>None</item>
+							</list>
+						</item>
+						<item>
+							<content styleCode="Bold">Stratification</content>
+							<list>
+								<item>None</item>
+							</list>
+						</item>
+					</list>
+				</xml>
+			</text>
+			<!-- IPP -->
+			<component typeCode="COMP">
+				<initialPopulationCriteria classCode="OBS" moodCode="EVN" isCriterionInd="true">
+					<id root="E8827E28-FF85-4C3F-A9F9-180E3D4E3A07" identifierName="IPOP"/>
+					<code code="IPPOP" codeSystem="2.16.840.1.113883.5.1063"
+						codeSystemName="HL7 Observation Value">
+						<displayName value="Initial Patient Population"/>
+					</code>
+					<precondition>
+					    <!--
+                            HQMF R2.1: Reference to an encounter expression defined in the included expression
+                            document. The id/@root attribute identifies the document, the id/@extension
+                            identifies the entity within the document.
+                        -->
+					    <criteriaReference classCode="OBS" moodCode="EVN">
+						    <id root="22688A59-B73C-4276-9E83-778214E1CA3C"
+						        extension="InInitialPopulation"/>
+						</criteriaReference>
+					</precondition>
+				</initialPopulationCriteria>
+			</component>
+			<!-- Denominator -->
+			<component typeCode="COMP">
+				<denominatorCriteria classCode="OBS" moodCode="EVN" isCriterionInd="true">
+					<id root="12471C88-136B-4442-958B-0926E77BCFF7" identifierName="Denom"/>
+					<code xsi:type="CD" code="DENOM" codeSystem="2.16.840.1.113883.5.1063"
+						codeSystemName="HL7 Observation Value">
+						<displayName value="Denominator"/>
+					</code>
+					<precondition>
+						<allTrue>
+							<!-- This adds nothing to the IPOP so it is left empty -->
+						</allTrue>
+					</precondition>
+				</denominatorCriteria>
+			</component>
+			<!-- Numerator -->
+			<component typeCode="COMP">
+				<numeratorCriteria moodCode="EVN" isCriterionInd="true">
+					<id root="4B1B4EA2-92F3-4357-A7C2-73EE0B934144" identifierName="Numerator"/>
+					<code code="NUMER" codeSystem="2.16.840.1.113883.5.1063"
+						codeSystemName="HL7 Observation Value">
+						<displayName value="Numerator"/>
+					</code>
+					<precondition>
+					    <!--
+                            HQMF R2.1: Reference to an encounter expression defined in the included expression
+                            document. The id/@root attribute identifies the document, the id/@extension
+                            identifies the entity within the document.
+                        -->
+					    <criteriaReference classCode="SBADM" moodCode="EVN">
+						    <id root="22688A59-B73C-4276-9E83-778214E1CA3C"
+						        extension="InNumerator"/>
+						</criteriaReference>
+					</precondition>
+				</numeratorCriteria>
+			</component>
+		</populationCriteriaSection>
+	</component>
+</QualityMeasureDocument>
