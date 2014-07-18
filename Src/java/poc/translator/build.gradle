@@ -16,6 +16,7 @@ dependencies {
     compile project(':cql')
     testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    testCompile group: 'org.mozilla', name: 'rhino', version: '1.7R4'
 }
 
 test {

@@ -12,9 +12,9 @@ public class TranslatorTest {
         Context cx = Context.enter();
         try {
             Scriptable scope = cx.initStandardObjects();
-            String command = "1";
+            String command = "1+1";
             Object result = cx.evaluateString(scope, command, "<cmd>", 1, null);
-            assertEquals(Context.toString(result), command);
+            assertEquals(Context.toString(result), "2");
         } finally {
             Context.exit();
         }
