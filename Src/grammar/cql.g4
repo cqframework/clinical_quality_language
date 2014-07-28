@@ -104,7 +104,7 @@ returnStatement
     ;
 
 retrieveDefinition
-    : 'define' 'retrieve' existenceModifier? '[' topic (',' modality)? (':' valuesetPathIdentifier 'in' valuesetIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' functionBody
+    : 'define' 'retrieve' '[' (occurrence 'of')? topic (',' modality)? (':' valuesetPathIdentifier 'in' valuesetIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' functionBody
     ;
 
 valuesetPathIdentifier
@@ -148,12 +148,11 @@ queryInclusionClause
     ;
 
 retrieve
-    : existenceModifier? '[' topic (',' modality)? (':' (valuesetPathIdentifier 'in')? valueset)? (',' duringPathIdentifier? 'during' expression)? ']'
+    : '[' (occurrence 'of')? topic (',' modality)? (':' (valuesetPathIdentifier 'in')? valueset)? (',' duringPathIdentifier? 'during' expression)? ']'
     ;
 
-existenceModifier
-    : 'no'
-    | 'unknown'
+occurrence
+    : IDENTIFIER
     ;
 
 topic
@@ -210,7 +209,7 @@ expression
     | ('not' | 'exists') expression                                      # existenceExpression
     | expression 'properly'? 'between' expressionTerm 'and' expressionTerm
                                                                          # rangeExpression
-    | ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'between' expressionTerm 'and' expressionTerm
+    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm
                                                                          # timeRangeExpression
     | expression ('<=' | '<' | '>' | '>=') expression                    # inequalityExpression
     | expression intervalOperatorPhrase expression                       # timingExpression
@@ -218,6 +217,21 @@ expression
     | expression ('in' | 'contains' | 'like') expression                 # membershipExpression
     | expression 'and' expression                                        # andExpression
     | expression ('or' | 'xor') expression                               # orExpression
+    ;
+
+dateTimePrecision
+    : 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond'
+    ;
+
+dateTimeComponent
+    : dateTimePrecision
+    | 'date'
+    | 'time'
+    | 'timezone'
+    ;
+
+pluralDateTimePrecision
+    : 'years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds'
     ;
 
 expressionTerm
@@ -228,10 +242,8 @@ expressionTerm
     | 'convert' expression 'to' typeSpecifier                            # conversionExpressionTerm
     | ('+' | '-') expressionTerm                                         # polarityExpressionTerm
     | ('start' | 'end') 'of' expressionTerm                              # timeBoundaryExpressionTerm
-    | ('date' | 'time' | 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond') 'of' expressionTerm
-                                                                         # timeUnitExpressionTerm
-    | 'duration' 'in' ('years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds') 'of' expressionTerm
-                                                                         # durationExpressionTerm
+    | dateTimeComponent 'of' expressionTerm                              # timeUnitExpressionTerm
+    | 'duration' 'in' pluralDateTimePrecision 'of' expressionTerm        # durationExpressionTerm
     | 'width' 'of' expressionTerm                                        # widthExpressionTerm
     | 'successor' 'of' expressionTerm                                    # successorExpressionTerm
     | 'predecessor' 'of' expressionTerm                                  # predecessorExpressionTerm
@@ -249,14 +261,20 @@ caseExpressionItem
     : 'when' expression 'then' expression
     ;
 
+relativeQualifier
+    : 'at most'
+    | 'at least'
+    ;
+
 intervalOperatorPhrase
-    : ('starts' | 'ends')? 'concurrent with' ('start' | 'end')?                             #concurrentWithIntervalOperatorPhrase
+    : ('starts' | 'ends')? relativeQualifier? 'same' dateTimePrecision? 'as' ('start' | 'end')?
+                                                                                            #concurrentWithIntervalOperatorPhrase
     | 'properly'? 'includes' ('start' | 'end')?                                             #includesIntervalOperatorPhrase
     | ('starts' | 'ends')? 'properly'? ('during' | 'included in')                           #includedInIntervalOperatorPhrase
     | ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')?          #beforeOrAfterIntervalOperatorPhrase
     | ('starts' | 'ends')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?     #withinIntervalOperatorPhrase
-    | 'meets' (quantityOffset? ('before' | 'after'))?                                       #meetsIntervalOperatorPhrase
-    | 'overlaps' (quantityOffset? ('before' | 'after'))?                                    #overlapsIntervalOperatorPhrase
+    | 'meets' ('before' | 'after')?                                                         #meetsIntervalOperatorPhrase
+    | 'overlaps' ('before' | 'after')?                                                      #overlapsIntervalOperatorPhrase
     | 'starts'                                                                              #startsIntervalOperatorPhrase
     | 'started by'                                                                          #startedByIntervalOperatorPhrase
     | 'ends'                                                                                #endsIntervalOperatorPhrase
@@ -264,7 +282,7 @@ intervalOperatorPhrase
     ;
 
 quantityOffset
-    : 'within'? quantityLiteral
+    : relativeQualifier? quantityLiteral
     ;
 
 term

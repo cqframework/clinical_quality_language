@@ -2,8 +2,6 @@ library CMS153 version '2'
 
 using QUICK
 
-context PATIENT
-
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 valueset "Other Female Reproductive Conditions" = ValueSet('2.16.840.1.113883.3.464.1003.111.12.1006')
 valueset "Genital Herpes" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1049')
@@ -18,6 +16,8 @@ valueset "Pap Test" = ValueSet('2.16.840.1.113883.3.464.1003.108.12.1017')
 valueset "Lab Tests During Pregnancy" = ValueSet('2.16.840.1.113883.3.464.1003.111.12.1007')
 valueset "Lab Tests for Sexually Transmitted Infections" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1051')
 valueset "Chlamydia Screening" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1052')
+
+context PATIENT
 
 let otherFemaleReproductiveConditions = [Condition: "Other Female Reproductive Conditions"]
 let genitalHerpes = [Condition: "Genital Herpes"]

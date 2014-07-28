@@ -1,39 +1,279 @@
 library ExampleSyntax
 
+let InpatientCode = CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' }
+
+let InpatientEncounters = [Encounter, Performance] E where E.code = InpatientCode
+
+valueset "Inpatient" = { CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' } }
+
+let InpatientEncounters = [Encounter, Performance: "Inpatient"]
+
+
 // Declaration Examples
+
+valueset "Severities" = ValueSet('http://hl7.fhir.org/vs/condition-severity')
+
+{ Coding { code: 'fatal',  }, Coding { 'severe' }, Coding { 'moderate' }, Coding { 'mild' } }
+
+valueset "Fatal Severities" = ValueSet('http://hl7.fhir.org/vs/fatal-condition-severities')
+
+valueset "Fatal Severities" = "Severities" S where S.code = 'fatal'
+
+[Condition: "Fatal Severities"]
+
+InValueSet(Code { '90201' }, "Inpatient")
+
+[Encounter, Performance] E where E.encounterType in "Inpatient"
+
+[Condition: severity in "Severities"]
+
+[Condition] C where C.severity.code = 'fatal'
+
+[Condition: severity = 'fatal']
+
+
+A = B
+A > B
+A >= B
+
+A same year as B
+A same minute as B // year, month, day, hour and minute are all the same
+
+year of A = year of B
+minute of A = minute of B // minute component A = minute component of B
+
+Date(2014)
+Date(2014, 7)
+Date(2014, 7, 11)
+Date(null, null, 11)
+
+// does precision matter for < or >, yes but not the ability to specify what precision is used
+
+Date(2014) = Date(2014, 6, 5)
+
+A = B // Exact equality requires the same precision and the same values for all components
+A < B
+A > B // Comparison must always be performed based on the lowest common granularity
+A <= B
+A >= B // Combines exact equality with comparison semantics (i.e. A <= B <=> A = B or A < B)
+
+// Precision-based comparison
+A same year as B
+
+A less than B
+A greater than B
+A at least B <=> A >= B
+A at most 5 <=> A <= B
+
+A same year as B
+A at least same year as B
+A at most same year as B
+
+A = B using years
+A > B using years
+A >= B using years
+
+A starts before start B
+
+A.start = Date(2012)
+B.start = Date(2014, 2, 12)
+
+// Method 1 - Intervals to minute precision
+intervalA = interval[Date(2012, 1, 1, 0, 0, 0), Date(2013, 1, 1, 0, 0, 0))
+intervalB = interval[Date(2014, 2, 12, 0, 0, 0), Date(2014, 2, 13, 0, 0, 0))
+
+// Method 2 - Precision-based
+year of A.start < year of B.start
+
+A starts concurrent with start B
+
+A same as B
+
+// impact on intervals:
+concurrent with
+before/after
+meets
+meets before/after
+overlaps
+overlaps before/after
+begins/begun by
+ends/ended by
+during/includes
+
+// interval operations involving equality
+concurrent with
+meets before/after
+overlaps before/after
+begins/begun by
+ends/ended by
+during/includes
+
+// impact on timing phrases
+concurrent with
+before/after
+within..of
+during
+includes
+
+// Only really need a solution for
+concurrent with
+during
+includes
+
+A starts during B using days
+A concurrent with B using days
+
+// Change concurrent with to same X as
+// Works for intervals and timing phrases
+
+// during
+A during B, works fine assuming date/time comparison semantics because it involves inequality which will work
+
+// meets doesn't work because there's equality involved, but I think that's the correct semantics for meets
+// for example:
+A = interval[Date(2012), Date(2013)]
+B = interval[Date(2014, 1, 1), Date(2015, 1, 1))
+A meets B is false
+
+
+
+3 days = 72 hours
+
+2.54 u"cm" = 1 u"in"
+
+[Patient] P where P.height > 2.0 u"m"
+
+where unit of P.height = u"m" and P.height > 2.0 u"m"
+
+let IsTall = height.units = 'm' and height.value > 2
+
+= <> < <= > >=
++ - * /
+
+
+unit of X
+value of X
+
+no [Condition]
+no [Encounter, Performance]
+
+[Condition,Observation-UnknownOccurrence :ValueSet]
+[Condition-Occurrence]
+[Condition,Observation?]
+
+[Encounter]
+
+[Encounter,Performance]
+[Encounter,Performance|Occurrence]
+[Encounter,Performance|NonOccurrence]
+[Encounter,Performance|UnknownOccurrence]
+
+[TheTopic,TheModality|Uncertain]
+
+[TheClass]
+
+[Condition|Occurrence]
+[Condition|NonOccurrence]
+[Condition|UnknownOccurrence]
+
+
+
+[no Encounter, Performance]
+
+[<topic>, <modality>, <occurrence>]
+
+[Condition, Nonoccurrence]
+[Encounter, Performance, Nonoccurrence]
+
+[non Condition]
+[non Encounter, Performed]
+[unknown Condition]
+[unknown Encounter, Performed]
+
+
+
+A starts
+
+[Encounter, Performance] E
+	with [Condition] C 
+		where E.effectiveTime starts before or same day end C.effectiveTime
+
+A starts during B
+
+// Library definition
+library CMS153 version '2'
 
 // Data model reference
 using QUICK
 
-// Establish PATIENT context
-context PATIENT
-
 // Include Common library
-include 'ChlamydiaScreening_Common.cql' as Common
+include CMS153_Common version '2' as Common
 
 // Define additional value sets for use within this artifact
 valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
 
+// Establish PATIENT context
+context PATIENT
+
 // Data Type examples
 // Simple Types
-let BooleanLiteral = true
-let StringLiteral = 'female'
+let BooleanLiteral = true  false
+let StringLiteral = 'female'  'pending', 'active', 'complete'
 let ValuesetLiteral = "Female Administrative Sex"
-let NumberLiteral = 16
+let NumberLiteral = 16, -28,  100.015
 
 // Clinical Types
-let QuantityLiteral = 6 u"gm/cm3"  // UCUM units
+let QuantityLiteral = 6 u'gm/cm3'  // UCUM units
+80 u'mm[Hg]'
 let TimespanLiteral = 3 months
 
 // Structured Types
 let Encounters = [Encounter, Performance]
-let TupleLiteral = tuple { Name: 'Patrick', DOB: Date(2014, 1, 1) }
+let Info = tuple { Name: 'Patrick', DOB: Date(2014, 7, 5) }
+
+let PharyngitisEffectiveTime = FirstPharyngitis.effectiveTime
+
+no unknown
+
+years months days hours minutes seconds milliseconds
+date time year month day hour minute second millisecond timezone
+date of X year of X minute of X
+
 
 // List Types
 let ListLiteral = { 1, 2, 3, 4, 5 }
 
 // Interval Types
 let IntervalLiteral = interval[today - 1 years, today]
+interval[3, 5)
+
+today - 1 years
+
+months between X and Y
+
+Count([Encounter, Performance])
+
+Sum({ 1, 2, 3, 4, 5 })
+Sum([ObservationResult] R return R.result)
+
+if Count(X) > 0 then X[1] else 0
+
+interval[3, 5) contains 4 
+4 in interval[3, 5)
+
+interval[3, null) contains 5
+
+X starts before start Y = start of X < start of Y // fairly straightforward
+X starts 3 days before start Y = start of X = start of Y - 3 days // ???
+X starts at least 3 days before start Y = start of X <= start of Y - 3 days
+X starts within 3 days before start Y = start of X >= start of Y - 3 days and start of X < start of Y // ???
+
+<= 3 days starts before start of
+
+
+X starts at least 3
+
+5 minutes
 
 // Simple Expressions
 let LogicalAnd = A and B
@@ -42,6 +282,11 @@ let GreaterOrEqual = A >= B
 let NotEqual = A <> B
 let Addition = A + B
 let Precedence = A + B * C
+
+5 = 'completed'
+{ 1, 2, 3, 4, 5 } = { 1, 2, 3, 4, 5 }
+{ 1, 2, 3, 4, 5 } <> { 5, 4, 3, 2, 1 }
+
 
 // Timing/Interval Operations
 let StartsBeforeStart = A starts before start B
@@ -84,11 +329,15 @@ Count({ 4, 5, 6 }) // evaluates to 3
 // First/Last
 First({ 4, 5, 6 }) // evaluates to 4
 
+X starts within 3 days of start Y
+
+dateTimeX within 3 days of dateTimeY
+
 // Date/Time Manipulation
 let DateSelector = Date(2014, 1, 1, 12, 0, 0, -6)
 let Now = now
 let Today = today
-let ConvertedDate = convert '20140101120000-0600' to Timestamp
+let ConvertedDate = convert '20140101120000-0600' to Datetime
 let DateAdd = today + 3 months - 2 days
 let DateDiff = months between start of X and end of X
 let Duration = duration in months of X
@@ -104,6 +353,15 @@ let IfExpression =
 let SelectedCaseExpression = 
 	// selected case expression
 	case X when 1 then 12 when 2 then 14 else 15 end
+
+X is null X is not null
+IfNull(X, Y) if X is null then Y else X
+Substring("abcdefg", 1, 3)
+
+Combine({ "ab", "cd", "ef" }) "abcdef"
+Combine({ "completed", "refused", "pending" }, ";") "completed;refused;pending"
+Split("completed;refused;pending", ";") { "completed", "refused", "pending" }
+
 
 let GeneralCaseExpression = 
 	// general case expression
@@ -137,27 +395,27 @@ let RangedRetrieve =
 	[Encounter, Performance, during MeasurementPeriod]
 
 let ExplicitlyRangedRetrieve =
-	[Encounter, Performance, PerformanceAtTime during MeasurementPeriod]
+	[Encounter, Performance, performanceTime during MeasurementPeriod]
 
 let WhereExplicitlyRangedRetrieve =
-	[Encounter, Performance where PerformanceAtTime during MeasurementPeriod]
+	[Encounter, Performance where performanceTime during MeasurementPeriod]
 
 let RangedWhere =
-	[Encounter, Performance] E where E.PerformanceAtTime during MeasurementPeriod
+	[Encounter, Performance] E where E.performanceTime during MeasurementPeriod
 
 let CodedRangedRetrieve =
 	[Encounter, Performance: "Ambulatory/ED Visit", during MeasurementPeriod]
 
 let ExplicitlyCodedRangedRetrieve =
-	[Encounter, Performance: serviceType in "Ambulatory/ED Visit", PerformanceAtTime during MeasurementPeriod]
+	[Encounter, Performance: serviceType in "Ambulatory/ED Visit", performanceTime during MeasurementPeriod]
 
 let WhereExplicitlyCodedRangedRetrieve =
-	[Encounter, Performance where serviceType in "Ambulatory/ED Visit" and PerformanceAtTime during MeasurementPeriod]
+	[Encounter, Performance where serviceType in "Ambulatory/ED Visit" and performanceTime during MeasurementPeriod]
 
 let CodedRangedWhere =
 	[Encounter, Performance] E 
 		where E.serviceType in ValueSet("Ambulatory/ED Visit") 
-			and E.PerformanceAtTime during MeasurementPeriod
+			and E.performanceTime during MeasurementPeriod
 
 // Query
 let Encounters =
@@ -165,8 +423,7 @@ let Encounters =
 
 // Filter
 let FilteredEncounters =
-	[Encounter, Performance: "Inpatient"] E
-		where duration in days of E.effectiveTime >= 120 days
+	[Encounter, Performance: "Inpatient"] E where duration in days of E.effectiveTime >= 120 days
 
 // Return
 let ProjectedEncounters =
@@ -176,7 +433,7 @@ let ProjectedEncounters =
 
 let ComputedEncounters =
 	// Compute values for returned columns
-	[Encounter, Performance: "Inpatient"] E
+	[Encounter, Performance: "Inpatient"] E 
 		return tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime }
 
 let ExtractedEncounters =
@@ -186,18 +443,17 @@ let ExtractedEncounters =
 
 // Sort
 let SortedEncounters =
-	[Encounter, Performance: "Inpatient"] E
+	[Encounter, Performance: "Inpatient"] E 
 		sort by effectiveTime
 
-	[Encounter, Performance: "Inpatient"] E
-		return tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime }
+	[Encounter, Performance: "Inpatient"] E 
+		return tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime } 
 		sort by lengthOfStay desc
 
 // With
 let TargetEncounters =
-	[Encounter, Performance: "Ambulatory/ED Visit"] E
-		with [Condition: "Acute Pharyngitis"] P
-			where P.effectiveTime overlaps after E.PerformanceAtTime
+	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+		with [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.PerformanceAtTime
 
 let TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
@@ -207,10 +463,11 @@ let TargetEncounters =
 
 // Full Query
 let FullQuery =
-	[Encounter, Performance: "Inpatient"] E
-		with [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.PerformanceAtTime
-		where duration in days of E.effectiveTime >= 120 days
-		return tuple { id: E.id, lengthOfStay: duration in days of E.EffectiveTime }
+	[Encounter, Performance: "Inpatient"] E 
+		with [Condition: "Acute Pharyngitis"] P 
+			where P.effectiveTime overlaps after E.PerformanceAtTime 
+		where duration in days of E.effectiveTime >= 120 days 
+		return tuple { id: E.id, lengthOfStay: duration in days of E.EffectiveTime } 
 		sort by lengthOfStay desc
 
 // Combine
@@ -352,13 +609,15 @@ let Transfusions = [Procedure, Performance: "Blood transfusion"] P where year of
 
 // Simple Example:
 
-using QUICK
+library CMS153
 
-context PATIENT
+using QUICK
 
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
+
+context PATIENT
 
 let InDemographic = 
 	AgeAt(start of MeasurementPeriod) >= 16
@@ -400,14 +659,16 @@ AND: "Medication, Order: Antibiotic Medications" <= 30 days(s) starts before sta
 
 // Chlamydia Screening, CQM
 
-using QUICK
+library CMS153_CQM
 
-context PATIENT
+using QUICK
 
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 ... // Additional valueset definitions omitted for brevity
+
+context PATIENT
 
 let InDemographic = 
 	AgeAt(start of MeasurementPeriod) >= 16
@@ -440,12 +701,14 @@ let InNumerator =
 
 // Chlamydia Screening, CDS
 
-using QUICK
+library CMS153_CDS
 
-context PATIENT
+using QUICK
 
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 ... // Other valueset definitions omitted for brevity
+
+context PATIENT
 
 let InDemographic = 
 	Age() >= 16 and Age() < 24 and Gender in "Female Administrative Sex"
@@ -474,12 +737,14 @@ let NeedScreening = InDemographic and SexuallyActive and NoScreening
 
 // Chlamydia Screening, Common
 
-using QUICK
+library CMS153_Common
 
-context PATIENT
+using QUICK
 
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 ... // Other valueset definitions omitted for brevity
+
+context PATIENT
 
 let ConditionsIndicatingSexualActivity =
     union(
@@ -504,15 +769,23 @@ let ResultsIndicatingSexualActivity =
 let ResultsPresentForChlamydiaScreening = 
     [ObservationResult: "Chlamydia Screening"] R where R.result is not null
 
+not exists ([Condition])
+
+X in "Acute Pharyngitis"
+
 // Chlamydia Screening, CQM, Using Common
+
+library CMS153_CQM version '2'
 
 using QUICK
 
-context PATIENT
-
-include 'ChlamydiaScreening_Common.cql' version '1' as Common
+include CMS153_Common version '2' as Common
 
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+
+parameter MeasurementPeriod : interval<Datetime>
+
+context PATIENT
 
 let InDemographic =
     AgeAt(start of MeasurementPeriod) >= 16
@@ -536,13 +809,15 @@ let InNumerator =
 
 // Chlamydia Screening, CDS, Using Common
 
+library CMS153_CDS
+
 using QUICK
 
-context PATIENT
-
-include ChlamydiaScreening_Common as Common
+include CMS153_Common as Common
 
 valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
+
+context PATIENT
 
 let InDemographic =
     Age() >= 16 and Age() < 24 and Gender in Common."Female Administrative Sex"
@@ -557,4 +832,21 @@ let NoScreening =
     and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
+
+let TargetEncounters =
+	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+		with [Condition: "Acute Pharyngitis"] P 
+			where not P.effectiveTime overlaps after E.performanceTime
+
+let TargetEncounters =
+	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+		where exists ([Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime)
+
+let TargetEncounters =
+	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+		without [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime
+
+let TargetEncounters =
+	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+		where not exists ([Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime)
 
