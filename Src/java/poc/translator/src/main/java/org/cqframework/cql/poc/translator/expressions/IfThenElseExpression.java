@@ -38,4 +38,18 @@ public class IfThenElseExpression extends Expression{
     public void setThen(Expression _then) {
         this._then = _then;
     }
+
+    @Override
+    public String toCql() {
+        StringBuffer buff = new StringBuffer();
+        buff.append("if ");
+        buff.append(_if.toCql());
+        buff.append(" then \n");
+        buff.append(_then.toCql());
+        buff.append("\n");
+        buff.append("else \n");
+        buff.append(_else);
+        buff.append("\n");
+        return buff.toString();
+    }
 }

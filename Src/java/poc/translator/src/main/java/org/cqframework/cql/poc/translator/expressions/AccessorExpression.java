@@ -38,4 +38,9 @@ public class AccessorExpression extends Expression {
     public void setValuesetAccessor(boolean valuesetAccessor) {
         this.valuesetAccessor = valuesetAccessor;
     }
+
+    @Override
+    public String toCql() {
+        return expression.toCql() +"."+identifier;
+    }
 }

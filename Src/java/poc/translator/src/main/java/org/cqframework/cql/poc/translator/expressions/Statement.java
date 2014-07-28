@@ -3,5 +3,5 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class Statement extends Expression {
+public abstract class Statement extends Expression {
 }

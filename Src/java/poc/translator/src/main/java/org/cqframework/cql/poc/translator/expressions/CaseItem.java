@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class CaseItem {
+public class CaseItem extends Expression{
 
     Expression when;
     Expression then;
@@ -27,5 +27,10 @@ public class CaseItem {
 
     public void setThen(Expression then) {
         this.then = then;
+    }
+
+    @Override
+    public String toCql() {
+        return "when "+when.toCql() +" then " +then.toCql();
     }
 }

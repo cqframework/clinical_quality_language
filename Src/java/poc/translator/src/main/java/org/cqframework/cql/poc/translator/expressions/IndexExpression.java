@@ -28,4 +28,9 @@ public class IndexExpression extends Expression{
     public void setProperty(Expression property) {
         this.property = property;
     }
+
+    @Override
+    public String toCql() {
+        return indexable.toCql()+"["+property.toCql()+"]";
+    }
 }

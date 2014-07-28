@@ -28,4 +28,9 @@ public class IntervalSelector extends Expression {
     public void setHigh(Expression high) {
         this.high = high;
     }
+
+    @Override
+    public String toCql() {
+        return "<"+low.toCql()+","+high.toCql()+">";
+    }
 }

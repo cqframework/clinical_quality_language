@@ -19,4 +19,8 @@ public class IdentifierExpression extends Expression{
         this.identifier = identifier;
     }
 
+    @Override
+    public String toCql() {
+        return identifier;
+    }
 }

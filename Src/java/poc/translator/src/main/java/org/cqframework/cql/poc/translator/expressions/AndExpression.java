@@ -29,4 +29,20 @@ public class AndExpression extends Expression {
         this.right = right;
     }
 
+    @Override
+    public String toCql() {
+        StringBuffer buff = new StringBuffer();
+        if(left instanceof  OrExpression){
+            buff.append("(");
+            buff.append(left.toCql());
+            buff.append(")");
+        }else{buff.append(left.toCql());}
+        buff.append(" and ");
+        if(right instanceof  OrExpression){
+           buff.append("(");
+           buff.append(right.toCql());
+           buff.append(")");
+        }else{buff.append(right.toCql());}
+        return buff.toString();
+    }
 }

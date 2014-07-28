@@ -38,4 +38,19 @@ public class QualifiedIdentifier extends  Expression{
     public void setValuesetIdentifier(boolean valuesetIdentifier) {
         this.valuesetIdentifier = valuesetIdentifier;
     }
+
+    @Override
+    public String toCql() {
+        StringBuffer buff = new StringBuffer();
+        if(qualifier != null){
+            buff.append(qualifier);
+            buff.append(".");
+        }
+        if(isValuesetIdentifier()){
+            buff.append("\""+identifier+"\"");
+        }else{
+            buff.append(identifier);
+        }
+        return buff.toString();
+    }
 }

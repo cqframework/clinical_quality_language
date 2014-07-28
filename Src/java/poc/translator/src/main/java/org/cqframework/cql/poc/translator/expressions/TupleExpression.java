@@ -21,4 +21,9 @@ public class TupleExpression extends Expression{
     public void setValues(Map<String, Expression> values) {
         this.values = values;
     }
+
+    @Override
+    public String toCql() {
+        return null;
+    }
 }

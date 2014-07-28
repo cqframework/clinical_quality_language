@@ -38,4 +38,28 @@ public class OrExpression extends Expression{
     public void setXor(boolean xor) {
         this.xor = xor;
     }
+
+    public String conjuntionString(){
+        return isXor()? "xor" : "or";
+    }
+    @Override
+    public String toCql() {
+        StringBuffer buff = new StringBuffer();
+        if((left instanceof  OrExpression && ((OrExpression) left).isXor() != isXor()) ||
+            left instanceof AndExpression){
+            buff.append("(");
+            buff.append(left.toCql());
+            buff.append(")");
+        }else{buff.append(left.toCql());}
+        buff.append(" ");
+        buff.append(conjuntionString());
+        buff.append(" ");
+        if((right instanceof  OrExpression && ((OrExpression) right).isXor() != isXor()) ||
+                right instanceof AndExpression){
+            buff.append("(");
+            buff.append(right.toCql());
+            buff.append(")");
+        }else{buff.append(right.toCql());}
+        return buff.toString();
+    }
 }

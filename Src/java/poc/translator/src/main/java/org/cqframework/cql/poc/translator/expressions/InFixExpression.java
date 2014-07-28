@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class InFixExpression {
+public class InFixExpression extends Expression{
 
     public enum Operator{
         union,
@@ -42,5 +42,10 @@ public class InFixExpression {
 
     public void setOperator(Operator operator) {
         this.operator = operator;
+    }
+
+    @Override
+    public String toCql() {
+        return "("+left.toCql()+" "+operator.name()+" "+right.toCql()+")";
     }
 }

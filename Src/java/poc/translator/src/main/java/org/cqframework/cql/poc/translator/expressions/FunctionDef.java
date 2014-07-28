@@ -1,5 +1,6 @@
 package org.cqframework.cql.poc.translator.expressions;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -39,5 +40,28 @@ public class FunctionDef extends Expression{
 
     public void setReturn(Expression _return) {
         this._return = _return;
+    }
+
+    @Override
+    public String toCql() {
+        StringBuffer buff = new StringBuffer();
+        buff.append("define function ");
+        buff.append(identifier);
+        buff.append("(");
+        for(Iterator<OperandDefinition> i = arguments.iterator(); i.hasNext(); ) {
+            OperandDefinition op  = i.next();
+            buff.append(op.toCql());
+            if(i.hasNext()){
+                buff.append(",");
+
+            }
+        }
+
+        buff.append(") {\n");
+        buff.append("return (");
+        buff.append(_return.toCql());
+        buff.append(")");
+        buff.append("}\n");
+        return "";
     }
 }

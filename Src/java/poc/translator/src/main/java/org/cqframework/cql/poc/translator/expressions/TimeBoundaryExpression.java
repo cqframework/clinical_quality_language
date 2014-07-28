@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class TimeBoundaryExpression {
+public class TimeBoundaryExpression extends  Expression{
 
     public enum Boundary{
         start,
@@ -34,5 +34,8 @@ public class TimeBoundaryExpression {
         this.boundary = boundary;
     }
 
-
+    @Override
+    public String toCql() {
+        return boundary.name() +" of "+expression.toCql();
+    }
 }

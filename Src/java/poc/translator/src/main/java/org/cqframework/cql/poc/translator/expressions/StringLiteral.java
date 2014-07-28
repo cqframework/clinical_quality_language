@@ -19,5 +19,8 @@ public class StringLiteral extends Expression{
         this.value = value;
     }
 
-
+    @Override
+    public String toCql() {
+        return "'"+value+"'";
+    }
 }

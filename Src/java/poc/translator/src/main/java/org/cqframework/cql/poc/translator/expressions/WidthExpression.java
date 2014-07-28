@@ -18,4 +18,9 @@ public class WidthExpression extends Expression {
     public void setExpression(Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public String toCql() {
+        return "width of "+expression.toCql();
+    }
 }

@@ -61,4 +61,32 @@ public class QueryExpression extends Expression{
     public void setSortClause(SortClause sortClause) {
         this.sortClause = sortClause;
     }
+
+    @Override
+    public String toCql() {
+
+        StringBuffer buff = new StringBuffer();
+        buff.append(aliaseQuerySource.toCql());
+        if(queryInclusionClauseExpressions != null){
+            for (QueryInclusionClauseExpression queryInclusionClauseExpression : queryInclusionClauseExpressions) {
+                buff.append(queryInclusionClauseExpression.toCql());
+                buff.append("\n");
+            }
+        }
+        if(whereClauseExpression !=null){
+            buff.append(" where ");
+            buff.append(whereClauseExpression.toCql());
+            buff.append("\n");
+        }
+        if(returnClause != null){
+            buff.append(" return ");
+            buff.append(returnClause.toCql());
+            buff.append("\n");
+        }
+        if(sortClause !=null){
+            buff.append("sort ");
+            buff.append(sortClause.toCql());
+        }
+        return buff.toString();
+    }
 }

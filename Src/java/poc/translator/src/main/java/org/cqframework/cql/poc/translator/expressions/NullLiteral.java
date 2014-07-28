@@ -11,4 +11,9 @@ public class NullLiteral extends Expression{
     public Object getValue(){
         return null;
     }
+
+    @Override
+    public String toCql() {
+        return "null";
+    }
 }

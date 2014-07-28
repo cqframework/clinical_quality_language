@@ -35,4 +35,20 @@ public class SortClause extends Expression{
     public void setSortItems(List<SortItem> sortItems) {
         this.sortItems = sortItems;
     }
+
+    @Override
+    public String toCql() {
+        StringBuffer buff = new StringBuffer();
+        if(direction !=null){
+            buff.append(direction.name());
+        }else{
+            for (SortItem sortItem : sortItems) {
+                buff.append("by ");
+                buff.append(sortItem.toCql());
+
+            }
+        }
+
+        return buff.toString();
+    }
 }

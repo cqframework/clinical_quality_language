@@ -28,4 +28,9 @@ public class LetStatement extends Statement{
     public void setExpression(Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public String toCql() {
+        return "let "+identifier+" = "+expression.toCql();
+    }
 }

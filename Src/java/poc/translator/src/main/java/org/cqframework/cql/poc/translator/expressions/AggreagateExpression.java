@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class AggreagateExpression {
+public class AggreagateExpression extends Expression{
 
     public enum Aggragator {
         distinct,
@@ -33,5 +33,10 @@ public class AggreagateExpression {
 
     public void setAggragator(Aggragator aggragator) {
         this.aggragator = aggragator;
+    }
+
+    @Override
+    public String toCql() {
+        return aggragator.name() +"("+expression.toCql()+")";
     }
 }

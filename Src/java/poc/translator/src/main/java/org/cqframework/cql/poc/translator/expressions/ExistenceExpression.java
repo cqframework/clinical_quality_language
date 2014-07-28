@@ -28,4 +28,10 @@ public class ExistenceExpression extends Expression{
     public void setExpression(Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public String toCql() {
+        String ex = negated? "not" : "exists";
+        return ex + " "+expression.toCql();
+    }
 }

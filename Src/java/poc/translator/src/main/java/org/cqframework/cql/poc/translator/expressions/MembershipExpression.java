@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class MembershipExpression {
+public class MembershipExpression extends Expression{
 
     public enum Membership{
         in,
@@ -42,5 +42,10 @@ public class MembershipExpression {
 
     public void setMembership(Membership membership) {
         this.membership = membership;
+    }
+
+    @Override
+    public String toCql() {
+        return "("+left.toCql()+ " " +membership.name()+" "+right.toCql()+" )";
     }
 }

@@ -28,4 +28,9 @@ public class SortItem extends Expression{
     public void setIdentifier(QualifiedIdentifier identifier) {
         this.identifier = identifier;
     }
+
+    @Override
+    public String toCql() {
+        return identifier.toCql()+ " "+direction.name();
+    }
 }

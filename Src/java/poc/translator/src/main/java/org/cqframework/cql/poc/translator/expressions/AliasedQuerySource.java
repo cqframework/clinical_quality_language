@@ -28,4 +28,9 @@ public class AliasedQuerySource extends Expression{
     public void setAlias(String alias) {
         this.alias = alias;
     }
+
+    @Override
+    public String toCql() {
+        return querySource.toCql()+ " " +alias;
+    }
 }

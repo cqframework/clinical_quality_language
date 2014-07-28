@@ -119,4 +119,9 @@ public class TimingExpression extends Expression{
     public void setProperly(boolean properly) {
         this.properly = properly;
     }
+
+    @Override
+    public String toCql() {
+        return null;
+    }
 }

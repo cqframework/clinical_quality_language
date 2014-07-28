@@ -48,4 +48,19 @@ public class RangeExpression extends Expression{
     public void setProperly(boolean properly) {
         this.properly = properly;
     }
+
+    @Override
+    public String toCql() {
+        StringBuffer buff = new StringBuffer();
+        buff.append(value.toCql());
+        if(properly){
+            buff.append(" properly ");
+        }
+        buff.append(" between ");
+        buff.append(left.toCql());
+        buff.append(" and ");
+        buff.append(right.toCql());
+
+        return buff.toString();
+    }
 }

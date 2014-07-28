@@ -67,4 +67,8 @@ public class ArithmaticExpression extends Expression{
     public void setOp(Operator op) {
         this.op = op;
     }
+
+    public String toCql(){
+        return "("+left.toCql()+" "+op.symbol+" "+right.toCql()+")";
+    }
 }

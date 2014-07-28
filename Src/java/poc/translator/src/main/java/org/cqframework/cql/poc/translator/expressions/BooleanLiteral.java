@@ -21,5 +21,8 @@ public class BooleanLiteral extends Expression {
         return value;
     }
 
-
+    @Override
+    public String toCql() {
+        return Boolean.toString(value);
+    }
 }

@@ -3,11 +3,11 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class PredecessorExpression extends Expression {
+public class SuccessorExpression extends Expression {
 
     Expression expression;
 
-    public PredecessorExpression(Expression expression) {
+    public SuccessorExpression(Expression expression) {
         this.expression = expression;
     }
 
@@ -21,6 +21,6 @@ public class PredecessorExpression extends Expression {
 
     @Override
     public String toCql() {
-        return "predecessor of "+expression.toCql();
+        return "successor of "+expression.toCql();
     }
 }

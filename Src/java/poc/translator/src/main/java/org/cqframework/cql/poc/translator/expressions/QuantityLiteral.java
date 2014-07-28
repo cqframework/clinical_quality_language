@@ -33,4 +33,9 @@ public class QuantityLiteral extends Expression{
     public void setQuantity(Number quantity) {
         this.quantity = quantity;
     }
+
+    @Override
+    public String toCql() {
+        return (unit==null)? quantity.toString() : unit.toString()+" "+unit;
+    }
 }
