@@ -1,18 +1,43 @@
 package org.cqframework.cql.poc.translator;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.expressions.*;
+import org.cqframework.cql.poc.translator.model.CqlLibrary;
+import org.cqframework.cql.poc.translator.model.DataRetrieve;
+import org.cqframework.cql.poc.translator.model.ValueSet;
+import org.cqframework.cql.poc.translator.model.logger.TrackBack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by bobd on 7/24/14.
- */
 public class CqlTranslatorVisitor extends cqlBaseVisitor {
+
+    private final CqlLibrary library = new CqlLibrary();
+
+    public CqlLibrary getLibrary() {
+        return library;
+    }
+
+    @Override
+    public Object visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
+        library.setLibrary(nullOrText(ctx.IDENTIFIER()));
+        library.setVersion(nullOrText(ctx.STRING()));
+
+        return library;
+    }
+
+    @Override
+    public Object visitValuesetDefinitionByConstructor(@NotNull cqlParser.ValuesetDefinitionByConstructorContext ctx) {
+        ValueSet vs = new ValueSet(ctx.VALUESET(1).getText(), ctx.VALUESET(0).getText());
+        vs.addTrackBack(createTrackBack(ctx));
+        library.addValueSet(vs);
+
+        return vs;
+    }
 
     @Override
     public Object visitLetStatement(@NotNull cqlParser.LetStatementContext ctx) {
@@ -59,8 +84,8 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitMultiplicationExpressionTerm(@NotNull cqlParser.MultiplicationExpressionTermContext ctx) {
         return new ArithmaticExpression((Expression)this.visit(ctx.expressionTerm(0)),
-                                         ArithmaticExpression.Operator.bySymbol(ctx.getChild(1).getText()),
-                                          (Expression)this.visit(ctx.expressionTerm(1)));
+                ArithmaticExpression.Operator.bySymbol(ctx.getChild(1).getText()),
+                (Expression)this.visit(ctx.expressionTerm(1)));
     }
 
     @Override
@@ -166,13 +191,23 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
             right = new BooleanLiteral(lastChild);
         }
         comp = (nextToLast.equals("not")) ? ComparisionExpression.Comparator.bySymbol("<>") :
-                                            ComparisionExpression.Comparator.bySymbol("=");
+                ComparisionExpression.Comparator.bySymbol("=");
 
         return new ComparisionExpression(left,comp,right);
     }
 
     @Override
     public Object visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
+        // TODO: Use RetrieveExpression instead?
+        DataRetrieve dr = new DataRetrieve(
+                extractExistence(ctx.existenceModifier()),
+                nullOrText(ctx.topic()),
+                nullOrText(ctx.modality()),
+                nullOrText(ctx.valueset())
+        );
+        dr.addTrackBack(createTrackBack(ctx));
+        library.addDataRetrieve(dr);
+
         RetrieveExpression.ExModifier existenceModifier = null;
         if(ctx.existenceModifier() != null){
             existenceModifier = RetrieveExpression.ExModifier.valueOf(ctx.existenceModifier().getText());
@@ -244,18 +279,18 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
-       AliasedQuerySource aqs = (AliasedQuerySource)visit(ctx.aliasedQuerySource());
-       List<QueryInclusionClauseExpression> qicx = new ArrayList<>();
-       if(ctx.queryInclusionClause()!=null){
-           for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
-               qicx.add((QueryInclusionClauseExpression)visit(queryInclusionClauseContext));
-           }
-       }
-       Expression where = ctx.whereClause() != null ? (Expression)visit(ctx.whereClause()) : null;
-       Expression ret = ctx.returnClause() != null ? (Expression)visit(ctx.returnClause()) : null;
-       SortClause sort = ctx.sortClause() != null ? (SortClause)visit(ctx.sortClause()) : null;
+        AliasedQuerySource aqs = (AliasedQuerySource)visit(ctx.aliasedQuerySource());
+        List<QueryInclusionClauseExpression> qicx = new ArrayList<>();
+        if(ctx.queryInclusionClause()!=null){
+            for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
+                qicx.add((QueryInclusionClauseExpression)visit(queryInclusionClauseContext));
+            }
+        }
+        Expression where = ctx.whereClause() != null ? (Expression)visit(ctx.whereClause()) : null;
+        Expression ret = ctx.returnClause() != null ? (Expression)visit(ctx.returnClause()) : null;
+        SortClause sort = ctx.sortClause() != null ? (SortClause)visit(ctx.sortClause()) : null;
 
-       return new QueryExpression(aqs,qicx,where,ret,sort);
+        return new QueryExpression(aqs,qicx,where,ret,sort);
     }
 
 
@@ -279,10 +314,41 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         List<OperandDefinition> operands = new ArrayList<>();
         if(ctx.operandDefinition() !=null){
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                 operands.add(new OperandDefinition(opdef.IDENTIFIER().getText(),opdef.typeSpecifier().getText()));
+                operands.add(new OperandDefinition(opdef.IDENTIFIER().getText(),opdef.typeSpecifier().getText()));
             }
         }
 
         return new FunctionDef(ident,operands,_resturn);
+    }
+
+    private String nullOrText(ParseTree pt) {
+        return pt == null ? null : pt.getText();
+    }
+
+    private DataRetrieve.Existence extractExistence(cqlParser.ExistenceModifierContext ctx) {
+        DataRetrieve.Existence existence = DataRetrieve.Existence.Occurrence;
+        if (ctx != null && ctx.getText().equals("no")) {
+            existence = DataRetrieve.Existence.NonOccurrence;
+        } else if (ctx != null && ctx.getText().equals("unknown")) {
+            existence = DataRetrieve.Existence.UnknownOccurrence;
+        }
+
+        return existence;
+    }
+
+    private TrackBack createTrackBack(ParserRuleContext ctx) {
+        String lib = library.getLibrary();
+        if (lib == null) {
+            lib = "unknown"; // TODO: use filename instead?
+        }
+
+        return new TrackBack(
+                lib,
+                library.getVersion(),
+                ctx.getStart().getLine(),
+                ctx.getStart().getCharPositionInLine(),
+                ctx.getStop().getLine(),
+                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1
+        );
     }
 }

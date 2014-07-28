@@ -1,7 +1,5 @@
 package org.cqframework.cql.poc.translator.expressions;
 
-import org.cqframework.cql.poc.translator.Context;
-
 /**
  * Created by bobd on 7/23/14.
  */
