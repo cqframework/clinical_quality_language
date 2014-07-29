@@ -201,22 +201,20 @@ qualifiedIdentifier
     ;
 
 expression
-    : expressionTerm                                                     # termExpression
-    | retrieve                                                           # retrieveExpression
-    | query                                                              # queryExpression
-    | expression 'is' 'not'? ( 'null' | 'true' | 'false' )               # booleanExpression
-    | expression ('is' | 'as') typeSpecifier                             # typeExpression
-    | ('not' | 'exists') expression                                      # existenceExpression
-    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm
-                                                                         # rangeExpression
-    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm
-                                                                         # timeRangeExpression
-    | expression ('<=' | '<' | '>' | '>=') expression                    # inequalityExpression
-    | expression intervalOperatorPhrase expression                       # timingExpression
-    | expression ('=' | '<>') expression                                 # equalityExpression
-    | expression ('in' | 'contains' | 'like') expression                 # membershipExpression
-    | expression 'and' expression                                        # andExpression
-    | expression ('or' | 'xor') expression                               # orExpression
+    : expressionTerm                                                         # termExpression
+    | retrieve                                                               # retrieveExpression
+    | query                                                                  # queryExpression
+    | expression 'is' 'not'? ( 'null' | 'true' | 'false' )                   # booleanExpression
+    | expression ('is' | 'as') typeSpecifier                                 # typeExpression
+    | ('not' | 'exists') expression                                          # existenceExpression
+    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm   # rangeExpression
+    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm  # timeRangeExpression
+    | expression ('<=' | '<' | '>' | '>=') expression                        # inequalityExpression
+    | expression intervalOperatorPhrase expression                           # timingExpression
+    | expression ('=' | '<>') expression                                     # equalityExpression
+    | expression ('in' | 'contains' | 'like') expression                     # membershipExpression
+    | expression 'and' expression                                            # andExpression
+    | expression ('or' | 'xor') expression                                   # orExpression
     ;
 
 dateTimePrecision
