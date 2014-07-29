@@ -7,7 +7,7 @@ import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.expressions.*;
 import org.cqframework.cql.poc.translator.model.CqlLibrary;
-import org.cqframework.cql.poc.translator.model.DataRetrieve;
+import org.cqframework.cql.poc.translator.model.SourceDataCriteria;
 import org.cqframework.cql.poc.translator.model.ValueSet;
 import org.cqframework.cql.poc.translator.model.logger.TrackBack;
 
@@ -198,15 +198,14 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
-        // TODO: Use RetrieveExpression instead?
-        DataRetrieve dr = new DataRetrieve(
+        SourceDataCriteria dr = new SourceDataCriteria(
                 extractExistence(ctx.existenceModifier()),
                 nullOrText(ctx.topic()),
                 nullOrText(ctx.modality()),
                 nullOrText(ctx.valueset())
         );
         dr.addTrackBack(createTrackBack(ctx));
-        library.addDataRetrieve(dr);
+        library.addSourceDataCriteria(dr);
 
         RetrieveExpression.ExModifier existenceModifier = null;
         if(ctx.existenceModifier() != null){
@@ -325,12 +324,12 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         return pt == null ? null : pt.getText();
     }
 
-    private DataRetrieve.Existence extractExistence(cqlParser.ExistenceModifierContext ctx) {
-        DataRetrieve.Existence existence = DataRetrieve.Existence.Occurrence;
+    private SourceDataCriteria.Existence extractExistence(cqlParser.ExistenceModifierContext ctx) {
+        SourceDataCriteria.Existence existence = SourceDataCriteria.Existence.Occurrence;
         if (ctx != null && ctx.getText().equals("no")) {
-            existence = DataRetrieve.Existence.NonOccurrence;
+            existence = SourceDataCriteria.Existence.NonOccurrence;
         } else if (ctx != null && ctx.getText().equals("unknown")) {
-            existence = DataRetrieve.Existence.UnknownOccurrence;
+            existence = SourceDataCriteria.Existence.UnknownOccurrence;
         }
 
         return existence;

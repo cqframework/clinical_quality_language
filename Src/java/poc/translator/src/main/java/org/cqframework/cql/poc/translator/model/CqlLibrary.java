@@ -9,12 +9,12 @@ public class CqlLibrary {
     private String library;
     private String version;
 
-    private final HashMap<Integer, DataRetrieve> dataRetrievesByHash;
+    private final HashMap<Integer, SourceDataCriteria> dataCriteriaByHash;
     private final HashMap<Integer, ValueSet> valueSetsByHash;
     private final HashMap<String, ValueSet> valueSetsByLocalIdentifier;
 
     public CqlLibrary() {
-        dataRetrievesByHash = new HashMap<>();
+        dataCriteriaByHash = new HashMap<>();
         valueSetsByHash = new HashMap<>();
         valueSetsByLocalIdentifier = new HashMap<>();
     }
@@ -35,16 +35,16 @@ public class CqlLibrary {
         this.version = version;
     }
 
-    public Collection<DataRetrieve> getDataRetrieves() {
-        return dataRetrievesByHash.values();
+    public Collection<SourceDataCriteria> getSourceDataCriteria() {
+        return dataCriteriaByHash.values();
     }
 
-    public DataRetrieve addDataRetrieve(DataRetrieve dataRetrieve) {
-        DataRetrieve existing = dataRetrievesByHash.get(dataRetrieve.hashCode());
+    public SourceDataCriteria addSourceDataCriteria(SourceDataCriteria sourceDataCriteria) {
+        SourceDataCriteria existing = dataCriteriaByHash.get(sourceDataCriteria.hashCode());
         if (existing != null) {
-            existing.merge(dataRetrieve);
+            existing.merge(sourceDataCriteria);
         } else {
-            existing = dataRetrievesByHash.put(dataRetrieve.hashCode(), dataRetrieve);
+            existing = dataCriteriaByHash.put(sourceDataCriteria.hashCode(), sourceDataCriteria);
         }
 
         return existing;
@@ -78,8 +78,8 @@ public class CqlLibrary {
         final StringBuilder sb = new StringBuilder("CqlLibrary{");
         sb.append("\n  library='").append(library).append('\'');
         sb.append("\n  version='").append(version).append('\'');
-        sb.append("\n  dataRetrieves={");
-        for (DataRetrieve dr : getDataRetrieves()) {
+        sb.append("\n  sourceDataCriteria={");
+        for (SourceDataCriteria dr : getSourceDataCriteria()) {
             sb.append("\n    ").append(dr);
             for (TrackBack tb : dr.getTrackbacks()) {
                 sb.append("\n      --> ").append(tb.toString());

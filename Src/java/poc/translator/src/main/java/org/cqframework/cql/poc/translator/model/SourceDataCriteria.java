@@ -2,7 +2,7 @@ package org.cqframework.cql.poc.translator.model;
 
 import org.cqframework.cql.poc.translator.model.logger.Trackable;
 
-public class DataRetrieve extends Trackable {
+public class SourceDataCriteria extends Trackable {
     public static enum Existence { Occurrence, NonOccurrence, UnknownOccurrence }
 
     private final Existence existence;
@@ -10,10 +10,8 @@ public class DataRetrieve extends Trackable {
     private final String modality;
     // TODO: capture valuesetPathIdentifier
     private final String valueset;
-    // TODO: capture embedded during phrase
 
-
-    public DataRetrieve(Existence existence, String topic, String modality, String valueset) {
+    public SourceDataCriteria(Existence existence, String topic, String modality, String valueset) {
         super();
 
         this.existence = existence;
@@ -43,7 +41,7 @@ public class DataRetrieve extends Trackable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DataRetrieve that = (DataRetrieve) o;
+        SourceDataCriteria that = (SourceDataCriteria) o;
 
         if (existence != that.existence) return false;
         if (modality != null ? !modality.equals(that.modality) : that.modality != null) return false;
