@@ -1,8 +1,5 @@
 package org.cqframework.cql.poc.translator.expressions;
 
-/**
- * Created by bobd on 7/23/14.
- */
 public class IdentifierExpression extends Expression{
 
     String identifier;
@@ -19,4 +16,20 @@ public class IdentifierExpression extends Expression{
         this.identifier = identifier;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return o != null && o instanceof IdentifierExpression && identifier.equals(((IdentifierExpression) o).getIdentifier());
+    }
+
+    @Override
+    public int hashCode() {
+        return identifier.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "IdentifierExpression{" +
+                "identifier='" + identifier + '\'' +
+                '}';
+    }
 }

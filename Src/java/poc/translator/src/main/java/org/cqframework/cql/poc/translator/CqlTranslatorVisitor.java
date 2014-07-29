@@ -24,15 +24,15 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
-        library.setLibrary(nullOrText(ctx.IDENTIFIER()));
-        library.setVersion(nullOrText(ctx.STRING()));
+        library.setLibrary(nullOrString(ctx.IDENTIFIER()));
+        library.setVersion(nullOrString(ctx.STRING()));
 
         return library;
     }
 
     @Override
     public Object visitValuesetDefinitionByConstructor(@NotNull cqlParser.ValuesetDefinitionByConstructorContext ctx) {
-        ValueSet vs = new ValueSet(ctx.VALUESET(1).getText(), ctx.VALUESET(0).getText());
+        ValueSet vs = new ValueSet(ctx.STRING().getText(), ctx.VALUESET().getText());
         vs.addTrackBack(createTrackBack(ctx));
         library.addValueSet(vs);
 
@@ -200,9 +200,9 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     public Object visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
         SourceDataCriteria dr = new SourceDataCriteria(
                 extractExistence(ctx.existenceModifier()),
-                nullOrText(ctx.topic()),
-                nullOrText(ctx.modality()),
-                nullOrText(ctx.valueset())
+                nullOrQualifiedIdentifierExpression(ctx.topic()),
+                nullOrIdentifierExpression(ctx.modality()),
+                nullOrQualifiedIdentifierExpression(ctx.valueset())
         );
         dr.addTrackBack(createTrackBack(ctx));
         library.addSourceDataCriteria(dr);
@@ -320,8 +320,16 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         return new FunctionDef(ident,operands,_resturn);
     }
 
-    private String nullOrText(ParseTree pt) {
+    private String nullOrString(ParseTree pt) {
         return pt == null ? null : pt.getText();
+    }
+
+    private IdentifierExpression nullOrIdentifierExpression(ParseTree pt) {
+        return pt == null ? null : (IdentifierExpression) visit(pt);
+    }
+
+    private QualifiedIdentifier nullOrQualifiedIdentifierExpression(ParseTree pt) {
+        return pt == null ? null : (QualifiedIdentifier) visit(pt);
     }
 
     private SourceDataCriteria.Existence extractExistence(cqlParser.ExistenceModifierContext ctx) {
