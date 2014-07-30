@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.expressions.*;
+import org.cqframework.cql.poc.translator.model.logger.Trackable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.testng.annotations.Test;
@@ -14,9 +15,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class TranslatorTest {
     @Test
@@ -38,9 +37,12 @@ public class TranslatorTest {
         try{
             ParseTree tree = parseData("let b = true");
             LetStatement let = (LetStatement)visitor.visit(tree);
+            assertTrackable(let);
             assertEquals(let.getIdentifier(),"b");
             assertTrue(let.getExpression() instanceof BooleanLiteral, "Should be boolean literal");
             assertTrue(((BooleanLiteral) let.getExpression()).getValue(), "Value should be true");
+
+            assertTrackable(let.getExpression());
 
             tree = parseData("let b = false");
             let = (LetStatement)visitor.visit(tree);
@@ -63,6 +65,8 @@ public class TranslatorTest {
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
             assertTrue(let.getExpression() instanceof StringLiteral, "Should be a string literal");
             assertEquals(((StringLiteral) let.getExpression()).getValue(), "hey its a string", "Value for string literal should be match (hey its a string)");
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
 
         }catch(Exception e) {
             throw e;
@@ -77,6 +81,9 @@ public class TranslatorTest {
             LetStatement let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
             assertTrue(let.getExpression() instanceof NullLiteral, "Should be a null literal");
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
+
         }catch(Exception e) {
             throw e;
         }
@@ -117,6 +124,8 @@ public class TranslatorTest {
             lit = (QuantityLiteral)let.getExpression();
             assertEquals(lit.getUnit(),"weeks", "Units should match expected weeks");
             assertEquals(lit.getQuantity(),1.1);
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
 
         }catch(Exception e) {
             throw e;
@@ -136,6 +145,11 @@ public class TranslatorTest {
             assertTrue(and.getRight() instanceof BooleanLiteral, "Right hand should be Boolean literal but was a "+and.getLeft());
             assertTrue(((BooleanLiteral) and.getLeft()).getValue(),"Boolean value of left hand side should be true but was "+((BooleanLiteral) and.getLeft()).getValue());
             assertFalse(((BooleanLiteral) and.getRight()).getValue(), "Boolean value of right hand side should be false but was " + ((BooleanLiteral) and.getRight()).getValue());
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
+            assertTrackable(and);
+            assertTrackable(and.getLeft());
+            assertTrackable(and.getRight());
 
         }catch(Exception e) {
             throw e;
@@ -163,6 +177,13 @@ public class TranslatorTest {
             assertTrue(let.getExpression() instanceof OrExpression, "Should be an OrExpression but was a "+let.getExpression());
             or = (OrExpression)let.getExpression();
             assertTrue(or.isXor(), "Or expressions should be an oxr but was not");
+
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
+            assertTrackable(or);
+            assertTrackable(or.getLeft());
+            assertTrackable(or.getRight());
+
         }catch(Exception e) {
             throw e;
         }
@@ -177,6 +198,12 @@ public class TranslatorTest {
                 LetStatement let = (LetStatement)visitor.visit(tree);
                 assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
                 assertTrue(let.getExpression() instanceof ComparisonExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
+                ComparisonExpression comp = (ComparisonExpression)let.getExpression();
+                assertTrackable(let);
+                assertTrackable(let.getExpression());
+                assertTrackable(comp);
+                assertTrackable(comp.getLeft());
+                assertTrackable(comp.getRight());
             }
 
         }catch(Exception e) {
@@ -236,6 +263,12 @@ public class TranslatorTest {
             assertTrue(((BooleanLiteral) comp.getRight()).getValue(),"Value for boolean literal should be true");
             assertTrue(comp.getComp().equals(ComparisonExpression.Comparator.EQ), "Comparator should be = but was "+ comp.getComp());
 
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
+            assertTrackable(comp);
+            assertTrackable(comp.getLeft());
+            assertTrackable(comp.getRight());
+
         }catch(Exception e) {
             throw e;
         }
@@ -268,6 +301,11 @@ public class TranslatorTest {
             assertEquals(ac.getIdentifier(),"valueset identifier", "Identifier should be valueset identifier but was "+ac.getIdentifier());
             assertTrue(ac.isValuesetAccessor(),"Should  be a valueset accessor but was not");
 
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
+            assertTrackable(ac);
+            assertTrackable(ac.getExpression());
+
         }catch(Exception e) {
             throw e;
         }
@@ -276,40 +314,21 @@ public class TranslatorTest {
 
     @Test
     public void testArithmaticExpressions(){
-        org.cqframework.cql.poc.translator.expressions.Context ct = new org.cqframework.cql.poc.translator.expressions.Context() {
-            @Override
-            public Object get(String key) {
-                return null;
-            }
 
-            @Override
-            public Object set(String key, Object obj) {
-                return null;
-            }
-
-            @Override
-            public Object get(Object key) {
-                return null;
-            }
-
-            @Override
-            public Object set(Object key, Object obj) {
-                return null;
-            }
-
-            @Override
-            public Callable getFunction(Object identifier) {
-                return null;
-            }
-        };
         CqlTranslatorVisitor visitor = new CqlTranslatorVisitor();
         try{
             for (ArithmaticExpression.Operator operator : ArithmaticExpression.Operator.values()) {
                 ParseTree tree = parseData("let st = 2 "+operator.symbol()+" 3 weeks");
                 LetStatement let = (LetStatement)visitor.visit(tree);
-                System.out.println(operator.name() + " "+let.evaluate(ct));
-                assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
+                assertEquals(let.getIdentifier(), "st", "let statment variable name should be st");
                 assertTrue(let.getExpression() instanceof ArithmaticExpression, "Expected expression to be of type ArithmaticExpression but was of type "+let.getExpression().getClass());
+                ArithmaticExpression ame = (ArithmaticExpression)let.getExpression();
+
+                assertTrackable(let);
+                assertTrackable(let.getExpression());
+                assertTrackable(ame);
+                assertTrackable(ame.getLeft());
+                assertTrackable(ame.getRight());
             }
 
         }catch(Exception e) {
@@ -382,6 +401,15 @@ public class TranslatorTest {
             ret = (RetrieveExpression)let.getExpression();
             assertEquals(ret.getExistenceModifier(), RetrieveExpression.ExModifier.no);
 
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
+            assertTrackable(ret);
+            assertTrackable(ret.getDuringExpression());
+            assertTrackable(ret.getDuringPathIdentifier());
+            assertTrackable(ret.getModality());
+            assertTrackable(ret.getTopic());
+            assertTrackable(ret.getValueset());
+            assertTrackable(ret.getValuesetPathIdentifier());
 
 
         }catch(Exception e) {
@@ -405,6 +433,17 @@ public class TranslatorTest {
             assertEquals("R" ,((IdentifierExpression)qe.getReturnClause()).getIdentifier());
             assertEquals("A",qe.getQueryInclusionClauseExpressions().get(0).getAliasedQuerySource().getAlias());
             assertTrue(qe.getQueryInclusionClauseExpressions().get(0).getAliasedQuerySource().getQuerySource() instanceof QualifiedIdentifier);
+
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
+            assertTrackable(qe);
+            assertTrackable(qe.getAliaseQuerySource());
+            assertTrackable(qe.getReturnClause());
+            assertTrackable(qe.getSortClause());
+            assertTrackable(qe.getWhereClauseExpression());
+            for (QueryInclusionClauseExpression queryInclusionClauseExpression : qe.getQueryInclusionClauseExpressions()) {
+                assertTrackable(queryInclusionClauseExpression);
+            }
 
         }catch(Exception e) {
             throw e;
@@ -445,6 +484,13 @@ public class TranslatorTest {
             assertTrue(meth.getParemeters().get(1) instanceof RetrieveExpression);
             assertEquals("X", ((IdentifierExpression) ((AccessorExpression) meth.getMethod()).getExpression()).getIdentifier());
             assertEquals("AgeAt", ((AccessorExpression)meth.getMethod()).getIdentifier());
+            assertTrackable(let);
+            assertTrackable(let.getExpression());
+            assertTrackable(meth);
+            assertTrackable(meth.getMethod());
+            for (Expression expression : meth.getParemeters()) {
+                assertTrackable(expression);
+            }
 
         }catch(Exception e) {
             throw e;
@@ -476,6 +522,13 @@ public class TranslatorTest {
     }
 
 
+    private void assertTrackable(Trackable t){
+        if(t == null){
+            return;
+        }
+        assertNotNull(t.getTrackbacks().get(0));
+        assertNotNull(t.getTrackerId());
+    }
 
     private Object parseFile(String fileName)throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
