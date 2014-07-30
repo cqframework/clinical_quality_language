@@ -10,6 +10,7 @@ import org.cqframework.cql.poc.translator.model.CqlLibrary;
 import org.cqframework.cql.poc.translator.model.SourceDataCriteria;
 import org.cqframework.cql.poc.translator.model.ValueSet;
 import org.cqframework.cql.poc.translator.model.logger.TrackBack;
+import org.cqframework.cql.poc.translator.model.logger.Trackable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitValuesetDefinitionByConstructor(@NotNull cqlParser.ValuesetDefinitionByConstructorContext ctx) {
         ValueSet vs = new ValueSet(ctx.STRING().getText(), ctx.VALUESET().getText());
-        vs.addTrackBack(createTrackBack(ctx));
+        track(vs, ctx);
         library.addValueSet(vs);
 
         return vs;
@@ -198,27 +199,20 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
-        SourceDataCriteria dr = new SourceDataCriteria(
+        SourceDataCriteria dataCriteria = new SourceDataCriteria(
                 extractExistence(ctx.existenceModifier()),
                 nullOrQualifiedIdentifierExpression(ctx.topic()),
                 nullOrIdentifierExpression(ctx.modality()),
+                nullOrIdentifierExpression(ctx.valuesetPathIdentifier()),
                 nullOrQualifiedIdentifierExpression(ctx.valueset())
         );
-        dr.addTrackBack(createTrackBack(ctx));
-        library.addSourceDataCriteria(dr);
+        track(dataCriteria, ctx);
+        library.addSourceDataCriteria(dataCriteria);
 
-        RetrieveExpression.ExModifier existenceModifier = null;
-        if(ctx.existenceModifier() != null){
-            existenceModifier = RetrieveExpression.ExModifier.valueOf(ctx.existenceModifier().getText());
-        }
-        QualifiedIdentifier topic = (QualifiedIdentifier)visit(ctx.topic());
-        IdentifierExpression modality = ctx.modality() != null ? (IdentifierExpression)visit(ctx.modality()) : null;
-        IdentifierExpression valuesetPathIdentifier = ctx.valuesetPathIdentifier() != null ? (IdentifierExpression)visit(ctx.valuesetPathIdentifier()): null;
-        QualifiedIdentifier valueset = ctx.valueset() != null ? (QualifiedIdentifier)visit(ctx.valueset()): null;
-        IdentifierExpression duringPathIdentifier = ctx.duringPathIdentifier() != null ? (IdentifierExpression)visit(ctx.duringPathIdentifier()):null;
-        Expression duringExpression = ctx.expression()!=null ? (Expression)visit(ctx.expression()) : null;
+        IdentifierExpression duringPathIdentifier = nullOrIdentifierExpression(ctx.duringPathIdentifier());
+        Expression duringExpression = nullOrExpression(ctx.expression());
 
-        return new RetrieveExpression(existenceModifier,topic,modality,valuesetPathIdentifier,valueset,duringPathIdentifier,duringExpression);
+        return new RetrieveExpression(dataCriteria, duringPathIdentifier,duringExpression);
     }
 
     @Override
@@ -332,6 +326,10 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         return pt == null ? null : (QualifiedIdentifier) visit(pt);
     }
 
+    private Expression nullOrExpression(ParseTree pt) {
+        return pt == null ? null : (Expression) visit(pt);
+    }
+
     private SourceDataCriteria.Existence extractExistence(cqlParser.ExistenceModifierContext ctx) {
         SourceDataCriteria.Existence existence = SourceDataCriteria.Existence.Occurrence;
         if (ctx != null && ctx.getText().equals("no")) {
@@ -343,13 +341,13 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         return existence;
     }
 
-    private TrackBack createTrackBack(ParserRuleContext ctx) {
+    private TrackBack track(Trackable trackable, ParserRuleContext ctx) {
         String lib = library.getLibrary();
         if (lib == null) {
             lib = "unknown"; // TODO: use filename instead?
         }
 
-        return new TrackBack(
+        TrackBack tb = new TrackBack(
                 lib,
                 library.getVersion(),
                 ctx.getStart().getLine(),
@@ -357,5 +355,9 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
                 ctx.getStop().getLine(),
                 ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1
         );
+
+        trackable.addTrackBack(tb);
+
+        return tb;
     }
 }
