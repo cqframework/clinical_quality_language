@@ -6,9 +6,15 @@ package org.cqframework.cql.poc.translator.expressions;
 public class NullLiteral extends Expression{
 
     public NullLiteral(){
+        super();
     }
 
     public Object getValue(){
+        return null;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
         return null;
     }
 

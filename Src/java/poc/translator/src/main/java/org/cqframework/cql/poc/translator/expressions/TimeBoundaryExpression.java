@@ -14,6 +14,7 @@ public class TimeBoundaryExpression extends  Expression{
     Boundary boundary;
 
     public TimeBoundaryExpression(Expression expression, Boundary boundary) {
+        super();
         this.expression = expression;
         this.boundary = boundary;
     }

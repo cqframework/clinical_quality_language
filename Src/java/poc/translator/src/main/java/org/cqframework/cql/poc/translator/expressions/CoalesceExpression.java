@@ -1,5 +1,8 @@
 package org.cqframework.cql.poc.translator.expressions;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,6 +14,8 @@ public class CoalesceExpression extends Expression {
     List<Expression> expressions;
 
     public CoalesceExpression(List<Expression> expressions) {
+
+        super();
         this.expressions = expressions;
     }
 
@@ -20,6 +25,22 @@ public class CoalesceExpression extends Expression {
 
     public void setExpressions(List<Expression> expressions) {
         this.expressions = expressions;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        List<Object> ret = new ArrayList<>();
+        for (Expression expression : expressions) {
+            Object o = expression.evaluate(ctx);
+            if(o != null){
+                if(o instanceof List || o instanceof Array){
+                    ret.addAll((Collection)o);
+                }else {
+                    ret.add(o);
+                }
+            }
+        }
+        return ret;
     }
 
     @Override

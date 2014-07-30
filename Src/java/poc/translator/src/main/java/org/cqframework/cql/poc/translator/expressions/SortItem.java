@@ -9,6 +9,7 @@ public class SortItem extends Expression{
     QualifiedIdentifier identifier;
 
     public SortItem(SortClause.SortDirection direction, QualifiedIdentifier identifier) {
+        super();
         this.direction = direction;
         this.identifier = identifier;
     }

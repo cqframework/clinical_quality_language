@@ -9,6 +9,7 @@ public class ExistenceExpression extends Expression{
     Expression expression ;
 
     public ExistenceExpression(boolean negated, Expression exp){
+        super();
         this.negated = negated;
         this.expression = exp;
     }
@@ -27,6 +28,12 @@ public class ExistenceExpression extends Expression{
 
     public void setExpression(Expression expression) {
         this.expression = expression;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        Object val = expression.evaluate(ctx);
+        return isNegated()? val==null: val !=null;
     }
 
     @Override

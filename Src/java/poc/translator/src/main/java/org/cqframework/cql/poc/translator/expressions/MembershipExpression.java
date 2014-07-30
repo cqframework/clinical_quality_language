@@ -15,6 +15,7 @@ public class MembershipExpression extends Expression{
     Membership membership;
 
     public MembershipExpression(Expression left, Expression right, Membership membership) {
+        super();
         this.left = left;
         this.right = right;
         this.membership = membership;

@@ -9,6 +9,7 @@ public class CaseItem extends Expression{
     Expression then;
 
     public CaseItem(Expression when, Expression then) {
+        super();
         this.when = when;
         this.then = then;
     }

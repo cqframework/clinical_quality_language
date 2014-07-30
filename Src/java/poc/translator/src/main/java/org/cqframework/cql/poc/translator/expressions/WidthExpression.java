@@ -8,6 +8,7 @@ public class WidthExpression extends Expression {
     Expression expression;
 
     public WidthExpression(Expression expression) {
+        super();
         this.expression = expression;
     }
 

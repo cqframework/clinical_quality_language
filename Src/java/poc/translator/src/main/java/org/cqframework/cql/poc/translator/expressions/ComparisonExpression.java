@@ -41,6 +41,7 @@ public class ComparisonExpression extends Expression{
     boolean isBooleanExpression = false;
 
     public ComparisonExpression(Expression left, Comparator comp, Expression right){
+        super();
         this.left = left;
         this.right=right;
         this.comp=comp;

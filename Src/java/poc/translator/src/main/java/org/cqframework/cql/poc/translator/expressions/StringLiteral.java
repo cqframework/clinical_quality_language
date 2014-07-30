@@ -8,6 +8,7 @@ public class StringLiteral extends Expression{
     String value;
 
     public StringLiteral(String value) {
+        super();
         this.value = value;
     }
 
@@ -19,6 +20,10 @@ public class StringLiteral extends Expression{
         this.value = value;
     }
 
+    @Override
+    public Object evaluate(Context ctx) {
+        return this.getValue();
+    }
     @Override
     public String toCql() {
         return "'"+value+"'";

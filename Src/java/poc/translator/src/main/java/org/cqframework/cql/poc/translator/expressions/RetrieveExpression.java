@@ -19,6 +19,7 @@ public class RetrieveExpression extends Expression{
     Expression duringExpression;
 
     public RetrieveExpression(ExModifier existenceModifier, QualifiedIdentifier topic, IdentifierExpression modality, IdentifierExpression valuesetPathIdentifier, QualifiedIdentifier valueset, IdentifierExpression duringPathIdentifier, Expression duringExpression) {
+        super();
         this.existenceModifier = existenceModifier;
         this.topic = topic;
         this.modality = modality;

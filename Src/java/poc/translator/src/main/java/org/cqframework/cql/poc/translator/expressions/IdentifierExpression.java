@@ -8,6 +8,8 @@ public class IdentifierExpression extends Expression{
     String identifier;
 
     public IdentifierExpression(String identifier) {
+
+        super();
         this.identifier = identifier;
     }
 
@@ -17,6 +19,11 @@ public class IdentifierExpression extends Expression{
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        return ctx.get(this);
     }
 
     @Override

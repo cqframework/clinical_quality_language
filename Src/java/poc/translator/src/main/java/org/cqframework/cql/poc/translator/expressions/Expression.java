@@ -1,18 +1,16 @@
 package org.cqframework.cql.poc.translator.expressions;
 
+import org.cqframework.cql.poc.translator.model.logger.Trackable;
+
 /**
  * Created by bobd on 7/23/14.
  */
-public abstract class Expression {
+public abstract class Expression extends Trackable{
 
-    String expression_identifier;
 
-    public String getExpression_identifier() {
-        return expression_identifier;
+    public  Object evaluate(Context ctx){
+        throw new RuntimeException("not implemented");
     }
 
-    public void setExpression_identifier(String expression_identifier) {
-        this.expression_identifier = expression_identifier;
-    }
-
+    public abstract String toCql();
 }

@@ -15,6 +15,7 @@ public class QueryExpression extends Expression{
 
     public QueryExpression(AliasedQuerySource aliaseQuerySource,List<QueryInclusionClauseExpression> queryInclusionClauseExpressions,
                            Expression whereClauseExpression, Expression returnClause, SortClause sortClause) {
+        super();
         this.aliaseQuerySource = aliaseQuerySource;
         this.queryInclusionClauseExpressions = queryInclusionClauseExpressions;
         this.whereClauseExpression = whereClauseExpression;

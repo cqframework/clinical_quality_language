@@ -11,6 +11,7 @@ public class RangeExpression extends Expression{
 
     boolean properly;
     public RangeExpression(Expression value, Expression left, Expression right, boolean properly) {
+        super();
         this.value = value;
         this.left = left;
         this.right = right;

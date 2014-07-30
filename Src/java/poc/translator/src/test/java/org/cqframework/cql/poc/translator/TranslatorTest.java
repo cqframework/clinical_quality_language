@@ -3,7 +3,6 @@ package org.cqframework.cql.poc.translator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.expressions.*;
@@ -12,7 +11,6 @@ import org.mozilla.javascript.Scriptable;
 import org.testng.annotations.Test;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -174,11 +172,11 @@ public class TranslatorTest {
     public void testComparisonExpressions(){
         CqlTranslatorVisitor visitor = new CqlTranslatorVisitor();
         try{
-            for (ComparisionExpression.Comparator operator : ComparisionExpression.Comparator.values()) {
+            for (ComparisonExpression.Comparator operator : ComparisonExpression.Comparator.values()) {
                 ParseTree tree = parseData("let st = 1 "+operator.symbol()+" 1");
                 LetStatement let = (LetStatement)visitor.visit(tree);
                 assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-                assertTrue(let.getExpression() instanceof ComparisionExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
+                assertTrue(let.getExpression() instanceof ComparisonExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
             }
 
         }catch(Exception e) {
@@ -193,50 +191,50 @@ public class TranslatorTest {
             ParseTree tree = parseData("let st = X is null");
             LetStatement let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof ComparisionExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
-            ComparisionExpression comp = (ComparisionExpression)let.getExpression();
+            assertTrue(let.getExpression() instanceof ComparisonExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
+            ComparisonExpression comp = (ComparisonExpression)let.getExpression();
             assertTrue(comp.getLeft() instanceof IdentifierExpression,"Left should be an IdentifierExpression but was "+comp.getLeft());
             assertTrue(comp.getRight() instanceof NullLiteral,"Right should be  NullLiteral but was "+comp.getRight());
-            assertTrue(comp.getComp().equals(ComparisionExpression.Comparator.EQ), "Comparator should be = but was "+ comp.getComp());
+            assertTrue(comp.getComp().equals(ComparisonExpression.Comparator.EQ), "Comparator should be = but was "+ comp.getComp());
 
             tree = parseData("let st = X is not null");
             let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(), "st", "let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof ComparisionExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
-            comp = (ComparisionExpression)let.getExpression();
+            assertTrue(let.getExpression() instanceof ComparisonExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
+            comp = (ComparisonExpression)let.getExpression();
             assertTrue(comp.getLeft() instanceof IdentifierExpression,"Left should be an IdentifierExpression but was "+comp.getLeft());
             assertTrue(comp.getRight() instanceof NullLiteral,"Right should be  NullLiteral but was "+comp.getRight());
-            assertTrue(comp.getComp().equals(ComparisionExpression.Comparator.NOT_EQ), "Comparator should be <> but was "+ comp.getComp());
+            assertTrue(comp.getComp().equals(ComparisonExpression.Comparator.NOT_EQ), "Comparator should be <> but was "+ comp.getComp());
 
             tree = parseData("let st = X is not true");
             let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof ComparisionExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
-            comp = (ComparisionExpression)let.getExpression();
+            assertTrue(let.getExpression() instanceof ComparisonExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
+            comp = (ComparisonExpression)let.getExpression();
             assertTrue(comp.getLeft() instanceof IdentifierExpression,"Left should be an IdentifierExpression but was "+comp.getLeft());
             assertTrue(comp.getRight() instanceof BooleanLiteral,"Right should be  BooleanLiteral but was "+comp.getRight());
             assertTrue(((BooleanLiteral) comp.getRight()).getValue(),"Value for boolean literal should be true");
-            assertTrue(comp.getComp().equals(ComparisionExpression.Comparator.NOT_EQ), "Comparator should be <> but was "+ comp.getComp());
+            assertTrue(comp.getComp().equals(ComparisonExpression.Comparator.NOT_EQ), "Comparator should be <> but was "+ comp.getComp());
 
             tree = parseData("let st = X is not false");
             let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof ComparisionExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
-            comp = (ComparisionExpression)let.getExpression();
+            assertTrue(let.getExpression() instanceof ComparisonExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
+            comp = (ComparisonExpression)let.getExpression();
             assertTrue(comp.getLeft() instanceof IdentifierExpression,"Left should be an IdentifierExpression but was "+comp.getLeft());
             assertTrue(comp.getRight() instanceof BooleanLiteral,"Right should be  BooleanLiteral but was "+comp.getRight());
             assertFalse(((BooleanLiteral) comp.getRight()).getValue(), "Value for boolean literal should be false");
-            assertTrue(comp.getComp().equals(ComparisionExpression.Comparator.NOT_EQ), "Comparator should be <> but was " + comp.getComp());
+            assertTrue(comp.getComp().equals(ComparisonExpression.Comparator.NOT_EQ), "Comparator should be <> but was " + comp.getComp());
 
             tree = parseData("let st = X is  true");
             let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof ComparisionExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
-            comp = (ComparisionExpression)let.getExpression();
+            assertTrue(let.getExpression() instanceof ComparisonExpression, "Expected expression to be of type ComparisionExpression but was of type "+let.getExpression().getClass());
+            comp = (ComparisonExpression)let.getExpression();
             assertTrue(comp.getLeft() instanceof IdentifierExpression,"Left should be an IdentifierExpression but was "+comp.getLeft());
             assertTrue(comp.getRight() instanceof BooleanLiteral,"Right should be  BooleanLiteral but was "+comp.getRight());
             assertTrue(((BooleanLiteral) comp.getRight()).getValue(),"Value for boolean literal should be true");
-            assertTrue(comp.getComp().equals(ComparisionExpression.Comparator.EQ), "Comparator should be = but was "+ comp.getComp());
+            assertTrue(comp.getComp().equals(ComparisonExpression.Comparator.EQ), "Comparator should be = but was "+ comp.getComp());
 
         }catch(Exception e) {
             throw e;
@@ -278,11 +276,38 @@ public class TranslatorTest {
 
     @Test
     public void testArithmaticExpressions(){
+        org.cqframework.cql.poc.translator.expressions.Context ct = new org.cqframework.cql.poc.translator.expressions.Context() {
+            @Override
+            public Object get(String key) {
+                return null;
+            }
+
+            @Override
+            public Object set(String key, Object obj) {
+                return null;
+            }
+
+            @Override
+            public Object get(Object key) {
+                return null;
+            }
+
+            @Override
+            public Object set(Object key, Object obj) {
+                return null;
+            }
+
+            @Override
+            public Callable getFunction(Object identifier) {
+                return null;
+            }
+        };
         CqlTranslatorVisitor visitor = new CqlTranslatorVisitor();
         try{
             for (ArithmaticExpression.Operator operator : ArithmaticExpression.Operator.values()) {
-                ParseTree tree = parseData("let st = 1 "+operator.symbol()+" 1");
+                ParseTree tree = parseData("let st = 2 "+operator.symbol()+" 3 weeks");
                 LetStatement let = (LetStatement)visitor.visit(tree);
+                System.out.println(operator.name() + " "+let.evaluate(ct));
                 assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
                 assertTrue(let.getExpression() instanceof ArithmaticExpression, "Expected expression to be of type ArithmaticExpression but was of type "+let.getExpression().getClass());
             }
@@ -376,7 +401,7 @@ public class TranslatorTest {
             QueryExpression qe = (QueryExpression)let.getExpression();
             assertEquals("R",qe.getAliaseQuerySource().getAlias());
             assertTrue(qe.getAliaseQuerySource().getQuerySource() instanceof RetrieveExpression, "QS should be a Retrieve expression");
-            assertEquals(1,qe.getQueryInclusionClauseExpressions().size());
+            assertEquals(1, qe.getQueryInclusionClauseExpressions().size());
             assertEquals("R" ,((IdentifierExpression)qe.getReturnClause()).getIdentifier());
             assertEquals("A",qe.getQueryInclusionClauseExpressions().get(0).getAliasedQuerySource().getAlias());
             assertTrue(qe.getQueryInclusionClauseExpressions().get(0).getAliasedQuerySource().getQuerySource() instanceof QualifiedIdentifier);
@@ -397,8 +422,8 @@ public class TranslatorTest {
             MethodExpression meth = (MethodExpression)let.getExpression();
             assertEquals("AgeAt", ((IdentifierExpression)meth.getMethod()).getIdentifier());
             assertTrue(meth.getParemeters().isEmpty());
-
             tree = parseData("let st = AgeAt(1,[Encounter, Perfromed])");
+
             let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
             assertTrue(let.getExpression() instanceof MethodExpression, "Should be a MethodExpression Expression but was " +let.getExpression());
@@ -409,6 +434,7 @@ public class TranslatorTest {
             assertTrue(meth.getParemeters().get(1) instanceof RetrieveExpression);
 
             tree = parseData("let st = X.AgeAt(1,[Encounter, Perfromed])");
+
             let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
             assertTrue(let.getExpression() instanceof MethodExpression, "Should be a MethodExpression Expression but was " +let.getExpression());
@@ -417,8 +443,9 @@ public class TranslatorTest {
             assertFalse(meth.getParemeters().isEmpty());
             assertTrue(meth.getParemeters().get(0) instanceof QuantityLiteral);
             assertTrue(meth.getParemeters().get(1) instanceof RetrieveExpression);
-            assertEquals("X", ((IdentifierExpression)((AccessorExpression)meth.getMethod()).getExpression()).getIdentifier());
+            assertEquals("X", ((IdentifierExpression) ((AccessorExpression) meth.getMethod()).getExpression()).getIdentifier());
             assertEquals("AgeAt", ((AccessorExpression)meth.getMethod()).getIdentifier());
+
         }catch(Exception e) {
             throw e;
         }
@@ -440,9 +467,8 @@ public class TranslatorTest {
             assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
             assertTrue(let.getExpression() instanceof ExistenceExpression, "Should be an existence expression");
             ex = (ExistenceExpression)let.getExpression();
-            assertFalse(ex.isNegated(),"Existence expression should  be negated when using 'not'");
+            assertTrue(ex.isNegated(),"Existence expression should  be negated when using 'not'");
             assertTrue(ex.getExpression() instanceof NullLiteral, "Expression should be a null literal");
-
 
         }catch(Exception e) {
             throw e;

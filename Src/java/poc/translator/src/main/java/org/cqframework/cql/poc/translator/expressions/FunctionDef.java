@@ -6,13 +6,14 @@ import java.util.List;
 /**
  * Created by bobd on 7/23/14.
  */
-public class FunctionDef extends Expression{
+public class FunctionDef extends Expression implements Callable{
 
     List<OperandDefinition> arguments;
     String identifier;
     Expression _return;
 
     public FunctionDef(String identifier, List<OperandDefinition> arguments, Expression _return) {
+        super();
         this.arguments = arguments;
         this.identifier = identifier;
         this._return = _return;
@@ -40,6 +41,11 @@ public class FunctionDef extends Expression{
 
     public void setReturn(Expression _return) {
         this._return = _return;
+    }
+
+    @Override
+    public Object call(Context ctx, List<Object> args) {
+        return null;
     }
 
     @Override

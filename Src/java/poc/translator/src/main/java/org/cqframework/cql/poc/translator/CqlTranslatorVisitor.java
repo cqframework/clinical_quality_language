@@ -1,25 +1,47 @@
 package org.cqframework.cql.poc.translator;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.expressions.*;
+
 import org.cqframework.cql.poc.translator.model.CqlLibrary;
 import org.cqframework.cql.poc.translator.model.SourceDataCriteria;
 import org.cqframework.cql.poc.translator.model.ValueSet;
 import org.cqframework.cql.poc.translator.model.logger.TrackBack;
+import org.cqframework.cql.poc.translator.model.logger.Trackable;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by bobd on 7/24/14.
+ */
 public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     private final CqlLibrary library = new CqlLibrary();
 
     public CqlLibrary getLibrary() {
         return library;
+    }
+
+
+    @Override
+    public Object visit(@NotNull ParseTree tree) {
+        Object o = super.visit(tree);
+        if(o instanceof Trackable && tree instanceof ParserRuleContext){
+           ((Trackable) o).addTrackBack(this.createTrackBack((ParserRuleContext)tree));
+        }
+        if(o instanceof Expression){
+            library.addExpression((Expression)o);
+        }
+
+        return o;
     }
 
     @Override
@@ -38,10 +60,11 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
         return vs;
     }
-
     @Override
     public Object visitLetStatement(@NotNull cqlParser.LetStatementContext ctx) {
-        return new LetStatement(ctx.IDENTIFIER().getText(), (Expression)visit(ctx.expression()));
+        LetStatement  let = new LetStatement(ctx.IDENTIFIER().getText(), (Expression)visit(ctx.expression()));
+        getLibrary().addLetStatement(let);
+        return let;
     }
 
     @Override
@@ -78,7 +101,7 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitExistenceExpression(@NotNull cqlParser.ExistenceExpressionContext ctx) {
         Expression ext = (Expression)this.visit(ctx.expression());
-        return new ExistenceExpression(ctx.children.get(0).equals("not"),ext);
+        return new ExistenceExpression(ctx.children.get(0).getText().equals("not"),ext);
     }
 
     @Override
@@ -120,14 +143,14 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitEqualityExpression(@NotNull cqlParser.EqualityExpressionContext ctx) {
-        ComparisionExpression.Comparator comp = ComparisionExpression.Comparator.bySymbol(ctx.getChild(1).getText());
-        return new ComparisionExpression((Expression)visit(ctx.expression(0)),comp, (Expression)visit(ctx.expression(1)));
+        ComparisonExpression.Comparator comp = ComparisonExpression.Comparator.bySymbol(ctx.getChild(1).getText());
+        return new ComparisonExpression((Expression)visit(ctx.expression(0)),comp, (Expression)visit(ctx.expression(1)));
     }
 
     @Override
     public Object visitInequalityExpression(@NotNull cqlParser.InequalityExpressionContext ctx) {
-        ComparisionExpression.Comparator comp = ComparisionExpression.Comparator.bySymbol(ctx.getChild(1).getText());
-        return new ComparisionExpression((Expression)visit(ctx.expression(0)),comp, (Expression)visit(ctx.expression(1)));
+        ComparisonExpression.Comparator comp = ComparisonExpression.Comparator.bySymbol(ctx.getChild(1).getText());
+        return new ComparisonExpression((Expression)visit(ctx.expression(0)),comp, (Expression)visit(ctx.expression(1)));
     }
 
     @Override
@@ -182,19 +205,35 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     public Object visitBooleanExpression(@NotNull cqlParser.BooleanExpressionContext ctx) {
         Expression left = (Expression)visit(ctx.expression());
         Expression right = null;
-        ComparisionExpression.Comparator comp = null;
+        ComparisonExpression.Comparator comp = null;
         String lastChild = ctx.getChild(ctx.getChildCount()-1).getText();
         String nextToLast = ctx.getChild(ctx.getChildCount()-2).getText();
+        visit(ctx.getChild(ctx.getChildCount()-1));
         if(lastChild.equals("null")){
             right = new NullLiteral();
         }else{
             right = new BooleanLiteral(lastChild);
         }
-        comp = (nextToLast.equals("not")) ? ComparisionExpression.Comparator.bySymbol("<>") :
-                ComparisionExpression.Comparator.bySymbol("=");
+        TrackBack tback =  new TrackBack(
+                (library == null)? "unknown" : library.getLibrary(),
+                library.getVersion(),
+                ctx.getStop().getLine(),
+                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length()-5,
+                ctx.getStop().getLine(),
+                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length()-1
+        );
+        right.addTrackBack(tback);
+        comp = (nextToLast.equals("not")) ? ComparisonExpression.Comparator.bySymbol("<>") :
+                ComparisonExpression.Comparator.bySymbol("=");
 
-        return new ComparisionExpression(left,comp,right);
+        return new ComparisonExpression(left,comp,right,true);
     }
+
+    @Override
+    public Object visitModality(@NotNull cqlParser.ModalityContext ctx) {
+        return new IdentifierExpression(ctx.IDENTIFIER().getText());
+    }
+
 
     @Override
     public Object visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
@@ -243,7 +282,7 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitSortByItem(@NotNull cqlParser.SortByItemContext ctx) {
         SortClause.SortDirection direction=SortClause.SortDirection.valueOf(ctx.sortDirection().getText());
-        QualifiedIdentifier exp = (QualifiedIdentifier)visitQualifiedIdentifier(ctx.qualifiedIdentifier());
+        QualifiedIdentifier exp = (QualifiedIdentifier)visit(ctx.qualifiedIdentifier());
         return new SortItem(direction,exp);
     }
 
@@ -253,7 +292,7 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         List<SortItem> sortItems = new ArrayList<>();
         if(ctx.sortByItem() != null){
             for (cqlParser.SortByItemContext sortByItemContext : ctx.sortByItem()) {
-                sortItems.add((SortItem)visitSortByItem(sortByItemContext));
+                sortItems.add((SortItem)visit(sortByItemContext));
             }
         }
         return new SortClause(direction,sortItems);
@@ -347,7 +386,14 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
                 ctx.getStart().getLine(),
                 ctx.getStart().getCharPositionInLine(),
                 ctx.getStop().getLine(),
-                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1
+                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length()-1
         );
+    }
+
+    private String getOriginalString(ParserRuleContext ctx){
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
+        return ctx.start.getInputStream().getText(interval);
     }
 }

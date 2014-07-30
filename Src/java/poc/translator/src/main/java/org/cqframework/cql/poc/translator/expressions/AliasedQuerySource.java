@@ -9,6 +9,7 @@ public class AliasedQuerySource extends Expression{
     String alias;
 
     public AliasedQuerySource(Expression querySource, String alias) {
+        super();
         this.querySource = querySource;
         this.alias = alias;
     }

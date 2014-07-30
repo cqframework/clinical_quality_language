@@ -39,6 +39,7 @@ public class ArithmaticExpression extends Expression{
     Operator op;
 
     public ArithmaticExpression(Expression left,Operator op, Expression right ){
+        super();
         this.left = left;
         this.right=right;
         this.op=op;
@@ -66,6 +67,76 @@ public class ArithmaticExpression extends Expression{
 
     public void setOp(Operator op) {
         this.op = op;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        Object left_val = left.evaluate(ctx);
+        Object right_val = right.evaluate(ctx);
+        String unit = null;
+        try {
+             unit = getCompatibleUnits(left_val, right_val);
+        }catch(Exception e){
+            return null;
+        }
+        Number l = getOperationValue(left_val);
+        Number r = getOperationValue(right_val);
+        if(r == null || l == null){
+            return null;
+        }
+        Number ret = null;
+        switch(op) {
+            case ADD:
+                ret = l.doubleValue()+r.doubleValue();
+                break;
+            case SUB:
+                ret = l.doubleValue()-r.doubleValue();
+                break;
+            case MUL:
+                ret = l.doubleValue()*r.doubleValue();
+                break;
+            case DIV:
+                ret = l.doubleValue()/r.doubleValue();
+                break;
+            case MOD:
+                ret = l.doubleValue()%r.doubleValue();
+                break;
+            case POW:
+                ret = Math.pow(l.doubleValue(),r.doubleValue());
+                break;
+        }
+
+        return new QuantityLiteral(ret,unit);
+    }
+
+    private String getCompatibleUnits(Object lv,Object rv)throws Exception{
+       String lu= null;
+        String ru = null;
+       if(lv instanceof QuantityLiteral){
+           lu = ((QuantityLiteral) lv).getUnit();
+       }
+        if(rv instanceof QuantityLiteral){
+            ru = ((QuantityLiteral) rv).getUnit();
+        }
+       if(lu == null && ru == null){
+           return null;
+       }
+       if(lu ==null || ru == null){
+           return lu ==null ? ru : lu;
+       }
+       if(lu.equals(ru) ){
+           return lu;
+       }
+       throw new Exception("");
+    }
+
+    private Number getOperationValue(Object o){
+        if(o instanceof Number){
+            return (Number)o;
+        }else if(o instanceof QuantityLiteral){
+            return ((QuantityLiteral) o).getQuantity();
+        }
+        return null;
     }
 
     public String toCql(){

@@ -9,11 +9,13 @@ public class QuantityLiteral extends Expression{
     Number quantity;
 
     public QuantityLiteral(Number value, String unit){
+        super();
         this.quantity=value;
         this.unit = unit;
     }
 
     public QuantityLiteral(String value, String unit){
+        super();
         this.quantity=Double.parseDouble(value);
         this.unit = unit;
     }
@@ -35,7 +37,20 @@ public class QuantityLiteral extends Expression{
     }
 
     @Override
+    public Object evaluate(Context ctx) {
+        return this;
+    }
+
+    @Override
     public String toCql() {
         return (unit==null)? quantity.toString() : unit.toString()+" "+unit;
+    }
+
+    @Override
+    public String toString() {
+        return "QuantityLiteral{" +
+                "unit='" + unit + '\'' +
+                ", quantity=" + quantity +
+                "} " + super.toString();
     }
 }

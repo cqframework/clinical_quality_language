@@ -15,6 +15,7 @@ public class InFixExpression extends Expression{
     Operator operator;
 
     public InFixExpression(Expression left, Expression right, Operator operator) {
+        super();
         this.left = left;
         this.right = right;
         this.operator = operator;

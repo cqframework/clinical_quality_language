@@ -10,6 +10,7 @@ public class QualifiedIdentifier extends  Expression{
     boolean valuesetIdentifier;
 
     public QualifiedIdentifier(String qualifier, String identifier, boolean valuesetIdentifier) {
+        super();
         this.qualifier = qualifier;
         this.identifier = identifier;
         this.valuesetIdentifier=valuesetIdentifier;
@@ -37,6 +38,11 @@ public class QualifiedIdentifier extends  Expression{
 
     public void setValuesetIdentifier(boolean valuesetIdentifier) {
         this.valuesetIdentifier = valuesetIdentifier;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        return ctx.get(this);
     }
 
     @Override

@@ -10,6 +10,7 @@ public class QueryInclusionClauseExpression extends  Expression{
     boolean negated;
 
     public QueryInclusionClauseExpression(AliasedQuerySource aliasedQuerySource, Expression expression, boolean negated) {
+        super();
         this.aliasedQuerySource = aliasedQuerySource;
         this.expression = expression;
         this.negated = negated;

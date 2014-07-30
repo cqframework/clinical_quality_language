@@ -1,22 +1,26 @@
 package org.cqframework.cql.poc.translator.model;
 
+import org.cqframework.cql.poc.translator.expressions.Expression;
+import org.cqframework.cql.poc.translator.expressions.LetStatement;
 import org.cqframework.cql.poc.translator.model.logger.TrackBack;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 public class CqlLibrary {
     private String library;
     private String version;
 
-    private final HashMap<Integer, SourceDataCriteria> dataCriteriaByHash;
-    private final HashMap<Integer, ValueSet> valueSetsByHash;
-    private final HashMap<String, ValueSet> valueSetsByLocalIdentifier;
-
+    private final Map<Integer, SourceDataCriteria> dataCriteriaByHash;
+    private final Map<Integer, ValueSet> valueSetsByHash;
+    private final Map<String, ValueSet> valueSetsByLocalIdentifier;
+    private final Map<String, LetStatement> variables;
+    private final List<Expression> expressions;
     public CqlLibrary() {
         dataCriteriaByHash = new HashMap<>();
         valueSetsByHash = new HashMap<>();
         valueSetsByLocalIdentifier = new HashMap<>();
+        variables = new HashMap<>();
+        expressions = new ArrayList<>();
     }
 
     public String getLibrary() {
@@ -71,6 +75,22 @@ public class CqlLibrary {
         }
 
         return existing;
+    }
+
+    public LetStatement addLetStatement(LetStatement let){
+       return getVariables().put(let.getIdentifier(),let);
+    }
+
+    public Map<String,LetStatement> getVariables(){
+        return this.variables;
+    }
+
+    public List<Expression> getExpressions(){
+        return this.expressions;
+    }
+
+    public boolean addExpression(Expression exp){
+        return getExpressions().add(exp);
     }
 
     @Override

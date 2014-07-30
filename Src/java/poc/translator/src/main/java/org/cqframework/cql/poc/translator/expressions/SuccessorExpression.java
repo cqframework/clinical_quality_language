@@ -8,6 +8,7 @@ public class SuccessorExpression extends Expression {
     Expression expression;
 
     public SuccessorExpression(Expression expression) {
+        super();
         this.expression = expression;
     }
 

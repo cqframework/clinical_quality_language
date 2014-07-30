@@ -15,6 +15,7 @@ public class AggreagateExpression extends Expression{
     AggreagateExpression.Aggragator aggragator;
 
     public AggreagateExpression(Expression expression, Aggragator aggragator) {
+        super();
         this.expression = expression;
         this.aggragator = aggragator;
     }

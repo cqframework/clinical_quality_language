@@ -9,6 +9,7 @@ public class IntervalSelector extends Expression {
     Expression high;
 
     public IntervalSelector(Expression low, Expression high) {
+        super();
         this.low = low;
         this.high = high;
     }

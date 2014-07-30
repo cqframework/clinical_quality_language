@@ -9,6 +9,7 @@ public class LetStatement extends Statement{
     Expression expression;
 
     public LetStatement(String identifier, Expression expression){
+        super();
         this.expression=expression;
         this.identifier=identifier;
     }
@@ -27,6 +28,11 @@ public class LetStatement extends Statement{
 
     public void setExpression(Expression expression) {
         this.expression = expression;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        return expression.evaluate(ctx);
     }
 
     @Override

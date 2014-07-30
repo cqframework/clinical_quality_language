@@ -13,6 +13,7 @@ public class CaseExpression extends Expression{
     Expression _else;
 
     public CaseExpression(Expression condition, List<CaseItem> caseItems, Expression _else) {
+        super();
         this.condition = condition;
         this.caseItems = caseItems;
         this._else=_else;
@@ -40,6 +41,25 @@ public class CaseExpression extends Expression{
 
     public void setElse(Expression _else) {
         this._else = _else;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        boolean cont = true;
+        if(condition != null){
+            cont = (boolean)condition.evaluate(ctx);
+        }
+        Object ret = null;
+        if(cont){
+            for (CaseItem caseItem : caseItems) {
+              if((boolean)caseItem.getWhen().evaluate(ctx)){
+                cont = false;
+                ret = caseItem.getThen().evaluate(ctx);
+                break;
+              }
+            }
+        }
+        return cont? this.getElse().evaluate(ctx) : ret;
     }
 
     @Override

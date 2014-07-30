@@ -10,6 +10,7 @@ public class OrExpression extends Expression{
     boolean xor = false;
 
     public OrExpression(Expression left, Expression right, boolean xor){
+        super();
         this.left=left;
         this.right=right;
         this.xor = xor;
@@ -39,6 +40,21 @@ public class OrExpression extends Expression{
         this.xor = xor;
     }
 
+    @Override
+    public Object evaluate(Context ctx) {
+        Object left_val = left.evaluate(ctx);
+        Object right_val = right.evaluate(ctx);
+        if(isXor()){
+           return (isTrue(left_val) || isTrue(right_val)) &&
+                 !(isTrue(left_val) && isTrue(right_val));
+        }
+          return isTrue(left_val) || isTrue(right_val);
+
+    }
+
+    private boolean isTrue(Object o){
+        return Boolean.TRUE.equals(o);
+    }
     public String conjuntionString(){
         return isXor()? "xor" : "or";
     }

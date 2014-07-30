@@ -16,6 +16,7 @@ public class SortClause extends Expression{
    List<SortItem> sortItems;
 
     public SortClause(SortDirection direction, List<SortItem> sortItems) {
+        super();
         this.direction = direction;
         this.sortItems = sortItems;
     }

@@ -1,5 +1,6 @@
 package org.cqframework.cql.poc.translator.expressions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -11,6 +12,7 @@ public class MethodExpression extends Expression{
     List<Expression> paremeters;
     Expression method;
     public MethodExpression(Expression method, List<Expression> expressions){
+        super();
         this.paremeters = expressions;
         this.method = method;
     }
@@ -29,6 +31,16 @@ public class MethodExpression extends Expression{
 
     public void setMethod(Expression method) {
         this.method = method;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        Callable callable = (Callable)method.evaluate(ctx);
+        List<Object> args = new ArrayList<>();
+        for (Expression paremeter : paremeters) {
+            args.add(paremeter.evaluate(ctx));
+        }
+        return callable.call(ctx,args);
     }
 
     @Override

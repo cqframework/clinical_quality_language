@@ -13,6 +13,7 @@ public class DurationExpression {
     Unit unit;
 
     public DurationExpression(Expression expression, Unit unit) {
+        super();
         this.expression = expression;
         this.unit = unit;
     }

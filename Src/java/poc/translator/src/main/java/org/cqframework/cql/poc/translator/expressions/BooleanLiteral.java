@@ -8,7 +8,7 @@ public class BooleanLiteral extends Expression {
     boolean value;
 
     public BooleanLiteral(boolean value) {
-
+        super();
         this.value = value;
     }
 
@@ -19,6 +19,11 @@ public class BooleanLiteral extends Expression {
 
     public Boolean getValue(){
         return value;
+    }
+
+    @Override
+    public Object evaluate(Context ctx) {
+        return this.getValue();
     }
 
     @Override
