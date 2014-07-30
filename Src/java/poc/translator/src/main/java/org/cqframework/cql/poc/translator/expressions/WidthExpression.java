@@ -22,6 +22,6 @@ public class WidthExpression extends Expression {
 
     @Override
     public String toCql() {
-        return "width of "+expression.toCql();
+        return "width of " + expression.toCql();
     }
 }

@@ -32,10 +32,10 @@ public class CoalesceExpression extends Expression {
         List<Object> ret = new ArrayList<>();
         for (Expression expression : expressions) {
             Object o = expression.evaluate(ctx);
-            if(o != null){
-                if(o instanceof List || o instanceof Array){
-                    ret.addAll((Collection)o);
-                }else {
+            if (o != null) {
+                if (o instanceof List || o instanceof Array) {
+                    ret.addAll((Collection) o);
+                } else {
                     ret.add(o);
                 }
             }
@@ -47,10 +47,10 @@ public class CoalesceExpression extends Expression {
     public String toCql() {
         StringBuffer buff = new StringBuffer();
         buff.append("coalesce (");
-        for (Iterator<Expression> i = expressions.iterator();i.hasNext();) {
+        for (Iterator<Expression> i = expressions.iterator(); i.hasNext(); ) {
             Expression expression = i.next();
             buff.append(expression.toCql());
-            if(i.hasNext()) {
+            if (i.hasNext()) {
                 buff.append(",");
             }
         }

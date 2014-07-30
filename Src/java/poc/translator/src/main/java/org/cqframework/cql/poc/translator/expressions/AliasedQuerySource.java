@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/23/14.
  */
-public class AliasedQuerySource extends Expression{
+public class AliasedQuerySource extends Expression {
 
     Expression querySource;
     String alias;
@@ -32,6 +32,6 @@ public class AliasedQuerySource extends Expression{
 
     @Override
     public String toCql() {
-        return querySource.toCql()+ " " +alias;
+        return querySource.toCql() + " " + alias;
     }
 }

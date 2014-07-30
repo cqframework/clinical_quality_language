@@ -7,11 +7,12 @@ import java.util.ListIterator;
 /**
  * Created by bobd on 7/23/14.
  */
-public class MethodExpression extends Expression{
+public class MethodExpression extends Expression {
 
     List<Expression> paremeters;
     Expression method;
-    public MethodExpression(Expression method, List<Expression> expressions){
+
+    public MethodExpression(Expression method, List<Expression> expressions) {
         super();
         this.paremeters = expressions;
         this.method = method;
@@ -35,12 +36,12 @@ public class MethodExpression extends Expression{
 
     @Override
     public Object evaluate(Context ctx) {
-        Callable callable = (Callable)method.evaluate(ctx);
+        Callable callable = (Callable) method.evaluate(ctx);
         List<Object> args = new ArrayList<>();
         for (Expression paremeter : paremeters) {
             args.add(paremeter.evaluate(ctx));
         }
-        return callable.call(ctx,args);
+        return callable.call(ctx, args);
     }
 
     @Override
@@ -49,10 +50,10 @@ public class MethodExpression extends Expression{
         buff.append(method.toCql());
         buff.append("(");
 
-        for (ListIterator<Expression> i = paremeters.listIterator(); i.hasNext();) {
+        for (ListIterator<Expression> i = paremeters.listIterator(); i.hasNext(); ) {
             Expression parameter = i.next();
             buff.append(parameter.toCql());
-            if(i.hasNext()){
+            if (i.hasNext()) {
                 buff.append(",");
             }
 

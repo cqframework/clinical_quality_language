@@ -3,13 +3,14 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/23/14.
  */
-public class RangeExpression extends Expression{
+public class RangeExpression extends Expression {
 
     Expression value;
     Expression left;
     Expression right;
 
     boolean properly;
+
     public RangeExpression(Expression value, Expression left, Expression right, boolean properly) {
         super();
         this.value = value;
@@ -54,7 +55,7 @@ public class RangeExpression extends Expression{
     public String toCql() {
         StringBuffer buff = new StringBuffer();
         buff.append(value.toCql());
-        if(properly){
+        if (properly) {
             buff.append(" properly ");
         }
         buff.append(" between ");

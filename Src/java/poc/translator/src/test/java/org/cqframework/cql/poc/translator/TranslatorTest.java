@@ -1,21 +1,27 @@
 package org.cqframework.cql.poc.translator;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cqframework.cql.gen.cqlLexer;
-import org.cqframework.cql.gen.cqlParser;
+
 import org.cqframework.cql.poc.translator.expressions.*;
 import org.cqframework.cql.poc.translator.model.logger.Trackable;
+import org.cqframework.cql.poc.translator.model.SourceDataCriteria;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.testng.annotations.Test;
+
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 import static org.testng.Assert.*;
+
+import static org.cqframework.cql.poc.translator.TestUtils.parseData;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
 
 public class TranslatorTest {
     @Test
@@ -343,73 +349,71 @@ public class TranslatorTest {
         try{
             ParseTree tree = parseData("let st = [Encounter, Performed]");
             LetStatement let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
+            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
             assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            RetrieveExpression ret = (RetrieveExpression)let.getExpression();
-            assertEquals("Encounter",ret.getTopic().getIdentifier());
+            SourceDataCriteria dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
+            assertEquals("Encounter",dc.getTopic().getIdentifier());
 
             tree = parseData("let st = [PATIENT.Encounter, Performed]");
             let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
+            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
             assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            ret = (RetrieveExpression)let.getExpression();
-            assertEquals("Encounter",ret.getTopic().getIdentifier());
-            assertEquals("PATIENT",ret.getTopic().getQualifier());
-            assertFalse(ret.getTopic().isValuesetIdentifier());
+            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
+            assertEquals("Encounter",dc.getTopic().getIdentifier());
+            assertEquals("PATIENT",dc.getTopic().getQualifier());
+            assertFalse(dc.getTopic().isValuesetIdentifier());
 
             tree = parseData("let st = [Encounter, Performed :\"Valueset Identifier\"]");
             let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
+            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
             assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            ret = (RetrieveExpression)let.getExpression();
-            assertEquals("Valueset Identifier",ret.getValueset().getIdentifier());
-            assertTrue(ret.getValueset().isValuesetIdentifier());
+            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
+            assertEquals("Valueset Identifier",dc.getValueset().getIdentifier());
+            assertTrue(dc.getValueset().isValuesetIdentifier());
 
             tree = parseData("let st = [Encounter, Performed :Comp.\"Valueset Identifier\"]");
             let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
+            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
             assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            ret = (RetrieveExpression)let.getExpression();
-            assertEquals("Valueset Identifier",ret.getValueset().getIdentifier());
-            assertEquals("Comp",ret.getValueset().getQualifier());
+            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
+            assertEquals("Valueset Identifier",dc.getValueset().getIdentifier());
+            assertEquals("Comp",dc.getValueset().getQualifier());
 
             tree = parseData("let st = [Encounter, Performed : Field in Comp.\"Valueset Identifier\"]");
             let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
+            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
             assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            ret = (RetrieveExpression)let.getExpression();
-            assertEquals("Valueset Identifier",ret.getValueset().getIdentifier());
-            assertEquals("Comp",ret.getValueset().getQualifier());
-            assertEquals("Field",ret.getValuesetPathIdentifier().getIdentifier());
+            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
+            assertEquals("Valueset Identifier",dc.getValueset().getIdentifier());
+            assertEquals("Comp",dc.getValueset().getQualifier());
+            assertEquals("Field",dc.getValuesetPathIdentifier().getIdentifier());
 
 
             tree = parseData("let st = [Encounter, Performed : Field in Comp.\"Valueset Identifier\", duringPath during (null) ]");
             let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
+            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
             assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            ret = (RetrieveExpression)let.getExpression();
-            assertEquals("Valueset Identifier",ret.getValueset().getIdentifier());
-            assertEquals("Comp",ret.getValueset().getQualifier());
-            assertEquals("Field",ret.getValuesetPathIdentifier().getIdentifier());
+            RetrieveExpression ret = (RetrieveExpression)let.getExpression();
+            dc = ret.getDataCriteria();
+            assertEquals("Valueset Identifier",dc.getValueset().getIdentifier());
+            assertEquals("Comp",dc.getValueset().getQualifier());
+            assertEquals("Field",dc.getValuesetPathIdentifier().getIdentifier());
             assertEquals("duringPath",ret.getDuringPathIdentifier().getIdentifier());
             assertTrue(ret.getDuringExpression() instanceof  NullLiteral);
 
             tree = parseData("let st = no [Encounter, Performed]");
             let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
+            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
             assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            ret = (RetrieveExpression)let.getExpression();
-            assertEquals(ret.getExistenceModifier(), RetrieveExpression.ExModifier.no);
+            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
+            assertEquals(dc.getExistence(), SourceDataCriteria.Existence.NonOccurrence);
 
             assertTrackable(let);
             assertTrackable(let.getExpression());
             assertTrackable(ret);
             assertTrackable(ret.getDuringExpression());
             assertTrackable(ret.getDuringPathIdentifier());
-            assertTrackable(ret.getModality());
-            assertTrackable(ret.getTopic());
-            assertTrackable(ret.getValueset());
-            assertTrackable(ret.getValuesetPathIdentifier());
+            assertTrackable(ret.getDataCriteria());
 
 
         }catch(Exception e) {
@@ -522,6 +526,7 @@ public class TranslatorTest {
     }
 
 
+
     private void assertTrackable(Trackable t){
         if(t == null){
             return;
@@ -540,13 +545,6 @@ public class TranslatorTest {
         return parseData(buff.toString());
     }
 
-    private ParseTree parseData(String cql_data){
-        ANTLRInputStream input = new ANTLRInputStream(cql_data);
-        cqlLexer lexer = new cqlLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        cqlParser parser = new cqlParser(tokens);
-        parser.setBuildParseTree(true);
-        ParseTree tree = parser.logic();
-        return tree;
-    }
+
+
 }

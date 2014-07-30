@@ -3,12 +3,12 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/23/14.
  */
-public class ExistenceExpression extends Expression{
+public class ExistenceExpression extends Expression {
 
     boolean negated = false;
-    Expression expression ;
+    Expression expression;
 
-    public ExistenceExpression(boolean negated, Expression exp){
+    public ExistenceExpression(boolean negated, Expression exp) {
         super();
         this.negated = negated;
         this.expression = exp;
@@ -33,12 +33,12 @@ public class ExistenceExpression extends Expression{
     @Override
     public Object evaluate(Context ctx) {
         Object val = expression.evaluate(ctx);
-        return isNegated()? val==null: val !=null;
+        return isNegated() ? val == null : val != null;
     }
 
     @Override
     public String toCql() {
-        String ex = negated? "not" : "exists";
-        return ex + " "+expression.toCql();
+        String ex = negated ? "not" : "exists";
+        return ex + " " + expression.toCql();
     }
 }

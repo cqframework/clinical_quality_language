@@ -3,13 +3,13 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/24/14.
  */
-public class NullLiteral extends Expression{
+public class NullLiteral extends Expression {
 
-    public NullLiteral(){
+    public NullLiteral() {
         super();
     }
 
-    public Object getValue(){
+    public Object getValue() {
         return null;
     }
 

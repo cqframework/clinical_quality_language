@@ -1,18 +1,17 @@
 package org.cqframework.cql.poc.translator.expressions;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by bobd on 7/23/14.
  */
-public class TupleExpression extends Expression{
+public class TupleExpression extends Expression {
 
     Map<String, Expression> values;
 
-    public TupleExpression(Map<String,Expression> values){
+    public TupleExpression(Map<String, Expression> values) {
         super();
-        this.values=values;
+        this.values = values;
     }
 
     public Map<String, Expression> getValues() {

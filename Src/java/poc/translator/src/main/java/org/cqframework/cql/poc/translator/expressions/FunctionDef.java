@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by bobd on 7/23/14.
  */
-public class FunctionDef extends Expression implements Callable{
+public class FunctionDef extends Expression implements Callable {
 
     List<OperandDefinition> arguments;
     String identifier;
@@ -54,10 +54,10 @@ public class FunctionDef extends Expression implements Callable{
         buff.append("define function ");
         buff.append(identifier);
         buff.append("(");
-        for(Iterator<OperandDefinition> i = arguments.iterator(); i.hasNext(); ) {
-            OperandDefinition op  = i.next();
+        for (Iterator<OperandDefinition> i = arguments.iterator(); i.hasNext(); ) {
+            OperandDefinition op = i.next();
             buff.append(op.toCql());
-            if(i.hasNext()){
+            if (i.hasNext()) {
                 buff.append(",");
 
             }

@@ -22,6 +22,6 @@ public class PredecessorExpression extends Expression {
 
     @Override
     public String toCql() {
-        return "predecessor of "+expression.toCql();
+        return "predecessor of " + expression.toCql();
     }
 }

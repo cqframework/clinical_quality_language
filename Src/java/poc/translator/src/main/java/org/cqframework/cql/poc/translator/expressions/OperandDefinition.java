@@ -29,7 +29,7 @@ public class OperandDefinition {
         this.type = type;
     }
 
-    public String toCql(){
-        return name+":"+type;
+    public String toCql() {
+        return name + ":" + type;
     }
 }

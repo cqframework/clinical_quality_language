@@ -4,29 +4,31 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/23/14.
  */
-public class ComparisonExpression extends Expression{
+public class ComparisonExpression extends Expression {
 
     public enum Comparator {
         EQ("="),
         NOT_EQ("<>"),
-        LT( "<"),
-        LT_EQ( "<="),
-        GT (">"),
-        GT_EQ ( ">=");
+        LT("<"),
+        LT_EQ("<="),
+        GT(">"),
+        GT_EQ(">=");
 
         private String symbol;
+
         private Comparator(String s) {
             symbol = s;
         }
-        public String symbol(){
+
+        public String symbol() {
             return this.symbol;
         }
 
-        public static Comparator bySymbol(String sym){
+        public static Comparator bySymbol(String sym) {
             Comparator op = null;
             for (Comparator operator : Comparator.values()) {
-                if(operator.symbol.equals(sym)){
-                    op= operator;
+                if (operator.symbol.equals(sym)) {
+                    op = operator;
                     break;
                 }
             }
@@ -40,14 +42,14 @@ public class ComparisonExpression extends Expression{
 
     boolean isBooleanExpression = false;
 
-    public ComparisonExpression(Expression left, Comparator comp, Expression right){
+    public ComparisonExpression(Expression left, Comparator comp, Expression right) {
         super();
         this.left = left;
-        this.right=right;
-        this.comp=comp;
+        this.right = right;
+        this.comp = comp;
     }
 
-    public ComparisonExpression(Expression left,  Comparator comp,Expression right, boolean isBooleanExpression) {
+    public ComparisonExpression(Expression left, Comparator comp, Expression right, boolean isBooleanExpression) {
         this.left = left;
         this.right = right;
         this.comp = comp;
@@ -91,12 +93,14 @@ public class ComparisonExpression extends Expression{
         StringBuffer buff = new StringBuffer();
         buff.append(left.toCql());
         buff.append(" ");
-        if(isBooleanExpression){
-           buff.append("is");
-           if(comp == Comparator.NOT_EQ){
-               buff.append(" not");
-           }
-        }else {buff.append(comp.symbol());}
+        if (isBooleanExpression) {
+            buff.append("is");
+            if (comp == Comparator.NOT_EQ) {
+                buff.append(" not");
+            }
+        } else {
+            buff.append(comp.symbol());
+        }
         buff.append(" ");
         buff.append(right.toCql());
         return buff.toString();

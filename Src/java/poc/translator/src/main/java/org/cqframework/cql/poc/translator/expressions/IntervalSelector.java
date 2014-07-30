@@ -32,6 +32,6 @@ public class IntervalSelector extends Expression {
 
     @Override
     public String toCql() {
-        return "<"+low.toCql()+","+high.toCql()+">";
+        return "<" + low.toCql() + "," + high.toCql() + ">";
     }
 }

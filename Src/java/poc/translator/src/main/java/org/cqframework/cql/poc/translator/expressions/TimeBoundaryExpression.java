@@ -3,9 +3,9 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class TimeBoundaryExpression extends  Expression{
+public class TimeBoundaryExpression extends Expression {
 
-    public enum Boundary{
+    public enum Boundary {
         start,
         end;
     }
@@ -37,6 +37,6 @@ public class TimeBoundaryExpression extends  Expression{
 
     @Override
     public String toCql() {
-        return boundary.name() +" of "+expression.toCql();
+        return boundary.name() + " of " + expression.toCql();
     }
 }

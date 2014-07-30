@@ -22,6 +22,6 @@ public class SuccessorExpression extends Expression {
 
     @Override
     public String toCql() {
-        return "successor of "+expression.toCql();
+        return "successor of " + expression.toCql();
     }
 }

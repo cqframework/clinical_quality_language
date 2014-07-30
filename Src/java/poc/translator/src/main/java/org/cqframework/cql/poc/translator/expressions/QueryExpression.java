@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by bobd on 7/23/14.
  */
-public class QueryExpression extends Expression{
+public class QueryExpression extends Expression {
 
     AliasedQuerySource aliaseQuerySource;
     List<QueryInclusionClauseExpression> queryInclusionClauseExpressions;
@@ -13,7 +13,7 @@ public class QueryExpression extends Expression{
     Expression returnClause;
     SortClause sortClause;
 
-    public QueryExpression(AliasedQuerySource aliaseQuerySource,List<QueryInclusionClauseExpression> queryInclusionClauseExpressions,
+    public QueryExpression(AliasedQuerySource aliaseQuerySource, List<QueryInclusionClauseExpression> queryInclusionClauseExpressions,
                            Expression whereClauseExpression, Expression returnClause, SortClause sortClause) {
         super();
         this.aliaseQuerySource = aliaseQuerySource;
@@ -68,23 +68,23 @@ public class QueryExpression extends Expression{
 
         StringBuffer buff = new StringBuffer();
         buff.append(aliaseQuerySource.toCql());
-        if(queryInclusionClauseExpressions != null){
+        if (queryInclusionClauseExpressions != null) {
             for (QueryInclusionClauseExpression queryInclusionClauseExpression : queryInclusionClauseExpressions) {
                 buff.append(queryInclusionClauseExpression.toCql());
                 buff.append("\n");
             }
         }
-        if(whereClauseExpression !=null){
+        if (whereClauseExpression != null) {
             buff.append(" where ");
             buff.append(whereClauseExpression.toCql());
             buff.append("\n");
         }
-        if(returnClause != null){
+        if (returnClause != null) {
             buff.append(" return ");
             buff.append(returnClause.toCql());
             buff.append("\n");
         }
-        if(sortClause !=null){
+        if (sortClause != null) {
             buff.append("sort ");
             buff.append(sortClause.toCql());
         }

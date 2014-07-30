@@ -15,7 +15,7 @@ public class Main {
         String inputFile = null;
         if (args.length > 0) inputFile = args[0];
         InputStream is = System.in;
-        if (inputFile!=null) {
+        if (inputFile != null) {
             is = new FileInputStream(inputFile);
         }
         ANTLRInputStream input = new ANTLRInputStream(is);

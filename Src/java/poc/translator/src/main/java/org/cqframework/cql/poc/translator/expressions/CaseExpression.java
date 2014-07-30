@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by bobd on 7/25/14.
  */
-public class CaseExpression extends Expression{
+public class CaseExpression extends Expression {
 
     Expression condition;
     List<CaseItem> caseItems = new ArrayList<>();
@@ -16,7 +16,7 @@ public class CaseExpression extends Expression{
         super();
         this.condition = condition;
         this.caseItems = caseItems;
-        this._else=_else;
+        this._else = _else;
     }
 
     public Expression getCondition() {
@@ -46,31 +46,31 @@ public class CaseExpression extends Expression{
     @Override
     public Object evaluate(Context ctx) {
         boolean cont = true;
-        if(condition != null){
-            cont = (boolean)condition.evaluate(ctx);
+        if (condition != null) {
+            cont = (boolean) condition.evaluate(ctx);
         }
         Object ret = null;
-        if(cont){
+        if (cont) {
             for (CaseItem caseItem : caseItems) {
-              if((boolean)caseItem.getWhen().evaluate(ctx)){
-                cont = false;
-                ret = caseItem.getThen().evaluate(ctx);
-                break;
-              }
+                if ((boolean) caseItem.getWhen().evaluate(ctx)) {
+                    cont = false;
+                    ret = caseItem.getThen().evaluate(ctx);
+                    break;
+                }
             }
         }
-        return cont? this.getElse().evaluate(ctx) : ret;
+        return cont ? this.getElse().evaluate(ctx) : ret;
     }
 
     @Override
     public String toCql() {
         StringBuffer buff = new StringBuffer();
         buff.append("case ");
-        if(condition != null){
+        if (condition != null) {
             buff.append(condition.toCql());
         }
         buff.append("\n");
-        if(caseItems !=null){
+        if (caseItems != null) {
             for (CaseItem caseItem : caseItems) {
                 buff.append(caseItem.toCql());
                 buff.append("\n");

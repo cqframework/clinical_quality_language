@@ -3,13 +3,14 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class MembershipExpression extends Expression{
+public class MembershipExpression extends Expression {
 
-    public enum Membership{
+    public enum Membership {
         in,
         contains,
         like;
     }
+
     Expression left;
     Expression right;
     Membership membership;
@@ -47,6 +48,6 @@ public class MembershipExpression extends Expression{
 
     @Override
     public String toCql() {
-        return "("+left.toCql()+ " " +membership.name()+" "+right.toCql()+" )";
+        return "(" + left.toCql() + " " + membership.name() + " " + right.toCql() + " )";
     }
 }

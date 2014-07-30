@@ -8,10 +8,10 @@ public class AndExpression extends Expression {
     Expression left;
     Expression right;
 
-    public AndExpression(Expression left, Expression right){
+    public AndExpression(Expression left, Expression right) {
         super();
-        this.left=left;
-        this.right=right;
+        this.left = left;
+        this.right = right;
     }
 
     public Expression getLeft() {
@@ -40,24 +40,28 @@ public class AndExpression extends Expression {
     @Override
     public String toCql() {
         StringBuffer buff = new StringBuffer();
-        if(left instanceof  OrExpression){
+        if (left instanceof OrExpression) {
             buff.append("(");
             buff.append(left.toCql());
             buff.append(")");
-        }else{buff.append(left.toCql());}
+        } else {
+            buff.append(left.toCql());
+        }
         buff.append(" and ");
-        if(right instanceof  OrExpression){
-           buff.append("(");
-           buff.append(right.toCql());
-           buff.append(")");
-        }else{buff.append(right.toCql());}
+        if (right instanceof OrExpression) {
+            buff.append("(");
+            buff.append(right.toCql());
+            buff.append(")");
+        } else {
+            buff.append(right.toCql());
+        }
         return buff.toString();
     }
 
-    private Boolean getBooleanValue(Object obj){
-        if(obj instanceof Boolean){
-            return (Boolean)obj;
-        }else if(obj instanceof BooleanLiteral) {
+    private Boolean getBooleanValue(Object obj) {
+        if (obj instanceof Boolean) {
+            return (Boolean) obj;
+        } else if (obj instanceof BooleanLiteral) {
             return ((BooleanLiteral) obj).getValue();
         }
         return obj != null;

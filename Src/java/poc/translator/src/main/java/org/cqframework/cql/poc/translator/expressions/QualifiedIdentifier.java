@@ -1,9 +1,6 @@
 package org.cqframework.cql.poc.translator.expressions;
 
-/**
- * Created by bobd on 7/24/14.
- */
-public class QualifiedIdentifier extends  Expression{
+public class QualifiedIdentifier extends Expression {
 
     String qualifier;
     String identifier;
@@ -13,7 +10,7 @@ public class QualifiedIdentifier extends  Expression{
         super();
         this.qualifier = qualifier;
         this.identifier = identifier;
-        this.valuesetIdentifier=valuesetIdentifier;
+        this.valuesetIdentifier = valuesetIdentifier;
     }
 
     public String getQualifier() {
@@ -41,6 +38,7 @@ public class QualifiedIdentifier extends  Expression{
     }
 
     @Override
+
     public Object evaluate(Context ctx) {
         return ctx.get(this);
     }
@@ -48,15 +46,45 @@ public class QualifiedIdentifier extends  Expression{
     @Override
     public String toCql() {
         StringBuffer buff = new StringBuffer();
-        if(qualifier != null){
+        if (qualifier != null) {
             buff.append(qualifier);
             buff.append(".");
         }
-        if(isValuesetIdentifier()){
-            buff.append("\""+identifier+"\"");
-        }else{
+        if (isValuesetIdentifier()) {
+            buff.append("\"" + identifier + "\"");
+        } else {
             buff.append(identifier);
         }
         return buff.toString();
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        QualifiedIdentifier that = (QualifiedIdentifier) o;
+
+        if (valuesetIdentifier != that.valuesetIdentifier) return false;
+        if (!identifier.equals(that.identifier)) return false;
+        if (qualifier != null ? !qualifier.equals(that.qualifier) : that.qualifier != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = qualifier != null ? qualifier.hashCode() : 0;
+        result = 31 * result + identifier.hashCode();
+        result = 31 * result + (valuesetIdentifier ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "QualifiedIdentifier{" +
+                "qualifier='" + qualifier + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", valuesetIdentifier=" + valuesetIdentifier +
+                '}';
     }
 }

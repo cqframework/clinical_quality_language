@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/24/14.
  */
-public class StringLiteral extends Expression{
+public class StringLiteral extends Expression {
 
     String value;
 
@@ -24,8 +24,9 @@ public class StringLiteral extends Expression{
     public Object evaluate(Context ctx) {
         return this.getValue();
     }
+
     @Override
     public String toCql() {
-        return "'"+value+"'";
+        return "'" + value + "'";
     }
 }

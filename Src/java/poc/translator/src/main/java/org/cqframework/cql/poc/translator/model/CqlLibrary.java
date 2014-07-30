@@ -15,6 +15,7 @@ public class CqlLibrary {
     private final Map<String, ValueSet> valueSetsByLocalIdentifier;
     private final Map<String, LetStatement> variables;
     private final List<Expression> expressions;
+
     public CqlLibrary() {
         dataCriteriaByHash = new HashMap<>();
         valueSetsByHash = new HashMap<>();
@@ -77,19 +78,19 @@ public class CqlLibrary {
         return existing;
     }
 
-    public LetStatement addLetStatement(LetStatement let){
-       return getVariables().put(let.getIdentifier(),let);
+    public LetStatement addLetStatement(LetStatement let) {
+        return getVariables().put(let.getIdentifier(), let);
     }
 
-    public Map<String,LetStatement> getVariables(){
+    public Map<String, LetStatement> getVariables() {
         return this.variables;
     }
 
-    public List<Expression> getExpressions(){
+    public List<Expression> getExpressions() {
         return this.expressions;
     }
 
-    public boolean addExpression(Expression exp){
+    public boolean addExpression(Expression exp) {
         return getExpressions().add(exp);
     }
 

@@ -3,20 +3,20 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/24/14.
  */
-public class QuantityLiteral extends Expression{
+public class QuantityLiteral extends Expression {
 
     String unit;
     Number quantity;
 
-    public QuantityLiteral(Number value, String unit){
+    public QuantityLiteral(Number value, String unit) {
         super();
-        this.quantity=value;
+        this.quantity = value;
         this.unit = unit;
     }
 
-    public QuantityLiteral(String value, String unit){
+    public QuantityLiteral(String value, String unit) {
         super();
-        this.quantity=Double.parseDouble(value);
+        this.quantity = Double.parseDouble(value);
         this.unit = unit;
     }
 
@@ -43,7 +43,7 @@ public class QuantityLiteral extends Expression{
 
     @Override
     public String toCql() {
-        return (unit==null)? quantity.toString() : unit.toString()+" "+unit;
+        return (unit == null) ? quantity.toString() : unit.toString() + " " + unit;
     }
 
     @Override

@@ -17,7 +17,7 @@ public class AccessorExpression extends Expression {
         super();
         this.expression = expression;
         this.identifier = identifier;
-        this.valuesetAccessor=isValuesetAccessor;
+        this.valuesetAccessor = isValuesetAccessor;
     }
 
     public Expression getExpression() {
@@ -47,20 +47,22 @@ public class AccessorExpression extends Expression {
     @Override
     public Object evaluate(Context ctx) {
         Object obj = getExpression().evaluate(ctx);
-        if(obj == null){
+        if (obj == null) {
             return null;
         }
-        try{
-            Method meth = obj.getClass().getMethod("get",null);
+        try {
+            Method meth = obj.getClass().getMethod("get", null);
             return meth.invoke(obj);
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
 
         try {
             Field f = obj.getClass().getField(identifier);
             return f.get(obj);
-        }catch(Exception e){}
+        } catch (Exception e) {
+        }
 
-        if(obj instanceof Map){
+        if (obj instanceof Map) {
             return ((Map) obj).get(identifier);
         }
         return null;
@@ -68,6 +70,6 @@ public class AccessorExpression extends Expression {
 
     @Override
     public String toCql() {
-        return expression.toCql() +"."+identifier;
+        return expression.toCql() + "." + identifier;
     }
 }

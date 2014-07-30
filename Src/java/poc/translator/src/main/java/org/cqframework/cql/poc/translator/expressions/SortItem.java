@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/24/14.
  */
-public class SortItem extends Expression{
+public class SortItem extends Expression {
 
     SortClause.SortDirection direction;
     QualifiedIdentifier identifier;
@@ -32,6 +32,6 @@ public class SortItem extends Expression{
 
     @Override
     public String toCql() {
-        return identifier.toCql()+ " "+direction.name();
+        return identifier.toCql() + " " + direction.name();
     }
 }

@@ -3,15 +3,15 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class LetStatement extends Statement{
+public class LetStatement extends Statement {
 
     String identifier;
     Expression expression;
 
-    public LetStatement(String identifier, Expression expression){
+    public LetStatement(String identifier, Expression expression) {
         super();
-        this.expression=expression;
-        this.identifier=identifier;
+        this.expression = expression;
+        this.identifier = identifier;
     }
 
     public String getIdentifier() {
@@ -37,6 +37,6 @@ public class LetStatement extends Statement{
 
     @Override
     public String toCql() {
-        return "let "+identifier+" = "+expression.toCql();
+        return "let " + identifier + " = " + expression.toCql();
     }
 }

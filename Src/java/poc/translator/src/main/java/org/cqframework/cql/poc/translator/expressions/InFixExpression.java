@@ -3,13 +3,14 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/25/14.
  */
-public class InFixExpression extends Expression{
+public class InFixExpression extends Expression {
 
-    public enum Operator{
+    public enum Operator {
         union,
         intersect,
         except;
     }
+
     Expression left;
     Expression right;
     Operator operator;
@@ -47,6 +48,6 @@ public class InFixExpression extends Expression{
 
     @Override
     public String toCql() {
-        return "("+left.toCql()+" "+operator.name()+" "+right.toCql()+")";
+        return "(" + left.toCql() + " " + operator.name() + " " + right.toCql() + ")";
     }
 }

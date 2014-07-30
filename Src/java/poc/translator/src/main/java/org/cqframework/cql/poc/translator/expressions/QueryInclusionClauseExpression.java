@@ -3,7 +3,7 @@ package org.cqframework.cql.poc.translator.expressions;
 /**
  * Created by bobd on 7/24/14.
  */
-public class QueryInclusionClauseExpression extends  Expression{
+public class QueryInclusionClauseExpression extends Expression {
 
     AliasedQuerySource aliasedQuerySource;
     Expression expression;
@@ -43,15 +43,15 @@ public class QueryInclusionClauseExpression extends  Expression{
     @Override
     public String toCql() {
         StringBuffer buff = new StringBuffer();
-        if(negated){
+        if (negated) {
             buff.append("without ");
-        }else{
+        } else {
             buff.append("with ");
         }
 
         buff.append(aliasedQuerySource.toCql());
         buff.append(" ");
-        if(expression !=null) {
+        if (expression != null) {
             buff.append(expression.toCql());
         }
         return buff.toString();

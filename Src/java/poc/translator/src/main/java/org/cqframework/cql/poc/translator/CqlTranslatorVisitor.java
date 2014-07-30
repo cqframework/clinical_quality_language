@@ -1,21 +1,18 @@
 package org.cqframework.cql.poc.translator;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.expressions.*;
-
 import org.cqframework.cql.poc.translator.model.CqlLibrary;
 import org.cqframework.cql.poc.translator.model.SourceDataCriteria;
 import org.cqframework.cql.poc.translator.model.ValueSet;
 import org.cqframework.cql.poc.translator.model.logger.TrackBack;
 import org.cqframework.cql.poc.translator.model.logger.Trackable;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +31,11 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visit(@NotNull ParseTree tree) {
         Object o = super.visit(tree);
-        if(o instanceof Trackable && tree instanceof ParserRuleContext){
-           ((Trackable) o).addTrackBack(this.createTrackBack((ParserRuleContext)tree));
+        if (o instanceof Trackable && tree instanceof ParserRuleContext) {
+            this.track((Trackable) o, (ParserRuleContext) tree);
         }
-        if(o instanceof Expression){
-            library.addExpression((Expression)o);
+        if (o instanceof Expression) {
+            library.addExpression((Expression) o);
         }
 
         return o;
@@ -46,23 +43,24 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
-        library.setLibrary(nullOrText(ctx.IDENTIFIER()));
-        library.setVersion(nullOrText(ctx.STRING()));
+        library.setLibrary(nullOrString(ctx.IDENTIFIER()));
+        library.setVersion(nullOrString(ctx.STRING()));
 
         return library;
     }
 
     @Override
     public Object visitValuesetDefinitionByConstructor(@NotNull cqlParser.ValuesetDefinitionByConstructorContext ctx) {
-        ValueSet vs = new ValueSet(ctx.VALUESET(1).getText(), ctx.VALUESET(0).getText());
-        vs.addTrackBack(createTrackBack(ctx));
+        ValueSet vs = new ValueSet(ctx.STRING().getText(), ctx.VALUESET().getText());
+        track(vs, ctx);
         library.addValueSet(vs);
 
         return vs;
     }
+
     @Override
     public Object visitLetStatement(@NotNull cqlParser.LetStatementContext ctx) {
-        LetStatement  let = new LetStatement(ctx.IDENTIFIER().getText(), (Expression)visit(ctx.expression()));
+        LetStatement let = new LetStatement(ctx.IDENTIFIER().getText(), (Expression) visit(ctx.expression()));
         getLibrary().addLetStatement(let);
         return let;
     }
@@ -91,38 +89,38 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitQuantityLiteral(@NotNull cqlParser.QuantityLiteralContext ctx) {
-        String unit = (ctx.unit() == null)? null: ctx.unit().getText();
-        if(ctx.unit()!=null && ctx.unit().STRING()!=null){
+        String unit = (ctx.unit() == null) ? null : ctx.unit().getText();
+        if (ctx.unit() != null && ctx.unit().STRING() != null) {
             unit = unit.substring(2, unit.length() - 1);
         }
-        return new QuantityLiteral(ctx.QUANTITY().getText(),unit);
+        return new QuantityLiteral(ctx.QUANTITY().getText(), unit);
     }
 
     @Override
     public Object visitExistenceExpression(@NotNull cqlParser.ExistenceExpressionContext ctx) {
-        Expression ext = (Expression)this.visit(ctx.expression());
-        return new ExistenceExpression(ctx.children.get(0).getText().equals("not"),ext);
+        Expression ext = (Expression) this.visit(ctx.expression());
+        return new ExistenceExpression(ctx.children.get(0).getText().equals("not"), ext);
     }
 
     @Override
     public Object visitMultiplicationExpressionTerm(@NotNull cqlParser.MultiplicationExpressionTermContext ctx) {
-        return new ArithmaticExpression((Expression)this.visit(ctx.expressionTerm(0)),
+        return new ArithmaticExpression((Expression) this.visit(ctx.expressionTerm(0)),
                 ArithmaticExpression.Operator.bySymbol(ctx.getChild(1).getText()),
-                (Expression)this.visit(ctx.expressionTerm(1)));
+                (Expression) this.visit(ctx.expressionTerm(1)));
     }
 
     @Override
     public Object visitPowerExpressionTerm(@NotNull cqlParser.PowerExpressionTermContext ctx) {
-        return new ArithmaticExpression((Expression)this.visit(ctx.expressionTerm(0)),
+        return new ArithmaticExpression((Expression) this.visit(ctx.expressionTerm(0)),
                 ArithmaticExpression.Operator.POW,
-                (Expression)this.visit(ctx.expressionTerm(1)));
+                (Expression) this.visit(ctx.expressionTerm(1)));
     }
 
     @Override
     public Object visitAdditionExpressionTerm(@NotNull cqlParser.AdditionExpressionTermContext ctx) {
-        return new ArithmaticExpression((Expression)this.visit(ctx.expressionTerm(0)),
+        return new ArithmaticExpression((Expression) this.visit(ctx.expressionTerm(0)),
                 ArithmaticExpression.Operator.bySymbol(ctx.getChild(1).getText()),
-                (Expression)this.visit(ctx.expressionTerm(1)));
+                (Expression) this.visit(ctx.expressionTerm(1)));
     }
 
     @Override
@@ -132,53 +130,53 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitAndExpression(@NotNull cqlParser.AndExpressionContext ctx) {
-        return new AndExpression((Expression)visit(ctx.expression(0)),(Expression)visit(ctx.expression(1)));
+        return new AndExpression((Expression) visit(ctx.expression(0)), (Expression) visit(ctx.expression(1)));
     }
 
     @Override
     public Object visitOrExpression(@NotNull cqlParser.OrExpressionContext ctx) {
         boolean xor = ctx.getChild(1).getText().equals("xor");
-        return new OrExpression((Expression)visit(ctx.expression(0)),(Expression)visit(ctx.expression(1)),xor);
+        return new OrExpression((Expression) visit(ctx.expression(0)), (Expression) visit(ctx.expression(1)), xor);
     }
 
     @Override
     public Object visitEqualityExpression(@NotNull cqlParser.EqualityExpressionContext ctx) {
         ComparisonExpression.Comparator comp = ComparisonExpression.Comparator.bySymbol(ctx.getChild(1).getText());
-        return new ComparisonExpression((Expression)visit(ctx.expression(0)),comp, (Expression)visit(ctx.expression(1)));
+        return new ComparisonExpression((Expression) visit(ctx.expression(0)), comp, (Expression) visit(ctx.expression(1)));
     }
 
     @Override
     public Object visitInequalityExpression(@NotNull cqlParser.InequalityExpressionContext ctx) {
         ComparisonExpression.Comparator comp = ComparisonExpression.Comparator.bySymbol(ctx.getChild(1).getText());
-        return new ComparisonExpression((Expression)visit(ctx.expression(0)),comp, (Expression)visit(ctx.expression(1)));
+        return new ComparisonExpression((Expression) visit(ctx.expression(0)), comp, (Expression) visit(ctx.expression(1)));
     }
 
     @Override
     public Object visitQualifiedIdentifier(@NotNull cqlParser.QualifiedIdentifierContext ctx) {
-        String qualifier = (ctx.qualifier() != null) ? ctx.qualifier().getText(): null;
-        return new QualifiedIdentifier(qualifier,ctx.IDENTIFIER().getText(),false);
+        String qualifier = (ctx.qualifier() != null) ? ctx.qualifier().getText() : null;
+        return new QualifiedIdentifier(qualifier, ctx.IDENTIFIER().getText(), false);
     }
 
     @Override
     public Object visitValueset(@NotNull cqlParser.ValuesetContext ctx) {
-        String qualifier = (ctx.qualifier() != null) ? ctx.qualifier().getText(): null;
+        String qualifier = (ctx.qualifier() != null) ? ctx.qualifier().getText() : null;
         boolean isValuesetIdentifier = ctx.VALUESET() != null;
 
         String ident = isValuesetIdentifier ? ctx.VALUESET().getText() : ctx.IDENTIFIER().getText();
-        if(ident != null && isValuesetIdentifier){
-            ident=ident.substring(1,ident.length()-1);
+        if (ident != null && isValuesetIdentifier) {
+            ident = ident.substring(1, ident.length() - 1);
         }
-        return new QualifiedIdentifier(qualifier,ident,isValuesetIdentifier);
+        return new QualifiedIdentifier(qualifier, ident, isValuesetIdentifier);
     }
 
     @Override
     public Object visitAccessorExpressionTerm(@NotNull cqlParser.AccessorExpressionTermContext ctx) {
-        boolean isValueset =ctx.VALUESET() != null;
-        String accessor = isValueset ? ctx.VALUESET().getText(): ctx.IDENTIFIER().getText();
-        if(accessor != null && isValueset){
-            accessor = accessor.substring(1,accessor.length()-1);
+        boolean isValueset = ctx.VALUESET() != null;
+        String accessor = isValueset ? ctx.VALUESET().getText() : ctx.IDENTIFIER().getText();
+        if (accessor != null && isValueset) {
+            accessor = accessor.substring(1, accessor.length() - 1);
         }
-        return new AccessorExpression((Expression)visit(ctx.expressionTerm()),accessor,(ctx.VALUESET() != null));
+        return new AccessorExpression((Expression) visit(ctx.expressionTerm()), accessor, (ctx.VALUESET() != null));
     }
 
     @Override
@@ -203,30 +201,30 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitBooleanExpression(@NotNull cqlParser.BooleanExpressionContext ctx) {
-        Expression left = (Expression)visit(ctx.expression());
+        Expression left = (Expression) visit(ctx.expression());
         Expression right = null;
         ComparisonExpression.Comparator comp = null;
-        String lastChild = ctx.getChild(ctx.getChildCount()-1).getText();
-        String nextToLast = ctx.getChild(ctx.getChildCount()-2).getText();
-        visit(ctx.getChild(ctx.getChildCount()-1));
-        if(lastChild.equals("null")){
+        String lastChild = ctx.getChild(ctx.getChildCount() - 1).getText();
+        String nextToLast = ctx.getChild(ctx.getChildCount() - 2).getText();
+        visit(ctx.getChild(ctx.getChildCount() - 1));
+        if (lastChild.equals("null")) {
             right = new NullLiteral();
-        }else{
+        } else {
             right = new BooleanLiteral(lastChild);
         }
-        TrackBack tback =  new TrackBack(
-                (library == null)? "unknown" : library.getLibrary(),
+        TrackBack tback = new TrackBack(
+                (library == null) ? "unknown" : library.getLibrary(),
                 library.getVersion(),
                 ctx.getStop().getLine(),
-                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length()-5,
+                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 5,
                 ctx.getStop().getLine(),
-                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length()-1
+                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1
         );
         right.addTrackBack(tback);
         comp = (nextToLast.equals("not")) ? ComparisonExpression.Comparator.bySymbol("<>") :
                 ComparisonExpression.Comparator.bySymbol("=");
 
-        return new ComparisonExpression(left,comp,right,true);
+        return new ComparisonExpression(left, comp, right, true);
     }
 
     @Override
@@ -237,35 +235,28 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
-        SourceDataCriteria dr = new SourceDataCriteria(
+        SourceDataCriteria dataCriteria = new SourceDataCriteria(
                 extractExistence(ctx.existenceModifier()),
-                nullOrText(ctx.topic()),
-                nullOrText(ctx.modality()),
-                nullOrText(ctx.valueset())
+                nullOrQualifiedIdentifierExpression(ctx.topic()),
+                nullOrIdentifierExpression(ctx.modality()),
+                nullOrIdentifierExpression(ctx.valuesetPathIdentifier()),
+                nullOrQualifiedIdentifierExpression(ctx.valueset())
         );
-        dr.addTrackBack(createTrackBack(ctx));
-        library.addSourceDataCriteria(dr);
+        track(dataCriteria, ctx);
+        library.addSourceDataCriteria(dataCriteria);
 
-        RetrieveExpression.ExModifier existenceModifier = null;
-        if(ctx.existenceModifier() != null){
-            existenceModifier = RetrieveExpression.ExModifier.valueOf(ctx.existenceModifier().getText());
-        }
-        QualifiedIdentifier topic = (QualifiedIdentifier)visit(ctx.topic());
-        IdentifierExpression modality = ctx.modality() != null ? (IdentifierExpression)visit(ctx.modality()) : null;
-        IdentifierExpression valuesetPathIdentifier = ctx.valuesetPathIdentifier() != null ? (IdentifierExpression)visit(ctx.valuesetPathIdentifier()): null;
-        QualifiedIdentifier valueset = ctx.valueset() != null ? (QualifiedIdentifier)visit(ctx.valueset()): null;
-        IdentifierExpression duringPathIdentifier = ctx.duringPathIdentifier() != null ? (IdentifierExpression)visit(ctx.duringPathIdentifier()):null;
-        Expression duringExpression = ctx.expression()!=null ? (Expression)visit(ctx.expression()) : null;
+        IdentifierExpression duringPathIdentifier = nullOrIdentifierExpression(ctx.duringPathIdentifier());
+        Expression duringExpression = nullOrExpression(ctx.expression());
 
-        return new RetrieveExpression(existenceModifier,topic,modality,valuesetPathIdentifier,valueset,duringPathIdentifier,duringExpression);
+        return new RetrieveExpression(dataCriteria, duringPathIdentifier, duringExpression);
     }
 
     @Override
     public Object visitQueryInclusionClause(@NotNull cqlParser.QueryInclusionClauseContext ctx) {
         boolean negated = ctx.getChild(0).equals("without");
-        Expression expression = (Expression)visit(ctx.expression());
-        AliasedQuerySource aqs = (AliasedQuerySource)visit(ctx.aliasedQuerySource());
-        return new QueryInclusionClauseExpression(aqs,expression,negated);
+        Expression expression = (Expression) visit(ctx.expression());
+        AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
+        return new QueryInclusionClauseExpression(aqs, expression, negated);
     }
 
     @Override
@@ -281,30 +272,30 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitSortByItem(@NotNull cqlParser.SortByItemContext ctx) {
-        SortClause.SortDirection direction=SortClause.SortDirection.valueOf(ctx.sortDirection().getText());
-        QualifiedIdentifier exp = (QualifiedIdentifier)visit(ctx.qualifiedIdentifier());
-        return new SortItem(direction,exp);
+        SortClause.SortDirection direction = SortClause.SortDirection.valueOf(ctx.sortDirection().getText());
+        QualifiedIdentifier exp = (QualifiedIdentifier) visit(ctx.qualifiedIdentifier());
+        return new SortItem(direction, exp);
     }
 
     @Override
     public Object visitSortClause(@NotNull cqlParser.SortClauseContext ctx) {
-        SortClause.SortDirection direction = ctx.sortDirection() != null ? SortClause.SortDirection.valueOf(ctx.sortDirection().getText()): null;
+        SortClause.SortDirection direction = ctx.sortDirection() != null ? SortClause.SortDirection.valueOf(ctx.sortDirection().getText()) : null;
         List<SortItem> sortItems = new ArrayList<>();
-        if(ctx.sortByItem() != null){
+        if (ctx.sortByItem() != null) {
             for (cqlParser.SortByItemContext sortByItemContext : ctx.sortByItem()) {
-                sortItems.add((SortItem)visit(sortByItemContext));
+                sortItems.add((SortItem) visit(sortByItemContext));
             }
         }
-        return new SortClause(direction,sortItems);
+        return new SortClause(direction, sortItems);
     }
 
     @Override
     public Object visitQuerySource(@NotNull cqlParser.QuerySourceContext ctx) {
         ParseTree o = ctx.expression();
-        if(o==null){
+        if (o == null) {
             o = ctx.retrieve();
         }
-        if(o == null){
+        if (o == null) {
             o = ctx.qualifiedIdentifier();
         }
         return visit(o);
@@ -312,55 +303,66 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitAliasedQuerySource(@NotNull cqlParser.AliasedQuerySourceContext ctx) {
-        return new AliasedQuerySource((Expression)visit(ctx.querySource()),ctx.alias().getText());
+        return new AliasedQuerySource((Expression) visit(ctx.querySource()), ctx.alias().getText());
     }
 
     @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
-        AliasedQuerySource aqs = (AliasedQuerySource)visit(ctx.aliasedQuerySource());
+        AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
         List<QueryInclusionClauseExpression> qicx = new ArrayList<>();
-        if(ctx.queryInclusionClause()!=null){
+        if (ctx.queryInclusionClause() != null) {
             for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
-                qicx.add((QueryInclusionClauseExpression)visit(queryInclusionClauseContext));
+                qicx.add((QueryInclusionClauseExpression) visit(queryInclusionClauseContext));
             }
         }
-        Expression where = ctx.whereClause() != null ? (Expression)visit(ctx.whereClause()) : null;
-        Expression ret = ctx.returnClause() != null ? (Expression)visit(ctx.returnClause()) : null;
-        SortClause sort = ctx.sortClause() != null ? (SortClause)visit(ctx.sortClause()) : null;
+        Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
+        Expression ret = ctx.returnClause() != null ? (Expression) visit(ctx.returnClause()) : null;
+        SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
 
-        return new QueryExpression(aqs,qicx,where,ret,sort);
+        return new QueryExpression(aqs, qicx, where, ret, sort);
     }
-
 
 
     @Override
     public Object visitMethodExpressionTerm(@NotNull cqlParser.MethodExpressionTermContext ctx) {
-        Expression identifier = (Expression)visit(ctx.expressionTerm());
-        List<Expression>parameters = new ArrayList<>();
-        if(ctx.expression() != null){
+        Expression identifier = (Expression) visit(ctx.expressionTerm());
+        List<Expression> parameters = new ArrayList<>();
+        if (ctx.expression() != null) {
             for (cqlParser.ExpressionContext expressionContext : ctx.expression()) {
-                parameters.add((Expression)visit(expressionContext));
+                parameters.add((Expression) visit(expressionContext));
             }
         }
-        return new MethodExpression(identifier,parameters);
+        return new MethodExpression(identifier, parameters);
     }
 
     @Override
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
-        Expression _resturn = (Expression)visit(ctx.functionBody().returnStatement());
+        Expression _resturn = (Expression) visit(ctx.functionBody().returnStatement());
         String ident = ctx.IDENTIFIER().getText();
         List<OperandDefinition> operands = new ArrayList<>();
-        if(ctx.operandDefinition() !=null){
+        if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                operands.add(new OperandDefinition(opdef.IDENTIFIER().getText(),opdef.typeSpecifier().getText()));
+                operands.add(new OperandDefinition(opdef.IDENTIFIER().getText(), opdef.typeSpecifier().getText()));
             }
         }
 
-        return new FunctionDef(ident,operands,_resturn);
+        return new FunctionDef(ident, operands, _resturn);
     }
 
-    private String nullOrText(ParseTree pt) {
+    private String nullOrString(ParseTree pt) {
         return pt == null ? null : pt.getText();
+    }
+
+    private IdentifierExpression nullOrIdentifierExpression(ParseTree pt) {
+        return pt == null ? null : (IdentifierExpression) visit(pt);
+    }
+
+    private QualifiedIdentifier nullOrQualifiedIdentifierExpression(ParseTree pt) {
+        return pt == null ? null : (QualifiedIdentifier) visit(pt);
+    }
+
+    private Expression nullOrExpression(ParseTree pt) {
+        return pt == null ? null : (Expression) visit(pt);
     }
 
     private SourceDataCriteria.Existence extractExistence(cqlParser.ExistenceModifierContext ctx) {
@@ -374,26 +376,30 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         return existence;
     }
 
-    private TrackBack createTrackBack(ParserRuleContext ctx) {
+    private TrackBack track(Trackable trackable, ParserRuleContext ctx) {
         String lib = library.getLibrary();
         if (lib == null) {
             lib = "unknown"; // TODO: use filename instead?
         }
 
-        return new TrackBack(
+        TrackBack tb = new TrackBack(
                 lib,
                 library.getVersion(),
                 ctx.getStart().getLine(),
                 ctx.getStart().getCharPositionInLine(),
                 ctx.getStop().getLine(),
-                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length()-1
+                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1
         );
+
+        trackable.addTrackBack(tb);
+
+        return tb;
     }
 
-    private String getOriginalString(ParserRuleContext ctx){
+    private String getOriginalString(ParserRuleContext ctx) {
         int a = ctx.start.getStartIndex();
         int b = ctx.stop.getStopIndex();
-        Interval interval = new Interval(a,b);
+        Interval interval = new Interval(a, b);
         return ctx.start.getInputStream().getText(interval);
     }
 }
