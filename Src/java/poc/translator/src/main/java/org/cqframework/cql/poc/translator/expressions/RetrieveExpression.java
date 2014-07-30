@@ -11,6 +11,7 @@ public class RetrieveExpression extends Expression {
 
     public RetrieveExpression(SourceDataCriteria dataCriteria, IdentifierExpression duringPathIdentifier, Expression duringExpression) {
         super();
+        this.dataCriteria = dataCriteria;
         this.duringPathIdentifier = duringPathIdentifier;
         this.duringExpression = duringExpression;
     }
