@@ -49,7 +49,8 @@ public class CqlLibrary {
         if (existing != null) {
             existing.merge(sourceDataCriteria);
         } else {
-            existing = dataCriteriaByHash.put(sourceDataCriteria.hashCode(), sourceDataCriteria);
+            dataCriteriaByHash.put(sourceDataCriteria.hashCode(), sourceDataCriteria);
+            existing = sourceDataCriteria;
         }
 
         return existing;
@@ -68,7 +69,8 @@ public class CqlLibrary {
         if (existing != null) {
             existing.merge(valueSet);
         } else {
-            existing = valueSetsByHash.put(valueSet.hashCode(), valueSet);
+            valueSetsByHash.put(valueSet.hashCode(), valueSet);
+            existing = valueSet;
         }
 
         for (String localStringId : valueSet.getLocalStringIdentifiers()) {

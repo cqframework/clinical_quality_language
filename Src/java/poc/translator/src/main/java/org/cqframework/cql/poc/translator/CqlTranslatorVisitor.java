@@ -4,7 +4,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cqframework.cql.gen.cqlBaseVisitor;
+import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.expressions.*;
 import org.cqframework.cql.poc.translator.model.CqlLibrary;
@@ -16,9 +18,6 @@ import org.cqframework.cql.poc.translator.model.logger.Trackable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by bobd on 7/24/14.
- */
 public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     private final CqlLibrary library = new CqlLibrary();
@@ -51,7 +50,7 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitValuesetDefinitionByConstructor(@NotNull cqlParser.ValuesetDefinitionByConstructorContext ctx) {
-        ValueSet vs = new ValueSet(ctx.STRING().getText(), ctx.VALUESET().getText());
+        ValueSet vs = new ValueSet(nullOrString(ctx.STRING()), nullOrString(ctx.VALUESET()));
         track(vs, ctx);
         library.addValueSet(vs);
 
@@ -350,7 +349,18 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     }
 
     private String nullOrString(ParseTree pt) {
-        return pt == null ? null : pt.getText();
+        if (pt == null) return null;
+
+        String text = pt.getText();
+        if (pt instanceof TerminalNode) {
+            int tokenType = ((TerminalNode) pt).getSymbol().getType();
+            if (cqlLexer.STRING == tokenType || cqlLexer.VALUESET == tokenType) {
+                // chop off leading and trailing ' or "
+                text = text.substring(1, text.length() - 1);
+            }
+        }
+
+        return text;
     }
 
     private IdentifierExpression nullOrIdentifierExpression(ParseTree pt) {
@@ -386,9 +396,9 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
                 lib,
                 library.getVersion(),
                 ctx.getStart().getLine(),
-                ctx.getStart().getCharPositionInLine(),
+                ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 ctx.getStop().getLine(),
-                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() - 1
+                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() // 1-based instead of 0-based
         );
 
         trackable.addTrackBack(tb);
