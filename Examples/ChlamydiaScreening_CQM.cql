@@ -34,8 +34,8 @@ let SexuallyActive =
 		or exists ([Condition: "HIV"] C where C.effectiveTime overlaps MeasurementPeriod)
 		or exists ([Condition: "Syphilis"] C where C.effectiveTime overlaps MeasurementPeriod)
 		or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([LaboratoryTest, Order: "Pregnancy"] R where R.effectiveTime during MeasurementPeriod)
-		or exists ([LaboratoryTest, Order: "Pap"] R where R.effectiveTime during MeasurementPeriod)
+		or exists ([LaboratoryTest, Order: "Pregnancy Test"] R where R.effectiveTime during MeasurementPeriod)
+		or exists ([LaboratoryTest, Order: "Pap Test"] R where R.effectiveTime during MeasurementPeriod)
 		or exists ([LaboratoryTest, Order: "Lab Tests During Pregnancy"] R where R.effectiveTime during MeasurementPeriod)
 		or exists ([LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"] R where R.observedAtTime during MeasurementPeriod)
 
