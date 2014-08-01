@@ -30,8 +30,8 @@ let ConditionsIndicatingSexualActivity =
     union [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
 
 let LaboratoryTestsIndicatingSexualActivity =
-    [LaboratoryTest, Order: "Pregnancy"]
-    union [LaboratoryTest, Order: "Pap"]
+    [LaboratoryTest, Order: "Pregnancy Test"]
+    union [LaboratoryTest, Order: "Pap Test"]
     union [LaboratoryTest, Order: "Lab Tests During Pregnancy"]
 	union [LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"]
 
