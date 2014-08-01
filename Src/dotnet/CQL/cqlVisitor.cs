@@ -12,11 +12,6 @@ namespace CQL
 			return base.VisitStatement(context);
 		}
 
-		public override string VisitExistenceModifier(cqlParser.ExistenceModifierContext context)
-		{
-			return base.VisitExistenceModifier(context);
-		}
-
         public override string VisitValueset(cqlParser.ValuesetContext context)
         {
             return base.VisitValueset(context);

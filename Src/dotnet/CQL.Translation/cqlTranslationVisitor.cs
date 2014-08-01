@@ -63,15 +63,15 @@ namespace CQL.Translation
 
 		public override Element VisitRetrieve(cqlParser.RetrieveContext context)
 		{
-			var existenceModifier = context.existenceModifier();
+			var occurrence = context.occurrence();
 			var topic = context.topic();
 			var modality = context.modality();
 			var className = 
 				GetClassName
 				(
-					existenceModifier == null 
+					occurrence == null 
 						? "Occurrence" 
-						: (existenceModifier.GetText() == "no" ? "NonOccurrence" : "UnknownOccurrence"), 
+						: (occurrence.GetText() == "no" ? "NonOccurrence" : "UnknownOccurrence"), 
 					topic.GetText(), 
 					modality == null ? null : modality.GetText()
 				);
@@ -195,7 +195,7 @@ namespace CQL.Translation
 						throw new NotSupportedException();
 					}
 
-					return new Sort { source = result, orderBy = sortClause.sortByItem(0).qualifiedIdentifier().GetText() };
+					return new Sort { source = result, orderBy = sortClause.sortByItem(0).expressionTerm().GetText() };
 				}
 			}
 

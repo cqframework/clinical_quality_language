@@ -1,5 +1,34 @@
 library ExampleSyntax
 
+[UnknownOccurrence of Encounter, Performance]
+
+[Encounter, Performance|Occurrence]
+
+let AllProcedures = [Procedure, Performance]
+
+let ImagingProcedures = AllProcedures P where P is [ImagingProcedure, Performance] return P as [ImagingProcedure, Performance]
+
+A starts at most same day as start B
+
+start of A <= start of B
+
+A starts at least same day as start B
+
+start of A >= start of B
+
+let MostRecentOfficeVisit = 
+	Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)
+
+let HighBP =
+	[SimpleObservationResult: "Systolic Blood Pressure"] SBP
+		with (Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)) OV 
+			where SBP.observedAtTime during OV.performanceTime
+		where SBP.value < 140 u'mm[Hg]'
+
+let HighBP =
+	Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)
+
+
 let InpatientCode = CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' }
 
 let InpatientEncounters = [Encounter, Performance] E where E.code = InpatientCode
@@ -49,24 +78,42 @@ Date(null, null, 11)
 
 // does precision matter for < or >, yes but not the ability to specify what precision is used
 
-Date(2014) = Date(2014, 6, 5)
+Date(2014) = Date(2014) // true
+Date(2014) = Date(2014, 6, 5) // unknown
+Date(2014, 6, 5) = Date(2014, 6, 5) // true
+Date(2014, 6, 6) = Date(2014, 6, 5) // false
 
 A = B // Exact equality requires the same precision and the same values for all components
+
 A < B
 A > B // Comparison must always be performed based on the lowest common granularity
+
+Date(2012) < Date(2014, 7, 11)
+Date(2012, 1, 1, 0, 0, 0)..Date(2012, 12, 31, 23, 59, 59) < Date(2014, 7, 11, 0, 0, 0)..Date(2014, 7, 11, 23, 59, 59)
+
+Date(2014) < Date(2014, 7, 11)
+
 A <= B
 A >= B // Combines exact equality with comparison semantics (i.e. A <= B <=> A = B or A < B)
+
+start of A <= start of B using years
+
+if (A is EncounterPerformanceOccurrence)
+
+(A as EncounterPerformanceOccurrence).encounterType
+
+if (A is [Encounter, Performance])
 
 // Precision-based comparison
 A same year as B
 
-A less than B
-A greater than B
+Date(2014) same day as Date(2014, 7, 11)
+
 A at least B <=> A >= B
 A at most 5 <=> A <= B
 
 A same year as B
-A at least same year as B
+A at least same year as B // A < B or A same year as B???
 A at most same year as B
 
 A = B using years
@@ -244,10 +291,10 @@ date of X year of X minute of X
 let ListLiteral = { 1, 2, 3, 4, 5 }
 
 // Interval Types
-let IntervalLiteral = interval[today - 1 years, today]
+let IntervalLiteral = interval[Today() - 1 years, Today()]
 interval[3, 5)
 
-today - 1 years
+Today() - 1 years
 
 months between X and Y
 
@@ -335,10 +382,10 @@ dateTimeX within 3 days of dateTimeY
 
 // Date/Time Manipulation
 let DateSelector = Date(2014, 1, 1, 12, 0, 0, -6)
-let Now = now
-let Today = today
+let Now = Now()
+let Today = Today()
 let ConvertedDate = convert '20140101120000-0600' to Datetime
-let DateAdd = today + 3 months - 2 days
+let DateAdd = Today() + 3 months - 2 days
 let DateDiff = months between start of X and end of X
 let Duration = duration in months of X
 let DateComponent = date of start of X
@@ -457,8 +504,8 @@ let TargetEncounters =
 
 let TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
-		with Pharyngitis P where P.effectiveTime overlaps after E.PerformanceAtTime
-		with Antibiotics A where A.orderedAtTime starts within 3 days after start E.PerformanceAtTime 
+		with Pharyngitis P such that P.effectiveTime overlaps after E.performanceTime
+		with Antibiotics A such that A.orderedAtTime starts within 3 days after start E.performanceTime 
 	    where E.PerformanceAtTime during MeasurementPeriod
 
 // Full Query
@@ -728,8 +775,8 @@ let SexuallyActive =
 	or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"])
 		
 let NoScreening =
-	not exists ([ObservationResult: "Chlamydia Screening", during interval[today - 1 years, today]] R where R.result is not null)
-	and not exists ([Procedure, Plan: "Chlamydia Screening", during interval[today, null]])
+	not exists ([ObservationResult: "Chlamydia Screening", during interval[Today() - 1 years, Today()]] R where R.result is not null)
+	and not exists ([Procedure, Plan: "Chlamydia Screening", during interval[Today(), null]])
 	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
@@ -827,7 +874,7 @@ let SexuallyActive =
     or exists (Common.ResultsIndicatingSexualActivity)
 
 let NoScreening =
-    not exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during interval[today - 1 years, today])
+    not exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during interval[Today() - 1 years, Today()])
     and not exists ([Procedure, Plan: Common."Chlamydia Screening"] P where P.effectiveTime >= now)
     and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 

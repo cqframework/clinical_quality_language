@@ -17,12 +17,12 @@ define retrieve [Condition: code in Concept, effectiveTime during Range]
 						interval
 						[
 							if C.onsetAge is not null 
-								then Date((year of today) - (Age() - C.onsetAge), null, null) 
+								then Date((year of Today()) - (Age() - C.onsetAge)) 
 								else C.onsetDate,
 							case
 								when C.abatement is not null then null
 								when C.abatementAge is not null
-									then Date((year of today) - (Age() - C.abatementAge), null, null)
+									then Date((year of Today()) - (Age() - C.abatementAge))
 								else C.abatementDate
 							end
 						],
@@ -30,7 +30,7 @@ define retrieve [Condition: code in Concept, effectiveTime during Range]
 				}
 }
 
-define retrieve [Condition|NonOccurrence: code in Concept, effectiveTime during Range]
+define retrieve [NonOccurrence of Condition: code in Concept, effectiveTime during Range]
 {
 	return
 		[FHIR.Condition : Concept, during Range] C
@@ -43,12 +43,12 @@ define retrieve [Condition|NonOccurrence: code in Concept, effectiveTime during 
 						interval
 						[
 							if C.onsetAge is not null 
-								then Date((year of today) - (Age() - C.onsetAge), null, null) 
+								then Date((year of Today()) - (Age() - C.onsetAge)) 
 								else C.onsetDate,
 							case
 								when C.abatement is not null then null
 								when C.abatementAge is not null
-									then Date((year of today) - (Age() - C.abatementAge), null, null)
+									then Date((year of Today()) - (Age() - C.abatementAge))
 								else C.abatementDate
 							end
 						],

@@ -49,7 +49,7 @@ typeSpecifier
     ;
 
 atomicTypeSpecifier
-    : IDENTIFIER // TODO: specify atomic type names as part of the grammar?
+    : IDENTIFIER
     ;
 
 listTypeSpecifier
@@ -193,7 +193,7 @@ sortDirection // TODO: use full words instead of abbreviations?
     ;
 
 sortByItem
-    : qualifiedIdentifier sortDirection?
+    : expressionTerm sortDirection?
     ;
 
 qualifiedIdentifier
@@ -340,14 +340,10 @@ quantityLiteral
     ;
 
 unit // NOTE: Using plurals here because that's the most common case, we could add singulars, but that would allow "within 5 day"
-    : 'years'
-    | 'months'
+    : dateTimePrecision
+    | pluralDateTimePrecision
+    | 'week'
     | 'weeks'
-    | 'days'
-    | 'hours'
-    | 'minutes'
-    | 'seconds'
-    | 'milliseconds'
     | 'u'STRING // UCUM syntax for units of measure
     ;
 

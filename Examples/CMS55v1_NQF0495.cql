@@ -66,3 +66,4 @@ let MeasureObservation =
 context POPULATION
 
 let MeasureScore = Median(MeasureObservation)
+

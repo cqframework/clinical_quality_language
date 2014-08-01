@@ -16,8 +16,8 @@ let SexuallyActive =
     or exists (Common.LaboratoryTestsIndicatingSexualActivity)
 
 let NoScreening =
-    not exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during interval[today - 1 years, today])
-    and not exists ([Procedure, Plan: Common."Chlamydia Screening"] P where P.effectiveTime >= now)
+    not exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during interval[Today() - 1 years, Today()])
+    and not exists ([Procedure, Plan: Common."Chlamydia Screening"] P where P.effectiveTime >= Now())
     and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
