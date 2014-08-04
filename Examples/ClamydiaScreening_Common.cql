@@ -2,8 +2,6 @@ library CMS153_Common version '2'
 
 using QUICK
 
-context PATIENT
-
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 valueset "Other Female Reproductive Conditions" = ValueSet('2.16.840.1.113883.3.464.1003.111.12.1006')
 valueset "Genital Herpes" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1049')
@@ -19,25 +17,23 @@ valueset "Lab Tests During Pregnancy" = ValueSet('2.16.840.1.113883.3.464.1003.1
 valueset "Lab Tests for Sexually Transmitted Infections" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1051')
 valueset "Chlamydia Screening" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1052')
 
-let ConditionsIndicatingSexualActivity =
-    union(
-        [Condition: "Other Female Reproductive Conditions"],
-        [Condition: "Genital Herpes"],
-        [Condition: "Genococcal Infections and Venereal Diseases"],
-        [Condition: "Inflammatory Diseases of Female Reproductive Organs"],
-        [Condition: "Chlamydia"],
-        [Condition: "HIV"],
-        [Condition: "Syphilis"],
-        [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
-    )
+context PATIENT
 
-let ResultsIndicatingSexualActivity =
-    union(
-        [ObservationResult: "Pregnancy"],
-        [ObservationResult: "Pap"],
-        [ObservationResult: "Lab Tests During Pregnancy"],
-        [ObservationResult: "Lab Tests for Sexually Transmitted Infections"]
-    )
+let ConditionsIndicatingSexualActivity =
+	[Condition: "Other Female Reproductive Conditions"]
+	union [Condition: "Genital Herpes"]
+    union [Condition: "Genococcal Infections and Venereal Diseases"]
+    union [Condition: "Inflammatory Diseases of Female Reproductive Organs"]
+    union [Condition: "Chlamydia"]
+    union [Condition: "HIV"]
+    union [Condition: "Syphilis"]
+    union [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
+
+let LaboratoryTestsIndicatingSexualActivity =
+    [LaboratoryTest, Order: "Pregnancy Test"]
+    union [LaboratoryTest, Order: "Pap Test"]
+    union [LaboratoryTest, Order: "Lab Tests During Pregnancy"]
+	union [LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"]
 
 let TestsPerformedForChlamydia =
 	[Procedure, Performance: "Chlamydia Screening"]

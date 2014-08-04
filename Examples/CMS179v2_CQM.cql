@@ -4,8 +4,6 @@ library CMS179 version '2'
 
 using QUICK
 
-context PATIENT
-
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
 valueset "Flutter Diagnosis" = ValueSet('2.16.840.1.113883.3.117.1.7.1.202')
@@ -14,6 +12,8 @@ valueset "Face-to-face Encounter" = ValueSet('2.16.840.1.113883.3.464.1003.101.1
 valueset "Office Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
 valueset "Valvular Heart Disease" = ValueSet('2.16.840.1.113883.3.464.1003.104.12.1017')
 valueset "INR Lab Result" = ValueSet('2.16.840.1.113883.3.117.1.7.1.213')
+
+context PATIENT
 
 let FlutterDiagnoses = [Condition: "Flutter Diagnosis"]
 let WarfarinMedications = [Medication, Administered: "Warfarin Medication"]

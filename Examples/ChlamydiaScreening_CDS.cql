@@ -2,8 +2,6 @@ library CMS153_CDS version '2'
 
 using QUICK
 
-context PATIENT
-
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 valueset "Other Female Reproductive Conditions" = ValueSet('2.16.840.1.113883.3.464.1003.111.12.1006')
 valueset "Genital Herpes" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1049')
@@ -20,8 +18,10 @@ valueset "Lab Tests for Sexually Transmitted Infections" = ValueSet('2.16.840.1.
 valueset "Chlamydia Screening" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1052')
 valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD') // Not used in the measure, need a value set for this
 
+context PATIENT
+
 let InDemographic = 
-	Age() >= 16 and Age() < 24 and Gender in "Female Administrative Sex"
+	Age() >= 16 and Age() < 24 and gender in "Female Administrative Sex"
 
 let SexuallyActive =
 	exists ([Condition: "Other Female Reproductive Conditions"])
@@ -32,14 +32,14 @@ let SexuallyActive =
 	or exists ([Condition: "HIV"])
 	or exists ([Condition: "Syphilis"])
 	or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"])
-	or exists ([ObservationResult: "Pregnancy Test"])
-	or exists ([ObservationResult: "Pap Test"])
-	or exists ([ObservationResult: "Lab Tests During Pregnancy"])
-	or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"])
+	or exists ([LaboratoryTest, Order: "Pregnancy Test"])
+	or exists ([LaboratoryTest, Order: "Pap Test"])
+	or exists ([LaboratoryTest, Order: "Lab Tests During Pregnancy"])
+	or exists ([LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"])
 		
 let NoScreening =
-	not exists ([ObservationResult: "Chlamydia Screening", during interval[today - 1 years, today]] R where R.result is not null)
-	and not exists ([Procedure, Plan: "Chlamydia Screening", during interval[today, null]])
+	not exists ([ObservationResult: "Chlamydia Screening", during interval[Today() - 1 years, Today()]] R where R.result is not null)
+	and not exists ([Procedure, Plan: "Chlamydia Screening", during interval[Today(), null]])
 	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening

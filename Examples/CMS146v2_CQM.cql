@@ -53,7 +53,7 @@ context PATIENT
 let InDemographic =
     AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
 
-let Pharyngitis =
+let Pharyngitis = 
     ([Condition: "Acute Pharyngitis"]) union ([Condition: "Acute Tonsilitis"])
 
 let Antibiotics =

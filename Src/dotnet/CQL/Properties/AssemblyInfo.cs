@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CQL")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("CQL Core")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("CQL")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2014")]
+[assembly: AssemblyCompany("The MITRE Corporation")]
+[assembly: AssemblyProduct("Clinical Quality Framework")]
+[assembly: AssemblyCopyright("Copyright © 2014 The MITRE Corporation")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

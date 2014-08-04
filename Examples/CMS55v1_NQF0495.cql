@@ -48,8 +48,10 @@ using QUICK
 
 context PATIENT
 
-let InpatientEncounters =
-	[Encounter, Performance: "Inpatient"] E where E.lengthOfStay <= 120 days and E.dischargeDateTime during MeasurementPeriod
+let InpatientEncounters = 
+	[Encounter, Performance: "Inpatient"] E 
+		where E.lengthOfStay <= 120 days 
+			and E.dischargeDateTime during MeasurementPeriod
 
 let EDEncounters =
 	[Encounter, Performance: "Emergency Department Visit"] ED
@@ -64,3 +66,4 @@ let MeasureObservation =
 context POPULATION
 
 let MeasureScore = Median(MeasureObservation)
+

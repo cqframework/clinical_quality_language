@@ -1,79 +1,8 @@
 <?xml version="1.0"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:dt="http://hl7.org/fhir" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
-	<!-- This file is derived from the required metadata elements from the initial HeD schema, and retargeted to the QUICK common
-	data types, which are based on the FHIR core data types. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
 		<xs:documentation>
 			This file defines the base types used in defining knowledge artifacts.
 		</xs:documentation>
 	</xs:annotation>
-	<xs:import namespace="http://hl7.org/fhir" schemaLocation="../common/fhir-datatypes.xsd"/>
-	<xs:complexType name="VersionedIdentifier">
-		<xs:annotation>
-			<xs:documentation>VersionedIdentifier is composed of two parts: (1)
-				an II identifier which identifies the set of all versions of a given
-				resource. (2) the actual version of the instance of interest in this
-				set. The VersionedIdentifier therefore points to an individual
-				'versioned' instance of a resource such as the third version of a
-				reminder rule.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="dt:Identifier">
-				<xs:attribute name="version" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="ModelReference">
-		<xs:annotation>
-			<xs:documentation>A reference to some model by its Universal Resource Identifier.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="description" type="dt:string">
-				<xs:annotation>
-					<xs:documentation>A description of the model.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="referencedModel">
-				<xs:annotation>
-					<xs:documentation>The identifier of the object that is being
-						referenced.
-					</xs:documentation>
-				</xs:annotation>
-				<xs:complexType>
-					<xs:attribute name="value" type="xs:anyURI">
-						<xs:annotation>
-							<xs:documentation>The URI of the object that is being referenced. This URL must also be defined as a namespace in the root element of the document</xs:documentation>
-						</xs:annotation>
-					</xs:attribute>
-				</xs:complexType>
-			</xs:element>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="LibraryReference">
-		<xs:annotation>
-			<xs:documentation>A reference to a library.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="name" type="xs:string" use="required">
-			<xs:annotation>
-				<xs:documentation>A unique name within this artifact for the library reference. This name is used within this artifact to reference components of this library.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="mediaType" type="xs:anyURI" use="optional" default="application/elm+xml">
-			<xs:annotation>
-				<xs:documentation>Defines the type of the library. If this attribute is omitted, the library is assumed to be an ELM library artifact.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="path" type="xs:anyURI" use="required">
-			<xs:annotation>
-				<xs:documentation>Defines the path to the library.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="version" type="xs:string" use="optional">
-			<xs:annotation>
-				<xs:documentation>Optionally defines the required version number of the referenced library.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-	</xs:complexType>
 </xs:schema>
