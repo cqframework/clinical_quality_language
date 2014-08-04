@@ -81,7 +81,8 @@ public class CqlLibrary {
     }
 
     public LetStatement addLetStatement(LetStatement let) {
-        return getVariables().put(let.getIdentifier(), let);
+        variables.put(let.getIdentifier(), let);
+        return let;
     }
 
     public Map<String, LetStatement> getVariables() {
@@ -113,6 +114,14 @@ public class CqlLibrary {
         for (ValueSet vs : getValueSets()) {
             sb.append("\n    ").append(vs);
             for (TrackBack tb : vs.getTrackbacks()) {
+                sb.append("\n      --> ").append(tb.toString());
+            }
+        }
+        sb.append("\n  }");
+        sb.append("\n  variables={");
+        for (Map.Entry<String, LetStatement> entry : getVariables().entrySet()) {
+            sb.append("\n    ").append(entry.getKey());
+            for (TrackBack tb : entry.getValue().getTrackbacks()) {
                 sb.append("\n      --> ").append(tb.toString());
             }
         }

@@ -534,17 +534,4 @@ public class TranslatorTest {
         assertNotNull(t.getTrackbacks().get(0));
         assertNotNull(t.getTrackerId());
     }
-
-    private Object parseFile(String fileName)throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-        StringBuffer buff = new StringBuffer();
-        String line = null;
-        while ((line = br.readLine()) != null) {
-            buff.append(line);
-        }
-        return parseData(buff.toString());
-    }
-
-
-
 }

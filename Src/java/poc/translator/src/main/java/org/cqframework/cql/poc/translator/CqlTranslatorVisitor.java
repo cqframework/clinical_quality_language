@@ -30,7 +30,7 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visit(@NotNull ParseTree tree) {
         Object o = super.visit(tree);
-        if (o instanceof Trackable && tree instanceof ParserRuleContext) {
+        if (o instanceof Trackable && tree instanceof ParserRuleContext && !(tree instanceof cqlParser.LogicContext)) {
             this.track((Trackable) o, (ParserRuleContext) tree);
         }
         if (o instanceof Expression) {
@@ -38,6 +38,19 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         }
 
         return o;
+    }
+
+    @Override
+    public Object visitLogic(@NotNull cqlParser.LogicContext ctx) {
+        Object lastResult = null;
+
+        // Loop through and call visit on each child (to ensure they are tracked)
+        for (int i=0; i < ctx.getChildCount(); i++) {
+            lastResult = visit(ctx.getChild(i));
+        }
+
+        // Return last result (consistent with super implementation and helps w/ testing)
+        return lastResult;
     }
 
     @Override
@@ -51,7 +64,6 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitValuesetDefinitionByConstructor(@NotNull cqlParser.ValuesetDefinitionByConstructorContext ctx) {
         ValueSet vs = new ValueSet(nullOrString(ctx.STRING()), nullOrString(ctx.VALUESET()));
-        track(vs, ctx);
         library.addValueSet(vs);
 
         return vs;

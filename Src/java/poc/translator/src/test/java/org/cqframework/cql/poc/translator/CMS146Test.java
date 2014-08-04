@@ -2,6 +2,7 @@ package org.cqframework.cql.poc.translator;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.poc.translator.expressions.IdentifierExpression;
+import org.cqframework.cql.poc.translator.expressions.LetStatement;
 import org.cqframework.cql.poc.translator.expressions.QualifiedIdentifier;
 import org.cqframework.cql.poc.translator.model.CqlLibrary;
 import org.cqframework.cql.poc.translator.model.SourceDataCriteria;
@@ -86,6 +87,16 @@ public class CMS146Test {
     }
 
     @Test
+    public void testVariables() {
+        Collection<String> actualVars = library.getVariables().keySet();
+        Collection<String> expectedVars = Arrays.asList("InDemographic", "Pharyngitis", "Antibiotics", "TargetEncounters",
+                "TargetDiagnoses", "HasPriorAntibiotics", "HasTargetEncounter", "InInitialPopulation", "InDenominator",
+                "InDenominatorExclusions", "InNumerator");
+
+        assertTrue(actualVars.containsAll(expectedVars) && expectedVars.containsAll(actualVars), "should capture all variables");
+    }
+
+    @Test
     public void testTrackBacks() {
         for (SourceDataCriteria dc : library.getSourceDataCriteria()) {
             int expectedNumbers[] = {0, 0, 0, 0};
@@ -139,12 +150,63 @@ public class CMS146Test {
                     expectedNumbers = new int[] {11, 1, 11, 92};
                     break;
                 default:
-                    fail("Unknown source data criteria: " + vs);
+                    fail("Unknown valueset: " + vs);
             }
             assertNotNull(vs.getTrackerId());
             assertEquals(vs.getTrackbacks().size(), 1);
 
             TrackBack tb = vs.getTrackbacks().iterator().next();
+            assertEquals(tb.getLibrary(), "CMS146");
+            assertEquals(tb.getVersion(), "2");
+            assertEquals(tb.getStartLine(), expectedNumbers[0]);
+            assertEquals(tb.getStartChar(), expectedNumbers[1]);
+            assertEquals(tb.getEndLine(), expectedNumbers[2]);
+            assertEquals(tb.getEndChar(), expectedNumbers[3]);
+        }
+
+        for (LetStatement ls : library.getVariables().values()) {
+            int expectedNumbers[] = {0, 0, 0, 0};
+            switch (ls.getIdentifier()) {
+                case "InDemographic":
+                    expectedNumbers = new int[] {15, 1, 16, 85};
+                    break;
+                case "Pharyngitis":
+                    expectedNumbers = new int[] {18, 1, 19, 78};
+                    break;
+                case "Antibiotics":
+                    expectedNumbers = new int[] {21, 1, 22, 54};
+                    break;
+                case "TargetEncounters":
+                    expectedNumbers = new int[] {24, 1, 28, 56};
+                    break;
+                case "TargetDiagnoses":
+                    expectedNumbers = new int[] {30, 1, 31, 96};
+                    break;
+                case "HasPriorAntibiotics":
+                    expectedNumbers = new int[] {33, 1, 34, 122};
+                    break;
+                case "HasTargetEncounter":
+                    expectedNumbers = new int[] {36, 1, 37, 29};
+                    break;
+                case "InInitialPopulation":
+                    expectedNumbers = new int[] {39, 1, 40, 40};
+                    break;
+                case "InDenominator":
+                    expectedNumbers = new int[] {42, 1, 43, 8};
+                    break;
+                case "InDenominatorExclusions":
+                    expectedNumbers = new int[] {45, 1, 46, 23};
+                    break;
+                case "InNumerator":
+                    expectedNumbers = new int[] {48, 1, 49, 137};
+                    break;
+                default:
+                    fail("Unknown variable: " + ls.getIdentifier());
+            }
+            assertNotNull(ls.getTrackerId());
+            assertEquals(ls.getTrackbacks().size(), 1, "Expecting 1 trackback but had: " + ls.getTrackbacks());
+
+            TrackBack tb = ls.getTrackbacks().iterator().next();
             assertEquals(tb.getLibrary(), "CMS146");
             assertEquals(tb.getVersion(), "2");
             assertEquals(tb.getStartLine(), expectedNumbers[0]);
