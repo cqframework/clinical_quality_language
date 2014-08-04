@@ -247,7 +247,7 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
         SourceDataCriteria dataCriteria = new SourceDataCriteria(
-                extractExistence(ctx.existenceModifier()),
+                extractExistence(ctx.occurrence()),
                 nullOrQualifiedIdentifierExpression(ctx.topic()),
                 nullOrIdentifierExpression(ctx.modality()),
                 nullOrIdentifierExpression(ctx.valuesetPathIdentifier()),
@@ -284,7 +284,8 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitSortByItem(@NotNull cqlParser.SortByItemContext ctx) {
         SortClause.SortDirection direction = SortClause.SortDirection.valueOf(ctx.sortDirection().getText());
-        QualifiedIdentifier exp = (QualifiedIdentifier) visit(ctx.qualifiedIdentifier());
+        // TODO: This changed in the grammar from QualifiedIdentifier to ExpressionTerm!
+        QualifiedIdentifier exp = (QualifiedIdentifier) visit(ctx.expressionTerm());
         return new SortItem(direction, exp);
     }
 
@@ -387,12 +388,10 @@ public class CqlTranslatorVisitor extends cqlBaseVisitor {
         return pt == null ? null : (Expression) visit(pt);
     }
 
-    private SourceDataCriteria.Existence extractExistence(cqlParser.ExistenceModifierContext ctx) {
+    private SourceDataCriteria.Existence extractExistence(cqlParser.OccurrenceContext ctx) {
         SourceDataCriteria.Existence existence = SourceDataCriteria.Existence.Occurrence;
-        if (ctx != null && ctx.getText().equals("no")) {
-            existence = SourceDataCriteria.Existence.NonOccurrence;
-        } else if (ctx != null && ctx.getText().equals("unknown")) {
-            existence = SourceDataCriteria.Existence.UnknownOccurrence;
+        if (ctx != null) {
+            existence = SourceDataCriteria.Existence.valueOf(ctx.getText());
         }
 
         return existence;

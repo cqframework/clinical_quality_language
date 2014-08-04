@@ -401,7 +401,7 @@ public class TranslatorTest {
             assertEquals("duringPath",ret.getDuringPathIdentifier().getIdentifier());
             assertTrue(ret.getDuringExpression() instanceof  NullLiteral);
 
-            tree = parseData("let st = no [Encounter, Performed]");
+            tree = parseData("let st = [NonOccurrence of Encounter, Performed]");
             let = (LetStatement)visitor.visit(tree);
             assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
             assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
