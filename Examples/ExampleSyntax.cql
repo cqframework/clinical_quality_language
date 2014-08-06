@@ -14,6 +14,22 @@ start of A <= start of B
 
 A starts at least same day as start B
 
+A starts 2 days before start B
+
+start of A < (start of B - 2 days)
+
+start of A < start of B and (duration in days between start of A and start of B) > 2
+
+                A.datetime = 2014/01/15
+                B.datetime = 2014/02
+
+IntervalA: interval[Date(2014,1,15,0,0,0), Date(2014,1,15,23,59,59)]
+IntervalB: interval[Date(2014,2,1,0,0,0), Date(2014,2,28,23,59,59)]
+
+IntervalB: interval[Date(2014,1,30,0,0,0), Date(2014,2,26,23,59,59)]
+
+end of IntervalA < start of IntervalB
+
 start of A >= start of B
 
 let MostRecentOfficeVisit = 
