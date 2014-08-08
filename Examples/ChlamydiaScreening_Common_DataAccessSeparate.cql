@@ -35,22 +35,18 @@ let chlamydiaScreening = [ObservationResult: "Chlamydia Screening"]
 let reasonForNoScreening = [ObservationResult: "Reason for not performing Chlamydia Screening"]
 
 let conditionsIndicatingSexualActivity =
-    union(
-        otherFemaleReproductiveConditions,
-        genitalHerpes,
-        genococcalInfectionsAndVeneralDiseases,
-        inflammatoryDiseasesOfFemaleReproductiveOrgans,
-        chlamydia,
-        hiv,
-        syphilis,
-        complicationsOfPregnancyChildbirthAndPuerperium
-    )
+    otherFemaleReproductiveConditions
+        union genitalHerpes
+        union genococcalInfectionsAndVeneralDiseases
+        union inflammatoryDiseasesOfFemaleReproductiveOrgans
+        union chlamydia
+        union hiv
+        union syphilis
+        union complicationsOfPregnancyChildbirthAndPuerperium
 
 let resultsIndicatingSexualActivity =
-    union(
-        pregnancy,
-        pap,
-        labTestsDuringPregnancy,
-        labTestsForSexuallyTransmittedInfections
-    )
+    pregnancy
+        union pap
+        union labTestsDuringPregnancy
+        union labTestsForSexuallyTransmittedInfections
 

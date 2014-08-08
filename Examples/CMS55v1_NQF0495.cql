@@ -55,7 +55,7 @@ let InpatientEncounters =
 
 let EDEncounters =
 	[Encounter, Performance: "Emergency Department Visit"] ED
-		with InpatientEncounters E where ED.effectiveTime ends within 1 hours before start of E.effectiveTime
+		with InpatientEncounters E where ED.effectiveTime ends at most 1 hour before start of E.effectiveTime
 
 let MeasureObservation = 
 	EDEncounters E 
