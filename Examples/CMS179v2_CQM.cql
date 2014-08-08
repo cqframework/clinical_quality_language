@@ -25,7 +25,7 @@ let INRLabResults = [ObservationResult: "INR Lab Result"]
 let InDemographic =
 	AgeAt(start of MeasurementPeriod) >= 18 years
 
-let InpatientEncounters = union ( FaceToFaceEncounters, OfficeVisitEncounters )
+let InpatientEncounters = FaceToFaceEncounters union OfficeVisitEncounters
 let ActiveFlutterDiagnoses = FlutterDiagnoses F where F.effectiveTime overlaps before MeasurementPeriod
 let ActiveValvularHeartDiseaseDiagnoses = ValvularHeartDiseaseDiagnoses D where D.effectiveTime overlaps before MeasurementPeriod
 

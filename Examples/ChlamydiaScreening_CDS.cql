@@ -44,3 +44,8 @@ let NoScreening =
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
 
+let Proposal = 
+	tuple(typeof[Procedure, Proposal]) { procedureCode: CodeableConcept { code: 'XYZ', codeSystem: 'SNOMED-CT', displayName: 'Chlamydia Screening' } };
+
+// Need to be able to map this to FHIR, something like: ToFHIR(Proposal)
+// The mapping needs to be kept separate from the artifact definition, the same way the FHIRMap libraries are separate
