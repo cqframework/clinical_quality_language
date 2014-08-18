@@ -198,6 +198,7 @@ Note that this property could potentially be specified elsewhere as part of an i
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
