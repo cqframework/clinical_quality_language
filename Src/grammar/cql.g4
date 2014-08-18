@@ -216,6 +216,7 @@ expression
     | expression ('in' | 'contains' | 'like') expression                     # membershipExpression
     | expression 'and' expression                                            # andExpression
     | expression ('or' | 'xor') expression                                   # orExpression
+    | expression ('union' | 'intersect' | 'except') expression               # inFixSetExpression
     ;
 
 dateTimePrecision
@@ -253,7 +254,6 @@ expressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     # caseExpressionTerm
     | 'coalesce' '(' expression (',' expression)+ ')'                    # coalesceExpressionTerm
     | ('distinct' | 'collapse' | 'expand') expression                    # aggregateExpressionTerm
-    | expressionTerm ('union' | 'intersect' | 'except') expressionTerm   # inFixSetExpressionTerm
     ;
 
 caseExpressionItem
