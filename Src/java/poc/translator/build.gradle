@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     compile project(':cql')
+    compile project(':elm')
     compile group: 'org.antlr', name: 'stringtemplate', version: '4.0.2'
     testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'

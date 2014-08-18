@@ -62,14 +62,14 @@ let Antibiotics =
 let TargetEncounters =
     [Encounter, Performance: "Ambulatory/ED Visit"] E
         with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
-        with Antibiotics A where A.orderedAtTime starts within 3 days after start E.performedAtTime
+        with Antibiotics A where A.orderedAtTime starts at most 3 days after start E.performedAtTime
         where E.performedAtTime during MeasurementPeriod
 
 let TargetDiagnoses =
     Pharyngitis P with TargetEncounters E where P.effectiveTime overlaps after E.performedAtTime
 
 let HasPriorAntibiotics =
-    exists (Antibiotics A with TargetDiagnoses D where A.orderedAtTime starts within 30 days before start D.effectiveTime)
+    exists (Antibiotics A with TargetDiagnoses D where A.orderedAtTime starts at most 30 days before start D.effectiveTime)
 
 let HasTargetEncounter =
     exists (TargetEncounters)

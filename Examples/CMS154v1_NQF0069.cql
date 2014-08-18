@@ -74,12 +74,12 @@ context PATIENT
 let InDemographic = AgeAt(start of MeasurementPeriod) >= 3 months and AgeAt(start of MeasurementPeriod) <= 18 years
 
 let ValidEncounters =
-	[Encounter, Performance: "Office Visit"]
-		union [Encounter, Performance: "Emergency Department Visit"]
-		union [Encounter, Performance: "Preventive Care- Initial Office Visit, 0 to 17"]
-		union [Encounter, Performance: "Preventive Care - Established Office Visit, 0 to 17"]
-		union [Encounter, Performance: "Hospital Observation Care - Initial"]
-		union [Encounter, Performance: "Face-to-Face Interaction"]
+	([Encounter, Performance: "Office Visit"])
+		union ([Encounter, Performance: "Emergency Department Visit"])
+		union ([Encounter, Performance: "Preventive Care- Initial Office Visit, 0 to 17"])
+		union ([Encounter, Performance: "Preventive Care - Established Office Visit, 0 to 17"])
+		union ([Encounter, Performance: "Hospital Observation Care - Initial"])
+		union ([Encounter, Performance: "Face-to-Face Interaction"])
 
 let EncountersDuringMeasurementPeriod =
 	ValidEncounters E where E.effectiveTime during MeasurementPeriod
@@ -100,7 +100,7 @@ let Denominator =
 	true
 
 let Numerator =
-	ValidDiagnosis V where not exists ([Medication, Order: "Antibiotic Medications"] M where M.orderTime starts within 3 days after start of V.effectiveTime)
+	ValidDiagnosis V where not exists ([Medication, Order: "Antibiotic Medications"] M where M.orderTime starts at most 3 days after start of V.effectiveTime)
 
 context POPULATION
 
