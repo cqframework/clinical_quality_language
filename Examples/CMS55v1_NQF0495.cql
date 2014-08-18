@@ -46,6 +46,9 @@ Supplemental Data Elements
 
 using QUICK
 
+valueset "Inpatient" = ValueSet('2.16.840.1.113883.3.666.5.307')
+valueset "Emergency Department Visit" = ValueSet('2.16.840.1.113883.3.117.1.7.1.293')
+
 context PATIENT
 
 let InpatientEncounters = 
@@ -55,13 +58,13 @@ let InpatientEncounters =
 
 let EDEncounters =
 	[Encounter, Performance: "Emergency Department Visit"] ED
-		with InpatientEncounters E where ED.effectiveTime ends within 1 hours before start of E.effectiveTime
+		with InpatientEncounters E where ED.effectiveTime ends at most 1 hours before start of E.effectiveTime
 
 let MeasureObservation = 
 	EDEncounters E 
 		where E.facilityLocationArrivalDateTime is not null
 			and E.facilityLocationDepartureDateTime is not null
-		return { DurationInMinutes: minutes between E.facilityLocationArrivalDateTime and E.facilityLocationDepartureDateTime }
+		return minutes between E.facilityLocationArrivalDateTime and E.facilityLocationDepartureDateTime
 
 context POPULATION
 

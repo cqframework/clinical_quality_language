@@ -4,7 +4,7 @@ using FHIR
 
 context PATIENT
 
-define retrieve [Condition: code in Concept, effectiveTime during Range]
+define retrieve [QUICK.Condition: code in Concept, effectiveTime during Range]
 {
 	return
 		[FHIR.Condition: Concept, during Range] C
@@ -84,3 +84,44 @@ define retrieve [ObservationResult: name in Concept, observedAtTime during Range
 					)
 			}
 }
+
+
+define retrieve [QUICK.MyCondition: code in Concept, effectiveTime during Range]
+{
+	return
+		[FHIR.TheirCondition: Concept, during Range] C
+			where C.status in { 'provisional', 'working', 'confirmed' }
+			return
+				tuple
+				{
+					code: C.name,
+					effectiveTime: 
+						interval
+						[
+							if C.onsetAge is not null 
+								then Date((year of Today()) - (Age() - C.onsetAge)) 
+								else C.onsetDate,
+							case
+								when C.abatement is not null then null
+								when C.abatementAge is not null
+									then Date((year of Today()) - (Age() - C.abatementAge))
+								else C.abatementDate
+							end
+						],
+					...,
+					myAttribute1: C.extension['Attribute1'].valueInteger, // using FHIR extension attributes
+					myAttribute2: C.Attribute2 // Assuming the FHIR data access layer returns first-class attributes based on the FHIR Profile
+				}
+}
+
+
+define function ToFHIR(procedureProposal: [Procedure, Proposal])
+{
+	return
+		tuple ([FHIR.Procedure])
+		{
+			code: procedureProposal.procedureCode,
+			...
+		}
+}
+

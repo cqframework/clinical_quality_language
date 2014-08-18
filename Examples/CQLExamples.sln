@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{DE
 		CMS179v2_CQM.cql = CMS179v2_CQM.cql
 		CMS55v1_NQF0495.cql = CMS55v1_NQF0495.cql
 		ExampleSyntax.cql = ExampleSyntax.cql
+		ScratchPad.cql = ScratchPad.cql
 	EndProjectSection
 EndProject
 Global
