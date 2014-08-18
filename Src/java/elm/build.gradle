@@ -16,6 +16,10 @@ configurations {
 dependencies {
     xjc group: 'com.sun.xml.bind', name: 'jaxb-xjc', version: '2.2.7-b41'
     xjc group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.7-b41'
+    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-ant', version: '0.6.5'
+    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.6.5'
+    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-fluent-api', version: '3.0'
+    compile group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.6.5'
 }
 
 ext.xjc = [
@@ -26,8 +30,10 @@ ext.xjc = [
 task generateSources << {
     file(xjc.destDir).mkdirs()
 
-    ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.xjc.asPath)
-    ant.xjc(destdir: xjc.destDir, schema: xjc.schema)
+    ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
+    ant.xjc(destdir: xjc.destDir, schema: xjc.schema) {
+        arg(line: '-Xfluent-api -Xequals -XhashCode -XtoString -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable')
+    }
 }
 
 compileJava.dependsOn generateSources
