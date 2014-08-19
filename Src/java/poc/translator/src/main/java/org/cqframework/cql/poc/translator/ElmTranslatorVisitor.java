@@ -17,6 +17,9 @@ import javax.xml.namespace.QName;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,15 +156,29 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Null visitNullLiteral(@NotNull cqlParser.NullLiteralContext ctx) {
-        // TODO: Is this the right way?
         return of.createNull();
     }
 
     @Override
-    public Literal visitQuantityLiteral(@NotNull cqlParser.QuantityLiteralContext ctx) {
-        // TODO: How to do this in ELM?
-        return of.createLiteral();
-        //return new QuantityLiteral(ctx.QUANTITY().getText(), unit);
+    public Expression visitQuantityLiteral(@NotNull cqlParser.QuantityLiteralContext ctx) {
+        if (ctx.unit() != null) {
+            DecimalFormat df = new DecimalFormat("#.#");
+            df.setParseBigDecimal(true);
+            try {
+                return of.createQuantity()
+                        .withValue((BigDecimal)df.parse(ctx.QUANTITY().getText()));
+            }
+            catch (ParseException e) {
+                // Should never occur, just return null
+                return of.createNull();
+            }
+        }
+        else {
+            String quantity = ctx.QUANTITY().getText();
+            return of.createLiteral()
+                    .withValue(quantity)
+                    .withValueType(new QName(quantity.contains(".") ? "xs:int" : "xs:decimal"));
+        }
     }
 
     @Override

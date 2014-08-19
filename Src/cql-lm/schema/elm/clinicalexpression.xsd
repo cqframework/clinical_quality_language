@@ -9,6 +9,8 @@
 		ClinicalRequestDef type added
 		ValueSetDef added
 		ValueSetRef added
+		IsEquivalent added
+		Quantity added
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
@@ -249,6 +251,25 @@ Note that the id, version, and authority for the value set are specified by attr
 						<xs:documentation>The authority for the value set to be retrieved. This value represents a conceptual identifier for the steward of the value set. An integration would need to be able to map this to a specific service providing the value sets maintained by this authority.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsEquivalent">
+		<xs:annotation>
+			<xs:documentation>The IsEquivalent operator determines whether two codes are equivalent concepts. The codes may be from the same or different code systems. The call is expected to be evaluated by a terminology service.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Quantity">
+		<xs:annotation>
+			<xs:documentation>The Quantity type defines a clinical quantity. For example, the quantity 10 days or 30 mmHg. The value is a decimal, while the unit is expected to be a valid UCUM unit.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="value" type="xs:decimal"/>
+				<xs:attribute name="unit" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

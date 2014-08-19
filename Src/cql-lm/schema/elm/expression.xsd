@@ -5,6 +5,7 @@
 		Added FunctionDef as an extension of ExpressionDef
 		Added FunctionRef as an extension of ExpressionRef
 		Added Element as an abstract base class for Expression, ExpressionDef, and ParameterDef
+		Made valueType attribute of Null optional
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
@@ -369,11 +370,11 @@ The static type of the then argument within the first caseItem determines the ty
 	-->
 	<xs:complexType name="Null">
 		<xs:annotation>
-			<xs:documentation>The Null operator returns a null, or missing information marker. To avoid the need to cast this result, the operator is defined to return a typed null.</xs:documentation>
+			<xs:documentation>The Null operator returns a null, or missing information marker. To avoid the need to cast this result, the operator is allowed to return a typed null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
-				<xs:attribute name="valueType" type="xs:QName" use="required"/>
+				<xs:attribute name="valueType" type="xs:QName" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
