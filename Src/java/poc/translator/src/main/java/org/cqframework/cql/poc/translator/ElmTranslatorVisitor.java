@@ -13,6 +13,10 @@ import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.elm.r1.*;
 
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -555,6 +559,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     private TrackBack track(Trackable trackable, ParserRuleContext ctx) {
         TrackBack tb = new TrackBack(
+                //of.createVersionedIdentifier().withId(library.getIdentifier().getId()).withVersion(library.getIdentifier().getVersion()),
                 library.getIdentifier(),
                 ctx.getStart().getLine(),
                 ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based
@@ -567,7 +572,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         return tb;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, JAXBException {
         String inputFile = null;
         if (args.length > 0) inputFile = args[0];
         InputStream is = System.in;
@@ -584,7 +589,19 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         ElmTranslatorVisitor visitor = new ElmTranslatorVisitor();
         visitor.visit(tree);
 
+        /* ToString output
         System.out.println(visitor.getLibrary().toString());
-        //JAXB.marshal((new ObjectFactory()).createLibrary(visitor.getLibrary()), System.out);
+        */
+
+        /* XML output
+        JAXB.marshal((new ObjectFactory()).createLibrary(visitor.getLibrary()), System.out);
+        */
+
+        /* JSON output */
+        JAXBContext jc = JAXBContext.newInstance(Library.class);
+        Marshaller marshaller = jc.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty("eclipselink.media-type", "application/json");
+        marshaller.marshal(new ObjectFactory().createLibrary(visitor.getLibrary()), System.out);
     }
 }
