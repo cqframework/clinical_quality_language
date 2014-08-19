@@ -8,4 +8,5 @@
 	<Folder FolderName="Entities" ExtStr="ent"/>
 	<ExtMountFolder FolderName="C:\Users\Bryn\Documents\Src\OneModel\CQL\Src\cql-lm\schema"/>
 	<ExtMountFolder FolderName="C:\Users\Bryn\Documents\Src\OneModel\CQL\Examples"/>
+	<ExtMountFolder FolderName="C:\Users\Bryn\Documents\Src\OneModel\QUICK\schema"/>
 </Project>

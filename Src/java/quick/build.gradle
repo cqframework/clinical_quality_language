@@ -1,0 +1,44 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+group = 'org.cqframework'
+version = '0.1'
+sourceCompatibility = '1.7'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    xjc
+}
+
+dependencies {
+    xjc group: 'com.sun.xml.bind', name: 'jaxb-xjc', version: '2.2.7-b41'
+    xjc group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.7-b41'
+    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-ant', version: '0.6.5'
+    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.6.5'
+    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-fluent-api', version: '3.0'
+    compile group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.6.5'
+}
+
+ext.xjc = [
+    schema:  "${projectDir}/../quick/schema/quick.xsd",
+    destDir: 'src/generated/java'
+]
+
+task generateSources << {
+    file(xjc.destDir).mkdirs()
+
+    ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
+    ant.xjc(destdir: xjc.destDir, schema: xjc.schema) {
+        arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString')
+    }
+}
+
+compileJava.dependsOn generateSources
+sourceSets.main.java.srcDirs += xjc.destDir
+
+clean {
+    delete xjc.destDir
+}

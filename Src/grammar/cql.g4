@@ -340,7 +340,7 @@ quantityLiteral
     : QUANTITY unit?
     ;
 
-unit // NOTE: Using plurals here because that's the most common case, we could add singulars, but that would allow "within 5 day"
+unit
     : dateTimePrecision
     | pluralDateTimePrecision
     | 'week'
