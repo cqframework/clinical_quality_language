@@ -34,6 +34,10 @@ task generateSources << {
     ant.xjc(destdir: xjc.destDir, schema: xjc.schema) {
         arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable')
     }
+
+    ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/modelinfo.xsd") {
+        arg(line: '-disableXmlSecurity')
+    }
 }
 
 compileJava.dependsOn generateSources

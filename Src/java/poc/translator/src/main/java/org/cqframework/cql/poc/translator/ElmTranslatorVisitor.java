@@ -11,27 +11,7 @@ import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.hl7.elm.r1.Add;
-import org.hl7.elm.r1.And;
-import org.hl7.elm.r1.BinaryExpression;
-import org.hl7.elm.r1.ClinicalRequest;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.ExpressionRef;
-import org.hl7.elm.r1.FunctionDef;
-import org.hl7.elm.r1.FunctionRef;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.Literal;
-import org.hl7.elm.r1.ModelReference;
-import org.hl7.elm.r1.Multiply;
-import org.hl7.elm.r1.ObjectFactory;
-import org.hl7.elm.r1.Or;
-import org.hl7.elm.r1.ParameterDef;
-import org.hl7.elm.r1.Power;
-import org.hl7.elm.r1.Property;
-import org.hl7.elm.r1.UnaryExpression;
-import org.hl7.elm.r1.ValueSetDef;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.elm.r1.*;
 
 import javax.xml.namespace.QName;
 import java.io.FileInputStream;
@@ -172,9 +152,9 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Literal visitNullLiteral(@NotNull cqlParser.NullLiteralContext ctx) {
+    public Null visitNullLiteral(@NotNull cqlParser.NullLiteralContext ctx) {
         // TODO: Is this the right way?
-        return of.createLiteral().withValue(null);
+        return of.createNull();
     }
 
     @Override
@@ -283,8 +263,10 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         Expression exp;
         if (ctx.VALUESET() != null) {
             exp = of.createValueSetRef()
-                    // TODO: Support library name
                     .withName(parseString(ctx.VALUESET()));
+            if (ctx.qualifier() != null) {
+                ((ValueSetRef)exp).withLibraryName(parseString(ctx.qualifier()));
+            }
         } else {
             exp = of.createExpressionRef()
                     .withLibraryName(parseString(ctx.qualifier()))

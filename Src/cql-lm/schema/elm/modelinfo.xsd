@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm-modelinfo:r1" targetNamespace="urn:hl7-org:elm-modelinfo:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="modelInfo" type="ModelInfo">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ModelInfo">
+		<xs:sequence>
+			<xs:element name="classInfo" type="ClassInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="url" type="xs:anyURI" use="required"/>
+		<xs:attribute name="schemaLocation" type="xs:string" use="optional"/>
+		<xs:attribute name="targetQualifier" type="xs:QName" use="optional"/>
+		<xs:attribute name="patientClassName" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ClassInfo">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="occurrenceAxis" type="xs:string" use="optional"/>
+		<xs:attribute name="topicAxis" type="xs:string" use="required"/>
+		<xs:attribute name="modalityAxis" type="xs:string" use="optional"/>
+		<xs:attribute name="primaryCodeAttribute" type="xs:string" use="optional"/>
+		<xs:attribute name="primaryDateAttribute" type="xs:string" use="optional"/>
+	</xs:complexType>
+</xs:schema>
