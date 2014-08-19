@@ -28,7 +28,7 @@ namespace CQL.Translation
             return base.ShouldVisitNextChild(node, currentResult);
         }
 
-        protected override Element DefaultResult()
+        protected Element DefaultResult()
         {
             return new Null();
         }
@@ -245,7 +245,17 @@ namespace CQL.Translation
 
 			foreach (var valuesetDefinition in context.valuesetDefinition())
 			{
-				library.valueSets.Add(new ValueSetDef { name = valuesetDefinition.VALUESET().GetText(), valueSet = (Expression)Visit(valuesetDefinition.expression()) });
+				var valuesetDefinitionByConstructor = valuesetDefinition as cqlParser.ValuesetDefinitionByConstructorContext;
+				if (valuesetDefinitionByConstructor != null)
+				{
+					library.valueSets.Add(new ValueSetDef { name = valuesetDefinitionByConstructor.VALUESET().GetText(), valueSet = new ValueSet { id = valuesetDefinitionByConstructor.STRING().GetText() } });
+				}
+
+				var valuesetDefinitionByExpression = valuesetDefinition as cqlParser.ValuesetDefinitionByExpressionContext;
+				if (valuesetDefinitionByExpression != null)
+				{
+					library.valueSets.Add(new ValueSetDef { name = valuesetDefinitionByExpression.VALUESET().GetText(), valueSet = (Expression)Visit(valuesetDefinitionByExpression.expression()) });
+				}
 			}
 
 			string currentContext = Contexts.PATIENT;
