@@ -1,5 +1,6 @@
 package org.cqframework.cql.poc.translator;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -11,7 +12,11 @@ import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
+import org.cqframework.cql.poc.translator.model.ClassDetail;
+import org.cqframework.cql.poc.translator.model.ModelHelper;
+import org.cqframework.cql.poc.translator.model.QuickModelHelper;
 import org.hl7.elm.r1.*;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.namespace.QName;
 import java.io.FileInputStream;
@@ -32,6 +37,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     //Put them here for now, but eventually somewhere else?
     private final List<ClinicalRequest> clinicalRequests = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
+    private ModelHelper modelHelper = null;
 
     public Library getLibrary() {
         return library;
@@ -85,8 +91,19 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public ModelReference visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
+        String modelIdentifier = parseString(ctx.IDENTIFIER());
+        // TODO: This should load from a modelinfo file based on the modelIdentifier above. Hard-coding to QUICK for POC purposes.
+        try {
+            modelHelper = new ModelHelper(QuickModelHelper.load());
+        }
+        catch (ClassNotFoundException e) {
+            // TODO: Should never occur...
+        }
+
+        // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
+
         ModelReference model = of.createModelReference()
-                .withReferencedModel(of.createModelReferenceReferencedModel().withValue(parseString(ctx.IDENTIFIER())));
+                .withReferencedModel(of.createModelReferenceReferencedModel().withValue(modelHelper.getModelInfo().getUrl()));
         addToLibrary(model);
 
         return model;
@@ -365,18 +382,39 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public ClinicalRequest visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
-        String occ = ctx.occurrence() != null ? ctx.occurrence().getText() : "Occurrence";
+        String occ = ctx.occurrence() != null ? ctx.occurrence().getText() : "Occurrence"; // TODO: Default occurrence label by model?
+        String topic = parseString(ctx.topic());
         String modality = ctx.modality() != null ? ctx.modality().getText() : "";
-        String subject = String.format("%s%s%s", parseString(ctx.topic()), modality, occ);
+        ClassDetail detail = modelHelper.getClassDetail(occ, topic, modality);
 
         ClinicalRequest request = of.createClinicalRequest()
-                .withSubject(createLiteral(subject))
-                .withCodeProperty(parseString(ctx.valuesetPathIdentifier()))
-                .withCodes(parseExpression(ctx.valueset()))
-                .withDateProperty(parseString(ctx.duringPathIdentifier()))
-                .withDateRange(parseExpression(ctx.expression()));
+                .withDataType(new QName(
+                        modelHelper.getModelInfo().getUrl(),
+                        detail != null ? detail.getClassInfo().getName() : String.format("%s%s%s", topic, modality, occ),
+                        modelHelper.getModelInfo().getTargetQualifier().toString()));
 
-        clinicalRequests.add(request);
+        if (ctx.valueset() != null) {
+            if (ctx.valuesetPathIdentifier() != null) {
+                request.setCodeProperty(parseString(ctx.valuesetPathIdentifier()));
+            } else if (detail != null && detail.getClassInfo().getPrimaryCodeAttribute() != null) {
+                request.setCodeProperty(detail.getClassInfo().getPrimaryCodeAttribute());
+            }
+
+            request.setCodes(parseExpression(ctx.valueset()));
+        }
+
+        if (ctx.expression() != null) {
+            if (ctx.duringPathIdentifier() != null) {
+                request.setDateProperty(parseString(ctx.duringPathIdentifier()));
+            }
+            else if (detail != null && detail.getClassInfo().getPrimaryDateAttribute() != null) {
+                request.setDateProperty(detail.getClassInfo().getPrimaryDateAttribute());
+            }
+
+            request.setDateRange(parseExpression(ctx.expression()));
+        }
+
+        clinicalRequests.add(request); // TODO: Why are we collecting these?
 
         return request;
     }

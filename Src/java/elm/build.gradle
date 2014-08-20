@@ -36,7 +36,7 @@ task generateSources << {
     }
 
     ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/modelinfo.xsd") {
-        arg(line: '-disableXmlSecurity')
+        arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString')
     }
 }
 

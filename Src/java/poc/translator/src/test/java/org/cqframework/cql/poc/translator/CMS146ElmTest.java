@@ -48,19 +48,22 @@ public class CMS146ElmTest {
 
         Collection<ClinicalRequest> expectedCR = Arrays.asList(
                 of.createClinicalRequest()
-                        .withSubject(literal("ConditionOccurrence"))
+                        .withDataType(quickDataType("ConditionOccurrence"))
+                        .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
                 of.createClinicalRequest()
-                        .withSubject(literal("ConditionOccurrence"))
+                        .withDataType(quickDataType("ConditionOccurrence"))
+                        .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsilitis")),
                 of.createClinicalRequest()
-                        .withSubject(literal("MedicationPrescriptionOccurrence"))
+                        .withDataType(quickDataType("MedicationPrescriptionOccurrence"))
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createClinicalRequest()
-                        .withSubject(literal("EncounterPerformanceOccurrence"))
+                        .withDataType(quickDataType("EncounterPerformanceOccurrence"))
+                        .withCodeProperty("class")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createClinicalRequest()
-                        .withSubject(literal("ObservationResultOccurrence"))
+                        .withDataType(quickDataType("ObservationResultOccurrence"))
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
         assertTrue(actualCR.containsAll(expectedCR) && expectedCR.containsAll(actualCR), "should capture all clinical requests");
@@ -222,6 +225,10 @@ public class CMS146ElmTest {
             assertEquals(tb.getEndLine(), expectedNumbers[2]);
             assertEquals(tb.getEndChar(), expectedNumbers[3]);
         }
+    }
+
+    private QName quickDataType(String dataTypeName) {
+        return new QName("http://org.hl7.fhir", dataTypeName, "quick");
     }
 
     private Literal literal(String str) {
