@@ -3,7 +3,6 @@ package org.cqframework.cql.poc.translator.model;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBException;
 import java.io.File;
 
 /**

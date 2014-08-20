@@ -1,6 +1,6 @@
 package org.cqframework.cql.poc.translator.model;
 
-import com.sun.istack.internal.NotNull;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 
 /**

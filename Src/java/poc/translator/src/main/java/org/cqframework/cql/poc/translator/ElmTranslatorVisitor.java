@@ -1,6 +1,5 @@
 package org.cqframework.cql.poc.translator;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -203,9 +202,13 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public UnaryExpression visitExistenceExpression(@NotNull cqlParser.ExistenceExpressionContext ctx) {
-        UnaryExpression exp = "not".equals(parseString(ctx.getChild(0))) ? of.createIsEmpty() : of.createIsNotEmpty();
-        return exp.withOperand(parseExpression(ctx.expression()));
+    public Not visitNotExpression(@NotNull cqlParser.NotExpressionContext ctx) {
+        return of.createNot().withOperand(parseExpression(ctx.expression()));
+    }
+
+    @Override
+    public IsNotEmpty visitExistenceExpression(@NotNull cqlParser.ExistenceExpressionContext ctx) {
+        return of.createIsNotEmpty().withOperand(parseExpression(ctx.expression()));
     }
 
     @Override
