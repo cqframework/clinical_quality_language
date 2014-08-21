@@ -7,7 +7,7 @@ import java.io.File;
 
 public class QuickModelHelper {
     public static ModelInfo load() {
-        return JAXB.unmarshal(QuickModelHelper.class.getResourceAsStream("resources/org/hl7/fhir/quick-modelinfo.xml"),
+        return JAXB.unmarshal(QuickModelHelper.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo.xml"),
                 ModelInfo.class);
     }
 }
