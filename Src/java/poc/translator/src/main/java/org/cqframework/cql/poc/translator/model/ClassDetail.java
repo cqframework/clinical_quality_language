@@ -3,9 +3,6 @@ package org.cqframework.cql.poc.translator.model;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 
-/**
- * Created by Bryn on 8/20/2014.
- */
 public class ClassDetail {
     public ClassInfo getClassInfo() {
         return _classInfo;
