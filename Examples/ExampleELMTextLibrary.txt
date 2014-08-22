@@ -1,0 +1,66 @@
+// Full Query
+Sort(E):  
+    orderBy: lengthOfStay  
+    source:   
+        ForEach(E):
+            ObjectExpression:
+                id: E.id
+                lengthOfStay: DateDiff(startDate(E.performanceTime), endDate(E.performanceTime), DAYS)
+            source:
+                Filter(E):
+                    condition: GreaterOrEqual(DateDiff(startDate(E.performanceTime), endDate(E.performanceTime), DAYS), 120)
+                    source:
+                        Filter(E):
+                            condition: 
+                                IsNotEmpty:
+                                    Filter(P):
+                                        condition: OverlapsAfter(P.effectiveTime, E.performanceTime)
+                                        source: 
+                                            ClinicalRequest:
+                                                dataType: ConditionObservationOccurrence
+                                                codeField: code
+                                                valueSet: AcutePharyngitis
+                            source: 
+                                ClinicalRequest:
+                                    dataType: EncounterPerformanceOccurrence
+                                    codeField: encounterType
+                                    valueSet: Inpatient  
+
+// With Breakdown
+Pharyngitis:
+	ClinicalRequest:
+		dataType: ConditionObservationOccurrence
+		codeField: code
+		valueSet: AcutePharyngitis
+
+InpatientEncounters:
+    ClinicalRequest:
+        dataType: EncounterPerformanceOccurrence
+        codeField: encounterType
+        valueSet: Inpatient  
+
+EncountersWithPharyngitis:
+    Filter(E):
+        condition: 
+            IsNotEmpty:
+                Filter(P):
+                    condition: OverlapsAfter(P.effectiveTime, E.performanceTime)
+                    source: Pharyngitis
+        source: InpatientEncounters
+
+EncountersLessThan120Days:
+    Filter(E):
+        condition: GreaterOrEqual(DateDiff(startDate(E.performanceTime), endDate(E.performanceTime), DAYS), 120)
+        source: EncountersWithPharyngitis
+
+EncountersWithLengthOfStay:
+    ForEach(E):
+        ObjectExpression:
+            id: E.id
+            lengthOfStay: DateDiff(startDate(E.performanceTime), endDate(E.performanceTime), DAYS)
+        source: EncountersLessThan120Days
+
+Sort(E):  
+    orderBy: lengthOfStay  
+    source: EncountersWithLengthOfStay
+

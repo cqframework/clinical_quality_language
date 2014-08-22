@@ -116,8 +116,14 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     public ParameterDef visitParameterDefinition(@NotNull cqlParser.ParameterDefinitionContext ctx) {
         ParameterDef param = of.createParameterDef()
                 .withName(parseString(ctx.IDENTIFIER()))
-                // TODO: Support types
-                .withDefault(parseExpression(ctx.expression()));
+                .withDefault(parseExpression(ctx.expression()))
+                .withParameterType(parseTypeSpecifier(ctx.typeSpecifier()));
+
+        // TODO: Support types
+        // Right now all type specifiers in ELM are QName attributes, so either we extend ELM to
+        // introduce structured representation of types as elements, or we encode type names into a
+        // QName attribute. I propose the former as more in keeping with the spirit of ELM.
+
         addToLibrary(param);
 
         return param;
@@ -133,9 +139,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         return vs;
     }
 
-    /*
-     * TODO: The ELM model doesn't expect this form of valueset definition
-     */
     @Override
     public ValueSetDef visitValuesetDefinitionByConstructor(@NotNull cqlParser.ValuesetDefinitionByConstructorContext ctx) {
         ValueSetDef vs = of.createValueSetDef()
@@ -245,12 +248,17 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Or visitOrExpression(@NotNull cqlParser.OrExpressionContext ctx) {
-        // TODO: How to represent XOR in ELM?
-        // boolean xor = ctx.getChild(1).getText().equals("xor");
-        return of.createOr().withOperand(
-                parseExpression(ctx.expression(0)),
-                parseExpression(ctx.expression(1)));
+    public Expression visitOrExpression(@NotNull cqlParser.OrExpressionContext ctx) {
+        if (ctx.getChild(1).getText().equals("xor")) {
+            return of.createXor().withOperand(
+                    parseExpression(ctx.expression(0)),
+                    parseExpression(ctx.expression(1)));
+        }
+        else {
+            return of.createOr().withOperand(
+                    parseExpression(ctx.expression(0)),
+                    parseExpression(ctx.expression(1)));
+        }
     }
 
     @Override
@@ -297,7 +305,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
                 .withLibraryName(parseString(ctx.qualifier()))
                 .withName(parseString(ctx.IDENTIFIER()));
     }
-
 
     @Override
     public Expression visitValueset(@NotNull cqlParser.ValuesetContext ctx) {
@@ -556,6 +563,10 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     private Expression parseExpression(ParseTree pt) {
         return pt == null ? null : (Expression) visit(pt);
+    }
+
+    private QName parseTypeSpecifier(ParseTree pt) {
+        return pt == null ? null : (QName) visit(pt);
     }
 
     private Literal createLiteral(String val, String type) {

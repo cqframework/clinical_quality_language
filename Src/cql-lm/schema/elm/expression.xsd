@@ -6,6 +6,8 @@
 		Added FunctionRef as an extension of ExpressionRef
 		Added Element as an abstract base class for Expression, ExpressionDef, and ParameterDef
 		Made valueType attribute of Null optional
+		Added Query construct to support more direct mapping from CQL
+		Added Xor operator to support more direct mapping from CQL
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
@@ -305,6 +307,14 @@ If any argument is null, the resulting list will have null for that element.</xs
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="NaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Xor">
+		<xs:annotation>
+			<xs:documentation>The Xor operator returns the exclusive or of its arguments. The result of Or with two arguments is defined using 3-valued logic semantics. This means that the result is true if and only if one argument is true and the other is false, and that the result is false if and only if both arguments are true or both arguments are false. If either or both arguments are null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Not">
@@ -1672,6 +1682,94 @@ Property expressions can also be used to access the individual points and open i
 				</xs:sequence>
 				<xs:attribute name="path" type="xs:string" use="required"/>
 				<xs:attribute name="scope" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- Queries -->
+	<xs:complexType name="AliasedQuerySource">
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="expression" type="Expression"/>
+				</xs:sequence>
+				<xs:attribute name="alias" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RelationshipClause" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="AliasedQuerySource">
+				<xs:sequence>
+					<xs:element name="where" type="Expression" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="With">
+		<xs:complexContent>
+			<xs:extension base="RelationshipClause"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Without">
+		<xs:complexContent>
+			<xs:extension base="RelationshipClause"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="SortDirection">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="asc"/>
+			<xs:enumeration value="ascending"/>
+			<xs:enumeration value="desc"/>
+			<xs:enumeration value="descending"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="SortByItem" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:attribute name="direction" type="SortDirection"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ByDirection">
+		<xs:complexContent>
+			<xs:extension base="SortByItem"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ByColumn">
+		<xs:complexContent>
+			<xs:extension base="SortByItem">
+				<xs:attribute name="path" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ByExpression">
+		<xs:complexContent>
+			<xs:extension base="SortByItem">
+				<xs:sequence>
+					<xs:element name="expression" type="Expression" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SortClause">
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="by" type="SortByItem" minOccurs="1" maxOccurs="unbounded"/> 
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Query">
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="source" type="AliasedQuerySource" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="relationship" type="RelationshipClause" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="where" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="return" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="sort" type="SortClause" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
