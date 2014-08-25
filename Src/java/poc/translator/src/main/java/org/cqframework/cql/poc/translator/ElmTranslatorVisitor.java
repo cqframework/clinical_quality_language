@@ -336,7 +336,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitPolarityExpressionTerm(@NotNull cqlParser.PolarityExpressionTermContext ctx) {
-        // TODO:
         if (ctx.getChild(0).getText() == "+") {
             return visit(ctx.expressionTerm());
         }
@@ -501,12 +500,8 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public ExpressionRef visitQualifiedIdentifier(@NotNull cqlParser.QualifiedIdentifierContext ctx) {
-        // TODO: There isn't always an easy way to distinguish if identifier is:
-        // - a reference to a variable (ExpressionRef)
-        // - a reference to a function (FunctionRef)
-        // - a reference to a model (ModelReference)
-        // - a property on a model (Property)
-        // Each would return something different!
+        // QualifiedIdentifier can only appear as a query source, so it can only be either an
+        // ExpressionRef, or a library qualified ExpressionRef.
         return of.createExpressionRef()
                 .withLibraryName(parseString(ctx.qualifier()))
                 .withName(parseString(ctx.IDENTIFIER()));
@@ -605,12 +600,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         // TODO: Error handling, this should throw, or return an Error() or something.
 
         return of.createNull();
-    }
-
-    @Override
-    public Object visitQualifier(@NotNull cqlParser.QualifierContext ctx) {
-        // TODO:
-        return super.visitQualifier(ctx);
     }
 
     @Override
@@ -832,87 +821,46 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             request.setDateRange(parseExpression(ctx.expression()));
         }
 
-        clinicalRequests.add(request); // TODO: Why are we collecting these?
+        clinicalRequests.add(request);
 
         return request;
     }
 
     @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
-        // TODO:
-        return super.visitQuery(ctx);
-    }
+        AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
+        List<RelationshipClause> qicx = new ArrayList<>();
+        if (ctx.queryInclusionClause() != null) {
+            for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
+                qicx.add((RelationshipClause) visit(queryInclusionClauseContext));
+            }
+        }
+        Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
+        Expression ret = ctx.returnClause() != null ? (Expression) visit(ctx.returnClause()) : null;
+        SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
 
-    @Override
-    public Object visitQueryExpression(@NotNull cqlParser.QueryExpressionContext ctx) {
-        // TODO:
-        return super.visitQueryExpression(ctx);
-    }
-
-    @Override
-    public Object visitAlias(@NotNull cqlParser.AliasContext ctx) {
-        // TODO:
-        return super.visitAlias(ctx);
+        return of.createQuery()
+                .withSource(aqs)
+                .withRelationship(qicx)
+                .withWhere(where)
+                .withReturn(ret)
+                .withSort(sort);
     }
 
     @Override
     public Object visitAliasedQuerySource(@NotNull cqlParser.AliasedQuerySourceContext ctx) {
-        // TODO:
-        return super.visitAliasedQuerySource(ctx);
+        return of.createAliasedQuerySource().withExpression(parseExpression(ctx.querySource()))
+                .withAlias(ctx.alias().getText());
     }
-
-    @Override
-    public Object visitQueryInclusionClause(@NotNull cqlParser.QueryInclusionClauseContext ctx) {
-        // TODO:
-        return super.visitQueryInclusionClause(ctx);
-    }
-
-    @Override
-    public Object visitWhereClause(@NotNull cqlParser.WhereClauseContext ctx) {
-        // TODO:
-        return super.visitWhereClause(ctx);
-    }
-
-    @Override
-    public Object visitReturnClause(@NotNull cqlParser.ReturnClauseContext ctx) {
-        // TODO:
-        return super.visitReturnClause(ctx);
-    }
-
-    @Override
-    public Object visitSortDirection(@NotNull cqlParser.SortDirectionContext ctx) {
-        // TODO:
-        return super.visitSortDirection(ctx);
-    }
-
-    @Override
-    public Object visitSortByItem(@NotNull cqlParser.SortByItemContext ctx) {
-        // TODO:
-        return super.visitSortByItem(ctx);
-    }
-
-    @Override
-    public Object visitSortClause(@NotNull cqlParser.SortClauseContext ctx) {
-        // TODO:
-        return super.visitSortClause(ctx);
-    }
-
-/*
-    TODO: Don't invest much time here until we know if it's changing in ELM
 
     @Override
     public Object visitQueryInclusionClause(@NotNull cqlParser.QueryInclusionClauseContext ctx) {
         boolean negated = ctx.getChild(0).equals("without");
-        Expression expression = (Expression) visit(ctx.expression());
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        return new QueryInclusionClauseExpression(aqs, expression, negated);
+        Expression expression = (Expression) visit(ctx.expression());
+        RelationshipClause result = negated ? of.createWithout() : of.createWith();
+        return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withWhere(expression);
     }
-
-    @Override
-    public Object visitReturnClause(@NotNull cqlParser.ReturnClauseContext ctx) {
-        return visit(ctx.expression());
-    }
-
 
     @Override
     public Object visitWhereClause(@NotNull cqlParser.WhereClauseContext ctx) {
@@ -920,25 +868,50 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitSortByItem(@NotNull cqlParser.SortByItemContext ctx) {
-        SortClause.SortDirection direction = SortClause.SortDirection.valueOf(ctx.sortDirection().getText());
-        // TODO: This changed in the grammar from QualifiedIdentifier to ExpressionTerm!
-        QualifiedIdentifier exp = (QualifiedIdentifier) visit(ctx.expressionTerm());
-        return new SortItem(direction, exp);
+    public Object visitReturnClause(@NotNull cqlParser.ReturnClauseContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    @Override
+    public SortDirection visitSortDirection(@NotNull cqlParser.SortDirectionContext ctx) {
+        if (ctx.getText() == "desc") {
+            return SortDirection.DESC;
+        }
+
+        return SortDirection.ASC;
+    }
+
+    private SortDirection parseSortDirection(cqlParser.SortDirectionContext ctx) {
+        if (ctx != null) {
+            return visitSortDirection(ctx);
+        }
+
+        return SortDirection.ASC;
+    }
+
+    @Override
+    public SortByItem visitSortByItem(@NotNull cqlParser.SortByItemContext ctx) {
+        return of.createByExpression()
+                .withExpression(parseExpression(ctx.expressionTerm()))
+                .withDirection(parseSortDirection(ctx.sortDirection()));
     }
 
     @Override
     public Object visitSortClause(@NotNull cqlParser.SortClauseContext ctx) {
-        SortClause.SortDirection direction = ctx.sortDirection() != null ? SortClause.SortDirection.valueOf(ctx.sortDirection().getText()) : null;
-        List<SortItem> sortItems = new ArrayList<>();
+        if (ctx.sortDirection() != null) {
+            return of.createSortClause()
+                    .withBy(of.createByDirection().withDirection(parseSortDirection(ctx.sortDirection())));
+        }
+
+        List<SortByItem> sortItems = new ArrayList<>();
         if (ctx.sortByItem() != null) {
             for (cqlParser.SortByItemContext sortByItemContext : ctx.sortByItem()) {
-                sortItems.add((SortItem) visit(sortByItemContext));
+                sortItems.add((SortByItem) visit(sortByItemContext));
             }
         }
-        return new SortClause(direction, sortItems);
+
+        return of.createSortClause().withBy(sortItems);
     }
-*/
 
     @Override
     public Object visitQuerySource(@NotNull cqlParser.QuerySourceContext ctx) {
@@ -951,29 +924,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         }
         return visit(o);
     }
-
-/*
-    @Override
-    public Object visitAliasedQuerySource(@NotNull cqlParser.AliasedQuerySourceContext ctx) {
-        return new AliasedQuerySource((Expression) visit(ctx.querySource()), ctx.alias().getText());
-    }
-
-    @Override
-    public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
-        AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        List<QueryInclusionClauseExpression> qicx = new ArrayList<>();
-        if (ctx.queryInclusionClause() != null) {
-            for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
-                qicx.add((QueryInclusionClauseExpression) visit(queryInclusionClauseContext));
-            }
-        }
-        Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
-        Expression ret = ctx.returnClause() != null ? (Expression) visit(ctx.returnClause()) : null;
-        SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
-
-        return new QueryExpression(aqs, qicx, where, ret, sort);
-    }
-*/
 
     @Override
     public Object visitIndexedExpressionTerm(@NotNull cqlParser.IndexedExpressionTermContext ctx) {
