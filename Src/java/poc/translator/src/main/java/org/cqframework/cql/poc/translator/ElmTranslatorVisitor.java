@@ -38,6 +38,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     //Put them here for now, but eventually somewhere else?
     private final HashMap<String, Library> libraries = new HashMap<>();
+    private final List<QueryContext> queries = new ArrayList<>();
     private final List<ClinicalRequest> clinicalRequests = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
@@ -499,9 +500,21 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public ExpressionRef visitQualifiedIdentifier(@NotNull cqlParser.QualifiedIdentifierContext ctx) {
-        // QualifiedIdentifier can only appear as a query source, so it can only be either an
-        // ExpressionRef, or a library qualified ExpressionRef.
+    public Expression visitQualifiedIdentifier(@NotNull cqlParser.QualifiedIdentifierContext ctx) {
+        // QualifiedIdentifier can only appear as a query source, so it can only be an
+        // ExpressionRef, a library qualified ExpressionRef, or an Alias qualified property ref.
+        if (ctx.qualifier() != null) {
+            String alias = resolveAlias(ctx.qualifier().getText());
+            if (alias != null) {
+                return of.createProperty().withPath(parseString(ctx.IDENTIFIER())).withScope(alias);
+            }
+        }
+
+        String alias = resolveAlias(ctx.IDENTIFIER().getText());
+        if (alias != null) {
+            return of.createAliasRef().withName(alias);
+        }
+
         return of.createExpressionRef()
                 .withLibraryName(parseString(ctx.qualifier()))
                 .withName(parseString(ctx.IDENTIFIER()));
@@ -543,9 +556,8 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             // if right is an IDENTIFIER
                 // modify the Property to append the IDENTIFIER to the PATH
             // if right is a VALUESET, throw
-        // TODO: Handle AliasRef as part of Query support
         // if left is an AliasRef
-            // return a Property with a Path and no source
+            // return a Property with a Path and no source, and Scope set to the Alias
         // if left is an Identifier
             // return a new Identifier with left as a qualifier
         // else
@@ -589,6 +601,14 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             }
         }
 
+        if (left instanceof AliasRef) {
+            if (ctx.IDENTIFIER() != null) {
+                return of.createProperty()
+                        .withScope(((AliasRef)left).getName())
+                        .withPath(ctx.IDENTIFIER().getText());
+            }
+        }
+
         if (left instanceof Property) {
             if (ctx.IDENTIFIER() != null) {
                 Property property = (Property)left;
@@ -608,7 +628,8 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             // 1: The name of a library
             // 2: The name of a parameter
             // 3: The name of an expression
-            // 4: An unresolved identifier that must be resolved later (by a method or accessor)
+            // 4: The name of an alias
+            // 5: An unresolved identifier that must be resolved later (by a method or accessor)
 
         String identifier = ctx.IDENTIFIER().getText();
 
@@ -628,6 +649,11 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         String expressionName = resolveExpressionName(library, identifier);
         if (expressionName != null) {
             return of.createExpressionRef().withName(expressionName);
+        }
+
+        String alias = resolveAlias(identifier);
+        if (alias != null) {
+            return of.createAliasRef().withName(identifier);
         }
 
         Identifier id = new Identifier();
@@ -828,23 +854,31 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
+        QueryContext queryContext = new QueryContext();
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        List<RelationshipClause> qicx = new ArrayList<>();
-        if (ctx.queryInclusionClause() != null) {
-            for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
-                qicx.add((RelationshipClause) visit(queryInclusionClauseContext));
+        queryContext.addQuerySource(aqs);
+        pushQueryContext(queryContext);
+        try {
+            List<RelationshipClause> qicx = new ArrayList<>();
+            if (ctx.queryInclusionClause() != null) {
+                for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
+                    qicx.add((RelationshipClause) visit(queryInclusionClauseContext));
+                }
             }
-        }
-        Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
-        Expression ret = ctx.returnClause() != null ? (Expression) visit(ctx.returnClause()) : null;
-        SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
+            Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
+            Expression ret = ctx.returnClause() != null ? (Expression) visit(ctx.returnClause()) : null;
+            SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
 
-        return of.createQuery()
-                .withSource(aqs)
-                .withRelationship(qicx)
-                .withWhere(where)
-                .withReturn(ret)
-                .withSort(sort);
+            return of.createQuery()
+                    .withSource(aqs)
+                    .withRelationship(qicx)
+                    .withWhere(where)
+                    .withReturn(ret)
+                    .withSort(sort);
+        }
+        finally {
+            popQueryContext();
+        }
     }
 
     @Override
@@ -857,9 +891,15 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     public Object visitQueryInclusionClause(@NotNull cqlParser.QueryInclusionClauseContext ctx) {
         boolean negated = ctx.getChild(0).equals("without");
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        Expression expression = (Expression) visit(ctx.expression());
-        RelationshipClause result = negated ? of.createWithout() : of.createWith();
-        return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withWhere(expression);
+        peekQueryContext().addQuerySource(aqs);
+        try {
+            Expression expression = (Expression) visit(ctx.expression());
+            RelationshipClause result = negated ? of.createWithout() : of.createWith();
+            return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withWhere(expression);
+        }
+        finally {
+            peekQueryContext().removeQuerySource(aqs);
+        }
     }
 
     @Override
@@ -1075,6 +1115,29 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     private Literal createLiteral(Boolean bool) {
         return createLiteral(String.valueOf(bool), "Boolean");
+    }
+
+    private void pushQueryContext(QueryContext query) {
+        queries.add(0, query);
+    }
+
+    private void popQueryContext() {
+        queries.remove(0);
+    }
+
+    private QueryContext peekQueryContext() {
+        return queries.get(0);
+    }
+
+    private String resolveAlias(String identifier) {
+        for (QueryContext query : queries) {
+            AliasedQuerySource source = query.resolveAlias(identifier);
+            if (source != null) {
+                return source.getAlias();
+            }
+        }
+
+        return null;
     }
 
     private void addToLibrary(ModelReference model) {
