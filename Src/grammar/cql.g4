@@ -214,7 +214,7 @@ expression
     | expression ('<=' | '<' | '>' | '>=') expression                        # inequalityExpression
     | expression intervalOperatorPhrase expression                           # timingExpression
     | expression ('=' | '<>') expression                                     # equalityExpression
-    | expression ('in' | 'contains' | 'like') expression                     # membershipExpression
+    | expression ('in' | 'contains' ) expression							 # membershipExpression
     | expression 'and' expression                                            # andExpression
     | expression ('or' | 'xor') expression                                   # orExpression
     | expression ('union' | 'intersect' | 'except') expression               # inFixSetExpression

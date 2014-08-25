@@ -197,12 +197,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitStatement(@NotNull cqlParser.StatementContext ctx) {
-        // TODO:
-        return super.visitStatement(ctx);
-    }
-
-    @Override
     public ExpressionDef visitLetStatement(@NotNull cqlParser.LetStatementContext ctx) {
         ExpressionDef let = of.createExpressionDef()
                 .withName(parseString(ctx.IDENTIFIER()))
@@ -211,18 +205,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         addToLibrary(let);
 
         return let;
-    }
-
-    @Override
-    public Object visitLiteral(@NotNull cqlParser.LiteralContext ctx) {
-        // TODO:
-        return super.visitLiteral(ctx);
-    }
-
-    @Override
-    public Object visitLiteralTerm(@NotNull cqlParser.LiteralTermContext ctx) {
-        // TODO:
-        return super.visitLiteralTerm(ctx);
     }
 
     @Override
@@ -237,44 +219,37 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIntervalSelector(@NotNull cqlParser.IntervalSelectorContext ctx) {
-        // TODO:
-        return super.visitIntervalSelector(ctx);
-    }
-
-    @Override
-    public Object visitIntervalSelectorTerm(@NotNull cqlParser.IntervalSelectorTermContext ctx) {
-        // TODO:
-        return super.visitIntervalSelectorTerm(ctx);
-    }
-
-    @Override
-    public Object visitTupleSelectorTerm(@NotNull cqlParser.TupleSelectorTermContext ctx) {
-        // TODO:
-        return super.visitTupleSelectorTerm(ctx);
+        return of.createInterval()
+                .withBegin(parseExpression(ctx.expression(0)))
+                .withBeginOpen(ctx.getChild(1).getText().equals("("))
+                .withEnd(parseExpression(ctx.expression(1)))
+                .withEndOpen(ctx.getChild(5).getText().equals(")"));
     }
 
     @Override
     public Object visitTupleElementSelector(@NotNull cqlParser.TupleElementSelectorContext ctx) {
-        // TODO:
-        return super.visitTupleElementSelector(ctx);
+        return of.createPropertyExpression()
+                .withName(ctx.IDENTIFIER().getText())
+                .withValue(parseExpression(ctx.expression()));
     }
 
     @Override
     public Object visitTupleSelector(@NotNull cqlParser.TupleSelectorContext ctx) {
-        // TODO:
-        return super.visitTupleSelector(ctx);
-    }
-
-    @Override
-    public Object visitListSelectorTerm(@NotNull cqlParser.ListSelectorTermContext ctx) {
-        // TODO:
-        return super.visitListSelectorTerm(ctx);
+        ObjectExpression objectExpression = of.createObjectExpression();
+        for (cqlParser.TupleElementSelectorContext element : ctx.tupleElementSelector()) {
+            objectExpression.getProperty().add((PropertyExpression)visit(element));
+        }
+        return objectExpression;
     }
 
     @Override
     public Object visitListSelector(@NotNull cqlParser.ListSelectorContext ctx) {
-        // TODO:
-        return super.visitListSelector(ctx);
+        org.hl7.elm.r1.List list = of.createList().withTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()));
+        for (cqlParser.ExpressionContext element : ctx.expression()) {
+            list.getElement().add(parseExpression(element));
+        }
+
+        return list;
     }
 
     @Override
@@ -307,8 +282,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitValuesetLiteral(@NotNull cqlParser.ValuesetLiteralContext ctx) {
-        // TODO:
-        return super.visitValuesetLiteral(ctx);
+        return of.createValueSetRef().withName(parseString(ctx.VALUESET()));
     }
 
     @Override
@@ -337,7 +311,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitPolarityExpressionTerm(@NotNull cqlParser.PolarityExpressionTermContext ctx) {
-        if (ctx.getChild(0).getText() == "+") {
+        if (ctx.getChild(0).getText().equals("+")) {
             return visit(ctx.expressionTerm());
         }
 
@@ -353,80 +327,145 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitPredecessorExpressionTerm(@NotNull cqlParser.PredecessorExpressionTermContext ctx) {
-        // TODO:
-        return super.visitPredecessorExpressionTerm(ctx);
+        return of.createPred().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
     public Object visitSuccessorExpressionTerm(@NotNull cqlParser.SuccessorExpressionTermContext ctx) {
-        // TODO:
-        return super.visitSuccessorExpressionTerm(ctx);
-    }
-
-    @Override
-    public Object visitDateTimeComponent(@NotNull cqlParser.DateTimeComponentContext ctx) {
-        // TODO:
-        return super.visitDateTimeComponent(ctx);
-    }
-
-    @Override
-    public Object visitPluralDateTimePrecision(@NotNull cqlParser.PluralDateTimePrecisionContext ctx) {
-        // TODO:
-        return super.visitPluralDateTimePrecision(ctx);
-    }
-
-    @Override
-    public Object visitDateTimePrecision(@NotNull cqlParser.DateTimePrecisionContext ctx) {
-        // TODO:
-        return super.visitDateTimePrecision(ctx);
+        return of.createSucc().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
     public Object visitTimeBoundaryExpressionTerm(@NotNull cqlParser.TimeBoundaryExpressionTermContext ctx) {
-        // TODO:
-        return super.visitTimeBoundaryExpressionTerm(ctx);
+        return ctx.getChild(0).getText().equals("start")
+                ? of.createBegin().withOperand(parseExpression(ctx.expressionTerm()))
+                : of.createEnd().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
     public Object visitTimeUnitExpressionTerm(@NotNull cqlParser.TimeUnitExpressionTermContext ctx) {
-        // TODO:
-        return super.visitTimeUnitExpressionTerm(ctx);
-    }
+        String component = ctx.dateTimeComponent().getText();
 
-    @Override
-    public Object visitTimingExpression(@NotNull cqlParser.TimingExpressionContext ctx) {
-        // TODO:
-        return super.visitTimingExpression(ctx);
+        switch (component) {
+            case "date":
+                return of.createDateOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "time":
+                return of.createTimeOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "timezone":
+                return of.createTimezoneOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "year":
+                return of.createYearOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "month":
+                return of.createMonthOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "day":
+                return of.createDayOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "hour":
+                return of.createHourOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "minute":
+                return of.createMinuteOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "second":
+                return of.createSecondOf().withOperand(parseExpression(ctx.expressionTerm()));
+            case "millisecond":
+                return of.createMillisecondOf().withOperand(parseExpression(ctx.expressionTerm()));
+        }
+
+        return of.createNull();
     }
 
     @Override
     public Object visitDurationExpressionTerm(@NotNull cqlParser.DurationExpressionTermContext ctx) {
-        // TODO:
-        return super.visitDurationExpressionTerm(ctx);
+        // duration in days of X <=> days between start of X and end of X
+        switch (ctx.pluralDateTimePrecision().getText()) {
+            case "years" :
+                return of.createYearsBetween().withOperand(
+                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
+                );
+            case "months" :
+                return of.createMonthsBetween().withOperand(
+                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
+                );
+            case "days" :
+                return of.createDaysBetween().withOperand(
+                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
+                );
+            case "hours" :
+                return of.createHoursBetween().withOperand(
+                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
+                );
+            case "minutes" :
+                return of.createMinutesBetween().withOperand(
+                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
+                );
+            case "seconds" :
+                return of.createSecondsBetween().withOperand(
+                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
+                );
+            case "milliseconds" :
+                return of.createMillisecondsBetween().withOperand(
+                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
+                );
+        }
+
+        return of.createNull();
     }
 
     @Override
     public Object visitRangeExpression(@NotNull cqlParser.RangeExpressionContext ctx) {
-        // TODO:
-        return super.visitRangeExpression(ctx);
+        // X properly? between Y and Z
+        Expression first = parseExpression(ctx.expression());
+        Expression second = parseExpression(ctx.expressionTerm(0));
+        Expression third = parseExpression(ctx.expressionTerm(1));
+        boolean isProper = ctx.getChild(0).getText().equals("properly");
+        return of.createAnd()
+                .withOperand(
+                        (isProper ? of.createGreater() : of.createGreaterOrEqual())
+                                .withOperand(first, second),
+                        (isProper ? of.createLess() : of.createLessOrEqual())
+                                .withOperand(first, third)
+                );
     }
 
     @Override
     public Object visitTimeRangeExpression(@NotNull cqlParser.TimeRangeExpressionContext ctx) {
-        // TODO:
-        return super.visitTimeRangeExpression(ctx);
+        String component = ctx.pluralDateTimePrecision().getText();
+
+        switch (component) {
+            case "years":
+                return of.createYearsBetween()
+                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
+            case "months":
+                return of.createMonthsBetween()
+                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
+            case "days":
+                return of.createDaysBetween()
+                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
+            case "hours":
+                return of.createHoursBetween()
+                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
+            case "minutes":
+                return of.createMinutesBetween()
+                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
+            case "seconds":
+                return of.createSecondsBetween()
+                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
+            case "milliseconds":
+                return of.createMillisecondsBetween()
+                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
+        }
+
+        return of.createNull();
     }
 
     @Override
     public Object visitWidthExpressionTerm(@NotNull cqlParser.WidthExpressionTermContext ctx) {
-        // TODO:
-        return super.visitWidthExpressionTerm(ctx);
-    }
-
-    @Override
-    public Object visitTermExpressionTerm(@NotNull cqlParser.TermExpressionTermContext ctx) {
-        // TODO:
-        return super.visitTermExpressionTerm(ctx);
+        return of.createWidth().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
@@ -436,8 +475,22 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitMembershipExpression(@NotNull cqlParser.MembershipExpressionContext ctx) {
-        // TODO:
-        return super.visitMembershipExpression(ctx);
+        String operator = ctx.getChild(1).getText();
+
+        switch (operator) {
+            case "in":
+                return of.createIn().withOperand(
+                        parseExpression(ctx.expression(0)),
+                        parseExpression(ctx.expression(1))
+                );
+            case "contains":
+                return of.createContains().withOperand(
+                        parseExpression(ctx.expression(0)),
+                        parseExpression(ctx.expression(1))
+                );
+        }
+
+        return of.createNull();
     }
 
     @Override
@@ -463,8 +516,27 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitInFixSetExpression(@NotNull cqlParser.InFixSetExpressionContext ctx) {
-        // TODO:
-        return super.visitInFixSetExpression(ctx);
+        String operator = ctx.getChild(1).getText();
+
+        switch (operator) {
+            case "union":
+                return of.createUnion().withOperand(
+                        parseExpression(ctx.expression(0)),
+                        parseExpression(ctx.expression(1))
+                );
+            case "intersect":
+                return of.createIntersect().withOperand(
+                        parseExpression(ctx.expression(0)),
+                        parseExpression(ctx.expression(1))
+                );
+            case "except":
+                return of.createDifference().withOperand(
+                        parseExpression(ctx.expression(0)),
+                        parseExpression(ctx.expression(1))
+                );
+        }
+
+        return of.createNull();
     }
 
     @Override
@@ -674,7 +746,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTypeExpression(@NotNull cqlParser.TypeExpressionContext ctx) {
-        if (ctx.getChild(1).getText() == "is") {
+        if (ctx.getChild(1).getText().equals("is")) {
             return of.createIs()
                     .withOperand(parseExpression(ctx.expression()))
                     .withIsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()));
@@ -702,6 +774,12 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         }
 
         return exp;
+    }
+
+    @Override
+    public Object visitTimingExpression(@NotNull cqlParser.TimingExpressionContext ctx) {
+        // TODO:
+        return super.visitTimingExpression(ctx);
     }
 
     @Override
@@ -914,7 +992,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public SortDirection visitSortDirection(@NotNull cqlParser.SortDirectionContext ctx) {
-        if (ctx.getText() == "desc") {
+        if (ctx.getText().equals("desc")) {
             return SortDirection.DESC;
         }
 
@@ -1066,12 +1144,14 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     private String resolveSystemNamedType(String typeName) {
-        if (typeName == "Boolean") return "bool";
-        else if (typeName == "Integer") return "int";
-        else if (typeName == "Decimal") return "decimal";
-        else if (typeName == "String") return "string";
-        else if (typeName == "DateTime") return "datetime";
-        else return typeName;
+        switch (typeName) {
+            case "Boolean": return "bool";
+            case "Integer": return "int";
+            case "Decimal": return "decimal";
+            case "String": return "string";
+            case "DateTime": return "datetime";
+            default: return typeName;
+        }
     }
 
     private QName resolveAxisType(String occurrence, String topic, String modality) {

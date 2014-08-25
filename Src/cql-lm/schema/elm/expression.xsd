@@ -9,6 +9,10 @@
 		Added Query construct to support more direct mapping from CQL
 		Added Xor operator to support more direct mapping from CQL
 		Added structural type specifier support
+		Added a typeSpecifier element to the List selector.
+		Added YearOf, MonthOf, DayOf, etc. to replace DatePart
+		Added Width operator to replace Length(interval)
+		Added YearsBetween, MonthsBetween, etc. to replace DateDiff
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
@@ -337,6 +341,7 @@ If any argument is null, the resulting list will have null for that element.</xs
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:sequence>
+					<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="element" type="Expression" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute name="key" type="xs:string" use="optional"/>
@@ -980,6 +985,76 @@ If either argument is null, the result is null.</xs:documentation>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="YearsBetween">
+		<xs:annotation>
+			<xs:documentation>The YearsBetween operator returns the number of year boundaries crossed between the first and second arguments. If the first argument is later than the second argument, the result is negative.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MonthsBetween">
+		<xs:annotation>
+			<xs:documentation>The MonthsBetween operator returns the number of month boundaries crossed between the first and second arguments. If the first argument is later than the second argument, the result is negative.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DaysBetween">
+		<xs:annotation>
+			<xs:documentation>The DaysBetween operator returns the number of day boundaries crossed between the first and second arguments. If the first argument is later than the second argument, the result is negative.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="HoursBetween">
+		<xs:annotation>
+			<xs:documentation>The HoursBetween operator returns the number of hour boundaries crossed between the first and second arguments. If the first argument is later than the second argument, the result is negative.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MinutesBetween">
+		<xs:annotation>
+			<xs:documentation>The MinutesBetween operator returns the number of minute boundaries crossed between the first and second arguments. If the first argument is later than the second argument, the result is negative.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SecondsBetween">
+		<xs:annotation>
+			<xs:documentation>The SecondsBetween operator returns the number of second boundaries crossed between the first and second arguments. If the first argument is later than the second argument, the result is negative.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MillisecondsBetween">
+		<xs:annotation>
+			<xs:documentation>The MillisecondsBetween operator returns the number of milliseconds between the first and second arguments. If the first argument is later than the second argument, the result is negative.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="DatePart">
 		<xs:annotation>
 			<xs:documentation>The DatePart operator returns the granularity component of the given date.</xs:documentation>
@@ -1006,6 +1081,86 @@ If the argument is null, the result is null.</xs:documentation>
 	<xs:complexType name="TimeOf">
 		<xs:annotation>
 			<xs:documentation>The TimeOf operator returns the time (with no date component) of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TimezoneOf">
+		<xs:annotation>
+			<xs:documentation>The TimezoneOf operator returns the timezone of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="YearOf">
+		<xs:annotation>
+			<xs:documentation>The YearOf operator returns the year component of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MonthOf">
+		<xs:annotation>
+			<xs:documentation>The MonthOf operator returns the month component of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DayOf">
+		<xs:annotation>
+			<xs:documentation>The DayOf operator returns the day component of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="HourOf">
+		<xs:annotation>
+			<xs:documentation>The HourOf operator returns the hour component of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MinuteOf">
+		<xs:annotation>
+			<xs:documentation>The MinuteOf operator returns the minute component of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SecondOf">
+		<xs:annotation>
+			<xs:documentation>The SecondOf operator returns the second component of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MillisecondOf">
+		<xs:annotation>
+			<xs:documentation>The MillisecondOf operator returns the millisecond component of the argument.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1055,7 +1210,17 @@ If any of year, month, or day is null, the result is null. The hour, minute, sec
 	<!-- Interval Operators -->
 	<!-- Equal (already defined) -->
 	<!-- NotEqual (already defined) -->
-	<!-- Length: Already defined in string operators -->
+	<xs:complexType name="Width">
+		<xs:annotation>
+			<xs:documentation>The Width operator returns the width of an interval. The result of this operator is equivalent to invoking: End(i) - Begin(i).
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+		<!-- Width(i) = End(i) - Begin(i) -->
+	</xs:complexType>
 	<xs:complexType name="Begin">
 		<xs:annotation>
 			<xs:documentation>The Begin operator returns the starting point of an interval. 
