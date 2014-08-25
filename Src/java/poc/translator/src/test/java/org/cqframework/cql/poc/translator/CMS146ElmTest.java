@@ -56,14 +56,15 @@ public class CMS146ElmTest {
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsilitis")),
                 of.createClinicalRequest()
-                        .withDataType(quickDataType("MedicationPrescriptionOccurrence"))
+                        .withDataType(quickDataType("MedicationTreatmentOrderOccurrence"))
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createClinicalRequest()
                         .withDataType(quickDataType("EncounterPerformanceOccurrence"))
                         .withCodeProperty("class")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createClinicalRequest()
-                        .withDataType(quickDataType("ObservationResultOccurrence"))
+                        .withDataType(quickDataType("SimpleObservationOccurrence"))
+                        .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
         assertTrue(actualCR.containsAll(expectedCR) && expectedCR.containsAll(actualCR), "should capture all clinical requests");
@@ -121,7 +122,7 @@ public class CMS146ElmTest {
                     expectedNumbers = new int[] {19, 47, 19, 77};
                     break;
                 case "Antibiotic Medications":
-                    expectedNumbers = new int[] {22, 5, 22, 54};
+                    expectedNumbers = new int[] {22, 5, 22, 58};
                     break;
                 case "Ambulatory/ED Visit":
                     expectedNumbers = new int[] {25, 5, 25, 51};
@@ -186,7 +187,7 @@ public class CMS146ElmTest {
                     expectedNumbers = new int[] {18, 1, 19, 78};
                     break;
                 case "Antibiotics":
-                    expectedNumbers = new int[] {21, 1, 22, 54};
+                    expectedNumbers = new int[] {21, 1, 22, 58};
                     break;
                 case "TargetEncounters":
                     expectedNumbers = new int[] {24, 1, 28, 56};

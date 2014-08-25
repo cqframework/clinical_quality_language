@@ -16,7 +16,7 @@ public class ModelHelper {
             ClassInfo classInfo = info.getClassInfo().get(i);
             ClassDetail classDetail = new ClassDetail();
             classDetail.setClassInfo(classInfo);
-            classDetail.setModelClass(Class.forName("org.hl7.fhir." + classInfo.getName()));
+            classDetail.setModelClass(resolveClass(classInfo.getName()));
             index.put(
                     computeKey(
                             classInfo.getOccurrenceAxis(),
@@ -46,5 +46,23 @@ public class ModelHelper {
 
     public ClassDetail getClassDetail(String occurrence, @NotNull String topic, String modality) {
         return index.get(computeKey(occurrence, topic, modality));
+    }
+
+    public Class resolveClass(String unqualifiedClassName) {
+        try {
+            return Class.forName("org.hl7.fhir." + unqualifiedClassName);
+        }
+        catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+
+    public String resolveClassName(String unqualifiedClassName) {
+        Class resolvedClass = resolveClass(unqualifiedClassName);
+        if (resolvedClass != null) {
+            return resolvedClass.getSimpleName();
+        }
+
+        return null;
     }
 }

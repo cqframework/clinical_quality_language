@@ -19,7 +19,7 @@ let Pharyngitis =
     ([Condition: "Acute Pharyngitis"]) union ([Condition: "Acute Tonsilitis"])
 
 let Antibiotics =
-    [MedicationPrescription: "Antibiotic Medications"]
+    [MedicationTreatment, Order: "Antibiotic Medications"]
 
 let TargetEncounters =
     [Encounter, Performance: "Ambulatory/ED Visit"] E
@@ -46,4 +46,4 @@ let InDenominatorExclusions =
     HasPriorAntibiotics
 
 let InNumerator =
-    exists ([ObservationResult: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod and R.result is not null)
+    exists ([SimpleObservation: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod and R.result is not null)

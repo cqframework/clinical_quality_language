@@ -8,6 +8,7 @@
 		Made valueType attribute of Null optional
 		Added Query construct to support more direct mapping from CQL
 		Added Xor operator to support more direct mapping from CQL
+		Added structural type specifier support
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
@@ -17,6 +18,55 @@
 		<xs:annotation>
 			<xs:documentation>The Element type defines the abstract base type for all library elements in ELM.</xs:documentation>
 		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="TypeSpecifier" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="Element"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NamedTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:attribute name="name" type="xs:QName" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntervalTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="pointType" type="TypeSpecifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ListTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="elementType" type="TypeSpecifier" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PropertyTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ObjectTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="property" type="PropertyTypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Expression" abstract="true">
 		<xs:annotation>
@@ -140,6 +190,7 @@
 			<xs:extension base="Element">
 				<xs:sequence>
 					<xs:element name="default" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="parameterTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="parameterType" type="xs:QName"/>
@@ -419,7 +470,10 @@ The static type of the then argument within the first caseItem determines the ty
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
-				<xs:attribute name="isType" type="xs:QName" use="required"/>
+				<xs:sequence>
+					<xs:element name="isTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="isType" type="xs:QName" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -429,7 +483,10 @@ The static type of the then argument within the first caseItem determines the ty
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
-				<xs:attribute name="asType" type="xs:QName" use="required"/>
+				<xs:sequence>
+					<xs:element name="asTypeSpecifier" type="TypeSpecifier" minOccurs="0"  maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="asType" type="xs:QName" use="optional"/>
 				<xs:attribute name="strict" type="xs:boolean" use="optional" default="false"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -1755,7 +1812,7 @@ Property expressions can also be used to access the individual points and open i
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
-					<xs:element name="by" type="SortByItem" minOccurs="1" maxOccurs="unbounded"/> 
+					<xs:element name="by" type="SortByItem" minOccurs="1" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

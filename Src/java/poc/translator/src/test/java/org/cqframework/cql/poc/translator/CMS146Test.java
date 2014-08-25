@@ -52,8 +52,8 @@ public class CMS146Test {
                         new QualifiedIdentifier(null, "Acute Tonsilitis", true)),
                 new SourceDataCriteria(
                         SourceDataCriteria.Existence.Occurrence,
-                        new QualifiedIdentifier(null, "MedicationPrescription", false),
-                        null,
+                        new QualifiedIdentifier(null, "MedicationTreatment", false),
+                        new IdentifierExpression("Order"),
                         new QualifiedIdentifier(null, "Antibiotic Medications", true)),
                 new SourceDataCriteria(
                         SourceDataCriteria.Existence.Occurrence,
@@ -62,7 +62,7 @@ public class CMS146Test {
                         new QualifiedIdentifier(null, "Ambulatory/ED Visit", true)),
                 new SourceDataCriteria(
                         SourceDataCriteria.Existence.Occurrence,
-                        new QualifiedIdentifier(null, "ObservationResult", false),
+                        new QualifiedIdentifier(null, "SimpleObservation", false),
                         null,
                         new QualifiedIdentifier(null, "Group A Streptococcus Test", true))
         );
@@ -108,7 +108,7 @@ public class CMS146Test {
                     expectedNumbers = new int[] {19, 47, 19, 77};
                     break;
                 case "Antibiotic Medications":
-                    expectedNumbers = new int[] {22, 5, 22, 54};
+                    expectedNumbers = new int[] {22, 5, 22, 58};
                     break;
                 case "Ambulatory/ED Visit":
                     expectedNumbers = new int[] {25, 5, 25, 51};
@@ -174,7 +174,7 @@ public class CMS146Test {
                     expectedNumbers = new int[] {18, 1, 19, 78};
                     break;
                 case "Antibiotics":
-                    expectedNumbers = new int[] {21, 1, 22, 54};
+                    expectedNumbers = new int[] {21, 1, 22, 58};
                     break;
                 case "TargetEncounters":
                     expectedNumbers = new int[] {24, 1, 28, 56};
