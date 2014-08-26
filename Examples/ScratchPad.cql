@@ -59,6 +59,11 @@ A >= B
 // is equivalent to
 A = B or A > B
 
+// Date/Time Comparison w/ Relative Qualifier (at least/at most)
+A at least same day as B
+// is equivalent to
+A same day as B or A > B
+
 // Durations
 days between A and B
 
@@ -77,7 +82,10 @@ days between Date(2014, 1, 15) and Date(2014, 2)
 // <= (before or same as)
 days between Date(2014, 1, 15) and Date(2014, 2) > 2
 // results in
-interval[16, 44] > [2, 2]
+interval[17, 44] > [2, 2]
+days between Date(2014, 1, 15) and Date(2014, 2) > 20
+// results in 
+interval[17, 44] > [20, 20] // potentially should return unknown
 
 // Timing Phrase Translations
 // same as
@@ -116,4 +124,22 @@ A starts during B
 
 // includes
 A includes start B
+
+
+[Encounter, Performance: "A"] A
+  with [Condition: "B"] B
+  with [Medication: "C"] C
+  where A.effectiveTime overlaps after B.effectiveTime
+  where C.effectiveTime overlaps after B.effectiveTime
+  where A.effectiveTime overlaps after C.effectiveTime
+
+let Medications =
+	[Medication: "C"] C
+		with [Condition: "B"] B
+			where C.effectiveTime overlaps after B.effectiveTime
+
+let Encounters =
+	[Encounter, Performance: "A"] A
+		with [Condition: "B"] B where A.effectiveTime overlaps after B.effectiveTime
+		with Medications C where A.effectiveTime overlaps after C.effectiveTime
 

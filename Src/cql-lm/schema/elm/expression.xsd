@@ -13,6 +13,7 @@
 		Added YearOf, MonthOf, DayOf, etc. to replace DatePart
 		Added Width operator to replace Length(interval)
 		Added YearsBetween, MonthsBetween, etc. to replace DateDiff
+		Added SameAs operators to support precision-based timing
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
@@ -523,6 +524,25 @@ For list types, this means that equality returns true if and only if the lists c
 For interval types, equality returns true if and only if the intervals are over the same point type, and they have the same value for the beginning and ending points of the interval.
 
 If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SameAs">
+		<xs:annotation>
+			<xs:documentation>The SameAs operator returns true if the arguments are equal, or both null; and false 
+				otherwise. Equality semantics are defined to be value-based.
+
+For scalars this means that equality returns true if and only if the result of each argument evaluates to the same value, or to null.
+
+For object types, this means that equality returns true if and only if the objects are of the same type, and the values for all properties are either both null, or equal.
+
+For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using the same semantics.
+
+For interval types, equality returns true if and only if the intervals are over the same point type, and they have the same value for the beginning and ending points of the interval.
+
+If one or the other argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1205,6 +1225,54 @@ If any of year, month, or day is null, the result is null. The hour, minute, sec
 					<xs:element name="millisecond" type="Expression" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SameYearAs">
+		<xs:annotation>
+			<xs:documentation>The SameYearAs operator returns true if the year components of the arguments are the same.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SameMonthAs">
+		<xs:annotation>
+			<xs:documentation>The SameMonthAs operator returns true if the year and month components of the arguments are the same.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SameDayAs">
+		<xs:annotation>
+			<xs:documentation>The SameDayAs operator returns true if the year, month, and day components of the arguments are the same.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SameHourAs">
+		<xs:annotation>
+			<xs:documentation>The SameHourAs operator returns true if the year, month, day, and hour components of the arguments are the same.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SameMinuteAs">
+		<xs:annotation>
+			<xs:documentation>The SameMinuteAs operator returns true if the year, month, day, hour, and minute components of the arguments are the same.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SameSecondAs">
+		<xs:annotation>
+			<xs:documentation>The SameSecondAs operator returns true if the year, month, day, minute, hour, and second components of the arguments are the same.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<!-- Interval Operators -->
