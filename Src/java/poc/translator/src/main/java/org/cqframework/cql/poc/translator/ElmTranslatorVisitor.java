@@ -1315,7 +1315,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     private Library resolveLibrary(String identifier) {
-        return libraries.getOrDefault(identifier, null);
+        return libraries.get(identifier);
     }
 
     private TrackBack track(Trackable trackable, ParserRuleContext ctx) {
