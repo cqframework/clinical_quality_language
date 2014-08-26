@@ -23,7 +23,7 @@ dependencies {
 }
 
 ext.xjc = [
-    schema:  "${projectDir}/../../../../QUICK/schema/quick.xsd",
+    schema:  "${projectDir}/schema/quick.xsd",
     destDir: 'src/generated/java'
 ]
 
