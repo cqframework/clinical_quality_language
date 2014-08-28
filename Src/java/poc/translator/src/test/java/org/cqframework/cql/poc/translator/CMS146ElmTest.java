@@ -2,6 +2,7 @@ package org.cqframework.cql.poc.translator;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.poc.translator.preprocessor.CqlPreprocessorVisitor;
 import org.hl7.elm.r1.ClinicalRequest;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
@@ -24,6 +25,7 @@ import static org.testng.Assert.*;
 
 public class CMS146ElmTest {
 
+    private CqlPreprocessorVisitor preprocessor;
     private ElmTranslatorVisitor visitor;
     private Library library;
     private ObjectFactory of;
@@ -31,7 +33,10 @@ public class CMS146ElmTest {
     @BeforeTest
     public void setup() throws IOException {
         ParseTree tree = parseFile("CMS146v2_Test_CQM.cql", true);
+        preprocessor = new CqlPreprocessorVisitor();
+        preprocessor.visit(tree);
         visitor = new ElmTranslatorVisitor();
+        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         visitor.visit(tree);
         library = visitor.getLibrary();
         of = new ObjectFactory();

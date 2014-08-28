@@ -12,6 +12,10 @@ import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.model.*;
+import org.cqframework.cql.poc.translator.preprocessor.FunctionDefinitionInfo;
+import org.cqframework.cql.poc.translator.preprocessor.LetStatementInfo;
+import org.cqframework.cql.poc.translator.preprocessor.LibraryInfo;
+import org.cqframework.cql.poc.translator.preprocessor.ParameterDefinitionInfo;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
@@ -33,6 +37,7 @@ import java.util.List;
 public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
 
+    private LibraryInfo libraryInfo = null;
     private Library library = null;
     private String currentContext = "UNKNOWN";
 
@@ -42,6 +47,9 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final List<ClinicalRequest> clinicalRequests = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
+
+    public LibraryInfo getLibraryInfo() { return libraryInfo; }
+    public void setLibraryInfo(LibraryInfo value) { libraryInfo = value; }
 
     public Library getLibrary() {
         return library;
@@ -713,12 +721,12 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             return libraryRef;
         }
 
-        String parameterName = resolveParameterName(library, identifier);
+        String parameterName = resolveParameterName(identifier);
         if (parameterName != null) {
             return of.createParameterRef().withName(parameterName);
         }
 
-        String expressionName = resolveExpressionName(library, identifier);
+        String expressionName = resolveExpressionName(identifier);
         if (expressionName != null) {
             return of.createExpressionRef().withName(expressionName);
         }
@@ -1174,7 +1182,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     private QName resolveNamedType(String typeName) {
         // TODO: Should attempt resolution in all models and throw if ambiguous
-        // Library qualifier should be required to resolve ambiguity
+        // Model qualifier should be required to resolve ambiguity
         // Requires CQL change to allow qualifiers in atomicTypeSpecifier (which should really be called namedTypeSpecifier)
         String className = modelHelper.resolveClassName(typeName);
 
@@ -1241,6 +1249,14 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         library.getStatements().getDef().add(expDef);
     }
 
+    private String resolveExpressionName(String identifier) {
+        if (libraryInfo != null) {
+            return libraryInfo.resolveExpressionName(identifier);
+        }
+
+        return null;
+    }
+
     private String resolveExpressionName(Library library, String identifier) {
         if (library.getStatements() != null) {
             for (ExpressionDef current : library.getStatements().getDef()) {
@@ -1248,6 +1264,17 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
                         && (current.getName() == identifier)) {
                     return identifier;
                 }
+            }
+        }
+
+        return null;
+    }
+
+    private String resolveFunctionName(String identifier) {
+        if (libraryInfo != null) {
+            FunctionDefinitionInfo info = libraryInfo.resolveFunctionReference(identifier);
+            if (info != null) {
+                return info.getName();
             }
         }
 
@@ -1271,6 +1298,17 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             library.setParameters(of.createLibraryParameters());
         }
         library.getParameters().getDef().add(paramDef);
+    }
+
+    private String resolveParameterName(String identifier) {
+        if (libraryInfo != null) {
+            ParameterDefinitionInfo info = libraryInfo.resolveParameterReference(identifier);
+            if (info != null) {
+                return info.getName();
+            }
+        }
+
+        return null;
     }
 
     private String resolveParameterName(Library library, String identifier) {
