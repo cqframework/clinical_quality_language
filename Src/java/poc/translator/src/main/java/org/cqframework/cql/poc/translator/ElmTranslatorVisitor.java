@@ -1179,32 +1179,67 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIfThenElseExpressionTerm(@NotNull cqlParser.IfThenElseExpressionTermContext ctx) {
-        // TODO:
-        return super.visitIfThenElseExpressionTerm(ctx);
+        return of.createConditional()
+                .withCondition(parseExpression(ctx.expression(0)))
+                .withThen(parseExpression(ctx.expression(1)))
+                .withElse(parseExpression(ctx.expression(2)));
     }
 
     @Override
     public Object visitCaseExpressionTerm(@NotNull cqlParser.CaseExpressionTermContext ctx) {
-        // TODO:
-        return super.visitCaseExpressionTerm(ctx);
+        Case result = of.createCase();
+        Boolean hitElse = false;
+        for (ParseTree pt : ctx.children) {
+            if ("else".equals(pt.getText())) {
+                hitElse = true;
+                continue;
+            }
+
+            if (pt instanceof cqlParser.ExpressionContext) {
+                if (hitElse) {
+                    result.setElse(parseExpression(pt));
+                }
+                else {
+                    result.setComparand(parseExpression(pt));
+                }
+            }
+
+            if (pt instanceof cqlParser.CaseExpressionItemContext) {
+                result.getCaseItem().add((CaseItem)visit(pt));
+            }
+        }
+
+        return result;
     }
 
     @Override
     public Object visitCaseExpressionItem(@NotNull cqlParser.CaseExpressionItemContext ctx) {
-        // TODO:
-        return super.visitCaseExpressionItem(ctx);
+        return of.createCaseItem()
+                .withWhen(parseExpression(ctx.expression(0)))
+                .withThen(parseExpression(ctx.expression(1)));
     }
 
     @Override
     public Object visitCoalesceExpressionTerm(@NotNull cqlParser.CoalesceExpressionTermContext ctx) {
-        // TODO:
-        return super.visitCoalesceExpressionTerm(ctx);
+        List<Expression> expressions = new ArrayList<>();
+
+        for (cqlParser.ExpressionContext expression : ctx.expression()) {
+            expressions.add(parseExpression(expression));
+        }
+
+        return of.createCoalesce().withOperand(expressions);
     }
 
     @Override
     public Object visitAggregateExpressionTerm(@NotNull cqlParser.AggregateExpressionTermContext ctx) {
-        // TODO:
-        return super.visitAggregateExpressionTerm(ctx);
+        switch (ctx.getChild(0).getText()) {
+            case "distinct": return of.createDistinct().withSource(parseExpression(ctx.expression()));
+            case "collapse": return of.createCollapse().withOperand(parseExpression(ctx.expression()));
+            case "expand": return of.createExpand().withOperand(parseExpression(ctx.expression()));
+        }
+
+        // TODO: Error-handling
+        return of.createNull();
     }
 
     @Override
@@ -1362,8 +1397,9 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIndexedExpressionTerm(@NotNull cqlParser.IndexedExpressionTermContext ctx) {
-        // TODO:
-        return super.visitIndexedExpressionTerm(ctx);
+        return of.createIndexer()
+                .withOperand(parseExpression(ctx.expressionTerm()))
+                .withIndex(parseExpression(ctx.expression()));
     }
 
     @Override
@@ -1386,30 +1422,15 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitOperandDefinition(@NotNull cqlParser.OperandDefinitionContext ctx) {
-        // TODO:
-        return super.visitOperandDefinition(ctx);
-    }
-
-    @Override
-    public Object visitFunctionBody(@NotNull cqlParser.FunctionBodyContext ctx) {
-        // TODO:
-        return super.visitFunctionBody(ctx);
-    }
-
-    @Override
-    public Object visitReturnStatement(@NotNull cqlParser.ReturnStatementContext ctx) {
-        // TODO:
-        return super.visitReturnStatement(ctx);
-    }
-
-    @Override
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef().withName(parseString(ctx.IDENTIFIER()));
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                // TODO: Support parameter type
-                fun.getParameter().add(of.createParameterDef().withName(parseString(opdef.IDENTIFIER())));
+                fun.getParameter().add(
+                        of.createParameterDef()
+                                .withName(parseString(opdef.IDENTIFIER()))
+                                .withParameterTypeSpecifier(parseTypeSpecifier(opdef.typeSpecifier()))
+                );
             }
         }
         fun.setExpression(parseExpression(ctx.functionBody()));
@@ -1418,6 +1439,9 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
         return fun;
     }
+
+    // TODO: Retrieve definition
+    // NOTE: Not spending any time here until we know whether we actually need retrieve definitions
 
     @Override
     public Object visitValuesetIdentifier(@NotNull cqlParser.ValuesetIdentifierContext ctx) {
