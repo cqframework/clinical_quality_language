@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
+import org.cqframework.cql.poc.translator.preprocessor.CqlPreprocessorVisitor;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,8 +18,29 @@ public class TestUtils {
         return parseANTLRInputStream(new ANTLRInputStream(is));
     }
 
-    public static ParseTree parseData(String cql_data){
-        return parseANTLRInputStream(new ANTLRInputStream(cql_data));
+    public static ElmTranslatorVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
+        ParseTree tree = parseFile(fileName, inClassPath);
+        ElmTranslatorVisitor visitor = createElmTranslatorVisitor(tree);
+        visitor.visit(tree);
+        return visitor;
+    }
+
+
+    public static ParseTree parseData(String cqlData){
+        return parseANTLRInputStream(new ANTLRInputStream(cqlData));
+    }
+
+    public static Object visitData(String cqlData) {
+        ParseTree tree = parseData(cqlData);
+        return createElmTranslatorVisitor(tree).visit(tree);
+    }
+
+    private static ElmTranslatorVisitor createElmTranslatorVisitor(ParseTree tree) {
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
+        preprocessor.visit(tree);
+        ElmTranslatorVisitor visitor = new ElmTranslatorVisitor();
+        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
+        return visitor;
     }
 
     private static ParseTree parseANTLRInputStream(ANTLRInputStream is) {

@@ -100,22 +100,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public ModelReference visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
-        String modelIdentifier = parseString(ctx.IDENTIFIER());
-        // TODO: This should load from a modelinfo file based on the modelIdentifier above. Hard-coding to QUICK for POC purposes.
-        try {
-            modelHelper = new ModelHelper(QuickModelHelper.load());
-        }
-        catch (ClassNotFoundException e) {
-            // TODO: Should never occur...
-        }
-
-        // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
-
-        ModelReference model = of.createModelReference()
-                .withReferencedModel(of.createModelReferenceReferencedModel().withValue(modelHelper.getModelInfo().getUrl()));
-        addToLibrary(model);
-
-        return model;
+        return initializeModelHelper(parseString(ctx.IDENTIFIER()));
     }
 
     @Override
@@ -281,7 +266,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             String quantity = ctx.QUANTITY().getText();
             return of.createLiteral()
                     .withValue(quantity)
-                    .withValueType(resolveNamedType(quantity.contains(".") ? "Integer" : "Decimal"));
+                    .withValueType(resolveNamedType(quantity.contains(".") ? "Decimal" : "Integer"));
         }
     }
 
@@ -301,10 +286,30 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Multiply visitMultiplicationExpressionTerm(@NotNull cqlParser.MultiplicationExpressionTermContext ctx) {
-        return of.createMultiply().withOperand(
-                parseExpression(ctx.expressionTerm(0)),
-                parseExpression(ctx.expressionTerm(1)));
+    public BinaryExpression visitMultiplicationExpressionTerm(@NotNull cqlParser.MultiplicationExpressionTermContext ctx) {
+        BinaryExpression exp = null;
+        switch(ctx.getChild(1).getText()) {
+            case "*":
+                exp = of.createMultiply();
+                break;
+            case "/":
+            case "div":
+                exp = of.createDivide();
+                break;
+            case "mod" :
+                exp = of.createModulo();
+                break;
+            default:
+                System.err.println("Unsupported operator: " + ctx.getChild(1).getText());
+        }
+
+        if (exp != null) {
+            exp.withOperand(
+                    parseExpression(ctx.expressionTerm(0)),
+                    parseExpression(ctx.expressionTerm(1)));
+        }
+
+        return exp;
     }
 
     @Override
@@ -324,10 +329,26 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Add visitAdditionExpressionTerm(@NotNull cqlParser.AdditionExpressionTermContext ctx) {
-        return of.createAdd().withOperand(
-                parseExpression(ctx.expressionTerm(0)),
-                parseExpression(ctx.expressionTerm(1)));
+    public BinaryExpression visitAdditionExpressionTerm(@NotNull cqlParser.AdditionExpressionTermContext ctx) {
+        BinaryExpression exp = null;
+        switch(ctx.getChild(1).getText()) {
+            case "+":
+                exp = of.createAdd();
+                break;
+            case "-" :
+                exp = of.createSubtract();
+                break;
+            default:
+                System.err.println("Unsupported operator: " + ctx.getChild(1).getText());
+        }
+
+        if (exp != null) {
+            exp.withOperand(
+                    parseExpression(ctx.expressionTerm(0)),
+                    parseExpression(ctx.expressionTerm(1)));
+        }
+
+        return exp;
     }
 
     @Override
@@ -1247,7 +1268,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         String occ = ctx.occurrence() != null ? ctx.occurrence().getText() : "Occurrence"; // TODO: Default occurrence label by model?
         String topic = parseString(ctx.topic());
         String modality = ctx.modality() != null ? ctx.modality().getText() : "";
-        ClassDetail detail = modelHelper.getClassDetail(occ, topic, modality);
+        ClassDetail detail = getModelHelper().getClassDetail(occ, topic, modality);
 
         ClinicalRequest request = of.createClinicalRequest()
                 .withDataType(resolveNamedType(
@@ -1461,6 +1482,33 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         return super.visitRetrieveDefinition(ctx);
     }
 
+    private ModelReference initializeModelHelper(String identifier) {
+        // TODO: This should load from a modelinfo file based on the modelIdentifier above. Hard-coding to QUICK for POC purposes.
+        try {
+            modelHelper = new ModelHelper(QuickModelHelper.load());
+        }
+        catch (ClassNotFoundException e) {
+            // TODO: Should never occur...
+        }
+
+        // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
+
+        ModelReference model = of.createModelReference()
+                .withReferencedModel(of.createModelReferenceReferencedModel().withValue(modelHelper.getModelInfo().getUrl()));
+        addToLibrary(model);
+
+        return model;
+    }
+
+    private ModelHelper getModelHelper() {
+        if (modelHelper == null) {
+            // No model declared, so default to QUICK
+            initializeModelHelper("QUICK");
+        }
+
+        return modelHelper;
+    }
+
     private String parseString(ParseTree pt) {
         if (pt == null) return null;
 
@@ -1496,7 +1544,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     private QName resolveAxisType(String occurrence, String topic, String modality) {
-        ClassDetail detail = modelHelper.getClassDetail(occurrence, topic, modality);
+        ClassDetail detail = getModelHelper().getClassDetail(occurrence, topic, modality);
 
         if (detail != null) {
             return resolveNamedType(detail.getClassInfo().getName());
@@ -1523,10 +1571,10 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         // TODO: Should attempt resolution in all models and throw if ambiguous
         // Model qualifier should be required to resolve ambiguity
         // Requires CQL change to allow qualifiers in atomicTypeSpecifier (which should really be called namedTypeSpecifier)
-        className = modelHelper.resolveClassName(typeName);
+        className = getModelHelper().resolveClassName(typeName);
 
         if (className != null) {
-            return new QName(modelHelper.getModelInfo().getUrl(), className);
+            return new QName(getModelHelper().getModelInfo().getUrl(), className);
         }
 
         // TODO: Error-handling

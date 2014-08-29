@@ -1,12 +1,9 @@
 package org.cqframework.cql.poc.translator;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.cqframework.cql.poc.translator.preprocessor.CqlPreprocessorVisitor;
 import org.hl7.elm.r1.ClinicalRequest;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.Literal;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.ValueSet;
 import org.hl7.elm.r1.ValueSetDef;
@@ -20,31 +17,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.cqframework.cql.poc.translator.TestUtils.parseFile;
+import static org.cqframework.cql.poc.translator.TestUtils.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.*;
 
 public class CMS146ElmTest {
 
-    private CqlPreprocessorVisitor preprocessor;
     private ElmTranslatorVisitor visitor;
     private Library library;
     private ObjectFactory of;
 
     @BeforeTest
     public void setup() throws IOException {
-        ParseTree tree = parseFile("CMS146v2_Test_CQM.cql", true);
-        preprocessor = new CqlPreprocessorVisitor();
-        preprocessor.visit(tree);
-        visitor = new ElmTranslatorVisitor();
-        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
-        visitor.visit(tree);
+        visitor = visitFile("CMS146v2_Test_CQM.cql", true);
         library = visitor.getLibrary();
         of = new ObjectFactory();
     }
 
     @Test
     public void testLibraryAndVersion() {
-        assertEquals(library.getIdentifier(), of.createVersionedIdentifier().withId("CMS146").withVersion("2"));
+        assertThat(library.getIdentifier(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
     }
 
     @Test
@@ -72,7 +65,8 @@ public class CMS146ElmTest {
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
-        assertTrue(actualCR.containsAll(expectedCR) && expectedCR.containsAll(actualCR), "should capture all clinical requests");
+
+        assertThat(actualCR, is(expectedCR));
     }
 
     @Test
@@ -97,8 +91,7 @@ public class CMS146ElmTest {
                         .withValueSet(of.createValueSet().withId("2.16.840.1.113883.3.464.1003.198.12.1012"))
         );
 
-        assertTrue(actualVS.containsAll(expectedVS) && expectedVS.containsAll(actualVS), "should capture all value set definitions");
-
+        assertThat(actualVS, is(expectedVS));
     }
 
     @Test
@@ -112,7 +105,7 @@ public class CMS146ElmTest {
                 "TargetDiagnoses", "HasPriorAntibiotics", "HasTargetEncounter", "InInitialPopulation", "InDenominator",
                 "InDenominatorExclusions", "InNumerator");
 
-        assertTrue(actualVars.containsAll(expectedVars) && expectedVars.containsAll(actualVars), "should capture all variables");
+        assertThat(actualVars, is(expectedVars));
     }
 
     @Test
@@ -138,16 +131,16 @@ public class CMS146ElmTest {
                 default:
                     fail("Unknown source data criteria: " + dc);
             }
-            assertNotNull(dc.getTrackerId());
+            assertThat(dc.getTrackerId(), notNullValue());
             // TODO: some objects get multiple trackers when they shouldn't
-            // assertEquals(dc.getTrackbacks().size(), 1);
+            // assertThat(dc.getTrackbacks().size(), is(1));
 
             TrackBack tb = dc.getTrackbacks().iterator().next();
-            assertEquals(tb.getLibrary(), of.createVersionedIdentifier().withId("CMS146").withVersion("2"));
-            assertEquals(tb.getStartLine(), expectedNumbers[0]);
-            assertEquals(tb.getStartChar(), expectedNumbers[1]);
-            assertEquals(tb.getEndLine(), expectedNumbers[2]);
-            assertEquals(tb.getEndChar(), expectedNumbers[3]);
+            assertThat(tb.getLibrary(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
+            assertThat(tb.getStartLine(), is(expectedNumbers[0]));
+            assertThat(tb.getStartChar(), is(expectedNumbers[1]));
+            assertThat(tb.getEndLine(), is(expectedNumbers[2]));
+            assertThat(tb.getEndChar(), is(expectedNumbers[3]));
         }
 
         for (ValueSetDef vs : library.getValueSets().getDef()) {
@@ -171,15 +164,15 @@ public class CMS146ElmTest {
                 default:
                     fail("Unknown valueset: " + vs);
             }
-            assertNotNull(vs.getTrackerId());
-            assertEquals(vs.getTrackbacks().size(), 1);
+            assertThat(vs.getTrackerId(), notNullValue());
+            assertThat(vs.getTrackbacks().size(), is(1));
 
             TrackBack tb = vs.getTrackbacks().iterator().next();
-            assertEquals(tb.getLibrary(), of.createVersionedIdentifier().withId("CMS146").withVersion("2"));
-            assertEquals(tb.getStartLine(), expectedNumbers[0]);
-            assertEquals(tb.getStartChar(), expectedNumbers[1]);
-            assertEquals(tb.getEndLine(), expectedNumbers[2]);
-            assertEquals(tb.getEndChar(), expectedNumbers[3]);
+            assertThat(tb.getLibrary(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
+            assertThat(tb.getStartLine(), is(expectedNumbers[0]));
+            assertThat(tb.getStartChar(), is(expectedNumbers[1]));
+            assertThat(tb.getEndLine(), is(expectedNumbers[2]));
+            assertThat(tb.getEndChar(), is(expectedNumbers[3]));
         }
 
         for (ExpressionDef ls : library.getStatements().getDef()) {
@@ -221,25 +214,19 @@ public class CMS146ElmTest {
                 default:
                     fail("Unknown variable: " + ls.getName());
             }
-            assertNotNull(ls.getTrackerId());
-            assertEquals(ls.getTrackbacks().size(), 1, "Expecting 1 trackback but had: " + ls.getTrackbacks());
+            assertThat(ls.getTrackerId(), notNullValue());
+            assertThat(ls.getTrackbacks().size(), is(1));
 
             TrackBack tb = ls.getTrackbacks().iterator().next();
-            assertEquals(tb.getLibrary(), of.createVersionedIdentifier().withId("CMS146").withVersion("2"));
-            assertEquals(tb.getStartLine(), expectedNumbers[0]);
-            assertEquals(tb.getStartChar(), expectedNumbers[1]);
-            assertEquals(tb.getEndLine(), expectedNumbers[2]);
-            assertEquals(tb.getEndChar(), expectedNumbers[3]);
+            assertThat(tb.getLibrary(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
+            assertThat(tb.getStartLine(), is(expectedNumbers[0]));
+            assertThat(tb.getStartChar(), is(expectedNumbers[1]));
+            assertThat(tb.getEndLine(), is(expectedNumbers[2]));
+            assertThat(tb.getEndChar(), is(expectedNumbers[3]));
         }
     }
 
     private QName quickDataType(String dataTypeName) {
         return new QName("http://org.hl7.fhir", dataTypeName, "quick");
-    }
-
-    private Literal literal(String str) {
-        return of.createLiteral()
-                .withValue(str)
-                .withValueType(new QName("http://www.w3.org/2001/XMLSchema", "string"));
     }
 }
