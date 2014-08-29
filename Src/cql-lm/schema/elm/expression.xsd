@@ -14,6 +14,7 @@
 		Added Width operator to replace Length(interval)
 		Added YearsBetween, MonthsBetween, etc. to replace DateDiff
 		Added SameAs operators to support precision-based timing
+		Added MeetsBefore/MeetsAfter and BegunBy/EndedBy
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
