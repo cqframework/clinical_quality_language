@@ -1467,7 +1467,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             case "Decimal": return "decimal";
             case "String": return "string";
             case "DateTime": return "datetime";
-            default: return typeName;
+            default: return null;
         }
     }
 
@@ -1490,16 +1490,23 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     private QName resolveNamedType(String typeName) {
+        // Resolve system primitive types first
+        String className = resolveSystemNamedType(typeName);
+        if (className != null) {
+            return new QName("http://ww.w3.org/2001/XMLSchema", className);
+        }
+
         // TODO: Should attempt resolution in all models and throw if ambiguous
         // Model qualifier should be required to resolve ambiguity
         // Requires CQL change to allow qualifiers in atomicTypeSpecifier (which should really be called namedTypeSpecifier)
-        String className = modelHelper.resolveClassName(typeName);
+        className = modelHelper.resolveClassName(typeName);
 
         if (className != null) {
             return new QName(modelHelper.getModelInfo().getUrl(), className);
         }
 
-        return new QName("http://www.w3.org/2001/XMLSchema", resolveSystemNamedType(typeName));
+        // TODO: Error-handling
+        return new QName("http://www.w3.org/2001/XMLSchema", typeName);
     }
 
     private Literal createLiteral(String val, String type) {
