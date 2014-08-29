@@ -4,9 +4,11 @@
 	<Folder FolderName="XSL Files" ExtStr="xsl;xslt"/>
 	<Folder FolderName="XQuery Files" ExtStr="xq;xql;xquery"/>
 	<Folder FolderName="HTML Files" ExtStr="html;htm;xhtml;asp"/>
-	<Folder FolderName="DTD/Schemas" ExtStr="dtd;dcd;xdr;biz;xsd"/>
+	<Folder FolderName="DTD/Schemas" ExtStr="dtd;dcd;xdr;biz;xsd">
+		<File FilePath="elm\clinicalexpression.xsd" HomeFolder="Yes"/>
+		<File FilePath="elm\expression.xsd" HomeFolder="Yes"/>
+		<File FilePath="elm\library.xsd" HomeFolder="Yes"/>
+		<File FilePath="elm\modelinfo.xsd" HomeFolder="Yes"/>
+	</Folder>
 	<Folder FolderName="Entities" ExtStr="ent"/>
-	<ExtMountFolder FolderName="C:\Users\Bryn\Documents\Src\OneModel\CQL\Src\cql-lm\schema"/>
-	<ExtMountFolder FolderName="C:\Users\Bryn\Documents\Src\OneModel\CQL\Examples"/>
-	<ExtMountFolder FolderName="C:\Users\Bryn\Documents\Src\OneModel\QUICK\schema"/>
 </Project>

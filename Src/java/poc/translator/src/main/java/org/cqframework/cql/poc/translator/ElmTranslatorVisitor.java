@@ -12,14 +12,9 @@ import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.model.*;
-import org.cqframework.cql.poc.translator.preprocessor.FunctionDefinitionInfo;
-import org.cqframework.cql.poc.translator.preprocessor.LetStatementInfo;
 import org.cqframework.cql.poc.translator.preprocessor.LibraryInfo;
-import org.cqframework.cql.poc.translator.preprocessor.ParameterDefinitionInfo;
 import org.hl7.elm.r1.*;
-import org.hl7.elm_modelinfo.r1.ModelInfo;
 
-import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -33,6 +28,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
@@ -43,7 +39,8 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     //Put them here for now, but eventually somewhere else?
     private final HashMap<String, Library> libraries = new HashMap<>();
-    private final List<QueryContext> queries = new ArrayList<>();
+    private final Stack<QueryContext> queries = new Stack<>();
+    private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final List<ClinicalRequest> clinicalRequests = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
@@ -786,86 +783,398 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTimingExpression(@NotNull cqlParser.TimingExpressionContext ctx) {
-        // TODO:
-        return super.visitTimingExpression(ctx);
-    }
-
-    @Override
-    public Object visitQuantityOffset(@NotNull cqlParser.QuantityOffsetContext ctx) {
-        // TODO:
-        return super.visitQuantityOffset(ctx);
-    }
-
-    @Override
-    public Object visitRelativeQualifier(@NotNull cqlParser.RelativeQualifierContext ctx) {
-        // TODO:
-        return super.visitRelativeQualifier(ctx);
-    }
-
-    @Override
-    public Object visitWithinIntervalOperatorPhrase(@NotNull cqlParser.WithinIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitWithinIntervalOperatorPhrase(ctx);
-    }
-
-    @Override
-    public Object visitBeforeOrAfterIntervalOperatorPhrase(@NotNull cqlParser.BeforeOrAfterIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitBeforeOrAfterIntervalOperatorPhrase(ctx);
-    }
-
-    @Override
-    public Object visitOverlapsIntervalOperatorPhrase(@NotNull cqlParser.OverlapsIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitOverlapsIntervalOperatorPhrase(ctx);
-    }
-
-    @Override
-    public Object visitStartsIntervalOperatorPhrase(@NotNull cqlParser.StartsIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitStartsIntervalOperatorPhrase(ctx);
+        Expression left = parseExpression(ctx.expression(0));
+        Expression right = parseExpression(ctx.expression(1));
+        TimingOperatorContext timingOperatorContext = new TimingOperatorContext();
+        timingOperators.push(timingOperatorContext);
+        try {
+            return visit(ctx.intervalOperatorPhrase());
+        }
+        finally {
+            timingOperators.pop();
+        }
     }
 
     @Override
     public Object visitConcurrentWithIntervalOperatorPhrase(@NotNull cqlParser.ConcurrentWithIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitConcurrentWithIntervalOperatorPhrase(ctx);
-    }
+        // ('starts' | 'ends')? relativeQualifier? 'same' dateTimePrecision? 'as' ('start' | 'end')?
 
-    @Override
-    public Object visitMeetsIntervalOperatorPhrase(@NotNull cqlParser.MeetsIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitMeetsIntervalOperatorPhrase(ctx);
-    }
+        TimingOperatorContext timingOperator = timingOperators.peek();
+        ParseTree firstChild = ctx.getChild(0);
+        if ("starts".equals(firstChild.getText())) {
+            timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+        }
 
-    @Override
-    public Object visitStartedByIntervalOperatorPhrase(@NotNull cqlParser.StartedByIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitStartedByIntervalOperatorPhrase(ctx);
-    }
+        if ("ends".equals(firstChild.getText())) {
+            timingOperator.setLeft(of.createEnd().withOperand(timingOperator.getLeft()));
+        }
 
-    @Override
-    public Object visitEndedByIntervalOperatorPhrase(@NotNull cqlParser.EndedByIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitEndedByIntervalOperatorPhrase(ctx);
+        ParseTree lastChild = ctx.getChild(ctx.getChildCount() - 1);
+        if ("start".equals(lastChild.getText())) {
+            timingOperator.setRight(of.createBegin().withOperand(timingOperator.getRight()));
+        }
+
+        if ("end".equals(lastChild.getText())) {
+            timingOperator.setRight(of.createEnd().withOperand(timingOperator.getRight()));
+        }
+
+        BinaryExpression operator = null;
+        if (ctx.dateTimePrecision() != null) {
+            switch (ctx.dateTimePrecision().getText()) {
+                case "year": operator = of.createSameYearAs(); break;
+                case "month": operator = of.createSameMonthAs(); break;
+                case "day": operator = of.createSameDayAs(); break;
+                case "hour": operator = of.createSameHourAs(); break;
+                case "minute": operator = of.createSameMinuteAs(); break;
+                case "second": operator = of.createSameSecondAs(); break;
+                // NOTE: No milliseconds here, because same millisecond as is equivalent to same as
+            }
+        }
+
+        if (operator == null) {
+            operator = of.createSameAs();
+        }
+
+        operator = operator.withOperand(timingOperator.getLeft(), timingOperator.getRight());
+
+        if (ctx.relativeQualifier() != null) {
+            switch (ctx.relativeQualifier().getText()) {
+                case "at least":
+                    return of.createOr().withOperand(
+                            operator,
+                            of.createGreater().withOperand(timingOperator.getLeft(), timingOperator.getRight())
+                    );
+
+                case "at most":
+                    return of.createOr().withOperand(
+                            operator,
+                            of.createLess().withOperand(timingOperator.getLeft(), timingOperator.getRight())
+                    );
+            }
+        }
+
+        return operator;
     }
 
     @Override
     public Object visitIncludesIntervalOperatorPhrase(@NotNull cqlParser.IncludesIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitIncludesIntervalOperatorPhrase(ctx);
-    }
+        // properly? includes (start | end)?
+        boolean isProper = false;
+        boolean isRightPoint = false;
+        TimingOperatorContext timingOperator = timingOperators.peek();
+        for (ParseTree pt : ctx.children) {
+            if ("properly".equals(pt.getText())) {
+                isProper = true;
+                continue;
+            }
 
-    @Override
-    public Object visitEndsIntervalOperatorPhrase(@NotNull cqlParser.EndsIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitEndsIntervalOperatorPhrase(ctx);
+            if ("start".equals(pt.getText())) {
+                timingOperator.setRight(of.createBegin().withOperand(timingOperator.getRight()));
+                isRightPoint = true;
+                continue;
+            }
+
+            if ("end".equals(pt.getText())) {
+                timingOperator.setRight(of.createEnd().withOperand(timingOperator.getRight()));
+                isRightPoint = true;
+                continue;
+            }
+        }
+
+        if (isRightPoint) {
+            // TODO: Handle is proper (no ELM representation for ProperContains)
+            return of.createContains().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+        }
+
+        if (isProper) {
+            return of.createProperIncludes().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+        }
+
+        return of.createIncludes().withOperand(timingOperator.getLeft(), timingOperator.getRight());
     }
 
     @Override
     public Object visitIncludedInIntervalOperatorPhrase(@NotNull cqlParser.IncludedInIntervalOperatorPhraseContext ctx) {
-        // TODO:
-        return super.visitIncludedInIntervalOperatorPhrase(ctx);
+        // (starts | ends)? properly? (during | included in)
+        boolean isProper = false;
+        boolean isLeftPoint = false;
+        TimingOperatorContext timingOperator = timingOperators.peek();
+        for (ParseTree pt : ctx.children) {
+            if ("starts".equals(pt.getText())) {
+                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                isLeftPoint = true;
+                continue;
+            }
+
+            if ("ends".equals(pt.getText())) {
+                timingOperator.setLeft(of.createEnd().withOperand(timingOperator.getLeft()));
+                isLeftPoint = true;
+                continue;
+            }
+
+            if ("properly".equals(pt.getText())) {
+                isProper = true;
+                continue;
+            }
+        }
+
+        if (isLeftPoint) {
+            // TODO: Handle is proper (no ELM representation for ProperIn)
+            return of.createIn().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+        }
+
+        if (isProper) {
+            return of.createProperIncludedIn().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+        }
+
+        return of.createIncludedIn().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+    }
+
+    @Override
+    public Object visitBeforeOrAfterIntervalOperatorPhrase(@NotNull cqlParser.BeforeOrAfterIntervalOperatorPhraseContext ctx) {
+        // ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')?
+
+        // duration before/after
+        // A starts 3 days before start B
+        // days between start of A and start of B = 3
+        // A starts 3 days after start B
+        // days between start of A and start of B = -3
+
+        // at least/most duration before/after
+        // A starts at least 3 days before start B
+        // days between start of A and start of B >= 3
+        // A starts at least 3 days after start B
+        // days between start of A and start of B <= -3
+        // A starts at most 3 days before start B
+        // days between start of A and start of B <= 3
+        // A starts at most 3 days after start B
+        // days between start of A and start of B >= -3
+
+        TimingOperatorContext timingOperator = timingOperators.peek();
+        Boolean isBefore = false;
+        for (ParseTree child : ctx.children) {
+            if ("starts".equals(child.getText())) {
+                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                continue;
+            }
+
+            if ("ends".equals(child.getText())) {
+                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                continue;
+            }
+
+            if ("start".equals(child.getText())) {
+                timingOperator.setRight(of.createBegin().withOperand(timingOperator.getRight()));
+                continue;
+            }
+
+            if ("end".equals(child.getText())) {
+                timingOperator.setRight(of.createEnd().withOperand(timingOperator.getRight()));
+                continue;
+            }
+
+            if ("before".equals(child.getText())) {
+                isBefore = true;
+                continue;
+            }
+        }
+
+        if (ctx.quantityOffset() == null) {
+            if (isBefore) {
+                return of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+            }
+            else {
+                return of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+            }
+        }
+        else {
+            Quantity quantity = (Quantity)visit(ctx.quantityOffset().quantityLiteral());
+            Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
+            BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(),
+                    timingOperator.getLeft(), timingOperator.getRight());
+            if (betweenOperator != null) {
+                if (ctx.quantityOffset().relativeQualifier() == null) {
+                    if (isBefore) {
+                        return of.createEqual().withOperand(
+                                betweenOperator,
+                                quantityLiteral
+                        );
+                    }
+                    else {
+                        return of.createEqual().withOperand(
+                                betweenOperator,
+                                of.createNegate().withOperand(quantityLiteral)
+                        );
+                    }
+                }
+                else {
+                    switch (ctx.quantityOffset().relativeQualifier().getText()) {
+                        case "at least":
+                            if (isBefore) {
+                                return of.createGreaterOrEqual().withOperand(
+                                        betweenOperator,
+                                        quantityLiteral
+                                );
+                            }
+                            else {
+                                return of.createLessOrEqual().withOperand(
+                                        betweenOperator,
+                                        of.createNegate().withOperand(quantityLiteral)
+                                );
+                            }
+                        case "at most":
+                            if (isBefore) {
+                                return of.createLessOrEqual().withOperand(
+                                        betweenOperator,
+                                        quantityLiteral
+                                );
+                            }
+                            else {
+                                return of.createGreaterOrEqual().withOperand(
+                                        betweenOperator,
+                                        of.createNegate().withOperand(quantityLiteral)
+                                );
+                            }
+                    }
+                }
+            }
+        }
+
+        // TODO: Error handling
+        return of.createNull();
+    }
+
+    private BinaryExpression resolveBetweenOperator(String unit, Expression left, Expression right) {
+        if (unit != null) {
+            switch (unit) {
+                case "year":
+                case "years": return of.createYearsBetween().withOperand(left, right);
+                case "month":
+                case "months": return of.createMonthsBetween().withOperand(left, right);
+                case "week":
+                case "weeks": return of.createMultiply().withOperand(
+                        of.createDaysBetween().withOperand(left, right),
+                        createLiteral(7));
+                case "day":
+                case "days": return of.createDaysBetween().withOperand(left, right);
+                case "hour":
+                case "hours": return of.createHoursBetween().withOperand(left, right);
+                case "minute":
+                case "minutes": return of.createMinutesBetween().withOperand(left, right);
+                case "second":
+                case "seconds": return of.createSecondsBetween().withOperand(left, right);
+                case "millisecond":
+                case "milliseconds": return of.createMillisecondsBetween().withOperand(left, right);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitWithinIntervalOperatorPhrase(@NotNull cqlParser.WithinIntervalOperatorPhraseContext ctx) {
+        // ('starts' | 'ends')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
+        // A starts within 3 days of start B
+        // days between start of A and start of B in [-3, 3]
+
+        TimingOperatorContext timingOperator = timingOperators.peek();
+        boolean isProper = false;
+        for (ParseTree child : ctx.children) {
+            if ("starts".equals(child.getText())) {
+                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                continue;
+            }
+
+            if ("ends".equals(child.getText())) {
+                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                continue;
+            }
+
+            if ("start".equals(child.getText())) {
+                timingOperator.setRight(of.createBegin().withOperand(timingOperator.getRight()));
+                continue;
+            }
+
+            if ("end".equals(child.getText())) {
+                timingOperator.setRight(of.createEnd().withOperand(timingOperator.getRight()));
+                continue;
+            }
+
+            if ("properly".equals(child.getText())) {
+                isProper = true;
+                continue;
+            }
+        }
+
+        Quantity quantity = (Quantity)visit(ctx.quantityLiteral());
+        Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
+        Interval quantityInterval = of.createInterval()
+                .withBegin(of.createNegate().withOperand(quantityLiteral)).withBeginOpen(isProper)
+                .withEnd(quantityLiteral).withEndOpen(isProper);
+        BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(),
+                timingOperator.getLeft(), timingOperator.getRight());
+        if (betweenOperator != null) {
+            return of.createIn().withOperand(betweenOperator, quantityInterval);
+        }
+
+        // TODO: Error handling
+        return of.createNull();
+    }
+
+    @Override
+    public Object visitMeetsIntervalOperatorPhrase(@NotNull cqlParser.MeetsIntervalOperatorPhraseContext ctx) {
+        BinaryExpression operator;
+        if (ctx.getChildCount() == 1) {
+            operator = of.createMeets();
+        }
+        else {
+            if ("before".equals(ctx.getChild(1).getText())) {
+                operator = of.createMeetsBefore();
+            }
+            else {
+                operator = of.createMeetsAfter();
+            }
+        }
+
+        return operator.withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+    }
+
+    @Override
+    public Object visitOverlapsIntervalOperatorPhrase(@NotNull cqlParser.OverlapsIntervalOperatorPhraseContext ctx) {
+        BinaryExpression operator;
+        if (ctx.getChildCount() == 1) {
+            operator = of.createOverlaps();
+        }
+        else {
+            if ("before".equals(ctx.getChild(1).getText())) {
+                operator = of.createOverlapsBefore();
+            }
+            else {
+                operator = of.createOverlapsAfter();
+            }
+        }
+
+        return operator.withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+    }
+
+    @Override
+    public Object visitStartsIntervalOperatorPhrase(@NotNull cqlParser.StartsIntervalOperatorPhraseContext ctx) {
+        return of.createBegins().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+    }
+
+    @Override
+    public Object visitStartedByIntervalOperatorPhrase(@NotNull cqlParser.StartedByIntervalOperatorPhraseContext ctx) {
+        return of.createBegunBy().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+    }
+
+    @Override
+    public Object visitEndsIntervalOperatorPhrase(@NotNull cqlParser.EndsIntervalOperatorPhraseContext ctx) {
+        return of.createEnds().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+    }
+
+    @Override
+    public Object visitEndedByIntervalOperatorPhrase(@NotNull cqlParser.EndedByIntervalOperatorPhraseContext ctx) {
+        return of.createEndedBy().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
     }
 
     @Override
@@ -943,7 +1252,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         QueryContext queryContext = new QueryContext();
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
         queryContext.addQuerySource(aqs);
-        pushQueryContext(queryContext);
+        queries.push(queryContext);
         try {
             List<RelationshipClause> qicx = new ArrayList<>();
             if (ctx.queryInclusionClause() != null) {
@@ -963,7 +1272,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
                     .withSort(sort);
         }
         finally {
-            popQueryContext();
+            queries.pop();
         }
     }
 
@@ -977,14 +1286,14 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     public Object visitQueryInclusionClause(@NotNull cqlParser.QueryInclusionClauseContext ctx) {
         boolean negated = ctx.getChild(0).equals("without");
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        peekQueryContext().addQuerySource(aqs);
+        queries.peek().addQuerySource(aqs);
         try {
             Expression expression = (Expression) visit(ctx.expression());
             RelationshipClause result = negated ? of.createWithout() : of.createWith();
             return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withWhere(expression);
         }
         finally {
-            peekQueryContext().removeQuerySource(aqs);
+            queries.peek().removeQuerySource(aqs);
         }
     }
 
@@ -1205,16 +1514,8 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         return createLiteral(String.valueOf(bool), "Boolean");
     }
 
-    private void pushQueryContext(QueryContext query) {
-        queries.add(0, query);
-    }
-
-    private void popQueryContext() {
-        queries.remove(0);
-    }
-
-    private QueryContext peekQueryContext() {
-        return queries.get(0);
+    private Literal createLiteral(Integer integer) {
+        return createLiteral(String.valueOf(integer), "Integer");
     }
 
     private String resolveAlias(String identifier) {
@@ -1272,10 +1573,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     private String resolveFunctionName(String identifier) {
         if (libraryInfo != null) {
-            FunctionDefinitionInfo info = libraryInfo.resolveFunctionReference(identifier);
-            if (info != null) {
-                return info.getName();
-            }
+            return libraryInfo.resolveFunctionName(identifier);
         }
 
         return null;
@@ -1302,10 +1600,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     private String resolveParameterName(String identifier) {
         if (libraryInfo != null) {
-            ParameterDefinitionInfo info = libraryInfo.resolveParameterReference(identifier);
-            if (info != null) {
-                return info.getName();
-            }
+            return libraryInfo.resolveParameterName(identifier);
         }
 
         return null;

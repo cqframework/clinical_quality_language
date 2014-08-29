@@ -490,7 +490,7 @@ The static type of the then argument within the first caseItem determines the ty
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
 				<xs:sequence>
-					<xs:element name="asTypeSpecifier" type="TypeSpecifier" minOccurs="0"  maxOccurs="1"/>
+					<xs:element name="asTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="asType" type="xs:QName" use="optional"/>
 				<xs:attribute name="strict" type="xs:boolean" use="optional" default="false"/>
@@ -1483,7 +1483,33 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
-		<!-- Meets(i1, i2) = End(i1) = Begin(i2) -->
+		<!-- Meets(i1, i2) = End(i1) = Pred(Begin(i2)) or End(i2) = Pred(Begin(i1)) -->
+	</xs:complexType>
+	<xs:complexType name="MeetsBefore">
+		<xs:annotation>
+			<xs:documentation>The MeetsBefore operator returns true if the first interval ends immediately before the second interval starts. In other words, if the ending point of the first interval is equal to the predecessor of the starting point of the second.
+			
+This operator uses the semantics described in the Begin and End operators to determine interval boundaries.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+		<!-- Meets(i1, i2) = End(i1) = Pred(Begin(i2)) -->
+	</xs:complexType>
+	<xs:complexType name="MeetsAfter">
+		<xs:annotation>
+			<xs:documentation>The MeetsAfter operator returns true if the first interval starts immediately after the second interval ends. In other words, if the starting point of the first interval is equal to the successor of the ending point of the second.
+			
+This operator uses the semantics described in the Begin and End operators to determine interval boundaries.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+		<!-- Meets(i1, i2) = End(i2) = Pred(Begin(i1)) -->
 	</xs:complexType>
 	<xs:complexType name="Overlaps">
 		<xs:annotation>
@@ -1537,6 +1563,19 @@ If either argument is null, the result is null.</xs:documentation>
 		</xs:complexContent>
 		<!-- Begins(i1, i2) = Begin(i1) = Begin(i2) and End(i1) <= End(i2) -->
 	</xs:complexType>
+	<xs:complexType name="BegunBy">
+		<xs:annotation>
+			<xs:documentation>The BegunBy operator returns true if the first interval is begun by the second. In other words, if the starting point of the first is equal to the starting point of the second interval and the ending point of the second interval is less than or equal to the ending point of the first interval.
+
+This operator uses the semantics described in the Begin and End operators to determine interval boundaries.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+		<!-- BegunBy(i1, i2) = Begin(i1) = Begin(i2) and End(i2) <= End(i1) -->
+	</xs:complexType>
 	<xs:complexType name="Ends">
 		<xs:annotation>
 			<xs:documentation>The Ends operator returns true if the first interval ends the second. In other words, if the starting point of the first interval is greater than or equal to the starting point of the second, and the ending point of the first interval is equal to the ending point of the second.
@@ -1549,6 +1588,19 @@ If either argument is null, the result is null.</xs:documentation>
 			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 		<!-- Ends(i1, i2) = Begin(i1) >= Begin(i2) and End(i1) = End(i2) -->
+	</xs:complexType>
+	<xs:complexType name="EndedBy">
+		<xs:annotation>
+			<xs:documentation>The EndedBy operator returns true if the first interval is ended by the second. In other words, if the starting point of the second interval is greater than or equal to the starting point of the first, and the ending point of the first interval is equal to the ending point of the second.
+			
+This operator uses the semantics described in the Begin and End operators to determine interval boundaries.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+		<!-- EndedBy(i1, i2) = Begin(i2) >= Begin(i1) and End(i1) = End(i2) -->
 	</xs:complexType>
 	<xs:complexType name="Collapse">
 		<xs:annotation>

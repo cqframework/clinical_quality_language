@@ -143,3 +143,42 @@ let Encounters =
 		with [Condition: "B"] B where A.effectiveTime overlaps after B.effectiveTime
 		with Medications C where A.effectiveTime overlaps after C.effectiveTime
 
+
+
+// Introduce the notion of an uncertainty range:
+uncertainty[17, 44]
+
+// Equality
+uncertainty[17, 44] = 2 // returns false
+uncertainty[17, 44] = 20 // returns unknown
+uncertainty[17, 44] = 45 // returns false
+
+// if the value being compared falls within the uncertainty range, the result is unknown, otherwise the result is false
+
+uncertainty[17, 44] = uncertainty[17, 44] // returns unknown
+uncertainty[17, 44] = uncertainty[2, 12] // returns false
+uncertainty[17, 44] = uncertainty[2, 20] // returns unknown
+
+// If the uncertainty ranges overlap in any way, the result is unknown, otherwise the result is false
+
+// Comparison
+uncertainty[17, 44] > 2 // returns true
+uncertainty[17, 44] > 20 // returns unknown
+uncertainty[17, 44] > 45 // returns false
+
+// If the value being compared falls within the uncertainty range, the result is unknown, otherwise, the result is based on the comparison to the relevant boundary
+
+uncertainty[17, 44] > uncertainty[17, 44] // returns unknown
+uncertainty[17, 44] > uncertainty[2, 12] // returns true
+uncertainty[17, 44] > uncertainty[2, 20] // returns unknown
+uncertainty[17, 44] > uncertainty[20, 20] // returns unknown
+uncertainty[17, 44] > uncertainty[20, 50] // returns unknown
+uncertainty[17, 44] > uncertainty[45, 50] // returns false
+
+// If the uncertainties overlap in any way, the result is unknown, otherwise, the result is based on the comparison to the relevant boundaries
+
+// Arithmetic
+
+uncertainty[17, 44] + 2 // returns uncertainty[19, 46]
+
+
