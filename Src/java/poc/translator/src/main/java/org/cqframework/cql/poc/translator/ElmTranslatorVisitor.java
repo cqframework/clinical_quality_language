@@ -1340,7 +1340,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitQueryInclusionClause(@NotNull cqlParser.QueryInclusionClauseContext ctx) {
-        boolean negated = ctx.getChild(0).equals("without");
+        boolean negated = "without".equals(ctx.getChild(0).getText());
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
         queries.peek().addQuerySource(aqs);
         try {
@@ -1641,7 +1641,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         if (library.getStatements() != null) {
             for (ExpressionDef current : library.getStatements().getDef()) {
                 if (!(current instanceof FunctionDef) && !(current instanceof ClinicalRequestDef)
-                        && (current.getName() == identifier)) {
+                        && (current.getName().equals(identifier))) {
                     return identifier;
                 }
             }
@@ -1661,7 +1661,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private String resolveFunctionName(Library library, String identifier) {
         if (library.getStatements() != null) {
             for (ExpressionDef current : library.getStatements().getDef()) {
-                if (current instanceof FunctionDef && current.getName() == identifier) {
+                if (current instanceof FunctionDef && current.getName().equals(identifier)) {
                     return identifier;
                 }
             }
@@ -1688,7 +1688,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private String resolveParameterName(Library library, String identifier) {
         if (library.getParameters() != null) {
             for (ParameterDef current : library.getParameters().getDef()) {
-                if (current.getName() == identifier) {
+                if (current.getName().equals(identifier)) {
                     return identifier;
                 }
             }
@@ -1717,7 +1717,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private String resolveLibraryName(String identifier) {
         if (library.getLibraries() != null) {
             for (LibraryReference current : library.getLibraries().getLibraryReference()) {
-                if (current.getName() == identifier) {
+                if (current.getName().equals(identifier)) {
                     return identifier;
                 }
             }
