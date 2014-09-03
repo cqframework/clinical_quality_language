@@ -1,9 +1,14 @@
 package org.cqframework.cql.poc.interpreter;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlBaseVisitor;
+import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.interpreter.patient.Patient;
+import org.cqframework.cql.poc.interpreter.patient.PatientDb;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -25,7 +30,7 @@ public class CqlInterpreterVisitor extends cqlBaseVisitor {
     @Override
     public Object visitLetStatement(@NotNull cqlParser.LetStatementContext ctx) {
         String id = ctx.IDENTIFIER().toString();
-        Object obj = visitChildren(ctx);
+        Object obj = visit(ctx.expression());
         vars.put(id, obj);
         return obj;
     }
@@ -33,8 +38,8 @@ public class CqlInterpreterVisitor extends cqlBaseVisitor {
     @Override
     public Object visitInequalityExpression(@NotNull cqlParser.InequalityExpressionContext ctx) {
         // TODO: Don't assume int
-        int lhNum = ((Quantity) dispatchExpression(ctx.expression(0))).getQuantity().intValue();
-        int rhNum = ((Quantity) dispatchExpression(ctx.expression(1))).getQuantity().intValue();
+        int lhNum = ((Quantity) visit(ctx.expression(0))).getQuantity().intValue();
+        int rhNum = ((Quantity) visit(ctx.expression(1))).getQuantity().intValue();
         boolean result;
         switch(ctx.getChild(1).getText()) {
             case "<" :
@@ -67,7 +72,7 @@ public class CqlInterpreterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTermExpression(@NotNull cqlParser.TermExpressionContext ctx) {
-        return dispatchExpressionTerm(ctx.expressionTerm());
+        return visit(ctx.expressionTerm());
     }
 
     @Override
@@ -77,7 +82,7 @@ public class CqlInterpreterVisitor extends cqlBaseVisitor {
             case "AgeAt":
                 cqlParser.TermExpressionContext exp = (cqlParser.TermExpressionContext) ctx.expression(0);
                 // TODO: Don't assume date
-                Date date = (Date) dispatchExpressionTerm(exp.expressionTerm());
+                Date date = (Date) visit(exp.expressionTerm());
                 result = new Quantity(patient.getAgeAt(date));
                 break;
         }
@@ -106,19 +111,30 @@ public class CqlInterpreterVisitor extends cqlBaseVisitor {
         return vars;
     }
 
-    private Object dispatchExpression(cqlParser.ExpressionContext ctx) {
-        if (ctx instanceof cqlParser.TermExpressionContext)
-            return visitTermExpression((cqlParser.TermExpressionContext) ctx);
-        else
-            return visitChildren(ctx);
-    }
+    public static void main(String[] args) {
+        String logic = "let InDemographic = AgeAt(start of MeasurementPeriod) >= 16";
+        ANTLRInputStream input = new ANTLRInputStream(logic);
+        cqlLexer lexer = new cqlLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        cqlParser parser = new cqlParser(tokens);
+        parser.setBuildParseTree(true);
+        ParseTree tree = parser.logic();
 
-    private Object dispatchExpressionTerm(cqlParser.ExpressionTermContext ctx) {
-        if (ctx instanceof cqlParser.MethodExpressionTermContext)
-            return visitMethodExpressionTerm((cqlParser.MethodExpressionTermContext) ctx);
-        else if (ctx instanceof cqlParser.TimeBoundaryExpressionTermContext)
-            return visitTimeBoundaryExpressionTerm((cqlParser.TimeBoundaryExpressionTermContext) ctx);
-        else
-            return visitChildren(ctx);
+        MeasurePeriod mp = MeasurePeriod.forYear(2013);
+        System.out.println("|---------------------------------------------------------------------------------------");
+        System.out.println("| MEASURE PERIOD: " + mp.getStart() + " - " + mp.getEnd());
+        System.out.println("|---------------------------------------------------------------------------------------");
+        System.out.println("| LOGIC: " + logic);
+        System.out.println("|---------------------------------------------------------------------------------------");
+        for (Patient p : PatientDb.instance().getPatients()) {
+            System.out.println("| PATIENT " + p.getId() + ": " + p.getName() + "(" + p.getBirthdate() + ")");
+            CqlInterpreterVisitor visitor = new CqlInterpreterVisitor(p, mp);
+            visitor.visit(tree);
+
+            for (String key : visitor.getVars().keySet()) {
+                System.out.println("|   " + key + " = " + visitor.getVars().get(key));
+            }
+            System.out.println("|---------------------------------------------------------------------------------------");
+        }
     }
 }

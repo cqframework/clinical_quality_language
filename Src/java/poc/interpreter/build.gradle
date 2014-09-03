@@ -6,7 +6,7 @@ group = 'org.cqframework'
 version = '0.1'
 sourceCompatibility = '1.7'
 
-mainClassName = 'org.cqframework.cql.poc.interpreter.Main'
+mainClassName = 'org.cqframework.cql.poc.interpreter.CqlInterpreterVisitor'
 
 repositories {
     mavenCentral()
