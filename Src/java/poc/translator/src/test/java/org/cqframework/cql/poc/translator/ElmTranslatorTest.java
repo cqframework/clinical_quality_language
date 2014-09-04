@@ -3,12 +3,20 @@ package org.cqframework.cql.poc.translator;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.poc.translator.model.Identifier;
 import org.hl7.elm.r1.Add;
+import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.And;
+import org.hl7.elm.r1.Begin;
 import org.hl7.elm.r1.BinaryExpression;
+import org.hl7.elm.r1.ByExpression;
+import org.hl7.elm.r1.ClinicalRequest;
+import org.hl7.elm.r1.DaysBetween;
 import org.hl7.elm.r1.Divide;
+import org.hl7.elm.r1.End;
 import org.hl7.elm.r1.Equal;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.ExpressionRef;
+import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.Greater;
 import org.hl7.elm.r1.GreaterOrEqual;
 import org.hl7.elm.r1.IsNull;
@@ -19,13 +27,22 @@ import org.hl7.elm.r1.Multiply;
 import org.hl7.elm.r1.Not;
 import org.hl7.elm.r1.NotEqual;
 import org.hl7.elm.r1.Null;
+import org.hl7.elm.r1.ObjectExpression;
 import org.hl7.elm.r1.Or;
+import org.hl7.elm.r1.OverlapsAfter;
+import org.hl7.elm.r1.ParameterRef;
 import org.hl7.elm.r1.Power;
+import org.hl7.elm.r1.Property;
+import org.hl7.elm.r1.PropertyExpression;
 import org.hl7.elm.r1.Quantity;
+import org.hl7.elm.r1.Query;
+import org.hl7.elm.r1.RelationshipClause;
+import org.hl7.elm.r1.SortClause;
+import org.hl7.elm.r1.SortDirection;
 import org.hl7.elm.r1.Subtract;
+import org.hl7.elm.r1.ValueSetRef;
+import org.hl7.elm.r1.With;
 import org.hl7.elm.r1.Xor;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -34,23 +51,11 @@ import java.util.Map;
 
 import static org.cqframework.cql.poc.translator.TestUtils.*;
 import static org.cqframework.cql.poc.translator.matchers.LiteralFor.literalFor;
+import static org.cqframework.cql.poc.translator.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class ElmTranslatorTest {
-    @Test
-    public void testRhinoWorks() {
-        Context cx = Context.enter();
-        try {
-            Scriptable scope = cx.initStandardObjects();
-            String command = "1+1";
-            Object result = cx.evaluateString(scope, command, "<cmd>", 1, null);
-            assertThat(Context.toString(result), is("2"));
-        } finally {
-            Context.exit();
-        }
-    }
-
     @Test
     public void testLet(){
         ExpressionDef let = (ExpressionDef) visitData("let b = true");
@@ -231,43 +236,74 @@ public class ElmTranslatorTest {
         assertTrackable(id);
     }
 
-    /* TODO: Implement this after Bryn's resolution changes
     @Test
-    public void testAccessorExpression(){
-        CqlTranslatorVisitor visitor = new CqlTranslatorVisitor();
-        try{
-            ParseTree tree = parseData("let st = X.effectiveTime");
-            LetStatement let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof AccessorExpression, "Should be an AccessorExpression but was a "+let.getExpression());
-            AccessorExpression ac = (AccessorExpression)let.getExpression();
-            Expression ex = ac.getExpression();
-            assertTrue(ex instanceof IdentifierExpression,"SHould be an IdentifierExpression but was "+ex);
-            assertEquals(((IdentifierExpression) ex).getIdentifier(),"X", "Expression should be X but was "+ac.getExpression());
-            assertEquals(ac.getIdentifier(),"effectiveTime", "Identifier should be effectiveTime but was "+ac.getIdentifier());
-            assertFalse(ac.isValuesetAccessor(),"Should not be a valueset accessor but was");
-
-            tree = parseData("let st = X.\"valueset identifier\"");
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof AccessorExpression, "Should be an AccessorExpression but was a "+let.getExpression());
-            ac = (AccessorExpression)let.getExpression();
-            ex = ac.getExpression();
-            assertTrue(ex instanceof IdentifierExpression,"SHould be an IdentifierExpression but was "+ex);
-            assertEquals(((IdentifierExpression) ex).getIdentifier(),"X", "Expression should be X but was "+ac.getExpression());
-            assertEquals(ac.getIdentifier(),"valueset identifier", "Identifier should be valueset identifier but was "+ac.getIdentifier());
-            assertTrue(ac.isValuesetAccessor(),"Should  be a valueset accessor but was not");
-
-            assertTrackable(let);
-            assertTrackable(let.getExpression());
-            assertTrackable(ac);
-            assertTrackable(ac.getExpression());
-
-        }catch(Exception e) {
-            throw e;
-        }
+    public void testExpressionReference() {
+        String cql =
+                "let X = [Condition]\n" +
+                "let st = X";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ExpressionRef exp = (ExpressionRef) let.getExpression();
+        assertThat(exp.getName(), is("X"));
+        assertThat(exp.getLibraryName(), is(nullValue()));
+        assertThat(exp.getDescription(), is(nullValue()));
     }
-    */
+
+    @Test
+    public void testPropertyReference() {
+        String cql =
+                "let X = [Condition]\n" +
+                "let st = X.effectiveTime";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        Property prop = (Property) let.getExpression();
+        ExpressionRef source = (ExpressionRef) prop.getSource();
+        assertThat(source.getName(), is("X"));
+        assertThat(source.getLibraryName(), is(nullValue()));
+        assertThat(source.getDescription(), is(nullValue()));
+        assertThat(prop.getPath(), is("effectiveTime"));
+        assertThat(prop.getScope(), is(nullValue()));
+        assertThat(prop.getDescription(), is(nullValue()));
+    }
+
+    @Test
+    public void testValueSetReference() {
+        String cql =
+                "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+                "let st = \"Acute Pharyngitis\"";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ValueSetRef vs = (ValueSetRef) let.getExpression();
+        assertThat(vs.getName(), is("Acute Pharyngitis"));
+        assertThat(vs.getLibraryName(), is(nullValue()));
+        assertThat(vs.getDescription(), is(nullValue()));
+    }
+
+    @Test
+    public void testFunctionReference() {
+        String cql =
+                "define function MyFunction() { return true }\n" +
+                "let st = MyFunction()";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        FunctionRef fun = (FunctionRef) let.getExpression();
+        assertThat(fun.getName(), is("MyFunction"));
+        assertThat(fun.getLibraryName(), is(nullValue()));
+        assertThat(fun.getDescription(), is(nullValue()));
+        assertThat(fun.getOperand(), is(empty()));
+    }
+
+    @Test
+    public void testFunctionReferenceWithArguments() {
+        String cql =
+                "define function MyFunction(arg: String) { return arg }\n" +
+                "let st = MyFunction('hello there')";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        FunctionRef fun = (FunctionRef) let.getExpression();
+        assertThat(fun.getName(), is("MyFunction"));
+        assertThat(fun.getLibraryName(), is(nullValue()));
+        assertThat(fun.getDescription(), is(nullValue()));
+        assertThat(fun.getOperand(), hasSize(1));
+        assertThat(fun.getOperand().get(0), literalFor("hello there"));
+    }
+
+    // TODO: Tests for accessors to expressions, valuesets, functions from included libraries
 
     @Test
     public void testArithmeticExpressions() {
@@ -296,191 +332,441 @@ public class ElmTranslatorTest {
         }
     }
 
-/* TODO: Implement these later...
-
     @Test
-    public void testRetrieveExpression(){
-        CqlTranslatorVisitor visitor = new CqlTranslatorVisitor();
-        try{
-            ParseTree tree = parseData("let st = [Encounter, Performed]");
-            LetStatement let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
-            assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            SourceDataCriteria dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
-            assertEquals("Encounter",dc.getTopic().getIdentifier());
+    public void testRetrieveTopic() {
+        ExpressionDef let = (ExpressionDef) visitData("let st = [Condition]");
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
+        assertThat(request.getCodeProperty(), is(nullValue()));
+        assertThat(request.getCodes(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        // TODO: What is templateId for?
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
 
-            tree = parseData("let st = [PATIENT.Encounter, Performed]");
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
-            assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
-            assertEquals("Encounter",dc.getTopic().getIdentifier());
-            assertEquals("PATIENT",dc.getTopic().getQualifier());
-            assertFalse(dc.getTopic().isValuesetIdentifier());
-
-            tree = parseData("let st = [Encounter, Performed :\"Valueset Identifier\"]");
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
-            assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
-            assertEquals("Valueset Identifier",dc.getValueset().getIdentifier());
-            assertTrue(dc.getValueset().isValuesetIdentifier());
-
-            tree = parseData("let st = [Encounter, Performed :Comp.\"Valueset Identifier\"]");
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
-            assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
-            assertEquals("Valueset Identifier",dc.getValueset().getIdentifier());
-            assertEquals("Comp",dc.getValueset().getQualifier());
-
-            tree = parseData("let st = [Encounter, Performed : Field in Comp.\"Valueset Identifier\"]");
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
-            assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
-            assertEquals("Valueset Identifier",dc.getValueset().getIdentifier());
-            assertEquals("Comp",dc.getValueset().getQualifier());
-            assertEquals("Field",dc.getValuesetPathIdentifier().getIdentifier());
-
-
-            tree = parseData("let st = [Encounter, Performed : Field in Comp.\"Valueset Identifier\", duringPath during (null) ]");
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
-            assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            RetrieveExpression ret = (RetrieveExpression)let.getExpression();
-            dc = ret.getDataCriteria();
-            assertEquals("Valueset Identifier",dc.getValueset().getIdentifier());
-            assertEquals("Comp",dc.getValueset().getQualifier());
-            assertEquals("Field",dc.getValuesetPathIdentifier().getIdentifier());
-            assertEquals("duringPath",ret.getDuringPathIdentifier().getIdentifier());
-            assertTrue(ret.getDuringExpression() instanceof  NullLiteral);
-
-            tree = parseData("let st = [NonOccurrence of Encounter, Performed]");
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statement variable name should be st");
-            assertTrue(let.getExpression() instanceof RetrieveExpression, "Should be a Retrieve Expression literal");
-            dc = ((RetrieveExpression)let.getExpression()).getDataCriteria();
-            assertEquals(dc.getExistence(), SourceDataCriteria.Existence.NonOccurrence);
-
-            assertTrackable(let);
-            assertTrackable(let.getExpression());
-            assertTrackable(ret);
-            assertTrackable(ret.getDuringExpression());
-            assertTrackable(ret.getDuringPathIdentifier());
-            assertTrackable(ret.getDataCriteria());
-
-
-        }catch(Exception e) {
-            throw e;
-        }
+    @Test(enabled=false)
+    public void testRetrieveNonOccurrenceOfTopic() {
+        ExpressionDef let = (ExpressionDef) visitData("let st = [NonOccurrence of Condition]");
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
+        assertThat(request.getCodeProperty(), is(nullValue()));
+        assertThat(request.getCodes(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
     }
 
     @Test
-    public void testQueryExpression(){
-        CqlTranslatorVisitor visitor = new CqlTranslatorVisitor();
-        try{
-            ParseTree tree = parseData("let st = [Encounter, Performed] R  with X.P A where A.s = R.y where R.effectiveTime = null return R");
-            LetStatement let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof QueryExpression, "Should be a QueryExpression Expression but was " +let.getExpression());
-            QueryExpression qe = (QueryExpression)let.getExpression();
-            assertEquals("R",qe.getAliaseQuerySource().getAlias());
-            assertTrue(qe.getAliaseQuerySource().getQuerySource() instanceof RetrieveExpression, "QS should be a Retrieve expression");
-            assertEquals(1, qe.getQueryInclusionClauseExpressions().size());
-            assertEquals("R" ,((IdentifierExpression)qe.getReturnClause()).getIdentifier());
-            assertEquals("A",qe.getQueryInclusionClauseExpressions().get(0).getAliasedQuerySource().getAlias());
-            assertTrue(qe.getQueryInclusionClauseExpressions().get(0).getAliasedQuerySource().getQuerySource() instanceof QualifiedIdentifier);
+    public void testRetrieveTopicAndModality() {
+        ExpressionDef let = (ExpressionDef) visitData("let st = [Encounter, Performance]");
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is(nullValue()));
+        assertThat(request.getCodes(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
 
-            assertTrackable(let);
-            assertTrackable(let.getExpression());
-            assertTrackable(qe);
-            assertTrackable(qe.getAliaseQuerySource());
-            assertTrackable(qe.getReturnClause());
-            assertTrackable(qe.getSortClause());
-            assertTrackable(qe.getWhereClauseExpression());
-            for (QueryInclusionClauseExpression queryInclusionClauseExpression : qe.getQueryInclusionClauseExpressions()) {
-                assertTrackable(queryInclusionClauseExpression);
-            }
-
-        }catch(Exception e) {
-            throw e;
-        }
+    @Test(enabled=false)
+    public void testRetrieveNonOccurrenceOfTopicAndModality() {
+        ExpressionDef let = (ExpressionDef) visitData("let st = [NonOccurrence of Encounter, Performance]");
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceNonOccurrence"));
+        assertThat(request.getCodeProperty(), is(nullValue()));
+        assertThat(request.getCodes(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
     }
 
     @Test
-    public void testMethodExpression(){
-        CqlTranslatorVisitor visitor = new CqlTranslatorVisitor();
-        try{
-            ParseTree tree = parseData("let st = AgeAt()");
-            LetStatement let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof MethodExpression, "Should be a MethodExpression Expression but was " +let.getExpression());
-            MethodExpression meth = (MethodExpression)let.getExpression();
-            assertEquals("AgeAt", ((IdentifierExpression)meth.getMethod()).getIdentifier());
-            assertTrue(meth.getParemeters().isEmpty());
-            tree = parseData("let st = AgeAt(1,[Encounter, Perfromed])");
-
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof MethodExpression, "Should be a MethodExpression Expression but was " +let.getExpression());
-            meth = (MethodExpression)let.getExpression();
-            assertEquals("AgeAt", ((IdentifierExpression)meth.getMethod()).getIdentifier());
-            assertFalse(meth.getParemeters().isEmpty());
-            assertTrue(meth.getParemeters().get(0) instanceof QuantityLiteral);
-            assertTrue(meth.getParemeters().get(1) instanceof RetrieveExpression);
-
-            tree = parseData("let st = X.AgeAt(1,[Encounter, Perfromed])");
-
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof MethodExpression, "Should be a MethodExpression Expression but was " +let.getExpression());
-            meth = (MethodExpression)let.getExpression();
-            assertTrue(meth.getMethod() instanceof AccessorExpression, "Should be a AccessorExpression Expression but was " +meth.getMethod());;
-            assertFalse(meth.getParemeters().isEmpty());
-            assertTrue(meth.getParemeters().get(0) instanceof QuantityLiteral);
-            assertTrue(meth.getParemeters().get(1) instanceof RetrieveExpression);
-            assertEquals("X", ((IdentifierExpression) ((AccessorExpression) meth.getMethod()).getExpression()).getIdentifier());
-            assertEquals("AgeAt", ((AccessorExpression)meth.getMethod()).getIdentifier());
-            assertTrackable(let);
-            assertTrackable(let.getExpression());
-            assertTrackable(meth);
-            assertTrackable(meth.getMethod());
-            for (Expression expression : meth.getParemeters()) {
-                assertTrackable(expression);
-            }
-
-        }catch(Exception e) {
-            throw e;
-        }
+    public void testRetrieveTopicAndModalityAndOccurrence() {
+        ExpressionDef let = (ExpressionDef) visitData("let st = [Occurrence of Encounter, Performance]");
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is(nullValue()));
+        assertThat(request.getCodes(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
     }
 
-    @Test(enabled = false, skipFailedInvocations = true)
-    public void testExistanceExpression(){
-        CqlTranslatorVisitor visitor = new CqlTranslatorVisitor();
-        try{
-            ParseTree tree = parseData("let st = exists (null)");
-            LetStatement let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof ExistenceExpression, "Should be an existence expression");
-            ExistenceExpression ex = (ExistenceExpression)let.getExpression();
-            assertFalse(ex.isNegated(),"Existence expression should not be negated when using 'exists'");
-            assertTrue(ex.getExpression() instanceof NullLiteral, "Expression should be a null literal but was a "+ex.getExpression());
-
-            tree = parseData("let st = not (null)");
-            let = (LetStatement)visitor.visit(tree);
-            assertEquals(let.getIdentifier(),"st","let statment variable name should be st");
-            assertTrue(let.getExpression() instanceof ExistenceExpression, "Should be an existence expression");
-            ex = (ExistenceExpression)let.getExpression();
-            assertTrue(ex.isNegated(),"Existence expression should  be negated when using 'not'");
-            assertTrue(ex.getExpression() instanceof NullLiteral, "Expression should be a null literal");
-
-        }catch(Exception e) {
-            throw e;
-        }
+    @Test
+    public void testRetrieveTopicAndValueSet() {
+        String cql =
+                "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+                "let st = [Condition: \"Acute Pharyngitis\"]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
+        assertThat(request.getCodeProperty(), is("code"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Acute Pharyngitis"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
     }
-    */
 
+    @Test
+    public void testRetrieveTopicAndModalityAndValueSet() {
+        String cql =
+                "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
+                "let st = [Encounter, Performance: \"Ambulatory/ED Visit\"]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Ambulatory/ED Visit"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
+
+    @Test(enabled = false)
+    public void testRetrieveNonOccurrenceOfTopicAndModalityAndValueSet() {
+        String cql =
+                "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
+                "let st = [NonOccurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceNonOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Ambulatory/ED Visit"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
+
+    @Test
+    public void testRetrieveTopicAndModalityAndOccurrenceAndValueSet() {
+        String cql =
+                "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
+                "let st = [Occurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Ambulatory/ED Visit"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
+
+    @Test
+    public void testRetrieveTopicAndSpecifiedCodeAttribute() {
+        String cql =
+                "valueset \"Moderate or Severe\" = ValueSet('2.16.840.1.113883.3.526.3.1092')\n" +
+                "let st = [Condition: severity in \"Moderate or Severe\"]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
+        assertThat(request.getCodeProperty(), is("severity"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Moderate or Severe"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
+
+    @Test
+    public void testRetrieveTopicAndModalityAndSpecifiedCodeAttribute() {
+        String cql =
+                "valueset \"CABG Surgeries\" = ValueSet('2.16.840.1.113883.3.666.5.694')\n" +
+                "let st = [Encounter, Performance: actionPerformed in \"CABG Surgeries\"]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("actionPerformed"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("CABG Surgeries"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
+
+    @Test
+    public void testRetrieveTopicAndModalityAndValueSetAndDuring() {
+        String cql =
+                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
+                "let st = [Encounter, Performance: \"Ambulatory/ED Visit\", during MeasurementPeriod]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Ambulatory/ED Visit"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("performanceTime"));
+        ParameterRef mp = (ParameterRef) request.getDateRange();
+        assertThat(mp.getName(), is("MeasurementPeriod"));
+        assertThat(mp.getLibraryName(), is(nullValue()));
+        assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
+
+    @Test
+    public void testRetrieveTopicAndModalityAndValueSetAndDuringAttribute() {
+        String cql =
+                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+                "let st = [Condition: \"Acute Pharyngitis\", effectiveTime during MeasurementPeriod]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
+        assertThat(request.getCodeProperty(), is("code"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Acute Pharyngitis"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ParameterRef mp = (ParameterRef) request.getDateRange();
+        assertThat(mp.getName(), is("MeasurementPeriod"));
+        assertThat(mp.getLibraryName(), is(nullValue()));
+        assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
+
+    @Test
+    public void testRetrieveTopicAndModalityAndCodeAttributeAndDuringAttribute() {
+        String cql =
+                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "valueset \"Moderate or Severe\" = ValueSet('2.16.840.1.113883.3.526.3.1092')\n" +
+                "let st = [Condition: severity in \"Moderate or Severe\", effectiveTime during MeasurementPeriod]";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
+        assertThat(request.getCodeProperty(), is("severity"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Moderate or Severe"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ParameterRef mp = (ParameterRef) request.getDateRange();
+        assertThat(mp.getName(), is("MeasurementPeriod"));
+        assertThat(mp.getLibraryName(), is(nullValue()));
+        assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+    }
+
+    @Test
+    public void testComplexQuery() {
+        String cql =
+            "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+            "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+            "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+            "let st = [Encounter, Performance: \"Inpatient\"] E\n" +
+            "    with [Condition: \"Acute Pharyngitis\"] P\n" +
+            "        where P.effectiveTime overlaps after E.performanceTime\n" +
+            "    where duration in days of E.performanceTime >= 120\n" +
+            "    return tuple { id: E.id, lengthOfStay: duration in days of E.performanceTime }\n" +
+            "    sort by lengthOfStay desc";
+        ExpressionDef let = (ExpressionDef) visitData(cql);
+        Query query = (Query) let.getExpression();
+
+        // First check the source
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getCardinality(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // Then check the with statement
+        assertThat(query.getRelationship(), hasSize(1));
+        RelationshipClause relationship = query.getRelationship().get(0);
+        assertThat(relationship, instanceOf(With.class));
+        assertThat(relationship.getAlias(), is("P"));
+        ClinicalRequest withRequest = (ClinicalRequest) relationship.getExpression();
+        assertThat(withRequest.getDataType(), quickDataType("ConditionOccurrence"));
+        assertThat(withRequest.getCodeProperty(), is("code"));
+        ValueSetRef withCode = (ValueSetRef) withRequest.getCodes();
+        assertThat(withCode.getName(), is("Acute Pharyngitis"));
+        assertThat(withCode.getLibraryName(), is(nullValue()));
+        assertThat(withCode.getDescription(), is(nullValue()));
+        assertThat(withRequest.getDateProperty(), is(nullValue()));
+        assertThat(withRequest.getDateRange(), is(nullValue()));
+        assertThat(withRequest.getDescription(), is(nullValue()));
+        assertThat(withRequest.getScope(), is(nullValue()));
+        assertThat(withRequest.getSubjectProperty(), is(nullValue()));
+        assertThat(withRequest.getSubject(), is(nullValue()));
+        assertThat(withRequest.getCardinality(), is(nullValue()));
+        assertThat(withRequest.getIdProperty(), is(nullValue()));
+        assertThat(withRequest.getTemplateId(), is(nullValue()));
+        OverlapsAfter withWhere = (OverlapsAfter) relationship.getWhere();
+        assertThat(withWhere.getDescription(), is(nullValue()));
+        assertThat(withWhere.getOperand(), hasSize(2));
+        // TODO: Bug in translator!  Operands are null!
+        // assertThat(withWhere.getOperand().get(0), is(notNullValue()));
+        // assertThat(withWhere.getOperand().get(1), is(notNullValue()));
+
+        // Then check where statement
+        GreaterOrEqual where = (GreaterOrEqual) query.getWhere();
+        assertThat(where.getDescription(), is(nullValue()));
+        assertThat(where.getOperand(), hasSize(2));
+        DaysBetween whereLHS = (DaysBetween) where.getOperand().get(0);
+        assertThat(whereLHS.getDescription(), is(nullValue()));
+        assertThat(whereLHS.getOperand(), hasSize(2));
+        Begin whereLHSBegin = (Begin) whereLHS.getOperand().get(0);
+        assertThat(whereLHSBegin.getDescription(), is(nullValue()));
+        // TODO: Bug in translator!  Operand is Null!
+        // assertThat(whereLHSBegin.getOperand(), not(instanceOf(Null.class)));
+        End whereLHSEnd = (End) whereLHS.getOperand().get(1);
+        assertThat(whereLHSEnd.getDescription(), is(nullValue()));
+        // TODO: Bug in translator!  Operand is Null!
+        // assertThat(whereLHSEnd.getOperand(), not(instanceOf(Null.class)));
+        assertThat(where.getOperand().get(1), literalFor(120));
+
+        // Then check the return statement
+        ObjectExpression rtn = (ObjectExpression) query.getReturn();
+        assertThat(rtn.getDescription(), is(nullValue()));
+        // TODO: Bug in translator!  Doesn't detect object type (intentional?)
+        // assertThat(rtn.getObjectType(), is(notNullValue()));
+        assertThat(rtn.getProperty(), hasSize(2));
+        PropertyExpression rtnP1 = rtn.getProperty().get(0);
+        assertThat(rtnP1.getName(), is("id"));
+        // TODO: Bug in translator!  Shouldn't be Null!
+        // assertThat(rtnP1.getValue(), not(instanceOf(Null.class)));
+        PropertyExpression rtnP2 = rtn.getProperty().get(1);
+        assertThat(rtnP2.getName(), is("lengthOfStay"));
+        // TODO: Bug in translator!  Shouldn't be Null!
+        DaysBetween rtnP2Val = (DaysBetween) rtnP2.getValue();
+        assertThat(rtnP2Val.getDescription(), is(nullValue()));
+        assertThat(rtnP2Val.getOperand(), hasSize(2));
+        Begin rtnP2ValBegin = (Begin) rtnP2Val.getOperand().get(0);
+        assertThat(rtnP2ValBegin.getDescription(), is(nullValue()));
+        // TODO: Bug in translator!  Shouldn't be Null!
+        // assertThat(rtnP2ValBegin.getOperand(), not(instanceOf(Null.class)));
+        End rtnP2ValEnd = (End) rtnP2Val.getOperand().get(1);
+        assertThat(rtnP2ValEnd.getDescription(), is(nullValue()));
+        // TODO: Bug in translator!  Shouldn't be Null!
+        // assertThat(rtnP2ValEnd.getOperand(), not(instanceOf(Null.class)));
+
+        // Finally test sort
+        SortClause sort = query.getSort();
+        assertThat(sort.getBy(), hasSize(1));
+        // TODO: Confirm this should not be ByColumn
+        ByExpression sortBy = (ByExpression) sort.getBy().get(0);
+        // TODO: Should this really be using Identifier class here?
+        Identifier id = (Identifier) sortBy.getExpression();
+        assertThat(id.getIdentifier(), is("lengthOfStay"));
+        assertThat(id.getLibraryName(), is(nullValue()));
+        assertThat(sortBy.getDirection(), is(SortDirection.DESC));
+    }
 
     private void assertTrackable(Trackable t){
         if(t == null){
