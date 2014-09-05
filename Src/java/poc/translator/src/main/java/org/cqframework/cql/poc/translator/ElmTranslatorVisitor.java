@@ -806,7 +806,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     public Object visitTimingExpression(@NotNull cqlParser.TimingExpressionContext ctx) {
         Expression left = parseExpression(ctx.expression(0));
         Expression right = parseExpression(ctx.expression(1));
-        TimingOperatorContext timingOperatorContext = new TimingOperatorContext();
+        TimingOperatorContext timingOperatorContext = new TimingOperatorContext(left, right);
         timingOperators.push(timingOperatorContext);
         try {
             return visit(ctx.intervalOperatorPhrase());

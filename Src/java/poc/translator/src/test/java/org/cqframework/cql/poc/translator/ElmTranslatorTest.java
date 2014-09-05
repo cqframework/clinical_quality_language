@@ -224,7 +224,6 @@ public class ElmTranslatorTest {
     @Test
     public void testIsNotNullExpressions(){
         ExpressionDef let = (ExpressionDef) visitData("let st = X is not null");
-        // TODO: Should this really be an "Equal" expression and not an "Is" expression?
         Not not = (Not) let.getExpression();
         IsNull isNull = (IsNull) not.getOperand();
         Identifier id = (Identifier) isNull.getOperand();
@@ -710,9 +709,16 @@ public class ElmTranslatorTest {
         OverlapsAfter withWhere = (OverlapsAfter) relationship.getWhere();
         assertThat(withWhere.getDescription(), is(nullValue()));
         assertThat(withWhere.getOperand(), hasSize(2));
-        // TODO: Bug in translator!  Operands are null!
-        // assertThat(withWhere.getOperand().get(0), is(notNullValue()));
-        // assertThat(withWhere.getOperand().get(1), is(notNullValue()));
+        Property overlapsLHS = (Property) withWhere.getOperand().get(0);
+        assertThat(overlapsLHS.getScope(), is("P"));
+        assertThat(overlapsLHS.getPath(), is("effectiveTime"));
+        assertThat(overlapsLHS.getSource(), is(nullValue()));
+        assertThat(overlapsLHS.getDescription(), is(nullValue()));
+        Property overlapsRHS = (Property) withWhere.getOperand().get(1);
+        assertThat(overlapsRHS.getScope(), is("E"));
+        assertThat(overlapsRHS.getPath(), is("performanceTime"));
+        assertThat(overlapsRHS.getSource(), is(nullValue()));
+        assertThat(overlapsRHS.getDescription(), is(nullValue()));
 
         // Then check where statement
         GreaterOrEqual where = (GreaterOrEqual) query.getWhere();
@@ -723,12 +729,18 @@ public class ElmTranslatorTest {
         assertThat(whereLHS.getOperand(), hasSize(2));
         Begin whereLHSBegin = (Begin) whereLHS.getOperand().get(0);
         assertThat(whereLHSBegin.getDescription(), is(nullValue()));
-        // TODO: Bug in translator!  Operand is Null!
-        // assertThat(whereLHSBegin.getOperand(), not(instanceOf(Null.class)));
+        Property whereLHSBeginProp = (Property) whereLHSBegin.getOperand();
+        assertThat(whereLHSBeginProp.getScope(), is("E"));
+        assertThat(whereLHSBeginProp.getPath(), is("performanceTime"));
+        assertThat(whereLHSBeginProp.getSource(), is(nullValue()));
+        assertThat(whereLHSBeginProp.getDescription(), is(nullValue()));
         End whereLHSEnd = (End) whereLHS.getOperand().get(1);
         assertThat(whereLHSEnd.getDescription(), is(nullValue()));
-        // TODO: Bug in translator!  Operand is Null!
-        // assertThat(whereLHSEnd.getOperand(), not(instanceOf(Null.class)));
+        Property whereLHSEndProp = (Property) whereLHSEnd.getOperand();
+        assertThat(whereLHSEndProp.getScope(), is("E"));
+        assertThat(whereLHSEndProp.getPath(), is("performanceTime"));
+        assertThat(whereLHSEndProp.getSource(), is(nullValue()));
+        assertThat(whereLHSEndProp.getDescription(), is(nullValue()));
         assertThat(where.getOperand().get(1), literalFor(120));
 
         // Then check the return statement
@@ -739,22 +751,30 @@ public class ElmTranslatorTest {
         assertThat(rtn.getProperty(), hasSize(2));
         PropertyExpression rtnP1 = rtn.getProperty().get(0);
         assertThat(rtnP1.getName(), is("id"));
-        // TODO: Bug in translator!  Shouldn't be Null!
-        // assertThat(rtnP1.getValue(), not(instanceOf(Null.class)));
+        Property rtnP1Val = (Property) rtnP1.getValue();
+        assertThat(rtnP1Val.getScope(), is("E"));
+        assertThat(rtnP1Val.getPath(), is("id"));
+        assertThat(rtnP1Val.getSource(), is(nullValue()));
+        assertThat(rtnP1Val.getDescription(), is(nullValue()));
         PropertyExpression rtnP2 = rtn.getProperty().get(1);
         assertThat(rtnP2.getName(), is("lengthOfStay"));
-        // TODO: Bug in translator!  Shouldn't be Null!
         DaysBetween rtnP2Val = (DaysBetween) rtnP2.getValue();
         assertThat(rtnP2Val.getDescription(), is(nullValue()));
         assertThat(rtnP2Val.getOperand(), hasSize(2));
         Begin rtnP2ValBegin = (Begin) rtnP2Val.getOperand().get(0);
         assertThat(rtnP2ValBegin.getDescription(), is(nullValue()));
-        // TODO: Bug in translator!  Shouldn't be Null!
-        // assertThat(rtnP2ValBegin.getOperand(), not(instanceOf(Null.class)));
+        Property rtnP2ValBeginProp = (Property) rtnP2ValBegin.getOperand();
+        assertThat(rtnP2ValBeginProp.getScope(), is("E"));
+        assertThat(rtnP2ValBeginProp.getPath(), is("performanceTime"));
+        assertThat(rtnP2ValBeginProp.getSource(), is(nullValue()));
+        assertThat(rtnP2ValBeginProp.getDescription(), is(nullValue()));
         End rtnP2ValEnd = (End) rtnP2Val.getOperand().get(1);
         assertThat(rtnP2ValEnd.getDescription(), is(nullValue()));
-        // TODO: Bug in translator!  Shouldn't be Null!
-        // assertThat(rtnP2ValEnd.getOperand(), not(instanceOf(Null.class)));
+        Property rtnP2ValEndProp = (Property) rtnP2ValEnd.getOperand();
+        assertThat(rtnP2ValEndProp.getScope(), is("E"));
+        assertThat(rtnP2ValEndProp.getPath(), is("performanceTime"));
+        assertThat(rtnP2ValEndProp.getSource(), is(nullValue()));
+        assertThat(rtnP2ValEndProp.getDescription(), is(nullValue()));
 
         // Finally test sort
         SortClause sort = query.getSort();

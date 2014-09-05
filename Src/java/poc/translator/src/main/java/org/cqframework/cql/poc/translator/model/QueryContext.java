@@ -18,7 +18,7 @@ public class QueryContext {
 
     public AliasedQuerySource resolveAlias(String identifier) {
         for (AliasedQuerySource source : sources) {
-            if ("identifier".equals(source.getAlias())) {
+            if (identifier.equals(source.getAlias())) {
                 return source;
             }
         }
