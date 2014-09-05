@@ -691,28 +691,22 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             }
         }
 
-        if (left instanceof ExpressionRef) {
-            if (ctx.IDENTIFIER() != null) {
-                return of.createProperty()
-                        .withSource(left)
-                        .withPath(ctx.IDENTIFIER().getText());
-            }
+        else if (left instanceof ExpressionRef && ctx.IDENTIFIER() != null) {
+            return of.createProperty()
+                    .withSource(left)
+                    .withPath(ctx.IDENTIFIER().getText());
         }
 
-        if (left instanceof AliasRef) {
-            if (ctx.IDENTIFIER() != null) {
-                return of.createProperty()
-                        .withScope(((AliasRef)left).getName())
-                        .withPath(ctx.IDENTIFIER().getText());
-            }
+        else if (left instanceof AliasRef && ctx.IDENTIFIER() != null) {
+            return of.createProperty()
+                    .withScope(((AliasRef)left).getName())
+                    .withPath(ctx.IDENTIFIER().getText());
         }
 
-        if (left instanceof Property) {
-            if (ctx.IDENTIFIER() != null) {
-                Property property = (Property)left;
-                property.setPath(String.format("%s.%s", property.getPath(), ctx.IDENTIFIER().getText()));
-                return property;
-            }
+        else if (left instanceof Property && ctx.IDENTIFIER() != null) {
+            Property property = (Property)left;
+            property.setPath(String.format("%s.%s", property.getPath(), ctx.IDENTIFIER().getText()));
+            return property;
         }
 
         // TODO: Error handling, this should throw, or return an Error() or something.
@@ -849,6 +843,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
                 case "minute": operator = of.createSameMinuteAs(); break;
                 case "second": operator = of.createSameSecondAs(); break;
                 // NOTE: No milliseconds here, because same millisecond as is equivalent to same as
+                default: operator = of.createSameAs(); break;
             }
         }
 
@@ -1465,18 +1460,21 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     // NOTE: Not spending any time here until we know whether we actually need retrieve definitions
 
     @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
     public Object visitValuesetIdentifier(@NotNull cqlParser.ValuesetIdentifierContext ctx) {
         // TODO:
         return super.visitValuesetIdentifier(ctx);
     }
 
     @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
     public Object visitDuringIdentifier(@NotNull cqlParser.DuringIdentifierContext ctx) {
         // TODO:
         return super.visitDuringIdentifier(ctx);
     }
 
     @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
     public Object visitRetrieveDefinition(@NotNull cqlParser.RetrieveDefinitionContext ctx) {
         // TODO:
         return super.visitRetrieveDefinition(ctx);
@@ -1489,6 +1487,8 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         }
         catch (ClassNotFoundException e) {
             // TODO: Should never occur...
+            System.err.println("Couldn't load QuickModelHelper!");
+            e.printStackTrace();
         }
 
         // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
@@ -1641,7 +1641,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         if (library.getStatements() != null) {
             for (ExpressionDef current : library.getStatements().getDef()) {
                 if (!(current instanceof FunctionDef) && !(current instanceof ClinicalRequestDef)
-                        && (current.getName().equals(identifier))) {
+                        && current.getName().equals(identifier)) {
                     return identifier;
                 }
             }

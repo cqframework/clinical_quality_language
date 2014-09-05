@@ -13,5 +13,5 @@ public class Identifier extends Expression {
 
     private String libraryName;
     public String getLibraryName() { return libraryName; }
-    public void setLibraryName(String value) { identifier = value; }
+    public void setLibraryName(String value) { libraryName = value; }
 }

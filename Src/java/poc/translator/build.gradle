@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
 apply plugin: 'idea'
 apply plugin:'application'
 
@@ -24,6 +27,15 @@ dependencies {
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
     testCompile group: 'org.mozilla', name: 'rhino', version: '1.7R4'
 }
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+check.dependsOn(jacocoTestReport)
 
 test {
     useTestNG()
