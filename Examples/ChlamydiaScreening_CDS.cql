@@ -38,14 +38,14 @@ let SexuallyActive =
 	or exists ([LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"])
 		
 let NoScreening =
-	not exists ([ObservationResult: "Chlamydia Screening", during interval[Today() - 1 years, Today()]] R where R.result is not null)
+	not exists ([SimpleObservation: "Chlamydia Screening", during interval[Today() - 1 years, Today()]] R where R.result is not null)
 	and not exists ([Procedure, Plan: "Chlamydia Screening", during interval[Today(), null]])
-	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
+	and not exists ([SimpleObservation: "Reason for not performing Chlamydia Screening"])
 
 let NeedScreening = InDemographic and SexuallyActive and NoScreening
 
-let Proposal = 
-	tuple(typeof[Procedure, Proposal]) { procedureCode: CodeableConcept { code: 'XYZ', codeSystem: 'SNOMED-CT', displayName: 'Chlamydia Screening' } };
+//let Proposal = 
+//	tuple(typeof[Procedure, Proposal]) { procedureCode: CodeableConcept { code: 'XYZ', codeSystem: 'SNOMED-CT', displayName: 'Chlamydia Screening' } };
 
 // Need to be able to map this to FHIR, something like: ToFHIR(Proposal)
 // The mapping needs to be kept separate from the artifact definition, the same way the FHIRMap libraries are separate
