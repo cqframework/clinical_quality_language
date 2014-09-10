@@ -3,7 +3,8 @@ package org.cqframework.cql.poc.translator;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -12,9 +13,13 @@ import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.poc.translator.model.*;
+import org.cqframework.cql.poc.translator.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.poc.translator.preprocessor.LibraryInfo;
+import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.elm.r1.*;
+import org.hl7.elm.r1.Interval;
 
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -32,6 +37,9 @@ import java.util.Stack;
 
 public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
+    private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
+
+    private TokenStream tokenStream;
 
     private LibraryInfo libraryInfo = null;
     private Library library = null;
@@ -44,6 +52,9 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final List<ClinicalRequest> clinicalRequests = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
+
+    public TokenStream getTokenStream() { return tokenStream; }
+    public void setTokenStream(TokenStream value) { tokenStream = value; }
 
     public LibraryInfo getLibraryInfo() { return libraryInfo; }
     public void setLibraryInfo(LibraryInfo value) { libraryInfo = value; }
@@ -67,7 +78,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             this.track((Trackable) o, (ParserRuleContext) tree);
         }
         if (o instanceof Expression) {
-            expressions.add((Expression) o);
+            addExpression(tree, (Expression) o);
         }
 
         return o;
@@ -1565,7 +1576,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         // Resolve system primitive types first
         String className = resolveSystemNamedType(typeName);
         if (className != null) {
-            return new QName("http://ww.w3.org/2001/XMLSchema", className);
+            return new QName("http://www.w3.org/2001/XMLSchema", className);
         }
 
         // TODO: Should attempt resolution in all models and throw if ambiguous
@@ -1677,6 +1688,25 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         library.getParameters().getDef().add(paramDef);
     }
 
+    private void addExpression(ParseTree ctx, Expression expression) {
+        // Expression is where annotations are defined in ELM, so adding the annotation here
+        org.antlr.v4.runtime.misc.Interval interval = ctx.getSourceInterval();
+        Annotation annotation = af.createAnnotation(); //.withCql(tokenStream.getText(interval));
+
+        if (expression.getTrackbacks().size() > 0) {
+            TrackBack trackBack = expression.getTrackbacks().get(0);
+            annotation.setLocator(String.format("%d:%d-%d:%d",
+                    trackBack.getStartLine(),
+                    trackBack.getStartChar(),
+                    trackBack.getEndLine(),
+                    trackBack.getEndChar()));
+        }
+
+        //expression.getAnnotation().add(annotation);
+
+        expressions.add(expression);
+    }
+
     private String resolveParameterName(String identifier) {
         if (libraryInfo != null) {
             return libraryInfo.resolveParameterName(identifier);
@@ -1759,22 +1789,31 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         parser.setBuildParseTree(true);
         ParseTree tree = parser.logic();
 
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
+        preprocessor.visit(tree);
+
         ElmTranslatorVisitor visitor = new ElmTranslatorVisitor();
+        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
+        visitor.setTokenStream(tokens);
         visitor.visit(tree);
 
         /* ToString output
         System.out.println(visitor.getLibrary().toString());
         */
 
-        /* XML output
-        JAXB.marshal((new ObjectFactory()).createLibrary(visitor.getLibrary()), System.out);
-        */
+        /* XML output */
+        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class, org.hl7.fhir.ClinicalStatement.class);
+        Marshaller marshaller = jc.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(new ObjectFactory().createLibrary(visitor.getLibrary()), System.out);
+        //JAXB.marshal((new ObjectFactory()).createLibrary(visitor.getLibrary()), System.out);
 
-        /* JSON output */
+        /* JSON output
         JAXBContext jc = JAXBContext.newInstance(Library.class);
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty("eclipselink.media-type", "application/json");
         marshaller.marshal(new ObjectFactory().createLibrary(visitor.getLibrary()), System.out);
+        */
     }
 }

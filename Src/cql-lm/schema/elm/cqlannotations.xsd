@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:cql-annotations:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:cql-annotations:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="Annotation">
+		<xs:sequence>
+			<xs:element name="cql" type="xs:string"/>
+			<xs:element name="locator" type="Locator"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="Locator">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d+:\d+(-\d+:\d+)?"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
