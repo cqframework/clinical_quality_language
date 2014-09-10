@@ -32,10 +32,14 @@ task generateSources << {
 
     ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
     ant.xjc(destdir: xjc.destDir, schema: xjc.schema) {
-        arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable')
+        arg(line: '-npa -disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable')
     }
 
     ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/modelinfo.xsd") {
+        arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString')
+    }
+
+    ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/cqlannotations.xsd") {
         arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString')
     }
 }
