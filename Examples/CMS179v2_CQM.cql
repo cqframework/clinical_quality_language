@@ -15,37 +15,37 @@ valueset "INR Lab Result" = ValueSet('2.16.840.1.113883.3.117.1.7.1.213')
 
 context PATIENT
 
-let FlutterDiagnoses = [Condition: "Flutter Diagnosis"]
-let WarfarinMedications = [Medication, Administered: "Warfarin Medication"]
-let FaceToFaceEncounters = [Encounter, Performance: "Face-to-face Encounter"]
-let OfficeVisitEncounters = [Encounter, Performance: "Office Visit"]
-let ValvularHeartDiseaseDiagnoses = [Condition: "Valvular Heart Disease"]
-let INRLabResults = [ObservationResult: "INR Lab Result"]
+define FlutterDiagnoses = [Condition: "Flutter Diagnosis"]
+define WarfarinMedications = [Medication, Administered: "Warfarin Medication"]
+define FaceToFaceEncounters = [Encounter, Performance: "Face-to-face Encounter"]
+define OfficeVisitEncounters = [Encounter, Performance: "Office Visit"]
+define ValvularHeartDiseaseDiagnoses = [Condition: "Valvular Heart Disease"]
+define INRLabResults = [ObservationResult: "INR Lab Result"]
 
-let InDemographic =
+define InDemographic =
 	AgeAt(start of MeasurementPeriod) >= 18 years
 
-let InpatientEncounters = FaceToFaceEncounters union OfficeVisitEncounters
-let ActiveFlutterDiagnoses = FlutterDiagnoses F where F.effectiveTime overlaps before MeasurementPeriod
-let ActiveValvularHeartDiseaseDiagnoses = ValvularHeartDiseaseDiagnoses D where D.effectiveTime overlaps before MeasurementPeriod
+define InpatientEncounters = FaceToFaceEncounters union OfficeVisitEncounters
+define ActiveFlutterDiagnoses = FlutterDiagnoses F where F.effectiveTime overlaps before MeasurementPeriod
+define ActiveValvularHeartDiseaseDiagnoses = ValvularHeartDiseaseDiagnoses D where D.effectiveTime overlaps before MeasurementPeriod
 
-let LookbackInterval = interval[MeasurePeriodStart - 200 days, MeasurePeriodStart]
+define LookbackInterval = interval[MeasurePeriodStart - 200 days, MeasurePeriodStart]
 
-let ActiveWarfarinDuringLookback =
+define ActiveWarfarinDuringLookback =
 	WarfarinMedications M where M.administeredTime overlaps LookbackInterval
 
-let WarfarinUsageIntervals =
+define WarfarinUsageIntervals =
 	collapse 
 		ActiveWarfarinDuringLookback M 
 			return tuple { usageWithinLookback: M.administeredTime intersect LookbackInterval }
 
-let WarfarinUsage = Sum(WarfarinUsageIntervals I return duration in days of I)
+define WarfarinUsage = Sum(WarfarinUsageIntervals I return duration in days of I)
 
-let INROutpatientLabResult = 
+define INROutpatientLabResult =
 	INRLabResults R 
 		where not exists (InpatientEncounters E where duration in hours of E.effectiveTime > 23 and R.observedAtTime starts during E.effectiveTime)
 
-let INRResultsByDay =
+define INRResultsByDay =
 	INROutpatientLabResult L 
 		where L.result > 0.8 // TODO: Units?
 		return 
@@ -56,16 +56,16 @@ let INRResultsByDay =
 				distanceFromMidpoint: Abs(2.5 - L.result) // TODO: Units?
 			}
 
-let INRResultsPerDay =
+define INRResultsPerDay =
 	(
 	    (distinct INRResultsByDay X return X.resultDate) D
 		    return First(INRResultsByDay R where R.resultDate = D sort by R.distanceFromMidpoint)
     ) X
 	sort by X.resultDate
 
-let TherapeuticRange = interval[2.0, 3.0] // TODO: Units?
+define TherapeuticRange = interval[2.0, 3.0] // TODO: Units?
 
-let INRIntervals =
+define INRIntervals =
 	(INRResultsPerDay S return tuple { startResult: S, endResult: First(INRResultsPerDay E where S.resultDate > E.resultDate) }) X
 		return
 			tuple
@@ -92,7 +92,7 @@ let INRIntervals =
 				isValid: days between X.startResult.resultDate and X.endResult.resultDate <= 56
 			}
 
-let TherapeuticDays =
+define TherapeuticDays =
 	INRIntervals I
 		return
 			tuple
@@ -107,29 +107,29 @@ let TherapeuticDays =
 						else IfNull(I.resultDays * Abs(I.boundedDifference / (if I.resultDays = 0 then null else I.resultDays)), 0)
 			}
 
-let TherapeuticTimeInRange =
+define TherapeuticTimeInRange =
 	Round(100 * (Sum(TherapeuticDays X return X.daysInRange) / Sum(TherapeuticDays X return X.resultDays)))
 
-let NumberOfValidIntervals = Count(TherapeuticDays D where D.isValid)
+define NumberOfValidIntervals = Count(TherapeuticDays D where D.isValid)
 
-let HasValidIntervals = NumberOfValidIntervals >= 2
+define HasValidIntervals = NumberOfValidIntervals >= 2
 
-let InitialPopulation =
+define InitialPopulation =
 	InDemographic
 		and exists (InpatientEncounters)
 		and exists (ActiveFlutterDiagnoses)
 		and WarfarinUsage >= 180
 		and not exists (ActiveValvularHeartDiseaseDiagnoses)
 
-let MeasurePopulation =
+define MeasurePopulation =
 	HasValidIntervals
 
-let MeasureObservation =
+define MeasureObservation =
 	TherapeuticTimeInRange
 
 context POPULATION
 
-let MeasureScore = Avg(MeasureObservation)
+define MeasureScore = Avg(MeasureObservation)
 
 
 	

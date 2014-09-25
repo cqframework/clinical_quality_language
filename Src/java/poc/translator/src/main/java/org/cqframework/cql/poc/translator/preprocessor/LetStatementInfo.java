@@ -4,7 +4,7 @@ import org.cqframework.cql.gen.cqlParser;
 
 public class LetStatementInfo {
     private String name;
-    private cqlParser.LetStatementContext definition;
+    private cqlParser.ExpressionDefinitionContext definition;
 
     public String getName() {
         return name;
@@ -14,11 +14,11 @@ public class LetStatementInfo {
         name = value;
     }
 
-    public cqlParser.LetStatementContext getDefinition() {
+    public cqlParser.ExpressionDefinitionContext getDefinition() {
         return definition;
     }
 
-    public void setDefinition(cqlParser.LetStatementContext value) {
+    public void setDefinition(cqlParser.ExpressionDefinitionContext value) {
         definition = value;
     }
 
@@ -27,7 +27,7 @@ public class LetStatementInfo {
         return this;
     }
 
-    public LetStatementInfo withDefinition(cqlParser.LetStatementContext value) {
+    public LetStatementInfo withDefinition(cqlParser.ExpressionDefinitionContext value) {
         setDefinition(value);
         return this;
     }

@@ -8,22 +8,22 @@ parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
 context PATIENT
 
-let InDemographic =
+define InDemographic =
     AgeAt(start of MeasurementPeriod) >= 16
         and AgeAt(start of MeasurementPeriod) < 24
         and gender in Common."Female Administrative Sex"
 
-let SexuallyActive =
+define SexuallyActive =
     exists(Common.ConditionsIndicatingSexualActivity C where C.effectiveTime overlaps MeasurementPeriod)
         or exists(Common.LaboratoryTestsIndicatingSexualActivity R where R.effectiveTime during MeasurementPeriod)
 
-let InInitialPopulation =
+define InInitialPopulation =
     InDemographic and SexuallyActive
 
-let InDenominator =
+define InDenominator =
     true
 
-let InNumerator =
+define InNumerator =
     exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during MeasurementPeriod)
 
 

@@ -1,7 +1,7 @@
 library Test
 
-let TestExpression = 1 + 1
+define TestExpression = 1 + 1
 
-let X = 1
-let Y = 2
-let XPlusY = X + Y
+define X = 1
+define Y = 2
+define XPlusY = X + Y

@@ -58,7 +58,7 @@ xsi:schemaLocation="urn:hl7-org:elm:r1 ..\Src\cql-lm\schema\elm\library.xsd urn:
    <statements>
       <def localId="29" name="InDemographic" context="PATIENT">
          <annotation xsi:type="a:Annotation">
-            <a:s r="29">let InDemographic =&#xd;
+            <a:s r="29">define InDemographic =&#xd;
 	<a:s r="28">
                   <a:s r="24">
                      <a:s r="19">
@@ -93,7 +93,7 @@ xsi:schemaLocation="urn:hl7-org:elm:r1 ..\Src\cql-lm\schema\elm\library.xsd urn:
       </def>
       <def localId="77" name="SexuallyActive" context="PATIENT">
          <annotation xsi:type="a:Annotation">
-            <a:s r="77">let SexuallyActive =&#xd;
+            <a:s r="77">define SexuallyActive =&#xd;
 	<a:s r="76">
                   <a:s r="72">
                      <a:s r="68">
@@ -215,7 +215,7 @@ xsi:schemaLocation="urn:hl7-org:elm:r1 ..\Src\cql-lm\schema\elm\library.xsd urn:
       </def>
       <def localId="108" name="NoScreening" context="PATIENT">
          <annotation xsi:type="a:Annotation">
-            <a:s r="108">let NoScreening =&#xd;
+            <a:s r="108">define NoScreening =&#xd;
 	<a:s r="107">
                   <a:s r="102">
                      <a:s r="93">not <a:s r="92">exists (<a:s r="91">
@@ -286,7 +286,7 @@ xsi:schemaLocation="urn:hl7-org:elm:r1 ..\Src\cql-lm\schema\elm\library.xsd urn:
       </def>
       <def localId="114" name="NeedScreening" context="PATIENT">
          <annotation xsi:type="a:Annotation">
-            <a:s r="114">let NeedScreening = <a:s r="113">
+            <a:s r="114">define NeedScreening = <a:s r="113">
                   <a:s r="111">
                      <a:s r="109">InDemographic</a:s> and <a:s r="110">SexuallyActive</a:s>
                   </a:s> and <a:s r="112">NoScreening</a:s>

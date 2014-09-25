@@ -21,11 +21,11 @@ valueset "Chlamydia Screening" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1
 
 context PATIENT 
 
-let InDemographicCriteria = 
+define InDemographicCriteria =
 	AgeAt(start of MeasurementPeriod) >= 16	and AgeAt(start of MeasurementPeriod) < 24 
 		and gender in "Female Administrative Sex"
 
-let SexuallyActive =
+define SexuallyActive =
 	exists ([Condition: "Other Female Reproductive Conditions"] C where C.effectiveTime overlaps MeasurementPeriod)
 		or exists ([Condition: "Genital Herpes"] C where C.effectiveTime overlaps MeasurementPeriod)
 		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where C.effectiveTime overlaps MeasurementPeriod)
@@ -39,23 +39,23 @@ let SexuallyActive =
 		or exists ([LaboratoryTest, Order: "Lab Tests During Pregnancy"] R where R.effectiveTime during MeasurementPeriod)
 		or exists ([LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"] R where R.observedAtTime during MeasurementPeriod)
 
-let InInitialPopulation =
+define InInitialPopulation =
 	InDemographic and SexuallyActive
 
-let InDenominator =
+define InDenominator =
 	true
 
-let InDenominator =
+define InDenominator =
 	InInitialPopulation
 
-let InNumerator =
+define InNumerator =
 	exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
 
-let InNumerator =
+define InNumerator =
 	InDenominator and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
 
 context POPULATION
 
-let MeasureScore = (Count(PATIENT P where InInitialPopulation and InDenominator and InNumerator) / Count(PATIENT P where InInitialPopulation and InDenominator)) * 100
+define MeasureScore = (Count(PATIENT P where InInitialPopulation and InDenominator and InNumerator) / Count(PATIENT P where InInitialPopulation and InDenominator)) * 100
 
-let MeasureScore = (Count(PATIENT P where InNumerator) / Count(PATIENT P where InDenominator)) * 100
+define MeasureScore = (Count(PATIENT P where InNumerator) / Count(PATIENT P where InDenominator)) * 100

@@ -74,14 +74,14 @@ tupleElementDefinition
  */
 
 statement
-    : letStatement
+    : expressionDefinition
     | contextDefinition
     | functionDefinition
     | retrieveDefinition
     ;
 
-letStatement
-    : 'let' IDENTIFIER '=' expression
+expressionDefinition
+    : 'define' IDENTIFIER '=' expression
     ;
 
 contextDefinition

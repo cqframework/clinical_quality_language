@@ -4,9 +4,9 @@ library ExampleSyntax
 
 [Encounter, Performance|Occurrence]
 
-let AllProcedures = [Procedure, Performance]
+define AllProcedures = [Procedure, Performance]
 
-let ImagingProcedures = AllProcedures P where P is [ImagingProcedure, Performance] return P as [ImagingProcedure, Performance]
+define ImagingProcedures = AllProcedures P where P is [ImagingProcedure, Performance] return P as [ImagingProcedure, Performance]
 
 A starts at most same day as start B
 
@@ -32,26 +32,26 @@ end of IntervalA < start of IntervalB
 
 start of A >= start of B
 
-let MostRecentOfficeVisit = 
+define MostRecentOfficeVisit =
 	Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)
 
-let HighBP =
+define HighBP =
 	[SimpleObservationResult: "Systolic Blood Pressure"] SBP
 		with (Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)) OV 
 			where SBP.observedAtTime during OV.performanceTime
 		where SBP.value < 140 u'mm[Hg]'
 
-let HighBP =
+define HighBP =
 	Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)
 
 
-let InpatientCode = CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' }
+define InpatientCode = CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' }
 
-let InpatientEncounters = [Encounter, Performance] E where E.code = InpatientCode
+define InpatientEncounters = [Encounter, Performance] E where E.code = InpatientCode
 
 valueset "Inpatient" = { CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' } }
 
-let InpatientEncounters = [Encounter, Performance: "Inpatient"]
+define InpatientEncounters = [Encounter, Performance: "Inpatient"]
 
 
 // Declaration Examples
@@ -208,7 +208,7 @@ A meets B is false
 
 where unit of P.height = u"m" and P.height > 2.0 u"m"
 
-let IsTall = height.units = 'm' and height.value > 2
+define IsTall = height.units = 'm' and height.value > 2
 
 = <> < <= > >=
 + - * /
@@ -280,21 +280,21 @@ context PATIENT
 
 // Data Type examples
 // Simple Types
-let BooleanLiteral = true  false
-let StringLiteral = 'female'  'pending', 'active', 'complete'
-let ValuesetLiteral = "Female Administrative Sex"
-let NumberLiteral = 16, -28,  100.015
+define BooleanLiteral = true  false
+define StringLiteral = 'female'  'pending', 'active', 'complete'
+define ValuesetLiteral = "Female Administrative Sex"
+define NumberLiteral = 16, -28,  100.015
 
 // Clinical Types
-let QuantityLiteral = 6 u'gm/cm3'  // UCUM units
+define QuantityLiteral = 6 u'gm/cm3'  // UCUM units
 80 u'mm[Hg]'
-let TimespanLiteral = 3 months
+define TimespanLiteral = 3 months
 
 // Structured Types
-let Encounters = [Encounter, Performance]
-let Info = tuple { Name: 'Patrick', DOB: Date(2014, 7, 5) }
+define Encounters = [Encounter, Performance]
+define Info = tuple { Name: 'Patrick', DOB: Date(2014, 7, 5) }
 
-let PharyngitisEffectiveTime = FirstPharyngitis.effectiveTime
+define PharyngitisEffectiveTime = FirstPharyngitis.effectiveTime
 
 no unknown
 
@@ -304,10 +304,10 @@ date of X year of X minute of X
 
 
 // List Types
-let ListLiteral = { 1, 2, 3, 4, 5 }
+define ListLiteral = { 1, 2, 3, 4, 5 }
 
 // Interval Types
-let IntervalLiteral = interval[Today() - 1 years, Today()]
+define IntervalLiteral = interval[Today() - 1 years, Today()]
 interval[3, 5)
 
 Today() - 1 years
@@ -339,12 +339,12 @@ X starts at least 3
 5 minutes
 
 // Simple Expressions
-let LogicalAnd = A and B
-let LogicalAndNotOr = A and not (B or C)
-let GreaterOrEqual = A >= B
-let NotEqual = A <> B
-let Addition = A + B
-let Precedence = A + B * C
+define LogicalAnd = A and B
+define LogicalAndNotOr = A and not (B or C)
+define GreaterOrEqual = A >= B
+define NotEqual = A <> B
+define Addition = A + B
+define Precedence = A + B * C
 
 5 = 'completed'
 { 1, 2, 3, 4, 5 } = { 1, 2, 3, 4, 5 }
@@ -352,22 +352,22 @@ let Precedence = A + B * C
 
 
 // Timing/Interval Operations
-let StartsBeforeStart = A starts before start B
-let StartsConccurrent = A starts concurrent with B
-let Starts3DaysBeforeStart = A starts 3 days before start B
-let StartsWithinBefore = A starts within 3 days before start
-let StartsWithinOf = A starts within 3 days of start
+define StartsBeforeStart = A starts before start B
+define StartsConccurrent = A starts concurrent with B
+define Starts3DaysBeforeStart = A starts 3 days before start B
+define StartsWithinBefore = A starts within 3 days before start
+define StartsWithinOf = A starts within 3 days of start
 
 // Interval Operators
-let Meets = A meets B
-let Overlaps = A overlaps B
-let During = A during B
+define Meets = A meets B
+define Overlaps = A overlaps B
+define During = A during B
 
 // Point Access
-let StartOf = start of MeasurementPeriod
+define StartOf = start of MeasurementPeriod
 
 // Membership
-let Membership = X in interval[4, 6]
+define Membership = X in interval[4, 6]
 
 // List Operations
 
@@ -397,23 +397,23 @@ X starts within 3 days of start Y
 dateTimeX within 3 days of dateTimeY
 
 // Date/Time Manipulation
-let DateSelector = Date(2014, 1, 1, 12, 0, 0, -6)
-let Now = Now()
-let Today = Today()
-let ConvertedDate = convert '20140101120000-0600' to Datetime
-let DateAdd = Today() + 3 months - 2 days
-let DateDiff = months between start of X and end of X
-let Duration = duration in months of X
-let DateComponent = date of start of X
-let TimeComponent = time of D
-let Months = month of start of X
+define DateSelector = Date(2014, 1, 1, 12, 0, 0, -6)
+define Now = Now()
+define Today = Today()
+define ConvertedDate = convert '20140101120000-0600' to Datetime
+define DateAdd = Today() + 3 months - 2 days
+define DateDiff = months between start of X and end of X
+define Duration = duration in months of X
+define DateComponent = date of start of X
+define TimeComponent = time of D
+define Months = month of start of X
 
 // Conditional Expressions
-let IfExpression = 
+define IfExpression =
 	// conditional expression
 	if X > Y then X else Y
 
-let SelectedCaseExpression = 
+define SelectedCaseExpression =
 	// selected case expression
 	case X when 1 then 12 when 2 then 14 else 15 end
 
@@ -426,12 +426,12 @@ Combine({ "completed", "refused", "pending" }, ";") "completed;refused;pending"
 Split("completed;refused;pending", ";") { "completed", "refused", "pending" }
 
 
-let GeneralCaseExpression = 
+define GeneralCaseExpression =
 	// general case expression
 	case when X > Y then X when Y > X then Y else 0 end
 
 // Aggregate Expressions
-let CountExpression =
+define CountExpression =
 	Count([Encounter, Performance])
 
 	Sum({ 1, 2, 3, 4, 5 })
@@ -439,73 +439,73 @@ let CountExpression =
 	Avg([ObservationResult] R return R.result)
 
 // Retrieve
-let SimpleRetrieve =
+define SimpleRetrieve =
 	[Encounter, Performance]
 
-let CodedRetrieve =
+define CodedRetrieve =
 	[Encounter, Performance: "Ambulatory/ED Visit"]
 
-let ExplicitlyCodedRetrieve =
+define ExplicitlyCodedRetrieve =
 	[Encounter, Performance: serviceType in "Ambulatory/ED Visit"]
 
-let WhereExplicitlyCodedRetrieve =
+define WhereExplicitlyCodedRetrieve =
 	[Encounter, Performance where serviceType in "Ambulatory/ED Visit"]
 
-let CodedWhere =
+define CodedWhere =
 	[Encounter, Performance] E where E.serviceType in ValueSet("Ambulatory/ED Visit")
 
-let RangedRetrieve =
+define RangedRetrieve =
 	[Encounter, Performance, during MeasurementPeriod]
 
-let ExplicitlyRangedRetrieve =
+define ExplicitlyRangedRetrieve =
 	[Encounter, Performance, performanceTime during MeasurementPeriod]
 
-let WhereExplicitlyRangedRetrieve =
+define WhereExplicitlyRangedRetrieve =
 	[Encounter, Performance where performanceTime during MeasurementPeriod]
 
-let RangedWhere =
+define RangedWhere =
 	[Encounter, Performance] E where E.performanceTime during MeasurementPeriod
 
-let CodedRangedRetrieve =
+define CodedRangedRetrieve =
 	[Encounter, Performance: "Ambulatory/ED Visit", during MeasurementPeriod]
 
-let ExplicitlyCodedRangedRetrieve =
+define ExplicitlyCodedRangedRetrieve =
 	[Encounter, Performance: serviceType in "Ambulatory/ED Visit", performanceTime during MeasurementPeriod]
 
-let WhereExplicitlyCodedRangedRetrieve =
+define WhereExplicitlyCodedRangedRetrieve =
 	[Encounter, Performance where serviceType in "Ambulatory/ED Visit" and performanceTime during MeasurementPeriod]
 
-let CodedRangedWhere =
+define CodedRangedWhere =
 	[Encounter, Performance] E 
 		where E.serviceType in ValueSet("Ambulatory/ED Visit") 
 			and E.performanceTime during MeasurementPeriod
 
 // Query
-let Encounters =
+define Encounters =
 	[Encounter, Performance: "Inpatient"] E
 
 // Filter
-let FilteredEncounters =
+define FilteredEncounters =
 	[Encounter, Performance: "Inpatient"] E where duration in days of E.effectiveTime >= 120 days
 
 // Return
-let ProjectedEncounters =
+define ProjectedEncounters =
 	// Select columns to be returned
 	[Encounter, Performance: "Inpatient"] E
 		return tuple { id: E.id, effectiveTime: E.effectiveTime, serviceType: E.serviceType }
 
-let ComputedEncounters =
+define ComputedEncounters =
 	// Compute values for returned columns
 	[Encounter, Performance: "Inpatient"] E 
 		return tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime }
 
-let ExtractedEncounters =
+define ExtractedEncounters =
 	// Extract values
 	[Encounter, Performance: "Inpatient"] E
 		return duration in days of E.effectiveTime
 
 // Sort
-let SortedEncounters =
+define SortedEncounters =
 	[Encounter, Performance: "Inpatient"] E 
 		sort by effectiveTime
 
@@ -514,18 +514,18 @@ let SortedEncounters =
 		sort by lengthOfStay desc
 
 // With
-let TargetEncounters =
+define TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
 		with [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.PerformanceAtTime
 
-let TargetEncounters =
+define TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
 		with Pharyngitis P such that P.effectiveTime overlaps after E.performanceTime
 		with Antibiotics A such that A.orderedAtTime starts within 3 days after start E.performanceTime 
 	    where E.PerformanceAtTime during MeasurementPeriod
 
 // Full Query
-let FullQuery =
+define FullQuery =
 	[Encounter, Performance: "Inpatient"] E 
 		with [Condition: "Acute Pharyngitis"] P 
 			where P.effectiveTime overlaps after E.PerformanceAtTime 
@@ -534,27 +534,27 @@ let FullQuery =
 		sort by lengthOfStay desc
 
 // Combine
-let EncountersAndConditions =
+define EncountersAndConditions =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		combine [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.PerformanceAtTime
 
-let FilteredEncountersAndConditions =
+define FilteredEncountersAndConditions =
 	EncountersAndConditions E where E.E.providerType in ValueSet("Provider Types")
 
-let EncountersAndConditionsAndAntibiotics =
+define EncountersAndConditionsAndAntibiotics =
 	FilteredEncountersAndConditions F combine [MedicationPrescription: "Antibiotic Medications"] A 
 		where A.orderedAtTime within 3 days after start F.E.effectiveTime
 
-let FilteredEncountersAndConditionsAndAntibiotics =
+define FilteredEncountersAndConditionsAndAntibiotics =
 	EncountersWithConditionsAndAntibiotics E where E.A.quantity > 1
 
-let EncountersAndConditions =
+define EncountersAndConditions =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		combine [Condition: "Acute Pharyngitis"] P 
 			where P.effectiveTime overlaps after E.PerformanceAtTime
 		return tuple { Encounter: E, Pharyngitis: P }
 
-let EncountersAndConditions =
+define EncountersAndConditions =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		combine [Condition: "Acute Pharyngitis"] P 
 			where P.effectiveTime overlaps after E.PerformanceAtTime
@@ -562,7 +562,7 @@ let EncountersAndConditions =
 
 ObservationResults R return R.result
 
-let UnionedEncounters =
+define UnionedEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] 
 		union [Encounter, Performance: "Inpatient"]
 
@@ -579,18 +579,18 @@ let UnionedEncounters =
 // with/combine
 // redefine
 
-let X = tuple { X: 1, Y: 1 }
-let NewX = X X return 
+define X = tuple { X: 1, Y: 1 }
+define NewX = X X return
 
 
 // This combine
-let EncountersAndConditions =
+define EncountersAndConditions =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		combine [Condition: "Acute Pharyngitis"] P 
 			where P.effectiveTime overlaps after E.PerformanceAtTime
 
 // Is equivalent to nested foreach invocations
-let CombinedEncountersAndConditions =
+define CombinedEncountersAndConditions =
 	expand
 	(
 		foreach E in [Encounter, Performance: "Ambulatory/ED Visit"]
@@ -600,7 +600,7 @@ let CombinedEncountersAndConditions =
 	)
 
 // followed by a filter
-let EncountersAndConditions =
+define EncountersAndConditions =
 	CombinedEncountersAndConditions EC 
 		where EC.Condition.effectiveTime overlaps after EC.Encounter.PerformanceAtTime
 
@@ -611,14 +611,14 @@ define function CumulativeDuration(Intervals: list<interval<Timestamp>>)
 	return Sum((collapse Intervals) X return duration in days of X)
 }
 
-let Encounters = [Encounter, Performance: "Inpatient Visit"]
+define Encounters = [Encounter, Performance: "Inpatient Visit"]
 
-let CMD = CumulativeDuration(Encounters E return E.effectiveTime)
+define CMD = CumulativeDuration(Encounters E return E.effectiveTime)
 
-let CombinedValueSet = "Ambulatory/ED Visit" union "Inpatient Visit"
+define CombinedValueSet = "Ambulatory/ED Visit" union "Inpatient Visit"
 
-let XYZCode = First(CombinedValueSet VS where VS.code = 'XYZ')
-let XYZCode = tuple { code: 'XYZ' }
+define XYZCode = First(CombinedValueSet VS where VS.code = 'XYZ')
+define XYZCode = tuple { code: 'XYZ' }
 
 Sum({ 1, 2, 3, 4, 5 })
 Count([Encounter, Performance])
@@ -635,36 +635,36 @@ foreach R in [ObservationResult] return R.result
 
 // foreach vs return clause
 
-let Z = foreach X in [Encounter, Performance]
+define Z = foreach X in [Encounter, Performance]
 	return foreach Y in [ObservationResult] return tuple { X: X, Y: Y }
 
-let A = [Encounter, Performance] X return [ObservationResult] Y return tuple { X: X, Y: Y }
+define A = [Encounter, Performance] X return [ObservationResult] Y return tuple { X: X, Y: Y }
 
 // Aggregates
 
-let A = Sum(result from [ObservationResult])
-let A = Sum([ObservationResult] X return X.result)
-let A = Sum({ 1, 2, 3, 4, 5 })
+define A = Sum(result from [ObservationResult])
+define A = Sum([ObservationResult] X return X.result)
+define A = Sum({ 1, 2, 3, 4, 5 })
 
-let Encounters = 
+define Encounters =
 	[Encounter, Performance, during MeasurementPeriod]
 
-let EncountersWithDates = 
+define EncountersWithDates =
 	Encounters X return tuple { encounter: X, effectiveDate: date of X.effectiveTime }
 
-let Dates = 
+define Dates =
 	distinct (EncountersWithDates X return X.effectiveDate)
 
-let NumberOfEncountersPerDate = 
+define NumberOfEncountersPerDate =
 	Dates D return tuple { encounterDate: D, number: Count(EncountersWithDates E where E.effectiveDate = D) }
 
 using QUICK
 
 context = PATIENT
 
-let InCohort = year of birthDate >= 1965 and year of birthDate < 1992
+define InCohort = year of birthDate >= 1965 and year of birthDate < 1992
 
-let Transfusions = [Procedure, Performance: "Blood transfusion"] P where year of P.performanceTime < 1992
+define Transfusions = [Procedure, Performance: "Blood transfusion"] P where year of P.performanceTime < 1992
 
 
 
@@ -682,7 +682,7 @@ valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 
 context PATIENT
 
-let InDemographic = 
+define InDemographic =
 	AgeAt(start of MeasurementPeriod) >= 16
 		and AgeAt(start of MeasurementPeriod) < 24
 		and Gender in "Female Administrative Sex"
@@ -695,7 +695,7 @@ AND: "Patient Characteristic Sex: Female"
 // Population Criteria
 
 // NOTE: Other clinically relevant indicators omitted for brevity
-let SexuallyActive =
+define SexuallyActive =
 	exists ([Condition: "Chlamydia"] C where C.effectiveTime overlaps MeasurementPeriod)
 	or exists ([Condition: "HIV"] C where C.effectiveTime overlaps MeasurementPeriod)
 	or exists ([Condition: "Syphilis"] C where C.effectiveTime overlaps MeasurementPeriod)
@@ -708,7 +708,7 @@ OR: "Diagnosis, Active: Syphilis" overlaps "Measurement Period"
 // Timing Phrases
 
 // Assumes previous definition of Antibiotics and TargetDiagnoses
-let HasPriorAntibiotics =
+define HasPriorAntibiotics =
 	exists (
 		Antibiotics A
 			with TargetDiagnoses D 
@@ -733,12 +733,12 @@ valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 
 context PATIENT
 
-let InDemographic = 
+define InDemographic =
 	AgeAt(start of MeasurementPeriod) >= 16
 		and AgeAt(start of MeasurementPeriod) < 24
 		and Gender in "Female Administrative Sex"
 
-let SexuallyActive =
+define SexuallyActive =
 	exists ([Condition: "Other Female Reproductive Conditions"] C where C.effectiveTime overlaps before MeasurementPeriod)
 		or exists ([Condition: "Genital Herpes"] C where C.effectiveTime overlaps before MeasurementPeriod)
 		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where C.effectiveTime overlaps before MeasurementPeriod)
@@ -752,13 +752,13 @@ let SexuallyActive =
 		or exists ([ObservationResult: "Lab Tests During Pregnancy"] R where R.effectiveTime during MeasurementPeriod)
 		or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"] R where R.observedAtTime during MeasurementPeriod)
 
-let InInitialPopulation =
+define InInitialPopulation =
 	InDemographic and SexuallyActive
 
-let InDenominator =
+define InDenominator =
 	InInitialPopulation
 
-let InNumerator =
+define InNumerator =
 	InDenominator
 		and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
 
@@ -773,10 +773,10 @@ valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 
 context PATIENT
 
-let InDemographic = 
+define InDemographic =
 	Age() >= 16 and Age() < 24 and Gender in "Female Administrative Sex"
 
-let SexuallyActive =
+define SexuallyActive =
 	exists ([Condition: "Other Female Reproductive Conditions"])
 	or exists ([Condition: "Genital Herpes"])
 	or exists ([Condition: "Genococcal Infections and Venereal Diseases"])
@@ -790,12 +790,12 @@ let SexuallyActive =
 	or exists ([ObservationResult: "Lab Tests During Pregnancy"])
 	or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"])
 		
-let NoScreening =
+define NoScreening =
 	not exists ([ObservationResult: "Chlamydia Screening", during interval[Today() - 1 years, Today()]] R where R.result is not null)
 	and not exists ([Procedure, Plan: "Chlamydia Screening", during interval[Today(), null]])
 	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
-let NeedScreening = InDemographic and SexuallyActive and NoScreening
+define NeedScreening = InDemographic and SexuallyActive and NoScreening
 
 
 // Chlamydia Screening, Common
@@ -809,7 +809,7 @@ valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 
 context PATIENT
 
-let ConditionsIndicatingSexualActivity =
+define ConditionsIndicatingSexualActivity =
     union(
         [Condition: "Other Female Reproductive Conditions"],
         [Condition: "Genital Herpes"],
@@ -821,7 +821,7 @@ let ConditionsIndicatingSexualActivity =
         [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
     )
 
-let ResultsIndicatingSexualActivity =
+define ResultsIndicatingSexualActivity =
     union(
         [ObservationResult: "Pregnancy"],
         [ObservationResult: "Pap"],
@@ -829,7 +829,7 @@ let ResultsIndicatingSexualActivity =
         [ObservationResult: "Lab Tests for Sexually Transmitted Infections"]
     )
 
-let ResultsPresentForChlamydiaScreening = 
+define ResultsPresentForChlamydiaScreening =
     [ObservationResult: "Chlamydia Screening"] R where R.result is not null
 
 not exists ([Condition])
@@ -850,22 +850,22 @@ parameter MeasurementPeriod : interval<Datetime>
 
 context PATIENT
 
-let InDemographic =
+define InDemographic =
     AgeAt(start of MeasurementPeriod) >= 16
         and AgeAt(start of MeasurementPeriod) < 24
         and Gender in Common."Female Administrative Sex"
 
-let SexuallyActive =
+define SexuallyActive =
     exists(Common.ConditionsIndicatingSexualActivity C where C.effectiveTime overlaps before MeasurementPeriod)
         or exists(Common.ResultsIndicatingSexualActivity R where R.effectiveTime during MeasurementPeriod)
 
-let InInitialPopulation =
+define InInitialPopulation =
     InDemographic and SexuallyActive
 
-let InDenominator =
+define InDenominator =
     InInitialPopulation
 
-let InNumerator =
+define InNumerator =
     InDenominator 
 		and exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during MeasurementPeriod)
 
@@ -882,34 +882,34 @@ valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
 
 context PATIENT
 
-let InDemographic =
+define InDemographic =
     Age() >= 16 and Age() < 24 and Gender in Common."Female Administrative Sex"
 
-let SexuallyActive =
+define SexuallyActive =
     exists (Common.ConditionsIndicatingSexualActivity)
     or exists (Common.ResultsIndicatingSexualActivity)
 
-let NoScreening =
+define NoScreening =
     not exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during interval[Today() - 1 years, Today()])
     and not exists ([Procedure, Plan: Common."Chlamydia Screening"] P where P.effectiveTime >= now)
     and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
-let NeedScreening = InDemographic and SexuallyActive and NoScreening
+define NeedScreening = InDemographic and SexuallyActive and NoScreening
 
-let TargetEncounters =
+define TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
 		with [Condition: "Acute Pharyngitis"] P 
 			where not P.effectiveTime overlaps after E.performanceTime
 
-let TargetEncounters =
+define TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
 		where exists ([Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime)
 
-let TargetEncounters =
+define TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
 		without [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime
 
-let TargetEncounters =
+define TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
 		where not exists ([Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime)
 

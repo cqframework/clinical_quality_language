@@ -28,7 +28,7 @@ public class CqlInterpreterVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitLetStatement(@NotNull cqlParser.LetStatementContext ctx) {
+    public Object visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         String id = ctx.IDENTIFIER().toString();
         Object obj = visit(ctx.expression());
         vars.put(id, obj);
@@ -112,7 +112,7 @@ public class CqlInterpreterVisitor extends cqlBaseVisitor {
     }
 
     public static void main(String[] args) {
-        String logic = "let InDemographic = AgeAt(start of MeasurementPeriod) >= 16";
+        String logic = "define InDemographic = AgeAt(start of MeasurementPeriod) >= 16";
         ANTLRInputStream input = new ANTLRInputStream(logic);
         cqlLexer lexer = new cqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);

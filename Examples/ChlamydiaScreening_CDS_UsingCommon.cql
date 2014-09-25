@@ -8,17 +8,17 @@ valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
 
 context PATIENT
 
-let InDemographic =
+define InDemographic =
     Age() >= 16 and Age() < 24 and gender in Common."Female Administrative Sex"
 
-let SexuallyActive =
+define SexuallyActive =
     exists (Common.ConditionsIndicatingSexualActivity)
     or exists (Common.LaboratoryTestsIndicatingSexualActivity)
 
-let NoScreening =
+define NoScreening =
     not exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during interval[Today() - 1 years, Today()])
     and not exists ([Procedure, Plan: Common."Chlamydia Screening"] P where P.effectiveTime >= Now())
     and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
-let NeedScreening = InDemographic and SexuallyActive and NoScreening
+define NeedScreening = InDemographic and SexuallyActive and NoScreening
 

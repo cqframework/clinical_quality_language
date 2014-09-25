@@ -19,22 +19,22 @@ valueset "Chlamydia Screening" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1
 
 context PATIENT
 
-let otherFemaleReproductiveConditions = [Condition: "Other Female Reproductive Conditions"]
-let genitalHerpes = [Condition: "Genital Herpes"]
-let genococcalInfectionsAndVenerealDiseases = [Condition: "Genococcal Infections and Venereal Diseases"]
-let inflammatoryDiseasesOfFemaleReproductiveOrgans = [Condition: "Inflammatory Diseases of Female Reproductive Organs"]
-let chlamydia = [Condition: "Chlamydia"]
-let hiv = [Condition: "HIV"]
-let syphilis = [Condition: "Syphilis"]
-let complicationsOfPregnancyChildbirthAndPuerperium = [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
-let pregnancy = [ObservationResult: "Pregnancy Test"]
-let pap = [ObservationResult: "Pap Test"]
-let labTestsDuringPregnancy = [ObservationResult: "Lab Tests During Pregnancy"]
-let labTestsForSexuallyTransmittedInfections = [ObservationResult: "Lab Tests for Sexually Transmitted Infections"]
-let chlamydiaScreening = [ObservationResult: "Chlamydia Screening"]
-let reasonForNoScreening = [ObservationResult: "Reason for not performing Chlamydia Screening"]
+define otherFemaleReproductiveConditions = [Condition: "Other Female Reproductive Conditions"]
+define genitalHerpes = [Condition: "Genital Herpes"]
+define genococcalInfectionsAndVenerealDiseases = [Condition: "Genococcal Infections and Venereal Diseases"]
+define inflammatoryDiseasesOfFemaleReproductiveOrgans = [Condition: "Inflammatory Diseases of Female Reproductive Organs"]
+define chlamydia = [Condition: "Chlamydia"]
+define hiv = [Condition: "HIV"]
+define syphilis = [Condition: "Syphilis"]
+define complicationsOfPregnancyChildbirthAndPuerperium = [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
+define pregnancy = [ObservationResult: "Pregnancy Test"]
+define pap = [ObservationResult: "Pap Test"]
+define labTestsDuringPregnancy = [ObservationResult: "Lab Tests During Pregnancy"]
+define labTestsForSexuallyTransmittedInfections = [ObservationResult: "Lab Tests for Sexually Transmitted Infections"]
+define chlamydiaScreening = [ObservationResult: "Chlamydia Screening"]
+define reasonForNoScreening = [ObservationResult: "Reason for not performing Chlamydia Screening"]
 
-let conditionsIndicatingSexualActivity =
+define conditionsIndicatingSexualActivity =
     otherFemaleReproductiveConditions
         union genitalHerpes
         union genococcalInfectionsAndVeneralDiseases
@@ -44,7 +44,7 @@ let conditionsIndicatingSexualActivity =
         union syphilis
         union complicationsOfPregnancyChildbirthAndPuerperium
 
-let resultsIndicatingSexualActivity =
+define resultsIndicatingSexualActivity =
     pregnancy
         union pap
         union labTestsDuringPregnancy

@@ -139,12 +139,10 @@ A includes start B
   where C.effectiveTime overlaps after B.effectiveTime
   where A.effectiveTime overlaps after C.effectiveTime
 
-let Medications =
+define Medications =
 	[Medication: "C"] C
 		with [Condition: "B"] B
-			where C.effectiveTime overlaps after B.effectiveTime
-
-let Encounters =
+			where C.effectiveTime overlaps after B.effectiveTimdefinelet Encounters =
 	[Encounter, Performance: "A"] A
 		with [Condition: "B"] B where A.effectiveTime overlaps after B.effectiveTime
 		with Medications C where A.effectiveTime overlaps after C.effectiveTime

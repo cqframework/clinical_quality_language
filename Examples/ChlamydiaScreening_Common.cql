@@ -19,7 +19,7 @@ valueset "Chlamydia Screening" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1
 
 context PATIENT
 
-let ConditionsIndicatingSexualActivity =
+define ConditionsIndicatingSexualActivity =
 	([Condition: "Other Female Reproductive Conditions"])
 	union ([Condition: "Genital Herpes"])
     union ([Condition: "Genococcal Infections and Venereal Diseases"])
@@ -29,16 +29,16 @@ let ConditionsIndicatingSexualActivity =
     union ([Condition: "Syphilis"])
     union ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"])
 
-let LaboratoryTestsIndicatingSexualActivity =
+define LaboratoryTestsIndicatingSexualActivity =
     ([LaboratoryTest, Order: "Pregnancy Test"])
     union ([LaboratoryTest, Order: "Pap Test"])
     union ([LaboratoryTest, Order: "Lab Tests During Pregnancy"])
 	union ([LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"])
 
-let TestsPerformedForChlamydia =
+define TestsPerformedForChlamydia =
 	[Procedure, Performance: "Chlamydia Screening"]
 
-let ResultsPresentForChlamydiaScreening = 
+define ResultsPresentForChlamydiaScreening =
     [ObservationResult: "Chlamydia Screening"] R where R.result is not null
 
 

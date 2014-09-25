@@ -19,13 +19,13 @@ public class GrammarTest {
 
     @Test
     public void ageAt() {
-        ParseTree tree = parseToTree("let inIPP = AgeAt(start of MeasurementPeriod) < 18");
+        ParseTree tree = parseToTree("define inIPP = AgeAt(start of MeasurementPeriod) < 18");
         LogicContext logic = (LogicContext) tree.getPayload();
 
-        LetStatementContext let = logic.statement(0).letStatement();
-        assertEquals("inIPP", let.IDENTIFIER().toString());
+        ExpressionDefinitionContext def = logic.statement(0).expressionDefinition();
+        assertEquals("inIPP", def.IDENTIFIER().toString());
 
-        InequalityExpressionContext cmpExpr = (InequalityExpressionContext) let.expression();
+        InequalityExpressionContext cmpExpr = (InequalityExpressionContext) def.expression();
         assertEquals("<", cmpExpr.getChild(1).getText());
 
         TermExpressionContext methodExpr = (TermExpressionContext) cmpExpr.expression(0);

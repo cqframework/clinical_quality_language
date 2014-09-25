@@ -51,16 +51,16 @@ valueset "Emergency Department Visit" = ValueSet('2.16.840.1.113883.3.117.1.7.1.
 
 context PATIENT
 
-let InpatientEncounters = 
+define InpatientEncounters =
 	[Encounter, Performance: "Inpatient"] E 
 		where E.lengthOfStay <= 120 days 
 			and E.dischargeDateTime during MeasurementPeriod
 
-let EDEncounters =
+define EDEncounters =
 	[Encounter, Performance: "Emergency Department Visit"] ED
 		with InpatientEncounters E where ED.effectiveTime ends at most 1 hour before start of E.effectiveTime
 
-let MeasureObservation = 
+define MeasureObservation =
 	EDEncounters E 
 		where E.facilityLocationArrivalDateTime is not null
 			and E.facilityLocationDepartureDateTime is not null
@@ -68,5 +68,5 @@ let MeasureObservation =
 
 context POPULATION
 
-let MeasureScore = Median(MeasureObservation)
+define MeasureScore = Median(MeasureObservation)
 

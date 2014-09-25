@@ -59,60 +59,60 @@ import static org.hamcrest.Matchers.*;
 public class ElmTranslatorTest {
     @Test
     public void testLet(){
-        ExpressionDef let = (ExpressionDef) visitData("let b = true");
-        assertThat(let.getName(), is("b"));
-        assertTrackable(let);
+        ExpressionDef def = (ExpressionDef) visitData("define b = true");
+        assertThat(def.getName(), is("b"));
+        assertTrackable(def);
     }
 
     @Test
     public void testBooleanLiteral(){
-        ExpressionDef let = (ExpressionDef) visitData("let b = true");
-        assertThat(let.getExpression(), literalFor(true));
-        assertTrackable(let.getExpression());
+        ExpressionDef def = (ExpressionDef) visitData("define b = true");
+        assertThat(def.getExpression(), literalFor(true));
+        assertTrackable(def.getExpression());
 
-        let = (ExpressionDef) visitData("let b = false");
-        assertThat(let.getExpression(), literalFor(false));
+        def = (ExpressionDef) visitData("define b = false");
+        assertThat(def.getExpression(), literalFor(false));
     }
 
     @Test
     public void testStringLiteral(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = 'hey its a string'");
-        assertThat(let.getExpression(), literalFor("hey its a string"));
-        assertTrackable(let.getExpression());
+        ExpressionDef def = (ExpressionDef) visitData("define st = 'hey its a string'");
+        assertThat(def.getExpression(), literalFor("hey its a string"));
+        assertTrackable(def.getExpression());
     }
 
     @Test
     public void testNullLiteral(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = null");
-        assertThat(let.getExpression(), instanceOf(Null.class));
-        assertTrackable(let.getExpression());
+        ExpressionDef def = (ExpressionDef) visitData("define st = null");
+        assertThat(def.getExpression(), instanceOf(Null.class));
+        assertTrackable(def.getExpression());
     }
 
     @Test
     public void testQuantityLiteral(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = 1");
-        assertThat(let.getExpression(), literalFor(1));
-        assertTrackable(let.getExpression());
+        ExpressionDef def = (ExpressionDef) visitData("define st = 1");
+        assertThat(def.getExpression(), literalFor(1));
+        assertTrackable(def.getExpression());
 
-        let = (ExpressionDef) visitData("let st = 1.1");
-        assertThat(let.getExpression(), literalFor(1.1));
+        def = (ExpressionDef) visitData("define st = 1.1");
+        assertThat(def.getExpression(), literalFor(1.1));
 
-        let = (ExpressionDef) visitData("let st = 1.1 u'mm'");
-        Quantity quantity = (Quantity) let.getExpression();
+        def = (ExpressionDef) visitData("define st = 1.1 u'mm'");
+        Quantity quantity = (Quantity) def.getExpression();
         assertThat(quantity.getValue(), is(BigDecimal.valueOf(1.1)));
         assertThat(quantity.getUnit(), is("u'mm'"));
         assertTrackable(quantity);
 
-        let = (ExpressionDef) visitData("let st = 1.1 weeks");
-        quantity = (Quantity) let.getExpression();
+        def = (ExpressionDef) visitData("define st = 1.1 weeks");
+        quantity = (Quantity) def.getExpression();
         assertThat(quantity.getValue(), is(BigDecimal.valueOf(1.1)));
         assertThat(quantity.getUnit(), is("weeks"));
     }
 
     @Test
     public void testAndExpressions(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = true and false");
-        And and = (And) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = true and false");
+        And and = (And) def.getExpression();
         Expression left = and.getOperand().get(0);
         Expression right = and.getOperand().get(1);
 
@@ -126,8 +126,8 @@ public class ElmTranslatorTest {
 
     @Test
     public void testOrExpressions(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = true or false");
-        Or or = (Or) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = true or false");
+        Or or = (Or) def.getExpression();
         Expression left = or.getOperand().get(0);
         Expression right = or.getOperand().get(1);
 
@@ -138,8 +138,8 @@ public class ElmTranslatorTest {
         assertTrackable(left);
         assertTrackable(right);
 
-        let = (ExpressionDef) visitData("let st = true xor false");
-        Xor xor = (Xor) let.getExpression();
+        def = (ExpressionDef) visitData("define st = true xor false");
+        Xor xor = (Xor) def.getExpression();
         left = xor.getOperand().get(0);
         right = xor.getOperand().get(1);
 
@@ -163,8 +163,8 @@ public class ElmTranslatorTest {
         }};
 
         for (Map.Entry<String, Class> e : comparisons.entrySet()) {
-            ExpressionDef let = (ExpressionDef) visitData("let st = 1 " + e.getKey() + " 2");
-            BinaryExpression binary = (BinaryExpression) let.getExpression();
+            ExpressionDef def = (ExpressionDef) visitData("define st = 1 " + e.getKey() + " 2");
+            BinaryExpression binary = (BinaryExpression) def.getExpression();
             Expression left = binary.getOperand().get(0);
             Expression right = binary.getOperand().get(1);
 
@@ -180,8 +180,8 @@ public class ElmTranslatorTest {
 
     @Test
     public void testIsTrueExpressions(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = X is true");
-        Equal equal = (Equal) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = X is true");
+        Equal equal = (Equal) def.getExpression();
         Identifier left = (Identifier) equal.getOperand().get(0);
         Expression right = equal.getOperand().get(1);
 
@@ -195,8 +195,8 @@ public class ElmTranslatorTest {
 
     @Test
     public void testIsNotTrueExpressions(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = X is not true");
-        Not not = (Not) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = X is not true");
+        Not not = (Not) def.getExpression();
         Equal equal = (Equal) not.getOperand();
         Identifier left = (Identifier) equal.getOperand().get(0);
         Expression right = equal.getOperand().get(1);
@@ -212,8 +212,8 @@ public class ElmTranslatorTest {
 
     @Test
     public void testIsNullExpressions(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = X is null");
-        IsNull isNull = (IsNull) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = X is null");
+        IsNull isNull = (IsNull) def.getExpression();
         Identifier id = (Identifier) isNull.getOperand();
 
         assertThat(id.getIdentifier(), is("X"));
@@ -224,8 +224,8 @@ public class ElmTranslatorTest {
 
     @Test
     public void testIsNotNullExpressions(){
-        ExpressionDef let = (ExpressionDef) visitData("let st = X is not null");
-        Not not = (Not) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = X is not null");
+        Not not = (Not) def.getExpression();
         IsNull isNull = (IsNull) not.getOperand();
         Identifier id = (Identifier) isNull.getOperand();
 
@@ -239,10 +239,10 @@ public class ElmTranslatorTest {
     @Test
     public void testExpressionReference() {
         String cql =
-                "let X = [Condition]\n" +
-                "let st = X";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ExpressionRef exp = (ExpressionRef) let.getExpression();
+                "define X = [Condition]\n" +
+                "define st = X";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ExpressionRef exp = (ExpressionRef) def.getExpression();
         assertThat(exp.getName(), is("X"));
         assertThat(exp.getLibraryName(), is(nullValue()));
         assertThat(exp.getDescription(), is(nullValue()));
@@ -251,10 +251,10 @@ public class ElmTranslatorTest {
     @Test
     public void testPropertyReference() {
         String cql =
-                "let X = [Condition]\n" +
-                "let st = X.effectiveTime";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        Property prop = (Property) let.getExpression();
+                "define X = [Condition]\n" +
+                "define st = X.effectiveTime";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        Property prop = (Property) def.getExpression();
         ExpressionRef source = (ExpressionRef) prop.getSource();
         assertThat(source.getName(), is("X"));
         assertThat(source.getLibraryName(), is(nullValue()));
@@ -268,9 +268,9 @@ public class ElmTranslatorTest {
     public void testValueSetReference() {
         String cql =
                 "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
-                "let st = \"Acute Pharyngitis\"";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ValueSetRef vs = (ValueSetRef) let.getExpression();
+                "define st = \"Acute Pharyngitis\"";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ValueSetRef vs = (ValueSetRef) def.getExpression();
         assertThat(vs.getName(), is("Acute Pharyngitis"));
         assertThat(vs.getLibraryName(), is(nullValue()));
         assertThat(vs.getDescription(), is(nullValue()));
@@ -280,9 +280,9 @@ public class ElmTranslatorTest {
     public void testFunctionReference() {
         String cql =
                 "define function MyFunction() { return true }\n" +
-                "let st = MyFunction()";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        FunctionRef fun = (FunctionRef) let.getExpression();
+                "define st = MyFunction()";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        FunctionRef fun = (FunctionRef) def.getExpression();
         assertThat(fun.getName(), is("MyFunction"));
         assertThat(fun.getLibraryName(), is(nullValue()));
         assertThat(fun.getDescription(), is(nullValue()));
@@ -293,9 +293,9 @@ public class ElmTranslatorTest {
     public void testFunctionReferenceWithArguments() {
         String cql =
                 "define function MyFunction(arg: String) { return arg }\n" +
-                "let st = MyFunction('hello there')";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        FunctionRef fun = (FunctionRef) let.getExpression();
+                "define st = MyFunction('hello there')";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        FunctionRef fun = (FunctionRef) def.getExpression();
         assertThat(fun.getName(), is("MyFunction"));
         assertThat(fun.getLibraryName(), is(nullValue()));
         assertThat(fun.getDescription(), is(nullValue()));
@@ -317,8 +317,8 @@ public class ElmTranslatorTest {
         }};
 
         for (Map.Entry<String, Class> e : comparisons.entrySet()) {
-            ExpressionDef let = (ExpressionDef) visitData("let st = 1 " + e.getKey() + " 2");
-            BinaryExpression binary = (BinaryExpression) let.getExpression();
+            ExpressionDef def = (ExpressionDef) visitData("define st = 1 " + e.getKey() + " 2");
+            BinaryExpression binary = (BinaryExpression) def.getExpression();
             Expression left = binary.getOperand().get(0);
             Expression right = binary.getOperand().get(1);
 
@@ -334,8 +334,8 @@ public class ElmTranslatorTest {
 
     @Test
     public void testRetrieveTopic() {
-        ExpressionDef let = (ExpressionDef) visitData("let st = [Condition]");
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = [Condition]");
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
@@ -353,8 +353,8 @@ public class ElmTranslatorTest {
 
     @Test(enabled=false)
     public void testRetrieveNonOccurrenceOfTopic() {
-        ExpressionDef let = (ExpressionDef) visitData("let st = [NonOccurrence of Condition]");
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = [NonOccurrence of Condition]");
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
@@ -371,8 +371,8 @@ public class ElmTranslatorTest {
 
     @Test
     public void testRetrieveTopicAndModality() {
-        ExpressionDef let = (ExpressionDef) visitData("let st = [Encounter, Performance]");
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = [Encounter, Performance]");
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
@@ -389,8 +389,8 @@ public class ElmTranslatorTest {
 
     @Test(enabled=false)
     public void testRetrieveNonOccurrenceOfTopicAndModality() {
-        ExpressionDef let = (ExpressionDef) visitData("let st = [NonOccurrence of Encounter, Performance]");
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = [NonOccurrence of Encounter, Performance]");
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceNonOccurrence"));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
@@ -407,8 +407,8 @@ public class ElmTranslatorTest {
 
     @Test
     public void testRetrieveTopicAndModalityAndOccurrence() {
-        ExpressionDef let = (ExpressionDef) visitData("let st = [Occurrence of Encounter, Performance]");
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData("define st = [Occurrence of Encounter, Performance]");
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
@@ -427,9 +427,9 @@ public class ElmTranslatorTest {
     public void testRetrieveTopicAndValueSet() {
         String cql =
                 "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
-                "let st = [Condition: \"Acute Pharyngitis\"]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [Condition: \"Acute Pharyngitis\"]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is("code"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -451,9 +451,9 @@ public class ElmTranslatorTest {
     public void testRetrieveTopicAndModalityAndValueSet() {
         String cql =
                 "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
-                "let st = [Encounter, Performance: \"Ambulatory/ED Visit\"]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [Encounter, Performance: \"Ambulatory/ED Visit\"]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -475,9 +475,9 @@ public class ElmTranslatorTest {
     public void testRetrieveNonOccurrenceOfTopicAndModalityAndValueSet() {
         String cql =
                 "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
-                "let st = [NonOccurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [NonOccurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceNonOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -499,9 +499,9 @@ public class ElmTranslatorTest {
     public void testRetrieveTopicAndModalityAndOccurrenceAndValueSet() {
         String cql =
                 "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
-                "let st = [Occurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [Occurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -523,9 +523,9 @@ public class ElmTranslatorTest {
     public void testRetrieveTopicAndSpecifiedCodeAttribute() {
         String cql =
                 "valueset \"Moderate or Severe\" = ValueSet('2.16.840.1.113883.3.526.3.1092')\n" +
-                "let st = [Condition: severity in \"Moderate or Severe\"]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [Condition: severity in \"Moderate or Severe\"]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is("severity"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -547,9 +547,9 @@ public class ElmTranslatorTest {
     public void testRetrieveTopicAndModalityAndSpecifiedCodeAttribute() {
         String cql =
                 "valueset \"CABG Surgeries\" = ValueSet('2.16.840.1.113883.3.666.5.694')\n" +
-                "let st = [Encounter, Performance: actionPerformed in \"CABG Surgeries\"]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [Encounter, Performance: actionPerformed in \"CABG Surgeries\"]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("actionPerformed"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -572,9 +572,9 @@ public class ElmTranslatorTest {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
                 "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
-                "let st = [Encounter, Performance: \"Ambulatory/ED Visit\", during MeasurementPeriod]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [Encounter, Performance: \"Ambulatory/ED Visit\", during MeasurementPeriod]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -600,9 +600,9 @@ public class ElmTranslatorTest {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
                 "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
-                "let st = [Condition: \"Acute Pharyngitis\", effectiveTime during MeasurementPeriod]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [Condition: \"Acute Pharyngitis\", effectiveTime during MeasurementPeriod]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is("code"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -628,9 +628,9 @@ public class ElmTranslatorTest {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
                 "valueset \"Moderate or Severe\" = ValueSet('2.16.840.1.113883.3.526.3.1092')\n" +
-                "let st = [Condition: severity in \"Moderate or Severe\", effectiveTime during MeasurementPeriod]";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) let.getExpression();
+                "define st = [Condition: severity in \"Moderate or Severe\", effectiveTime during MeasurementPeriod]";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is("severity"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
@@ -657,14 +657,14 @@ public class ElmTranslatorTest {
             "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
             "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
             "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
-            "let st = [Encounter, Performance: \"Inpatient\"] E\n" +
+            "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
             "    with [Condition: \"Acute Pharyngitis\"] P\n" +
             "        where P.effectiveTime overlaps after E.performanceTime\n" +
             "    where duration in days of E.performanceTime >= 120\n" +
             "    return tuple { id: E.id, lengthOfStay: duration in days of E.performanceTime }\n" +
             "    sort by lengthOfStay desc";
-        ExpressionDef let = (ExpressionDef) visitData(cql);
-        Query query = (Query) let.getExpression();
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        Query query = (Query) def.getExpression();
 
         // First check the source
         AliasedQuerySource source = query.getSource();

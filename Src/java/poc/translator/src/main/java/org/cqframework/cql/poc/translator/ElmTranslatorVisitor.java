@@ -297,14 +297,14 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public ExpressionDef visitLetStatement(@NotNull cqlParser.LetStatementContext ctx) {
-        ExpressionDef let = of.createExpressionDef()
+    public ExpressionDef visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
+        ExpressionDef def = of.createExpressionDef()
                 .withName(parseString(ctx.IDENTIFIER()))
                 .withContext(currentContext)
                 .withExpression((Expression) visit(ctx.expression()));
-        addToLibrary(let);
+        addToLibrary(def);
 
-        return let;
+        return def;
     }
 
     @Override

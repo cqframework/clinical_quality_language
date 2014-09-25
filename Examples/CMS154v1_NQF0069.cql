@@ -71,9 +71,9 @@ using QUICK
 
 context PATIENT
 
-let InDemographic = AgeAt(start of MeasurementPeriod) >= 3 months and AgeAt(start of MeasurementPeriod) <= 18 years
+define InDemographic = AgeAt(start of MeasurementPeriod) >= 3 months and AgeAt(start of MeasurementPeriod) <= 18 years
 
-let ValidEncounters =
+define ValidEncounters =
 	([Encounter, Performance: "Office Visit"])
 		union ([Encounter, Performance: "Emergency Department Visit"])
 		union ([Encounter, Performance: "Preventive Care- Initial Office Visit, 0 to 17"])
@@ -81,29 +81,29 @@ let ValidEncounters =
 		union ([Encounter, Performance: "Hospital Observation Care - Initial"])
 		union ([Encounter, Performance: "Face-to-Face Interaction"])
 
-let EncountersDuringMeasurementPeriod =
+define EncountersDuringMeasurementPeriod =
 	ValidEncounters E where E.effectiveTime during MeasurementPeriod
 
-let URIDiagnosis =
+define URIDiagnosis =
 	[Condition: "Upper Respiratory Infection"]
 
-let ValidDiagnosis =
+define ValidDiagnosis =
 	URIDiagnosis U 
 		where exists (EncountersDuringMeasurementPeriod E where U.effectiveTime starts during E.effectiveTime)
 			or exists (ValidEncounters E where U.effectiveTime includes E.effectiveTime)
 
-let InitialPopulation =
+define InitialPopulation =
 	ValidDiagnosis V
 		where InDemographic
 
-let Denominator = 
+define Denominator =
 	true
 
-let Numerator =
+define Numerator =
 	ValidDiagnosis V where not exists ([Medication, Order: "Antibiotic Medications"] M where M.orderTime starts at most 3 days after start of V.effectiveTime)
 
 context POPULATION
 
-let MeasureScore = (Count(Numerator) / Count(Denominator)) * 100
+define MeasureScore = (Count(Numerator) / Count(Denominator)) * 100
 
 

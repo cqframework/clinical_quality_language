@@ -2058,7 +2058,7 @@ Reasons such as "SpO2 less than x%" should be addressed as a PRN Instruction rat
 						<xs:annotation>
 							<xs:documentation>Attribute that specifies the component of a composite action that was performed. For instance, the fulfillment of a prescription may result in both a substance administration event and a dispense event, thus resulting in two actions being performed.
 
-let VancoDoseAdmin =
+define VancoDoseAdmin =
   [MedicationTreatment, Performance: "Hospital measures-IV Vancomycin"] V 
     where
     dosage[1].route in "Hospital measures-Route IV"
@@ -2763,7 +2763,7 @@ Expression from source knowledge artifact
 Risk Category Assessment: Framingham coronary heart disease 10 year risk (result &gt; 20 %)" during "Measurement Period
 
 Expression in CQL+QUICK
-let FraminghamScore = 
+define FraminghamScore = 
   [Prediction: "Framingham Score"] FSP
     where 
       FSP.likelihood &gt; 20 u '%'
@@ -2819,7 +2819,7 @@ Expression from source knowledge artifact
 Diagnosis, Active: Acute Myocardial Infarction" &lt;= 12 month(s) starts before start of "Measurement Period" using "Acute Myocardial Infarction Grouping Value Set 
 
 Expression in CQL+QUICK
-let AMICondition =
+define AMICondition =
   [Condition: "Acute Myocardial Infarction Grouping ValueSet"] AMI
     where effectiveTime starts at most 12 months before start MeasurementPeriod</xs:documentation>
 		</xs:annotation>
@@ -2899,7 +2899,7 @@ Expression from source knowledge artifact
 Encounter, Performed: Care Services in Long-Term Residential Facility during Measurement Period
 
 Expression in CQL+QUICK
-let LTRFEnc = 
+define LTRFEnc = 
   [Encounter, Performance] E
     where
     E.location.type in "Long-Term Residential Facility Value Set"
@@ -2911,7 +2911,7 @@ let LTRFEnc =
 				<xs:annotation>
 					<xs:documentation>Attribute that specifies the component of a composite action that was performed. For instance, the fulfillment of a prescription may result in both a substance administration event and a dispense event, thus resulting in two actions being performed.
 
-let VancoDoseAdmin =
+define VancoDoseAdmin =
   [MedicationTreatment, Performance: "Hospital measures-IV Vancomycin"] V 
     where
     dosage[1].route in "Hospital measures-Route IV"
@@ -3005,7 +3005,7 @@ Expression from source knowledge artifact
 "Medication, Administered: Hospital measures-IV Vancomycin (route: "Hospital measures-Route IV")" 
 
 Expression in CQL+QUICK
-let VancoDoseAdmin =
+define VancoDoseAdmin =
   [MedicationTreatment, Performance: "Hospital measures-IV Vancomycin"] V 
     where
     dosage[1].route in "Hospital measures-Route IV"
@@ -3016,7 +3016,7 @@ Expression from source knowledge artifact
 Medication dispensed: Medications indicative of diabetes
 
 Expression in CQL+QUICK
-let DiabetesMedsDispensed =
+define DiabetesMedsDispensed =
   [MedicationTreatment, Performance: "Medications indicative of diabetes"] M 
     where
       IsEquivalent(actionPerformed, MedicationDispensedActionCode)</xs:documentation>
@@ -3026,7 +3026,7 @@ let DiabetesMedsDispensed =
 				<xs:annotation>
 					<xs:documentation>Attribute that specifies the component of a composite action that was performed. For instance, the fulfillment of a prescription may result in both a substance administration event and a dispense event, thus resulting in two actions being performed.
 
-let VancoDoseAdmin =
+define VancoDoseAdmin =
   [MedicationTreatment, Performance: "Hospital measures-IV Vancomycin"] V 
     where
     dosage[1].route in "Hospital measures-Route IV"
@@ -3086,7 +3086,7 @@ Expression from source knowledge artifact
 Screen for syphilis infections
 
 Expression in CQL+QUICK
-let PCIEvent =
+define PCIEvent =
   [Procedure, Performance: "Percutaneous Coronary Intervention"] PCI
     where performanceTime starts at most 12 months before start MeasurementPeriod</xs:documentation>
 		</xs:annotation>
@@ -3095,7 +3095,7 @@ let PCIEvent =
 				<xs:annotation>
 					<xs:documentation>Attribute that specifies the component of a composite action that was performed. For instance, the fulfillment of a prescription may result in both a substance administration event and a dispense event, thus resulting in two actions being performed.
 
-let VancoDoseAdmin =
+define VancoDoseAdmin =
   [MedicationTreatment, Performance: "Hospital measures-IV Vancomycin"] V 
     where
     dosage[1].route in "Hospital measures-Route IV"
@@ -3165,10 +3165,10 @@ Expression from source knowledge artifact
 "Physical Exam, Finding: Systolic Blood Pressure (result &lt; 140 mmHg)" during MOST RECENT: "Encounter, Performed: Office Visit"
 
 Expression in CQL+QUICK
-let MostRecentOfficeVisit = 
+define MostRecentOfficeVisit = 
        Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)
 
-let LastBPNormal =
+define LastBPNormal =
        [SimpleObservationResult: "Systolic Blood Pressure"] SBP
               with MostRecentOfficeVisit OV 
                      where SBP.observedAtTime during OV.performanceTime
@@ -3196,7 +3196,7 @@ Expression from source knowledge artifact
 Device, Applied: Hospital Measures-Indwelling urinary catheter
 
 Expression in CQL+QUICK
-let UsedIndwellingCath =
+define UsedIndwellingCath =
   [DeviceUse, Performance: "Hospital Measures-Indwelling urinary catheter"]</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
@@ -3219,7 +3219,7 @@ let UsedIndwellingCath =
 				<xs:annotation>
 					<xs:documentation>Attribute that specifies the component of a composite action that was performed. For instance, the fulfillment of a prescription may result in both a substance administration event and a dispense event, thus resulting in two actions being performed.
 
-let VancoDoseAdmin =
+define VancoDoseAdmin =
   [MedicationTreatment, Performance: "Hospital measures-IV Vancomycin"] V 
     where
     dosage[1].route in "Hospital measures-Route IV"
@@ -3264,7 +3264,7 @@ Expression from source knowledge artifact
 Screen for syphilis infections
 
 Expression in CQL+QUICK
-let SyphScreen = 
+define SyphScreen = 
   [Procedure, Proposal: "Screening Test for Syphillis"]</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
@@ -3333,7 +3333,7 @@ Expression from source knowledge artifact
 Aspirin 81 mg ,one tablet per day orally was proposed
 
 Expression in CQL+QUICK
-let AspirinProposal = 
+define AspirinProposal = 
   [MedicationTreatment, Proposal: "Aspirin"] A where
     dosage[1].doseQuantity = 81 u 'mg'
     and
@@ -3397,7 +3397,7 @@ Expression from source knowledge artifact
 A CBC test result that was resulted in the last 2 days
 
 Expression in CQL+QUICK
-let RecentCBC =      
+define RecentCBC =      
   [ObservationResultGroup: "Complete Blood Count"] CBC
     where CBC.observedAtTime starts during interval[Today, Today - 2 days]</xs:documentation>
 		</xs:annotation>
@@ -3423,7 +3423,7 @@ Expression from source knowledge artifact
 "CT Scan of Lower Spine" ordered &lt;= 28 day(s) after start of "Occurrence A of Diagnosis, Active: Low Back Pain"
 
 Expression in CQL+QUICK
-let CTSpineOrder =
+define CTSpineOrder =
   [DiagnosticImaging, Order: "CT Scan of Lower Spine"] CT with 
     [Condition:  "Low Back Pain"] LBP where 
       CT.orderTime starts at most 28 days after start LBP.effectiveTime</xs:documentation>
@@ -3514,7 +3514,7 @@ Expression from source knowledge artifact
 CT Scan of Lower Spine" proposed &lt;= 28 day(s) after start of "Occurrence A of Diagnosis, Active: Low Back Pain"
 
 Expression in CQL+QUICK
-let CTSpineProposal =
+define CTSpineProposal =
   [DiagnosticImaging, Proposal: "CT Scan of Lower Spine"] CT with 
     [Condition:  "Low Back Pain"] LBP where 
       CT.proposedAtTime starts at most 28 days after start LBP.effectiveTime</xs:documentation>
@@ -3595,7 +3595,7 @@ Expression from source knowledge artifact
 "Diagnostic Study, Performed: CT Scan of Lower Spine" &lt;= 28 day(s) starts after start of "Occurrence A of Diagnosis, Active: Low Back Pain"
 
 Expression in CQL+QUICK
-let CTSpinePerformance =
+define CTSpinePerformance =
   [DiagnosticImaging, Performance: "CT Scan of Lower Spine"] CT with 
     [Condition:  "Low Back Pain"] LBP where 
       CT.performanceTime starts at most 28 days after start LBP.effectiveTime</xs:documentation>
@@ -3640,7 +3640,7 @@ let CTSpinePerformance =
 				<xs:annotation>
 					<xs:documentation>Attribute that specifies the component of a composite action that was performed. For instance, the fulfillment of a prescription may result in both a substance administration event and a dispense event, thus resulting in two actions being performed.
 
-let VancoDoseAdmin =
+define VancoDoseAdmin =
   [MedicationTreatment, Performance: "Hospital measures-IV Vancomycin"] V 
     where
     dosage[1].route in "Hospital measures-Route IV"
@@ -3686,7 +3686,7 @@ Expression from source knowledge artifact
 Notify San Diego County Department of Health and Human Services about case of Pertussis
 
 Expression in CQL+QUICK
-let PertussisNotificationSD = 
+define PertussisNotificationSD = 
   [Communication, Proposal] N where
     N.recipient is Organization
       and
@@ -3763,7 +3763,7 @@ Expression from source knowledge artifact
 Communication from patient to provider: Previous receipt of influenza vaccine
 
 Expression in CQL+QUICK
-let FluVaccCommunication =
+define FluVaccCommunication =
   [Communication, Performance] C where
     C.sender is Patient
       and
@@ -3804,7 +3804,7 @@ let FluVaccCommunication =
 				<xs:annotation>
 					<xs:documentation>Attribute that specifies the component of a composite action that was performed. For instance, the fulfillment of a prescription may result in both a substance administration event and a dispense event, thus resulting in two actions being performed.
 
-let VancoDoseAdmin =
+define VancoDoseAdmin =
   [MedicationTreatment, Performance: "Hospital measures-IV Vancomycin"] V 
     where
     dosage[1].route in "Hospital measures-Route IV"
@@ -3849,7 +3849,7 @@ Expression from source knowledge artifact
 Begin NTP (Non-Invasive Transcutaneous Pacing) immediately
 
 Expression in CQL+QUICK
-let NTPOrder =
+define NTPOrder =
   [DeviceUse, Order: "Non-Invasive Transcutaneous Pacing"] N where
     N.urgency in "Urgent Action Value Set"</xs:documentation>
 		</xs:annotation>
@@ -3919,7 +3919,7 @@ Expression from source knowledge artifact
 Use of CPAP is proposed (for patient with sleep apnea)
 
 Expression in CQL+QUICK
-let CPAPProposal =
+define CPAPProposal =
   [DeviceUse, Proposal: "CPAP"]</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
@@ -3978,7 +3978,7 @@ Expression from source knowledge artifact
 Refer patient for a consult to nutrition services for weight loss
 
 Expression in CQL+QUICK
-let NutrRef =
+define NutrRef =
   [Encounter, Proposal] E
     where
      serviceType in "Consult"
@@ -4075,7 +4075,7 @@ Expression from source knowledge artifact
 Ticagrelor, 180 mg loading dose by mouth once, 90 mg by mouth twice daily
 
 Expression in CQL+QUICK
-let TicagrelorOrder = 
+define TicagrelorOrder = 
   [MedicationTreatment, Order: "Ticagrelor"] T where
     exists (
       T.dosage LD where 
@@ -4169,7 +4169,7 @@ Expression from source knowledge artifact
 Glucose by finger stick screening 4 times daily for 24 hours
 
 Expression in CQL+QUICK
-let FSOrder =
+define FSOrder =
   [Procedure, Order: "Finger Stick Screening "] Gluc
     where IsEquivalent((procedureSchedule.administrationFrequency.cycle.cycleTiming as CodedRecurringEvent).repeatCode, FourTimesPerDayCode)
      and 

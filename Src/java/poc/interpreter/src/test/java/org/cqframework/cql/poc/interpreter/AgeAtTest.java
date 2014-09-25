@@ -17,7 +17,7 @@ import static org.testng.Assert.assertEquals;
 public class AgeAtTest {
     @Test
     public void testPatientsAtStartOfMP() throws ParseException {
-        ParseTree tree = getParseTree("let InDemographic = AgeAt(start of MeasurementPeriod) >= 16");
+        ParseTree tree = getParseTree("define InDemographic = AgeAt(start of MeasurementPeriod) >= 16");
         MeasurePeriod mp = MeasurePeriod.forYear(2013);
 
         Patient p = new Patient(1, "Bob", convertToDate("1997-01-01"));
@@ -33,7 +33,7 @@ public class AgeAtTest {
 
     @Test
     public void testPatientsAtEndOfMP() throws ParseException {
-        ParseTree tree = getParseTree("let InDemographic = AgeAt(end of MeasurementPeriod) >= 16");
+        ParseTree tree = getParseTree("define InDemographic = AgeAt(end of MeasurementPeriod) >= 16");
         MeasurePeriod mp = MeasurePeriod.forYear(2013);
 
         Patient p = new Patient(1, "Bob", convertToDate("1997-12-31"));

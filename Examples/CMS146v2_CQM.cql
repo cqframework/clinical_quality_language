@@ -50,38 +50,38 @@ valueset "Group A Streptococcus Test" = ValueSet('2.16.840.1.113883.3.464.1003.1
 
 context PATIENT
 
-let InDemographic =
+define InDemographic =
     AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
 
-let Pharyngitis = 
+define Pharyngitis =
     ([Condition: "Acute Pharyngitis"]) union ([Condition: "Acute Tonsilitis"])
 
-let Antibiotics =
+define Antibiotics =
     [MedicationPrescription: "Antibiotic Medications"]
 
-let TargetEncounters =
+define TargetEncounters =
     [Encounter, Performance: "Ambulatory/ED Visit"] E
         with Pharyngitis P where P.effectiveTime overlaps after E.performedAtTime
         with Antibiotics A where A.orderedAtTime starts at most 3 days after start E.performedAtTime
         where E.performedAtTime during MeasurementPeriod
 
-let TargetDiagnoses =
+define TargetDiagnoses =
     Pharyngitis P with TargetEncounters E where P.effectiveTime overlaps after E.performedAtTime
 
-let HasPriorAntibiotics =
+define HasPriorAntibiotics =
     exists (Antibiotics A with TargetDiagnoses D where A.orderedAtTime starts at most 30 days before start D.effectiveTime)
 
-let HasTargetEncounter =
+define HasTargetEncounter =
     exists (TargetEncounters)
 
-let InInitialPopulation =
+define InInitialPopulation =
     InDemographic and HasTargetEncounter
 
-let InDenominator =
+define InDenominator =
     true
 
-let InDenominatorExclusions =
+define InDenominatorExclusions =
     HasPriorAntibiotics
 
-let InNumerator =
+define InNumerator =
     exists ([ObservationResult: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod and R.result is not null)

@@ -20,10 +20,10 @@ valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD') // No
 
 context PATIENT
 
-let InDemographic =
+define InDemographic =
 	Age() >= 16 and Age() < 24 and gender in "Female Administrative Sex"
 
-let SexuallyActive =
+define SexuallyActive =
 	exists ([Condition: "Other Female Reproductive Conditions"])
 	or exists ([Condition: "Genital Herpes"])
 	or exists ([Condition: "Genococcal Infections and Venereal Diseases"])
@@ -37,14 +37,14 @@ let SexuallyActive =
 	or exists ([LaboratoryTest, Order: "Lab Tests During Pregnancy"])
 	or exists ([LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"])
 		
-let NoScreening =
+define NoScreening =
 	not exists ([SimpleObservation: "Chlamydia Screening", during interval[Today() - 1 years, Today()]] R where R.result is not null)
 	and not exists ([Procedure, Plan: "Chlamydia Screening", during interval[Today(), null]])
 	and not exists ([SimpleObservation: "Reason for not performing Chlamydia Screening"])
 
-let NeedScreening = InDemographic and SexuallyActive and NoScreening
+define NeedScreening = InDemographic and SexuallyActive and NoScreening
 
-//let Proposal = 
+//define Proposal =
 //	tuple(typeof[Procedure, Proposal]) { procedureCode: CodeableConcept { code: 'XYZ', codeSystem: 'SNOMED-CT', displayName: 'Chlamydia Screening' } };
 
 // Need to be able to map this to FHIR, something like: ToFHIR(Proposal)

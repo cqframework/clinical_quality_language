@@ -73,7 +73,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitLetStatement(@NotNull cqlParser.LetStatementContext ctx) {
+    public Object visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         LetStatementInfo letStatement = new LetStatementInfo();
         letStatement.setName((String)visit(ctx.IDENTIFIER()));
         letStatement.setDefinition(ctx);
