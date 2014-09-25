@@ -25,23 +25,16 @@ year of A same as year of B
 	and second of A same as second of B
 	and millisecond of A same as millisecond of B
 
+Date(2014, 15, 2) same as Date(2014, 15, 2)
+Date(2014, 15) same as Date(2014, 15, 2)
+
+
 // and for precision-based equality
 A same day as B
 // is equivalent to
 year of A same as year of B
 	and month of A same as month of B
 	and day of A same as day of B
-
-// Date/Time Equality
-A = B
-// is equivalent to
-((year of A is null and year of B is null) or (year of A = year of B))
-	and ((month of A is null and month of B is null) or (month of A = month of B))
-	and ((day of A is null and day of B is null) or (day of A = day of B))
-	and ((hour of A is null and hour of B is null) or (hour of A = hour of B))
-	and ((minute of A is null and minute of B is null) or (minute of A = minute of B))
-	and ((second of A is null and second of B is null) or (second of A = second of B))
-	and ((millisecond of A is null and millisecond of B is null) or (millisecond of A = millisecond of B))
 
 // Date/Time Relative Comparison
 A > B
@@ -54,6 +47,10 @@ year of A > year of B
 	or (year of A = year of B and month of A = month of B and day of A = day of B and hour of A = hour of B and minute of A = minute of B and second of A > second of B)
 	or (year of A = year of B and month of A = month of B and day of A = day of B and hour of A = hour of B and minute of A = minute of B and second of A = second of B and millisecond of A > millisecond of B)
 
+Date(2012) > Date(2014, 2, 15) // Returns false
+Date(2014) > Date(2014, 2, 15) // Returns null
+Date(2016) > Date(2014, 2, 15) // Returns true
+
 // Date/Time Equality Comparison
 A >= B
 // is equivalent to
@@ -61,8 +58,11 @@ A = B or A > B
 
 // Date/Time Comparison w/ Relative Qualifier (at least/at most)
 A at least same day as B
+A at most same day as B
 // is equivalent to
 A same day as B or A > B
+A same day as B or A < B
+
 
 // Durations
 days between A and B
@@ -71,7 +71,10 @@ days between A and B
 
 // extended to return an interval
 days between Date(2014, 1, 15) and Date(2014, 2)
-// returns interval[16, 44]
+
+days between Date(2014, 1, 15) and Date(2014, 2, 1) // 17 days
+days between Date(2014, 1, 15) and Date(2014, 2, 28) // 44 days
+// returns interval[17, 44]
 
 // define implicit conversion from a point to an interval
 // allow interval comparison operators
@@ -92,28 +95,32 @@ interval[17, 44] > [20, 20] // potentially should return unknown
 A same as B
 A starts same as start B
 A starts same day as start B
+start of A same day as start of B
 
 // at least/most same as
-A starts at least same day as B
-A starts at most same day as B
+A starts at least same day as start B
+A starts at most same day as start B
+
+start of A at least same day as start of B
+start of A at most same day as start of B
 
 // before/after
 A starts before start B
-start of A < start of B
 A starts after start B
+start of A < start of B
 start of A > start of B
 
 // duration before/after
 A starts 3 days before start B
-days between start of A and start of B = -3
 A starts 3 days after start B
 days between start of A and start of B = 3
+days between start of A and start of B = -3
 
 // at least/most duration before/after
 A starts at least 3 days before start B
-days between start of A and start of B > -3
 A starts at most 3 days after start B
-days between start of A and start of B < 3
+days between start of A and start of B >= -3
+days between start of A and start of B <= 3
 
 // within duration
 A starts within 3 days of start B
@@ -124,7 +131,6 @@ A starts during B
 
 // includes
 A includes start B
-
 
 [Encounter, Performance: "A"] A
   with [Condition: "B"] B
@@ -143,6 +149,10 @@ let Encounters =
 		with [Condition: "B"] B where A.effectiveTime overlaps after B.effectiveTime
 		with Medications C where A.effectiveTime overlaps after C.effectiveTime
 
+Date(2014) < Date(2014, 1, 1)
+Date(null)
+Date(null, 5)
+Date(2014, 5, null, 16, 30)
 
 
 // Introduce the notion of an uncertainty range:
@@ -159,10 +169,14 @@ uncertainty[17, 44] = uncertainty[17, 44] // returns unknown
 uncertainty[17, 44] = uncertainty[2, 12] // returns false
 uncertainty[17, 44] = uncertainty[2, 20] // returns unknown
 
+X + Y
+
+interval[17, 44] = interval[17, 44]
+
 // If the uncertainty ranges overlap in any way, the result is unknown, otherwise the result is false
 
 // Comparison
-uncertainty[17, 44] > 2 // returns true
+interval[17, 44] > 2 // returns true
 uncertainty[17, 44] > 20 // returns unknown
 uncertainty[17, 44] > 45 // returns false
 
@@ -180,5 +194,59 @@ uncertainty[17, 44] > uncertainty[45, 50] // returns false
 // Arithmetic
 
 uncertainty[17, 44] + 2 // returns uncertainty[19, 46]
+interval[17, 44] + uncertainty[5, 10] // returns uncertainty[22, 54]
+uncertainty[17, 44] * 2 // returns uncertainty[34, 88]
+interval[17, 44] * uncertainty[2, 4] // returns uncertainty[34, 176]
+
+// Membership
+
+uncertainty[17, 44] in interval[-3, 3] // returns false
+uncertainty[17, 44] in interval[1, 100] // returns true
+uncertainty[17, 44] in interval[25, 50] // returns unknown
+
+// If the uncertainty is before or after the interval, return false
+// If the uncertainty is contained within the interval, return true
+// If the uncertainty overlaps either interval boundary, return unknown
+// These rules follow directly from the rules for comparison of uncertainties
+
+// Interval granularities, for reals
+// How do we deal with interval granularities for reals?
+// Easiest conceptual solution is to assert that we only deal with BCDs, and that the relevant successor/predecessor functions are defined in terms of the minimum step for the real.
+// This would require a precision and scale to be specified for all real values. We could infer a default of say 28,8. The point type of a real interval would then be based on the most-specific
+// type of the start and stop for the interval. If you wanted an interval at a lower granularity, you would convert the real to the lower precision and scale prior to creation of the interval.
+
+// Interval granularities, for date/times
+
+// Datetimes must not be allowed to specify components with lower granularity than unspecified components
+// Because what would it mean, for example, to have a DateTime with a month, but no year? I argue that if we need that, it's not a date/time.
+
+// What would it mean to specify an interval with start/stop datetimes of different granularities?
+// For example, interval[DateTime(2014), DateTime(2015, 1)]?
+// The interval is somewhat poorly defined, but you could still answer the question, duration in years, which would be 1. duration in months or lower would be an uncertainty[1, 12]
+
+// What would uncertainty over datetimes look like?
+// If the low/high bounds of the uncertainty were not specified to the same granularity, the appropriate granularity would be defaulted
+uncertainty[DateTime(2014), DateTime(2015, 1)] would become uncertainty[DateTime(2014, 1), DateTime(2015, 1)]
+uncertainty[DateTime(2014, 1), DateTime(2015)] would become uncertainty[DateTime(2014, 1), DateTime(2015, 12)]
+
+uncertainty[DateTime(2014, 1), DateTime(2015, 1)] + 1 year = uncertainty[DateTime(2015), DateTime(2016, 1)]
+uncertainty[DateTime(2014), DateTime(2015, 1)] + 1 month = 
+
+DateTime(2014) + 1 month = uncertainty[DateTime(2014, 1), DateTime(2015, 1)]
+DateTime(2014) = uncertainty[DateTime(2014, 1), DateTime(2014, 12)]
+
+// Does "fuzzy" logic apply? No.
+
+// interval of an uncertainty...
+interval[uncertainty[1, 10], uncertainty[20, 30]]
+
+// uncertainty of an uncertainty....
+
+uncertainty[uncertainty[1, 10], uncertainty[20, 30]] // equivalent to uncertainty[1, 30]
+
+
+
+
+
 
 
