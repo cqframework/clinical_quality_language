@@ -37,6 +37,7 @@ import org.hl7.elm.r1.PropertyExpression;
 import org.hl7.elm.r1.Quantity;
 import org.hl7.elm.r1.Query;
 import org.hl7.elm.r1.RelationshipClause;
+import org.hl7.elm.r1.RequestCardinality;
 import org.hl7.elm.r1.SortClause;
 import org.hl7.elm.r1.SortDirection;
 import org.hl7.elm.r1.Subtract;
@@ -336,6 +337,7 @@ public class ElmTranslatorTest {
         ExpressionDef let = (ExpressionDef) visitData("let st = [Condition]");
         ClinicalRequest request = (ClinicalRequest) let.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
         assertThat(request.getDescription(), is(nullValue()));
@@ -344,7 +346,6 @@ public class ElmTranslatorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         // TODO: What is templateId for?
         assertThat(request.getTemplateId(), is(nullValue()));
@@ -373,6 +374,7 @@ public class ElmTranslatorTest {
         ExpressionDef let = (ExpressionDef) visitData("let st = [Encounter, Performance]");
         ClinicalRequest request = (ClinicalRequest) let.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
         assertThat(request.getDescription(), is(nullValue()));
@@ -381,7 +383,6 @@ public class ElmTranslatorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -409,6 +410,7 @@ public class ElmTranslatorTest {
         ExpressionDef let = (ExpressionDef) visitData("let st = [Occurrence of Encounter, Performance]");
         ClinicalRequest request = (ClinicalRequest) let.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
         assertThat(request.getDescription(), is(nullValue()));
@@ -417,7 +419,6 @@ public class ElmTranslatorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -435,13 +436,13 @@ public class ElmTranslatorTest {
         assertThat(code.getName(), is("Acute Pharyngitis"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -459,13 +460,13 @@ public class ElmTranslatorTest {
         assertThat(code.getName(), is("Ambulatory/ED Visit"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -507,13 +508,13 @@ public class ElmTranslatorTest {
         assertThat(code.getName(), is("Ambulatory/ED Visit"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -531,13 +532,13 @@ public class ElmTranslatorTest {
         assertThat(code.getName(), is("Moderate or Severe"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -555,13 +556,13 @@ public class ElmTranslatorTest {
         assertThat(code.getName(), is("CABG Surgeries"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -585,11 +586,11 @@ public class ElmTranslatorTest {
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
         assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -613,11 +614,11 @@ public class ElmTranslatorTest {
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
         assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -641,11 +642,11 @@ public class ElmTranslatorTest {
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
         assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -673,6 +674,7 @@ public class ElmTranslatorTest {
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
@@ -681,7 +683,6 @@ public class ElmTranslatorTest {
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
 
@@ -695,6 +696,7 @@ public class ElmTranslatorTest {
         assertThat(withRequest.getCodeProperty(), is("code"));
         ValueSetRef withCode = (ValueSetRef) withRequest.getCodes();
         assertThat(withCode.getName(), is("Acute Pharyngitis"));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(withCode.getLibraryName(), is(nullValue()));
         assertThat(withCode.getDescription(), is(nullValue()));
         assertThat(withRequest.getDateProperty(), is(nullValue()));
@@ -703,7 +705,6 @@ public class ElmTranslatorTest {
         assertThat(withRequest.getScope(), is(nullValue()));
         assertThat(withRequest.getSubjectProperty(), is(nullValue()));
         assertThat(withRequest.getSubject(), is(nullValue()));
-        assertThat(withRequest.getCardinality(), is(nullValue()));
         assertThat(withRequest.getIdProperty(), is(nullValue()));
         assertThat(withRequest.getTemplateId(), is(nullValue()));
         OverlapsAfter withWhere = (OverlapsAfter) relationship.getWhere();

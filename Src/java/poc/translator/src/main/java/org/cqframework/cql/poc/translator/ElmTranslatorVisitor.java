@@ -86,12 +86,10 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         // If there is a parent narrative
             // add the text from the current text pointer to the start of the new source context to the narrative
         Narrative parentNarrative = narratives.isEmpty() ? null : narratives.peek();
-        if (parentNarrative != null) {
-            if (sourceInterval.a - 1 - currentToken >= 0) {
-                org.antlr.v4.runtime.misc.Interval tokenInterval =
-                        new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.a - 1);
-                parentNarrative.getContent().add(tokenStream.getText(tokenInterval));
-            }
+        if (parentNarrative != null && sourceInterval.a - 1 - currentToken >= 0) {
+            org.antlr.v4.runtime.misc.Interval tokenInterval =
+                    new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.a - 1);
+            parentNarrative.getContent().add(tokenStream.getText(tokenInterval));
         }
 
         // advance the token pointer to the start of the new source context
