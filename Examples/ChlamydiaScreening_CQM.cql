@@ -21,7 +21,7 @@ valueset "Chlamydia Screening" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1
 
 context PATIENT 
 
-let InDemographic = 
+let InDemographicCriteria = 
 	AgeAt(start of MeasurementPeriod) >= 16	and AgeAt(start of MeasurementPeriod) < 24 
 		and gender in "Female Administrative Sex"
 
@@ -45,9 +45,17 @@ let InInitialPopulation =
 let InDenominator =
 	true
 
+let InDenominator =
+	InInitialPopulation
+
 let InNumerator =
 	exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
 
+let InNumerator =
+	InDenominator and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
+
 context POPULATION
+
+let MeasureScore = (Count(PATIENT P where InInitialPopulation and InDenominator and InNumerator) / Count(PATIENT P where InInitialPopulation and InDenominator)) * 100
 
 let MeasureScore = (Count(PATIENT P where InNumerator) / Count(PATIENT P where InDenominator)) * 100

@@ -2,13 +2,24 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:cql-annotations:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:cql-annotations:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:complexType name="Annotation">
 		<xs:sequence>
-			<xs:element name="cql" type="xs:string"/>
-			<xs:element name="locator" type="Locator"/>
+			<xs:element name="s" type="Narrative" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="locator" type="Locator" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:simpleType name="Locator">
-		<xs:restriction base="xs:string">
-			<xs:pattern value="\d+:\d+(-\d+:\d+)?"/>
-		</xs:restriction>
-	</xs:simpleType>
+	<xs:complexType name="Locator">
+		<xs:attribute name="startLine" type="xs:int" use="optional"/>
+		<xs:attribute name="startChar" type="xs:int" use="optional"/>
+		<xs:attribute name="endLine" type="xs:int" use="optional"/>
+		<xs:attribute name="endChar" type="xs:int" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="Narrative" mixed="true">
+		<xs:complexContent>
+			<xs:restriction base="xs:anyType">
+				<xs:sequence>
+					<xs:element name="s" type="Narrative" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="r" type="xs:string" use="optional"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>

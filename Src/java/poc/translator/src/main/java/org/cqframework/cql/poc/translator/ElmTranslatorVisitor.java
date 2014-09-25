@@ -16,13 +16,12 @@ import org.cqframework.cql.poc.translator.model.*;
 import org.cqframework.cql.poc.translator.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.poc.translator.preprocessor.LibraryInfo;
 import org.hl7.cql_annotations.r1.Annotation;
+import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.*;
+import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
 
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.*;
 import javax.xml.namespace.QName;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,6 +48,9 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final HashMap<String, Library> libraries = new HashMap<>();
     private final Stack<QueryContext> queries = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
+    private final Stack<Narrative> narratives = new Stack<>();
+    private int currentToken = -1;
+    private int nextLocalId = 1;
     private final List<ClinicalRequest> clinicalRequests = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
@@ -71,9 +73,101 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         return expressions;
     }
 
+    private int getNextLocalId() {
+        return nextLocalId++;
+    }
+
+    private void PushNarrative(@NotNull ParseTree tree) {
+        org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
+
+        // If there is a parent narrative
+            // add the text from the current text pointer to the start of the new source context to the narrative
+        Narrative parentNarrative = narratives.isEmpty() ? null : narratives.peek();
+        if (parentNarrative != null) {
+            if (sourceInterval.a - 1 - currentToken >= 0) {
+                org.antlr.v4.runtime.misc.Interval tokenInterval =
+                        new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.a - 1);
+                parentNarrative.getContent().add(tokenStream.getText(tokenInterval));
+            }
+        }
+
+        // advance the token pointer to the start of the new source context
+        currentToken = sourceInterval.a;
+
+        // Create a new narrative
+            // add it to the parent narrative, if there is one
+            // push it on the narrative stack
+        Narrative newNarrative = af.createNarrative();
+        narratives.push(newNarrative);
+    }
+
+    private Narrative PopNarrative(@NotNull ParseTree tree, Object o) {
+        org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
+
+        // Pop the narrative off the narrative stack
+        Narrative currentNarrative = narratives.pop();
+
+        // Add the text from the current token pointer to the end of the current source context to the narrative
+        if (sourceInterval.b - currentToken >= 0) {
+            org.antlr.v4.runtime.misc.Interval tokenInterval =
+                    new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.b);
+            currentNarrative.getContent().add(tokenStream.getText(tokenInterval));
+        }
+
+        // Advance the token pointer after the end of the current source context
+        currentToken = sourceInterval.b + 1;
+
+        // If the narrative corresponds to an element returned by the parser
+            // if the element doesn't have a localId
+                // set the narrative's reference id
+                // if there is a parent narrative
+                    // add this narrative to the content of the parent
+            // else
+                // if there is a parent narrative
+                    // add the contents of this narrative to that narrative
+        if (o instanceof Element) {
+            Element element = (Element)o;
+            if (element.getLocalId() == null) {
+                element.setLocalId(Integer.toString(getNextLocalId()));
+                currentNarrative.setR(element.getLocalId());
+
+                if (!narratives.isEmpty()) {
+                    Narrative parentNarrative = narratives.peek();
+                    parentNarrative.getContent().add(
+                            new JAXBElement<>(
+                                    new QName("urn:hl7-org:cql-annotations:r1", "s"),
+                                    Narrative.class,
+                                    currentNarrative));
+                }
+
+                // If the current element is an expression def, set the narrative as the annotation
+                if (o instanceof ExpressionDef) {
+                    ExpressionDef expressionDef = (ExpressionDef)o;
+                    expressionDef.getAnnotation().add(af.createAnnotation().withS(currentNarrative));
+                }
+            }
+            else {
+                if (!narratives.isEmpty()) {
+                    Narrative parentNarrative = narratives.peek();
+                    parentNarrative.getContent().addAll(currentNarrative.getContent());
+                }
+            }
+        }
+
+        return currentNarrative;
+    }
+
     @Override
     public Object visit(@NotNull ParseTree tree) {
-        Object o = super.visit(tree);
+        PushNarrative(tree);
+        Object o = null;
+        try {
+            o = super.visit(tree);
+        }
+        finally {
+            PopNarrative(tree, o);
+        }
+
         if (o instanceof Trackable && tree instanceof ParserRuleContext && !(tree instanceof cqlParser.LogicContext)) {
             this.track((Trackable) o, (ParserRuleContext) tree);
         }
@@ -1689,21 +1783,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     }
 
     private void addExpression(ParseTree ctx, Expression expression) {
-        // Expression is where annotations are defined in ELM, so adding the annotation here
-        org.antlr.v4.runtime.misc.Interval interval = ctx.getSourceInterval();
-        Annotation annotation = af.createAnnotation(); //.withCql(tokenStream.getText(interval));
-
-        if (expression.getTrackbacks().size() > 0) {
-            TrackBack trackBack = expression.getTrackbacks().get(0);
-            annotation.setLocator(String.format("%d:%d-%d:%d",
-                    trackBack.getStartLine(),
-                    trackBack.getStartChar(),
-                    trackBack.getEndLine(),
-                    trackBack.getEndChar()));
-        }
-
-        //expression.getAnnotation().add(annotation);
-
         expressions.add(expression);
     }
 

@@ -1,215 +1,304 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:cqla="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1"
+xsi:schemaLocation="urn:hl7-org:elm:r1 ..\Src\cql-lm\schema\elm\library.xsd urn:hl7-org:cql-annotations:r1 ..\Src\cql-lm\schema\elm\cqlannotations.xsd">
    <identifier id="CMS153_CDS" version="2"/>
+   <schemaIdentifier id="ELM" version="1"/>
    <dataModels>
       <modelReference>
          <referencedModel value="http://org.hl7.fhir"/>
       </modelReference>
    </dataModels>
    <valueSets>
-      <def name="Female Administrative Sex">
+      <def localId="1" name="Female Administrative Sex">
          <valueSet id="2.16.840.1.113883.3.560.100.2" xsi:type="ValueSet"/>
       </def>
-      <def name="Other Female Reproductive Conditions">
+      <def localId="2" name="Other Female Reproductive Conditions">
          <valueSet id="2.16.840.1.113883.3.464.1003.111.12.1006" xsi:type="ValueSet"/>
       </def>
-      <def name="Genital Herpes">
+      <def localId="3" name="Genital Herpes">
          <valueSet id="2.16.840.1.113883.3.464.1003.110.12.1049" xsi:type="ValueSet"/>
       </def>
-      <def name="Genococcal Infections and Venereal Diseases">
+      <def localId="4" name="Genococcal Infections and Venereal Diseases">
          <valueSet id="2.16.840.1.113883.3.464.1003.112.12.1001" xsi:type="ValueSet"/>
       </def>
-      <def name="Inflammatory Diseases of Female Reproductive Organs">
+      <def localId="5" name="Inflammatory Diseases of Female Reproductive Organs">
          <valueSet id="2.16.840.1.113883.3.464.1003.112.12.1004" xsi:type="ValueSet"/>
       </def>
-      <def name="Chlamydia">
+      <def localId="6" name="Chlamydia">
          <valueSet id="2.16.840.1.113883.3.464.1003.112.12.1003" xsi:type="ValueSet"/>
       </def>
-      <def name="HIV">
+      <def localId="7" name="HIV">
          <valueSet id="2.16.840.1.113883.3.464.1003.120.12.1003" xsi:type="ValueSet"/>
       </def>
-      <def name="Syphilis">
+      <def localId="8" name="Syphilis">
          <valueSet id="2.16.840.1.113883.3.464.1003.112.12.1002" xsi:type="ValueSet"/>
       </def>
-      <def name="Complications of Pregnancy, Childbirth and the Puerperium">
+      <def localId="9" name="Complications of Pregnancy, Childbirth and the Puerperium">
          <valueSet id="2.16.840.1.113883.3.464.1003.111.12.1012" xsi:type="ValueSet"/>
       </def>
-      <def name="Pregnancy Test">
+      <def localId="10" name="Pregnancy Test">
          <valueSet id="2.16.840.1.113883.3.464.1003.111.12.1011" xsi:type="ValueSet"/>
       </def>
-      <def name="Pap Test">
+      <def localId="11" name="Pap Test">
          <valueSet id="2.16.840.1.113883.3.464.1003.108.12.1017" xsi:type="ValueSet"/>
       </def>
-      <def name="Lab Tests During Pregnancy">
+      <def localId="12" name="Lab Tests During Pregnancy">
          <valueSet id="2.16.840.1.113883.3.464.1003.111.12.1007" xsi:type="ValueSet"/>
       </def>
-      <def name="Lab Tests for Sexually Transmitted Infections">
+      <def localId="13" name="Lab Tests for Sexually Transmitted Infections">
          <valueSet id="2.16.840.1.113883.3.464.1003.110.12.1051" xsi:type="ValueSet"/>
       </def>
-      <def name="Chlamydia Screening">
+      <def localId="14" name="Chlamydia Screening">
          <valueSet id="2.16.840.1.113883.3.464.1003.110.12.1052" xsi:type="ValueSet"/>
       </def>
-      <def name="Reason for not performing Chlamydia Screening">
+      <def localId="15" name="Reason for not performing Chlamydia Screening">
          <valueSet id="TBD" xsi:type="ValueSet"/>
       </def>
    </valueSets>
    <statements>
-      <def name="InDemographic" context="PATIENT">
-         <expression xsi:type="And">
-            <operand xsi:type="And">
-               <operand xsi:type="GreaterOrEqual">
-                  <operand name="Age" xsi:type="FunctionRef"/>
-                  <operand valueType="xsd:int" value="16" xsi:type="Literal"/>
+      <def localId="29" name="InDemographic" context="PATIENT">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">let InDemographic =&#xd;
+	<a:s r="28">
+                  <a:s r="24">
+                     <a:s r="19">
+                        <a:s r="17">
+                           <a:s r="16">Age</a:s>()</a:s> >= <a:s r="18">16</a:s>
+                     </a:s> and <a:s r="23">
+                        <a:s r="21">
+                           <a:s r="20">Age</a:s>()</a:s> &lt; <a:s r="22">24</a:s>
+                     </a:s>
+                  </a:s> and <a:s r="27">
+                     <a:s r="25">gender</a:s> in <a:s r="26">&quot;Female Administrative Sex&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="28" xsi:type="And">
+            <operand localId="24" xsi:type="And">
+               <operand localId="19" xsi:type="GreaterOrEqual">
+                  <operand localId="17" name="Age" xsi:type="FunctionRef"/>
+                  <operand localId="18" valueType="xsd:int" value="16" xsi:type="Literal"/>
                </operand>
-               <operand xsi:type="Less">
-                  <operand name="Age" xsi:type="FunctionRef"/>
-                  <operand valueType="xsd:int" value="24" xsi:type="Literal"/>
-               </operand>
-            </operand>
-            <operand xsi:type="In">
-               <operand/>
-               <operand name="Female Administrative Sex" xsi:type="ValueSetRef"/>
-            </operand>
-         </expression>
-      </def>
-      <def name="SexuallyActive" context="PATIENT">
-         <expression xsi:type="Or">
-            <operand xsi:type="Or">
-               <operand xsi:type="Or">
-                  <operand xsi:type="Or">
-                     <operand xsi:type="Or">
-                        <operand xsi:type="Or">
-                           <operand xsi:type="Or">
-                              <operand xsi:type="Or">
-                                 <operand xsi:type="Or">
-                                    <operand xsi:type="Or">
-                                       <operand xsi:type="Or">
-                                          <operand xsi:type="IsNotEmpty">
-                                             <operand dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                                                <codes name="Other Female Reproductive Conditions" xsi:type="ValueSetRef"/>
-                                             </operand>
-                                          </operand>
-                                          <operand xsi:type="IsNotEmpty">
-                                             <operand dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                                                <codes name="Genital Herpes" xsi:type="ValueSetRef"/>
-                                             </operand>
-                                          </operand>
-                                       </operand>
-                                       <operand xsi:type="IsNotEmpty">
-                                          <operand dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                                             <codes name="Genococcal Infections and Venereal Diseases" xsi:type="ValueSetRef"/>
-                                          </operand>
-                                       </operand>
-                                    </operand>
-                                    <operand xsi:type="IsNotEmpty">
-                                       <operand dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                                          <codes name="Inflammatory Diseases of Female Reproductive Organs" xsi:type="ValueSetRef"/>
-                                       </operand>
-                                    </operand>
-                                 </operand>
-                                 <operand xsi:type="IsNotEmpty">
-                                    <operand dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                                       <codes name="Chlamydia" xsi:type="ValueSetRef"/>
-                                    </operand>
-                                 </operand>
-                              </operand>
-                              <operand xsi:type="IsNotEmpty">
-                                 <operand dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                                    <codes name="HIV" xsi:type="ValueSetRef"/>
-                                 </operand>
-                              </operand>
-                           </operand>
-                           <operand xsi:type="IsNotEmpty">
-                              <operand dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                                 <codes name="Syphilis" xsi:type="ValueSetRef"/>
-                              </operand>
-                           </operand>
-                        </operand>
-                        <operand xsi:type="IsNotEmpty">
-                           <operand dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                              <codes name="Complications of Pregnancy, Childbirth and the Puerperium" xsi:type="ValueSetRef"/>
-                           </operand>
-                        </operand>
-                     </operand>
-                     <operand xsi:type="IsNotEmpty">
-                        <operand dataType="xsd:LaboratoryTestOrderOccurrence" xsi:type="ClinicalRequest">
-                           <codes name="Pregnancy Test" xsi:type="ValueSetRef"/>
-                        </operand>
-                     </operand>
-                  </operand>
-                  <operand xsi:type="IsNotEmpty">
-                     <operand dataType="xsd:LaboratoryTestOrderOccurrence" xsi:type="ClinicalRequest">
-                        <codes name="Pap Test" xsi:type="ValueSetRef"/>
-                     </operand>
-                  </operand>
-               </operand>
-               <operand xsi:type="IsNotEmpty">
-                  <operand dataType="xsd:LaboratoryTestOrderOccurrence" xsi:type="ClinicalRequest">
-                     <codes name="Lab Tests During Pregnancy" xsi:type="ValueSetRef"/>
-                  </operand>
+               <operand localId="23" xsi:type="Less">
+                  <operand localId="21" name="Age" xsi:type="FunctionRef"/>
+                  <operand localId="22" valueType="xsd:int" value="24" xsi:type="Literal"/>
                </operand>
             </operand>
-            <operand xsi:type="IsNotEmpty">
-               <operand dataType="xsd:LaboratoryTestOrderOccurrence" xsi:type="ClinicalRequest">
-                  <codes name="Lab Tests for Sexually Transmitted Infections" xsi:type="ValueSetRef"/>
-               </operand>
+            <operand localId="27" xsi:type="In">
+               <operand localId="25" xsi:type="Property" path="Gender"/>
+               <operand localId="26" name="Female Administrative Sex" xsi:type="ValueSetRef"/>
             </operand>
          </expression>
       </def>
-      <def name="NoScreening" context="PATIENT">
-         <expression xsi:type="And">
-            <operand xsi:type="And">
-               <operand xsi:type="Not">
-                  <operand xsi:type="IsNotEmpty">
-                     <operand xsi:type="Query">
-                        <source alias="R">
-                           <expression dataType="quick:SimpleObservationOccurrence" codeProperty="code" dateProperty="observedAtTime" xsi:type="ClinicalRequest">
-                              <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
-                              <dateRange beginOpen="false" endOpen="false" xsi:type="Interval">
-                                 <begin xsi:type="Subtract">
-                                    <operand name="Today" xsi:type="FunctionRef"/>
-                                    <operand value="1" unit="years" xsi:type="Quantity"/>
+      <def localId="77" name="SexuallyActive" context="PATIENT">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="77">let SexuallyActive =&#xd;
+	<a:s r="76">
+                  <a:s r="72">
+                     <a:s r="68">
+                        <a:s r="64">
+                           <a:s r="60">
+                              <a:s r="56">
+                                 <a:s r="52">
+                                    <a:s r="48">
+                                       <a:s r="44">
+                                          <a:s r="40">
+                                             <a:s r="36">
+                                                <a:s r="32">exists (<a:s r="31">[Condition: <a:s r="30">&quot;Other Female Reproductive Conditions&quot;</a:s>]</a:s>)</a:s>&#xd;
+	or <a:s r="35">exists (<a:s r="34">[Condition: <a:s r="33">&quot;Genital Herpes&quot;</a:s>]</a:s>)</a:s>
+                                             </a:s>&#xd;
+	or <a:s r="39">exists (<a:s r="38">[Condition: <a:s r="37">&quot;Genococcal Infections and Venereal Diseases&quot;</a:s>]</a:s>)</a:s>
+                                          </a:s>&#xd;
+	or <a:s r="43">exists (<a:s r="42">[Condition: <a:s r="41">&quot;Inflammatory Diseases of Female Reproductive Organs&quot;</a:s>]</a:s>)</a:s>
+                                       </a:s>&#xd;
+	or <a:s r="47">exists (<a:s r="46">[Condition: <a:s r="45">&quot;Chlamydia&quot;</a:s>]</a:s>)</a:s>
+                                    </a:s>&#xd;
+	or <a:s r="51">exists (<a:s r="50">[Condition: <a:s r="49">&quot;HIV&quot;</a:s>]</a:s>)</a:s>
+                                 </a:s>&#xd;
+	or <a:s r="55">exists (<a:s r="54">[Condition: <a:s r="53">&quot;Syphilis&quot;</a:s>]</a:s>)</a:s>
+                              </a:s>&#xd;
+	or <a:s r="59">exists (<a:s r="58">[Condition: <a:s r="57">&quot;Complications of Pregnancy, Childbirth and the Puerperium&quot;</a:s>]</a:s>)</a:s>
+                           </a:s>&#xd;
+	or <a:s r="63">exists (<a:s r="62">[LaboratoryTest, Order: <a:s r="61">&quot;Pregnancy Test&quot;</a:s>]</a:s>)</a:s>
+                        </a:s>&#xd;
+	or <a:s r="67">exists (<a:s r="66">[LaboratoryTest, Order: <a:s r="65">&quot;Pap Test&quot;</a:s>]</a:s>)</a:s>
+                     </a:s>&#xd;
+	or <a:s r="71">exists (<a:s r="70">[LaboratoryTest, Order: <a:s r="69">&quot;Lab Tests During Pregnancy&quot;</a:s>]</a:s>)</a:s>
+                  </a:s>&#xd;
+	or <a:s r="75">exists (<a:s r="74">[LaboratoryTest, Order: <a:s r="73">&quot;Lab Tests for Sexually Transmitted Infections&quot;</a:s>]</a:s>)</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="76" xsi:type="Or">
+            <operand localId="72" xsi:type="Or">
+               <operand localId="68" xsi:type="Or">
+                  <operand localId="64" xsi:type="Or">
+                     <operand localId="60" xsi:type="Or">
+                        <operand localId="56" xsi:type="Or">
+                           <operand localId="52" xsi:type="Or">
+                              <operand localId="48" xsi:type="Or">
+                                 <operand localId="44" xsi:type="Or">
+                                    <operand localId="40" xsi:type="Or">
+                                       <operand localId="36" xsi:type="Or">
+                                          <operand localId="32" xsi:type="IsNotEmpty">
+                                             <operand localId="31" dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                                                <codes localId="30" name="Other Female Reproductive Conditions" xsi:type="ValueSetRef"/>
+                                             </operand>
+                                          </operand>
+                                          <operand localId="35" xsi:type="IsNotEmpty">
+                                             <operand localId="34" dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                                                <codes localId="33" name="Genital Herpes" xsi:type="ValueSetRef"/>
+                                             </operand>
+                                          </operand>
+                                       </operand>
+                                       <operand localId="39" xsi:type="IsNotEmpty">
+                                          <operand localId="38" dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                                             <codes localId="37" name="Genococcal Infections and Venereal Diseases" xsi:type="ValueSetRef"/>
+                                          </operand>
+                                       </operand>
+                                    </operand>
+                                    <operand localId="43" xsi:type="IsNotEmpty">
+                                       <operand localId="42" dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                                          <codes localId="41" name="Inflammatory Diseases of Female Reproductive Organs" xsi:type="ValueSetRef"/>
+                                       </operand>
+                                    </operand>
+                                 </operand>
+                                 <operand localId="47" xsi:type="IsNotEmpty">
+                                    <operand localId="46" dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                                       <codes localId="45" name="Chlamydia" xsi:type="ValueSetRef"/>
+                                    </operand>
+                                 </operand>
+                              </operand>
+                              <operand localId="51" xsi:type="IsNotEmpty">
+                                 <operand localId="50" dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                                    <codes localId="49" name="HIV" xsi:type="ValueSetRef"/>
+                                 </operand>
+                              </operand>
+                           </operand>
+                           <operand localId="55" xsi:type="IsNotEmpty">
+                              <operand localId="54" dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                                 <codes localId="53" name="Syphilis" xsi:type="ValueSetRef"/>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="59" xsi:type="IsNotEmpty">
+                           <operand localId="58" dataType="quick:ConditionOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                              <codes localId="57" name="Complications of Pregnancy, Childbirth and the Puerperium" xsi:type="ValueSetRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="63" xsi:type="IsNotEmpty">
+                        <operand localId="62" dataType="xsd:LaboratoryTestOrderOccurrence" xsi:type="ClinicalRequest">
+                           <codes localId="61" name="Pregnancy Test" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="67" xsi:type="IsNotEmpty">
+                     <operand localId="66" dataType="xsd:LaboratoryTestOrderOccurrence" xsi:type="ClinicalRequest">
+                        <codes localId="65" name="Pap Test" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="71" xsi:type="IsNotEmpty">
+                  <operand localId="70" dataType="xsd:LaboratoryTestOrderOccurrence" xsi:type="ClinicalRequest">
+                     <codes localId="69" name="Lab Tests During Pregnancy" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="75" xsi:type="IsNotEmpty">
+               <operand localId="74" dataType="xsd:LaboratoryTestOrderOccurrence" xsi:type="ClinicalRequest">
+                  <codes localId="73" name="Lab Tests for Sexually Transmitted Infections" xsi:type="ValueSetRef"/>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="108" name="NoScreening" context="PATIENT">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="108">let NoScreening =&#xd;
+	<a:s r="107">
+                  <a:s r="102">
+                     <a:s r="93">not <a:s r="92">exists (<a:s r="91">
+                              <a:s r="87">
+                                 <a:s r="86">[SimpleObservation: <a:s r="78">&quot;Chlamydia Screening&quot;</a:s>, during <a:s r="85">interval[<a:s r="82">
+                                          <a:s r="80">
+                                             <a:s r="79">Today</a:s>()</a:s> - <a:s r="81">1 years</a:s>
+                                       </a:s>, <a:s r="84">
+                                          <a:s r="83">Today</a:s>()</a:s>]</a:s>]</a:s> R</a:s> where <a:s r="90">
+                                 <a:s r="89">
+                                    <a:s r="88">R</a:s>.result</a:s> is not null</a:s>
+                           </a:s>)</a:s>
+                     </a:s>&#xd;
+	and <a:s r="101">not <a:s r="100">exists (<a:s r="99">[Procedure, Plan: <a:s r="94">&quot;Chlamydia Screening&quot;</a:s>, during <a:s r="98">interval[<a:s r="96">
+                                    <a:s r="95">Today</a:s>()</a:s>, <a:s r="97">null</a:s>]</a:s>]</a:s>)</a:s>
+                     </a:s>
+                  </a:s>&#xd;
+	and <a:s r="106">not <a:s r="105">exists (<a:s r="104">[SimpleObservation: <a:s r="103">&quot;Reason for not performing Chlamydia Screening&quot;</a:s>]</a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="107" xsi:type="And">
+            <operand localId="102" xsi:type="And">
+               <operand localId="93" xsi:type="Not">
+                  <operand localId="92" xsi:type="IsNotEmpty">
+                     <operand localId="91" xsi:type="Query">
+                        <source localId="87" alias="R">
+                           <expression localId="86" dataType="quick:SimpleObservationOccurrence" codeProperty="code" dateProperty="observedAtTime" xsi:type="ClinicalRequest">
+                              <codes localId="78" name="Chlamydia Screening" xsi:type="ValueSetRef"/>
+                              <dateRange localId="85" beginOpen="false" endOpen="false" xsi:type="Interval">
+                                 <begin localId="82" xsi:type="Subtract">
+                                    <operand localId="80" name="Today" xsi:type="FunctionRef"/>
+                                    <operand localId="81" value="1" unit="years" xsi:type="Quantity"/>
                                  </begin>
-                                 <end name="Today" xsi:type="FunctionRef"/>
+                                 <end localId="84" name="Today" xsi:type="FunctionRef"/>
                               </dateRange>
                            </expression>
                         </source>
-                        <where xsi:type="Not">
+                        <where localId="90" xsi:type="Not">
                            <operand xsi:type="IsNull">
-                              <operand xsi:type="Null"/>
+                              <operand localId="89" path="result" scope="R" xsi:type="Property"/>
                            </operand>
                         </where>
                      </operand>
                   </operand>
                </operand>
-               <operand xsi:type="Not">
-                  <operand xsi:type="IsNotEmpty">
-                     <operand dataType="xsd:ProcedurePlanOccurrence" xsi:type="ClinicalRequest">
-                        <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
-                        <dateRange beginOpen="false" endOpen="false" xsi:type="Interval">
-                           <begin name="Today" xsi:type="FunctionRef"/>
-                           <end xsi:type="Null"/>
+               <operand localId="101" xsi:type="Not">
+                  <operand localId="100" xsi:type="IsNotEmpty">
+                     <operand localId="99" dataType="xsd:ProcedurePlanOccurrence" xsi:type="ClinicalRequest">
+                        <codes localId="94" name="Chlamydia Screening" xsi:type="ValueSetRef"/>
+                        <dateRange localId="98" beginOpen="false" endOpen="false" xsi:type="Interval">
+                           <begin localId="96" name="Today" xsi:type="FunctionRef"/>
+                           <end localId="97" xsi:type="Null"/>
                         </dateRange>
                      </operand>
                   </operand>
                </operand>
             </operand>
-            <operand xsi:type="Not">
-               <operand xsi:type="IsNotEmpty">
-                  <operand dataType="quick:SimpleObservationOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
-                     <codes name="Reason for not performing Chlamydia Screening" xsi:type="ValueSetRef"/>
+            <operand localId="106" xsi:type="Not">
+               <operand localId="105" xsi:type="IsNotEmpty">
+                  <operand localId="104" dataType="quick:SimpleObservationOccurrence" codeProperty="code" xsi:type="ClinicalRequest">
+                     <codes localId="103" name="Reason for not performing Chlamydia Screening" xsi:type="ValueSetRef"/>
                   </operand>
                </operand>
             </operand>
          </expression>
       </def>
-      <def name="NeedScreening" context="PATIENT">
-         <expression xsi:type="And">
-            <operand xsi:type="And">
-               <operand name="InDemographic" xsi:type="ExpressionRef"/>
-               <operand name="SexuallyActive" xsi:type="ExpressionRef"/>
+      <def localId="114" name="NeedScreening" context="PATIENT">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="114">let NeedScreening = <a:s r="113">
+                  <a:s r="111">
+                     <a:s r="109">InDemographic</a:s> and <a:s r="110">SexuallyActive</a:s>
+                  </a:s> and <a:s r="112">NoScreening</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="113" xsi:type="And">
+            <operand localId="111" xsi:type="And">
+               <operand localId="109" name="InDemographic" xsi:type="ExpressionRef"/>
+               <operand localId="110" name="SexuallyActive" xsi:type="ExpressionRef"/>
             </operand>
-            <operand name="NoScreening" xsi:type="ExpressionRef"/>
+            <operand localId="112" name="NoScreening" xsi:type="ExpressionRef"/>
          </expression>
       </def>
    </statements>

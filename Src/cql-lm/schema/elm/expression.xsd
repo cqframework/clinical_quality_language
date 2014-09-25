@@ -24,6 +24,15 @@
 		<xs:annotation>
 			<xs:documentation>The Element type defines the abstract base type for all library elements in ELM.</xs:documentation>
 		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="annotation" type="xs:anyType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The annotation element provides a mechanism for decorating expressions with application-specific information such as translation hints, visual designer information, or debug symbols.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="localId" type="xs:string" use="optional"/>
 	</xs:complexType>
 	<xs:complexType name="TypeSpecifier" abstract="true">
 		<xs:complexContent>
@@ -79,16 +88,7 @@
 			<xs:documentation>The Expression type defines the abstract base type for all expressions used in the ELM expression language.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Element">
-				<xs:sequence>
-					<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="annotation" type="xs:anyType" minOccurs="0" maxOccurs="unbounded">
-						<xs:annotation>
-							<xs:documentation>The annotation element provides a mechanism for decorating expressions with application-specific information such as translation hints, visual designer information, or debug symbols.</xs:documentation>
-						</xs:annotation>
-					</xs:element>
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="Element"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="UnaryExpression" abstract="true">

@@ -20,7 +20,7 @@ valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD') // No
 
 context PATIENT
 
-let InDemographic = 
+let InDemographic =
 	Age() >= 16 and Age() < 24 and gender in "Female Administrative Sex"
 
 let SexuallyActive =

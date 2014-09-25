@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{DE
 	ProjectSection(SolutionItems) = preProject
 		ChlamydiaScreening_CDS.cql = ChlamydiaScreening_CDS.cql
 		ChlamydiaScreening_CDS_UsingCommon.cql = ChlamydiaScreening_CDS_UsingCommon.cql
+		ChlamydiaScreening_Common.cql = ChlamydiaScreening_Common.cql
 		ChlamydiaScreening_Common_DataAccessSeparate.cql = ChlamydiaScreening_Common_DataAccessSeparate.cql
 		ChlamydiaScreening_CQM.cql = ChlamydiaScreening_CQM.cql
 		ChlamydiaScreening_CQM_UsingCommon.cql = ChlamydiaScreening_CQM_UsingCommon.cql
@@ -18,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{DE
 		CMS179v2_CQM.cql = CMS179v2_CQM.cql
 		CMS55v1_NQF0495.cql = CMS55v1_NQF0495.cql
 		ExampleSyntax.cql = ExampleSyntax.cql
+		QUICK-FHIR-Examples.cql = QUICK-FHIR-Examples.cql
 		ScratchPad.cql = ScratchPad.cql
 	EndProjectSection
 EndProject

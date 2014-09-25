@@ -48,7 +48,7 @@ The result of a request is defined to return the same data for subsequent invoca
 						<xs:documentation>The scope attribute optionally specifies a name for the scope for this operator that can be used within expressions to reference the current element.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="cardinality" type="RequestCardinality" use="required">
+				<xs:attribute name="cardinality" type="RequestCardinality" use="optional" default="Multiple">
 					<xs:annotation>
 						<xs:documentation>The cardinality attribute defines the expected result cardinality for the expression. If cardinality is Single, the result will be a singleton value of the type specified by the dataType attribute. If cardinality is Multiple, the result will be a list of values of the type specified by the dataType attribute. If a request results in a cardinality higher than expected, a run-time exception should be thrown.</xs:documentation>
 					</xs:annotation>
