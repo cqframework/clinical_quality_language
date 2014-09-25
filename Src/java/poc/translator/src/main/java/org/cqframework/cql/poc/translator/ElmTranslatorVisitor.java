@@ -37,6 +37,7 @@ import java.util.Stack;
 public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
+    private boolean annotate = false;
 
     private TokenStream tokenStream;
 
@@ -55,6 +56,8 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
 
+    public void enableAnnotations() { annotate = true; }
+    public void disableAnnotations() { annotate = false; }
     public TokenStream getTokenStream() { return tokenStream; }
     public void setTokenStream(TokenStream value) { tokenStream = value; }
 
@@ -159,13 +162,17 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visit(@NotNull ParseTree tree) {
-        PushNarrative(tree);
+        if (annotate) {
+            PushNarrative(tree);
+        }
         Object o = null;
         try {
             o = super.visit(tree);
         }
         finally {
-            PopNarrative(tree, o);
+            if (annotate) {
+                PopNarrative(tree, o);
+            }
         }
 
         if (o instanceof Trackable && tree instanceof ParserRuleContext && !(tree instanceof cqlParser.LogicContext)) {

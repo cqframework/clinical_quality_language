@@ -2,6 +2,7 @@ package org.cqframework.cql.poc.translator;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -13,41 +14,38 @@ import java.io.InputStream;
 
 public class TestUtils {
 
-    public static ParseTree parseFile(String fileName, boolean inClassPath)throws IOException {
-        InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
-        return parseANTLRInputStream(new ANTLRInputStream(is));
-    }
-
     public static ElmTranslatorVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
-        ParseTree tree = parseFile(fileName, inClassPath);
-        ElmTranslatorVisitor visitor = createElmTranslatorVisitor(tree);
+        InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
+        TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(is));
+        ParseTree tree = parseTokenStream(tokens);
+        ElmTranslatorVisitor visitor = createElmTranslatorVisitor(tokens, tree);
         visitor.visit(tree);
         return visitor;
     }
 
-
-    public static ParseTree parseData(String cqlData){
-        return parseANTLRInputStream(new ANTLRInputStream(cqlData));
-    }
-
     public static Object visitData(String cqlData) {
-        ParseTree tree = parseData(cqlData);
-        return createElmTranslatorVisitor(tree).visit(tree);
+        TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(cqlData));
+        ParseTree tree = parseTokenStream(tokens);
+        return createElmTranslatorVisitor(tokens, tree).visit(tree);
     }
 
-    private static ElmTranslatorVisitor createElmTranslatorVisitor(ParseTree tree) {
+    private static ElmTranslatorVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);
         ElmTranslatorVisitor visitor = new ElmTranslatorVisitor();
+        visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         return visitor;
     }
 
-    private static ParseTree parseANTLRInputStream(ANTLRInputStream is) {
-        cqlLexer lexer = new cqlLexer(is);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
+    private static ParseTree parseTokenStream(TokenStream tokens) {
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
         return parser.logic();
+    }
+
+    private static TokenStream parseANTLRInputStream(ANTLRInputStream is) {
+        cqlLexer lexer = new cqlLexer(is);
+        return new CommonTokenStream(lexer);
     }
 }
