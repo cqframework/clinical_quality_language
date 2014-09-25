@@ -1879,6 +1879,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         ElmTranslatorVisitor visitor = new ElmTranslatorVisitor();
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         visitor.setTokenStream(tokens);
+        visitor.enableAnnotations();
         visitor.visit(tree);
 
         /* ToString output
