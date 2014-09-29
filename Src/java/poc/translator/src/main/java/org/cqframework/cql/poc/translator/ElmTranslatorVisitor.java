@@ -20,6 +20,7 @@ import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
+import org.hl7.elm_modelinfo.r1.ClassInfo;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
@@ -38,6 +39,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean annotate = false;
+    private boolean dateRangeOptimization = false;
 
     private TokenStream tokenStream;
 
@@ -58,6 +60,8 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     public void enableAnnotations() { annotate = true; }
     public void disableAnnotations() { annotate = false; }
+    public void enableDateRangeOptimization() { dateRangeOptimization = true; }
+    public void disableDateRangeOptimization() { dateRangeOptimization = false; }
     public TokenStream getTokenStream() { return tokenStream; }
     public void setTokenStream(TokenStream value) { tokenStream = value; }
 
@@ -1392,17 +1396,6 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
             request.setCodes(parseExpression(ctx.valueset()));
         }
 
-        if (ctx.expression() != null) {
-            if (ctx.duringPathIdentifier() != null) {
-                request.setDateProperty(parseString(ctx.duringPathIdentifier()));
-            }
-            else if (detail != null && detail.getClassInfo().getPrimaryDateAttribute() != null) {
-                request.setDateProperty(detail.getClassInfo().getPrimaryDateAttribute());
-            }
-
-            request.setDateRange(parseExpression(ctx.expression()));
-        }
-
         clinicalRequests.add(request);
 
         return request;
@@ -1422,6 +1415,9 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
                 }
             }
             Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
+            if (dateRangeOptimization && where != null) {
+                where = optimizeDateRangeInQuery(where, aqs);
+            }
             Expression ret = ctx.returnClause() != null ? (Expression) visit(ctx.returnClause()) : null;
             SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
 
@@ -1435,6 +1431,207 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         finally {
             queries.pop();
         }
+    }
+
+    /**
+     * Some systems may wish to optimize performance by restricting retrieves with available date ranges.  Specifying
+     * date ranges in a retrieve was removed from the CQL grammar, but it is still possible to extract date ranges from
+     * the where clause and put them in the ClinicalRequest in ELM.  The <code>optimizeDateRangeInQuery</code> method
+     * attempts to do this automatically.  If optimization is possible, it will remove the corresponding "during" from
+     * the where clause and insert the date range into the ClinicalRequest.
+     *
+     * @param aqs the AliasedQuerySource containing the ClinicalRequest to possibly refactor a date range into.
+     * @param where the Where clause to search for potential date range optimizations
+     * @return the where clause with optimized "durings" removed, or <code>null</code> if there is no longer a Where
+     * clause after optimization.
+     */
+    private Expression optimizeDateRangeInQuery(Expression where, AliasedQuerySource aqs) {
+        if (aqs.getExpression() instanceof ClinicalRequest) {
+            ClinicalRequest request = (ClinicalRequest) aqs.getExpression();
+            String alias = aqs.getAlias();
+            if (where instanceof IncludedIn && attemptDateRangeOptimization((IncludedIn) where, request, alias)) {
+                where = null;
+            } else if (where instanceof And && attemptDateRangeOptimization((And) where, request, alias)) {
+                // Now optimize out the trues from the Ands
+                where = consolidateAnd((And) where);
+            }
+        }
+        return where;
+    }
+
+    /**
+     * Test an <code>IncludedIn</code> expression and determine if it is suitable to be refactored into the
+     * <code>ClinicalRequest</code> as a date range restriction.  If so, adjust the <code>ClinicalRequest</code>
+     * accordingly and return <code>true</code>.
+     * @param during the <code>IncludedIn</code> expression to potentially refactor into the <code>ClinicalRequest</code>
+     * @param request the <code>ClinicalRequest</code> to add qualifying date ranges to (if applicable)
+     * @param alias the alias of the <code>ClinicalRequest</code> in the query.
+     * @return <code>true</code> if the date range was set in the <code>ClinicalRequest</code>; <code>false</code>
+     * otherwise.
+     */
+    private boolean attemptDateRangeOptimization(IncludedIn during, ClinicalRequest request, String alias) {
+        if (request.getDateProperty() != null || request.getDateRange() != null) {
+            return false;
+        }
+
+        Expression left = during.getOperand().get(0);
+        Expression right = during.getOperand().get(1);
+
+        String propertyName = extractLHSPropertyNameEligibleForDateRangeOptimization(left, request, alias);
+        if (propertyName != null && isRHSEligibleForDateRangeOptimization(right)) {
+            request.setDateProperty(propertyName);
+            request.setDateRange(right);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Test an <code>And</code> expression and determine if it contains any operands (first-level or nested deeper)
+     * than are <code>IncludedIn</code> expressions that can be refactored into a <code>ClinicalRequest</code>.  If so,
+     * adjust the <code>ClinicalRequest</code> accordingly and reset the corresponding operand to a literal
+     * <code>true</code>.  This <code>and</code> branch containing a <code>true</code> can be further consolidated
+     * later.
+     * @param and the <code>And</code> expression containing operands to potentially refactor into the
+     *            <code>ClinicalRequest</code>
+     * @param request the <code>ClinicalRequest</code> to add qualifying date ranges to (if applicable)
+     * @param alias the alias of the <code>ClinicalRequest</code> in the query.
+     * @return <code>true</code> if the date range was set in the <code>ClinicalRequest</code> and the <code>And</code>
+     * operands (or sub-operands) were modified; <code>false</code> otherwise.
+     */
+    private boolean attemptDateRangeOptimization(And and, ClinicalRequest request, String alias) {
+        if (request.getDateProperty() != null || request.getDateRange() != null) {
+            return false;
+        }
+
+        for (int i = 0; i < and.getOperand().size(); i++) {
+            Expression operand = and.getOperand().get(i);
+            if (operand instanceof IncludedIn && attemptDateRangeOptimization((IncludedIn) operand, request, alias)) {
+                // Replace optimized part in And with true -- to be optimized out later
+                and.getOperand().set(i, createLiteral(true));
+                return true;
+            } else if (operand instanceof And && attemptDateRangeOptimization((And) operand, request, alias)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * If any branches in the <code>And</code> tree contain a <code>true</code>, refactor it out.
+     * @param and the <code>And</code> tree to attempt to consolidate
+     * @return the potentially consolidated <code>And</code>
+     */
+    private Expression consolidateAnd(And and) {
+        Expression result = and;
+        Expression lhs = and.getOperand().get(0);
+        Expression rhs = and.getOperand().get(1);
+        if (isBooleanLiteral(lhs, true)) {
+            result = rhs;
+        } else if (isBooleanLiteral(rhs, true)) {
+            result = lhs;
+        } else if (lhs instanceof And) {
+            and.getOperand().set(0, consolidateAnd((And) lhs));
+        } else if (rhs instanceof And) {
+            and.getOperand().set(1, consolidateAnd((And) rhs));
+        }
+
+        return result;
+    }
+
+    /**
+     * Extract the property name from the left-hand side of an <code>IncludedIn</code>.  If no property is explicitly
+     * stated, try to infer it from the model info.
+     * @param lhs the left-hand-side of an <code>IncludedIn</code> expression
+     * @param request the <code>ClinicalRequest</code> from the query containing the <code>IncludedIn</code>
+     * @param alias the alias associated with the <code>ClinicalRequest</code> in the query
+     * @return the property name if available and eligible for potential refactoring to the ClinicalRequest
+     */
+    private String extractLHSPropertyNameEligibleForDateRangeOptimization(Expression lhs, ClinicalRequest request, String alias) {
+        String propertyName = null;
+        if (lhs instanceof AliasRef) {
+            QName datatype = request.getDataType();
+            if (getModelHelper().getModelInfo().getUrl().equals(datatype.getNamespaceURI())) {
+                for (ClassInfo info : getModelHelper().getModelInfo().getClassInfo()) {
+                    if (datatype.getLocalPart().equals(info.getName())) {
+                        lhs = of.createProperty().withScope(((AliasRef) lhs).getName()).withPath(info.getPrimaryDateAttribute());
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (lhs instanceof Property) {
+            Property property = (Property) lhs;
+            if (property.getScope() != null && property.getScope().equals(alias)) {
+                propertyName = property.getPath();
+            }
+        }
+
+        return propertyName;
+    }
+
+    /**
+     * Determine if the right-hand side of an <code>IncludedIn</code> expression can be refactored into the date range
+     * of a <code>ClinicalRequest</code>.  Currently, refactoring is only supported when the RHS is a literal
+     * DateTime interval, a literal DateTime, a parameter representing a DateTime interval or a DateTime, or an
+     * expression reference representing a DateTime interval or a DateTime.
+     * @param rhs the right-hand side of the <code>IncludedIn</code> to test for potential optimization
+     * @return <code>true</code> if the RHS supports refactoring to a <code>ClinicalRequest</code>, <code>false</code>
+     * otherwise.
+     */
+    private boolean isRHSEligibleForDateRangeOptimization(Expression rhs) {
+        Element targetElement = rhs;
+        if (rhs instanceof ParameterRef) {
+            String paramName = ((ParameterRef) rhs).getName();
+            for (ParameterDef def : getLibrary().getParameters().getDef()) {
+                if (paramName.equals(def.getName())) {
+                    targetElement = def.getParameterTypeSpecifier();
+                    if (targetElement == null) {
+                        targetElement = def.getDefault();
+                    }
+                    break;
+                }
+            }
+        } else if (rhs instanceof ExpressionRef && ! (rhs instanceof FunctionRef)) {
+            // TODO: Support forward declaration, if necessary
+            String expName = ((ExpressionRef) rhs).getName();
+            for (ExpressionDef def : getLibrary().getStatements().getDef()) {
+                if (expName.equals(def.getName())) {
+                    targetElement = def.getExpression();
+                }
+            }
+        }
+
+        boolean isEligible = false;
+        if (targetElement instanceof Interval) {
+            Interval ivl = (Interval) targetElement;
+            isEligible = isDateFunctionRef(ivl.getBegin()) && isDateFunctionRef(ivl.getEnd());
+        } else if (targetElement instanceof IntervalTypeSpecifier) {
+            IntervalTypeSpecifier spec = (IntervalTypeSpecifier) targetElement;
+            isEligible = isDateTimeTypeSpecifier(spec.getPointType());
+        } else if (targetElement instanceof FunctionRef) {
+            isEligible = isDateFunctionRef(targetElement);
+        } else if (targetElement instanceof NamedTypeSpecifier) {
+            isEligible = isDateTimeTypeSpecifier(targetElement);
+        }
+        return isEligible;
+    }
+
+    private boolean isDateFunctionRef(Element e) {
+        return e != null && e instanceof FunctionRef && "Date".equals(((FunctionRef) e).getName());
+    }
+
+    private boolean isDateTimeTypeSpecifier(Element e) {
+        boolean result = false;
+        if (e instanceof NamedTypeSpecifier) {
+            QName type = ((NamedTypeSpecifier) e).getName();
+            result = "http://www.w3.org/2001/XMLSchema".equals(type.getNamespaceURI()) && "datetime".equals(type.getLocalPart());
+        }
+
+        return result;
     }
 
     @Override
@@ -1705,6 +1902,18 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
 
     private Literal createLiteral(Integer integer) {
         return createLiteral(String.valueOf(integer), "Integer");
+    }
+
+    private boolean isBooleanLiteral(Expression expression, Boolean bool) {
+        boolean ret = false;
+        if (expression instanceof Literal) {
+            Literal lit = (Literal) expression;
+            ret = lit.getValueType().equals(resolveNamedType("Boolean"));
+            if (ret && bool != null) {
+                ret = bool.equals(Boolean.valueOf(lit.getValue()));
+            }
+        }
+        return ret;
     }
 
     private String resolveAlias(String identifier) {

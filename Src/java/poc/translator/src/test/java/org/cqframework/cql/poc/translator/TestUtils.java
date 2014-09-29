@@ -29,6 +29,19 @@ public class TestUtils {
         return createElmTranslatorVisitor(tokens, tree).visit(tree);
     }
 
+    public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
+        TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(cqlData));
+        ParseTree tree = parseTokenStream(tokens);
+        ElmTranslatorVisitor visitor = createElmTranslatorVisitor(tokens, tree);
+        if (enableAnnotations) {
+            visitor.enableAnnotations();
+        }
+        if (enableDateRangeOptimization) {
+            visitor.enableDateRangeOptimization();
+        }
+        return visitor.visit(tree);
+    }
+
     private static ElmTranslatorVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);
