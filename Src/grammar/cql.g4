@@ -149,7 +149,7 @@ queryInclusionClause
     ;
 
 retrieve
-    : '[' (occurrence 'of')? topic (',' modality)? (':' (valuesetPathIdentifier 'in')? valueset)? (',' duringPathIdentifier? 'during' expression)? ']'
+    : '[' (occurrence 'of')? topic (',' modality)? (':' (valuesetPathIdentifier 'in')? valueset)? ']'
     ;
 
 occurrence

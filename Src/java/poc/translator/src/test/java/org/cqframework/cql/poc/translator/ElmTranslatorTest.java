@@ -19,6 +19,8 @@ import org.hl7.elm.r1.ExpressionRef;
 import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.Greater;
 import org.hl7.elm.r1.GreaterOrEqual;
+import org.hl7.elm.r1.IncludedIn;
+import org.hl7.elm.r1.Interval;
 import org.hl7.elm.r1.IsNull;
 import org.hl7.elm.r1.Less;
 import org.hl7.elm.r1.LessOrEqual;
@@ -55,6 +57,8 @@ import static org.cqframework.cql.poc.translator.matchers.LiteralFor.literalFor;
 import static org.cqframework.cql.poc.translator.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 public class ElmTranslatorTest {
     @Test
@@ -568,17 +572,499 @@ public class ElmTranslatorTest {
     }
 
     @Test
-    public void testRetrieveTopicAndModalityAndValueSetAndDuring() {
+    public void testDateRangeOptimizationForDateIntervalLiteral() {
         String cql =
-                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
-                "define st = [Encounter, Performance: \"Ambulatory/ED Visit\", during MeasurementPeriod]";
-        ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Ambulatory/ED Visit"));
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        Interval ivl = (Interval) request.getDateRange();
+        assertFalse(ivl.isBeginOpen());
+        assertTrue(ivl.isEndOpen());
+        FunctionRef ivlBegin = (FunctionRef) ivl.getBegin();
+        assertThat(ivlBegin.getName(), is("Date"));
+        assertThat(ivlBegin.getOperand(), hasSize(3));
+        assertThat(ivlBegin.getOperand().get(0), literalFor(2013));
+        assertThat(ivlBegin.getOperand().get(1), literalFor(1));
+        assertThat(ivlBegin.getOperand().get(2), literalFor(1));
+        FunctionRef ivlEnd = (FunctionRef) ivl.getEnd();
+        assertThat(ivlEnd.getName(), is("Date"));
+        assertThat(ivlEnd.getOperand(), hasSize(3));
+        assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
+        assertThat(ivlEnd.getOperand().get(1), literalFor(1));
+        assertThat(ivlEnd.getOperand().get(2), literalFor(1));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForDateIntervalLiteralAndImpliedDateRangeProperty() {
+        String cql =
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                        "    where E during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("performanceTime"));
+        Interval ivl = (Interval) request.getDateRange();
+        assertFalse(ivl.isBeginOpen());
+        assertTrue(ivl.isEndOpen());
+        FunctionRef ivlBegin = (FunctionRef) ivl.getBegin();
+        assertThat(ivlBegin.getName(), is("Date"));
+        assertThat(ivlBegin.getOperand(), hasSize(3));
+        assertThat(ivlBegin.getOperand().get(0), literalFor(2013));
+        assertThat(ivlBegin.getOperand().get(1), literalFor(1));
+        assertThat(ivlBegin.getOperand().get(2), literalFor(1));
+        FunctionRef ivlEnd = (FunctionRef) ivl.getEnd();
+        assertThat(ivlEnd.getName(), is("Date"));
+        assertThat(ivlEnd.getOperand(), hasSize(3));
+        assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
+        assertThat(ivlEnd.getOperand().get(1), literalFor(1));
+        assertThat(ivlEnd.getOperand().get(2), literalFor(1));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForDefaultedDateIntervalParameter() {
+        String cql =
+            "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+            "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+            "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+            "    where E.effectiveTime during MeasurementPeriod";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during MeasurementPeriod" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ParameterRef mp = (ParameterRef) request.getDateRange();
+        assertThat(mp.getName(), is("MeasurementPeriod"));
+        assertThat(mp.getLibraryName(), is(nullValue()));
+        assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForTypedDateIntervalParameter() {
+        String cql =
+                "parameter MeasurementPeriod : interval<DateTime>\n" +
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during MeasurementPeriod";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during MeasurementPeriod" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ParameterRef mp = (ParameterRef) request.getDateRange();
+        assertThat(mp.getName(), is("MeasurementPeriod"));
+        assertThat(mp.getLibraryName(), is(nullValue()));
+        assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForDateIntervalExpressionReference() {
+        String cql =
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define twentyThirteen = interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during twentyThirteen";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during twentyThirteen" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ExpressionRef ivl = (ExpressionRef) request.getDateRange();
+        assertThat(ivl.getName(), is("twentyThirteen"));
+        assertThat(ivl.getLibraryName(), is(nullValue()));
+        assertThat(ivl.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForDateTimeLiteral() {
+        String cql =
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                        "    where E.effectiveTime during Date(2013, 6)";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during Date(2013, 6)" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        FunctionRef dtFun = (FunctionRef) request.getDateRange();
+        assertThat(dtFun.getName(), is("Date"));
+        assertThat(dtFun.getOperand(), hasSize(2));
+        assertThat(dtFun.getOperand().get(0), literalFor(2013));
+        assertThat(dtFun.getOperand().get(1), literalFor(6));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForDefaultedDateTimeParameter() {
+        String cql =
+                "parameter MyDate default Date(2013, 6)\n" +
+                        "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                        "    where E.effectiveTime during MyDate";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during MyDate" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ParameterRef myDate = (ParameterRef) request.getDateRange();
+        assertThat(myDate.getName(), is("MyDate"));
+        assertThat(myDate.getLibraryName(), is(nullValue()));
+        assertThat(myDate.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForTypedDateTimeParameter() {
+        String cql =
+                "parameter MyDate : DateTime\n" +
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during MyDate";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during MyDate" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ParameterRef myDate = (ParameterRef) request.getDateRange();
+        assertThat(myDate.getName(), is("MyDate"));
+        assertThat(myDate.getLibraryName(), is(nullValue()));
+        assertThat(myDate.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForDateTimeExpressionReference() {
+        String cql =
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define myDate = Date(2013, 6)\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during myDate";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during myDate" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ExpressionRef myDate = (ExpressionRef) request.getDateRange();
+        assertThat(myDate.getName(), is("myDate"));
+        assertThat(myDate.getLibraryName(), is(nullValue()));
+        assertThat(myDate.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        assertThat(query.getWhere(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForAndedWhere() {
+        String cql =
+                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.length > 2 days\n" +
+                "    and E.effectiveTime during MeasurementPeriod";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during MeasurementPeriod" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ParameterRef mp = (ParameterRef) request.getDateRange();
+        assertThat(mp.getName(), is("MeasurementPeriod"));
+        assertThat(mp.getLibraryName(), is(nullValue()));
+        assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now just be the greaterThanPhrase!
+        Greater where = (Greater) query.getWhere();
+        Property lhs = (Property) where.getOperand().get(0);
+        assertThat(lhs.getScope(), is("E"));
+        assertThat(lhs.getPath(), is("length"));
+        assertThat(lhs.getSource(), is(nullValue()));
+        Quantity rhs = (Quantity) where.getOperand().get(1);
+        assertThat(rhs.getValue(), is(BigDecimal.valueOf(2)));
+        assertThat(rhs.getUnit(), is("days"));
+        assertThat(where.getDescription(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForDeeplyAndedWhere() {
+        String cql =
+                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                        "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                        "    where E.length > 2 days\n" +
+                        "    and E.length < 14 days\n" +
+                        "    and E.location.name = 'The Good Hospital'\n" +
+                        "    and E.effectiveTime during MeasurementPeriod";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during MeasurementPeriod" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getDateProperty(), is("effectiveTime"));
+        ParameterRef mp = (ParameterRef) request.getDateRange();
+        assertThat(mp.getName(), is("MeasurementPeriod"));
+        assertThat(mp.getLibraryName(), is(nullValue()));
+        assertThat(mp.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be the And clauses without the during!
+        And where = (And) query.getWhere();
+        And lhs = (And) where.getOperand().get(0);
+        Greater innerLhs = (Greater) lhs.getOperand().get(0);
+        Property gtLhs = (Property) innerLhs.getOperand().get(0);
+        assertThat(gtLhs.getScope(), is("E"));
+        assertThat(gtLhs.getPath(), is("length"));
+        assertThat(gtLhs.getSource(), is(nullValue()));
+        Quantity gtRhs = (Quantity) innerLhs.getOperand().get(1);
+        assertThat(gtRhs.getValue(), is(BigDecimal.valueOf(2)));
+        assertThat(gtRhs.getUnit(), is("days"));
+        Less innerRhs = (Less) lhs.getOperand().get(1);
+        Property ltLhs = (Property) innerRhs.getOperand().get(0);
+        assertThat(ltLhs.getScope(), is("E"));
+        assertThat(ltLhs.getPath(), is("length"));
+        assertThat(ltLhs.getSource(), is(nullValue()));
+        Quantity ltRhs = (Quantity) innerRhs.getOperand().get(1);
+        assertThat(ltRhs.getValue(), is(BigDecimal.valueOf(14)));
+        assertThat(ltRhs.getUnit(), is("days"));
+        Equal rhs = (Equal) where.getOperand().get(1);
+        Property eqLhs = (Property) rhs.getOperand().get(0);
+        assertThat(eqLhs.getScope(), is("E"));
+        assertThat(eqLhs.getPath(), is("location.name"));
+        assertThat(eqLhs.getSource(), is(nullValue()));
+        assertThat(rhs.getOperand().get(1), literalFor("The Good Hospital"));
+        assertThat(where.getDescription(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationForMultipleQualifyingClauses() {
+        String cql =
+                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.performanceTime during MeasurementPeriod\n" +
+                "    and E.effectiveTime during MeasurementPeriod";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during MeasurementPeriod" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("performanceTime"));
@@ -593,62 +1079,108 @@ public class ElmTranslatorTest {
         assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now just be the other IncludeIn phrase!
+        IncludedIn where = (IncludedIn) query.getWhere();
+        Property lhs = (Property) where.getOperand().get(0);
+        assertThat(lhs.getScope(), is("E"));
+        assertThat(lhs.getPath(), is("effectiveTime"));
+        assertThat(lhs.getSource(), is(nullValue()));
+        ParameterRef rhs = (ParameterRef) where.getOperand().get(1);
+        assertThat(rhs.getName(), is("MeasurementPeriod"));
+        assertThat(rhs.getLibraryName(), is(nullValue()));
+        assertThat(rhs.getDescription(), is(nullValue()));
+        assertThat(where.getDescription(), is(nullValue()));
     }
 
     @Test
-    public void testRetrieveTopicAndModalityAndValueSetAndDuringAttribute() {
+    public void testDateRangeOptimizationNotDoneWhenDisabled() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                        "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                        "    where E.effectiveTime during MeasurementPeriod";
+
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during MeasurementPeriod" migrated up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now just be the other IncludeIn phrase!
+        IncludedIn where = (IncludedIn) query.getWhere();
+        Property lhs = (Property) where.getOperand().get(0);
+        assertThat(lhs.getScope(), is("E"));
+        assertThat(lhs.getPath(), is("effectiveTime"));
+        assertThat(lhs.getSource(), is(nullValue()));
+        ParameterRef rhs = (ParameterRef) where.getOperand().get(1);
+        assertThat(rhs.getName(), is("MeasurementPeriod"));
+        assertThat(rhs.getLibraryName(), is(nullValue()));
+        assertThat(rhs.getDescription(), is(nullValue()));
+        assertThat(where.getDescription(), is(nullValue()));
+    }
+
+    @Test
+    public void testDateRangeOptimizationNotDoneOnUnsupportedExpressions() {
+        // NOTE: I'm not sure that the below statement is even valid without a "with" clause
+        String cql =
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
-                "define st = [Condition: \"Acute Pharyngitis\", effectiveTime during MeasurementPeriod]";
-        ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
-        assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
-        assertThat(request.getCodeProperty(), is("code"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Acute Pharyngitis"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getDateProperty(), is("effectiveTime"));
-        ParameterRef mp = (ParameterRef) request.getDateRange();
-        assertThat(mp.getName(), is("MeasurementPeriod"));
-        assertThat(mp.getLibraryName(), is(nullValue()));
-        assertThat(mp.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
-    }
+                "define pharyngitis = [Condition: \"Acute Pharyngitis\"]\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during pharyngitis";
 
-    @Test
-    public void testRetrieveTopicAndModalityAndCodeAttributeAndDuringAttribute() {
-        String cql =
-                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                "valueset \"Moderate or Severe\" = ValueSet('2.16.840.1.113883.3.526.3.1092')\n" +
-                "define st = [Condition: severity in \"Moderate or Severe\", effectiveTime during MeasurementPeriod]";
-        ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
-        assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
-        assertThat(request.getCodeProperty(), is("severity"));
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
+        Query query = (Query) def.getExpression();
+
+        // First check the source and ensure the "during pharnyngitis" didn't migrate up!
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Moderate or Severe"));
+        assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getDateProperty(), is("effectiveTime"));
-        ParameterRef mp = (ParameterRef) request.getDateRange();
-        assertThat(mp.getName(), is("MeasurementPeriod"));
-        assertThat(mp.getLibraryName(), is(nullValue()));
-        assertThat(mp.getDescription(), is(nullValue()));
         assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getSubjectProperty(), is(nullValue()));
         assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
+
+        // "Where" should now be null!
+        IncludedIn where = (IncludedIn) query.getWhere();
+        assertThat(where.getDescription(), is(nullValue()));
+        Property lhs = (Property) where.getOperand().get(0);
+        assertThat(lhs.getScope(), is("E"));
+        assertThat(lhs.getPath(), is("effectiveTime"));
+        assertThat(lhs.getSource(), is(nullValue()));
+        ExpressionRef rhs = (ExpressionRef) where.getOperand().get(1);
+        assertThat(rhs.getName(), is("pharyngitis"));
+        assertThat(rhs.getLibraryName(), is(nullValue()));
+        assertThat(rhs.getDescription(), is(nullValue()));
     }
 
     @Test
