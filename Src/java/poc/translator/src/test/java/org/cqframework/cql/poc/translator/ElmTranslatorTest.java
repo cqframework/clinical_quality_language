@@ -3,6 +3,7 @@ package org.cqframework.cql.poc.translator;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.poc.translator.model.Identifier;
 import org.hl7.elm.r1.Add;
+import org.hl7.elm.r1.AliasRef;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.And;
 import org.hl7.elm.r1.Begin;
@@ -40,6 +41,13 @@ import org.hl7.elm.r1.Quantity;
 import org.hl7.elm.r1.Query;
 import org.hl7.elm.r1.RelationshipClause;
 import org.hl7.elm.r1.RequestCardinality;
+import org.hl7.elm.r1.SameAs;
+import org.hl7.elm.r1.SameDayAs;
+import org.hl7.elm.r1.SameHourAs;
+import org.hl7.elm.r1.SameMinuteAs;
+import org.hl7.elm.r1.SameMonthAs;
+import org.hl7.elm.r1.SameSecondAs;
+import org.hl7.elm.r1.SameYearAs;
 import org.hl7.elm.r1.SortClause;
 import org.hl7.elm.r1.SortDirection;
 import org.hl7.elm.r1.Subtract;
@@ -578,19 +586,11 @@ public class ElmTranslatorTest {
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         Interval ivl = (Interval) request.getDateRange();
         assertFalse(ivl.isBeginOpen());
@@ -607,13 +607,6 @@ public class ElmTranslatorTest {
         assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
         assertThat(ivlEnd.getOperand().get(1), literalFor(1));
         assertThat(ivlEnd.getOperand().get(2), literalFor(1));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -623,22 +616,13 @@ public class ElmTranslatorTest {
     public void testDateRangeOptimizationForDateIntervalLiteralAndImpliedDateRangeProperty() {
         String cql =
                 "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
-                        "    where E during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("performanceTime"));
         Interval ivl = (Interval) request.getDateRange();
         assertFalse(ivl.isBeginOpen());
@@ -655,13 +639,6 @@ public class ElmTranslatorTest {
         assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
         assertThat(ivlEnd.getOperand().get(1), literalFor(1));
         assertThat(ivlEnd.getOperand().get(2), literalFor(1));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -670,36 +647,20 @@ public class ElmTranslatorTest {
     @Test
     public void testDateRangeOptimizationForDefaultedDateIntervalParameter() {
         String cql =
-            "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-            "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-            "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
-            "    where E.effectiveTime during MeasurementPeriod";
+                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during MeasurementPeriod";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
         assertThat(mp.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -713,31 +674,15 @@ public class ElmTranslatorTest {
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during MeasurementPeriod";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
         assertThat(mp.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -751,31 +696,15 @@ public class ElmTranslatorTest {
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during twentyThirteen";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during twentyThirteen" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ExpressionRef ivl = (ExpressionRef) request.getDateRange();
         assertThat(ivl.getName(), is("twentyThirteen"));
         assertThat(ivl.getLibraryName(), is(nullValue()));
         assertThat(ivl.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -785,35 +714,19 @@ public class ElmTranslatorTest {
     public void testDateRangeOptimizationForDateTimeLiteral() {
         String cql =
                 "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
-                        "    where E.effectiveTime during Date(2013, 6)";
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during Date(2013, 6)";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during Date(2013, 6)" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         FunctionRef dtFun = (FunctionRef) request.getDateRange();
         assertThat(dtFun.getName(), is("Date"));
         assertThat(dtFun.getOperand(), hasSize(2));
         assertThat(dtFun.getOperand().get(0), literalFor(2013));
         assertThat(dtFun.getOperand().get(1), literalFor(6));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -823,35 +736,19 @@ public class ElmTranslatorTest {
     public void testDateRangeOptimizationForDefaultedDateTimeParameter() {
         String cql =
                 "parameter MyDate default Date(2013, 6)\n" +
-                        "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
-                        "    where E.effectiveTime during MyDate";
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during MyDate";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during MyDate" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef myDate = (ParameterRef) request.getDateRange();
         assertThat(myDate.getName(), is("MyDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
         assertThat(myDate.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -865,31 +762,15 @@ public class ElmTranslatorTest {
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during MyDate";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during MyDate" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef myDate = (ParameterRef) request.getDateRange();
         assertThat(myDate.getName(), is("MyDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
         assertThat(myDate.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -903,31 +784,15 @@ public class ElmTranslatorTest {
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during myDate";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during myDate" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ExpressionRef myDate = (ExpressionRef) request.getDateRange();
         assertThat(myDate.getName(), is("myDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
         assertThat(myDate.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -942,31 +807,15 @@ public class ElmTranslatorTest {
                 "    where E.length > 2 days\n" +
                 "    and E.effectiveTime during MeasurementPeriod";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
         assertThat(mp.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now just be the greaterThanPhrase!
         Greater where = (Greater) query.getWhere();
@@ -984,38 +833,22 @@ public class ElmTranslatorTest {
     public void testDateRangeOptimizationForDeeplyAndedWhere() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                        "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
-                        "    where E.length > 2 days\n" +
-                        "    and E.length < 14 days\n" +
-                        "    and E.location.name = 'The Good Hospital'\n" +
-                        "    and E.effectiveTime during MeasurementPeriod";
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.length > 2 days\n" +
+                "    and E.length < 14 days\n" +
+                "    and E.location.name = 'The Good Hospital'\n" +
+                "    and E.effectiveTime during MeasurementPeriod";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
         assertThat(mp.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be the And clauses without the during!
         And where = (And) query.getWhere();
@@ -1054,31 +887,15 @@ public class ElmTranslatorTest {
                 "    where E.performanceTime during MeasurementPeriod\n" +
                 "    and E.effectiveTime during MeasurementPeriod";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is("performanceTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
         assertThat(mp.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now just be the other IncludeIn phrase!
         IncludedIn where = (IncludedIn) query.getWhere();
@@ -1097,32 +914,16 @@ public class ElmTranslatorTest {
     public void testDateRangeOptimizationNotDoneWhenDisabled() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                        "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-                        "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
-                        "    where E.effectiveTime during MeasurementPeriod";
+                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+                "    where E.effectiveTime during MeasurementPeriod";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql, false);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now just be the other IncludeIn phrase!
         IncludedIn where = (IncludedIn) query.getWhere();
@@ -1147,28 +948,12 @@ public class ElmTranslatorTest {
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during pharyngitis";
 
-        ExpressionDef def = (ExpressionDef) visitData(cql, false, true);
-        Query query = (Query) def.getExpression();
+        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
 
         // First check the source and ensure the "during pharnyngitis" didn't migrate up!
-        AliasedQuerySource source = query.getSource();
-        assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
-        assertThat(code.getName(), is("Inpatient"));
-        assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is(nullValue()));
 
         // "Where" should now be null!
         IncludedIn where = (IncludedIn) query.getWhere();
@@ -1181,6 +966,34 @@ public class ElmTranslatorTest {
         assertThat(rhs.getName(), is("pharyngitis"));
         assertThat(rhs.getLibraryName(), is(nullValue()));
         assertThat(rhs.getDescription(), is(nullValue()));
+    }
+
+    private Query testEncounterPerformanceInpatientForDateRangeOptimization(String cql) {
+        return testEncounterPerformanceInpatientForDateRangeOptimization(cql, true);
+    }
+
+    private Query testEncounterPerformanceInpatientForDateRangeOptimization(String cql, boolean enableDateRangeOptimization) {
+        ExpressionDef def = (ExpressionDef) visitData(cql, false, enableDateRangeOptimization);
+        Query query = (Query) def.getExpression();
+
+        AliasedQuerySource source = query.getSource();
+        assertThat(source.getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(code.getDescription(), is(nullValue()));
+        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
+        assertThat(request.getDescription(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getSubjectProperty(), is(nullValue()));
+        assertThat(request.getSubject(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        return query;
     }
 
     @Test
@@ -1319,6 +1132,233 @@ public class ElmTranslatorTest {
         assertThat(id.getIdentifier(), is("lengthOfStay"));
         assertThat(id.getLibraryName(), is(nullValue()));
         assertThat(sortBy.getDirection(), is(SortDirection.DESC));
+    }
+
+    @Test
+    public void testSameAs() {
+        String where = "P same as E";
+        SameAs sameAs = (SameAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameAs.getOperand(), hasSize(2));
+        AliasRef lhs = (AliasRef) sameAs.getOperand().get(0);
+        assertThat(lhs.getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameAs.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testSameYearAs() {
+        String where = "P same year as E";
+        SameYearAs sameYear = (SameYearAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameYear.getOperand(), hasSize(2));
+        AliasRef lhs = (AliasRef) sameYear.getOperand().get(0);
+        assertThat(lhs.getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameYear.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testSameMonthAs() {
+        String where = "P same month as E";
+        SameMonthAs sameMonth = (SameMonthAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameMonth.getOperand(), hasSize(2));
+        AliasRef lhs = (AliasRef) sameMonth.getOperand().get(0);
+        assertThat(lhs.getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameMonth.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testSameDayAs() {
+        String where = "P same day as E";
+        SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        AliasRef lhs = (AliasRef) sameDay.getOperand().get(0);
+        assertThat(lhs.getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameDay.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testSameHourAs() {
+        String where = "P same hour as E";
+        SameHourAs sameHour = (SameHourAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameHour.getOperand(), hasSize(2));
+        AliasRef lhs = (AliasRef) sameHour.getOperand().get(0);
+        assertThat(lhs.getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameHour.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testSameMinuteAs() {
+        String where = "P same minute as E";
+        SameMinuteAs sameMin = (SameMinuteAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameMin.getOperand(), hasSize(2));
+        AliasRef lhs = (AliasRef) sameMin.getOperand().get(0);
+        assertThat(lhs.getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameMin.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testSameSecondAs() {
+        String where = "P same second as E";
+        SameSecondAs sameSec = (SameSecondAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameSec.getOperand(), hasSize(2));
+        AliasRef lhs = (AliasRef) sameSec.getOperand().get(0);
+        assertThat(lhs.getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameSec.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testSameMillisecondAs() {
+        String where = "P same millisecond as E";
+        SameAs sameMS = (SameAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameMS.getOperand(), hasSize(2));
+        AliasRef lhs = (AliasRef) sameMS.getOperand().get(0);
+        assertThat(lhs.getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameMS.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testStartsSameDayAs() {
+        String where = "P starts same day as E";
+        SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameDay.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testStartsSameDayAsStart() {
+        String where = "P starts same day as start E";
+        SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        Begin rhs = (Begin) sameDay.getOperand().get(1);
+        assertThat(((AliasRef) rhs.getOperand()).getName(), is("E"));
+    }
+
+    @Test
+    public void testStartsSameDayAsEnd() {
+        String where = "P starts same day as end E";
+        SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        End rhs = (End) sameDay.getOperand().get(1);
+        assertThat(((AliasRef) rhs.getOperand()).getName(), is("E"));
+    }
+
+    @Test
+    public void testStartsAtLeastSameDayAs() {
+        String where = "P starts at least same day as E";
+        Or or = (Or) testInpatientWithPharyngitisWhere(where);
+        assertThat(or.getOperand(), hasSize(2));
+
+        SameDayAs sameDay = (SameDayAs) or.getOperand().get(0);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameDay.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+
+        Greater greater = (Greater) or.getOperand().get(1);
+        assertThat(greater.getOperand(), hasSize(2));
+        lhs = (Begin) greater.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        rhs = (AliasRef) greater.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testStartsAtMostSameDayAs() {
+        String where = "P starts at most same day as E";
+        Or or = (Or) testInpatientWithPharyngitisWhere(where);
+        assertThat(or.getOperand(), hasSize(2));
+
+        SameDayAs sameDay = (SameDayAs) or.getOperand().get(0);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameDay.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+
+        Less lesser = (Less) or.getOperand().get(1);
+        assertThat(lesser.getOperand(), hasSize(2));
+        lhs = (Begin) lesser.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        rhs = (AliasRef) lesser.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testEndsSameDayAs() {
+        String where = "P ends same day as E";
+        SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        End lhs = (End) sameDay.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        AliasRef rhs = (AliasRef) sameDay.getOperand().get(1);
+        assertThat(rhs.getName(), is("E"));
+    }
+
+    @Test
+    public void testEndsSameDayAsEnd() {
+        String where = "P ends same day as end E";
+        SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        End lhs = (End) sameDay.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        End rhs = (End) sameDay.getOperand().get(1);
+        assertThat(((AliasRef) rhs.getOperand()).getName(), is("E"));
+    }
+
+    @Test
+    public void testEndsSameDayAsStart() {
+        String where = "P ends same day as start E";
+        SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
+        assertThat(sameDay.getOperand(), hasSize(2));
+        End lhs = (End) sameDay.getOperand().get(0);
+        assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
+        Begin rhs = (Begin) sameDay.getOperand().get(1);
+        assertThat(((AliasRef) rhs.getOperand()).getName(), is("E"));
+    }
+
+    private Expression testInpatientWithPharyngitisWhere(String withWhereClause) {
+        String cql =
+            "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+            "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+            "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
+            "    with [Condition: \"Acute Pharyngitis\"] P\n" +
+            "    where " + withWhereClause;
+
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        Query query = (Query) def.getExpression();
+        assertThat(query.getSource().getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        assertThat(request.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
+        assertThat(request.getDataType().getLocalPart(), is("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef vs = (ValueSetRef) request.getCodes();
+        assertThat(vs.getName(), is("Inpatient"));
+        assertThat(vs.getLibraryName(), is(nullValue()));
+        assertThat(query.getRelationship(), hasSize(1));
+        With with = (With) query.getRelationship().get(0);
+        assertThat(with.getAlias(), is("P"));
+        ClinicalRequest withRequest = (ClinicalRequest) with.getExpression();
+        assertThat(withRequest.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
+        assertThat(withRequest.getDataType().getLocalPart(), is("ConditionOccurrence"));
+        assertThat(withRequest.getCodeProperty(), is("code"));
+        ValueSetRef withVS = (ValueSetRef) withRequest.getCodes();
+        assertThat(withVS.getName(), is("Acute Pharyngitis"));
+        assertThat(withVS.getLibraryName(), is(nullValue()));
+        return with.getWhere();
     }
 
     private void assertTrackable(Trackable t){
