@@ -10,7 +10,7 @@ version = '0.1'
 sourceCompatibility = '1.7'
 
 mainClassName = 'org.cqframework.cql.poc.translator.ElmTranslatorVisitor'
-run.args = ["${projectDir}/../../../../Examples/CMS146v2_CQM.cql"]
+run.args = ["${projectDir}/../../../Examples/CMS146v2_CQM.cql"]
 
 repositories {
     mavenCentral()
