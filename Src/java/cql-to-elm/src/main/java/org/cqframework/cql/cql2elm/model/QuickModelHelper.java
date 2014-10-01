@@ -1,9 +1,8 @@
-package org.cqframework.cql.poc.translator.model;
+package org.cqframework.cql.cql2elm.model;
 
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.bind.JAXB;
-import java.io.File;
 
 public class QuickModelHelper {
     public static ModelInfo load() {

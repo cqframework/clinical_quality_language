@@ -1,4 +1,4 @@
-package org.cqframework.cql.poc.translator.preprocessor;
+package org.cqframework.cql.cql2elm.preprocessor;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -74,7 +74,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
-        LetStatementInfo letStatement = new LetStatementInfo();
+        ExpressionDefinitionInfo letStatement = new ExpressionDefinitionInfo();
         letStatement.setName((String)visit(ctx.IDENTIFIER()));
         letStatement.setDefinition(ctx);
         libraryInfo.addLetStatement(letStatement);

@@ -1,4 +1,4 @@
-package org.cqframework.cql.poc.translator;
+package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -12,9 +12,9 @@ import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.cqframework.cql.poc.translator.model.*;
-import org.cqframework.cql.poc.translator.preprocessor.CqlPreprocessorVisitor;
-import org.cqframework.cql.poc.translator.preprocessor.LibraryInfo;
+import org.cqframework.cql.cql2elm.model.*;
+import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.cql2elm.preprocessor.LibraryInfo;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.*;
@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-public class ElmTranslatorVisitor extends cqlBaseVisitor {
+public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean annotate = false;
@@ -2085,7 +2085,7 @@ public class ElmTranslatorVisitor extends cqlBaseVisitor {
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);
 
-        ElmTranslatorVisitor visitor = new ElmTranslatorVisitor();
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         visitor.setTokenStream(tokens);
         visitor.enableAnnotations();

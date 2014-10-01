@@ -1,7 +1,7 @@
-package org.cqframework.cql.poc.translator;
+package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.Trackable;
-import org.cqframework.cql.poc.translator.model.Identifier;
+import org.cqframework.cql.cql2elm.model.Identifier;
 import org.hl7.elm.r1.Add;
 import org.hl7.elm.r1.AliasRef;
 import org.hl7.elm.r1.AliasedQuerySource;
@@ -60,15 +60,15 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.cqframework.cql.poc.translator.TestUtils.*;
-import static org.cqframework.cql.poc.translator.matchers.LiteralFor.literalFor;
-import static org.cqframework.cql.poc.translator.matchers.QuickDataType.quickDataType;
+import static org.cqframework.cql.cql2elm.TestUtils.*;
+import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
+import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-public class ElmTranslatorTest {
+public class Cql2ElmVisitorTest {
     @Test
     public void testLet(){
         ExpressionDef def = (ExpressionDef) visitData("define b = true");

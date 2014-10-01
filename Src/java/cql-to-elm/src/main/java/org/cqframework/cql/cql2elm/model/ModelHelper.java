@@ -1,11 +1,10 @@
-package org.cqframework.cql.poc.translator.model;
+package org.cqframework.cql.cql2elm.model;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.util.HashMap;
-import java.util.ListIterator;
 
 public class ModelHelper {
     public ModelHelper(@NotNull ModelInfo modelInfo) throws ClassNotFoundException {

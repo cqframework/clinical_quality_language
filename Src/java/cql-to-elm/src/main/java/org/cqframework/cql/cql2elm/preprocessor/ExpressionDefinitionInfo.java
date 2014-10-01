@@ -1,8 +1,8 @@
-package org.cqframework.cql.poc.translator.preprocessor;
+package org.cqframework.cql.cql2elm.preprocessor;
 
 import org.cqframework.cql.gen.cqlParser;
 
-public class LetStatementInfo {
+public class ExpressionDefinitionInfo {
     private String name;
     private cqlParser.ExpressionDefinitionContext definition;
 
@@ -22,12 +22,12 @@ public class LetStatementInfo {
         definition = value;
     }
 
-    public LetStatementInfo withName(String value) {
+    public ExpressionDefinitionInfo withName(String value) {
         setName(value);
         return this;
     }
 
-    public LetStatementInfo withDefinition(cqlParser.ExpressionDefinitionContext value) {
+    public ExpressionDefinitionInfo withDefinition(cqlParser.ExpressionDefinitionContext value) {
         setDefinition(value);
         return this;
     }

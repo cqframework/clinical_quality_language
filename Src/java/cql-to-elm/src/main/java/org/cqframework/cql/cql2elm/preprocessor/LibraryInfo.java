@@ -1,6 +1,4 @@
-package org.cqframework.cql.poc.translator.preprocessor;
-
-import org.cqframework.cql.poc.translator.model.*;
+package org.cqframework.cql.cql2elm.preprocessor;
 
 import java.util.*;
 
@@ -12,7 +10,7 @@ public class LibraryInfo {
     private final Map<String, IncludeDefinitionInfo> includeDefinitions;
     private final Map<String, ValuesetDefinitionInfo> valuesetDefinitions;
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
-    private final Map<String, LetStatementInfo> letStatements;
+    private final Map<String, ExpressionDefinitionInfo> letStatements;
     private final Map<String, FunctionDefinitionInfo> functionDefinitions; // TODO: Overloads...
     private final Map<String, RetrieveDefinitionInfo> retrieveDefinitions;
 
@@ -111,16 +109,16 @@ public class LibraryInfo {
         return null;
     }
 
-    public void addLetStatement(LetStatementInfo letStatement) {
+    public void addLetStatement(ExpressionDefinitionInfo letStatement) {
         letStatements.put(letStatement.getName(), letStatement);
     }
 
-    public LetStatementInfo resolveExpressionReference(String identifier) {
+    public ExpressionDefinitionInfo resolveExpressionReference(String identifier) {
         return letStatements.get(identifier);
     }
 
     public String resolveExpressionName(String identifier) {
-        LetStatementInfo letStatement = resolveExpressionReference(identifier);
+        ExpressionDefinitionInfo letStatement = resolveExpressionReference(identifier);
         if (letStatement != null) {
             return letStatement.getName();
         }

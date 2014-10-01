@@ -1,4 +1,4 @@
-package org.cqframework.cql.poc.translator;
+package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.ClinicalRequest;
@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.cqframework.cql.poc.translator.TestUtils.*;
+import static org.cqframework.cql.cql2elm.TestUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.*;
 
 public class CMS146ElmTest {
 
-    private ElmTranslatorVisitor visitor;
+    private Cql2ElmVisitor visitor;
     private Library library;
     private ObjectFactory of;
 

@@ -1,4 +1,4 @@
-package org.cqframework.cql.poc.translator;
+package org.cqframework.cql.cql2elm;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
