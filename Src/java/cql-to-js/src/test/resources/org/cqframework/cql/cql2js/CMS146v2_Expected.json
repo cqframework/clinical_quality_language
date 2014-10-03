@@ -1,0 +1,420 @@
+{
+   "library" : {
+      "identifier" : {
+         "id" : "CMS146",
+         "version" : "2"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "MeasurementPeriod",
+            "default" : {
+               "beginOpen" : false,
+               "endOpen" : true,
+               "type" : "Interval",
+               "begin" : {
+                  "name" : "Date",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               },
+               "end" : {
+                  "name" : "Date",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Acute Pharyngitis",
+            "valueSet" : {
+               "id" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+               "type" : "ValueSet"
+            }
+         }, {
+            "name" : "Acute Tonsillitis",
+            "valueSet" : {
+               "id" : "2.16.840.1.113883.3.464.1003.102.12.1012",
+               "type" : "ValueSet"
+            }
+         }, {
+            "name" : "Ambulatory/ED Visit",
+            "valueSet" : {
+               "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+               "type" : "ValueSet"
+            }
+         }, {
+            "name" : "Antibiotic Medications",
+            "valueSet" : {
+               "id" : "2.16.840.1.113883.3.464.1003.196.12.1001",
+               "type" : "ValueSet"
+            }
+         }, {
+            "name" : "Group A Streptococcus Test",
+            "valueSet" : {
+               "id" : "2.16.840.1.113883.3.464.1003.198.12.1012",
+               "type" : "ValueSet"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "InDemographic",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "GreaterOrEqual",
+                  "operand" : [ {
+                     "name" : "AgeAt",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "type" : "Begin",
+                        "operand" : {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        }
+                     } ]
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "Less",
+                  "operand" : [ {
+                     "name" : "AgeAt",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "type" : "Begin",
+                        "operand" : {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        }
+                     } ]
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "18",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "Pharyngitis",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                  "codeProperty" : "code",
+                  "type" : "ClinicalRequest",
+                  "codes" : {
+                     "name" : "Acute Pharyngitis",
+                     "type" : "ValueSetRef"
+                  }
+               }, {
+                  "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                  "codeProperty" : "code",
+                  "type" : "ClinicalRequest",
+                  "codes" : {
+                     "name" : "Acute Tonsilitis",
+                     "type" : "ValueSetRef"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "Antibiotics",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}MedicationTreatmentOrderOccurrence",
+               "type" : "ClinicalRequest",
+               "codes" : {
+                  "name" : "Antibiotic Medications",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "TargetEncounters",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "codeProperty" : "class",
+                     "type" : "ClinicalRequest",
+                     "codes" : {
+                        "name" : "Ambulatory/ED Visit",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               },
+               "relationship" : [ {
+                  "alias" : "P",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "Pharyngitis",
+                     "type" : "ExpressionRef"
+                  },
+                  "where" : {
+                     "type" : "OverlapsAfter",
+                     "operand" : [ {
+                        "path" : "effectiveTime",
+                        "scope" : "P",
+                        "type" : "Property"
+                     }, {
+                        "path" : "performedAtTime",
+                        "scope" : "E",
+                        "type" : "Property"
+                     } ]
+                  }
+               }, {
+                  "alias" : "A",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "Antibiotics",
+                     "type" : "ExpressionRef"
+                  },
+                  "where" : {
+                     "type" : "GreaterOrEqual",
+                     "operand" : [ {
+                        "type" : "DaysBetween",
+                        "operand" : [ {
+                           "type" : "Begin",
+                           "operand" : {
+                              "path" : "orderedAtTime",
+                              "scope" : "A",
+                              "type" : "Property"
+                           }
+                        }, {
+                           "type" : "Begin",
+                           "operand" : {
+                              "path" : "performedAtTime",
+                              "scope" : "E",
+                              "type" : "Property"
+                           }
+                        } ]
+                     }, {
+                        "type" : "Negate",
+                        "operand" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  }
+               } ],
+               "where" : {
+                  "type" : "IncludedIn",
+                  "operand" : [ {
+                     "path" : "performedAtTime",
+                     "scope" : "E",
+                     "type" : "Property"
+                  }, {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "TargetDiagnoses",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : {
+                  "alias" : "P",
+                  "expression" : {
+                     "name" : "Pharyngitis",
+                     "type" : "ExpressionRef"
+                  }
+               },
+               "relationship" : [ {
+                  "alias" : "E",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "TargetEncounters",
+                     "type" : "ExpressionRef"
+                  },
+                  "where" : {
+                     "type" : "OverlapsAfter",
+                     "operand" : [ {
+                        "path" : "effectiveTime",
+                        "scope" : "P",
+                        "type" : "Property"
+                     }, {
+                        "path" : "performedAtTime",
+                        "scope" : "E",
+                        "type" : "Property"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "HasPriorAntibiotics",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "IsNotEmpty",
+               "operand" : {
+                  "type" : "Query",
+                  "source" : {
+                     "alias" : "A",
+                     "expression" : {
+                        "name" : "Antibiotics",
+                        "type" : "ExpressionRef"
+                     }
+                  },
+                  "relationship" : [ {
+                     "alias" : "D",
+                     "type" : "With",
+                     "expression" : {
+                        "name" : "TargetDiagnoses",
+                        "type" : "ExpressionRef"
+                     },
+                     "where" : {
+                        "type" : "LessOrEqual",
+                        "operand" : [ {
+                           "type" : "DaysBetween",
+                           "operand" : [ {
+                              "type" : "Begin",
+                              "operand" : {
+                                 "path" : "orderedAtTime",
+                                 "scope" : "A",
+                                 "type" : "Property"
+                              }
+                           }, {
+                              "type" : "Begin",
+                              "operand" : {
+                                 "path" : "effectiveTime",
+                                 "scope" : "D",
+                                 "type" : "Property"
+                              }
+                           } ]
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "30",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "HasTargetEncounter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "IsNotEmpty",
+               "operand" : {
+                  "name" : "TargetEncounters",
+                  "type" : "ExpressionRef"
+               }
+            }
+         }, {
+            "name" : "InInitialPopulation",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "name" : "InDemographic",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "HasTargetEncounter",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "InDenominator",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+               "value" : "true",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "InDenominatorExclusions",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "HasPriorAntibiotics",
+               "type" : "ExpressionRef"
+            }
+         }, {
+            "name" : "InNumerator",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "IsNotEmpty",
+               "operand" : {
+                  "type" : "Query",
+                  "source" : {
+                     "alias" : "R",
+                     "expression" : {
+                        "dataType" : "{http://org.hl7.fhir}SimpleObservationOccurrence",
+                        "codeProperty" : "code",
+                        "type" : "ClinicalRequest",
+                        "codes" : {
+                           "name" : "Group A Streptococcus Test",
+                           "type" : "ValueSetRef"
+                        }
+                     }
+                  },
+                  "relationship" : [ ],
+                  "where" : {
+                     "type" : "And",
+                     "operand" : [ {
+                        "type" : "IncludedIn",
+                        "operand" : [ {
+                           "path" : "observedAtTime",
+                           "scope" : "R",
+                           "type" : "Property"
+                        }, {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        } ]
+                     }, {
+                        "type" : "Not",
+                        "operand" : {
+                           "type" : "IsNull",
+                           "operand" : {
+                              "path" : "result",
+                              "scope" : "R",
+                              "type" : "Property"
+                           }
+                        }
+                     } ]
+                  }
+               }
+            }
+         } ]
+      }
+   }
+}

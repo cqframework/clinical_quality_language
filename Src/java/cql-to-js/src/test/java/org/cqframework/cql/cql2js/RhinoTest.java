@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm;
+package org.cqframework.cql.cql2js;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;

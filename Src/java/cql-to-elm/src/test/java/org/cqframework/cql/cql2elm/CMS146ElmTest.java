@@ -4,6 +4,7 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.ClinicalRequest;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.ModelReference;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.ValueSet;
 import org.hl7.elm.r1.ValueSetDef;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.cqframework.cql.cql2elm.TestUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,6 +40,14 @@ public class CMS146ElmTest {
     @Test
     public void testLibraryAndVersion() {
         assertThat(library.getIdentifier(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
+    }
+
+    @Test
+    public void testUsingDataModel() {
+        List<ModelReference> models = library.getDataModels().getModelReference();
+        assertThat(models, hasSize(1));
+        assertThat(models.get(0).getReferencedModel().getValue(), is("http://org.hl7.fhir"));
+        assertThat(models.get(0).getDescription(), is(nullValue()));
     }
 
     @Test
