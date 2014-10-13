@@ -7,6 +7,7 @@ It contains the following sub-projects:
 * **quick:** generates and builds Java classes based on the QUICK XML schema
 * **elm:** generates and builds Java classes based on the ELM XML schema
 * **cql-to-elm:** generates Expression Logical Model (ELM) XML from CQL source
+* **cql-to-js:** a JavaScript framework for executing CQL or ELM libraries
 
 # Building the Project
 
@@ -62,3 +63,20 @@ Lastly, you can run the script for the cql-to-elm project (which can also accept
 
 If you do not provide a file argument to cql-to-elm, it will expect CQL to be entered via the console.
 Press `CTL-D` (Mac) or `CTL-Z` (Win) to stop typing CQL into the console.
+
+# Using the CQL-to-JS Execution Framework
+
+The CQL-to-JS framework contains Java code to translate CQL or ELM to a JSON representation.  It
+also contains [CoffeeScript](http://coffeescript.org/) libraries that can execute the JSON
+representation of the logic.  At this point, only a small subset has been implemented and it uses
+a very simple JSON-based representation of patients.
+
+## Generate a JSON Representation of CQL Logic
+
+To generate a JSON representation of CQL logic, build and execute the cql-to-js app:
+
+    ./gradlew :cql-to-js:installApp
+    ./cql-to-js/build/install/cql-to-js/bin/cql-to-js ../../Examples/ChlamydiaScreening_CQM.cql
+
+To save the results to a file, simply redirect output to a file.  Note that this is all likely to
+change at some point in the future!

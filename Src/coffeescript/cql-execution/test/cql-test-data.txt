@@ -1,0 +1,83 @@
+# InAgeDemographic
+parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+
+context PATIENT
+
+define InDemographic =
+    AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
+
+# ExpressionDef
+context PATIENT
+define Foo = 'Bar'
+
+# ExpressionRef
+define Life = 42
+define Foo = Life
+
+# ParameterDef
+parameter MeasureYear default 2012
+
+# ParameterRef
+parameter FooP default 'Bar'
+define Foo = FooP
+
+# And
+define AllTrue = true and true
+define AllFalse = false and false
+define SomeTrue = true and false
+
+# AgeAtFunctionRef
+define AgeAt2012 = AgeAt(Date(2012))
+define AgeAt19810216 = AgeAt(Date(1981, 2, 16))
+define AgeAt1975 = AgeAt(Date(1975))
+
+# DateFunctionRef
+define Year = Date(2012)
+define Month = Date(2012, 4)
+define Day = Date(2012, 4, 15)
+define Hour = Date(2012, 4, 15, 12)
+define Minute = Date(2012, 4, 15, 12, 10)
+define Second = Date(2012, 4, 15, 12, 10, 59)
+
+# Interval
+define Foo = interval[1, 4]
+
+# Greater
+define AGtB_Int = 5 > 4
+define AEqB_Int = 5 > 5
+define ALtB_Int = 5 > 6
+
+# GreaterOrEqual
+define AGtB_Int = 5 >= 4
+define AEqB_Int = 5 >= 5
+define ALtB_Int = 5 >= 6
+
+# Equal
+define AGtB_Int = 5 = 4
+define AEqB_Int = 5 = 5
+define ALtB_Int = 5 = 6
+
+# LessOrEqual
+define AGtB_Int = 5 <= 4
+define AEqB_Int = 5 <= 5
+define ALtB_Int = 5 <= 6
+
+# Less
+define AGtB_Int = 5 < 4
+define AEqB_Int = 5 < 5
+define ALtB_Int = 5 < 6
+
+# Interval
+define Open = interval(Date(2012, 1, 1), Date(2013, 1, 1))
+define LeftOpen = interval(Date(2012, 1, 1), Date(2013, 1, 1)]
+define RightOpen = interval[Date(2012, 1, 1), Date(2013, 1, 1))
+define Closed = interval[Date(2012, 1, 1), Date(2013, 1, 1)]
+
+# Begin
+define Foo = start of interval[Date(2012, 1, 1), Date(2013, 1, 1)]
+
+# Literal
+define BoolTrue = true
+define BoolFalse = false
+define IntOne = 1
+define StringTrue = 'true'
