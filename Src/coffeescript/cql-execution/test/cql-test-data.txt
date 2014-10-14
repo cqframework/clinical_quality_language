@@ -21,6 +21,15 @@ parameter MeasureYear default 2012
 parameter FooP default 'Bar'
 define Foo = FooP
 
+# ValueSetDef
+valueset "One Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
+valueset "Two Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011', '20140501')
+valueset "Three Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011', '20140501', 'National Committee for Quality Assurance')
+
+# ValueSetRef
+valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
+define Foo = "Acute Pharyngitis"
+
 # And
 define AllTrue = true and true
 define AllFalse = false and false

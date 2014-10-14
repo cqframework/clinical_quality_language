@@ -59,32 +59,57 @@
          "def" : [ {
             "name" : "Acute Pharyngitis",
             "valueSet" : {
-               "id" : "2.16.840.1.113883.3.464.1003.102.12.1011",
-               "type" : "ValueSet"
+              "name" : "ValueSet",
+              "type" : "FunctionRef",
+              "operand" : [ {
+                 "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                 "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+                 "type" : "Literal"
+              } ]
             }
          }, {
             "name" : "Acute Tonsillitis",
             "valueSet" : {
-               "id" : "2.16.840.1.113883.3.464.1003.102.12.1012",
-               "type" : "ValueSet"
+              "name" : "ValueSet",
+              "type" : "FunctionRef",
+              "operand" : [ {
+                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                "value" : "2.16.840.1.113883.3.464.1003.102.12.1012",
+                "type" : "Literal"
+              } ]
             }
          }, {
             "name" : "Ambulatory/ED Visit",
             "valueSet" : {
-               "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
-               "type" : "ValueSet"
+              "name" : "ValueSet",
+              "type" : "FunctionRef",
+              "operand" : [ {
+                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+                "type" : "Literal"
+              } ]
             }
          }, {
             "name" : "Antibiotic Medications",
             "valueSet" : {
-               "id" : "2.16.840.1.113883.3.464.1003.196.12.1001",
-               "type" : "ValueSet"
+              "name" : "ValueSet",
+              "type" : "FunctionRef",
+              "operand" : [ {
+                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                "value" : "2.16.840.1.113883.3.464.1003.196.12.1001",
+                "type" : "Literal"
+              } ]
             }
          }, {
             "name" : "Group A Streptococcus Test",
             "valueSet" : {
-               "id" : "2.16.840.1.113883.3.464.1003.198.12.1012",
-               "type" : "ValueSet"
+              "name" : "ValueSet",
+              "type" : "FunctionRef",
+              "operand" : [ {
+                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                "value" : "2.16.840.1.113883.3.464.1003.198.12.1012",
+                "type" : "Literal"
+              } ]
             }
          } ]
       },

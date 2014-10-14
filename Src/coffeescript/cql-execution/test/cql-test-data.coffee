@@ -273,6 +273,126 @@ module.exports.ParameterRef = {
    }
 }
 
+### ValueSetDef
+library TestSnippet version '1'
+using QUICK
+valueset "One Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
+valueset "Two Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011', '20140501')
+valueset "Three Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011', '20140501', 'National Committee for Quality Assurance')
+###
+
+module.exports.ValueSetDef = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "One Arg",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "Two Arg",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "20140501",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "Three Arg",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "20140501",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "National Committee for Quality Assurance",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### ValueSetRef
+library TestSnippet version '1'
+using QUICK
+valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
+context PATIENT
+define Foo = "Acute Pharyngitis"
+###
+
+module.exports.ValueSetRef = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Acute Pharyngitis",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1001",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Foo",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Acute Pharyngitis",
+               "type" : "ValueSetRef"
+            }
+         } ]
+      }
+   }
+}
+
 ### And
 library TestSnippet version '1'
 using QUICK

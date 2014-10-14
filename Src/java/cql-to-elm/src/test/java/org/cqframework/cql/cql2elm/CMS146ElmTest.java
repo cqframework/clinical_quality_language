@@ -3,10 +3,11 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.ClinicalRequest;
 import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.Literal;
 import org.hl7.elm.r1.ModelReference;
 import org.hl7.elm.r1.ObjectFactory;
-import org.hl7.elm.r1.ValueSet;
 import org.hl7.elm.r1.ValueSetDef;
 import org.hl7.elm.r1.ValueSetRef;
 import org.testng.annotations.BeforeTest;
@@ -86,22 +87,31 @@ public class CMS146ElmTest {
         Collection<ValueSetDef> expectedVS = Arrays.asList(
                 of.createValueSetDef()
                         .withName("Acute Pharyngitis")
-                        .withValueSet(of.createValueSet().withId("2.16.840.1.113883.3.464.1003.102.12.1011")),
+                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.102.12.1011")),
                 of.createValueSetDef()
                         .withName("Acute Tonsillitis")
-                        .withValueSet(of.createValueSet().withId("2.16.840.1.113883.3.464.1003.102.12.1012")),
+                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.102.12.1012")),
                 of.createValueSetDef()
                         .withName("Ambulatory/ED Visit")
-                        .withValueSet(of.createValueSet().withId("2.16.840.1.113883.3.464.1003.101.12.1061")),
+                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.101.12.1061")),
                 of.createValueSetDef()
                         .withName("Antibiotic Medications")
-                        .withValueSet(of.createValueSet().withId("2.16.840.1.113883.3.464.1003.196.12.1001")),
+                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.196.12.1001")),
                 of.createValueSetDef()
                         .withName("Group A Streptococcus Test")
-                        .withValueSet(of.createValueSet().withId("2.16.840.1.113883.3.464.1003.198.12.1012"))
+                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.198.12.1012"))
         );
 
         assertThat(actualVS, is(expectedVS));
+    }
+
+    private FunctionRef createValueSetFunctionRef(String oid) {
+        return of.createFunctionRef()
+                .withName("ValueSet")
+                .withOperand(
+                        of.createLiteral()
+                                .withValueType(new QName("http://www.w3.org/2001/XMLSchema", "string"))
+                                .withValue(oid));
     }
 
     @Test
@@ -155,7 +165,7 @@ public class CMS146ElmTest {
 
         for (ValueSetDef vs : library.getValueSets().getDef()) {
             int expectedNumbers[] = {0, 0, 0, 0};
-            switch (((ValueSet) vs.getValueSet()).getId()) {
+            switch (((Literal) ((FunctionRef) vs.getValueSet()).getOperand().get(0)).getValue()) {
                 case "2.16.840.1.113883.3.464.1003.102.12.1011":
                     expectedNumbers = new int[] {7, 1, 7, 83};
                     break;

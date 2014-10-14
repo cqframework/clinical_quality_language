@@ -274,20 +274,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public ValueSetDef visitValuesetDefinitionByExpression(@NotNull cqlParser.ValuesetDefinitionByExpressionContext ctx) {
+    public ValueSetDef visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
         ValueSetDef vs = of.createValueSetDef()
                 .withName(parseString(ctx.VALUESET()))
                 .withValueSet(parseExpression(ctx.expression()));
-        addToLibrary(vs);
-
-        return vs;
-    }
-
-    @Override
-    public ValueSetDef visitValuesetDefinitionByConstructor(@NotNull cqlParser.ValuesetDefinitionByConstructorContext ctx) {
-        ValueSetDef vs = of.createValueSetDef()
-                .withName(parseString(ctx.VALUESET()))
-                .withValueSet(of.createValueSet().withId(parseString(ctx.STRING())));
         addToLibrary(vs);
 
         return vs;

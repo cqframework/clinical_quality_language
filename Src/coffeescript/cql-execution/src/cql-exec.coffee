@@ -33,6 +33,9 @@ class Library
     @parameters = {}
     for param in json.library.parameters?.def ? []
       @parameters[param.name] = new ParameterDef(param)
+    @valueSets = {}
+    for valueSet in json.library.valueSets?.def ? []
+      @valueSets[valueSet.name] = new ValueSetDef(valueSet)
     @expressions = {}
     for expr in json.library.statements?.def ? []
       @expressions[expr.name] = new ExpressionDef(expr)
@@ -133,6 +136,33 @@ class ParameterRef extends Expression
   exec: (ctx) ->
     ctx.measure.parameters[@name]?.exec(ctx)
 
+# Value Sets
+class ValueSet extends Expression
+  constructor: (@id, @version, @authority) ->
+    super
+    if typeof @id is "object"
+      json = @id
+      @id = json.id
+      @version = json.version
+      @authority = json.authority
+
+class ValueSetDef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+    @valueSet = build(json.valueSet)
+
+  exec: (ctx) ->
+    @valueSet?.exec(ctx)
+
+class ValueSetRef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+
+  exec: (ctx) ->
+    ctx.measure.valueSets[@name]?.exec(ctx)
+
 # Logical Operators
 
 class And extends Expression
@@ -166,6 +196,13 @@ class DateFunctionRef extends FunctionRef
 
   exec: (ctx) ->
     new CqlDate(@execArgs(ctx)...)
+
+class ValueSetFunctionRef extends FunctionRef
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    new ValueSet(@execArgs(ctx)...)
 
 # Comparisons
 class Greater extends Expression

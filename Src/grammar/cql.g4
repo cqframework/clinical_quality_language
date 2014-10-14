@@ -34,8 +34,7 @@ parameterDefinition
     ;
 
 valuesetDefinition
-    : 'valueset' VALUESET '=' 'ValueSet' '(' STRING ')'   #valuesetDefinitionByConstructor
-    | 'valueset' VALUESET '=' expression                    #valuesetDefinitionByExpression
+    : 'valueset' VALUESET '=' expression
     ;
 
 /*

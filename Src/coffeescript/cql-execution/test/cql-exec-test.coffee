@@ -72,6 +72,41 @@ describe 'ParameterRef', ->
   it 'should execute to provided value', ->
     @foo.exec(@ctx.withParameters { FooP: 'Bah' }).should.equal 'Bah'
 
+describe 'ValueSetDef', ->
+  @beforeEach ->
+    setup @
+    @oneArg = @lib.valueSets['One Arg']
+    @twoArg = @lib.valueSets['Two Arg']
+    @threeArg = @lib.valueSets['Three Arg']
+
+  it 'should execute one-arg to ValueSet with ID', ->
+    @oneArg.exec(@ctx).id.should.equal '2.16.840.1.113883.3.464.1003.102.12.1011'
+    should.not.exist @oneArg.version
+    should.not.exist @oneArg.authority
+
+  it 'should execute two-arg to ValueSet with ID and version', ->
+    @twoArg.exec(@ctx).id.should.equal '2.16.840.1.113883.3.464.1003.102.12.1011'
+    @twoArg.exec(@ctx).version.should.equal '20140501'
+    should.not.exist @twoArg.authority
+
+  it 'should execute three-arg to ValueSet with ID, version, and authority', ->
+    @threeArg.exec(@ctx).id.should.equal '2.16.840.1.113883.3.464.1003.102.12.1011'
+    @threeArg.exec(@ctx).version.should.equal '20140501'
+    @threeArg.exec(@ctx).authority.should.equal 'National Committee for Quality Assurance'
+
+describe 'ValueSetRef', ->
+  @beforeEach ->
+    setup @
+
+  it 'should have type: ValueSetRef', ->
+    @foo.type.should.equal 'ValueSetRef'
+
+  it 'should have a name', ->
+    @foo.name.should.equal 'Acute Pharyngitis'
+
+  it 'should execute to the defined value set', ->
+    @foo.exec(@ctx).id.should.equal '2.16.840.1.113883.3.464.1003.101.12.1001'
+
 describe 'And', ->
   @beforeEach ->
     setup @
