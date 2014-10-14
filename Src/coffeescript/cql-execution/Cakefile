@@ -43,7 +43,7 @@ task 'watch-test-data', 'Watch test/cql-test-data.txt for changes', ->
  
 task "watch-all", "Watch src/ and test/cql-test-data.txt for changes", ->
   invoke 'watch'
-  invoke 'watchTestData'
+  invoke 'watch-test-data'
 
 task "test", "run tests", ->
   invoke 'build'
