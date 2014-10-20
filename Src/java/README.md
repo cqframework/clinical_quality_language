@@ -64,19 +64,19 @@ Lastly, you can run the script for the cql-to-elm project (which can also accept
 If you do not provide a file argument to cql-to-elm, it will expect CQL to be entered via the console.
 Press `CTL-D` (Mac) or `CTL-Z` (Win) to stop typing CQL into the console.
 
-# Using the CQL-to-JS Execution Framework
-
-The CQL-to-JS framework contains Java code to translate CQL or ELM to a JSON representation.  It
-also contains [CoffeeScript](http://coffeescript.org/) libraries that can execute the JSON
-representation of the logic.  At this point, only a small subset has been implemented and it uses
-a very simple JSON-based representation of patients.
-
 ## Generate a JSON Representation of CQL Logic
 
 To generate a JSON representation of CQL logic, build and execute the cql-to-js app:
 
     ./gradlew :cql-to-js:installApp
-    ./cql-to-js/build/install/cql-to-js/bin/cql-to-js ../../Examples/ChlamydiaScreening_CQM.cql
+    ./cql-to-js/build/install/cql-to-js/bin/cql-to-js --input ../../Examples/ChlamydiaScreening_CQM.cql
 
-To save the results to a file, simply redirect output to a file.  Note that this is all likely to
-change at some point in the future!
+The following options are supported:
+
+* `--input` or `-i`: Specify the input CQL file (REQUIRED).
+* `--output` or `-o`: Specify the output file.  If not specified, the output file will have the
+  same base name and location as the input file.  If only a directory is specified, the output
+  file will have the same base name as the input file and be written to the requested directory.
+* `--stdout` or `-s`: Write output to the console instead of a file.
+* `--coffeescript` or `-c`: Output as a coffescript file with the measure exported (otherwise it
+  will be output as a JSON file).

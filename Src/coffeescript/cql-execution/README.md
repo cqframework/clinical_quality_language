@@ -6,18 +6,74 @@ functionality has been implemented (and a very simple JSON-based patient format 
 
 # Project Configuration
 
-To use this project, you must perform the following steps:
+To use this project, you should perform the following steps:
 
 1. Install [Node.js](http://nodejs.org/)
-2. Install [CoffeeScript](http://coffeescript.org/) (optional)
+2. Install [CoffeeScript](http://coffeescript.org/)
 3. Execute the following from the _cql-execution_ directory: `npm install`
+
+# To Execute a Measure
+
+Please note that the CQL Execution Framework has very limited support right now.  It will not
+execute most measures.  You should check to see what is implemented before expecting it to work!
+For a working example, see `src/example`.
+
+Once the project is complete, it will be packaged in a way that makes execution easier.  For now,
+there are some manual steps involved.  First, you must create a JSON representation of the ELM.
+For easiest integration, we will generate a coffee file using cql-to-js:
+
+1. Install the [Java 7 SDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
+2. `cd ${branch}/Src/java` (replacing `${branch}` with the path to your git branch)
+3. `./gradlew :cql-to-js:installApp`
+4. `./cql-to-js/build/install/cql-to-js/bin/cql-to-js --coffee --input ${path_to_cql} --output ${branch}/Src/coffeescript/cql-execution/src/`
+
+The above example put the measure into the coffeescript src directory to make things easy, but it
+doesn't _have_ to go there.  If you put it elsewhere, you'll need to compile it to javascript and
+modify the examples below with the new path (where applicable).
+
+Next, create a coffeescript file to execute the measure.  This file will need to contain (or 
+`require`) JSON patient representations for testing as well.  For ease of use, let's put the file
+in the `coffeescript/cql-execution/src` directory:
+
+    { Library, Context } = require './cql-exec'
+    measure = require './my-measure'
+    
+    lib = new Library(measure)
+    ctx = new Context(lib)
+    ctx.patients = [ {
+        "id": 1,
+        "name": "John Smith",
+        "birthdate" : new Date(1980, 2, 17, 6, 15)
+      }, {
+        "id": 2,
+        "name": "Sally Smith",
+        "birthdate" : new Date(2007, 8, 2, 11, 47)
+    } ]
+    
+    result = lib.exec(ctx)
+    console.log JSON.stringify(result, undefined, 2)
+
+In the above file, we've assumed the JSON ELM coffeescript file for the measure is called
+`my-measure.coffeescript` and is in the same directory as the file (and `cql-exec` library).  We've
+also assumed a couple of very simple patients.  Let's call the file we just created
+`my-measure-exec.coffeescript`.
+
+Now we must compile it to javascript in the `${branch}/Src/coffeescript/cql-execution/lib`
+directory.  There is a simple Cakefile build script for this (cake is installed with coffeescript):
+
+1. `cd ${build}/Src/coffeescript`
+2. `cake build`
+
+Now we can execute the measure using Node.js:
+
+1. `cd ${build}/Src/coffeescript/lib`
+2. `node my-measure-exec`
+
+If all is well, it should print the result object to standard out.
 
 # To Run the CQL Execution Unit Tests
 
-Execute `npm test`.
-
-CoffeeScript's _cake_ command can also be used (if installed): `cake test`.  Alternately, you can
-use the _cake_ installed in your local node_modules: `./node_modules/.bin/cake test`.
+Execute `npm test` or `cake test`.
 
 # To Develop Tests
 

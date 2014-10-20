@@ -9,6 +9,7 @@
     "should": "^4.0.4"
   },
   "scripts": {
+    "prepublish": "cake build",
     "test": "cake test"
   },
   "license": "Apache 2.0"
