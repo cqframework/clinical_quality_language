@@ -1275,6 +1275,106 @@ module.exports.Less = {
    }
 }
 
+### List
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define three = 1 + 2
+define IntList = { 9, 7, 8 }
+define StringList = { 'a', 'bee', 'see' }
+define mixedList = { 1, 'two', three }
+###
+
+module.exports.List = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "three",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "IntList",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "List",
+               "element" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "9",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "7",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "8",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "StringList",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "List",
+               "element" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "a",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "bee",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "see",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "mixedList",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "List",
+               "element" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "two",
+                  "type" : "Literal"
+               }, {
+                  "name" : "three",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
 ### Begin
 library TestSnippet version '1'
 using QUICK
@@ -1346,6 +1446,151 @@ module.exports.Begin = {
    }
 }
 
+### Add
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define Ten = 10
+define Eleven = 11
+define OnePlusTwo = 1 + 2
+define AddMultiple = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
+define AddVariables = Ten + Eleven
+###
+
+module.exports.Add = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Ten",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "10",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "Eleven",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "11",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "OnePlusTwo",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "AddMultiple",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "type" : "Add",
+                  "operand" : [ {
+                     "type" : "Add",
+                     "operand" : [ {
+                        "type" : "Add",
+                        "operand" : [ {
+                           "type" : "Add",
+                           "operand" : [ {
+                              "type" : "Add",
+                              "operand" : [ {
+                                 "type" : "Add",
+                                 "operand" : [ {
+                                    "type" : "Add",
+                                    "operand" : [ {
+                                       "type" : "Add",
+                                       "operand" : [ {
+                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                          "value" : "1",
+                                          "type" : "Literal"
+                                       }, {
+                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                          "value" : "2",
+                                          "type" : "Literal"
+                                       } ]
+                                    }, {
+                                       "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                       "value" : "3",
+                                       "type" : "Literal"
+                                    } ]
+                                 }, {
+                                    "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                    "value" : "4",
+                                    "type" : "Literal"
+                                 } ]
+                              }, {
+                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "value" : "5",
+                                 "type" : "Literal"
+                              } ]
+                           }, {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "6",
+                              "type" : "Literal"
+                           } ]
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "7",
+                           "type" : "Literal"
+                        } ]
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "8",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "9",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "AddVariables",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "Ten",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "Eleven",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
 ### Literal
 library TestSnippet version '1'
 using QUICK
@@ -1401,6 +1646,621 @@ module.exports.Literal = {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
                "value" : "true",
                "type" : "Literal"
+            }
+         } ]
+      }
+   }
+}
+
+### InList
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define IsIn = 4 in { 3, 4, 5 }
+define IsNotIn = 4 in { 3, 5, 6 }
+###
+
+module.exports.InList = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "IsIn",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "4",
+                  "type" : "Literal"
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "IsNotIn",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "4",
+                  "type" : "Literal"
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### InValueSet
+library TestSnippet version '1'
+using QUICK
+valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+valueset "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+context PATIENT
+define String = 'F' in "Female"
+define StringInVersionedValueSet = 'F' in "Versioned Female"
+define ShortCode = Code('F') in "Female"
+define MediumCode = Code('F', '2.16.840.1.113883.18.2') in "Female"
+define LongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.5') in "Female"
+define WrongString = 'M' in "Female"
+define WrongStringInVersionedValueSet = 'M' in "Versioned Female"
+define WrongShortCode = Code('M') in "Female"
+define WrongMediumCode = Code('F', '3.16.840.1.113883.18.2') in "Female"
+define WrongLongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6') in "Female"
+###
+
+module.exports.InValueSet = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Female",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "Versioned Female",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "20121025",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "String",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "F",
+                  "type" : "Literal"
+               }, {
+                  "name" : "Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "StringInVersionedValueSet",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "F",
+                  "type" : "Literal"
+               }, {
+                  "name" : "Versioned Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "ShortCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "name" : "Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "MediumCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "2.16.840.1.113883.18.2",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "name" : "Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "LongCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "2.16.840.1.113883.18.2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "HL7V2.5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "name" : "Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "WrongString",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "M",
+                  "type" : "Literal"
+               }, {
+                  "name" : "Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "WrongStringInVersionedValueSet",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "M",
+                  "type" : "Literal"
+               }, {
+                  "name" : "Versioned Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "WrongShortCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "M",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "name" : "Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "WrongMediumCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "3.16.840.1.113883.18.2",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "name" : "Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         }, {
+            "name" : "WrongLongCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "2.16.840.1.113883.18.2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "HL7V2.6",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "name" : "Female",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### InValueSetFunction
+library TestSnippet version '1'
+using QUICK
+valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+valueset "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+context PATIENT
+define String = InValueSet('F', '2.16.840.1.113883.3.560.100.2')
+define StringInVersionedValueSet = InValueSet('F', '2.16.840.1.113883.3.560.100.2', '20121025')
+define ShortCode = InValueSet(Code('F'), '2.16.840.1.113883.3.560.100.2')
+define MediumCode = InValueSet(Code('F', '2.16.840.1.113883.18.2'), '2.16.840.1.113883.3.560.100.2')
+define LongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.5'), '2.16.840.1.113883.3.560.100.2')
+define WrongString = InValueSet('M', '2.16.840.1.113883.3.560.100.2')
+define WrongStringInVersionedValueSet = InValueSet('M', '2.16.840.1.113883.3.560.100.2', '20121025')
+define WrongShortCode = InValueSet(Code('M'), '2.16.840.1.113883.3.560.100.2')
+define WrongMediumCode = InValueSet(Code('F', '3.16.840.1.113883.18.2'), '2.16.840.1.113883.3.560.100.2')
+define WrongLongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6'), '2.16.840.1.113883.3.560.100.2')
+###
+
+module.exports.InValueSetFunction = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Female",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "Versioned Female",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "20121025",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "String",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "F",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "StringInVersionedValueSet",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "F",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "20121025",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "ShortCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "MediumCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "2.16.840.1.113883.18.2",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LongCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "2.16.840.1.113883.18.2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "HL7V2.5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "WrongString",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "M",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "WrongStringInVersionedValueSet",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "M",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "20121025",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "WrongShortCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "M",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "WrongMediumCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "3.16.840.1.113883.18.2",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "WrongLongCode",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "InValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "Code",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "F",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "2.16.840.1.113883.18.2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "HL7V2.6",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
             }
          } ]
       }

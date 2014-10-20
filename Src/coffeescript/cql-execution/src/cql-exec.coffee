@@ -49,7 +49,7 @@ class Library
     r
 
 class Context
-  constructor: (@measure, @patients = [], @parameters = {}) ->
+  constructor: (@measure, @patients = [], @parameters = {}, @valueSets = {}) ->
     @patientIndex = 0
 
   withPatients: (p) ->
@@ -59,6 +59,17 @@ class Context
   withParameters: (p) ->
     @parameters = p ? {}
     @
+
+  withValueSets: (vs) ->
+    @valueSets = vs ? {}
+    @
+
+  resolveValueSet: (oid, version) ->
+    vs = @valueSets[oid]
+    if vs?
+      if version? then vs = vs[version]
+      else vs = vs[key] for key of vs
+    vs
 
   currentPatient: () ->
     if @patientIndex < @patients.length then @patients[@patientIndex] else null
@@ -136,10 +147,16 @@ class ParameterRef extends Expression
   exec: (ctx) ->
     ctx.measure.parameters[@name]?.exec(ctx)
 
-# Value Sets
+# Value Sets and Codes
+class Code extends Expression
+  constructor: (@code, @system, @version) ->
+    super
+    @type = 'Code'
+
 class ValueSet extends Expression
   constructor: (@id, @version, @authority) ->
     super
+    @type ?= 'ValueSet'
     if typeof @id is "object"
       json = @id
       @id = json.id
@@ -189,6 +206,31 @@ class AgeAtFunctionRef extends FunctionRef
     ageInMS = date.getTime() - ctx.currentPatient().birthdate.getTime()
     # Doesn't account for leap year, but close enough for now
     Math.floor(ageInMS / (1000 * 60 * 60 * 24 * 365))
+
+class CodeFunctionRef extends FunctionRef
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    new Code(@execArgs(ctx)...)
+
+class InValueSetFunctionRef extends FunctionRef
+  constructor: (json) ->
+    super
+    @in = new In({
+      type: 'In',
+      operand: [
+          json.operand[0],
+          {
+            type: 'FunctionRef',
+            name: 'ValueSet',
+            operand: json.operand[1..]
+          }
+      ]
+    })
+
+  exec: (ctx) ->
+    @in.exec(ctx)
 
 class DateFunctionRef extends FunctionRef
   constructor: (json) ->
@@ -245,7 +287,15 @@ class Less extends Expression
     args = @execArgs(ctx)
     args[0] < args[1]
 
-# Intervals and Dates
+# Lists and Intervals
+
+class List extends Expression
+  constructor: (json) ->
+    super
+    @elements = build json.element
+
+  exec: (ctx) ->
+    (item.exec(ctx) for item in @elements)
 
 class Interval extends Expression
   constructor: (json) ->
@@ -263,11 +313,43 @@ class Begin extends Expression
     # assumes this is interval
     @arg.exec(ctx).begin.exec(ctx)
 
+# Dates
+
 class CqlDate
   constructor: (@year, @month, @day, @hour, @minute, @second) ->
 
   toJSDate: () ->
     new Date(@year, (@month?-1) ? 0, @day ? 1, @hour ? 0, @minute ? 0, @second ? 0, 0)
+
+# Membership
+
+class In extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    [item, container] = @execArgs(ctx)
+
+    switch
+      when typeIsArray container
+        return item in container
+      when container.type is 'ValueSet'
+        vs = ctx.resolveValueSet(container.id, container.version)
+        if vs?
+          code = if typeof item is 'string' then new Code(item) else item
+          codes = (c for c in vs when c.code is code.code)
+          if code.system? then codes = (c for c in codes when c.system is code.system)
+          if code.version? then codes = (c for c in codes when c.version is code.version)
+          return codes.length > 0
+
+# Math
+
+class Add extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @execArgs(ctx).reduce (x,y) -> x + y
 
 # Literals
 

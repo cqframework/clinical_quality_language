@@ -272,6 +272,22 @@ describe 'Less', ->
   it 'should be true for 5 < 6', ->
     @aLtB_Int.exec(@ctx).should.be.true
 
+describe 'List', ->
+  @beforeEach ->
+    setup @
+
+  it 'should have type: List', ->
+    @intList.type.should.equal 'List'
+
+  it 'should execute to an array (ints)', ->
+    @intList.exec(@ctx).should.eql [9, 7, 8]
+
+  it 'should execute to an array (strings)', ->
+    @stringList.exec(@ctx).should.eql ['a', 'bee', 'see']
+
+  it 'should execute to an array (mixed)', ->
+    @mixedList.exec(@ctx).should.eql [1, 'two', 3]
+
 describe 'Interval', ->
   @beforeEach ->
     setup @
@@ -315,6 +331,111 @@ describe 'Begin', ->
 
   it 'should execute as the beginning of the interval', ->
     @foo.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
+
+describe 'InList', ->
+  @beforeEach ->
+    setup @
+
+  it 'should execute to true when item is in list', ->
+    @isIn.exec(@ctx).should.be.true
+
+  it 'should execute to false when item is not in list', ->
+    @isNotIn.exec(@ctx).should.be.false
+
+describe 'InValueSet', ->
+  @beforeEach ->
+    setup @
+    @ctx = @ctx.withValueSets {
+      "2.16.840.1.113883.3.560.100.2" : {
+        "20121025" : [
+          { "code": "F", "system": "2.16.840.1.113883.18.2", "version": "HL7V2.5" }
+        ]
+      }
+    }
+
+  it 'should find string code in value set', ->
+    @string.exec(@ctx).should.be.true
+
+  it 'should find string code in versioned value set', ->
+    @stringInVersionedValueSet.exec(@ctx).should.be.true
+
+  it 'should find short code in value set', ->
+    @shortCode.exec(@ctx).should.be.true
+
+  it 'should find medium code in value set', ->
+    @mediumCode.exec(@ctx).should.be.true
+
+  it 'should find long code in value set', ->
+    @longCode.exec(@ctx).should.be.true
+
+  it 'should not find string code in value set', ->
+    @wrongString.exec(@ctx).should.be.false
+
+  it 'should not find string code in versioned value set', ->
+    @wrongStringInVersionedValueSet.exec(@ctx).should.be.false
+
+  it 'should not find short code in value set', ->
+    @wrongShortCode.exec(@ctx).should.be.false
+
+  it 'should not find medium code in value set', ->
+    @wrongMediumCode.exec(@ctx).should.be.false
+
+  it 'should not find long code in value set', ->
+    @wrongLongCode.exec(@ctx).should.be.false
+
+describe 'InValueSetFunction', ->
+  @beforeEach ->
+    setup @
+    @ctx = @ctx.withValueSets {
+      "2.16.840.1.113883.3.560.100.2" : {
+        "20121025" : [
+          { "code": "F", "system": "2.16.840.1.113883.18.2", "version": "HL7V2.5" }
+        ]
+      }
+    }
+
+  it 'should find string code in value set', ->
+    @string.exec(@ctx).should.be.true
+
+  it 'should find string code in versioned value set', ->
+    @stringInVersionedValueSet.exec(@ctx).should.be.true
+
+  it 'should find short code in value set', ->
+    @shortCode.exec(@ctx)#.should.be.true
+
+  it 'should find medium code in value set', ->
+    @mediumCode.exec(@ctx).should.be.true
+
+  it 'should find long code in value set', ->
+    @longCode.exec(@ctx).should.be.true
+
+  it 'should not find string code in value set', ->
+    @wrongString.exec(@ctx).should.be.false
+
+  it 'should not find string code in versioned value set', ->
+    @wrongStringInVersionedValueSet.exec(@ctx).should.be.false
+
+  it 'should not find short code in value set', ->
+    @wrongShortCode.exec(@ctx).should.be.false
+
+  it 'should not find medium code in value set', ->
+    @wrongMediumCode.exec(@ctx).should.be.false
+
+  it 'should not find long code in value set', ->
+    @wrongLongCode.exec(@ctx).should.be.false
+
+describe 'Add', ->
+  @beforeEach ->
+    setup @
+
+  it 'should add two numbers', ->
+    @onePlusTwo.exec(@ctx).should.equal 3
+
+  it 'should add multiple numbers', ->
+    @addMultiple.exec(@ctx).should.equal 55
+
+  it 'should add variables', ->
+    @addVariables.exec(@ctx).should.equal 21
 
 describe 'Literal', ->
   @beforeEach ->

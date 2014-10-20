@@ -76,6 +76,12 @@ define AGtB_Int = 5 < 4
 define AEqB_Int = 5 < 5
 define ALtB_Int = 5 < 6
 
+# List
+define three = 1 + 2
+define IntList = { 9, 7, 8 }
+define StringList = { 'a', 'bee', 'see' }
+define mixedList = { 1, 'two', three }
+
 # Interval
 define Open = interval(Date(2012, 1, 1), Date(2013, 1, 1))
 define LeftOpen = interval(Date(2012, 1, 1), Date(2013, 1, 1)]
@@ -85,8 +91,48 @@ define Closed = interval[Date(2012, 1, 1), Date(2013, 1, 1)]
 # Begin
 define Foo = start of interval[Date(2012, 1, 1), Date(2013, 1, 1)]
 
+# Add
+define Ten = 10
+define Eleven = 11
+define OnePlusTwo = 1 + 2
+define AddMultiple = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
+define AddVariables = Ten + Eleven
+
 # Literal
 define BoolTrue = true
 define BoolFalse = false
 define IntOne = 1
 define StringTrue = 'true'
+
+# InList
+define IsIn = 4 in { 3, 4, 5 }
+define IsNotIn = 4 in { 3, 5, 6 }
+
+# InValueSet
+valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+valueset "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+define String = 'F' in "Female"
+define StringInVersionedValueSet = 'F' in "Versioned Female"
+define ShortCode = Code('F') in "Female"
+define MediumCode = Code('F', '2.16.840.1.113883.18.2') in "Female"
+define LongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.5') in "Female"
+define WrongString = 'M' in "Female"
+define WrongStringInVersionedValueSet = 'M' in "Versioned Female"
+define WrongShortCode = Code('M') in "Female"
+define WrongMediumCode = Code('F', '3.16.840.1.113883.18.2') in "Female"
+define WrongLongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6') in "Female"
+
+# InValueSetFunction
+valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+valueset "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+define String = InValueSet('F', '2.16.840.1.113883.3.560.100.2')
+define StringInVersionedValueSet = InValueSet('F', '2.16.840.1.113883.3.560.100.2', '20121025')
+define ShortCode = InValueSet(Code('F'), '2.16.840.1.113883.3.560.100.2')
+define MediumCode = InValueSet(Code('F', '2.16.840.1.113883.18.2'), '2.16.840.1.113883.3.560.100.2')
+define LongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.5'), '2.16.840.1.113883.3.560.100.2')
+define WrongString = InValueSet('M', '2.16.840.1.113883.3.560.100.2')
+define WrongStringInVersionedValueSet = InValueSet('M', '2.16.840.1.113883.3.560.100.2', '20121025')
+define WrongShortCode = InValueSet(Code('M'), '2.16.840.1.113883.3.560.100.2')
+define WrongMediumCode = InValueSet(Code('F', '3.16.840.1.113883.18.2'), '2.16.840.1.113883.3.560.100.2')
+define WrongLongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6'), '2.16.840.1.113883.3.560.100.2')
+
