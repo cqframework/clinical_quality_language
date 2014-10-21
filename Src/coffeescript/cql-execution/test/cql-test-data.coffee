@@ -1446,212 +1446,6 @@ module.exports.Begin = {
    }
 }
 
-### Add
-library TestSnippet version '1'
-using QUICK
-context PATIENT
-define Ten = 10
-define Eleven = 11
-define OnePlusTwo = 1 + 2
-define AddMultiple = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
-define AddVariables = Ten + Eleven
-###
-
-module.exports.Add = {
-   "library" : {
-      "identifier" : {
-         "id" : "TestSnippet",
-         "version" : "1"
-      },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
-            "name" : "Ten",
-            "context" : "PATIENT",
-            "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-               "value" : "10",
-               "type" : "Literal"
-            }
-         }, {
-            "name" : "Eleven",
-            "context" : "PATIENT",
-            "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-               "value" : "11",
-               "type" : "Literal"
-            }
-         }, {
-            "name" : "OnePlusTwo",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "Add",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "1",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "2",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "AddMultiple",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "Add",
-               "operand" : [ {
-                  "type" : "Add",
-                  "operand" : [ {
-                     "type" : "Add",
-                     "operand" : [ {
-                        "type" : "Add",
-                        "operand" : [ {
-                           "type" : "Add",
-                           "operand" : [ {
-                              "type" : "Add",
-                              "operand" : [ {
-                                 "type" : "Add",
-                                 "operand" : [ {
-                                    "type" : "Add",
-                                    "operand" : [ {
-                                       "type" : "Add",
-                                       "operand" : [ {
-                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                                          "value" : "1",
-                                          "type" : "Literal"
-                                       }, {
-                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                                          "value" : "2",
-                                          "type" : "Literal"
-                                       } ]
-                                    }, {
-                                       "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                                       "value" : "3",
-                                       "type" : "Literal"
-                                    } ]
-                                 }, {
-                                    "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                                    "value" : "4",
-                                    "type" : "Literal"
-                                 } ]
-                              }, {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                                 "value" : "5",
-                                 "type" : "Literal"
-                              } ]
-                           }, {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                              "value" : "6",
-                              "type" : "Literal"
-                           } ]
-                        }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "7",
-                           "type" : "Literal"
-                        } ]
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "8",
-                        "type" : "Literal"
-                     } ]
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "9",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "10",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "AddVariables",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "Add",
-               "operand" : [ {
-                  "name" : "Ten",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "Eleven",
-                  "type" : "ExpressionRef"
-               } ]
-            }
-         } ]
-      }
-   }
-}
-
-### Literal
-library TestSnippet version '1'
-using QUICK
-context PATIENT
-define BoolTrue = true
-define BoolFalse = false
-define IntOne = 1
-define StringTrue = 'true'
-###
-
-module.exports.Literal = {
-   "library" : {
-      "identifier" : {
-         "id" : "TestSnippet",
-         "version" : "1"
-      },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
-            "name" : "BoolTrue",
-            "context" : "PATIENT",
-            "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-               "value" : "true",
-               "type" : "Literal"
-            }
-         }, {
-            "name" : "BoolFalse",
-            "context" : "PATIENT",
-            "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-               "value" : "false",
-               "type" : "Literal"
-            }
-         }, {
-            "name" : "IntOne",
-            "context" : "PATIENT",
-            "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-               "value" : "1",
-               "type" : "Literal"
-            }
-         }, {
-            "name" : "StringTrue",
-            "context" : "PATIENT",
-            "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-               "value" : "true",
-               "type" : "Literal"
-            }
-         } ]
-      }
-   }
-}
-
 ### InList
 library TestSnippet version '1'
 using QUICK
@@ -2261,6 +2055,455 @@ module.exports.InValueSetFunction = {
                   "value" : "2.16.840.1.113883.3.560.100.2",
                   "type" : "Literal"
                } ]
+            }
+         } ]
+      }
+   }
+}
+
+### PatientPropertyInValueSet
+library TestSnippet version '1'
+using QUICK
+valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+context PATIENT
+define IsFemale = gender in "Female Administrative Sex"
+###
+
+module.exports.PatientPropertyInValueSet = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Female",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.560.100.2",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "IsFemale",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+               }, {
+                  "name" : "Female Administrative Sex",
+                  "type" : "ValueSetRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Add
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define Ten = 10
+define Eleven = 11
+define OnePlusTwo = 1 + 2
+define AddMultiple = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
+define AddVariables = Ten + Eleven
+###
+
+module.exports.Add = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Ten",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "10",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "Eleven",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "11",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "OnePlusTwo",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "AddMultiple",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "type" : "Add",
+                  "operand" : [ {
+                     "type" : "Add",
+                     "operand" : [ {
+                        "type" : "Add",
+                        "operand" : [ {
+                           "type" : "Add",
+                           "operand" : [ {
+                              "type" : "Add",
+                              "operand" : [ {
+                                 "type" : "Add",
+                                 "operand" : [ {
+                                    "type" : "Add",
+                                    "operand" : [ {
+                                       "type" : "Add",
+                                       "operand" : [ {
+                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                          "value" : "1",
+                                          "type" : "Literal"
+                                       }, {
+                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                          "value" : "2",
+                                          "type" : "Literal"
+                                       } ]
+                                    }, {
+                                       "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                       "value" : "3",
+                                       "type" : "Literal"
+                                    } ]
+                                 }, {
+                                    "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                    "value" : "4",
+                                    "type" : "Literal"
+                                 } ]
+                              }, {
+                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "value" : "5",
+                                 "type" : "Literal"
+                              } ]
+                           }, {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "6",
+                              "type" : "Literal"
+                           } ]
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "7",
+                           "type" : "Literal"
+                        } ]
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "8",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "9",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "AddVariables",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "Ten",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "Eleven",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Literal
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define BoolTrue = true
+define BoolFalse = false
+define IntOne = 1
+define StringTrue = 'true'
+###
+
+module.exports.Literal = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "BoolTrue",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+               "value" : "true",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "BoolFalse",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+               "value" : "false",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "IntOne",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "1",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "StringTrue",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+               "value" : "true",
+               "type" : "Literal"
+            }
+         } ]
+      }
+   }
+}
+
+### ClinicalRequest
+library TestSnippet version '1'
+using QUICK
+valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
+valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+valueset "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
+context PATIENT
+define Conditions = [Condition]
+define Encounters = [Encounter, Performance]
+define PharyngitisConditions = [Condition: "Acute Pharyngitis"]
+define AmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED Visit"]
+define EncountersByServiceType = [Encounter, Performance: serviceType in "Annual Wellness Visit"]
+define WrongDataType = [Encounter, Proposal: "Ambulatory/ED Visit"]
+define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
+define WrongCodeProperty = [Encounter, Performance: class in "Annual Wellness Visit"]
+###
+
+module.exports.ClinicalRequest = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Acute Pharyngitis",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "Ambulatory/ED Visit",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "Annual Wellness Visit",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.526.3.1240",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Conditions",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+               "type" : "ClinicalRequest"
+            }
+         }, {
+            "name" : "Encounters",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+               "type" : "ClinicalRequest"
+            }
+         }, {
+            "name" : "PharyngitisConditions",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+               "codeProperty" : "code",
+               "type" : "ClinicalRequest",
+               "codes" : {
+                  "name" : "Acute Pharyngitis",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "AmbulatoryEncounters",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+               "codeProperty" : "class",
+               "type" : "ClinicalRequest",
+               "codes" : {
+                  "name" : "Ambulatory/ED Visit",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "EncountersByServiceType",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+               "codeProperty" : "serviceType",
+               "type" : "ClinicalRequest",
+               "codes" : {
+                  "name" : "Annual Wellness Visit",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "WrongDataType",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}EncounterProposalOccurrence",
+               "codeProperty" : "class",
+               "type" : "ClinicalRequest",
+               "codes" : {
+                  "name" : "Ambulatory/ED Visit",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "WrongValueSet",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+               "codeProperty" : "code",
+               "type" : "ClinicalRequest",
+               "codes" : {
+                  "name" : "Ambulatory/ED Visit",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "WrongCodeProperty",
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+               "codeProperty" : "class",
+               "type" : "ClinicalRequest",
+               "codes" : {
+                  "name" : "Annual Wellness Visit",
+                  "type" : "ValueSetRef"
+               }
+            }
+         } ]
+      }
+   }
+}
+
+### ScratchPad
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define Foo = "foo"
+###
+
+module.exports.ScratchPad = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Foo",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "foo",
+               "type" : "ValueSetRef"
             }
          } ]
       }

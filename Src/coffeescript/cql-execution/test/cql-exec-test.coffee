@@ -11,7 +11,7 @@ setup = (test, patients=[], parameters={}) ->
 
 describe 'InAgeDemographic', ->
   @beforeEach ->
-    setup @, P.InAgeDemographic
+    setup @, P.P1AndP2
     @results = @lib.exec(@ctx)
   
   it 'should have correct patient results', ->
@@ -125,7 +125,7 @@ describe 'And', ->
 
 describe 'AgeAtFunctionRef', ->
   @beforeEach ->
-    setup @, [P.p1]
+    setup @, [P.P1]
 
   it 'should have type: FunctionRef', ->
     @ageAt2012.type.should.equal 'FunctionRef'
@@ -345,7 +345,7 @@ describe 'InList', ->
 describe 'InValueSet', ->
   @beforeEach ->
     setup @
-    @ctx = @ctx.withValueSets {
+    @ctx.withValueSets {
       "2.16.840.1.113883.3.560.100.2" : {
         "20121025" : [
           { "code": "F", "system": "2.16.840.1.113883.18.2", "version": "HL7V2.5" }
@@ -386,7 +386,7 @@ describe 'InValueSet', ->
 describe 'InValueSetFunction', ->
   @beforeEach ->
     setup @
-    @ctx = @ctx.withValueSets {
+    @ctx.withValueSets {
       "2.16.840.1.113883.3.560.100.2" : {
         "20121025" : [
           { "code": "F", "system": "2.16.840.1.113883.18.2", "version": "HL7V2.5" }
@@ -423,6 +423,25 @@ describe 'InValueSetFunction', ->
 
   it 'should not find long code in value set', ->
     @wrongLongCode.exec(@ctx).should.be.false
+
+describe.skip 'PatientPropertyInValueSet', ->
+  @beforeEach ->
+    setup @
+    @ctx.withValueSets {
+      "2.16.840.1.113883.3.560.100.2" : {
+        "20121025" : [
+          { "code": "F", "system": "2.16.840.1.113883.18.2", "version": "HL7V2.5" }
+        ]
+      }
+    }
+
+  it 'should find that John is not female', ->
+    @ctx = @ctx.withPatients [ P.P1 ]
+    @isFemale.exec(@ctx).should.be.false
+
+  it 'should find that Sally is female', ->
+    @ctx = @ctx.withPatients [ P.P2 ]
+    @isFemale.exec(@ctx).should.be.true
 
 describe 'Add', ->
   @beforeEach ->
@@ -470,3 +489,84 @@ describe 'Literal', ->
 
   it 'should execute \'true\' as \'true\'', ->
     @stringTrue.exec(@ctx).should.equal 'true'
+
+describe 'ClinicalRequest', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients [P.P3]
+    @ctx.withValueSets {
+      "2.16.840.1.113883.3.464.1003.102.12.1011" : {
+        "20140501" : [
+          { "code": "034.0", "system": "2.16.840.1.113883.6.103", "version": "2013" },
+          { "code": "1532007", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "43878008", "system": "2.16.840.1.113883.6.96", "version": "2013-09" }
+        ]
+      },
+      "2.16.840.1.113883.3.464.1003.101.12.1061" : {
+        "20140501" : [
+          { "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "270427003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "406547006", "system": "2.16.840.1.113883.6.96", "version": "2013-09" }
+        ]
+      },
+      "2.16.840.1.113883.3.526.3.1010" : {
+        "20140501" : [
+          { "code": "109264009", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "109383000", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "109962001", "system": "2.16.840.1.113883.6.96", "version": "2013-09" }
+        ]
+      },
+      "2.16.840.1.113883.3.526.3.1240" : {
+        "20140501" : [
+          { "code": "G0438", "system": "2.16.840.1.113883.6.285", "version": "2014" },
+          { "code": "G0439", "system": "2.16.840.1.113883.6.285", "version": "2014" }
+        ]
+      }
+    }
+
+  it 'should find observations', ->
+    c = @conditions.exec(@ctx)
+    c.should.have.length(2)
+    c[0].identifier.id.should.equal 'http://cqframework.org/3/2'
+    c[1].identifier.id.should.equal 'http://cqframework.org/3/4'
+
+  it 'should find encounter performances', ->
+    e = @encounters.exec(@ctx)
+    e.should.have.length(2)
+    e[0].identifier.id.should.equal 'http://cqframework.org/3/1'
+    e[1].identifier.id.should.equal 'http://cqframework.org/3/3'
+
+  it 'should find observations with a value set', ->
+    p = @pharyngitisConditions.exec(@ctx)
+    p.should.have.length(1)
+    p[0].identifier.id.should.equal 'http://cqframework.org/3/2'
+
+  it 'should find encounter performances with a value set', ->
+    a = @ambulatoryEncounters.exec(@ctx)
+    a.should.have.length(2)
+    a[0].identifier.id.should.equal 'http://cqframework.org/3/1'
+    a[1].identifier.id.should.equal 'http://cqframework.org/3/3'
+
+  it 'should find encounter performances by service type', ->
+    e = @encountersByServiceType.exec(@ctx)
+    e.should.have.length(1)
+    e[0].identifier.id.should.equal 'http://cqframework.org/3/1'
+
+  it 'should not find encounter proposals when they don\'t exist', ->
+    e = @wrongDataType.exec(@ctx)
+    e.should.be.empty
+
+  it 'should not find conditions with wrong valueset', ->
+    e = @wrongValueSet.exec(@ctx)
+    e.should.be.empty
+
+  it 'should not find encounter performances using wrong codeProperty', ->
+    e = @wrongCodeProperty.exec(@ctx)
+    e.should.be.empty
+
+###
+describe.only 'ScratchPad', ->
+  it 'is a quick scratchpad for simple testing during development', ->
+    setup @
+    console.log JSON.stringify(@foo, undefined, 2)
+###

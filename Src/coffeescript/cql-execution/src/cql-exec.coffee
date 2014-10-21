@@ -1,3 +1,5 @@
+{ Patient } = require './cql-patient'
+
 typeIsArray = Array.isArray || ( value ) -> return {}.toString.call( value ) is '[object Array]'
 
 functionExists = (name) -> eval("typeof #{name}") is "function"
@@ -49,11 +51,12 @@ class Library
     r
 
 class Context
-  constructor: (@measure, @patients = [], @parameters = {}, @valueSets = {}) ->
+  constructor: (@measure, patients = [], @parameters = {}, @valueSets = {}) ->
+    @withPatients(patients)
     @patientIndex = 0
 
-  withPatients: (p) ->
-    @patients = p ? []
+  withPatients: (patients = []) ->
+    @patients = (new Patient(p) for p in patients)
     @
 
   withParameters: (p) ->
@@ -63,13 +66,6 @@ class Context
   withValueSets: (vs) ->
     @valueSets = vs ? {}
     @
-
-  resolveValueSet: (oid, version) ->
-    vs = @valueSets[oid]
-    if vs?
-      if version? then vs = vs[version]
-      else vs = vs[key] for key of vs
-    vs
 
   currentPatient: () ->
     if @patientIndex < @patients.length then @patients[@patientIndex] else null
@@ -163,6 +159,26 @@ class ValueSet extends Expression
       @version = json.version
       @authority = json.authority
 
+  exec: (ctx) ->
+    codes = ctx.valueSets[@id]
+    if codes?
+      if @version? then codes = codes[@version]
+      else codes = codes[key] for key of codes
+
+    new ResolvedValueSet(@id, @version, @authority, codes ? [])
+
+class ResolvedValueSet extends ValueSet
+  constructor: (@id, @version, @authority, @codes = []) ->
+    super
+    @type = 'ResolvedValueSet'
+
+  hasCode: (code) ->
+    if typeof code is 'string' then code = new Code(code)
+    matches = (c for c in @codes when c.code is code.code)
+    if code.system? then matches = (c for c in matches when c.system is code.system)
+    if code.version? then matches = (c for c in matches when c.version is code.version)
+    return matches.length > 0
+
 class ValueSetDef extends Expression
   constructor: (json) ->
     super
@@ -217,20 +233,12 @@ class CodeFunctionRef extends FunctionRef
 class InValueSetFunctionRef extends FunctionRef
   constructor: (json) ->
     super
-    @in = new In({
-      type: 'In',
-      operand: [
-          json.operand[0],
-          {
-            type: 'FunctionRef',
-            name: 'ValueSet',
-            operand: json.operand[1..]
-          }
-      ]
-    })
 
   exec: (ctx) ->
-    @in.exec(ctx)
+    args = @execArgs(ctx)
+    item = args[0]
+    resolvedVS = new ValueSet(args[1..]...).exec(ctx)
+    resolvedVS.hasCode item
 
 class DateFunctionRef extends FunctionRef
   constructor: (json) ->
@@ -244,7 +252,7 @@ class ValueSetFunctionRef extends FunctionRef
     super
 
   exec: (ctx) ->
-    new ValueSet(@execArgs(ctx)...)
+    new ValueSet(@execArgs(ctx)...).exec(ctx)
 
 # Comparisons
 class Greater extends Expression
@@ -333,14 +341,8 @@ class In extends Expression
     switch
       when typeIsArray container
         return item in container
-      when container.type is 'ValueSet'
-        vs = ctx.resolveValueSet(container.id, container.version)
-        if vs?
-          code = if typeof item is 'string' then new Code(item) else item
-          codes = (c for c in vs when c.code is code.code)
-          if code.system? then codes = (c for c in codes when c.system is code.system)
-          if code.version? then codes = (c for c in codes when c.version is code.version)
-          return codes.length > 0
+      when container.type is 'ResolvedValueSet'
+        return container.hasCode item
 
 # Math
 
@@ -384,6 +386,25 @@ class StringLiteral extends Literal
 
   exec: (ctx) ->
     @value
+
+# Clinical Requests
+
+class ClinicalRequest extends Expression
+  constructor: (json) ->
+    super
+    @datatype = json.dataType
+    @codeProperty = json.codeProperty
+    @codes = build json.codes
+
+  exec: (ctx) ->
+    if @datatype[...21] is '{http://org.hl7.fhir}' then name = @datatype[21..]
+    else name = @datatype
+
+    records = ctx.currentPatient()?.records?[name] ? []
+    if @codes
+      valueset = @codes.exec(ctx)
+      records = (r for r in records when valueset.hasCode(r[@codeProperty]))
+    records
 
 module.exports.Library = Library
 module.exports.Context = Context

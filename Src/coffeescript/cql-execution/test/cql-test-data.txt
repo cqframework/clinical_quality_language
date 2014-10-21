@@ -91,19 +91,6 @@ define Closed = interval[Date(2012, 1, 1), Date(2013, 1, 1)]
 # Begin
 define Foo = start of interval[Date(2012, 1, 1), Date(2013, 1, 1)]
 
-# Add
-define Ten = 10
-define Eleven = 11
-define OnePlusTwo = 1 + 2
-define AddMultiple = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
-define AddVariables = Ten + Eleven
-
-# Literal
-define BoolTrue = true
-define BoolFalse = false
-define IntOne = 1
-define StringTrue = 'true'
-
 # InList
 define IsIn = 4 in { 3, 4, 5 }
 define IsNotIn = 4 in { 3, 5, 6 }
@@ -136,3 +123,35 @@ define WrongShortCode = InValueSet(Code('M'), '2.16.840.1.113883.3.560.100.2')
 define WrongMediumCode = InValueSet(Code('F', '3.16.840.1.113883.18.2'), '2.16.840.1.113883.3.560.100.2')
 define WrongLongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6'), '2.16.840.1.113883.3.560.100.2')
 
+# PatientPropertyInValueSet
+valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+define IsFemale = gender in "Female Administrative Sex"
+
+# Add
+define Ten = 10
+define Eleven = 11
+define OnePlusTwo = 1 + 2
+define AddMultiple = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
+define AddVariables = Ten + Eleven
+
+# Literal
+define BoolTrue = true
+define BoolFalse = false
+define IntOne = 1
+define StringTrue = 'true'
+
+# ClinicalRequest
+valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
+valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+valueset "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
+define Conditions = [Condition]
+define Encounters = [Encounter, Performance]
+define PharyngitisConditions = [Condition: "Acute Pharyngitis"]
+define AmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED Visit"]
+define EncountersByServiceType = [Encounter, Performance: serviceType in "Annual Wellness Visit"]
+define WrongDataType = [Encounter, Proposal: "Ambulatory/ED Visit"]
+define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
+define WrongCodeProperty = [Encounter, Performance: class in "Annual Wellness Visit"]
+
+#ScratchPad
+define Foo = "foo"
