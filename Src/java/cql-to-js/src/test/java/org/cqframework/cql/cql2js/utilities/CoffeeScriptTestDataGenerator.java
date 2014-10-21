@@ -81,7 +81,7 @@ public class CoffeeScriptTestDataGenerator {
             updateSnippet(entry.getValue());
             String name = entry.getKey();
             String snippet = entry.getValue().toString();
-            String json = CqlLibrary.loadCql(snippet).asJson();
+            String json = CqlLibrary.loadCql(snippet, CqlLibrary.Options.EnableDateRangeOptimization).asJson();
             pw.println("### " + name);
             pw.println(snippet);
             pw.println("###");

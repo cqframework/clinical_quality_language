@@ -21,17 +21,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
 
 public class CqlLibrary {
-
+    public static enum Options { EnableDateRangeOptimization, EnableAnnotations }
     private final String json;
 
-    public static CqlLibrary loadCql(String cqlText) {
-        return loadANTLRInputStream(new ANTLRInputStream(cqlText));
+    public static CqlLibrary loadCql(String cqlText, Options... options) {
+        return loadANTLRInputStream(new ANTLRInputStream(cqlText), options);
     }
 
-    public static CqlLibrary loadCql(File cqlFile) throws IOException {
-        return loadANTLRInputStream(new ANTLRInputStream(new FileInputStream(cqlFile)));
+    public static CqlLibrary loadCql(File cqlFile, Options... options) throws IOException {
+        return loadANTLRInputStream(new ANTLRInputStream(new FileInputStream(cqlFile)), options);
     }
 
     public static CqlLibrary loadElm(Library library) {
@@ -42,19 +44,19 @@ public class CqlLibrary {
         }
     }
 
-    private static CqlLibrary loadANTLRInputStream(ANTLRInputStream is) {
+    private static CqlLibrary loadANTLRInputStream(ANTLRInputStream is, Options... options) {
         try {
-            return new CqlLibrary(is);
+            return new CqlLibrary(is, options);
         } catch (JAXBException e) {
             throw new IllegalArgumentException("Couldn't process CQL", e);
         }
     }
 
-    private CqlLibrary(ANTLRInputStream is) throws JAXBException {
-        this.json = convertToJSON(is);
+    private CqlLibrary(ANTLRInputStream is, Options... options) throws JAXBException {
+        this.json = convertToJSON(is, options);
     }
 
-    private CqlLibrary(Library library) throws JAXBException {
+    private CqlLibrary(Library library, Options... options) throws JAXBException {
         this.json = convertToJSON(library);
     }
 
@@ -66,7 +68,7 @@ public class CqlLibrary {
         return new ObjectMapper().readTree(json);
     }
 
-    private String convertToJSON(ANTLRInputStream is) throws JAXBException {
+    private String convertToJSON(ANTLRInputStream is, Options... options) throws JAXBException {
         cqlLexer lexer = new cqlLexer(is);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
@@ -79,6 +81,14 @@ public class CqlLibrary {
         Cql2ElmVisitor visitor = new Cql2ElmVisitor();
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         visitor.setTokenStream(tokens);
+
+        List<Options> optionList = Arrays.asList(options);
+        if (optionList.contains(Options.EnableDateRangeOptimization)) {
+            visitor.enableDateRangeOptimization();
+        }
+        if (optionList.contains(Options.EnableAnnotations)) {
+            visitor.enableAnnotations();
+        }
         visitor.visit(tree);
 
         return convertToJSON(visitor.getLibrary());

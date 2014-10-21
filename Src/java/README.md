@@ -77,6 +77,8 @@ The following options are supported:
 * `--output` or `-o`: Specify the output file.  If not specified, the output file will have the
   same base name and location as the input file.  If only a directory is specified, the output
   file will have the same base name as the input file and be written to the requested directory.
+* `--date-range-optimization` or `-d`: Refactor simple during clauses into the ClinicalRequest.
+* `--annotations` or `-a`: Include annotations in the output (work in progress).
 * `--stdout` or `-s`: Write output to the console instead of a file.
 * `--coffeescript` or `-c`: Output as a coffescript file with the measure exported (otherwise it
   will be output as a JSON file).

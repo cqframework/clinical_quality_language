@@ -8,13 +8,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 
 public class Cql2Js {
     private static enum Format { JSON, COFFEESCRIPT }
 
-    private static void writeJs(File inFile, PrintWriter pw, Format format) throws IOException {
-        String lib = CqlLibrary.loadCql(inFile).asJson();
+    private static void writeJs(File inFile, PrintWriter pw, Format format, boolean dateRangeOptimizations, boolean annotations) throws IOException {
+        ArrayList<CqlLibrary.Options> options = new ArrayList<>();
+        if (dateRangeOptimizations) {
+            options.add(CqlLibrary.Options.EnableDateRangeOptimization);
+        }
+        if (annotations) {
+            options.add(CqlLibrary.Options.EnableAnnotations);
+        }
+        String lib = CqlLibrary.loadCql(inFile, options.toArray(new CqlLibrary.Options[options.size()])).asJson();
         if (format == Format.COFFEESCRIPT) {
             pw.print("module.exports = ");
         }
@@ -27,6 +35,8 @@ public class Cql2Js {
         OptionParser parser = new OptionParser();
         OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required();
         OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class);
+        OptionSpec optimization = parser.accepts("date-range-optimization");
+        OptionSpec annotations = parser.accepts("annotations");
         OptionSpec coffee = parser.accepts("coffee");
         OptionSpec stdout = parser.accepts("stdout");
 
@@ -56,6 +66,6 @@ public class Cql2Js {
             pw = new PrintWriter(outfile, "UTF-8");
         }
 
-        writeJs(infile, pw, format);
+        writeJs(infile, pw, format, options.has(optimization), options.has(annotations));
     }
 }
