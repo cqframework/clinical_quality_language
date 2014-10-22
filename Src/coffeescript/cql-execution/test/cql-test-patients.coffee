@@ -55,6 +55,15 @@ p3 = {
       "code": { "code": "109962001", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Diffuse non-Hodgkin's lymphoma (disorder)" },
       "effectiveTime": { "start": "2010-10-24" },
       "observedAtTime": { "start": "2011-02-01T11:55" }
+    },
+    {
+      "identifier": { "id": "http://cqframework.org/3/5", "system": "http://cqframework.org" },
+      "datatype": "EncounterPerformanceOccurrence",
+      "topic": "Encounter",
+      "modality": "Performance",
+      "class": { "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Encounter for \"check-up\" (procedure)" },
+      "serviceType": { "code": "G0438", "system": "2.16.840.1.113883.6.285", "version": "2014", "display": "Annual wellness visit; includes a personalized prevention plan of service (pps), initial visit" },
+      "performanceTime": { "start": "2013-05-23T10:00", "end": "2013-05-23T11:00" }
     }
   ]
 }

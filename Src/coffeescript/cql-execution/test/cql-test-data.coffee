@@ -2477,6 +2477,136 @@ module.exports.ClinicalRequest = {
    }
 }
 
+### DateRangeOptimizedQuery
+library TestSnippet version '1'
+using QUICK
+parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+context PATIENT
+define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
+define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
+###
+
+module.exports.DateRangeOptimizedQuery = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "MeasurementPeriod",
+            "default" : {
+               "beginOpen" : false,
+               "endOpen" : true,
+               "type" : "Interval",
+               "begin" : {
+                  "name" : "Date",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               },
+               "end" : {
+                  "name" : "Date",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Ambulatory/ED Visit",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "EncountersDuringMP",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dateProperty" : "performanceTime",
+                     "type" : "ClinicalRequest",
+                     "dateRange" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }
+               },
+               "relationship" : [ ]
+            }
+         }, {
+            "name" : "AmbulatoryEncountersDuringMP",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "codeProperty" : "class",
+                     "dateProperty" : "performanceTime",
+                     "type" : "ClinicalRequest",
+                     "codes" : {
+                        "name" : "Ambulatory/ED Visit",
+                        "type" : "ValueSetRef"
+                     },
+                     "dateRange" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }
+               },
+               "relationship" : [ ]
+            }
+         } ]
+      }
+   }
+}
+
 ### ScratchPad
 library TestSnippet version '1'
 using QUICK

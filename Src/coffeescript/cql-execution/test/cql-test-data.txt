@@ -153,5 +153,11 @@ define WrongDataType = [Encounter, Proposal: "Ambulatory/ED Visit"]
 define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
 define WrongCodeProperty = [Encounter, Performance: class in "Annual Wellness Visit"]
 
+# DateRangeOptimizedQuery
+parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
+define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
+
 #ScratchPad
 define Foo = "foo"

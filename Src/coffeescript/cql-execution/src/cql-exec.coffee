@@ -313,17 +313,40 @@ class Interval extends Expression
     @begin = build(json.begin)
     @end = build(json.end)
 
+  exec: (ctx) ->
+    new ResolvedInterval(@beginOpen, @endOpen, @begin.exec(ctx), @end.exec(ctx))
+
+class ResolvedInterval extends Expression
+  constructor: (@beginOpen, @endOpen, @begin, @end) ->
+    super
+    @type = 'ResolvedInterval'
+
+  contains: (item) ->
+    # TODO: Expand to work w/ more than date
+    bDate = @begin.toJSDate()
+    eDate = @end.toJSDate()
+    if item instanceof CqlDate or item instanceof ResolvedInterval
+      ibDate = if item instanceof CqlDate then item.toJSDate() else item.begin.toJSDate()
+      ieDate = if item instanceof CqlDate then item.toJSDate() else item.end.toJSDate()
+      (if @beginOpen then bDate < ibDate else bDate <= ibDate) and (if @endOpen then ieDate < eDate else ieDate <= eDate)
+    else false
+
 class Begin extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
     # assumes this is interval
-    @arg.exec(ctx).begin.exec(ctx)
+    @arg.exec(ctx).begin
 
 # Dates
 
 class CqlDate
+  @fromString: (string) ->
+    match = /(\d{4})(-(\d{2})(-(\d{2})(T(\d{2})(\:(\d{2})(\:(\d{2})([+-](\d{2})(\:(\d{2}))?)?)?)?)?)?)?/.exec string
+    # arguments to CqlDate are at odd indexes (1, 3, 5...)
+    if match[0] is string then new CqlDate((arg for arg in match[1..] by 2)...) else null 
+
   constructor: (@year, @month, @day, @hour, @minute, @second) ->
 
   toJSDate: () ->
@@ -387,7 +410,7 @@ class StringLiteral extends Literal
   exec: (ctx) ->
     @value
 
-# Clinical Requests
+# Clinical Requests and Queries
 
 class ClinicalRequest extends Expression
   constructor: (json) ->
@@ -395,6 +418,8 @@ class ClinicalRequest extends Expression
     @datatype = json.dataType
     @codeProperty = json.codeProperty
     @codes = build json.codes
+    @dateProperty = json.dateProperty
+    @dateRange = build json.dateRange
 
   exec: (ctx) ->
     if @datatype[...21] is '{http://org.hl7.fhir}' then name = @datatype[21..]
@@ -404,7 +429,21 @@ class ClinicalRequest extends Expression
     if @codes
       valueset = @codes.exec(ctx)
       records = (r for r in records when valueset.hasCode(r[@codeProperty]))
+    if @dateRange
+      range = @dateRange.exec(ctx)
+      records = (r for r in records when range.contains(new ResolvedInterval(true, true, CqlDate.fromString(r[@dateProperty].start), CqlDate.fromString(r[@dateProperty].end))))
+
     records
+
+class Query extends Expression
+  constructor: (json) ->
+    super
+    @sourceAlias = json.source.alias
+    @source = build json.source.expression
+    @relationship = build json.relationship
+
+  exec: (ctx) ->
+    @source.exec(ctx)
 
 module.exports.Library = Library
 module.exports.Context = Context

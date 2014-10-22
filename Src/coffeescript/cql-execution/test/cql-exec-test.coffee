@@ -319,8 +319,13 @@ describe 'Interval', ->
     @closed.begin.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
     @closed.end.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
 
-  it 'should exec as itself', ->
-    @open.exec(@cql).should.equal @open
+  it 'should exec to ResolvedInterval', ->
+    ivl = @open.exec(@cql)
+    ivl.type.should.equal 'ResolvedInterval'
+    ivl.beginOpen.should.equal @open.beginOpen
+    ivl.endOpen.should.equal @open.beginOpen
+    ivl.begin.toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
+    ivl.end.toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
 
 describe 'Begin', ->
   @beforeEach ->
@@ -532,9 +537,10 @@ describe 'ClinicalRequest', ->
 
   it 'should find encounter performances', ->
     e = @encounters.exec(@ctx)
-    e.should.have.length(2)
+    e.should.have.length(3)
     e[0].identifier.id.should.equal 'http://cqframework.org/3/1'
     e[1].identifier.id.should.equal 'http://cqframework.org/3/3'
+    e[2].identifier.id.should.equal 'http://cqframework.org/3/5'
 
   it 'should find observations with a value set', ->
     p = @pharyngitisConditions.exec(@ctx)
@@ -543,14 +549,16 @@ describe 'ClinicalRequest', ->
 
   it 'should find encounter performances with a value set', ->
     a = @ambulatoryEncounters.exec(@ctx)
-    a.should.have.length(2)
+    a.should.have.length(3)
     a[0].identifier.id.should.equal 'http://cqframework.org/3/1'
     a[1].identifier.id.should.equal 'http://cqframework.org/3/3'
+    a[2].identifier.id.should.equal 'http://cqframework.org/3/5'
 
   it 'should find encounter performances by service type', ->
     e = @encountersByServiceType.exec(@ctx)
-    e.should.have.length(1)
+    e.should.have.length(2)
     e[0].identifier.id.should.equal 'http://cqframework.org/3/1'
+    e[1].identifier.id.should.equal 'http://cqframework.org/3/5'
 
   it 'should not find encounter proposals when they don\'t exist', ->
     e = @wrongDataType.exec(@ctx)
@@ -563,6 +571,30 @@ describe 'ClinicalRequest', ->
   it 'should not find encounter performances using wrong codeProperty', ->
     e = @wrongCodeProperty.exec(@ctx)
     e.should.be.empty
+
+describe 'DateRangeOptimizedQuery', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients [P.P3]
+    @ctx.withValueSets {
+      "2.16.840.1.113883.3.464.1003.101.12.1061" : {
+        "20140501" : [
+          { "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "270427003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "406547006", "system": "2.16.840.1.113883.6.96", "version": "2013-09" }
+        ]
+      }
+    }
+
+  it 'should find encounters performed during the MP', ->
+    e = @encountersDuringMP.exec(@ctx)
+    e.should.have.length(1)
+    e[0].identifier.id.should.equal 'http://cqframework.org/3/5'
+
+  it 'should find ambulatory encounters performed during the MP', ->
+    e = @ambulatoryEncountersDuringMP.exec(@ctx)
+    e.should.have.length(1)
+    e[0].identifier.id.should.equal 'http://cqframework.org/3/5'
 
 ###
 describe.only 'ScratchPad', ->
