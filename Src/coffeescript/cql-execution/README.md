@@ -78,7 +78,7 @@ Execute `npm test` or `cake test`.
 # To Develop Tests
 
 Many of the tests require JSON ELM data.  It is much easier to write CQL rather than JSON ELM, so
-test authors should create test data by adding new CQL to _test/cql-test-data.txt_.  Some
+test authors should create test data by adding new CQL to _test/data/cql-test-data.txt_.  Some
 conventions are followed to make testing easier.  The following is an example of some test data:
 
     # And
@@ -92,7 +92,7 @@ test suite.
 
 To convert the CQL to CoffeeScript containing the JSON ELM representation, execute
 `cake build-test-data`. This will use the java _cql-to-js_ project to generate the
-_test/cql-test-data.coffee_ file containing the following exported variable declaration:
+_test/data/cql-test-data.coffee_ file containing the following exported variable declaration:
 
     ### And
     library TestSnippet version '1'

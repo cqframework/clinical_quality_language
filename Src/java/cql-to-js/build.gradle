@@ -32,13 +32,13 @@ dependencies {
 task generateTestData (dependsOn: 'testClasses', type: JavaExec) {
     main = 'org.cqframework.cql.cql2js.utilities.CoffeeScriptTestDataGenerator'
     classpath = sourceSets.test.runtimeClasspath
-    args = ["-i", "${projectDir}/../../coffeescript/cql-execution/test/cql-test-data.txt"]
+    args = ["-i", "${projectDir}/../../coffeescript/cql-execution/test/data/cql-test-data.txt"]
 }
 
 task watchTestData (dependsOn: 'testClasses', type: JavaExec) {
     main = 'org.cqframework.cql.cql2js.utilities.CoffeeScriptTestDataGenerator'
     classpath = sourceSets.test.runtimeClasspath
-    args = ["-w", "-i", "${projectDir}/../../coffeescript/cql-execution/test/cql-test-data.txt"]
+    args = ["-w", "-i", "${projectDir}/../../coffeescript/cql-execution/test/data/cql-test-data.txt"]
 }
 
 tasks.withType(FindBugs) {

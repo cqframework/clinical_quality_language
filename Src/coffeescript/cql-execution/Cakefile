@@ -31,17 +31,17 @@ task 'watch', 'Watch src/ for changes', ->
   coffee.stdout.on 'data', (data) ->
     print data.toString()
 
-task 'build-test-data', 'Build test/cql-test-data.coffee from test/cql-test-data.txt', ->
+task 'build-test-data', 'Build test/data/cql-test-data.coffee from test/data/cql-test-data.txt', ->
   buildTestData()
 
-task 'watch-test-data', 'Watch test/cql-test-data.txt for changes', ->
+task 'watch-test-data', 'Watch test/data/cql-test-data.txt for changes', ->
   gradle = spawn './gradlew', [':cql-to-js:watchTestData'], cwd: "../../java/"
   gradle.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
   gradle.stdout.on 'data', (data) ->
     print data.toString()
  
-task "watch-all", "Watch src/ and test/cql-test-data.txt for changes", ->
+task "watch-all", "Watch src/ and test/data/cql-test-data.txt for changes", ->
   invoke 'watch'
   invoke 'watch-test-data'
 

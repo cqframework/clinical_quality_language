@@ -22,9 +22,9 @@ parameter FooP default 'Bar'
 define Foo = FooP
 
 # ValueSetDef
-valueset "One Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
-valueset "Two Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011', '20140501')
-valueset "Three Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011', '20140501', 'National Committee for Quality Assurance')
+valueset "Known" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+valueset "Unknown One Arg" = ValueSet('1.2.3.4.5.6.7.8.9')
+valueset "Unknown Two Arg" = ValueSet('1.2.3.4.5.6.7.8.9', '1')
 
 # ValueSetRef
 valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')

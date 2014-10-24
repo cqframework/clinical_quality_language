@@ -1,4 +1,5 @@
 { Patient } = require './cql-patient'
+DT = require './cql-datatypes'
 
 typeIsArray = Array.isArray || ( value ) -> return {}.toString.call( value ) is '[object Array]'
 
@@ -51,8 +52,8 @@ class Library
     r
 
 class Context
-  constructor: (@measure, patients = [], @parameters = {}, @valueSets = {}) ->
-    @withPatients(patients)
+  constructor: (@measure, patients = [], @parameters = {}, @codeService) ->
+    @withPatients patients
     @patientIndex = 0
 
   withPatients: (patients = []) ->
@@ -63,8 +64,8 @@ class Context
     @parameters = p ? {}
     @
 
-  withValueSets: (vs) ->
-    @valueSets = vs ? {}
+  withCodeService: (cs) ->
+    @codeService = cs
     @
 
   currentPatient: () ->
@@ -90,8 +91,6 @@ class Results
 
 class Expression
   constructor: (json) ->
-    if json.type? then @type = json.type
-
     if json.operand?
       op = build(json.operand)
       if typeIsArray(json.operand) then @args = op else @arg = op
@@ -144,40 +143,6 @@ class ParameterRef extends Expression
     ctx.measure.parameters[@name]?.exec(ctx)
 
 # Value Sets and Codes
-class Code extends Expression
-  constructor: (@code, @system, @version) ->
-    super
-    @type = 'Code'
-
-class ValueSet extends Expression
-  constructor: (@id, @version, @authority) ->
-    super
-    @type ?= 'ValueSet'
-    if typeof @id is "object"
-      json = @id
-      @id = json.id
-      @version = json.version
-      @authority = json.authority
-
-  exec: (ctx) ->
-    codes = ctx.valueSets[@id]
-    if codes?
-      if @version? then codes = codes[@version]
-      else codes = codes[key] for key of codes
-
-    new ResolvedValueSet(@id, @version, @authority, codes ? [])
-
-class ResolvedValueSet extends ValueSet
-  constructor: (@id, @version, @authority, @codes = []) ->
-    super
-    @type = 'ResolvedValueSet'
-
-  hasCode: (code) ->
-    if typeof code is 'string' then code = new Code(code)
-    matches = (c for c in @codes when c.code is code.code)
-    if code.system? then matches = (c for c in matches when c.system is code.system)
-    if code.version? then matches = (c for c in matches when c.version is code.version)
-    return matches.length > 0
 
 class ValueSetDef extends Expression
   constructor: (json) ->
@@ -219,7 +184,7 @@ class AgeAtFunctionRef extends FunctionRef
 
   exec: (ctx) ->
     date = @execArgs(ctx)[0].toJSDate()
-    ageInMS = date.getTime() - ctx.currentPatient().birthdate.getTime()
+    ageInMS = date.getTime() - ctx.currentPatient().birthdate.toJSDate().getTime()
     # Doesn't account for leap year, but close enough for now
     Math.floor(ageInMS / (1000 * 60 * 60 * 24 * 365))
 
@@ -228,7 +193,7 @@ class CodeFunctionRef extends FunctionRef
     super
 
   exec: (ctx) ->
-    new Code(@execArgs(ctx)...)
+    new DT.Code(@execArgs(ctx)...)
 
 class InValueSetFunctionRef extends FunctionRef
   constructor: (json) ->
@@ -237,22 +202,23 @@ class InValueSetFunctionRef extends FunctionRef
   exec: (ctx) ->
     args = @execArgs(ctx)
     item = args[0]
-    resolvedVS = new ValueSet(args[1..]...).exec(ctx)
-    resolvedVS.hasCode item
+    valueSet = ctx.codeService.findValueSet(args[1..]...)
+    if valueSet? then valueSet.hasCode item else false
 
 class DateFunctionRef extends FunctionRef
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    new CqlDate(@execArgs(ctx)...)
+    new DT.DateTime(@execArgs(ctx)...)
 
 class ValueSetFunctionRef extends FunctionRef
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    new ValueSet(@execArgs(ctx)...).exec(ctx)
+    args = @execArgs(ctx)
+    ctx.codeService.findValueSet(args...) ? new DT.ValueSet(args...)
 
 # Comparisons
 class Greater extends Expression
@@ -314,22 +280,7 @@ class Interval extends Expression
     @end = build(json.end)
 
   exec: (ctx) ->
-    new ResolvedInterval(@beginOpen, @endOpen, @begin.exec(ctx), @end.exec(ctx))
-
-class ResolvedInterval extends Expression
-  constructor: (@beginOpen, @endOpen, @begin, @end) ->
-    super
-    @type = 'ResolvedInterval'
-
-  contains: (item) ->
-    # TODO: Expand to work w/ more than date
-    bDate = @begin.toJSDate()
-    eDate = @end.toJSDate()
-    if item instanceof CqlDate or item instanceof ResolvedInterval
-      ibDate = if item instanceof CqlDate then item.toJSDate() else item.begin.toJSDate()
-      ieDate = if item instanceof CqlDate then item.toJSDate() else item.end.toJSDate()
-      (if @beginOpen then bDate < ibDate else bDate <= ibDate) and (if @endOpen then ieDate < eDate else ieDate <= eDate)
-    else false
+    new DT.Interval(@begin.exec(ctx), @end.exec(ctx), @beginOpen, @endOpen)
 
 class Begin extends Expression
   constructor: (json) ->
@@ -338,19 +289,6 @@ class Begin extends Expression
   exec: (ctx) ->
     # assumes this is interval
     @arg.exec(ctx).begin
-
-# Dates
-
-class CqlDate
-  @fromString: (string) ->
-    match = /(\d{4})(-(\d{2})(-(\d{2})(T(\d{2})(\:(\d{2})(\:(\d{2})([+-](\d{2})(\:(\d{2}))?)?)?)?)?)?)?/.exec string
-    # arguments to CqlDate are at odd indexes (1, 3, 5...)
-    if match[0] is string then new CqlDate((arg for arg in match[1..] by 2)...) else null 
-
-  constructor: (@year, @month, @day, @hour, @minute, @second) ->
-
-  toJSDate: () ->
-    new Date(@year, (@month?-1) ? 0, @day ? 1, @hour ? 0, @minute ? 0, @second ? 0, 0)
 
 # Membership
 
@@ -364,7 +302,7 @@ class In extends Expression
     switch
       when typeIsArray container
         return item in container
-      when container.type is 'ResolvedValueSet'
+      when container instanceof DT.ValueSet
         return container.hasCode item
 
 # Math
@@ -425,13 +363,13 @@ class ClinicalRequest extends Expression
     if @datatype[...21] is '{http://org.hl7.fhir}' then name = @datatype[21..]
     else name = @datatype
 
-    records = ctx.currentPatient()?.records?[name] ? []
+    records = ctx.currentPatient()?.findRecords([name])
     if @codes
       valueset = @codes.exec(ctx)
-      records = (r for r in records when valueset.hasCode(r[@codeProperty]))
+      records = (r for r in records when valueset.hasCode(r.getCode(@codeProperty)))
     if @dateRange
       range = @dateRange.exec(ctx)
-      records = (r for r in records when range.contains(new ResolvedInterval(true, true, CqlDate.fromString(r[@dateProperty].start), CqlDate.fromString(r[@dateProperty].end))))
+      records = (r for r in records when range.contains(r.getDateOrInterval(@dateProperty)))
 
     records
 

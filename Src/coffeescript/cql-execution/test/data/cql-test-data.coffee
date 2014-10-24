@@ -276,9 +276,9 @@ module.exports.ParameterRef = {
 ### ValueSetDef
 library TestSnippet version '1'
 using QUICK
-valueset "One Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
-valueset "Two Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011', '20140501')
-valueset "Three Arg" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011', '20140501', 'National Committee for Quality Assurance')
+valueset "Known" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+valueset "Unknown One Arg" = ValueSet('1.2.3.4.5.6.7.8.9')
+valueset "Unknown Two Arg" = ValueSet('1.2.3.4.5.6.7.8.9', '1')
 ###
 
 module.exports.ValueSetDef = {
@@ -296,47 +296,39 @@ module.exports.ValueSetDef = {
       },
       "valueSets" : {
          "def" : [ {
-            "name" : "One Arg",
+            "name" : "Known",
             "valueSet" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
                   "type" : "Literal"
                } ]
             }
          }, {
-            "name" : "Two Arg",
+            "name" : "Unknown One Arg",
             "valueSet" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "20140501",
+                  "value" : "1.2.3.4.5.6.7.8.9",
                   "type" : "Literal"
                } ]
             }
          }, {
-            "name" : "Three Arg",
+            "name" : "Unknown Two Arg",
             "valueSet" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+                  "value" : "1.2.3.4.5.6.7.8.9",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "20140501",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "National Committee for Quality Assurance",
+                  "value" : "1",
                   "type" : "Literal"
                } ]
             }
