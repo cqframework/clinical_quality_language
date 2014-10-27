@@ -21,6 +21,7 @@ dependencies {
     xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-fluent-api', version: '3.0'
     compile group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.6.5'
     runtime group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.0-M3'
+    runtime group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 }
 
 ext.xjc = [
