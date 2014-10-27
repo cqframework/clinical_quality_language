@@ -2,7 +2,7 @@ library CMS153_CQM version '2'
 
 using QUICK
 
-include CMS153_Common version '2' as Common
+include CMS153_Common version '2' called Common
 
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 

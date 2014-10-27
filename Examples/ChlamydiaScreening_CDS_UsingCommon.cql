@@ -2,7 +2,7 @@ library CMS153_CDS version '2'
 
 using QUICK
 
-include CMS153_Common version '2' as Common
+include CMS153_Common version '2' called Common
 
 valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
 
