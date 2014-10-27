@@ -142,8 +142,8 @@ alias
     ;
 
 queryInclusionClause
-    : 'with' aliasedQuerySource 'where' expression
-    | 'without' aliasedQuerySource 'where' expression
+    : 'with' aliasedQuerySource 'such that' expression
+    | 'without' aliasedQuerySource 'such that' expression
     //| 'combine' aliasedQuerySource 'where' expression // TODO: Determine whether combine should be allowed
     ;
 

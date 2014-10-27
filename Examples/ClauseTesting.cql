@@ -10,8 +10,8 @@ define WhereClause =
 
 define TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
-		with Pharyngitis P where P.effectiveTime overlaps after E.PerformanceAtTime
-		with Antibiotics A where A.orderedAtTime starts at most 3 days after start E.PerformanceAtTime 
+		with Pharyngitis P such that P.effectiveTime overlaps after E.PerformanceAtTime
+		with Antibiotics A such that A.orderedAtTime starts at most 3 days after start E.PerformanceAtTime
 	    where E.PerformanceAtTime during MeasurementPeriod
 
 define SimpleRetrieve =

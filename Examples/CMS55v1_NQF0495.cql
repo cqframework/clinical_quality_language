@@ -58,7 +58,7 @@ define InpatientEncounters =
 
 define EDEncounters =
 	[Encounter, Performance: "Emergency Department Visit"] ED
-		with InpatientEncounters E where ED.effectiveTime ends at most 1 hour before start of E.effectiveTime
+		with InpatientEncounters E such that ED.effectiveTime ends at most 1 hour before start of E.effectiveTime
 
 define MeasureObservation =
 	EDEncounters E 
