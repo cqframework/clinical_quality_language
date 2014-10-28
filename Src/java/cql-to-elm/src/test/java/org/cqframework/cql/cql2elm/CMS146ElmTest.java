@@ -80,9 +80,9 @@ public class CMS146ElmTest {
         assertThat(actualCR, is(expectedCR));
     }
 
-    //@Test
     // TODO: Disabled the test for now, valuesets have been moved to expression definitions. These are being checked in
     // the testVariables() test, but not as completely as this.
+    @Test(enabled=false)
     public void testValueSets() {
         Collection<ValueSetDef> actualVS = library.getValueSets().getDef();
 
@@ -131,8 +131,8 @@ public class CMS146ElmTest {
         assertThat(actualVars, is(expectedVars));
     }
 
-    //@Test
     // TODO: Disabled the test for now, needs to be updated to use annotations, will update after all syntax changes.
+    @Test(enabled=false)
     public void testTrackBacks() {
         for (ClinicalRequest dc : visitor.getClinicalRequests()) {
             int expectedNumbers[] = {0, 0, 0, 0};

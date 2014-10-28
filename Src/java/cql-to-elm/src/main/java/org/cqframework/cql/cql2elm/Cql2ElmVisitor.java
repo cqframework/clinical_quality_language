@@ -1927,13 +1927,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         library.getDataModels().getModelReference().add(model);
     }
 
-    private void addToLibrary(ValueSetDef vs) {
-        if (library.getValueSets() == null) {
-            library.setValueSets(of.createLibraryValueSets());
-        }
-        library.getValueSets().getDef().add(vs);
-    }
-
     private void addToLibrary(ExpressionDef expDef) {
         if (library.getStatements() == null) {
             library.setStatements(of.createLibraryStatements());

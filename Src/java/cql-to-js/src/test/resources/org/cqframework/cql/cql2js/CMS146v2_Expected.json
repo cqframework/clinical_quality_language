@@ -55,66 +55,68 @@
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
-            "valueSet" : {
-              "name" : "ValueSet",
-              "type" : "FunctionRef",
-              "operand" : [ {
-                 "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                 "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
-                 "type" : "Literal"
-              } ]
+            "context" : "UNKNOWN",
+            "expression" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "Acute Tonsillitis",
-            "valueSet" : {
-              "name" : "ValueSet",
-              "type" : "FunctionRef",
-              "operand" : [ {
-                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                "value" : "2.16.840.1.113883.3.464.1003.102.12.1012",
-                "type" : "Literal"
-              } ]
+            "context" : "UNKNOWN",
+            "expression" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1012",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "Ambulatory/ED Visit",
-            "valueSet" : {
-              "name" : "ValueSet",
-              "type" : "FunctionRef",
-              "operand" : [ {
-                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
-                "type" : "Literal"
-              } ]
+            "context" : "UNKNOWN",
+            "expression" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "Antibiotic Medications",
-            "valueSet" : {
-              "name" : "ValueSet",
-              "type" : "FunctionRef",
-              "operand" : [ {
-                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                "value" : "2.16.840.1.113883.3.464.1003.196.12.1001",
-                "type" : "Literal"
-              } ]
+            "context" : "UNKNOWN",
+            "expression" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.196.12.1001",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "Group A Streptococcus Test",
-            "valueSet" : {
-              "name" : "ValueSet",
-              "type" : "FunctionRef",
-              "operand" : [ {
-                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                "value" : "2.16.840.1.113883.3.464.1003.198.12.1012",
-                "type" : "Literal"
-              } ]
+            "context" : "UNKNOWN",
+            "expression" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.198.12.1012",
+                  "type" : "Literal"
+               } ]
             }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
+         }, {
             "name" : "InDemographic",
             "context" : "PATIENT",
             "expression" : {
@@ -166,15 +168,13 @@
                   "type" : "ClinicalRequest",
                   "codes" : {
                      "name" : "Acute Pharyngitis",
-                     "type" : "ValueSetRef"
+                     "type" : "ExpressionRef"
                   }
                }, {
                   "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
                   "codeProperty" : "code",
                   "type" : "ClinicalRequest",
                   "codes" : {
-                     "name" : "Acute Tonsilitis",
-                     "type" : "ValueSetRef"
                   }
                } ]
             }
@@ -186,7 +186,7 @@
                "type" : "ClinicalRequest",
                "codes" : {
                   "name" : "Antibiotic Medications",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                }
             }
          }, {
@@ -202,7 +202,7 @@
                      "type" : "ClinicalRequest",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
-                        "type" : "ValueSetRef"
+                        "type" : "ExpressionRef"
                      }
                   }
                },
@@ -408,7 +408,7 @@
                         "type" : "ClinicalRequest",
                         "codes" : {
                            "name" : "Group A Streptococcus Test",
-                           "type" : "ValueSetRef"
+                           "type" : "ExpressionRef"
                         }
                      }
                   },
