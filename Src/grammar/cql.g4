@@ -88,7 +88,6 @@ statement
     : expressionDefinition
     | contextDefinition
     | functionDefinition
-    | retrieveDefinition
     ;
 
 expressionDefinition
@@ -113,26 +112,6 @@ functionBody
 
 returnStatement
     : 'return' expression
-    ;
-
-retrieveDefinition
-    : 'define' 'retrieve' '[' (occurrence 'of')? topic (',' modality)? (':' valuesetPathIdentifier 'in' valuesetIdentifier)? (',' duringPathIdentifier 'during' duringIdentifier)? ']' functionBody
-    ;
-
-valuesetPathIdentifier
-    : identifier
-    ;
-
-valuesetIdentifier
-    : identifier
-    ;
-
-duringPathIdentifier
-    : identifier
-    ;
-
-duringIdentifier
-    : identifier
     ;
 
 /*
@@ -180,6 +159,10 @@ topic
 
 modality
     : namedTypeSpecifier
+    ;
+
+valuesetPathIdentifier
+    : identifier
     ;
 
 valueset

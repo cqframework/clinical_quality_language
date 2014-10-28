@@ -1789,30 +1789,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return fun;
     }
 
-    // TODO: Retrieve definition
-    // NOTE: Not spending any time here until we know whether we actually need retrieve definitions
-
-    @Override
-    @SuppressWarnings("PMD.UselessOverridingMethod")
-    public Object visitValuesetIdentifier(@NotNull cqlParser.ValuesetIdentifierContext ctx) {
-        // TODO:
-        return super.visitValuesetIdentifier(ctx);
-    }
-
-    @Override
-    @SuppressWarnings("PMD.UselessOverridingMethod")
-    public Object visitDuringIdentifier(@NotNull cqlParser.DuringIdentifierContext ctx) {
-        // TODO:
-        return super.visitDuringIdentifier(ctx);
-    }
-
-    @Override
-    @SuppressWarnings("PMD.UselessOverridingMethod")
-    public Object visitRetrieveDefinition(@NotNull cqlParser.RetrieveDefinitionContext ctx) {
-        // TODO:
-        return super.visitRetrieveDefinition(ctx);
-    }
-
     private ModelReference initializeModelHelper(String identifier) {
         // TODO: This should load from a modelinfo file based on the modelIdentifier above. Hard-coding to QUICK for POC purposes.
         try {

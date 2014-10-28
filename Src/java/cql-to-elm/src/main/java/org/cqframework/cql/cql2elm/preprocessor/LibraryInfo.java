@@ -12,7 +12,6 @@ public class LibraryInfo {
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
     private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
     private final Map<String, FunctionDefinitionInfo> functionDefinitions; // TODO: Overloads...
-    private final Map<String, RetrieveDefinitionInfo> retrieveDefinitions;
 
     public LibraryInfo() {
         usingDefinitions = new LinkedHashMap<>();
@@ -21,7 +20,6 @@ public class LibraryInfo {
         parameterDefinitions = new LinkedHashMap<>();
         expressionDefinitions = new LinkedHashMap<>();
         functionDefinitions = new LinkedHashMap<>();
-        retrieveDefinitions = new LinkedHashMap<>();
     }
 
     public String getLibraryName() {
@@ -141,13 +139,5 @@ public class LibraryInfo {
         }
 
         return null;
-    }
-
-    public void addRetrieveDefinition(RetrieveDefinitionInfo retrieveDefinition) {
-        retrieveDefinitions.put(retrieveDefinition.getName(), retrieveDefinition);
-    }
-
-    public RetrieveDefinitionInfo resolveRetrieveReference(String identifier) {
-        return retrieveDefinitions.get(identifier);
     }
 }

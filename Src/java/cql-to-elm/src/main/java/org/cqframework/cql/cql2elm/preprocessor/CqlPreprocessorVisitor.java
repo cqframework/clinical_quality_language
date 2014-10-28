@@ -82,15 +82,6 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitRetrieveDefinition(@NotNull cqlParser.RetrieveDefinitionContext ctx) {
-        RetrieveDefinitionInfo retrieveDefinition = new RetrieveDefinitionInfo();
-        retrieveDefinition.setName((String)visit(ctx.topic())); // TODO: Needs to take all axes into account
-        retrieveDefinition.setDefinition(ctx);
-        libraryInfo.addRetrieveDefinition(retrieveDefinition);
-        return retrieveDefinition;
-    }
-
-    @Override
     public Object visitTerminal(@NotNull TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
