@@ -389,9 +389,13 @@ module.exports.ValueSetRef = {
 library TestSnippet version '1'
 using QUICK
 context PATIENT
-define AllTrue = true and true
-define AllFalse = false and false
-define SomeTrue = true and false
+define TT = true and true
+define FF = false and false
+define TF = true and false
+define FT = false and true
+define TTT = true and true and true
+define FFF = false and false and false
+define TFT = true and false and true
 ###
 
 module.exports.And = {
@@ -409,7 +413,7 @@ module.exports.And = {
       },
       "statements" : {
          "def" : [ {
-            "name" : "AllTrue",
+            "name" : "TT",
             "context" : "PATIENT",
             "expression" : {
                "type" : "And",
@@ -424,7 +428,7 @@ module.exports.And = {
                } ]
             }
          }, {
-            "name" : "AllFalse",
+            "name" : "FF",
             "context" : "PATIENT",
             "expression" : {
                "type" : "And",
@@ -439,7 +443,7 @@ module.exports.And = {
                } ]
             }
          }, {
-            "name" : "SomeTrue",
+            "name" : "TF",
             "context" : "PATIENT",
             "expression" : {
                "type" : "And",
@@ -447,6 +451,518 @@ module.exports.And = {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "true",
                   "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TTT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "And",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FFF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "And",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TFT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "And",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Or
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define TT = true or true
+define FF = false or false
+define TF = true or false
+define FT = false or true
+define TTT = true or true or true
+define FFF = false or false or false
+define TFT = true or false or true
+###
+
+module.exports.Or = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "TT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TTT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "type" : "Or",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FFF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "type" : "Or",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TFT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "type" : "Or",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### XOr
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define TT = true xor true
+define FF = false xor false
+define TF = true xor false
+define FT = false xor true
+define TTT = true xor true xor true
+define TTF = true xor true xor false
+define TFT = true xor false xor true
+define TFF = true xor false xor false
+define FTT = false xor true xor true
+define FTF = false xor true xor false
+define FFT = false xor false xor true
+define FFF = false xor false xor false
+###
+
+module.exports.XOr = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "TT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TTT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Xor",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TTF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Xor",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TFT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Xor",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TFF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Xor",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FTT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Xor",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FTF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Xor",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "true",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FFT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Xor",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "FFF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Xor",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "false",
@@ -1271,10 +1787,11 @@ module.exports.Less = {
 library TestSnippet version '1'
 using QUICK
 context PATIENT
-define three = 1 + 2
+define Three = 1 + 2
 define IntList = { 9, 7, 8 }
 define StringList = { 'a', 'bee', 'see' }
-define mixedList = { 1, 'two', three }
+define MixedList = { 1, 'two', Three }
+define EmptyList = {}
 ###
 
 module.exports.List = {
@@ -1292,7 +1809,7 @@ module.exports.List = {
       },
       "statements" : {
          "def" : [ {
-            "name" : "three",
+            "name" : "Three",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Add",
@@ -1345,7 +1862,7 @@ module.exports.List = {
                } ]
             }
          }, {
-            "name" : "mixedList",
+            "name" : "MixedList",
             "context" : "PATIENT",
             "expression" : {
                "type" : "List",
@@ -1358,9 +1875,73 @@ module.exports.List = {
                   "value" : "two",
                   "type" : "Literal"
                }, {
-                  "name" : "three",
+                  "name" : "Three",
                   "type" : "ExpressionRef"
                } ]
+            }
+         }, {
+            "name" : "EmptyList",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "List"
+            }
+         } ]
+      }
+   }
+}
+
+### IsNotEmpty
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define EmptyList = exists ({})
+define FullList = exists ({ 1, 2, 3 })
+###
+
+module.exports.IsNotEmpty = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "EmptyList",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "IsNotEmpty",
+               "operand" : {
+                  "type" : "List"
+               }
+            }
+         }, {
+            "name" : "FullList",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "IsNotEmpty",
+               "operand" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }
             }
          } ]
       }
@@ -2250,6 +2831,437 @@ module.exports.Add = {
    }
 }
 
+### Subtract
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define Ten = 10
+define Eleven = 11
+define FiveMinusTwo = 5 - 2
+define SubtractMultiple = 100 - 50 - 25 - 10
+define SubtractVariables = Eleven - Ten
+###
+
+module.exports.Subtract = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Ten",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "10",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "Eleven",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "11",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "FiveMinusTwo",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "5",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "SubtractMultiple",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "type" : "Subtract",
+                  "operand" : [ {
+                     "type" : "Subtract",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "50",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "25",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "SubtractVariables",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "Eleven",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "Ten",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Multiply
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define Ten = 10
+define Eleven = 11
+define FiveTimesTwo = 5 * 2
+define MultiplyMultiple = 1 * 2 * 3 * 4 * 5
+define MultiplyVariables = Eleven * Ten
+###
+
+module.exports.Multiply = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Ten",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "10",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "Eleven",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "11",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "FiveTimesTwo",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "5",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "MultiplyMultiple",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "type" : "Multiply",
+                  "operand" : [ {
+                     "type" : "Multiply",
+                     "operand" : [ {
+                        "type" : "Multiply",
+                        "operand" : [ {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "2",
+                           "type" : "Literal"
+                        } ]
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "5",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "MultiplyVariables",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "name" : "Eleven",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "Ten",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Divide
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define Hundred = 100
+define Four = 4
+define TenDividedByTwo = 10 / 2
+define TenDividedByFour = 10 / 4
+define DivideMultiple = 1000 / 4 / 10 / 5
+define DivideVariables = Hundred / Four
+###
+
+module.exports.Divide = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Hundred",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "100",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "Four",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "value" : "4",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "TenDividedByTwo",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Divide",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TenDividedByFour",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Divide",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "4",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "DivideMultiple",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Divide",
+               "operand" : [ {
+                  "type" : "Divide",
+                  "operand" : [ {
+                     "type" : "Divide",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "5",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "DivideVariables",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Divide",
+               "operand" : [ {
+                  "name" : "Hundred",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "Four",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### MathPrecedence
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define Mixed = 1 + 5 * 10 - 15 / 3
+define Parenthetical = (1 + 5) * (10 - 15) / 3
+###
+
+module.exports.MathPrecedence = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Mixed",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "type" : "Add",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "type" : "Multiply",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "10",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "type" : "Divide",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "Parenthetical",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Divide",
+               "operand" : [ {
+                  "type" : "Multiply",
+                  "operand" : [ {
+                     "type" : "Add",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "5",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "type" : "Subtract",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "10",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "15",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "3",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
 ### Literal
 library TestSnippet version '1'
 using QUICK
@@ -2257,6 +3269,7 @@ context PATIENT
 define BoolTrue = true
 define BoolFalse = false
 define IntOne = 1
+define DecimalTenth = 0.1
 define StringTrue = 'true'
 ###
 
@@ -2296,6 +3309,14 @@ module.exports.Literal = {
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "1",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "DecimalTenth",
+            "context" : "PATIENT",
+            "expression" : {
+               "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+               "value" : "0.1",
                "type" : "Literal"
             }
          }, {
@@ -2593,6 +3614,122 @@ module.exports.DateRangeOptimizedQuery = {
                   }
                },
                "relationship" : [ ]
+            }
+         } ]
+      }
+   }
+}
+
+### OverlapsQuery
+library TestSnippet version '1'
+using QUICK
+parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+context PATIENT
+define AmbulatoryEncountersOverlapMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime overlaps MeasurementPeriod
+###
+
+module.exports.OverlapsQuery = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "MeasurementPeriod",
+            "default" : {
+               "beginOpen" : false,
+               "endOpen" : true,
+               "type" : "Interval",
+               "begin" : {
+                  "name" : "Date",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               },
+               "end" : {
+                  "name" : "Date",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Ambulatory/ED Visit",
+            "valueSet" : {
+               "name" : "ValueSet",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "AmbulatoryEncountersOverlapMP",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "codeProperty" : "class",
+                     "type" : "ClinicalRequest",
+                     "codes" : {
+                        "name" : "Ambulatory/ED Visit",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               },
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Overlaps",
+                  "operand" : [ {
+                     "path" : "performanceTime",
+                     "scope" : "E",
+                     "type" : "Property"
+                  }, {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  } ]
+               }
             }
          } ]
       }

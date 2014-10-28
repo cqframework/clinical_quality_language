@@ -12,12 +12,76 @@ class ValueSet
     return matches.length > 0
 
 class DateTime
+  @Unit: { YEAR: 'year', MONTH: 'month', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second' }
+
   @parse: (string) ->
     match = /(\d{4})(-(\d{2})(-(\d{2})(T(\d{2})(\:(\d{2})(\:(\d{2})([+-](\d{2})(\:(\d{2}))?)?)?)?)?)?)?/.exec string
     # arguments to DateTime are at odd indexes (1, 3, 5...)
-    if match[0] is string then new DateTime((arg for arg in match[1..] by 2)...) else null 
+    if match[0] is string then new DateTime(((if arg? then parseInt(arg)) for arg in match[1..] by 2)...) else null 
+
+  @fromDate: (date) ->
+    new DateTime(date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds())
 
   constructor: (@year, @month, @day, @hour, @minute, @second) ->
+
+  copy: (other) ->
+    new DateTime(@year, @month, @day, @hour, @minute, @second)
+
+  sameXAs: (field, other) ->
+    if not(other instanceof DateTime) then return null
+
+    [a, b] = [@[field], other[field]]
+    if (a? and b?) then a is b else null
+
+  before: (other) ->
+    if not(other instanceof DateTime) then null
+
+    for key, field of DateTime.Unit
+      same = @sameXAs(field, other)
+      if same then continue
+      else if not same? then return null
+      else return @[field] < other[field]
+
+    false
+
+  beforeOrSameAs: (other) ->
+    before = @before(other)
+    sameAs = @sameAs(other)
+    if before or sameAs then return true
+    else if before? and sameAs? then return false
+    else return null
+
+  after: (other) ->
+    if not(other instanceof DateTime) then null
+
+    other.before(@)
+
+  afterOrSameAs: (other) ->
+    after = @after(other)
+    sameAs = @sameAs(other)
+    if after or sameAs then return true
+    else if after? and sameAs? then return false
+    else return null
+
+  sameAs: (other) ->
+    if not(other instanceof DateTime) then null
+
+    for key, field of DateTime.Unit
+      same = @sameXAs(field, other)
+      if not same? or not same then return same
+
+    true
+
+  add: (offset, field) ->
+    result = @copy()
+    if result[field]?
+      # Increment the field, then round-trip to JS date and back for calendar math
+      result[field] = result[field] + offset
+      normalized = DateTime.fromDate(result.toJSDate())
+      for key, field of DateTime.Unit when result[field]?
+        result[field] = normalized[field]
+
+    result
 
   toJSDate: () ->
     jsMonth = if @month? then @month-1 else 0
@@ -30,12 +94,18 @@ class Interval
     if item instanceof DateTime then item = new Interval(item, item, false, false)
 
     if item instanceof Interval
-      # TODO: Expand to work w/ more than date
-      [ivlBeg, ivlEnd, itmBeg, itmEnd] = [@begin.toJSDate(), @end.toJSDate(), item.begin.toJSDate(), item.end.toJSDate()]
-      itmBegOnOrAfterIvlBeg = itmBeg > ivlBeg or (itmBeg >= ivlBeg and (item.beginOpen or not @beginOpen))
-      itmEndOnOrBeforeIvlEnd = itmEnd < ivlEnd or (itmEnd <= ivlEnd and (item.endOpen or not @endOpen))
-      itmBegOnOrAfterIvlBeg and itmEndOnOrBeforeIvlEnd
+      if ([@begin, @end, item.begin, item.end].every (x) -> x instanceof DateTime)
+        [begin, end] = @getAdjustedEndpoints()
+        [itmBegin, itmEnd] = item.getAdjustedEndpoints()
+        return begin.beforeOrSameAs(itmBegin) and end.afterOrSameAs(itmEnd)
     else false
+
+  # Adjusted endpoints are useful for timing calculations with open endpoints
+  getAdjustedEndpoints: () ->
+    [
+      if @beginOpen then @begin.add(1, DateTime.Unit.SECOND) else @begin,
+      if @endOpen then @end.add(-1, DateTime.Unit.SECOND) else @end
+    ]
 
 module.exports.Code = Code
 module.exports.ValueSet = ValueSet

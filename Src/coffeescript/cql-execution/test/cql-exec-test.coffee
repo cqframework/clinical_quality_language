@@ -121,14 +121,91 @@ describe 'And', ->
   @beforeEach ->
     setup @
 
-  it 'should execute allTrue as true', ->
-    @allTrue.exec(@ctx).should.be.true
+  it 'should execute T and T as T', ->
+    @tT.exec(@ctx).should.be.true
 
-  it 'should execute allFalse as false', ->
-    @allFalse.exec(@ctx).should.be.false
+  it 'should execute F and F as F', ->
+    @fF.exec(@ctx).should.be.false
 
-  it 'should execute someTrue as false', ->
-    @someTrue.exec(@ctx).should.be.false
+  it 'should execute T and F as F', ->
+    @tF.exec(@ctx).should.be.false
+
+  it 'should execute F and T as F', ->
+    @fT.exec(@ctx).should.be.false
+
+  it 'should execute T and T and T as T', ->
+    @tTT.exec(@ctx).should.be.true
+
+  it 'should execute F and F and F as F', ->
+    @fFF.exec(@ctx).should.be.false
+
+  it 'should execute T and F and T as F', ->
+    @tFT.exec(@ctx).should.be.false
+
+describe 'Or', ->
+  @beforeEach ->
+    setup @
+
+  it 'should execute T or T as T', ->
+    @tT.exec(@ctx).should.be.true
+
+  it 'should execute F or F as F', ->
+    @fF.exec(@ctx).should.be.false
+
+  it 'should execute T or F as T', ->
+    @tF.exec(@ctx).should.be.true
+
+  it 'should execute F or T as T', ->
+    @fT.exec(@ctx).should.be.true
+
+  it 'should execute T or T or T as T', ->
+    @tTT.exec(@ctx).should.be.true
+
+  it 'should execute F or F or F as F', ->
+    @fFF.exec(@ctx).should.be.false
+
+  it 'should execute T or F or T as T', ->
+    @tFT.exec(@ctx).should.be.true
+
+describe 'XOr', ->
+  @beforeEach ->
+    setup @
+
+  it 'should execute T xor T as F', ->
+    @tT.exec(@ctx).should.be.false
+
+  it 'should execute F xor F as F', ->
+    @fF.exec(@ctx).should.be.false
+
+  it 'should execute T xor F as T', ->
+    @tF.exec(@ctx).should.be.true
+
+  it 'should execute F xor T as T', ->
+    @fT.exec(@ctx).should.be.true
+
+  it 'should execute T xor T xor T as T', ->
+    @tTT.exec(@ctx).should.be.true
+
+  it 'should execute T xor T xor F as F', ->
+    @tTF.exec(@ctx).should.be.false
+
+  it 'should execute T xor F xor T as F', ->
+    @tFT.exec(@ctx).should.be.false
+
+  it 'should execute T xor F xor F as T', ->
+    @tFF.exec(@ctx).should.be.true
+
+  it 'should execute F xor T xor T as F', ->
+    @fTT.exec(@ctx).should.be.false
+
+  it 'should execute F xor T xor F as T', ->
+    @fTF.exec(@ctx).should.be.true
+
+  it 'should execute F xor F xor T as T', ->
+    @fFT.exec(@ctx).should.be.true
+
+  it 'should execute F xor F xor F as F', ->
+    @fFF.exec(@ctx).should.be.false
 
 describe 'AgeAtFunctionRef', ->
   @beforeEach ->
@@ -270,6 +347,19 @@ describe 'List', ->
 
   it 'should execute to an array (mixed)', ->
     @mixedList.exec(@ctx).should.eql [1, 'two', 3]
+
+  it 'should execute to an empty array', ->
+    @emptyList.exec(@ctx).should.eql []
+
+describe 'IsNotEmpty', ->
+  @beforeEach ->
+    setup @
+
+  it 'should return false for empty list', ->
+    @emptyList.exec(@ctx).should.be.false
+
+  it 'should return true for full list', ->
+    @fullList.exec(@ctx).should.be.true
 
 describe 'Interval', ->
   @beforeEach ->
@@ -438,6 +528,58 @@ describe 'Add', ->
   it 'should add variables', ->
     @addVariables.exec(@ctx).should.equal 21
 
+describe 'Subtract', ->
+  @beforeEach ->
+    setup @
+
+  it 'should subtract two numbers', ->
+    @fiveMinusTwo.exec(@ctx).should.equal 3
+
+  it 'should subtract multiple numbers', ->
+    @subtractMultiple.exec(@ctx).should.equal 15
+
+  it 'should subtract variables', ->
+    @subtractVariables.exec(@ctx).should.equal 1
+
+describe 'Multiply', ->
+  @beforeEach ->
+    setup @
+
+  it 'should multiply two numbers', ->
+    @fiveTimesTwo.exec(@ctx).should.equal 10
+
+  it 'should multiply multiple numbers', ->
+    @multiplyMultiple.exec(@ctx).should.equal 120
+
+  it 'should multiply variables', ->
+    @multiplyVariables.exec(@ctx).should.equal 110
+
+describe 'Divide', ->
+  @beforeEach ->
+    setup @
+
+  it 'should divide two numbers', ->
+    @tenDividedByTwo.exec(@ctx).should.equal 5
+
+  it 'should divide two numbers that don\'t evenly divide', ->
+    @tenDividedByFour.exec(@ctx).should.equal 2.5
+
+  it 'should divide multiple numbers', ->
+    @divideMultiple.exec(@ctx).should.equal 5
+
+  it 'should divide variables', ->
+    @divideVariables.exec(@ctx).should.equal 25
+
+describe 'MathPrecedence', ->
+  @beforeEach ->
+    setup @
+
+  it 'should follow order of operations', ->
+    @mixed.exec(@ctx).should.equal 46
+
+  it 'should allow parentheses to override order of operations', ->
+    @parenthetical.exec(@ctx).should.equal -10
+
 describe 'Literal', ->
   @beforeEach ->
     setup @
@@ -459,6 +601,12 @@ describe 'Literal', ->
 
   it 'should execute 1 as 1', ->
     @intOne.exec(@ctx).should.equal 1
+
+  it 'should convert .1 to decimal .1', ->
+    @decimalTenth.value.should.equal 0.1
+
+  it 'should execute .1 as .1', ->
+    @decimalTenth.exec(@ctx).should.equal 0.1
 
   it 'should convert \'true\' to string \'true\'', ->
     @stringTrue.value.should.equal 'true'

@@ -26,6 +26,7 @@ buildLiteral = (json) ->
   switch(json.valueType)
     when "{http://www.w3.org/2001/XMLSchema}bool" then new BooleanLiteral(json)
     when "{http://www.w3.org/2001/XMLSchema}int" then new IntegerLiteral(json)
+    when "{http://www.w3.org/2001/XMLSchema}decimal" then new DecimalLiteral(json)
     when "{http://www.w3.org/2001/XMLSchema}string" then new StringLiteral(json)
     else new Literal(json)
 
@@ -171,6 +172,22 @@ class And extends Expression
     results = @execArgs(ctx)
     results.reduce (a,b) -> a and b
 
+class Or extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    results = @execArgs(ctx)
+    results.reduce (a,b) -> a or b
+
+class Xor extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    results = @execArgs(ctx)
+    results.reduce (a,b) -> (!a ^ !b) is 1
+
 # Functions
 
 class FunctionRef extends Expression
@@ -266,10 +283,17 @@ class Less extends Expression
 class List extends Expression
   constructor: (json) ->
     super
-    @elements = build json.element
+    @elements = (build json.element) ? []
 
   exec: (ctx) ->
     (item.exec(ctx) for item in @elements)
+
+class IsNotEmpty extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @execArgs(ctx)?.length > 0
 
 class Interval extends Expression
   constructor: (json) ->
@@ -314,6 +338,27 @@ class Add extends Expression
   exec: (ctx) ->
     @execArgs(ctx).reduce (x,y) -> x + y
 
+class Subtract extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @execArgs(ctx).reduce (x,y) -> x - y
+
+class Multiply extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @execArgs(ctx).reduce (x,y) -> x * y
+
+class Divide extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @execArgs(ctx).reduce (x,y) -> x / y
+
 # Literals
 
 class Literal extends Expression
@@ -337,6 +382,14 @@ class IntegerLiteral extends Literal
   constructor: (json) ->
     super
     @value = parseInt(@value, 10)
+
+  exec: (ctx) ->
+    @value
+
+class DecimalLiteral extends Literal
+  constructor: (json) ->
+    super
+    @value = parseFloat(@value)
 
   exec: (ctx) ->
     @value

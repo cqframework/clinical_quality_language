@@ -31,9 +31,36 @@ valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.100
 define Foo = "Acute Pharyngitis"
 
 # And
-define AllTrue = true and true
-define AllFalse = false and false
-define SomeTrue = true and false
+define TT = true and true
+define FF = false and false
+define TF = true and false
+define FT = false and true
+define TTT = true and true and true
+define FFF = false and false and false
+define TFT = true and false and true
+
+# Or
+define TT = true or true
+define FF = false or false
+define TF = true or false
+define FT = false or true
+define TTT = true or true or true
+define FFF = false or false or false
+define TFT = true or false or true
+
+# XOr
+define TT = true xor true
+define FF = false xor false
+define TF = true xor false
+define FT = false xor true
+define TTT = true xor true xor true
+define TTF = true xor true xor false
+define TFT = true xor false xor true
+define TFF = true xor false xor false
+define FTT = false xor true xor true
+define FTF = false xor true xor false
+define FFT = false xor false xor true
+define FFF = false xor false xor false
 
 # AgeAtFunctionRef
 define AgeAt2012 = AgeAt(Date(2012))
@@ -77,10 +104,15 @@ define AEqB_Int = 5 < 5
 define ALtB_Int = 5 < 6
 
 # List
-define three = 1 + 2
+define Three = 1 + 2
 define IntList = { 9, 7, 8 }
 define StringList = { 'a', 'bee', 'see' }
-define mixedList = { 1, 'two', three }
+define MixedList = { 1, 'two', Three }
+define EmptyList = {}
+
+# IsNotEmpty
+define EmptyList = exists ({})
+define FullList = exists ({ 1, 2, 3 })
 
 # Interval
 define Open = interval(Date(2012, 1, 1), Date(2013, 1, 1))
@@ -134,10 +166,37 @@ define OnePlusTwo = 1 + 2
 define AddMultiple = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
 define AddVariables = Ten + Eleven
 
+# Subtract
+define Ten = 10
+define Eleven = 11
+define FiveMinusTwo = 5 - 2
+define SubtractMultiple = 100 - 50 - 25 - 10
+define SubtractVariables = Eleven - Ten
+
+# Multiply
+define Ten = 10
+define Eleven = 11
+define FiveTimesTwo = 5 * 2
+define MultiplyMultiple = 1 * 2 * 3 * 4 * 5
+define MultiplyVariables = Eleven * Ten
+
+# Divide
+define Hundred = 100
+define Four = 4
+define TenDividedByTwo = 10 / 2
+define TenDividedByFour = 10 / 4
+define DivideMultiple = 1000 / 4 / 10 / 5
+define DivideVariables = Hundred / Four
+
+# MathPrecedence
+define Mixed = 1 + 5 * 10 - 15 / 3
+define Parenthetical = (1 + 5) * (10 - 15) / 3
+
 # Literal
 define BoolTrue = true
 define BoolFalse = false
 define IntOne = 1
+define DecimalTenth = 0.1
 define StringTrue = 'true'
 
 # ClinicalRequest
@@ -158,6 +217,11 @@ parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
 define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
+
+# OverlapsQuery
+parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+define AmbulatoryEncountersOverlapMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime overlaps MeasurementPeriod
 
 #ScratchPad
 define Foo = "foo"
