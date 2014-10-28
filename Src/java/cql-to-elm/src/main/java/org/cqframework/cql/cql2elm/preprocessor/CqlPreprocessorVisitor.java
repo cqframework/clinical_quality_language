@@ -15,9 +15,9 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
-        libraryInfo.setLibraryName((String)visit(ctx.IDENTIFIER()));
-        if (ctx.STRING() != null) {
-            libraryInfo.setVersion((String)visit(ctx.STRING()));
+        libraryInfo.setLibraryName((String)visit(ctx.identifier()));
+        if (ctx.versionSpecifier() != null) {
+            libraryInfo.setVersion((String)visit(ctx.versionSpecifier()));
         }
         return super.visitLibraryDefinition(ctx);
     }
@@ -25,11 +25,11 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         IncludeDefinitionInfo includeDefinition = new IncludeDefinitionInfo();
-        includeDefinition.setName((String)visit(ctx.IDENTIFIER(0)));
-        if (ctx.STRING() != null) {
-            includeDefinition.setVersion((String)visit(ctx.STRING()));
+        includeDefinition.setName((String)visit(ctx.identifier()));
+        if (ctx.versionSpecifier() != null) {
+            includeDefinition.setVersion((String)visit(ctx.versionSpecifier()));
         }
-        includeDefinition.setLocalName((String)visit(ctx.IDENTIFIER(1)));
+        includeDefinition.setLocalName((String)visit(ctx.localIdentifier()));
         libraryInfo.addIncludeDefinition(includeDefinition);
         return includeDefinition;
     }
@@ -37,27 +37,18 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
-        usingDefinition.setName((String)visit(ctx.IDENTIFIER()));
-        if (ctx.STRING() != null) {
-            usingDefinition.setVersion((String)visit(ctx.STRING()));
+        usingDefinition.setName((String)visit(ctx.identifier()));
+        if (ctx.versionSpecifier() != null) {
+            usingDefinition.setVersion((String)visit(ctx.versionSpecifier()));
         }
         libraryInfo.addUsingDefinition(usingDefinition);
         return usingDefinition;
     }
 
     @Override
-    public Object visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
-        ValuesetDefinitionInfo valuesetDefinition = new ValuesetDefinitionInfo();
-        valuesetDefinition.setName((String)visit(ctx.VALUESET()));
-        valuesetDefinition.setDefinition(ctx);
-        libraryInfo.addValuesetDefinition(valuesetDefinition);
-        return valuesetDefinition;
-    }
-
-    @Override
     public Object visitParameterDefinition(@NotNull cqlParser.ParameterDefinitionContext ctx) {
         ParameterDefinitionInfo parameterDefinition = new ParameterDefinitionInfo();
-        parameterDefinition.setName((String)visit(ctx.IDENTIFIER()));
+        parameterDefinition.setName((String)visit(ctx.identifier()));
         parameterDefinition.setDefinition(ctx);
         libraryInfo.addParameterDefinition(parameterDefinition);
         return parameterDefinition;
@@ -65,17 +56,17 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
-        ExpressionDefinitionInfo letStatement = new ExpressionDefinitionInfo();
-        letStatement.setName((String)visit(ctx.IDENTIFIER()));
-        letStatement.setDefinition(ctx);
-        libraryInfo.addLetStatement(letStatement);
-        return letStatement;
+        ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
+        expressionDefinition.setName((String)visit(ctx.identifier()));
+        expressionDefinition.setDefinition(ctx);
+        libraryInfo.addExpressionDefinition(expressionDefinition);
+        return expressionDefinition;
     }
 
     @Override
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
-        functionDefinition.setName((String)visit(ctx.IDENTIFIER()));
+        functionDefinition.setName((String)visit(ctx.identifier()));
         functionDefinition.setDefinition(ctx);
         libraryInfo.addFunctionDefinition(functionDefinition);
         return functionDefinition;
@@ -94,7 +85,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     public Object visitTerminal(@NotNull TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
-        if (cqlLexer.STRING == tokenType || cqlLexer.VALUESET == tokenType) {
+        if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType) {
             // chop off leading and trailing ' or "
             text = text.substring(1, text.length() - 1);
         }

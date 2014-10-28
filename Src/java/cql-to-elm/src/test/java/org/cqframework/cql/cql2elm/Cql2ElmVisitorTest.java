@@ -70,7 +70,7 @@ import static org.testng.Assert.assertTrue;
 
 public class Cql2ElmVisitorTest {
     @Test
-    public void testLet(){
+    public void testDefine(){
         ExpressionDef def = (ExpressionDef) visitData("define b = true");
         assertThat(def.getName(), is("b"));
         assertTrackable(def);
@@ -279,10 +279,10 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testValueSetReference() {
         String cql =
-                "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+                "define \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
                 "define st = \"Acute Pharyngitis\"";
         ExpressionDef def = (ExpressionDef) visitData(cql);
-        ValueSetRef vs = (ValueSetRef) def.getExpression();
+        ExpressionRef vs = (ExpressionRef) def.getExpression();
         assertThat(vs.getName(), is("Acute Pharyngitis"));
         assertThat(vs.getLibraryName(), is(nullValue()));
         assertThat(vs.getDescription(), is(nullValue()));
@@ -438,13 +438,13 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testRetrieveTopicAndValueSet() {
         String cql =
-                "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+                "define \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
                 "define st = [Condition: \"Acute Pharyngitis\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is("code"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
+        ExpressionRef code = (ExpressionRef) request.getCodes();
         assertThat(code.getName(), is("Acute Pharyngitis"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
@@ -462,13 +462,13 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testRetrieveTopicAndModalityAndValueSet() {
         String cql =
-                "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
+                "define \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
                 "define st = [Encounter, Performance: \"Ambulatory/ED Visit\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
+        ExpressionRef code = (ExpressionRef) request.getCodes();
         assertThat(code.getName(), is("Ambulatory/ED Visit"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
@@ -486,13 +486,13 @@ public class Cql2ElmVisitorTest {
     @Test(enabled = false)
     public void testRetrieveNonOccurrenceOfTopicAndModalityAndValueSet() {
         String cql =
-                "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
+                "define \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
                 "define st = [NonOccurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceNonOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
+        ExpressionRef code = (ExpressionRef) request.getCodes();
         assertThat(code.getName(), is("Ambulatory/ED Visit"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
@@ -510,13 +510,13 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testRetrieveTopicAndModalityAndOccurrenceAndValueSet() {
         String cql =
-                "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
+                "define \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
                 "define st = [Occurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
+        ExpressionRef code = (ExpressionRef) request.getCodes();
         assertThat(code.getName(), is("Ambulatory/ED Visit"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
@@ -534,13 +534,13 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testRetrieveTopicAndSpecifiedCodeAttribute() {
         String cql =
-                "valueset \"Moderate or Severe\" = ValueSet('2.16.840.1.113883.3.526.3.1092')\n" +
+                "define \"Moderate or Severe\" = ValueSet('2.16.840.1.113883.3.526.3.1092')\n" +
                 "define st = [Condition: severity in \"Moderate or Severe\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is("severity"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
+        ExpressionRef code = (ExpressionRef) request.getCodes();
         assertThat(code.getName(), is("Moderate or Severe"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
@@ -558,13 +558,13 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testRetrieveTopicAndModalityAndSpecifiedCodeAttribute() {
         String cql =
-                "valueset \"CABG Surgeries\" = ValueSet('2.16.840.1.113883.3.666.5.694')\n" +
+                "define \"CABG Surgeries\" = ValueSet('2.16.840.1.113883.3.666.5.694')\n" +
                 "define st = [Encounter, Performance: actionPerformed in \"CABG Surgeries\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         ClinicalRequest request = (ClinicalRequest) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("actionPerformed"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
+        ExpressionRef code = (ExpressionRef) request.getCodes();
         assertThat(code.getName(), is("CABG Surgeries"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
@@ -582,7 +582,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForDateIntervalLiteral() {
         String cql =
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
 
@@ -615,7 +615,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForDateIntervalLiteralAndImpliedDateRangeProperty() {
         String cql =
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
 
@@ -648,7 +648,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDefaultedDateIntervalParameter() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during MeasurementPeriod";
 
@@ -670,7 +670,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForTypedDateIntervalParameter() {
         String cql =
                 "parameter MeasurementPeriod : interval<DateTime>\n" +
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during MeasurementPeriod";
 
@@ -691,7 +691,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForDateIntervalExpressionReference() {
         String cql =
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define twentyThirteen = interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during twentyThirteen";
@@ -713,7 +713,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForDateTimeLiteral() {
         String cql =
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during Date(2013, 6)";
 
@@ -736,7 +736,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDefaultedDateTimeParameter() {
         String cql =
                 "parameter MyDate default Date(2013, 6)\n" +
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during MyDate";
 
@@ -758,7 +758,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForTypedDateTimeParameter() {
         String cql =
                 "parameter MyDate : DateTime\n" +
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during MyDate";
 
@@ -779,7 +779,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForDateTimeExpressionReference() {
         String cql =
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define myDate = Date(2013, 6)\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during myDate";
@@ -802,7 +802,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForAndedWhere() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
                 "    and E.effectiveTime during MeasurementPeriod";
@@ -833,7 +833,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDeeplyAndedWhere() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
                 "    and E.length < 14 days\n" +
@@ -882,7 +882,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForMultipleQualifyingClauses() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.performanceTime during MeasurementPeriod\n" +
                 "    and E.effectiveTime during MeasurementPeriod";
@@ -914,7 +914,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationNotDoneWhenDisabled() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during MeasurementPeriod";
 
@@ -942,8 +942,8 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationNotDoneOnUnsupportedExpressions() {
         // NOTE: I'm not sure that the below statement is even valid without a "with" clause
         String cql =
-                "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-                "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+                "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+                "define \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
                 "define pharyngitis = [Condition: \"Acute Pharyngitis\"]\n" +
                 "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
                 "    where E.effectiveTime during pharyngitis";
@@ -981,7 +981,7 @@ public class Cql2ElmVisitorTest {
         ClinicalRequest request = (ClinicalRequest) source.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
+        ExpressionRef code = (ExpressionRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(code.getDescription(), is(nullValue()));
@@ -1000,11 +1000,11 @@ public class Cql2ElmVisitorTest {
     public void testComplexQuery() {
         String cql =
             "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
-            "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-            "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+            "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+            "define \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
             "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
             "    with [Condition: \"Acute Pharyngitis\"] P\n" +
-            "        where P.effectiveTime overlaps after E.performanceTime\n" +
+            "        such that P.effectiveTime overlaps after E.performanceTime\n" +
             "    where duration in days of E.performanceTime >= 120\n" +
             "    return tuple { id: E.id, lengthOfStay: duration in days of E.performanceTime }\n" +
             "    sort by lengthOfStay desc";
@@ -1017,7 +1017,7 @@ public class Cql2ElmVisitorTest {
         ClinicalRequest request = (ClinicalRequest) source.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef code = (ValueSetRef) request.getCodes();
+        ExpressionRef code = (ExpressionRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(code.getLibraryName(), is(nullValue()));
@@ -1039,7 +1039,7 @@ public class Cql2ElmVisitorTest {
         ClinicalRequest withRequest = (ClinicalRequest) relationship.getExpression();
         assertThat(withRequest.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(withRequest.getCodeProperty(), is("code"));
-        ValueSetRef withCode = (ValueSetRef) withRequest.getCodes();
+        ExpressionRef withCode = (ExpressionRef) withRequest.getCodes();
         assertThat(withCode.getName(), is("Acute Pharyngitis"));
         assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(withCode.getLibraryName(), is(nullValue()));
@@ -1332,11 +1332,11 @@ public class Cql2ElmVisitorTest {
 
     private Expression testInpatientWithPharyngitisWhere(String withWhereClause) {
         String cql =
-            "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
-            "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
+            "define \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+            "define \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
             "define st = [Encounter, Performance: \"Inpatient\"] E\n" +
             "    with [Condition: \"Acute Pharyngitis\"] P\n" +
-            "    where " + withWhereClause;
+            "    such that " + withWhereClause;
 
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Query query = (Query) def.getExpression();
@@ -1345,7 +1345,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
         assertThat(request.getDataType().getLocalPart(), is("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
-        ValueSetRef vs = (ValueSetRef) request.getCodes();
+        ExpressionRef vs = (ExpressionRef) request.getCodes();
         assertThat(vs.getName(), is("Inpatient"));
         assertThat(vs.getLibraryName(), is(nullValue()));
         assertThat(query.getRelationship(), hasSize(1));
@@ -1355,7 +1355,7 @@ public class Cql2ElmVisitorTest {
         assertThat(withRequest.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
         assertThat(withRequest.getDataType().getLocalPart(), is("ConditionOccurrence"));
         assertThat(withRequest.getCodeProperty(), is("code"));
-        ValueSetRef withVS = (ValueSetRef) withRequest.getCodes();
+        ExpressionRef withVS = (ExpressionRef) withRequest.getCodes();
         assertThat(withVS.getName(), is("Acute Pharyngitis"));
         assertThat(withVS.getLibraryName(), is(nullValue()));
         return with.getWhere();

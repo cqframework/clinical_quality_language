@@ -205,8 +205,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public VersionedIdentifier visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
         VersionedIdentifier vid = of.createVersionedIdentifier()
-                .withId(parseString(ctx.IDENTIFIER()))
-                .withVersion(parseString(ctx.STRING()));
+                .withId(parseString(ctx.identifier()))
+                .withVersion(parseString(ctx.versionSpecifier()));
         library.setIdentifier(vid);
 
         return vid;
@@ -214,15 +214,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public ModelReference visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
-        return initializeModelHelper(parseString(ctx.IDENTIFIER()));
+        return initializeModelHelper(parseString(ctx.identifier()));
     }
 
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         LibraryReference library = of.createLibraryReference()
-                .withName(ctx.IDENTIFIER(1).getText())
-                .withPath(ctx.IDENTIFIER(0).getText())
-                .withVersion(parseString(ctx.STRING()));
+                .withName(parseString(ctx.localIdentifier()))
+                .withPath(parseString(ctx.identifier()))
+                .withVersion(parseString(ctx.versionSpecifier()));
 
         addToLibrary(library);
 
@@ -232,7 +232,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public ParameterDef visitParameterDefinition(@NotNull cqlParser.ParameterDefinitionContext ctx) {
         ParameterDef param = of.createParameterDef()
-                .withName(parseString(ctx.IDENTIFIER()))
+                .withName(parseString(ctx.identifier()))
                 .withDefault(parseExpression(ctx.expression()))
                 .withParameterTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()));
 
@@ -242,14 +242,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public NamedTypeSpecifier visitAtomicTypeSpecifier(@NotNull cqlParser.AtomicTypeSpecifierContext ctx) {
-        return of.createNamedTypeSpecifier().withName(resolveNamedType(ctx.IDENTIFIER().getText()));
+    public NamedTypeSpecifier visitNamedTypeSpecifier(@NotNull cqlParser.NamedTypeSpecifierContext ctx) {
+        return of.createNamedTypeSpecifier().withName(resolveNamedType(parseString(ctx.identifier())));
     }
 
     @Override
     public PropertyTypeSpecifier visitTupleElementDefinition(@NotNull cqlParser.TupleElementDefinitionContext ctx) {
         return of.createPropertyTypeSpecifier()
-                .withName(ctx.IDENTIFIER().getText())
+                .withName(parseString(ctx.identifier()))
                 .withType(parseTypeSpecifier(ctx.typeSpecifier()));
     }
 
@@ -274,18 +274,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public ValueSetDef visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
-        ValueSetDef vs = of.createValueSetDef()
-                .withName(parseString(ctx.VALUESET()))
-                .withValueSet(parseExpression(ctx.expression()));
-        addToLibrary(vs);
-
-        return vs;
-    }
-
-    @Override
     public String visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
-        currentContext = parseString(ctx.IDENTIFIER());
+        currentContext = parseString(ctx.identifier());
 
         return currentContext;
     }
@@ -293,7 +283,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public ExpressionDef visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         ExpressionDef def = of.createExpressionDef()
-                .withName(parseString(ctx.IDENTIFIER()))
+                .withName(parseString(ctx.identifier()))
                 .withContext(currentContext)
                 .withExpression((Expression) visit(ctx.expression()));
         addToLibrary(def);
@@ -308,7 +298,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Literal visitBooleanLiteral(@NotNull cqlParser.BooleanLiteralContext ctx) {
-        return createLiteral(Boolean.valueOf(parseString(ctx)));
+        return createLiteral(Boolean.valueOf(ctx.getText()));
     }
 
     @Override
@@ -323,7 +313,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitTupleElementSelector(@NotNull cqlParser.TupleElementSelectorContext ctx) {
         return of.createPropertyExpression()
-                .withName(ctx.IDENTIFIER().getText())
+                .withName(parseString(ctx.identifier()))
                 .withValue(parseExpression(ctx.expression()));
     }
 
@@ -372,11 +362,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     .withValue(quantity)
                     .withValueType(resolveNamedType(quantity.contains(".") ? "Decimal" : "Integer"));
         }
-    }
-
-    @Override
-    public Object visitValuesetLiteral(@NotNull cqlParser.ValuesetLiteralContext ctx) {
-        return of.createValueSetRef().withName(parseString(ctx.VALUESET()));
     }
 
     @Override
@@ -702,115 +687,82 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Expression visitQualifiedIdentifier(@NotNull cqlParser.QualifiedIdentifierContext ctx) {
-        // QualifiedIdentifier can only appear as a query source, so it can only be an
-        // ExpressionRef, a library qualified ExpressionRef, or an Alias qualified property ref.
-        if (ctx.qualifier() != null) {
-            String alias = resolveAlias(ctx.qualifier().getText());
-            if (alias != null) {
-                return of.createProperty().withPath(parseString(ctx.IDENTIFIER())).withScope(alias);
-            }
+    public List<String> visitQualifiedIdentifier(@NotNull cqlParser.QualifiedIdentifierContext ctx) {
+        // Return the list of qualified identifiers for resolution by the containing element
+        List<String> identifiers = new ArrayList<>();
+        for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
+            String qualifier = parseString(qualifierContext);
+            identifiers.add(qualifier);
         }
 
-        String alias = resolveAlias(ctx.IDENTIFIER().getText());
-        if (alias != null) {
-            return of.createAliasRef().withName(alias);
-        }
-
-        return of.createExpressionRef()
-                .withLibraryName(parseString(ctx.qualifier()))
-                .withName(parseString(ctx.IDENTIFIER()));
+        String identifier = parseString(ctx.identifier());
+        identifiers.add(identifier);
+        return identifiers;
     }
 
-    @Override
-    public Expression visitValueset(@NotNull cqlParser.ValuesetContext ctx) {
-        Expression exp;
-        if (ctx.VALUESET() != null) {
-            exp = of.createValueSetRef()
-                    .withName(parseString(ctx.VALUESET()));
-            if (ctx.qualifier() != null) {
-                ((ValueSetRef)exp).withLibraryName(parseString(ctx.qualifier()));
-            }
-        } else {
-            exp = of.createExpressionRef()
-                    .withLibraryName(parseString(ctx.qualifier()))
-                    .withName(parseString(ctx.IDENTIFIER()));
-        }
-
-        return exp;
-    }
-
-    @Override
-    public Expression visitAccessorExpressionTerm(@NotNull cqlParser.AccessorExpressionTermContext ctx) {
-        Expression left = parseExpression(ctx.expressionTerm());
-
+    public Expression resolveAccessor(Expression left, String memberIdentifier) {
         // if left is a LibraryRef
-            // if right is an IDENTIFIER
-                // right may be a ParameterRef or an ExpressionRef -- need to resolve on the referenced library
-                // return an ExpressionRef with the LibraryName set to the name of the LibraryRef
-            // if right is a VALUESET
-                // return a ValueSetRef with the LibraryName set to the name of the LibraryRef
+        // if right is an identifier
+        // right may be a ParameterRef or an ExpressionRef -- need to resolve on the referenced library
+        // return an ExpressionRef with the LibraryName set to the name of the LibraryRef
         // if left is an ExpressionRef
-            // if right is an IDENTIFIER
-                // return a Property with the ExpressionRef as source and IDENTIFIER as Path
-            // if right is a VALUESET, throw
-        // if left is a PropertyRef
-            // if right is an IDENTIFIER
-                // modify the Property to append the IDENTIFIER to the PATH
-            // if right is a VALUESET, throw
+        // if right is an identifier
+        // return a Property with the ExpressionRef as source and identifier as Path
+        // if left is a Property
+        // if right is an identifier
+        // modify the Property to append the identifier to the path
         // if left is an AliasRef
-            // return a Property with a Path and no source, and Scope set to the Alias
+        // return a Property with a Path and no source, and Scope set to the Alias
         // if left is an Identifier
-            // return a new Identifier with left as a qualifier
+        // return a new Identifier with left as a qualifier
         // else
-            // return an Identifier for resolution later by a method or accessor
+        // return an Identifier for resolution later by a method or accessor
 
         if (left instanceof LibraryRef) {
-            if (ctx.IDENTIFIER() != null) {
-                Library referencedLibrary = resolveLibrary(((LibraryRef)left).getLibraryName());
+            Library referencedLibrary = resolveLibrary(((LibraryRef) left).getLibraryName());
 
-                String parameterName = resolveParameterName(referencedLibrary, ctx.IDENTIFIER().getText());
-                if (parameterName != null) {
-                    return of.createParameterRef()
-                            .withLibraryName(((LibraryRef)left).getLibraryName())
-                            .withName(ctx.IDENTIFIER().getText());
-                }
-
-                String expressionName = resolveExpressionName(referencedLibrary, ctx.IDENTIFIER().getText());
-                if (expressionName != null) {
-                    return of.createExpressionRef()
-                            .withLibraryName(((LibraryRef)left).getLibraryName())
-                            .withName(ctx.IDENTIFIER().getText());
-                }
-
-                Identifier identifier = new Identifier();
-                identifier.setLibraryName(((LibraryRef)left).getLibraryName());
-                identifier.setIdentifier(ctx.IDENTIFIER().getText());
+            String parameterName = resolveParameterName(referencedLibrary, memberIdentifier);
+            if (parameterName != null) {
+                return of.createParameterRef()
+                        .withLibraryName(((LibraryRef) left).getLibraryName())
+                        .withName(memberIdentifier);
             }
 
-            if (ctx.VALUESET() != null) {
-                return of.createValueSetRef()
-                        .withLibraryName(((LibraryRef)left).getLibraryName())
-                        .withName(ctx.VALUESET().getText());
+            String expressionName = resolveExpressionName(referencedLibrary, memberIdentifier);
+            if (expressionName != null) {
+                return of.createExpressionRef()
+                        .withLibraryName(((LibraryRef) left).getLibraryName())
+                        .withName(memberIdentifier);
             }
+
+            Identifier identifier = new Identifier();
+            identifier.setLibraryName(((LibraryRef)left).getLibraryName());
+            identifier.setIdentifier(memberIdentifier);
+            return identifier;
         }
 
-        else if (left instanceof ExpressionRef && ctx.IDENTIFIER() != null) {
+        else if (left instanceof ExpressionRef) {
             return of.createProperty()
                     .withSource(left)
-                    .withPath(ctx.IDENTIFIER().getText());
+                    .withPath(memberIdentifier);
         }
 
-        else if (left instanceof AliasRef && ctx.IDENTIFIER() != null) {
+        else if (left instanceof AliasRef) {
             return of.createProperty()
                     .withScope(((AliasRef)left).getName())
-                    .withPath(ctx.IDENTIFIER().getText());
+                    .withPath(memberIdentifier);
         }
 
-        else if (left instanceof Property && ctx.IDENTIFIER() != null) {
+        else if (left instanceof Property) {
             Property property = (Property)left;
-            property.setPath(String.format("%s.%s", property.getPath(), ctx.IDENTIFIER().getText()));
+            property.setPath(String.format("%s.%s", property.getPath(), memberIdentifier));
             return property;
+        }
+
+        else if (left instanceof Identifier) {
+            Identifier identifier = (Identifier)left;
+            identifier.setIdentifier(String.format("%s.%s", identifier.getIdentifier(), memberIdentifier));
+            return identifier;
         }
 
         // TODO: Error handling, this should throw, or return an Error() or something.
@@ -819,15 +771,34 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Expression visitIdentifierTerm(@NotNull cqlParser.IdentifierTermContext ctx) {
-        // An Identifier will always be:
-            // 1: The name of a library
-            // 2: The name of a parameter
-            // 3: The name of an expression
-            // 4: The name of an alias
-            // 5: An unresolved identifier that must be resolved later (by a method or accessor)
+    public Expression visitAccessorExpressionTerm(@NotNull cqlParser.AccessorExpressionTermContext ctx) {
+        Expression left = parseExpression(ctx.expressionTerm());
+        String memberIdentifier = parseString(ctx.identifier());
+        return resolveAccessor(left, memberIdentifier);
+    }
 
-        String identifier = ctx.IDENTIFIER().getText();
+    public Expression resolveIdentifier(String identifier) {
+        // An Identifier will always be:
+        // 1: The name of an alias
+        // 2: The name of an expression
+        // 3: The name of a parameter
+        // 4: The name of a library
+        // 5: An unresolved identifier that must be resolved later (by a method or accessor)
+
+        String alias = resolveAlias(identifier);
+        if (alias != null) {
+            return of.createAliasRef().withName(identifier);
+        }
+
+        String expressionName = resolveExpressionName(identifier);
+        if (expressionName != null) {
+            return of.createExpressionRef().withName(expressionName);
+        }
+
+        String parameterName = resolveParameterName(identifier);
+        if (parameterName != null) {
+            return of.createParameterRef().withName(parameterName);
+        }
 
         String libraryName = resolveLibraryName(identifier);
         if (libraryName != null) {
@@ -837,26 +808,42 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return libraryRef;
         }
 
-        String parameterName = resolveParameterName(identifier);
-        if (parameterName != null) {
-            return of.createParameterRef().withName(parameterName);
-        }
-
-        String expressionName = resolveExpressionName(identifier);
-        if (expressionName != null) {
-            return of.createExpressionRef().withName(expressionName);
-        }
-
-        String alias = resolveAlias(identifier);
-        if (alias != null) {
-            return of.createAliasRef().withName(identifier);
-        }
-
         Identifier id = new Identifier();
         id.setIdentifier(identifier);
         return id;
     }
 
+    public Expression resolveQualifiedIdentifier(List<String> identifiers) {
+        Expression current = null;
+        for (String identifier : identifiers) {
+            if (current == null) {
+                current = resolveIdentifier(identifier);
+            }
+            else {
+                current = resolveAccessor(current, identifier);
+            }
+        }
+
+        return current;
+    }
+
+    @Override
+    public Expression visitIdentifierTerm(@NotNull cqlParser.IdentifierTermContext ctx) {
+        String identifier = parseString(ctx.identifier());
+        return resolveIdentifier(identifier);
+    }
+
+    @Override
+    public Object visitTerminal(@NotNull TerminalNode node) {
+        String text = node.getText();
+        int tokenType = node.getSymbol().getType();
+        if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType) {
+            // chop off leading and trailing ' or "
+            text = text.substring(1, text.length() - 1);
+        }
+
+        return text;
+    }
     @Override
     public Object visitTermExpression(@NotNull cqlParser.TermExpressionContext ctx) {
         return visit(ctx.expressionTerm());
@@ -1364,9 +1351,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public ClinicalRequest visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
-        String occ = ctx.occurrence() != null ? ctx.occurrence().getText() : "Occurrence"; // TODO: Default occurrence label by model?
-        String topic = parseString(ctx.topic());
-        String modality = ctx.modality() != null ? ctx.modality().getText() : "";
+        // TODO: Model prefixes are currently ignored here...
+        String occ = ctx.occurrence() != null ? parseString(ctx.occurrence().namedTypeSpecifier().identifier()) : "Occurrence"; // TODO: Default occurrence label by model?
+        String topic = parseString(ctx.topic().namedTypeSpecifier().identifier());
+        String modality = ctx.modality() != null ? parseString(ctx.modality().namedTypeSpecifier().identifier()) : "";
         ClassDetail detail = getModelHelper().getClassDetail(occ, topic, modality);
 
         ClinicalRequest request = of.createClinicalRequest()
@@ -1383,7 +1371,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 request.setCodeProperty(detail.getClassInfo().getPrimaryCodeAttribute());
             }
 
-            request.setCodes(parseExpression(ctx.valueset()));
+            List<String> identifiers = (List<String>)visit(ctx.valueset());
+            request.setCodes(resolveQualifiedIdentifier(identifiers));
         }
 
         clinicalRequests.add(request);
@@ -1631,13 +1620,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitQueryInclusionClause(@NotNull cqlParser.QueryInclusionClauseContext ctx) {
-        boolean negated = "without".equals(ctx.getChild(0).getText());
-        AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
+    public Object visitWithClause(@NotNull cqlParser.WithClauseContext ctx) {
+        AliasedQuerySource aqs = (AliasedQuerySource)visit(ctx.aliasedQuerySource());
         queries.peek().addQuerySource(aqs);
         try {
-            Expression expression = (Expression) visit(ctx.expression());
-            RelationshipClause result = negated ? of.createWithout() : of.createWith();
+            Expression expression = (Expression)visit(ctx.expression());
+            RelationshipClause result = of.createWith();
+            return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withWhere(expression);
+        }
+        finally {
+            queries.peek().removeQuerySource(aqs);
+        }
+    }
+
+    @Override
+    public Object visitWithoutClause(@NotNull cqlParser.WithoutClauseContext ctx) {
+        AliasedQuerySource aqs = (AliasedQuerySource)visit(ctx.aliasedQuerySource());
+        queries.peek().addQuerySource(aqs);
+        try {
+            Expression expression = (Expression)visit(ctx.expression());
+            RelationshipClause result = of.createWithout();
             return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withWhere(expression);
         }
         finally {
@@ -1698,14 +1700,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitQuerySource(@NotNull cqlParser.QuerySourceContext ctx) {
-        ParseTree o = ctx.expression();
-        if (o == null) {
-            o = ctx.retrieve();
+        if (ctx.expression() != null) {
+            return visit(ctx.expression());
         }
-        if (o == null) {
-            o = ctx.qualifiedIdentifier();
+        else if (ctx.retrieve() != null) {
+            return visit(ctx.retrieve());
         }
-        return visit(o);
+        else {
+            List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+            return resolveQualifiedIdentifier(identifiers);
+        }
     }
 
     @Override
@@ -1735,13 +1739,23 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitReturnStatement(@NotNull cqlParser.ReturnStatementContext ctx) {
+        return visit(ctx.expression());
+    }
+
+    @Override
+    public Object visitFunctionBody(@NotNull cqlParser.FunctionBodyContext ctx) {
+        return visit(ctx.returnStatement());
+    }
+
+    @Override
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
-        FunctionDef fun = of.createFunctionDef().withName(parseString(ctx.IDENTIFIER()));
+        FunctionDef fun = of.createFunctionDef().withName(parseString(ctx.identifier()));
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
                 fun.getParameter().add(
                         of.createParameterDef()
-                                .withName(parseString(opdef.IDENTIFIER()))
+                                .withName(parseString(opdef.identifier()))
                                 .withParameterTypeSpecifier(parseTypeSpecifier(opdef.typeSpecifier()))
                 );
             }
@@ -1807,26 +1821,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private String parseString(ParseTree pt) {
-        if (pt == null) return null;
-
-        String text = pt.getText();
-        if (pt instanceof TerminalNode) {
-            int tokenType = ((TerminalNode) pt).getSymbol().getType();
-            if (cqlLexer.STRING == tokenType || cqlLexer.VALUESET == tokenType) {
-                // chop off leading and trailing ' or "
-                text = text.substring(1, text.length() - 1);
-            }
-        }
-
-        return text;
+        return pt == null ? null : (String)visit(pt);
     }
 
     private Expression parseExpression(ParseTree pt) {
-        return pt == null ? null : (Expression) visit(pt);
+        return pt == null ? null : (Expression)visit(pt);
     }
 
     private TypeSpecifier parseTypeSpecifier(ParseTree pt) {
-        return pt == null ? null : (TypeSpecifier) visit(pt);
+        return pt == null ? null : (TypeSpecifier)visit(pt);
     }
 
     private String resolveSystemNamedType(String typeName) {

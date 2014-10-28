@@ -8,18 +8,16 @@ public class LibraryInfo {
 
     private final Map<String, UsingDefinitionInfo> usingDefinitions;
     private final Map<String, IncludeDefinitionInfo> includeDefinitions;
-    private final Map<String, ValuesetDefinitionInfo> valuesetDefinitions;
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
-    private final Map<String, ExpressionDefinitionInfo> letStatements;
+    private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
     private final Map<String, FunctionDefinitionInfo> functionDefinitions; // TODO: Overloads...
     private final Map<String, RetrieveDefinitionInfo> retrieveDefinitions;
 
     public LibraryInfo() {
         usingDefinitions = new LinkedHashMap<>();
         includeDefinitions = new LinkedHashMap<>();
-        valuesetDefinitions = new LinkedHashMap<>();
         parameterDefinitions = new LinkedHashMap<>();
-        letStatements = new LinkedHashMap<>();
+        expressionDefinitions = new LinkedHashMap<>();
         functionDefinitions = new LinkedHashMap<>();
         retrieveDefinitions = new LinkedHashMap<>();
     }
@@ -92,35 +90,18 @@ public class LibraryInfo {
         return null;
     }
 
-    public void addValuesetDefinition(ValuesetDefinitionInfo valuesetDefinition) {
-        valuesetDefinitions.put(valuesetDefinition.getName(), valuesetDefinition);
-    }
-
-    public ValuesetDefinitionInfo resolveValuesetReference(String identifier) {
-        return valuesetDefinitions.get(identifier);
-    }
-
-    public String resolveValuesetName(String identifier) {
-        ValuesetDefinitionInfo valuesetDefinition = resolveValuesetReference(identifier);
-        if (valuesetDefinition != null) {
-            return valuesetDefinition.getName();
-        }
-
-        return null;
-    }
-
-    public void addLetStatement(ExpressionDefinitionInfo letStatement) {
-        letStatements.put(letStatement.getName(), letStatement);
+    public void addExpressionDefinition(ExpressionDefinitionInfo letStatement) {
+        expressionDefinitions.put(letStatement.getName(), letStatement);
     }
 
     public ExpressionDefinitionInfo resolveExpressionReference(String identifier) {
-        return letStatements.get(identifier);
+        return expressionDefinitions.get(identifier);
     }
 
     public String resolveExpressionName(String identifier) {
-        ExpressionDefinitionInfo letStatement = resolveExpressionReference(identifier);
-        if (letStatement != null) {
-            return letStatement.getName();
+        ExpressionDefinitionInfo expressionDefinition = resolveExpressionReference(identifier);
+        if (expressionDefinition != null) {
+            return expressionDefinition.getName();
         }
 
         return null;

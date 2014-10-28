@@ -49,20 +49,20 @@ define InpatientCode = CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.11
 
 define InpatientEncounters = [Encounter, Performance] E where E.code = InpatientCode
 
-valueset "Inpatient" = { CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' } }
+define "Inpatient" = { CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' } }
 
 define InpatientEncounters = [Encounter, Performance: "Inpatient"]
 
 
 // Declaration Examples
 
-valueset "Severities" = ValueSet('http://hl7.fhir.org/vs/condition-severity')
+define "Severities" = ValueSet('http://hl7.fhir.org/vs/condition-severity')
 
 { Coding { code: 'fatal',  }, Coding { 'severe' }, Coding { 'moderate' }, Coding { 'mild' } }
 
-valueset "Fatal Severities" = ValueSet('http://hl7.fhir.org/vs/fatal-condition-severities')
+define "Fatal Severities" = ValueSet('http://hl7.fhir.org/vs/fatal-condition-severities')
 
-valueset "Fatal Severities" = "Severities" S where S.code = 'fatal'
+define "Fatal Severities" = "Severities" S where S.code = 'fatal'
 
 [Condition: "Fatal Severities"]
 

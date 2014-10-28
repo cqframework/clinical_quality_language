@@ -4,7 +4,7 @@ using QUICK
 
 include CMS153_Common version '2' called Common
 
-valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
+define "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
 
 context PATIENT
 

@@ -9,7 +9,7 @@ logic
     libraryDefinition?
     usingDefinition*
 	includeDefinition*
-	(parameterDefinition | valuesetDefinition)*
+	parameterDefinition*
 	statement+
 	;
 
@@ -18,23 +18,27 @@ logic
  */
 
 libraryDefinition
-    : 'library' IDENTIFIER ('version' STRING)?
+    : 'library' identifier ('version' versionSpecifier)?
     ;
 
 usingDefinition
-    : 'using' IDENTIFIER ('version' STRING)?
+    : 'using' identifier ('version' versionSpecifier)?
     ;
 
 includeDefinition
-    : 'include' IDENTIFIER ('version' STRING)? 'called' IDENTIFIER
+    : 'include' identifier ('version' versionSpecifier)? 'called' localIdentifier
+    ;
+
+localIdentifier
+    : identifier
     ;
 
 parameterDefinition
-    : 'parameter' IDENTIFIER (':' typeSpecifier)? ('default' expression)?
+    : 'parameter' identifier (':' typeSpecifier)? ('default' expression)?
     ;
 
-valuesetDefinition
-    : 'valueset' VALUESET '=' expression
+versionSpecifier
+    : STRING
     ;
 
 /*
@@ -42,14 +46,18 @@ valuesetDefinition
  */
 
 typeSpecifier
-    : atomicTypeSpecifier
+    : namedTypeSpecifier
     | listTypeSpecifier
     | intervalTypeSpecifier
     | tupleTypeSpecifier
     ;
 
-atomicTypeSpecifier
-    : IDENTIFIER
+namedTypeSpecifier
+    : (modelIdentifier '.')? identifier
+    ;
+
+modelIdentifier
+    : identifier
     ;
 
 listTypeSpecifier
@@ -65,7 +73,7 @@ tupleTypeSpecifier
     ;
 
 tupleElementDefinition
-    : IDENTIFIER ':' typeSpecifier
+    : identifier ':' typeSpecifier
     ;
 
 /*
@@ -80,19 +88,19 @@ statement
     ;
 
 expressionDefinition
-    : 'define' IDENTIFIER '=' expression
+    : 'define' identifier '=' expression
     ;
 
 contextDefinition
-    : 'context' IDENTIFIER
+    : 'context' identifier
     ;
 
 functionDefinition
-    : 'define' 'function' IDENTIFIER '(' (operandDefinition (',' operandDefinition)*)? ')' functionBody
+    : 'define' 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')' functionBody
     ;
 
 operandDefinition
-    : IDENTIFIER ':' typeSpecifier
+    : identifier ':' typeSpecifier
     ;
 
 functionBody
@@ -108,19 +116,19 @@ retrieveDefinition
     ;
 
 valuesetPathIdentifier
-    : IDENTIFIER
+    : identifier
     ;
 
 valuesetIdentifier
-    : IDENTIFIER
+    : identifier
     ;
 
 duringPathIdentifier
-    : IDENTIFIER
+    : identifier
     ;
 
 duringIdentifier
-    : IDENTIFIER
+    : identifier
     ;
 
 /*
@@ -138,13 +146,20 @@ aliasedQuerySource
     ;
 
 alias
-    : IDENTIFIER
+    : identifier
     ;
 
 queryInclusionClause
+    : withClause
+    | withoutClause
+    ;
+
+withClause
     : 'with' aliasedQuerySource 'such that' expression
-    | 'without' aliasedQuerySource 'such that' expression
-    //| 'combine' aliasedQuerySource 'where' expression // TODO: Determine whether combine should be allowed
+    ;
+
+withoutClause
+    : 'without' aliasedQuerySource 'such that' expression
     ;
 
 retrieve
@@ -152,23 +167,23 @@ retrieve
     ;
 
 occurrence
-    : IDENTIFIER
+    : namedTypeSpecifier
     ;
 
 topic
-    : qualifiedIdentifier
+    : namedTypeSpecifier
     ;
 
 modality
-    : IDENTIFIER
+    : namedTypeSpecifier
     ;
 
 valueset
-    : (qualifier '.')? (VALUESET | IDENTIFIER)
+    : qualifiedIdentifier
     ;
 
 qualifier
-    : IDENTIFIER
+    : identifier
     ;
 
 query
@@ -197,7 +212,7 @@ sortByItem
     ;
 
 qualifiedIdentifier
-    : (qualifier '.')? IDENTIFIER
+    : (qualifier '.')* identifier
     ;
 
 expression
@@ -236,7 +251,7 @@ pluralDateTimePrecision
 
 expressionTerm
     : term                                                               # termExpressionTerm
-    | expressionTerm '.' (IDENTIFIER | VALUESET)                         # accessorExpressionTerm
+    | expressionTerm '.' identifier                                      # accessorExpressionTerm
     | expressionTerm '[' expression ']'                                  # indexedExpressionTerm
     | expressionTerm '(' (expression (',' expression)*)? ')'             # methodExpressionTerm
     | 'convert' expression 'to' typeSpecifier                            # conversionExpressionTerm
@@ -285,7 +300,7 @@ quantityOffset
     ;
 
 term
-    : IDENTIFIER            #identifierTerm
+    : identifier            #identifierTerm
     | literal               #literalTerm
     | intervalSelector      #intervalSelectorTerm
     | tupleSelector         #tupleSelectorTerm
@@ -304,7 +319,7 @@ tupleSelector
     ;
 
 tupleElementSelector
-    : IDENTIFIER ':' expression
+    : identifier ':' expression
     ;
 
 listSelector
@@ -315,7 +330,6 @@ literal
     : nullLiteral
     | booleanLiteral
     | stringLiteral
-    | valuesetLiteral
     | quantityLiteral
     ;
 
@@ -332,10 +346,6 @@ stringLiteral
     : STRING
     ;
 
-valuesetLiteral
-    : VALUESET
-    ;
-
 quantityLiteral
     : QUANTITY unit?
     ;
@@ -346,6 +356,10 @@ unit
     | 'week'
     | 'weeks'
     | 'u'STRING // UCUM syntax for units of measure
+    ;
+
+identifier
+    : IDENTIFIER | QUOTEDIDENTIFIER
     ;
 
 /*
@@ -360,7 +374,7 @@ QUANTITY
     : [0-9]+('.'[0-9]+)?
     ;
 
-VALUESET
+QUOTEDIDENTIFIER
     : '"' ( ~[\\"] )* '"'
     ;
 

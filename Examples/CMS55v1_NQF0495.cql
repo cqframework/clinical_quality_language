@@ -46,8 +46,8 @@ Supplemental Data Elements
 
 using QUICK
 
-valueset "Inpatient" = ValueSet('2.16.840.1.113883.3.666.5.307')
-valueset "Emergency Department Visit" = ValueSet('2.16.840.1.113883.3.117.1.7.1.293')
+define "Inpatient" = ValueSet('2.16.840.1.113883.3.666.5.307')
+define "Emergency Department Visit" = ValueSet('2.16.840.1.113883.3.117.1.7.1.293')
 
 context PATIENT
 

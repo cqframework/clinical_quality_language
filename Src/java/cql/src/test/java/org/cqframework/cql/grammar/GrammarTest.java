@@ -23,7 +23,7 @@ public class GrammarTest {
         LogicContext logic = (LogicContext) tree.getPayload();
 
         ExpressionDefinitionContext def = logic.statement(0).expressionDefinition();
-        assertEquals("inIPP", def.IDENTIFIER().toString());
+        assertEquals("inIPP", def.identifier().IDENTIFIER().toString());
 
         InequalityExpressionContext cmpExpr = (InequalityExpressionContext) def.expression();
         assertEquals("<", cmpExpr.getChild(1).getText());
