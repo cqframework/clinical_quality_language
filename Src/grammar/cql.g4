@@ -342,7 +342,7 @@ unit
     | pluralDateTimePrecision
     | 'week'
     | 'weeks'
-    | 'u'STRING // UCUM syntax for units of measure
+    | STRING // UCUM syntax for units of measure
     ;
 
 identifier
