@@ -422,7 +422,7 @@ class ClinicalRequest extends Expression
       records = (r for r in records when valueset.hasCode(r.getCode(@codeProperty)))
     if @dateRange
       range = @dateRange.exec(ctx)
-      records = (r for r in records when range.contains(r.getDateOrInterval(@dateProperty)))
+      records = (r for r in records when range.includes(r.getDateOrInterval(@dateProperty)))
 
     records
 

@@ -13,6 +13,7 @@ class ValueSet
 
 class DateTime
   @Unit: { YEAR: 'year', MONTH: 'month', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second' }
+  @FIELDS: [@Unit.YEAR, @Unit.MONTH, @Unit.DAY, @Unit.HOUR, @Unit.MINUTE, @Unit.SECOND]
 
   @parse: (string) ->
     match = /(\d{4})(-(\d{2})(-(\d{2})(T(\d{2})(\:(\d{2})(\:(\d{2})([+-](\d{2})(\:(\d{2}))?)?)?)?)?)?)?/.exec string
@@ -36,7 +37,7 @@ class DateTime
   before: (other) ->
     if not(other instanceof DateTime) then null
 
-    for key, field of DateTime.Unit
+    for field in DateTime.FIELDS
       same = @sameXAs(field, other)
       if same then continue
       else if not same? then return null
@@ -66,7 +67,7 @@ class DateTime
   sameAs: (other) ->
     if not(other instanceof DateTime) then null
 
-    for key, field of DateTime.Unit
+    for field in DateTime.FIELDS
       same = @sameXAs(field, other)
       if not same? or not same then return same
 
@@ -78,7 +79,7 @@ class DateTime
       # Increment the field, then round-trip to JS date and back for calendar math
       result[field] = result[field] + offset
       normalized = DateTime.fromDate(result.toJSDate())
-      for key, field of DateTime.Unit when result[field]?
+      for field in DateTime.FIELDS when result[field]?
         result[field] = normalized[field]
 
     result
@@ -90,7 +91,7 @@ class DateTime
 class Interval
   constructor: (@begin, @end, @beginOpen = false, @endOpen = false) ->
 
-  contains: (item) ->
+  includes: (item) ->
     if item instanceof DateTime then item = new Interval(item, item, false, false)
 
     if item instanceof Interval

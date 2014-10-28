@@ -1,5 +1,55 @@
 should = require 'should'
+TH = require './cql-test-helper'
 DT = require '../lib/cql-datatypes'
+
+setupIntervals = (test) ->
+  test['sameAs'] = {
+    #    |----------X----------|
+    #    |----------Y----------|
+    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59')),
+    y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+  }
+  test['before'] = {
+    #    |----------X----------|
+    #                               |----------Y----------|
+    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-04-01T00:00:00')),
+    y: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+  }
+  test['meets'] = {
+    #    |----------X----------|
+    #                          |-----------Y----------|
+    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-07-01T00:00:00')),
+    y: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+  }
+  test['overlaps'] = {
+    #    |----------X----------|
+    #                  |----------Y----------|
+    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-09-01T00:00:00')),
+    y: new TH.Interval(DT.DateTime.parse('2012-06-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+  }
+  test['begins'] = {
+    #    |-----X-----|
+    #    |----------Y----------|
+    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-07-01T00:00:00')),
+    y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+  }
+  test['during'] = {
+    #         |-----X-----|
+    #    |----------Y----------|
+    x: new TH.Interval(DT.DateTime.parse('2012-05-01T00:00:00'), DT.DateTime.parse('2012-07-01T00:00:00')),
+    y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+  }
+  test['ends'] = {
+    #              |-----X-----|
+    #    |----------Y----------|
+    x: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59')),
+    y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+  }
+
+xy = (obj) -> [obj.x, obj.y]
+
+open = (ivl) ->
+  new DT.Interval(ivl.begin, ivl.end, true, true)
 
 describe 'Code', ->
   @beforeEach ->
@@ -479,108 +529,156 @@ describe 'Interval', ->
     i.beginOpen.should.be.false
     i.endOpen.should.be.false
 
-describe 'Interval.contains', ->
+describe 'Interval.includes(DateTime)', ->
 
   it 'should detect dates contained by it', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'))
-    i.contains(DT.DateTime.parse '2012-06-01T00:00:00').should.be.true
+    i.includes(DT.DateTime.parse '2012-06-01T00:00:00').should.be.true
 
   it 'should detect imprecise dates contained by it', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01'), DT.DateTime.parse('2013-01'))
-    i.contains(DT.DateTime.parse '2012-06').should.be.true
+    i.includes(DT.DateTime.parse '2012-06').should.be.true
 
   it.skip 'should detect imprecise dates contained by it (edge case)', ->
     # Should this be supported?
     i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'), false, true)
-    i.contains(DT.DateTime.parse '2012').should.be.true
+    i.includes(DT.DateTime.parse '2012').should.be.true
 
   it 'should detect boundary dates contained by it when it is closed', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), false, false)
-    i.contains(DT.DateTime.parse '2012-01-01T00:00:00').should.be.true
-    i.contains(DT.DateTime.parse '2012-12-31T23:59:59').should.be.true
+    i.includes(DT.DateTime.parse '2012-01-01T00:00:00').should.be.true
+    i.includes(DT.DateTime.parse '2012-12-31T23:59:59').should.be.true
 
   it 'should detect boundary dates not contained by it when it is open', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), true, true)
-    i.contains(DT.DateTime.parse '2012-01-01T00:00:00').should.be.false
-    i.contains(DT.DateTime.parse '2012-12-31T23:59:59').should.be.false
+    i.includes(DT.DateTime.parse '2012-01-01T00:00:00').should.be.false
+    i.includes(DT.DateTime.parse '2012-12-31T23:59:59').should.be.false
 
   it 'should return null for imprecise boundary dates possibly contained by it', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01-01'), DT.DateTime.parse('2012-12-31'), false, false)
-    should.not.exist i.contains(DT.DateTime.parse '2012-01-01')
-    should.not.exist i.contains(DT.DateTime.parse '2012-12-31')
+    should.not.exist i.includes(DT.DateTime.parse '2012-01-01')
+    should.not.exist i.includes(DT.DateTime.parse '2012-12-31')
 
     i = new DT.Interval(DT.DateTime.parse('2012-01-01'), DT.DateTime.parse('2012-12-31'), true, true)
-    should.not.exist i.contains(DT.DateTime.parse '2012-01-01')
-    should.not.exist i.contains(DT.DateTime.parse '2012-12-31')
+    should.not.exist i.includes(DT.DateTime.parse '2012-01-01')
+    should.not.exist i.includes(DT.DateTime.parse '2012-12-31')
 
   it 'should detect dates not contained by it', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'))
-    i.contains(DT.DateTime.parse '2011-06-01T00:00:00').should.be.false
+    i.includes(DT.DateTime.parse '2011-06-01T00:00:00').should.be.false
 
   it 'should detect imprecise dates not contained by it', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01'), DT.DateTime.parse('2013-01'))
-    i.contains(DT.DateTime.parse '2011-06').should.be.false
+    i.includes(DT.DateTime.parse '2011-06').should.be.false
 
-  it 'should detect intervals contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'))
-    inner = new DT.Interval(DT.DateTime.parse('2012-02-01T00:00:00'), DT.DateTime.parse('2012-12-01T00:00:00'))
-    i.contains(inner).should.be.true
+describe 'Interval.includes(Interval)', ->
+  @beforeEach ->
+    setupIntervals @
 
-  it 'should detect imprecise intervals contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2010'), DT.DateTime.parse('2013'))
-    inner = new DT.Interval(DT.DateTime.parse('2011'), DT.DateTime.parse('2012'))
-    i.contains(inner).should.be.true
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @sameAs
+    x.closed.includes(y.closed).should.be.true
+    x.closed.includes(y.open).should.be.true
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.true
 
-  it 'should detect same closed interval contained by it when it is closed', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), false, false)
-    same = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), false, false)
-    i.contains(same).should.be.true
+    y.closed.includes(x.closed).should.be.true
+    y.closed.includes(x.open).should.be.true
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.true
 
-  it 'should detect same closed interval not contained by it when it is open', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), true, true)
-    same = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), false, false)
-    i.contains(same).should.be.false
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @before
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.false
+    y.closed.includes(x.open).should.be.false
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.false
 
-  it 'should detect same open interval contained by it when it is closed', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), false, false)
-    same = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), true, true)
-    i.contains(same).should.be.true
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @meets
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.false
+    y.closed.includes(x.open).should.be.false
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.false
 
-  it 'should detect same open interval contained by it when it is open', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), true, true)
-    same = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), true, true)
-    i.contains(same).should.be.true
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @overlaps
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.false
+    y.closed.includes(x.open).should.be.false
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.false
 
-  it 'should detect outer interval not contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'))
-    outer = new DT.Interval(DT.DateTime.parse('2011-01-01T00:00:00'), DT.DateTime.parse('2014-01-01T00:00:00'))
-    i.contains(outer).should.be.false
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @begins
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.true
+    y.closed.includes(x.open).should.be.true
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.true
 
-  it 'should detect overlapping interval not contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'))
-    overlap = new DT.Interval(DT.DateTime.parse('2011-06-01T00:00:00'), DT.DateTime.parse('2012-06-01T00:00:00'))
-    i.contains(overlap).should.be.false
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @during
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.true
+    y.closed.includes(x.open).should.be.true
+    y.open.includes(x.closed).should.be.true
+    y.open.includes(x.open).should.be.true
 
-  it 'should detect imprecise overlapping interval not contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012'), DT.DateTime.parse('2013'))
-    overlap = new DT.Interval(DT.DateTime.parse('2011-06'), DT.DateTime.parse('2012-06'))
-    i.contains(overlap).should.be.false
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @ends
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.true
+    y.closed.includes(x.open).should.be.true
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.true
 
-  it 'should return null on imprecise overlapping interval possibly contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2011-06'), DT.DateTime.parse('2012-06'))
-    overlap = new DT.Interval(DT.DateTime.parse('2012'), DT.DateTime.parse('2012'))
-    should.not.exist i.contains(overlap)
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @sameAs
+    should.not.exist x.closed.includes(y.toMinute)
+    should.not.exist x.toHour.includes(y.toMinute)
 
-  it 'should detect outside intervals not contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'))
-    before = new DT.Interval(DT.DateTime.parse('2010-01-01T00:00:00'), DT.DateTime.parse('2011-01-01T00:00:00'))
-    after = new DT.Interval(DT.DateTime.parse('2014-01-01T00:00:00'), DT.DateTime.parse('2015-01-01T00:00:00'))
-    i.contains(before).should.be.false
-    i.contains(after).should.be.false
+    [x, y] = xy @before
+    x.toMonth.includes(y.toMonth).should.be.false
+    should.not.exist x.toYear.includes(y.closed)
 
-  it 'should detect imprecise outside intervals not contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01'), DT.DateTime.parse('2013-01'))
-    before = new DT.Interval(DT.DateTime.parse('2010-01'), DT.DateTime.parse('2011-01'))
-    after = new DT.Interval(DT.DateTime.parse('2014-01'), DT.DateTime.parse('2015-01'))
-    i.contains(before).should.be.false
-    i.contains(after).should.be.false
+    [x, y] = xy @meets
+    x.toMonth.includes(y.toMonth).should.be.false
+    should.not.exist x.toYear.includes(y.closed)
+
+    [x, y] = xy @overlaps
+    x.toMonth.includes(y.toMonth).should.be.false
+    should.not.exist x.toYear.includes(y.closed)
+
+    [x, y] = xy @begins
+    should.not.exist x.toMinute.includes(y.toMinute)
+    should.not.exist x.toYear.includes(y.closed)
+
+    [x, y] = xy @during
+    x.toMonth.includes(y.toMonth).should.be.false
+    y.toMonth.includes(x.toMonth).should.be.true
+    should.not.exist x.toYear.includes(y.closed)
+
+    [x, y] = xy @begins
+    should.not.exist x.toMinute.includes(y.toMinute)
+    should.not.exist x.toYear.includes(y.closed)
