@@ -8,6 +8,7 @@ public class LibraryInfo {
 
     private final Map<String, UsingDefinitionInfo> usingDefinitions;
     private final Map<String, IncludeDefinitionInfo> includeDefinitions;
+    private final Map<String, ValuesetDefinitionInfo> valuesetDefinitions;
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
     private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
     private final Map<String, FunctionDefinitionInfo> functionDefinitions; // TODO: Overloads...
@@ -16,6 +17,7 @@ public class LibraryInfo {
     public LibraryInfo() {
         usingDefinitions = new LinkedHashMap<>();
         includeDefinitions = new LinkedHashMap<>();
+        valuesetDefinitions = new LinkedHashMap<>();
         parameterDefinitions = new LinkedHashMap<>();
         expressionDefinitions = new LinkedHashMap<>();
         functionDefinitions = new LinkedHashMap<>();
@@ -90,6 +92,23 @@ public class LibraryInfo {
         return null;
     }
 
+    public void addValuesetDefinition(ValuesetDefinitionInfo valuesetDefinition) {
+        valuesetDefinitions.put(valuesetDefinition.getName(), valuesetDefinition);
+    }
+
+    public ValuesetDefinitionInfo resolveValuesetReference(String identifier) {
+        return valuesetDefinitions.get(identifier);
+    }
+
+    public String resolveValuesetName(String identifier) {
+        ValuesetDefinitionInfo valuesetDefinition = resolveValuesetReference(identifier);
+        if (valuesetDefinition != null) {
+            return valuesetDefinition.getName();
+        }
+
+        return null;
+    }
+
     public void addExpressionDefinition(ExpressionDefinitionInfo letStatement) {
         expressionDefinitions.put(letStatement.getName(), letStatement);
     }
@@ -99,9 +118,9 @@ public class LibraryInfo {
     }
 
     public String resolveExpressionName(String identifier) {
-        ExpressionDefinitionInfo expressionDefinition = resolveExpressionReference(identifier);
-        if (expressionDefinition != null) {
-            return expressionDefinition.getName();
+        ExpressionDefinitionInfo letStatement = resolveExpressionReference(identifier);
+        if (letStatement != null) {
+            return letStatement.getName();
         }
 
         return null;

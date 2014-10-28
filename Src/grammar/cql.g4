@@ -9,7 +9,7 @@ logic
     libraryDefinition?
     usingDefinition*
 	includeDefinition*
-	parameterDefinition*
+	(parameterDefinition | valuesetDefinition)*
 	statement+
 	;
 
@@ -35,6 +35,10 @@ localIdentifier
 
 parameterDefinition
     : 'parameter' identifier (':' typeSpecifier)? ('default' expression)?
+    ;
+
+valuesetDefinition
+    : 'valueset' identifier '=' expression
     ;
 
 versionSpecifier

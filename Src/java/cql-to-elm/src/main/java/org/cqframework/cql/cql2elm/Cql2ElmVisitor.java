@@ -274,6 +274,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public ValueSetDef visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
+        ValueSetDef vs = of.createValueSetDef()
+                .withName(parseString(ctx.identifier()))
+                .withValueSet(parseExpression(ctx.expression()));
+        addToLibrary(vs);
+
+        return vs;
+    }
+
+    @Override
     public String visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
         currentContext = parseString(ctx.identifier());
 
@@ -702,35 +712,41 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public Expression resolveAccessor(Expression left, String memberIdentifier) {
         // if left is a LibraryRef
-        // if right is an identifier
-        // right may be a ParameterRef or an ExpressionRef -- need to resolve on the referenced library
-        // return an ExpressionRef with the LibraryName set to the name of the LibraryRef
+            // if right is an identifier
+            // right may be an ExpressionRef, a ValueSetRef, or a ParameterRef -- need to resolve on the referenced library
         // if left is an ExpressionRef
-        // if right is an identifier
-        // return a Property with the ExpressionRef as source and identifier as Path
+            // if right is an identifier
+            // return a Property with the ExpressionRef as source and identifier as Path
         // if left is a Property
-        // if right is an identifier
-        // modify the Property to append the identifier to the path
+            // if right is an identifier
+            // modify the Property to append the identifier to the path
         // if left is an AliasRef
-        // return a Property with a Path and no source, and Scope set to the Alias
+            // return a Property with a Path and no source, and Scope set to the Alias
         // if left is an Identifier
-        // return a new Identifier with left as a qualifier
+            // return a new Identifier with left as a qualifier
         // else
-        // return an Identifier for resolution later by a method or accessor
+            // return an Identifier for resolution later by a method or accessor
 
         if (left instanceof LibraryRef) {
             Library referencedLibrary = resolveLibrary(((LibraryRef) left).getLibraryName());
 
-            String parameterName = resolveParameterName(referencedLibrary, memberIdentifier);
-            if (parameterName != null) {
-                return of.createParameterRef()
+            String expressionName = resolveExpressionName(referencedLibrary, memberIdentifier);
+            if (expressionName != null) {
+                return of.createExpressionRef()
                         .withLibraryName(((LibraryRef) left).getLibraryName())
                         .withName(memberIdentifier);
             }
 
-            String expressionName = resolveExpressionName(referencedLibrary, memberIdentifier);
-            if (expressionName != null) {
-                return of.createExpressionRef()
+            String valuesetName = resolveValuesetName(referencedLibrary, memberIdentifier);
+            if (valuesetName != null) {
+                return of.createValueSetRef()
+                        .withLibraryName(((LibraryRef) left).getLibraryName())
+                        .withName(memberIdentifier);
+            }
+
+            String parameterName = resolveParameterName(referencedLibrary, memberIdentifier);
+            if (parameterName != null) {
+                return of.createParameterRef()
                         .withLibraryName(((LibraryRef) left).getLibraryName())
                         .withName(memberIdentifier);
             }
@@ -781,9 +797,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // An Identifier will always be:
         // 1: The name of an alias
         // 2: The name of an expression
-        // 3: The name of a parameter
-        // 4: The name of a library
-        // 5: An unresolved identifier that must be resolved later (by a method or accessor)
+        // 3: The name of a valueset
+        // 4: The name of a parameter
+        // 5: The name of a library
+        // 6: An unresolved identifier that must be resolved later (by a method or accessor)
 
         String alias = resolveAlias(identifier);
         if (alias != null) {
@@ -793,6 +810,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String expressionName = resolveExpressionName(identifier);
         if (expressionName != null) {
             return of.createExpressionRef().withName(expressionName);
+        }
+
+        String valuesetName = resolveValuesetName(identifier);
+        if (valuesetName != null) {
+            return of.createValueSetRef().withName(valuesetName);
         }
 
         String parameterName = resolveParameterName(identifier);
@@ -1927,11 +1949,38 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         library.getDataModels().getModelReference().add(model);
     }
 
+    private void addToLibrary(ValueSetDef vs) {
+        if (library.getValueSets() == null) {
+            library.setValueSets(of.createLibraryValueSets());
+        }
+        library.getValueSets().getDef().add(vs);
+    }
+
     private void addToLibrary(ExpressionDef expDef) {
         if (library.getStatements() == null) {
             library.setStatements(of.createLibraryStatements());
         }
         library.getStatements().getDef().add(expDef);
+    }
+
+    private String resolveValuesetName(String identifier) {
+        if (libraryInfo != null) {
+            return libraryInfo.resolveValuesetName(identifier);
+        }
+
+        return null;
+    }
+
+    private String resolveValuesetName(Library library, String identifier) {
+        if (library.getValueSets() != null) {
+            for (ValueSetDef current : library.getValueSets().getDef()) {
+                if (current.getName().equals(identifier)) {
+                    return identifier;
+                }
+            }
+        }
+
+        return null;
     }
 
     private String resolveExpressionName(String identifier) {

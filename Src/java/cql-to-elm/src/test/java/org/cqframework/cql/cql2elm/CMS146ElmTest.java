@@ -59,22 +59,22 @@ public class CMS146ElmTest {
                 of.createClinicalRequest()
                         .withDataType(quickDataType("ConditionOccurrence"))
                         .withCodeProperty("code")
-                        .withCodes(of.createExpressionRef().withName("Acute Pharyngitis")),
+                        .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
                 of.createClinicalRequest()
                         .withDataType(quickDataType("ConditionOccurrence"))
                         .withCodeProperty("code")
-                        .withCodes(of.createExpressionRef().withName("Acute Tonsilitis")),
+                        .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
                 of.createClinicalRequest()
                         .withDataType(quickDataType("MedicationTreatmentOrderOccurrence"))
-                        .withCodes(of.createExpressionRef().withName("Antibiotic Medications")),
+                        .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createClinicalRequest()
                         .withDataType(quickDataType("EncounterPerformanceOccurrence"))
                         .withCodeProperty("class")
-                        .withCodes(of.createExpressionRef().withName("Ambulatory/ED Visit")),
+                        .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createClinicalRequest()
                         .withDataType(quickDataType("SimpleObservationOccurrence"))
                         .withCodeProperty("code")
-                        .withCodes(of.createExpressionRef().withName("Group A Streptococcus Test"))
+                        .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
 
         assertThat(actualCR, is(expectedCR));
@@ -123,10 +123,9 @@ public class CMS146ElmTest {
             actualVars.add(def.getName());
         }
 
-        Collection<String> expectedVars = Arrays.asList("Acute Pharyngitis", "Acute Tonsillitis", "Ambulatory/ED Visit",
-                "Antibiotic Medications", "Group A Streptococcus Test", "InDemographic", "Pharyngitis", "Antibiotics",
-                "TargetEncounters", "TargetDiagnoses", "HasPriorAntibiotics", "HasTargetEncounter",
-                "InInitialPopulation", "InDenominator", "InDenominatorExclusions", "InNumerator");
+        Collection<String> expectedVars = Arrays.asList("InDemographic", "Pharyngitis", "Antibiotics", "TargetEncounters",
+                "TargetDiagnoses", "HasPriorAntibiotics", "HasTargetEncounter", "InInitialPopulation", "InDenominator",
+                "InDenominatorExclusions", "InNumerator");
 
         assertThat(actualVars, is(expectedVars));
     }
@@ -140,7 +139,7 @@ public class CMS146ElmTest {
                 case "Acute Pharyngitis":
                     expectedNumbers = new int[] {19, 6, 19, 37};
                     break;
-                case "Acute Tonsilitis":
+                case "Acute Tonsillitis":
                     expectedNumbers = new int[] {19, 47, 19, 77};
                     break;
                 case "Antibiotic Medications":

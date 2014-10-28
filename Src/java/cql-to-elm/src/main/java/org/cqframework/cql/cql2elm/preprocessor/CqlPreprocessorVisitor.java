@@ -46,6 +46,15 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
+        ValuesetDefinitionInfo valuesetDefinition = new ValuesetDefinitionInfo();
+        valuesetDefinition.setName((String)visit(ctx.identifier()));
+        valuesetDefinition.setDefinition(ctx);
+        libraryInfo.addValuesetDefinition(valuesetDefinition);
+        return valuesetDefinition;
+    }
+
+    @Override
     public Object visitParameterDefinition(@NotNull cqlParser.ParameterDefinitionContext ctx) {
         ParameterDefinitionInfo parameterDefinition = new ParameterDefinitionInfo();
         parameterDefinition.setName((String)visit(ctx.identifier()));
