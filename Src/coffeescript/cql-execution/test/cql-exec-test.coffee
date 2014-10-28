@@ -86,9 +86,6 @@ describe 'ValueSetDef', ->
         ]
       }
     }
-    @known = @lib.valueSets['Known']
-    @oneArg = @lib.valueSets['Unknown One Arg']
-    @twoArg = @lib.valueSets['Unknown Two Arg']
 
   it 'should return a resolved value set when the codeService knows about it', ->
     vs = @known.exec(@ctx)
@@ -97,12 +94,12 @@ describe 'ValueSetDef', ->
     vs.codes.length.should.equal 3
   
   it 'should execute one-arg to ValueSet with ID', ->
-    vs = @oneArg.exec(@ctx)
+    vs = @['unknown One Arg'].exec(@ctx)
     vs.oid.should.equal '1.2.3.4.5.6.7.8.9'
     should.not.exist vs.version
 
   it 'should execute two-arg to ValueSet with ID and version', ->
-    vs = @twoArg.exec(@ctx)
+    vs = @['unknown Two Arg'].exec(@ctx)
     vs.oid.should.equal '1.2.3.4.5.6.7.8.9'
     vs.version.should.equal '1'
 

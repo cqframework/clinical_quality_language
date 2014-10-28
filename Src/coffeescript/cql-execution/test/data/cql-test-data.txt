@@ -22,12 +22,12 @@ parameter FooP default 'Bar'
 define Foo = FooP
 
 # ValueSetDef
-valueset "Known" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-valueset "Unknown One Arg" = ValueSet('1.2.3.4.5.6.7.8.9')
-valueset "Unknown Two Arg" = ValueSet('1.2.3.4.5.6.7.8.9', '1')
+define "Known" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+define "Unknown One Arg" = ValueSet('1.2.3.4.5.6.7.8.9')
+define "Unknown Two Arg" = ValueSet('1.2.3.4.5.6.7.8.9', '1')
 
 # ValueSetRef
-valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
+define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
 define Foo = "Acute Pharyngitis"
 
 # And
@@ -128,8 +128,8 @@ define IsIn = 4 in { 3, 4, 5 }
 define IsNotIn = 4 in { 3, 5, 6 }
 
 # InValueSet
-valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-valueset "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+define "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
 define String = 'F' in "Female"
 define StringInVersionedValueSet = 'F' in "Versioned Female"
 define ShortCode = Code('F') in "Female"
@@ -142,8 +142,8 @@ define WrongMediumCode = Code('F', '3.16.840.1.113883.18.2') in "Female"
 define WrongLongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6') in "Female"
 
 # InValueSetFunction
-valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-valueset "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+define "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
 define String = InValueSet('F', '2.16.840.1.113883.3.560.100.2')
 define StringInVersionedValueSet = InValueSet('F', '2.16.840.1.113883.3.560.100.2', '20121025')
 define ShortCode = InValueSet(Code('F'), '2.16.840.1.113883.3.560.100.2')
@@ -156,7 +156,7 @@ define WrongMediumCode = InValueSet(Code('F', '3.16.840.1.113883.18.2'), '2.16.8
 define WrongLongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6'), '2.16.840.1.113883.3.560.100.2')
 
 # PatientPropertyInValueSet
-valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
 define IsFemale = gender in "Female Administrative Sex"
 
 # Add
@@ -200,9 +200,9 @@ define DecimalTenth = 0.1
 define StringTrue = 'true'
 
 # ClinicalRequest
-valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
-valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-valueset "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
+define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
+define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+define "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
 define Conditions = [Condition]
 define Encounters = [Encounter, Performance]
 define PharyngitisConditions = [Condition: "Acute Pharyngitis"]
@@ -214,13 +214,13 @@ define WrongCodeProperty = [Encounter, Performance: class in "Annual Wellness Vi
 
 # DateRangeOptimizedQuery
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
 define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
 
 # OverlapsQuery
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 define AmbulatoryEncountersOverlapMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime overlaps MeasurementPeriod
 
 #ScratchPad

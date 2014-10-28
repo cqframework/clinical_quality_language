@@ -276,9 +276,10 @@ module.exports.ParameterRef = {
 ### ValueSetDef
 library TestSnippet version '1'
 using QUICK
-valueset "Known" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-valueset "Unknown One Arg" = ValueSet('1.2.3.4.5.6.7.8.9')
-valueset "Unknown Two Arg" = ValueSet('1.2.3.4.5.6.7.8.9', '1')
+context PATIENT
+define "Known" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+define "Unknown One Arg" = ValueSet('1.2.3.4.5.6.7.8.9')
+define "Unknown Two Arg" = ValueSet('1.2.3.4.5.6.7.8.9', '1')
 ###
 
 module.exports.ValueSetDef = {
@@ -294,10 +295,11 @@ module.exports.ValueSetDef = {
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Known",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -308,7 +310,8 @@ module.exports.ValueSetDef = {
             }
          }, {
             "name" : "Unknown One Arg",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -319,7 +322,8 @@ module.exports.ValueSetDef = {
             }
          }, {
             "name" : "Unknown Two Arg",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -340,8 +344,8 @@ module.exports.ValueSetDef = {
 ### ValueSetRef
 library TestSnippet version '1'
 using QUICK
-valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
 context PATIENT
+define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
 define Foo = "Acute Pharyngitis"
 ###
 
@@ -358,10 +362,11 @@ module.exports.ValueSetRef = {
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -370,15 +375,12 @@ module.exports.ValueSetRef = {
                   "type" : "Literal"
                } ]
             }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
                "name" : "Acute Pharyngitis",
-               "type" : "ValueSetRef"
+               "type" : "ExpressionRef"
             }
          } ]
       }
@@ -2101,9 +2103,9 @@ module.exports.InList = {
 ### InValueSet
 library TestSnippet version '1'
 using QUICK
-valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-valueset "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
 context PATIENT
+define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+define "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
 define String = 'F' in "Female"
 define StringInVersionedValueSet = 'F' in "Versioned Female"
 define ShortCode = Code('F') in "Female"
@@ -2129,10 +2131,11 @@ module.exports.InValueSet = {
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Female",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -2143,7 +2146,8 @@ module.exports.InValueSet = {
             }
          }, {
             "name" : "Versioned Female",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -2156,10 +2160,7 @@ module.exports.InValueSet = {
                   "type" : "Literal"
                } ]
             }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
+         }, {
             "name" : "String",
             "context" : "PATIENT",
             "expression" : {
@@ -2170,7 +2171,7 @@ module.exports.InValueSet = {
                   "type" : "Literal"
                }, {
                   "name" : "Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2184,7 +2185,7 @@ module.exports.InValueSet = {
                   "type" : "Literal"
                }, {
                   "name" : "Versioned Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2202,7 +2203,7 @@ module.exports.InValueSet = {
                   } ]
                }, {
                   "name" : "Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2224,7 +2225,7 @@ module.exports.InValueSet = {
                   } ]
                }, {
                   "name" : "Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2250,7 +2251,7 @@ module.exports.InValueSet = {
                   } ]
                }, {
                   "name" : "Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2264,7 +2265,7 @@ module.exports.InValueSet = {
                   "type" : "Literal"
                }, {
                   "name" : "Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2278,7 +2279,7 @@ module.exports.InValueSet = {
                   "type" : "Literal"
                }, {
                   "name" : "Versioned Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2296,7 +2297,7 @@ module.exports.InValueSet = {
                   } ]
                }, {
                   "name" : "Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2318,7 +2319,7 @@ module.exports.InValueSet = {
                   } ]
                }, {
                   "name" : "Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          }, {
@@ -2344,7 +2345,7 @@ module.exports.InValueSet = {
                   } ]
                }, {
                   "name" : "Female",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                } ]
             }
          } ]
@@ -2355,9 +2356,9 @@ module.exports.InValueSet = {
 ### InValueSetFunction
 library TestSnippet version '1'
 using QUICK
-valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-valueset "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
 context PATIENT
+define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
+define "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
 define String = InValueSet('F', '2.16.840.1.113883.3.560.100.2')
 define StringInVersionedValueSet = InValueSet('F', '2.16.840.1.113883.3.560.100.2', '20121025')
 define ShortCode = InValueSet(Code('F'), '2.16.840.1.113883.3.560.100.2')
@@ -2383,10 +2384,11 @@ module.exports.InValueSetFunction = {
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Female",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -2397,7 +2399,8 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "Versioned Female",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -2410,10 +2413,7 @@ module.exports.InValueSetFunction = {
                   "type" : "Literal"
                } ]
             }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
+         }, {
             "name" : "String",
             "context" : "PATIENT",
             "expression" : {
@@ -2637,8 +2637,8 @@ module.exports.InValueSetFunction = {
 ### PatientPropertyInValueSet
 library TestSnippet version '1'
 using QUICK
-valueset "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
 context PATIENT
+define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
 define IsFemale = gender in "Female Administrative Sex"
 ###
 
@@ -2655,10 +2655,11 @@ module.exports.PatientPropertyInValueSet = {
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Female",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -2667,18 +2668,13 @@ module.exports.PatientPropertyInValueSet = {
                   "type" : "Literal"
                } ]
             }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
+         }, {
             "name" : "IsFemale",
             "context" : "PATIENT",
             "expression" : {
                "type" : "In",
                "operand" : [ {
                }, {
-                  "name" : "Female Administrative Sex",
-                  "type" : "ValueSetRef"
                } ]
             }
          } ]
@@ -3335,10 +3331,10 @@ module.exports.Literal = {
 ### ClinicalRequest
 library TestSnippet version '1'
 using QUICK
-valueset "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
-valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-valueset "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
 context PATIENT
+define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
+define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
+define "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
 define Conditions = [Condition]
 define Encounters = [Encounter, Performance]
 define PharyngitisConditions = [Condition: "Acute Pharyngitis"]
@@ -3362,10 +3358,11 @@ module.exports.ClinicalRequest = {
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -3376,7 +3373,8 @@ module.exports.ClinicalRequest = {
             }
          }, {
             "name" : "Ambulatory/ED Visit",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -3387,7 +3385,8 @@ module.exports.ClinicalRequest = {
             }
          }, {
             "name" : "Annual Wellness Visit",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -3396,10 +3395,7 @@ module.exports.ClinicalRequest = {
                   "type" : "Literal"
                } ]
             }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
+         }, {
             "name" : "Conditions",
             "context" : "PATIENT",
             "expression" : {
@@ -3422,7 +3418,7 @@ module.exports.ClinicalRequest = {
                "type" : "ClinicalRequest",
                "codes" : {
                   "name" : "Acute Pharyngitis",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                }
             }
          }, {
@@ -3434,7 +3430,7 @@ module.exports.ClinicalRequest = {
                "type" : "ClinicalRequest",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                }
             }
          }, {
@@ -3446,7 +3442,7 @@ module.exports.ClinicalRequest = {
                "type" : "ClinicalRequest",
                "codes" : {
                   "name" : "Annual Wellness Visit",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                }
             }
          }, {
@@ -3458,7 +3454,7 @@ module.exports.ClinicalRequest = {
                "type" : "ClinicalRequest",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                }
             }
          }, {
@@ -3470,7 +3466,7 @@ module.exports.ClinicalRequest = {
                "type" : "ClinicalRequest",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                }
             }
          }, {
@@ -3482,7 +3478,7 @@ module.exports.ClinicalRequest = {
                "type" : "ClinicalRequest",
                "codes" : {
                   "name" : "Annual Wellness Visit",
-                  "type" : "ValueSetRef"
+                  "type" : "ExpressionRef"
                }
             }
          } ]
@@ -3494,8 +3490,8 @@ module.exports.ClinicalRequest = {
 library TestSnippet version '1'
 using QUICK
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 context PATIENT
+define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
 define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
 ###
@@ -3557,10 +3553,11 @@ module.exports.DateRangeOptimizedQuery = {
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Ambulatory/ED Visit",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -3569,10 +3566,7 @@ module.exports.DateRangeOptimizedQuery = {
                   "type" : "Literal"
                } ]
             }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
+         }, {
             "name" : "EncountersDuringMP",
             "context" : "PATIENT",
             "expression" : {
@@ -3605,7 +3599,7 @@ module.exports.DateRangeOptimizedQuery = {
                      "type" : "ClinicalRequest",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
-                        "type" : "ValueSetRef"
+                        "type" : "ExpressionRef"
                      },
                      "dateRange" : {
                         "name" : "MeasurementPeriod",
@@ -3624,8 +3618,8 @@ module.exports.DateRangeOptimizedQuery = {
 library TestSnippet version '1'
 using QUICK
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-valueset "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 context PATIENT
+define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 define AmbulatoryEncountersOverlapMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime overlaps MeasurementPeriod
 ###
 
@@ -3686,10 +3680,11 @@ module.exports.OverlapsQuery = {
             }
          } ]
       },
-      "valueSets" : {
+      "statements" : {
          "def" : [ {
             "name" : "Ambulatory/ED Visit",
-            "valueSet" : {
+            "context" : "PATIENT",
+            "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
                "operand" : [ {
@@ -3698,10 +3693,7 @@ module.exports.OverlapsQuery = {
                   "type" : "Literal"
                } ]
             }
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
+         }, {
             "name" : "AmbulatoryEncountersOverlapMP",
             "context" : "PATIENT",
             "expression" : {
@@ -3714,7 +3706,7 @@ module.exports.OverlapsQuery = {
                      "type" : "ClinicalRequest",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
-                        "type" : "ValueSetRef"
+                        "type" : "ExpressionRef"
                      }
                   }
                },
@@ -3761,8 +3753,6 @@ module.exports.ScratchPad = {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
-               "name" : "foo",
-               "type" : "ValueSetRef"
             }
          } ]
       }
