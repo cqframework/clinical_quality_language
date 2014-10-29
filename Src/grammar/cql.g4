@@ -263,12 +263,21 @@ caseExpressionItem
     ;
 
 relativeQualifier
-    : 'at most'
-    | 'at least'
+    : 'or before'
+    | 'or after'
+    ;
+
+offsetRelativeQualifier
+    : 'or more'
+    | 'or less'
+    ;
+
+quantityOffset
+    : quantityLiteral offsetRelativeQualifier?
     ;
 
 intervalOperatorPhrase
-    : ('starts' | 'ends')? relativeQualifier? 'same' dateTimePrecision? 'as' ('start' | 'end')?
+    : ('starts' | 'ends')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?
                                                                                             #concurrentWithIntervalOperatorPhrase
     | 'properly'? 'includes' ('start' | 'end')?                                             #includesIntervalOperatorPhrase
     | ('starts' | 'ends')? 'properly'? ('during' | 'included in')                           #includedInIntervalOperatorPhrase
@@ -280,10 +289,6 @@ intervalOperatorPhrase
     | 'started by'                                                                          #startedByIntervalOperatorPhrase
     | 'ends'                                                                                #endsIntervalOperatorPhrase
     | 'ended by'                                                                            #endedByIntervalOperatorPhrase
-    ;
-
-quantityOffset
-    : relativeQualifier? quantityLiteral
     ;
 
 term

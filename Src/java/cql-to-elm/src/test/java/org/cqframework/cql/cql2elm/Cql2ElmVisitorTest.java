@@ -1257,7 +1257,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testStartsAtLeastSameDayAs() {
-        String where = "P starts at least same day as E";
+        String where = "P starts same day or after E";
         Or or = (Or) testInpatientWithPharyngitisWhere(where);
         assertThat(or.getOperand(), hasSize(2));
 
@@ -1278,7 +1278,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testStartsAtMostSameDayAs() {
-        String where = "P starts at most same day as E";
+        String where = "P starts same day or before E";
         Or or = (Or) testInpatientWithPharyngitisWhere(where);
         assertThat(or.getOperand(), hasSize(2));
 

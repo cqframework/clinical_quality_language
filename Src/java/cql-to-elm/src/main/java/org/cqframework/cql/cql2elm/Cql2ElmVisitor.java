@@ -968,13 +968,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (ctx.relativeQualifier() != null) {
             switch (ctx.relativeQualifier().getText()) {
-                case "at least":
+                case "or after":
                     return of.createOr().withOperand(
                             operator,
                             of.createGreater().withOperand(timingOperator.getLeft(), timingOperator.getRight())
                     );
 
-                case "at most":
+                case "or before":
                     return of.createOr().withOperand(
                             operator,
                             of.createLess().withOperand(timingOperator.getLeft(), timingOperator.getRight())
@@ -1069,15 +1069,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // A starts 3 days after start B
         // days between start of A and start of B = -3
 
-        // at least/most duration before/after
-        // A starts at least 3 days before start B
+        // or more/less duration before/after
+        // A starts 3 days or more before start B
         // days between start of A and start of B >= 3
-        // A starts at least 3 days after start B
+        // A starts 3 days or more after start B
         // days between start of A and start of B <= -3
-        // A starts at most 3 days before start B
-        // days between start of A and start of B <= 3
-        // A starts at most 3 days after start B
-        // days between start of A and start of B >= -3
+        // A starts 3 days or less before start B
+        // days between start of A and start of B in (0, 3]
+        // A starts 3 days or less after start B
+        // days between start of A and start of B in [-3, 0)
 
         TimingOperatorContext timingOperator = timingOperators.peek();
         Boolean isBefore = false;
@@ -1122,7 +1122,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(),
                     timingOperator.getLeft(), timingOperator.getRight());
             if (betweenOperator != null) {
-                if (ctx.quantityOffset().relativeQualifier() == null) {
+                if (ctx.quantityOffset().offsetRelativeQualifier() == null) {
                     if (isBefore) {
                         return of.createEqual().withOperand(
                                 betweenOperator,
@@ -1137,8 +1137,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     }
                 }
                 else {
-                    switch (ctx.quantityOffset().relativeQualifier().getText()) {
-                        case "at least":
+                    switch (ctx.quantityOffset().offsetRelativeQualifier().getText()) {
+                        case "or more":
                             if (isBefore) {
                                 return of.createGreaterOrEqual().withOperand(
                                         betweenOperator,
@@ -1151,17 +1151,23 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                         of.createNegate().withOperand(quantityLiteral)
                                 );
                             }
-                        case "at most":
+                        case "or less":
                             if (isBefore) {
-                                return of.createLessOrEqual().withOperand(
+                                Interval quantityInterval = of.createInterval()
+                                        .withBegin(createLiteral(0)).withBeginOpen(true)
+                                        .withEnd(quantityLiteral).withEndOpen(false);
+                                return of.createIn().withOperand(
                                         betweenOperator,
-                                        quantityLiteral
+                                        quantityInterval
                                 );
                             }
                             else {
-                                return of.createGreaterOrEqual().withOperand(
+                                Interval quantityInterval = of.createInterval()
+                                        .withBegin(of.createNegate().withOperand(quantityLiteral)).withBeginOpen(false)
+                                        .withEnd(createLiteral(0)).withEndOpen(true);
+                                return of.createIn().withOperand(
                                         betweenOperator,
-                                        of.createNegate().withOperand(quantityLiteral)
+                                        quantityInterval
                                 );
                             }
                     }
