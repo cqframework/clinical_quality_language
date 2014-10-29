@@ -1399,27 +1399,54 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitSingleSourceClause(@NotNull cqlParser.SingleSourceClauseContext ctx) {
+        List<AliasedQuerySource> sources = new ArrayList<>();
+        sources.add((AliasedQuerySource)visit(ctx.aliasedQuerySource()));
+        return sources;
+    }
+
+    @Override
+    public Object visitMultipleSourceClause(@NotNull cqlParser.MultipleSourceClauseContext ctx) {
+        List<AliasedQuerySource> sources = new ArrayList<>();
+        for (cqlParser.AliasedQuerySourceContext source : ctx.aliasedQuerySource()) {
+            sources.add((AliasedQuerySource)visit(source));
+        }
+        return sources;
+    }
+
+    @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
-        AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        queryContext.addQuerySource(aqs);
+        List<AliasedQuerySource> sources = (List<AliasedQuerySource>)visit(ctx.sourceClause());
+        for (AliasedQuerySource aqs : sources) {
+            queryContext.addQuerySource(aqs);
+        }
         queries.push(queryContext);
         try {
+
+            List<DefineClause> dfcx = ctx.defineClause() != null ? (List<DefineClause>)visit(ctx.defineClause()) : null;
+            // TODO: Add defined items to the query context and identifier resolution
+
             List<RelationshipClause> qicx = new ArrayList<>();
             if (ctx.queryInclusionClause() != null) {
                 for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
                     qicx.add((RelationshipClause) visit(queryInclusionClauseContext));
                 }
             }
+
             Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
             if (dateRangeOptimization && where != null) {
-                where = optimizeDateRangeInQuery(where, aqs);
+                for (AliasedQuerySource aqs : sources) {
+                    where = optimizeDateRangeInQuery(where, aqs);
+                }
             }
+
             Expression ret = ctx.returnClause() != null ? (Expression) visit(ctx.returnClause()) : null;
             SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
 
             return of.createQuery()
-                    .withSource(aqs)
+                    .withSource(sources)
+                    .withDefine(dfcx)
                     .withRelationship(qicx)
                     .withWhere(where)
                     .withReturn(ret)
@@ -1632,9 +1659,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitDefineClause(@NotNull cqlParser.DefineClauseContext ctx) {
+        List<DefineClause> defineClauseItems = new ArrayList<>();
+        for (cqlParser.DefineClauseItemContext defineClauseItem : ctx.defineClauseItem()) {
+            defineClauseItems.add((DefineClause)visit(defineClauseItem));
+        }
+        return defineClauseItems;
+    }
+
+    @Override
+    public Object visitDefineClauseItem(@NotNull cqlParser.DefineClauseItemContext ctx) {
+        return of.createDefineClause().withExpression(parseExpression(ctx.expression()))
+                .withIdentifier(parseString(ctx.identifier()));
+    }
+
+    @Override
     public Object visitAliasedQuerySource(@NotNull cqlParser.AliasedQuerySourceContext ctx) {
         return of.createAliasedQuerySource().withExpression(parseExpression(ctx.querySource()))
-                .withAlias(ctx.alias().getText());
+                .withAlias(parseString(ctx.alias()));
     }
 
     @Override

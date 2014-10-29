@@ -174,7 +174,28 @@ qualifier
     ;
 
 query
-    : aliasedQuerySource queryInclusionClause* whereClause? returnClause? sortClause?
+    : sourceClause defineClause? queryInclusionClause* whereClause? returnClause? sortClause?
+    ;
+
+sourceClause
+    : singleSourceClause
+    | multipleSourceClause
+    ;
+
+singleSourceClause
+    : aliasedQuerySource
+    ;
+
+multipleSourceClause
+    : 'foreach' aliasedQuerySource (',' aliasedQuerySource)*
+    ;
+
+defineClause
+    : 'define' defineClauseItem (',' defineClauseItem)*
+    ;
+
+defineClauseItem
+    : identifier '=' expression
     ;
 
 whereClause

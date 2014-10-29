@@ -588,7 +588,7 @@ public class Cql2ElmVisitorTest {
 
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -620,7 +620,7 @@ public class Cql2ElmVisitorTest {
                 "    where E during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
         assertThat(request.getDateProperty(), is("performanceTime"));
@@ -653,7 +653,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -675,7 +675,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -697,7 +697,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during twentyThirteen";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during twentyThirteen" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -718,7 +718,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during Date(2013, 6)";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during Date(2013, 6)" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -741,7 +741,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MyDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MyDate" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -763,7 +763,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MyDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MyDate" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -785,7 +785,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during myDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during myDate" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -808,7 +808,7 @@ public class Cql2ElmVisitorTest {
                 "    and E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -841,7 +841,7 @@ public class Cql2ElmVisitorTest {
                 "    and E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -888,7 +888,7 @@ public class Cql2ElmVisitorTest {
                 "    and E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("performanceTime"));
@@ -919,7 +919,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql, false);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is(nullValue()));
@@ -949,7 +949,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during pharyngitis";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during pharnyngitis" didn't migrate up!
         assertThat(request.getDateProperty(), is(nullValue()));
@@ -976,7 +976,7 @@ public class Cql2ElmVisitorTest {
         ExpressionDef def = (ExpressionDef) visitData(cql, false, enableDateRangeOptimization);
         Query query = (Query) def.getExpression();
 
-        AliasedQuerySource source = query.getSource();
+        AliasedQuerySource source = query.getSource().get(0);
         assertThat(source.getAlias(), is("E"));
         ClinicalRequest request = (ClinicalRequest) source.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
@@ -1012,7 +1012,7 @@ public class Cql2ElmVisitorTest {
         Query query = (Query) def.getExpression();
 
         // First check the source
-        AliasedQuerySource source = query.getSource();
+        AliasedQuerySource source = query.getSource().get(0);
         assertThat(source.getAlias(), is("E"));
         ClinicalRequest request = (ClinicalRequest) source.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
@@ -1340,8 +1340,8 @@ public class Cql2ElmVisitorTest {
 
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Query query = (Query) def.getExpression();
-        assertThat(query.getSource().getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) query.getSource().getExpression();
+        assertThat(query.getSource().get(0).getAlias(), is("E"));
+        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
         assertThat(request.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
         assertThat(request.getDataType().getLocalPart(), is("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));

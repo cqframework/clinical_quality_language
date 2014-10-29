@@ -2039,6 +2039,16 @@ Property expressions can also be used to access the individual points and open i
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="DefineClause">
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="expression" type="Expression"/>
+				</xs:sequence>
+				<xs:attribute name="identifier" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="RelationshipClause" abstract="true">
 		<xs:complexContent>
 			<xs:extension base="AliasedQuerySource">
@@ -2107,7 +2117,8 @@ Property expressions can also be used to access the individual points and open i
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:sequence>
-					<xs:element name="source" type="AliasedQuerySource" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="source" type="AliasedQuerySource" minOccurs="1" maxOccurs="unbounded"/>
+					<xs:element name="define" type="DefineClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="relationship" type="RelationshipClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="where" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="return" type="Expression" minOccurs="0" maxOccurs="1"/>

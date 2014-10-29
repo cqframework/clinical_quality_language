@@ -194,7 +194,7 @@
             "context" : "PATIENT",
             "expression" : {
                "type" : "Query",
-               "source" : {
+               "source" : [ {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
@@ -205,7 +205,7 @@
                         "type" : "ExpressionRef"
                      }
                   }
-               },
+               } ],
                "relationship" : [ {
                   "alias" : "P",
                   "type" : "With",
@@ -288,13 +288,13 @@
             "context" : "PATIENT",
             "expression" : {
                "type" : "Query",
-               "source" : {
+               "source" : [ {
                   "alias" : "P",
                   "expression" : {
                      "name" : "Pharyngitis",
                      "type" : "ExpressionRef"
                   }
-               },
+               } ],
                "relationship" : [ {
                   "alias" : "E",
                   "type" : "With",
@@ -323,13 +323,13 @@
                "type" : "IsNotEmpty",
                "operand" : {
                   "type" : "Query",
-                  "source" : {
+                  "source" : [ {
                      "alias" : "A",
                      "expression" : {
                         "name" : "Antibiotics",
                         "type" : "ExpressionRef"
                      }
-                  },
+                  } ],
                   "relationship" : [ {
                      "alias" : "D",
                      "type" : "With",
@@ -420,7 +420,7 @@
                "type" : "IsNotEmpty",
                "operand" : {
                   "type" : "Query",
-                  "source" : {
+                  "source" : [ {
                      "alias" : "R",
                      "expression" : {
                         "dataType" : "{http://org.hl7.fhir}SimpleObservationOccurrence",
@@ -431,7 +431,7 @@
                            "type" : "ExpressionRef"
                         }
                      }
-                  },
+                  } ],
                   "relationship" : [ ],
                   "where" : {
                      "type" : "And",
