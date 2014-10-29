@@ -233,7 +233,7 @@
                      "type" : "ExpressionRef"
                   },
                   "where" : {
-                     "type" : "GreaterOrEqual",
+                     "type" : "In",
                      "operand" : [ {
                         "type" : "DaysBetween",
                         "operand" : [ {
@@ -252,10 +252,20 @@
                            }
                         } ]
                      }, {
-                        "type" : "Negate",
-                        "operand" : {
+                        "beginOpen" : false,
+                        "endOpen" : true,
+                        "type" : "Interval",
+                        "begin" : {
+                           "type" : "Negate",
+                           "operand" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "3",
+                              "type" : "Literal"
+                           }
+                        },
+                        "end" : {
                            "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "3",
+                           "value" : "0",
                            "type" : "Literal"
                         }
                      } ]
@@ -328,7 +338,7 @@
                         "type" : "ExpressionRef"
                      },
                      "where" : {
-                        "type" : "LessOrEqual",
+                        "type" : "In",
                         "operand" : [ {
                            "type" : "DaysBetween",
                            "operand" : [ {
@@ -347,9 +357,19 @@
                               }
                            } ]
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "30",
-                           "type" : "Literal"
+                           "beginOpen" : true,
+                           "endOpen" : false,
+                           "type" : "Interval",
+                           "begin" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "0",
+                              "type" : "Literal"
+                           },
+                           "end" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "30",
+                              "type" : "Literal"
+                           }
                         } ]
                      }
                   } ]
