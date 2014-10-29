@@ -9,7 +9,8 @@ logic
     libraryDefinition?
     usingDefinition*
 	includeDefinition*
-	(parameterDefinition | valuesetDefinition)*
+	parameterDefinition*
+	valuesetDefinition*
 	statement+
 	;
 
@@ -38,7 +39,11 @@ parameterDefinition
     ;
 
 valuesetDefinition
-    : 'valueset' identifier '=' expression
+    : 'valueset' identifier '=' valuesetId ('version' versionSpecifier)?
+    ;
+
+valuesetId
+    : STRING
     ;
 
 versionSpecifier

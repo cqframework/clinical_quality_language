@@ -9,8 +9,8 @@ parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 context PATIENT
 
 define InDemographic =
-    AgeAt(start of MeasurementPeriod) >= 16
-        and AgeAt(start of MeasurementPeriod) < 24
+    AgeInYearsAt(start of MeasurementPeriod) >= 16
+        and AgeInYearsAt(start of MeasurementPeriod) < 24
         and gender in Common."Female Administrative Sex"
 
 define SexuallyActive =

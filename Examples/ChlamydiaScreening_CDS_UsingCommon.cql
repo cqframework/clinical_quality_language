@@ -4,12 +4,12 @@ using QUICK
 
 include CMS153_Common version '2' called Common
 
-valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
+valueset "Reason for not performing Chlamydia Screening" = 'TBD'
 
 context PATIENT
 
 define InDemographic =
-    Age() >= 16 and Age() < 24 and gender in Common."Female Administrative Sex"
+    AgeInYears() >= 16 and AgeInYears() < 24 and gender in Common."Female Administrative Sex"
 
 define SexuallyActive =
     exists (Common.ConditionsIndicatingSexualActivity)

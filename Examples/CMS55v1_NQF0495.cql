@@ -46,8 +46,8 @@ Supplemental Data Elements
 
 using QUICK
 
-valueset "Inpatient" = ValueSet('2.16.840.1.113883.3.666.5.307')
-valueset "Emergency Department Visit" = ValueSet('2.16.840.1.113883.3.117.1.7.1.293')
+valueset "Inpatient" = '2.16.840.1.113883.3.666.5.307'
+valueset "Emergency Department Visit" = '2.16.840.1.113883.3.117.1.7.1.293'
 
 context PATIENT
 
@@ -58,7 +58,7 @@ define InpatientEncounters =
 
 define EDEncounters =
 	[Encounter, Performance: "Emergency Department Visit"] ED
-		with InpatientEncounters E such that ED.effectiveTime ends at most 1 hour before start of E.effectiveTime
+		with InpatientEncounters E such that ED.effectiveTime ends 1 hour or less before start of E.effectiveTime
 
 define MeasureObservation =
 	EDEncounters E 

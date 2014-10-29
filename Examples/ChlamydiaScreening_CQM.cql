@@ -22,7 +22,7 @@ valueset "Chlamydia Screening" = ValueSet('2.16.840.1.113883.3.464.1003.110.12.1
 context PATIENT 
 
 define InDemographicCriteria =
-	AgeAt(start of MeasurementPeriod) >= 16	and AgeAt(start of MeasurementPeriod) < 24 
+	AgeInYearsAt(start of MeasurementPeriod) >= 16 and AgeInYearsAt(start of MeasurementPeriod) < 24
 		and gender in "Female Administrative Sex"
 
 define SexuallyActive =

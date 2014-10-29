@@ -71,15 +71,17 @@ using QUICK
 
 context PATIENT
 
-define InDemographic = AgeAt(start of MeasurementPeriod) >= 3 months and AgeAt(start of MeasurementPeriod) <= 18 years
+define InDemographic =
+    AgeInMonthsAt(start of MeasurementPeriod) >= 3
+        and AgeInYearsAt(start of MeasurementPeriod) <= 18 years
 
 define ValidEncounters =
-	([Encounter, Performance: "Office Visit"])
-		union ([Encounter, Performance: "Emergency Department Visit"])
-		union ([Encounter, Performance: "Preventive Care- Initial Office Visit, 0 to 17"])
-		union ([Encounter, Performance: "Preventive Care - Established Office Visit, 0 to 17"])
-		union ([Encounter, Performance: "Hospital Observation Care - Initial"])
-		union ([Encounter, Performance: "Face-to-Face Interaction"])
+	[Encounter, Performance: "Office Visit"]
+		union [Encounter, Performance: "Emergency Department Visit"]
+		union [Encounter, Performance: "Preventive Care- Initial Office Visit, 0 to 17"]
+		union [Encounter, Performance: "Preventive Care - Established Office Visit, 0 to 17"]
+		union [Encounter, Performance: "Hospital Observation Care - Initial"]
+		union [Encounter, Performance: "Face-to-Face Interaction"]
 
 define EncountersDuringMeasurementPeriod =
 	ValidEncounters E where E.effectiveTime during MeasurementPeriod

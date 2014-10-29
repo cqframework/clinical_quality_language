@@ -6,12 +6,12 @@ using QUICK
 
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
-valueset "Flutter Diagnosis" = ValueSet('2.16.840.1.113883.3.117.1.7.1.202')
-valueset "Warfarin Medication" = ValueSet('2.16.840.1.113883.3.117.1.7.1.232')
-valueset "Face-to-face Encounter" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1048')
-valueset "Office Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
-valueset "Valvular Heart Disease" = ValueSet('2.16.840.1.113883.3.464.1003.104.12.1017')
-valueset "INR Lab Result" = ValueSet('2.16.840.1.113883.3.117.1.7.1.213')
+valueset "Flutter Diagnosis" = '2.16.840.1.113883.3.117.1.7.1.202'
+valueset "Warfarin Medication" = '2.16.840.1.113883.3.117.1.7.1.232'
+valueset "Face-to-face Encounter" = '2.16.840.1.113883.3.464.1003.101.12.1048'
+valueset "Office Visit" = '2.16.840.1.113883.3.464.1003.101.12.1001'
+valueset "Valvular Heart Disease" = '2.16.840.1.113883.3.464.1003.104.12.1017'
+valueset "INR Lab Result" = '2.16.840.1.113883.3.117.1.7.1.213'
 
 context PATIENT
 
@@ -23,7 +23,7 @@ define ValvularHeartDiseaseDiagnoses = [Condition: "Valvular Heart Disease"]
 define INRLabResults = [ObservationResult: "INR Lab Result"]
 
 define InDemographic =
-	AgeAt(start of MeasurementPeriod) >= 18 years
+	AgeInYearsAt(start of MeasurementPeriod) >= 18 years
 
 define InpatientEncounters = FaceToFaceEncounters union OfficeVisitEncounters
 define ActiveFlutterDiagnoses = FlutterDiagnoses F where F.effectiveTime overlaps before MeasurementPeriod
