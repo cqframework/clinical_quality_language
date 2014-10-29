@@ -1298,18 +1298,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitStartedByIntervalOperatorPhrase(@NotNull cqlParser.StartedByIntervalOperatorPhraseContext ctx) {
-        return of.createBegunBy().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
-    }
-
-    @Override
     public Object visitEndsIntervalOperatorPhrase(@NotNull cqlParser.EndsIntervalOperatorPhraseContext ctx) {
         return of.createEnds().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
-    }
-
-    @Override
-    public Object visitEndedByIntervalOperatorPhrase(@NotNull cqlParser.EndedByIntervalOperatorPhraseContext ctx) {
-        return of.createEndedBy().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
     }
 
     @Override

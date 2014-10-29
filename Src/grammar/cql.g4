@@ -286,9 +286,7 @@ intervalOperatorPhrase
     | 'meets' ('before' | 'after')?                                                         #meetsIntervalOperatorPhrase
     | 'overlaps' ('before' | 'after')?                                                      #overlapsIntervalOperatorPhrase
     | 'starts'                                                                              #startsIntervalOperatorPhrase
-    | 'started by'                                                                          #startedByIntervalOperatorPhrase
     | 'ends'                                                                                #endsIntervalOperatorPhrase
-    | 'ended by'                                                                            #endedByIntervalOperatorPhrase
     ;
 
 term
