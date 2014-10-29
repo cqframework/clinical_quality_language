@@ -210,9 +210,9 @@ sortClause
     : 'sort' ( sortDirection | ('by' sortByItem (',' sortByItem)*) )
     ;
 
-sortDirection // TODO: use full words instead of abbreviations?
-    : 'asc'
-    | 'desc'
+sortDirection
+    : 'asc' | 'ascending'
+    | 'desc' | 'descending'
     ;
 
 sortByItem
