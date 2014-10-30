@@ -4,21 +4,20 @@
          "id" : "CMS146",
          "version" : "2"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
             "default" : {
-               "beginOpen" : false,
-               "endOpen" : true,
+               "lowClosed" : true,
+               "highClosed" : false,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -35,7 +34,7 @@
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -127,7 +126,7 @@
                      "name" : "AgeAt",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "type" : "Begin",
+                        "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
                            "type" : "ParameterRef"
@@ -144,7 +143,7 @@
                      "name" : "AgeAt",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "type" : "Begin",
+                        "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
                            "type" : "ParameterRef"
@@ -165,7 +164,7 @@
                "operand" : [ {
                   "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
                   "codeProperty" : "code",
-                  "type" : "ClinicalRequest",
+                  "type" : "Retrieve",
                   "codes" : {
                      "name" : "Acute Pharyngitis",
                      "type" : "ExpressionRef"
@@ -173,7 +172,7 @@
                }, {
                   "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
                   "codeProperty" : "code",
-                  "type" : "ClinicalRequest",
+                  "type" : "Retrieve",
                   "codes" : {
                   }
                } ]
@@ -183,7 +182,7 @@
             "context" : "PATIENT",
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}MedicationTreatmentOrderOccurrence",
-               "type" : "ClinicalRequest",
+               "type" : "Retrieve",
                "codes" : {
                   "name" : "Antibiotic Medications",
                   "type" : "ExpressionRef"
@@ -199,7 +198,7 @@
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
                      "codeProperty" : "class",
-                     "type" : "ClinicalRequest",
+                     "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
                         "type" : "ExpressionRef"
@@ -213,7 +212,7 @@
                      "name" : "Pharyngitis",
                      "type" : "ExpressionRef"
                   },
-                  "where" : {
+                  "suchThat" : {
                      "type" : "OverlapsAfter",
                      "operand" : [ {
                         "path" : "effectiveTime",
@@ -232,19 +231,19 @@
                      "name" : "Antibiotics",
                      "type" : "ExpressionRef"
                   },
-                  "where" : {
+                  "suchThat" : {
                      "type" : "In",
                      "operand" : [ {
                         "type" : "DaysBetween",
                         "operand" : [ {
-                           "type" : "Begin",
+                           "type" : "Start",
                            "operand" : {
                               "path" : "orderedAtTime",
                               "scope" : "A",
                               "type" : "Property"
                            }
                         }, {
-                           "type" : "Begin",
+                           "type" : "Start",
                            "operand" : {
                               "path" : "performedAtTime",
                               "scope" : "E",
@@ -252,10 +251,10 @@
                            }
                         } ]
                      }, {
-                        "beginOpen" : false,
-                        "endOpen" : true,
+                        "lowClosed" : true,
+                        "highClosed" : false,
                         "type" : "Interval",
-                        "begin" : {
+                        "low" : {
                            "type" : "Negate",
                            "operand" : {
                               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -263,7 +262,7 @@
                               "type" : "Literal"
                            }
                         },
-                        "end" : {
+                        "high" : {
                            "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                            "value" : "0",
                            "type" : "Literal"
@@ -302,7 +301,7 @@
                      "name" : "TargetEncounters",
                      "type" : "ExpressionRef"
                   },
-                  "where" : {
+                  "suchThat" : {
                      "type" : "OverlapsAfter",
                      "operand" : [ {
                         "path" : "effectiveTime",
@@ -320,7 +319,7 @@
             "name" : "HasPriorAntibiotics",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "IsNotEmpty",
+               "type" : "Exists",
                "operand" : {
                   "type" : "Query",
                   "source" : [ {
@@ -337,19 +336,19 @@
                         "name" : "TargetDiagnoses",
                         "type" : "ExpressionRef"
                      },
-                     "where" : {
+                     "suchThat" : {
                         "type" : "In",
                         "operand" : [ {
                            "type" : "DaysBetween",
                            "operand" : [ {
-                              "type" : "Begin",
+                              "type" : "Start",
                               "operand" : {
                                  "path" : "orderedAtTime",
                                  "scope" : "A",
                                  "type" : "Property"
                               }
                            }, {
-                              "type" : "Begin",
+                              "type" : "Start",
                               "operand" : {
                                  "path" : "effectiveTime",
                                  "scope" : "D",
@@ -357,15 +356,15 @@
                               }
                            } ]
                         }, {
-                           "beginOpen" : true,
-                           "endOpen" : false,
+                           "lowClosed" : false,
+                           "highClosed" : true,
                            "type" : "Interval",
-                           "begin" : {
+                           "low" : {
                               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                               "value" : "0",
                               "type" : "Literal"
                            },
-                           "end" : {
+                           "high" : {
                               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                               "value" : "30",
                               "type" : "Literal"
@@ -379,7 +378,7 @@
             "name" : "HasTargetEncounter",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "IsNotEmpty",
+               "type" : "Exists",
                "operand" : {
                   "name" : "TargetEncounters",
                   "type" : "ExpressionRef"
@@ -417,7 +416,7 @@
             "name" : "InNumerator",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "IsNotEmpty",
+               "type" : "Exists",
                "operand" : {
                   "type" : "Query",
                   "source" : [ {
@@ -425,7 +424,7 @@
                      "expression" : {
                         "dataType" : "{http://org.hl7.fhir}SimpleObservationOccurrence",
                         "codeProperty" : "code",
-                        "type" : "ClinicalRequest",
+                        "type" : "Retrieve",
                         "codes" : {
                            "name" : "Group A Streptococcus Test",
                            "type" : "ExpressionRef"
