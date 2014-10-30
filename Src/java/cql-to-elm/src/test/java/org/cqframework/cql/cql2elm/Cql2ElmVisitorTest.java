@@ -6,10 +6,10 @@ import org.hl7.elm.r1.Add;
 import org.hl7.elm.r1.AliasRef;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.And;
-import org.hl7.elm.r1.Begin;
+import org.hl7.elm.r1.Start;
 import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.ByExpression;
-import org.hl7.elm.r1.ClinicalRequest;
+import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.DaysBetween;
 import org.hl7.elm.r1.Divide;
 import org.hl7.elm.r1.End;
@@ -30,17 +30,16 @@ import org.hl7.elm.r1.Multiply;
 import org.hl7.elm.r1.Not;
 import org.hl7.elm.r1.NotEqual;
 import org.hl7.elm.r1.Null;
-import org.hl7.elm.r1.ObjectExpression;
+import org.hl7.elm.r1.Tuple;
 import org.hl7.elm.r1.Or;
 import org.hl7.elm.r1.OverlapsAfter;
 import org.hl7.elm.r1.ParameterRef;
 import org.hl7.elm.r1.Power;
 import org.hl7.elm.r1.Property;
-import org.hl7.elm.r1.PropertyExpression;
+import org.hl7.elm.r1.TupleElement;
 import org.hl7.elm.r1.Quantity;
 import org.hl7.elm.r1.Query;
 import org.hl7.elm.r1.RelationshipClause;
-import org.hl7.elm.r1.RequestCardinality;
 import org.hl7.elm.r1.SameAs;
 import org.hl7.elm.r1.SameDayAs;
 import org.hl7.elm.r1.SameHourAs;
@@ -257,7 +256,6 @@ public class Cql2ElmVisitorTest {
         ExpressionRef exp = (ExpressionRef) def.getExpression();
         assertThat(exp.getName(), is("X"));
         assertThat(exp.getLibraryName(), is(nullValue()));
-        assertThat(exp.getDescription(), is(nullValue()));
     }
 
     @Test
@@ -270,10 +268,8 @@ public class Cql2ElmVisitorTest {
         ExpressionRef source = (ExpressionRef) prop.getSource();
         assertThat(source.getName(), is("X"));
         assertThat(source.getLibraryName(), is(nullValue()));
-        assertThat(source.getDescription(), is(nullValue()));
         assertThat(prop.getPath(), is("effectiveTime"));
         assertThat(prop.getScope(), is(nullValue()));
-        assertThat(prop.getDescription(), is(nullValue()));
     }
 
     @Test
@@ -285,7 +281,6 @@ public class Cql2ElmVisitorTest {
         ValueSetRef vs = (ValueSetRef) def.getExpression();
         assertThat(vs.getName(), is("Acute Pharyngitis"));
         assertThat(vs.getLibraryName(), is(nullValue()));
-        assertThat(vs.getDescription(), is(nullValue()));
     }
 
     @Test
@@ -297,7 +292,6 @@ public class Cql2ElmVisitorTest {
         FunctionRef fun = (FunctionRef) def.getExpression();
         assertThat(fun.getName(), is("MyFunction"));
         assertThat(fun.getLibraryName(), is(nullValue()));
-        assertThat(fun.getDescription(), is(nullValue()));
         assertThat(fun.getOperand(), is(empty()));
     }
 
@@ -310,7 +304,6 @@ public class Cql2ElmVisitorTest {
         FunctionRef fun = (FunctionRef) def.getExpression();
         assertThat(fun.getName(), is("MyFunction"));
         assertThat(fun.getLibraryName(), is(nullValue()));
-        assertThat(fun.getDescription(), is(nullValue()));
         assertThat(fun.getOperand(), hasSize(1));
         assertThat(fun.getOperand().get(0), literalFor("hello there"));
     }
@@ -347,36 +340,28 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testRetrieveTopic() {
         ExpressionDef def = (ExpressionDef) visitData("define st = [Condition]");
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        // TODO: What is templateId for?
+        // TODO: What is templateId for? BTR -> Part of profiling, we still need to solidify this
         assertThat(request.getTemplateId(), is(nullValue()));
     }
 
     @Test(enabled=false)
     public void testRetrieveNonOccurrenceOfTopic() {
         ExpressionDef def = (ExpressionDef) visitData("define st = [NonOccurrence of Condition]");
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -384,17 +369,13 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testRetrieveTopicAndModality() {
         ExpressionDef def = (ExpressionDef) visitData("define st = [Encounter, Performance]");
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -402,17 +383,13 @@ public class Cql2ElmVisitorTest {
     @Test(enabled=false)
     public void testRetrieveNonOccurrenceOfTopicAndModality() {
         ExpressionDef def = (ExpressionDef) visitData("define st = [NonOccurrence of Encounter, Performance]");
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceNonOccurrence"));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -420,17 +397,13 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testRetrieveTopicAndModalityAndOccurrence() {
         ExpressionDef def = (ExpressionDef) visitData("define st = [Occurrence of Encounter, Performance]");
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -441,20 +414,15 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Acute Pharyngitis\" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')\n" +
                 "define st = [Condition: \"Acute Pharyngitis\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is("code"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Acute Pharyngitis"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -465,20 +433,15 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
                 "define st = [Encounter, Performance: \"Ambulatory/ED Visit\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Ambulatory/ED Visit"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -489,20 +452,15 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
                 "define st = [NonOccurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceNonOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Ambulatory/ED Visit"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
-        assertThat(request.getCardinality(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -513,20 +471,15 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Ambulatory/ED Visit\" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')\n" +
                 "define st = [Occurrence of Encounter, Performance: \"Ambulatory/ED Visit\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Ambulatory/ED Visit"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -537,20 +490,15 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Moderate or Severe\" = ValueSet('2.16.840.1.113883.3.526.3.1092')\n" +
                 "define st = [Condition: severity in \"Moderate or Severe\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(request.getCodeProperty(), is("severity"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Moderate or Severe"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -561,20 +509,15 @@ public class Cql2ElmVisitorTest {
                 "valueset \"CABG Surgeries\" = ValueSet('2.16.840.1.113883.3.666.5.694')\n" +
                 "define st = [Encounter, Performance: actionPerformed in \"CABG Surgeries\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
-        ClinicalRequest request = (ClinicalRequest) def.getExpression();
+        Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("actionPerformed"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("CABG Surgeries"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
     }
@@ -588,20 +531,20 @@ public class Cql2ElmVisitorTest {
 
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         Interval ivl = (Interval) request.getDateRange();
-        assertFalse(ivl.isBeginOpen());
-        assertTrue(ivl.isEndOpen());
-        FunctionRef ivlBegin = (FunctionRef) ivl.getBegin();
+        assertTrue(ivl.isLowClosed());
+        assertFalse(ivl.isHighClosed());
+        FunctionRef ivlBegin = (FunctionRef) ivl.getLow();
         assertThat(ivlBegin.getName(), is("Date"));
         assertThat(ivlBegin.getOperand(), hasSize(3));
         assertThat(ivlBegin.getOperand().get(0), literalFor(2013));
         assertThat(ivlBegin.getOperand().get(1), literalFor(1));
         assertThat(ivlBegin.getOperand().get(2), literalFor(1));
-        FunctionRef ivlEnd = (FunctionRef) ivl.getEnd();
+        FunctionRef ivlEnd = (FunctionRef) ivl.getHigh();
         assertThat(ivlEnd.getName(), is("Date"));
         assertThat(ivlEnd.getOperand(), hasSize(3));
         assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
@@ -620,20 +563,20 @@ public class Cql2ElmVisitorTest {
                 "    where E during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
         assertThat(request.getDateProperty(), is("performanceTime"));
         Interval ivl = (Interval) request.getDateRange();
-        assertFalse(ivl.isBeginOpen());
-        assertTrue(ivl.isEndOpen());
-        FunctionRef ivlBegin = (FunctionRef) ivl.getBegin();
+        assertTrue(ivl.isLowClosed());
+        assertFalse(ivl.isHighClosed());
+        FunctionRef ivlBegin = (FunctionRef) ivl.getLow();
         assertThat(ivlBegin.getName(), is("Date"));
         assertThat(ivlBegin.getOperand(), hasSize(3));
         assertThat(ivlBegin.getOperand().get(0), literalFor(2013));
         assertThat(ivlBegin.getOperand().get(1), literalFor(1));
         assertThat(ivlBegin.getOperand().get(2), literalFor(1));
-        FunctionRef ivlEnd = (FunctionRef) ivl.getEnd();
+        FunctionRef ivlEnd = (FunctionRef) ivl.getHigh();
         assertThat(ivlEnd.getName(), is("Date"));
         assertThat(ivlEnd.getOperand(), hasSize(3));
         assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
@@ -653,14 +596,13 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
-        assertThat(mp.getDescription(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -675,14 +617,13 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
-        assertThat(mp.getDescription(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -697,14 +638,13 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during twentyThirteen";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during twentyThirteen" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ExpressionRef ivl = (ExpressionRef) request.getDateRange();
         assertThat(ivl.getName(), is("twentyThirteen"));
         assertThat(ivl.getLibraryName(), is(nullValue()));
-        assertThat(ivl.getDescription(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -718,7 +658,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during Date(2013, 6)";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during Date(2013, 6)" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
@@ -741,14 +681,13 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MyDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MyDate" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef myDate = (ParameterRef) request.getDateRange();
         assertThat(myDate.getName(), is("MyDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
-        assertThat(myDate.getDescription(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -763,14 +702,13 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MyDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MyDate" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef myDate = (ParameterRef) request.getDateRange();
         assertThat(myDate.getName(), is("MyDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
-        assertThat(myDate.getDescription(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -785,14 +723,13 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during myDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during myDate" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ExpressionRef myDate = (ExpressionRef) request.getDateRange();
         assertThat(myDate.getName(), is("myDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
-        assertThat(myDate.getDescription(), is(nullValue()));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));
@@ -808,14 +745,13 @@ public class Cql2ElmVisitorTest {
                 "    and E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
-        assertThat(mp.getDescription(), is(nullValue()));
 
         // "Where" should now just be the greaterThanPhrase!
         Greater where = (Greater) query.getWhere();
@@ -826,7 +762,6 @@ public class Cql2ElmVisitorTest {
         Quantity rhs = (Quantity) where.getOperand().get(1);
         assertThat(rhs.getValue(), is(BigDecimal.valueOf(2)));
         assertThat(rhs.getUnit(), is("days"));
-        assertThat(where.getDescription(), is(nullValue()));
     }
 
     @Test
@@ -841,14 +776,13 @@ public class Cql2ElmVisitorTest {
                 "    and E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("effectiveTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
-        assertThat(mp.getDescription(), is(nullValue()));
 
         // "Where" should now be the And clauses without the during!
         And where = (And) query.getWhere();
@@ -875,7 +809,6 @@ public class Cql2ElmVisitorTest {
         assertThat(eqLhs.getPath(), is("location.name"));
         assertThat(eqLhs.getSource(), is(nullValue()));
         assertThat(rhs.getOperand().get(1), literalFor("The Good Hospital"));
-        assertThat(where.getDescription(), is(nullValue()));
     }
 
     @Test
@@ -888,14 +821,13 @@ public class Cql2ElmVisitorTest {
                 "    and E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is("performanceTime"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
-        assertThat(mp.getDescription(), is(nullValue()));
 
         // "Where" should now just be the other IncludeIn phrase!
         IncludedIn where = (IncludedIn) query.getWhere();
@@ -906,8 +838,6 @@ public class Cql2ElmVisitorTest {
         ParameterRef rhs = (ParameterRef) where.getOperand().get(1);
         assertThat(rhs.getName(), is("MeasurementPeriod"));
         assertThat(rhs.getLibraryName(), is(nullValue()));
-        assertThat(rhs.getDescription(), is(nullValue()));
-        assertThat(where.getDescription(), is(nullValue()));
     }
 
     @Test
@@ -919,7 +849,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql, false);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
         assertThat(request.getDateProperty(), is(nullValue()));
@@ -934,8 +864,6 @@ public class Cql2ElmVisitorTest {
         ParameterRef rhs = (ParameterRef) where.getOperand().get(1);
         assertThat(rhs.getName(), is("MeasurementPeriod"));
         assertThat(rhs.getLibraryName(), is(nullValue()));
-        assertThat(rhs.getDescription(), is(nullValue()));
-        assertThat(where.getDescription(), is(nullValue()));
     }
 
     @Test
@@ -949,7 +877,7 @@ public class Cql2ElmVisitorTest {
                 "    where E.effectiveTime during pharyngitis";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during pharnyngitis" didn't migrate up!
         assertThat(request.getDateProperty(), is(nullValue()));
@@ -957,7 +885,6 @@ public class Cql2ElmVisitorTest {
 
         // "Where" should now be null!
         IncludedIn where = (IncludedIn) query.getWhere();
-        assertThat(where.getDescription(), is(nullValue()));
         Property lhs = (Property) where.getOperand().get(0);
         assertThat(lhs.getScope(), is("E"));
         assertThat(lhs.getPath(), is("effectiveTime"));
@@ -965,7 +892,6 @@ public class Cql2ElmVisitorTest {
         ExpressionRef rhs = (ExpressionRef) where.getOperand().get(1);
         assertThat(rhs.getName(), is("pharyngitis"));
         assertThat(rhs.getLibraryName(), is(nullValue()));
-        assertThat(rhs.getDescription(), is(nullValue()));
     }
 
     private Query testEncounterPerformanceInpatientForDateRangeOptimization(String cql) {
@@ -978,18 +904,13 @@ public class Cql2ElmVisitorTest {
 
         AliasedQuerySource source = query.getSource().get(0);
         assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
 
@@ -1014,20 +935,15 @@ public class Cql2ElmVisitorTest {
         // First check the source
         AliasedQuerySource source = query.getSource().get(0);
         assertThat(source.getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) source.getExpression();
+        Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(code.getDescription(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getDescription(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
-        assertThat(request.getSubjectProperty(), is(nullValue()));
-        assertThat(request.getSubject(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is(nullValue()));
 
@@ -1036,91 +952,70 @@ public class Cql2ElmVisitorTest {
         RelationshipClause relationship = query.getRelationship().get(0);
         assertThat(relationship, instanceOf(With.class));
         assertThat(relationship.getAlias(), is("P"));
-        ClinicalRequest withRequest = (ClinicalRequest) relationship.getExpression();
+        Retrieve withRequest = (Retrieve) relationship.getExpression();
         assertThat(withRequest.getDataType(), quickDataType("ConditionOccurrence"));
         assertThat(withRequest.getCodeProperty(), is("code"));
         ValueSetRef withCode = (ValueSetRef) withRequest.getCodes();
         assertThat(withCode.getName(), is("Acute Pharyngitis"));
-        assertThat(request.getCardinality(), is(RequestCardinality.MULTIPLE));
         assertThat(withCode.getLibraryName(), is(nullValue()));
-        assertThat(withCode.getDescription(), is(nullValue()));
         assertThat(withRequest.getDateProperty(), is(nullValue()));
         assertThat(withRequest.getDateRange(), is(nullValue()));
-        assertThat(withRequest.getDescription(), is(nullValue()));
         assertThat(withRequest.getScope(), is(nullValue()));
-        assertThat(withRequest.getSubjectProperty(), is(nullValue()));
-        assertThat(withRequest.getSubject(), is(nullValue()));
         assertThat(withRequest.getIdProperty(), is(nullValue()));
         assertThat(withRequest.getTemplateId(), is(nullValue()));
-        OverlapsAfter withWhere = (OverlapsAfter) relationship.getWhere();
-        assertThat(withWhere.getDescription(), is(nullValue()));
+        OverlapsAfter withWhere = (OverlapsAfter) relationship.getSuchThat();
         assertThat(withWhere.getOperand(), hasSize(2));
         Property overlapsLHS = (Property) withWhere.getOperand().get(0);
         assertThat(overlapsLHS.getScope(), is("P"));
         assertThat(overlapsLHS.getPath(), is("effectiveTime"));
         assertThat(overlapsLHS.getSource(), is(nullValue()));
-        assertThat(overlapsLHS.getDescription(), is(nullValue()));
         Property overlapsRHS = (Property) withWhere.getOperand().get(1);
         assertThat(overlapsRHS.getScope(), is("E"));
         assertThat(overlapsRHS.getPath(), is("performanceTime"));
         assertThat(overlapsRHS.getSource(), is(nullValue()));
-        assertThat(overlapsRHS.getDescription(), is(nullValue()));
 
         // Then check where statement
         GreaterOrEqual where = (GreaterOrEqual) query.getWhere();
-        assertThat(where.getDescription(), is(nullValue()));
         assertThat(where.getOperand(), hasSize(2));
         DaysBetween whereLHS = (DaysBetween) where.getOperand().get(0);
-        assertThat(whereLHS.getDescription(), is(nullValue()));
         assertThat(whereLHS.getOperand(), hasSize(2));
-        Begin whereLHSBegin = (Begin) whereLHS.getOperand().get(0);
-        assertThat(whereLHSBegin.getDescription(), is(nullValue()));
+        Start whereLHSBegin = (Start) whereLHS.getOperand().get(0);
         Property whereLHSBeginProp = (Property) whereLHSBegin.getOperand();
         assertThat(whereLHSBeginProp.getScope(), is("E"));
         assertThat(whereLHSBeginProp.getPath(), is("performanceTime"));
         assertThat(whereLHSBeginProp.getSource(), is(nullValue()));
-        assertThat(whereLHSBeginProp.getDescription(), is(nullValue()));
         End whereLHSEnd = (End) whereLHS.getOperand().get(1);
-        assertThat(whereLHSEnd.getDescription(), is(nullValue()));
         Property whereLHSEndProp = (Property) whereLHSEnd.getOperand();
         assertThat(whereLHSEndProp.getScope(), is("E"));
         assertThat(whereLHSEndProp.getPath(), is("performanceTime"));
         assertThat(whereLHSEndProp.getSource(), is(nullValue()));
-        assertThat(whereLHSEndProp.getDescription(), is(nullValue()));
         assertThat(where.getOperand().get(1), literalFor(120));
 
         // Then check the return statement
-        ObjectExpression rtn = (ObjectExpression) query.getReturn();
-        assertThat(rtn.getDescription(), is(nullValue()));
+        Tuple rtn = (Tuple) query.getReturn();
         // TODO: Bug in translator!  Doesn't detect object type (intentional?)
         // assertThat(rtn.getObjectType(), is(notNullValue()));
-        assertThat(rtn.getProperty(), hasSize(2));
-        PropertyExpression rtnP1 = rtn.getProperty().get(0);
+        assertThat(rtn.getElement(), hasSize(2));
+        TupleElement rtnP1 = rtn.getElement().get(0);
         assertThat(rtnP1.getName(), is("id"));
         Property rtnP1Val = (Property) rtnP1.getValue();
         assertThat(rtnP1Val.getScope(), is("E"));
         assertThat(rtnP1Val.getPath(), is("id"));
         assertThat(rtnP1Val.getSource(), is(nullValue()));
-        assertThat(rtnP1Val.getDescription(), is(nullValue()));
-        PropertyExpression rtnP2 = rtn.getProperty().get(1);
+        TupleElement rtnP2 = rtn.getElement().get(1);
         assertThat(rtnP2.getName(), is("lengthOfStay"));
         DaysBetween rtnP2Val = (DaysBetween) rtnP2.getValue();
-        assertThat(rtnP2Val.getDescription(), is(nullValue()));
         assertThat(rtnP2Val.getOperand(), hasSize(2));
-        Begin rtnP2ValBegin = (Begin) rtnP2Val.getOperand().get(0);
-        assertThat(rtnP2ValBegin.getDescription(), is(nullValue()));
+        Start rtnP2ValBegin = (Start) rtnP2Val.getOperand().get(0);
         Property rtnP2ValBeginProp = (Property) rtnP2ValBegin.getOperand();
         assertThat(rtnP2ValBeginProp.getScope(), is("E"));
         assertThat(rtnP2ValBeginProp.getPath(), is("performanceTime"));
         assertThat(rtnP2ValBeginProp.getSource(), is(nullValue()));
-        assertThat(rtnP2ValBeginProp.getDescription(), is(nullValue()));
         End rtnP2ValEnd = (End) rtnP2Val.getOperand().get(1);
-        assertThat(rtnP2ValEnd.getDescription(), is(nullValue()));
         Property rtnP2ValEndProp = (Property) rtnP2ValEnd.getOperand();
         assertThat(rtnP2ValEndProp.getScope(), is("E"));
         assertThat(rtnP2ValEndProp.getPath(), is("performanceTime"));
         assertThat(rtnP2ValEndProp.getSource(), is(nullValue()));
-        assertThat(rtnP2ValEndProp.getDescription(), is(nullValue()));
 
         // Finally test sort
         SortClause sort = query.getSort();
@@ -1227,7 +1122,7 @@ public class Cql2ElmVisitorTest {
         String where = "P starts same day as E";
         SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
         assertThat(sameDay.getOperand(), hasSize(2));
-        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        Start lhs = (Start) sameDay.getOperand().get(0);
         assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
         AliasRef rhs = (AliasRef) sameDay.getOperand().get(1);
         assertThat(rhs.getName(), is("E"));
@@ -1238,9 +1133,9 @@ public class Cql2ElmVisitorTest {
         String where = "P starts same day as start E";
         SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
         assertThat(sameDay.getOperand(), hasSize(2));
-        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        Start lhs = (Start) sameDay.getOperand().get(0);
         assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
-        Begin rhs = (Begin) sameDay.getOperand().get(1);
+        Start rhs = (Start) sameDay.getOperand().get(1);
         assertThat(((AliasRef) rhs.getOperand()).getName(), is("E"));
     }
 
@@ -1249,7 +1144,7 @@ public class Cql2ElmVisitorTest {
         String where = "P starts same day as end E";
         SameDayAs sameDay = (SameDayAs) testInpatientWithPharyngitisWhere(where);
         assertThat(sameDay.getOperand(), hasSize(2));
-        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        Start lhs = (Start) sameDay.getOperand().get(0);
         assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
         End rhs = (End) sameDay.getOperand().get(1);
         assertThat(((AliasRef) rhs.getOperand()).getName(), is("E"));
@@ -1263,14 +1158,14 @@ public class Cql2ElmVisitorTest {
 
         SameDayAs sameDay = (SameDayAs) or.getOperand().get(0);
         assertThat(sameDay.getOperand(), hasSize(2));
-        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        Start lhs = (Start) sameDay.getOperand().get(0);
         assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
         AliasRef rhs = (AliasRef) sameDay.getOperand().get(1);
         assertThat(rhs.getName(), is("E"));
 
         Greater greater = (Greater) or.getOperand().get(1);
         assertThat(greater.getOperand(), hasSize(2));
-        lhs = (Begin) greater.getOperand().get(0);
+        lhs = (Start) greater.getOperand().get(0);
         assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
         rhs = (AliasRef) greater.getOperand().get(1);
         assertThat(rhs.getName(), is("E"));
@@ -1284,14 +1179,14 @@ public class Cql2ElmVisitorTest {
 
         SameDayAs sameDay = (SameDayAs) or.getOperand().get(0);
         assertThat(sameDay.getOperand(), hasSize(2));
-        Begin lhs = (Begin) sameDay.getOperand().get(0);
+        Start lhs = (Start) sameDay.getOperand().get(0);
         assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
         AliasRef rhs = (AliasRef) sameDay.getOperand().get(1);
         assertThat(rhs.getName(), is("E"));
 
         Less lesser = (Less) or.getOperand().get(1);
         assertThat(lesser.getOperand(), hasSize(2));
-        lhs = (Begin) lesser.getOperand().get(0);
+        lhs = (Start) lesser.getOperand().get(0);
         assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
         rhs = (AliasRef) lesser.getOperand().get(1);
         assertThat(rhs.getName(), is("E"));
@@ -1326,7 +1221,7 @@ public class Cql2ElmVisitorTest {
         assertThat(sameDay.getOperand(), hasSize(2));
         End lhs = (End) sameDay.getOperand().get(0);
         assertThat(((AliasRef) lhs.getOperand()).getName(), is("P"));
-        Begin rhs = (Begin) sameDay.getOperand().get(1);
+        Start rhs = (Start) sameDay.getOperand().get(1);
         assertThat(((AliasRef) rhs.getOperand()).getName(), is("E"));
     }
 
@@ -1341,7 +1236,7 @@ public class Cql2ElmVisitorTest {
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Query query = (Query) def.getExpression();
         assertThat(query.getSource().get(0).getAlias(), is("E"));
-        ClinicalRequest request = (ClinicalRequest) query.getSource().get(0).getExpression();
+        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
         assertThat(request.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
         assertThat(request.getDataType().getLocalPart(), is("EncounterPerformanceOccurrence"));
         assertThat(request.getCodeProperty(), is("class"));
@@ -1351,14 +1246,14 @@ public class Cql2ElmVisitorTest {
         assertThat(query.getRelationship(), hasSize(1));
         With with = (With) query.getRelationship().get(0);
         assertThat(with.getAlias(), is("P"));
-        ClinicalRequest withRequest = (ClinicalRequest) with.getExpression();
+        Retrieve withRequest = (Retrieve) with.getExpression();
         assertThat(withRequest.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
         assertThat(withRequest.getDataType().getLocalPart(), is("ConditionOccurrence"));
         assertThat(withRequest.getCodeProperty(), is("code"));
         ValueSetRef withVS = (ValueSetRef) withRequest.getCodes();
         assertThat(withVS.getName(), is("Acute Pharyngitis"));
         assertThat(withVS.getLibraryName(), is(nullValue()));
-        return with.getWhere();
+        return with.getSuchThat();
     }
 
     private void assertTrackable(Trackable t){

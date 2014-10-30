@@ -54,7 +54,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Stack<Narrative> narratives = new Stack<>();
     private int currentToken = -1;
     private int nextLocalId = 1;
-    private final List<ClinicalRequest> clinicalRequests = new ArrayList<>();
+    private final List<Retrieve> retrieves= new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
 
@@ -72,9 +72,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return library;
     }
 
-    public List<ClinicalRequest> getClinicalRequests() {
-        return clinicalRequests;
-    }
+    public List<Retrieve> getRetrieves() { return retrieves; }
 
     public List<Expression> getExpressions() {
         return expressions;
@@ -213,14 +211,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public ModelReference visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
+    public UsingDef visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
         return initializeModelHelper(parseString(ctx.identifier()));
     }
 
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
-        LibraryReference library = of.createLibraryReference()
-                .withName(parseString(ctx.localIdentifier()))
+        IncludeDef library = of.createIncludeDef()
+                .withLocalIdentifier(parseString(ctx.localIdentifier()))
                 .withPath(parseString(ctx.identifier()))
                 .withVersion(parseString(ctx.versionSpecifier()));
 
@@ -247,17 +245,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public PropertyTypeSpecifier visitTupleElementDefinition(@NotNull cqlParser.TupleElementDefinitionContext ctx) {
-        return of.createPropertyTypeSpecifier()
+    public TupleElementDefinition visitTupleElementDefinition(@NotNull cqlParser.TupleElementDefinitionContext ctx) {
+        return of.createTupleElementDefinition()
                 .withName(parseString(ctx.identifier()))
                 .withType(parseTypeSpecifier(ctx.typeSpecifier()));
     }
 
     @Override
     public Object visitTupleTypeSpecifier(@NotNull cqlParser.TupleTypeSpecifierContext ctx) {
-        ObjectTypeSpecifier typeSpecifier = of.createObjectTypeSpecifier();
+        TupleTypeSpecifier typeSpecifier = of.createTupleTypeSpecifier();
         for (cqlParser.TupleElementDefinitionContext definitionContext : ctx.tupleElementDefinition()) {
-            typeSpecifier.getProperty().add((PropertyTypeSpecifier)visit(definitionContext));
+            typeSpecifier.getElement().add((TupleElementDefinition)visit(definitionContext));
         }
 
         return typeSpecifier;
@@ -316,26 +314,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitIntervalSelector(@NotNull cqlParser.IntervalSelectorContext ctx) {
         return of.createInterval()
-                .withBegin(parseExpression(ctx.expression(0)))
-                .withBeginOpen(ctx.getChild(1).getText().equals("("))
-                .withEnd(parseExpression(ctx.expression(1)))
-                .withEndOpen(ctx.getChild(5).getText().equals(")"));
+                .withLow(parseExpression(ctx.expression(0)))
+                .withLowClosed(ctx.getChild(1).getText().equals("["))
+                .withHigh(parseExpression(ctx.expression(1)))
+                .withHighClosed(ctx.getChild(5).getText().equals("]"));
     }
 
     @Override
     public Object visitTupleElementSelector(@NotNull cqlParser.TupleElementSelectorContext ctx) {
-        return of.createPropertyExpression()
+        return of.createTupleElement()
                 .withName(parseString(ctx.identifier()))
                 .withValue(parseExpression(ctx.expression()));
     }
 
     @Override
     public Object visitTupleSelector(@NotNull cqlParser.TupleSelectorContext ctx) {
-        ObjectExpression objectExpression = of.createObjectExpression();
+        Tuple tuple = of.createTuple();
         for (cqlParser.TupleElementSelectorContext element : ctx.tupleElementSelector()) {
-            objectExpression.getProperty().add((PropertyExpression)visit(element));
+            tuple.getElement().add((TupleElement)visit(element));
         }
-        return objectExpression;
+        return tuple;
     }
 
     @Override
@@ -382,8 +380,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public IsNotEmpty visitExistenceExpression(@NotNull cqlParser.ExistenceExpressionContext ctx) {
-        return of.createIsNotEmpty().withOperand(parseExpression(ctx.expression()));
+    public Exists visitExistenceExpression(@NotNull cqlParser.ExistenceExpressionContext ctx) {
+        return of.createExists().withOperand(parseExpression(ctx.expression()));
     }
 
     @Override
@@ -465,7 +463,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitTimeBoundaryExpressionTerm(@NotNull cqlParser.TimeBoundaryExpressionTermContext ctx) {
         return ctx.getChild(0).getText().equals("start")
-                ? of.createBegin().withOperand(parseExpression(ctx.expressionTerm()))
+                ? of.createStart().withOperand(parseExpression(ctx.expressionTerm()))
                 : of.createEnd().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
@@ -505,37 +503,37 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         switch (ctx.pluralDateTimePrecision().getText()) {
             case "years" :
                 return of.createYearsBetween().withOperand(
-                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
                         of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
                 );
             case "months" :
                 return of.createMonthsBetween().withOperand(
-                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
                         of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
                 );
             case "days" :
                 return of.createDaysBetween().withOperand(
-                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
                         of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
                 );
             case "hours" :
                 return of.createHoursBetween().withOperand(
-                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
                         of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
                 );
             case "minutes" :
                 return of.createMinutesBetween().withOperand(
-                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
                         of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
                 );
             case "seconds" :
                 return of.createSecondsBetween().withOperand(
-                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
                         of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
                 );
             case "milliseconds" :
                 return of.createMillisecondsBetween().withOperand(
-                        of.createBegin().withOperand(parseExpression(ctx.expressionTerm())),
+                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
                         of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
                 );
         }
@@ -657,7 +655,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         parseExpression(ctx.expression(1))
                 );
             case "except":
-                return of.createDifference().withOperand(
+                return of.createExcept().withOperand(
                         parseExpression(ctx.expression(0)),
                         parseExpression(ctx.expression(1))
                 );
@@ -890,7 +888,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return of.createAs()
                 .withOperand(parseExpression(ctx.expression()))
                 .withAsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()))
-                .withStrict(false); // CQL doesn't support the notion of a strict type-cast
+                .withStrict(false);
+    }
+
+    @Override
+    public Object visitCastExpression(@NotNull cqlParser.CastExpressionContext ctx) {
+        return of.createAs()
+                .withOperand(parseExpression(ctx.expression()))
+                .withAsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()))
+                .withStrict(true);
     }
 
     @Override
@@ -932,7 +938,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         TimingOperatorContext timingOperator = timingOperators.peek();
         ParseTree firstChild = ctx.getChild(0);
         if ("starts".equals(firstChild.getText())) {
-            timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+            timingOperator.setLeft(of.createStart().withOperand(timingOperator.getLeft()));
         }
 
         if ("ends".equals(firstChild.getText())) {
@@ -941,7 +947,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         ParseTree lastChild = ctx.getChild(ctx.getChildCount() - 1);
         if ("start".equals(lastChild.getText())) {
-            timingOperator.setRight(of.createBegin().withOperand(timingOperator.getRight()));
+            timingOperator.setRight(of.createStart().withOperand(timingOperator.getRight()));
         }
 
         if ("end".equals(lastChild.getText())) {
@@ -1000,7 +1006,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
 
             if ("start".equals(pt.getText())) {
-                timingOperator.setRight(of.createBegin().withOperand(timingOperator.getRight()));
+                timingOperator.setRight(of.createStart().withOperand(timingOperator.getRight()));
                 isRightPoint = true;
                 continue;
             }
@@ -1032,7 +1038,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         TimingOperatorContext timingOperator = timingOperators.peek();
         for (ParseTree pt : ctx.children) {
             if ("starts".equals(pt.getText())) {
-                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                timingOperator.setLeft(of.createStart().withOperand(timingOperator.getLeft()));
                 isLeftPoint = true;
                 continue;
             }
@@ -1085,17 +1091,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Boolean isBefore = false;
         for (ParseTree child : ctx.children) {
             if ("starts".equals(child.getText())) {
-                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                timingOperator.setLeft(of.createStart().withOperand(timingOperator.getLeft()));
                 continue;
             }
 
             if ("ends".equals(child.getText())) {
-                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                timingOperator.setLeft(of.createStart().withOperand(timingOperator.getLeft()));
                 continue;
             }
 
             if ("start".equals(child.getText())) {
-                timingOperator.setRight(of.createBegin().withOperand(timingOperator.getRight()));
+                timingOperator.setRight(of.createStart().withOperand(timingOperator.getRight()));
                 continue;
             }
 
@@ -1156,8 +1162,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         case "or less":
                             if (isBefore) {
                                 Interval quantityInterval = of.createInterval()
-                                        .withBegin(createLiteral(0)).withBeginOpen(true)
-                                        .withEnd(quantityLiteral).withEndOpen(false);
+                                        .withLow(createLiteral(0)).withLowClosed(false)
+                                        .withHigh(quantityLiteral).withHighClosed(true);
                                 return of.createIn().withOperand(
                                         betweenOperator,
                                         quantityInterval
@@ -1165,8 +1171,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             }
                             else {
                                 Interval quantityInterval = of.createInterval()
-                                        .withBegin(of.createNegate().withOperand(quantityLiteral)).withBeginOpen(false)
-                                        .withEnd(createLiteral(0)).withEndOpen(true);
+                                        .withLow(of.createNegate().withOperand(quantityLiteral)).withLowClosed(true)
+                                        .withHigh(createLiteral(0)).withHighClosed(false);
                                 return of.createIn().withOperand(
                                         betweenOperator,
                                         quantityInterval
@@ -1218,17 +1224,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         boolean isProper = false;
         for (ParseTree child : ctx.children) {
             if ("starts".equals(child.getText())) {
-                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                timingOperator.setLeft(of.createStart().withOperand(timingOperator.getLeft()));
                 continue;
             }
 
             if ("ends".equals(child.getText())) {
-                timingOperator.setLeft(of.createBegin().withOperand(timingOperator.getLeft()));
+                timingOperator.setLeft(of.createStart().withOperand(timingOperator.getLeft()));
                 continue;
             }
 
             if ("start".equals(child.getText())) {
-                timingOperator.setRight(of.createBegin().withOperand(timingOperator.getRight()));
+                timingOperator.setRight(of.createStart().withOperand(timingOperator.getRight()));
                 continue;
             }
 
@@ -1246,8 +1252,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Quantity quantity = (Quantity)visit(ctx.quantityLiteral());
         Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
         Interval quantityInterval = of.createInterval()
-                .withBegin(of.createNegate().withOperand(quantityLiteral)).withBeginOpen(isProper)
-                .withEnd(quantityLiteral).withEndOpen(isProper);
+                .withLow(of.createNegate().withOperand(quantityLiteral)).withLowClosed(!isProper)
+                .withHigh(quantityLiteral).withHighClosed(!isProper);
         BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(),
                 timingOperator.getLeft(), timingOperator.getRight());
         if (betweenOperator != null) {
@@ -1296,7 +1302,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitStartsIntervalOperatorPhrase(@NotNull cqlParser.StartsIntervalOperatorPhraseContext ctx) {
-        return of.createBegins().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+        return of.createStarts().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
     }
 
     @Override
@@ -1306,7 +1312,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIfThenElseExpressionTerm(@NotNull cqlParser.IfThenElseExpressionTermContext ctx) {
-        return of.createConditional()
+        return of.createIf()
                 .withCondition(parseExpression(ctx.expression(0)))
                 .withThen(parseExpression(ctx.expression(1)))
                 .withElse(parseExpression(ctx.expression(2)));
@@ -1370,14 +1376,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public ClinicalRequest visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
+    public Retrieve visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
         // TODO: Model prefixes are currently ignored here...
         String occ = ctx.occurrence() != null ? parseString(ctx.occurrence().namedTypeSpecifier().identifier()) : "Occurrence"; // TODO: Default occurrence label by model?
         String topic = parseString(ctx.topic().namedTypeSpecifier().identifier());
         String modality = ctx.modality() != null ? parseString(ctx.modality().namedTypeSpecifier().identifier()) : "";
         ClassDetail detail = getModelHelper().getClassDetail(occ, topic, modality);
 
-        ClinicalRequest request = of.createClinicalRequest()
+        Retrieve retrieve = of.createRetrieve()
                 .withDataType(resolveNamedType(
                         detail != null
                                 ? detail.getClassInfo().getName()
@@ -1385,19 +1391,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (ctx.valueset() != null) {
             if (ctx.valuesetPathIdentifier() != null) {
-                request.setCodeProperty(parseString(ctx.valuesetPathIdentifier()));
+                retrieve.setCodeProperty(parseString(ctx.valuesetPathIdentifier()));
             }
             else if (detail != null && detail.getClassInfo().getPrimaryCodeAttribute() != null) {
-                request.setCodeProperty(detail.getClassInfo().getPrimaryCodeAttribute());
+                retrieve.setCodeProperty(detail.getClassInfo().getPrimaryCodeAttribute());
             }
 
             List<String> identifiers = (List<String>)visit(ctx.valueset());
-            request.setCodes(resolveQualifiedIdentifier(identifiers));
+            retrieve.setCodes(resolveQualifiedIdentifier(identifiers));
         }
 
-        clinicalRequests.add(request);
+        retrieves.add(retrieve);
 
-        return request;
+        return retrieve;
     }
 
     @Override
@@ -1462,9 +1468,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     /**
      * Some systems may wish to optimize performance by restricting retrieves with available date ranges.  Specifying
      * date ranges in a retrieve was removed from the CQL grammar, but it is still possible to extract date ranges from
-     * the where clause and put them in the ClinicalRequest in ELM.  The <code>optimizeDateRangeInQuery</code> method
+     * the where clause and put them in the Retrieve in ELM.  The <code>optimizeDateRangeInQuery</code> method
      * attempts to do this automatically.  If optimization is possible, it will remove the corresponding "during" from
-     * the where clause and insert the date range into the ClinicalRequest.
+     * the where clause and insert the date range into the Retrieve.
      *
      * @param aqs the AliasedQuerySource containing the ClinicalRequest to possibly refactor a date range into.
      * @param where the Where clause to search for potential date range optimizations
@@ -1472,12 +1478,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
      * clause after optimization.
      */
     private Expression optimizeDateRangeInQuery(Expression where, AliasedQuerySource aqs) {
-        if (aqs.getExpression() instanceof ClinicalRequest) {
-            ClinicalRequest request = (ClinicalRequest) aqs.getExpression();
+        if (aqs.getExpression() instanceof Retrieve) {
+            Retrieve retrieve = (Retrieve) aqs.getExpression();
             String alias = aqs.getAlias();
-            if (where instanceof IncludedIn && attemptDateRangeOptimization((IncludedIn) where, request, alias)) {
+            if (where instanceof IncludedIn && attemptDateRangeOptimization((IncludedIn) where, retrieve, alias)) {
                 where = null;
-            } else if (where instanceof And && attemptDateRangeOptimization((And) where, request, alias)) {
+            } else if (where instanceof And && attemptDateRangeOptimization((And) where, retrieve, alias)) {
                 // Now optimize out the trues from the Ands
                 where = consolidateAnd((And) where);
             }
@@ -1487,26 +1493,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     /**
      * Test an <code>IncludedIn</code> expression and determine if it is suitable to be refactored into the
-     * <code>ClinicalRequest</code> as a date range restriction.  If so, adjust the <code>ClinicalRequest</code>
+     * <code>Retrieve</code> as a date range restriction.  If so, adjust the <code>Retrieve</code>
      * accordingly and return <code>true</code>.
-     * @param during the <code>IncludedIn</code> expression to potentially refactor into the <code>ClinicalRequest</code>
-     * @param request the <code>ClinicalRequest</code> to add qualifying date ranges to (if applicable)
-     * @param alias the alias of the <code>ClinicalRequest</code> in the query.
-     * @return <code>true</code> if the date range was set in the <code>ClinicalRequest</code>; <code>false</code>
+     * @param during the <code>IncludedIn</code> expression to potentially refactor into the <code>Retrieve</code>
+     * @param retrieve the <code>Retrieve</code> to add qualifying date ranges to (if applicable)
+     * @param alias the alias of the <code>Retrieve</code> in the query.
+     * @return <code>true</code> if the date range was set in the <code>Retrieve</code>; <code>false</code>
      * otherwise.
      */
-    private boolean attemptDateRangeOptimization(IncludedIn during, ClinicalRequest request, String alias) {
-        if (request.getDateProperty() != null || request.getDateRange() != null) {
+    private boolean attemptDateRangeOptimization(IncludedIn during, Retrieve retrieve, String alias) {
+        if (retrieve.getDateProperty() != null || retrieve.getDateRange() != null) {
             return false;
         }
 
         Expression left = during.getOperand().get(0);
         Expression right = during.getOperand().get(1);
 
-        String propertyName = extractLHSPropertyNameEligibleForDateRangeOptimization(left, request, alias);
+        String propertyName = extractLHSPropertyNameEligibleForDateRangeOptimization(left, retrieve, alias);
         if (propertyName != null && isRHSEligibleForDateRangeOptimization(right)) {
-            request.setDateProperty(propertyName);
-            request.setDateRange(right);
+            retrieve.setDateProperty(propertyName);
+            retrieve.setDateRange(right);
             return true;
         }
 
@@ -1515,29 +1521,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     /**
      * Test an <code>And</code> expression and determine if it contains any operands (first-level or nested deeper)
-     * than are <code>IncludedIn</code> expressions that can be refactored into a <code>ClinicalRequest</code>.  If so,
-     * adjust the <code>ClinicalRequest</code> accordingly and reset the corresponding operand to a literal
+     * than are <code>IncludedIn</code> expressions that can be refactored into a <code>Retrieve</code>.  If so,
+     * adjust the <code>Retrieve</code> accordingly and reset the corresponding operand to a literal
      * <code>true</code>.  This <code>and</code> branch containing a <code>true</code> can be further consolidated
      * later.
      * @param and the <code>And</code> expression containing operands to potentially refactor into the
-     *            <code>ClinicalRequest</code>
-     * @param request the <code>ClinicalRequest</code> to add qualifying date ranges to (if applicable)
-     * @param alias the alias of the <code>ClinicalRequest</code> in the query.
-     * @return <code>true</code> if the date range was set in the <code>ClinicalRequest</code> and the <code>And</code>
+     *            <code>Retrieve</code>
+     * @param retrieve the <code>Retrieve</code> to add qualifying date ranges to (if applicable)
+     * @param alias the alias of the <code>Retrieve</code> in the query.
+     * @return <code>true</code> if the date range was set in the <code>Retrieve</code> and the <code>And</code>
      * operands (or sub-operands) were modified; <code>false</code> otherwise.
      */
-    private boolean attemptDateRangeOptimization(And and, ClinicalRequest request, String alias) {
-        if (request.getDateProperty() != null || request.getDateRange() != null) {
+    private boolean attemptDateRangeOptimization(And and, Retrieve retrieve, String alias) {
+        if (retrieve.getDateProperty() != null || retrieve.getDateRange() != null) {
             return false;
         }
 
         for (int i = 0; i < and.getOperand().size(); i++) {
             Expression operand = and.getOperand().get(i);
-            if (operand instanceof IncludedIn && attemptDateRangeOptimization((IncludedIn) operand, request, alias)) {
+            if (operand instanceof IncludedIn && attemptDateRangeOptimization((IncludedIn) operand, retrieve, alias)) {
                 // Replace optimized part in And with true -- to be optimized out later
                 and.getOperand().set(i, createLiteral(true));
                 return true;
-            } else if (operand instanceof And && attemptDateRangeOptimization((And) operand, request, alias)) {
+            } else if (operand instanceof And && attemptDateRangeOptimization((And) operand, retrieve, alias)) {
                 return true;
             }
         }
@@ -1571,14 +1577,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
      * Extract the property name from the left-hand side of an <code>IncludedIn</code>.  If no property is explicitly
      * stated, try to infer it from the model info.
      * @param lhs the left-hand-side of an <code>IncludedIn</code> expression
-     * @param request the <code>ClinicalRequest</code> from the query containing the <code>IncludedIn</code>
-     * @param alias the alias associated with the <code>ClinicalRequest</code> in the query
-     * @return the property name if available and eligible for potential refactoring to the ClinicalRequest
+     * @param retrieve the <code>Retrieve</code> from the query containing the <code>IncludedIn</code>
+     * @param alias the alias associated with the <code>Retrieve</code> in the query
+     * @return the property name if available and eligible for potential refactoring to the Retrieve
      */
-    private String extractLHSPropertyNameEligibleForDateRangeOptimization(Expression lhs, ClinicalRequest request, String alias) {
+    private String extractLHSPropertyNameEligibleForDateRangeOptimization(Expression lhs, Retrieve retrieve, String alias) {
         String propertyName = null;
         if (lhs instanceof AliasRef) {
-            QName datatype = request.getDataType();
+            QName datatype = retrieve.getDataType();
             if (getModelHelper().getModelInfo().getUrl().equals(datatype.getNamespaceURI())) {
                 for (ClassInfo info : getModelHelper().getModelInfo().getClassInfo()) {
                     if (datatype.getLocalPart().equals(info.getName())) {
@@ -1601,11 +1607,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     /**
      * Determine if the right-hand side of an <code>IncludedIn</code> expression can be refactored into the date range
-     * of a <code>ClinicalRequest</code>.  Currently, refactoring is only supported when the RHS is a literal
+     * of a <code>Retrieve</code>.  Currently, refactoring is only supported when the RHS is a literal
      * DateTime interval, a literal DateTime, a parameter representing a DateTime interval or a DateTime, or an
      * expression reference representing a DateTime interval or a DateTime.
      * @param rhs the right-hand side of the <code>IncludedIn</code> to test for potential optimization
-     * @return <code>true</code> if the RHS supports refactoring to a <code>ClinicalRequest</code>, <code>false</code>
+     * @return <code>true</code> if the RHS supports refactoring to a <code>Retrieve</code>, <code>false</code>
      * otherwise.
      */
     private boolean isRHSEligibleForDateRangeOptimization(Expression rhs) {
@@ -1634,7 +1640,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         boolean isEligible = false;
         if (targetElement instanceof Interval) {
             Interval ivl = (Interval) targetElement;
-            isEligible = isDateFunctionRef(ivl.getBegin()) && isDateFunctionRef(ivl.getEnd());
+            isEligible = isDateFunctionRef(ivl.getLow()) && isDateFunctionRef(ivl.getHigh());
         } else if (targetElement instanceof IntervalTypeSpecifier) {
             IntervalTypeSpecifier spec = (IntervalTypeSpecifier) targetElement;
             isEligible = isDateTimeTypeSpecifier(spec.getPointType());
@@ -1688,7 +1694,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         try {
             Expression expression = (Expression)visit(ctx.expression());
             RelationshipClause result = of.createWith();
-            return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withWhere(expression);
+            return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withSuchThat(expression);
         }
         finally {
             queries.peek().removeQuerySource(aqs);
@@ -1702,7 +1708,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         try {
             Expression expression = (Expression)visit(ctx.expression());
             RelationshipClause result = of.createWithout();
-            return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withWhere(expression);
+            return result.withExpression(aqs.getExpression()).withAlias(aqs.getAlias()).withSuchThat(expression);
         }
         finally {
             queries.peek().removeQuerySource(aqs);
@@ -1829,7 +1835,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return fun;
     }
 
-    private ModelReference initializeModelHelper(String identifier) {
+    private UsingDef initializeModelHelper(String identifier) {
         // TODO: This should load from a modelinfo file based on the modelIdentifier above. Hard-coding to QUICK for POC purposes.
         try {
             modelHelper = new ModelHelper(QuickModelHelper.load());
@@ -1842,11 +1848,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
 
-        ModelReference model = of.createModelReference()
-                .withReferencedModel(of.createModelReferenceReferencedModel().withValue(modelHelper.getModelInfo().getUrl()));
-        addToLibrary(model);
+        UsingDef usingDef = of.createUsingDef()
+                .withLocalIdentifier(identifier)
+                .withUri(modelHelper.getModelInfo().getUrl());
+                // TODO: .withVersion? Or will version be part of the resolved Url?
+        addToLibrary(usingDef);
 
-        return model;
+        return usingDef;
     }
 
     private ModelHelper getModelHelper() {
@@ -1958,11 +1966,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return null;
     }
 
-    private void addToLibrary(ModelReference model) {
-        if (library.getDataModels() == null) {
-            library.setDataModels(of.createLibraryDataModels());
+    private void addToLibrary(UsingDef usingDef) {
+        if (library.getUsings() == null) {
+            library.setUsings(of.createLibraryUsings());
         }
-        library.getDataModels().getModelReference().add(model);
+        library.getUsings().getDef().add(usingDef);
     }
 
     private void addToLibrary(ValueSetDef vs) {
@@ -2010,8 +2018,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private String resolveExpressionName(Library library, String identifier) {
         if (library.getStatements() != null) {
             for (ExpressionDef current : library.getStatements().getDef()) {
-                if (!(current instanceof FunctionDef) && !(current instanceof ClinicalRequestDef)
-                        && current.getName().equals(identifier)) {
+                if (!(current instanceof FunctionDef) && current.getName().equals(identifier)) {
                     return identifier;
                 }
             }
@@ -2071,27 +2078,27 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return null;
     }
 
-    private void addToLibrary(LibraryReference libraryReference) {
-        if (library.getLibraries() == null) {
-            library.setLibraries(of.createLibraryLibraries());
+    private void addToLibrary(IncludeDef includeDef) {
+        if (library.getIncludes() == null) {
+            library.setIncludes(of.createLibraryIncludes());
         }
-        library.getLibraries().getLibraryReference().add(libraryReference);
+        library.getIncludes().getDef().add(includeDef);
 
         Library referencedLibrary =
                 new Library()
                         .withIdentifier(
                                 new VersionedIdentifier()
-                                        .withId(libraryReference.getPath())
-                                        .withVersion(libraryReference.getVersion()));
+                                        .withId(includeDef.getPath())
+                                        .withVersion(includeDef.getVersion()));
 
         // TODO: Resolve and prepare the actual library
-        libraries.put(libraryReference.getName(), referencedLibrary);
+        libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
     }
 
     private String resolveLibraryName(String identifier) {
-        if (library.getLibraries() != null) {
-            for (LibraryReference current : library.getLibraries().getLibraryReference()) {
-                if (current.getName().equals(identifier)) {
+        if (library.getIncludes() != null) {
+            for (IncludeDef current : library.getIncludes().getDef()) {
+                if (current.getLocalIdentifier().equals(identifier)) {
                     return identifier;
                 }
             }

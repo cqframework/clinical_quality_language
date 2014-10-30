@@ -234,6 +234,7 @@ expression
     | query                                                                  # queryExpression
     | expression 'is' 'not'? ( 'null' | 'true' | 'false' )                   # booleanExpression
     | expression ('is' | 'as') typeSpecifier                                 # typeExpression
+    | 'cast' expression 'as' typeSpecifier                                   # castExpression
     | 'not' expression                                                       # notExpression
     | 'exists' expression                                                    # existenceExpression
     | expression 'properly'? 'between' expressionTerm 'and' expressionTerm   # rangeExpression

@@ -1,12 +1,12 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.hl7.elm.r1.ClinicalRequest;
+import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Literal;
-import org.hl7.elm.r1.ModelReference;
+import org.hl7.elm.r1.UsingDef;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.ValueSetDef;
 import org.hl7.elm.r1.ValueSetRef;
@@ -45,33 +45,32 @@ public class CMS146ElmTest {
 
     @Test
     public void testUsingDataModel() {
-        List<ModelReference> models = library.getDataModels().getModelReference();
+        List<UsingDef> models = library.getUsings().getDef();
         assertThat(models, hasSize(1));
-        assertThat(models.get(0).getReferencedModel().getValue(), is("http://org.hl7.fhir"));
-        assertThat(models.get(0).getDescription(), is(nullValue()));
+        assertThat(models.get(0).getUri(), is("http://org.hl7.fhir"));
     }
 
     @Test
     public void testClinicalRequests() {
-        Collection<ClinicalRequest> actualCR = visitor.getClinicalRequests();
+        Collection<Retrieve> actualCR = visitor.getRetrieves();
 
-        Collection<ClinicalRequest> expectedCR = Arrays.asList(
-                of.createClinicalRequest()
+        Collection<Retrieve> expectedCR = Arrays.asList(
+                of.createRetrieve()
                         .withDataType(quickDataType("ConditionOccurrence"))
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
-                of.createClinicalRequest()
+                of.createRetrieve()
                         .withDataType(quickDataType("ConditionOccurrence"))
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
-                of.createClinicalRequest()
+                of.createRetrieve()
                         .withDataType(quickDataType("MedicationTreatmentOrderOccurrence"))
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
-                of.createClinicalRequest()
+                of.createRetrieve()
                         .withDataType(quickDataType("EncounterPerformanceOccurrence"))
                         .withCodeProperty("class")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
-                of.createClinicalRequest()
+                of.createRetrieve()
                         .withDataType(quickDataType("SimpleObservationOccurrence"))
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
@@ -133,7 +132,7 @@ public class CMS146ElmTest {
     // TODO: Disabled the test for now, needs to be updated to use annotations, will update after all syntax changes.
     @Test(enabled=false)
     public void testTrackBacks() {
-        for (ClinicalRequest dc : visitor.getClinicalRequests()) {
+        for (Retrieve dc : visitor.getRetrieves()) {
             int expectedNumbers[] = {0, 0, 0, 0};
             switch (((ValueSetRef) dc.getCodes()).getName()) {
                 case "Acute Pharyngitis":
