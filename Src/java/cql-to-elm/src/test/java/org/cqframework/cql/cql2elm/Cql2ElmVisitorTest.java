@@ -293,10 +293,9 @@ public class Cql2ElmVisitorTest {
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);
         assertThat(def.getName(), is("Female Administrative Sex"));
-        ValueSet vs = def.getValueSet();
-        assertThat(vs.getId(), is("2.16.840.1.113883.3.560.100.2"));
-        assertThat(vs.getVersion(), is(nullValue()));
-        assertThat(vs.getCodeSystemVersions(), is(nullValue()));
+        assertThat(def.getId(), is("2.16.840.1.113883.3.560.100.2"));
+        assertThat(def.getVersion(), is(nullValue()));
+        assertThat(def.getCodeSystemVersions(), is(nullValue()));
     }
 
     @Test
@@ -305,10 +304,9 @@ public class Cql2ElmVisitorTest {
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);
         assertThat(def.getName(), is("Female Administrative Sex"));
-        ValueSet vs = def.getValueSet();
-        assertThat(vs.getId(), is("2.16.840.1.113883.3.560.100.2"));
-        assertThat(vs.getVersion(), is("1"));
-        assertThat(vs.getCodeSystemVersions(), is(nullValue()));
+        assertThat(def.getId(), is("2.16.840.1.113883.3.560.100.2"));
+        assertThat(def.getVersion(), is("1"));
+        assertThat(def.getCodeSystemVersions(), is(nullValue()));
     }
 
     @Test
@@ -318,10 +316,9 @@ public class Cql2ElmVisitorTest {
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);
         assertThat(def.getName(), is("Female Administrative Sex"));
-        ValueSet vs = def.getValueSet();
-        assertThat(vs.getId(), is("2.16.840.1.113883.3.560.100.2"));
-        assertThat(vs.getVersion(), is("1"));
-        assertThat(vs.getCodeSystemVersions(), is("SNOMED-CT 2014 ICD-9 2014"));
+        assertThat(def.getId(), is("2.16.840.1.113883.3.560.100.2"));
+        assertThat(def.getVersion(), is("1"));
+        assertThat(def.getCodeSystemVersions(), is("SNOMED-CT 2014 ICD-9 2014"));
     }
 
     @Test

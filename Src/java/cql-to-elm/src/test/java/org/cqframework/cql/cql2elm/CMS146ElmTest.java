@@ -80,27 +80,22 @@ public class CMS146ElmTest {
         Collection<ValueSetDef> expectedVS = Arrays.asList(
                 of.createValueSetDef()
                         .withName("Acute Pharyngitis")
-                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.102.12.1011")),
+                        .withId("2.16.840.1.113883.3.464.1003.102.12.1011"),
                 of.createValueSetDef()
                         .withName("Acute Tonsillitis")
-                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.102.12.1012")),
+                        .withId("2.16.840.1.113883.3.464.1003.102.12.1012"),
                 of.createValueSetDef()
                         .withName("Ambulatory/ED Visit")
-                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.101.12.1061")),
+                        .withId("2.16.840.1.113883.3.464.1003.101.12.1061"),
                 of.createValueSetDef()
                         .withName("Antibiotic Medications")
-                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.196.12.1001")),
+                        .withId("2.16.840.1.113883.3.464.1003.196.12.1001"),
                 of.createValueSetDef()
                         .withName("Group A Streptococcus Test")
-                        .withValueSet(createValueSetFunctionRef("2.16.840.1.113883.3.464.1003.198.12.1012"))
+                        .withId("2.16.840.1.113883.3.464.1003.198.12.1012")
         );
 
         assertThat(actualVS, is(expectedVS));
-    }
-
-    private ValueSet createValueSetFunctionRef(String oid) {
-        return of.createValueSet()
-                .withId(oid);
     }
 
     @Test
@@ -155,7 +150,7 @@ public class CMS146ElmTest {
 
         for (ValueSetDef vs : library.getValueSets().getDef()) {
             int expectedNumbers[] = {0, 0, 0, 0};
-            switch (vs.getValueSet().getId()) {
+            switch (vs.getId()) {
                 case "2.16.840.1.113883.3.464.1003.102.12.1011":
                     expectedNumbers = new int[] {7, 1, 7, 83};
                     break;

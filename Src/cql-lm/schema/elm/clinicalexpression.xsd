@@ -76,46 +76,19 @@ Note that this property could potentially be specified elsewhere as part of an i
 	</xs:complexType>
 	<xs:complexType name="ValueSetDef">
 		<xs:annotation>
-			<xs:documentation>The ValueSetDef type defines a value set identifier that can be referenced by name anywhere within an expression. ValueSetDefs are defined at the library level</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="Element">
-				<xs:sequence>
-					<xs:element name="valueSet" type="ValueSet" minOccurs="1" maxOccurs="1">
-						<xs:annotation>
-							<xs:documentation>An expression of type List of Code that returns the ValueSet. Note that this does not imply that an implementation would be required to materialize all ValueSet references, they may be preserved as ValueSets and a terminology server may be used to perform the required value set testing operations.</xs:documentation>
-						</xs:annotation>
-					</xs:element>
-				</xs:sequence>
-				<xs:attribute name="name" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="ValueSetRef">
-		<xs:annotation>
-			<xs:documentation>The ValueSetRef expression allows a previously defined named value set to be referenced within an expression.</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="Expression">
-				<xs:attribute name="name" type="xs:string"/>
-				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="ValueSet">
-		<xs:annotation>
-			<xs:documentation>The ValueSet operator returns the expansion set for a value set as a list of codes whose elements are defined by the value set definition specified by the id. 
+			<xs:documentation>The ValueSetDef type defines a value set identifier that can be referenced by name anywhere within an expression.
+
+The id specifies the globally unique identifier for the value set. This may be an HL7 OID, a FHIR URL, or a CTS2 value set URL.
 
 If version is specified, it will be used to resolve the version of the value set definition to be used. Otherwise, the most current published version of the value set is assumed. 
 
 If codeSystemVersions is specified, it will be used to resolve the versions of code systems used within the value set definition to construct the expansion set. The value of the codeSystemVersions attribute must contain a list of pairs, separated by spaces, where each pair specifies the version of a code system referenced by the value set definition.
 
-Note that the recommended approach to statically binding to an expansion set is to use a value set definition that specifies the version of each code system used. The codeSystemVersions attribute is provided only to ensure static binding can be achieved when the value set definition does not specify code system versions as part of the definition header.
-			
-Note that the id, version, and codeSystemVersions for the value set are specified by attributes, rather than as expression elements. This is deliberately done to ensure that the value sets involved in an artifact can be determined by static analysis.</xs:documentation>
+Note that the recommended approach to statically binding to an expansion set is to use a value set definition that specifies the version of each code system used. The codeSystemVersions attribute is provided only to ensure static binding can be achieved when the value set definition does not specify code system versions as part of the definition header.			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="Element">
+				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="id" type="xs:string" use="required">
 					<xs:annotation>
 						<xs:documentation>The unique identifier of the value set to be retrieved.</xs:documentation>
@@ -136,22 +109,14 @@ If this attribute is provided, the value must contain a list of pairs, separated
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="InValueSet">
+	<xs:complexType name="ValueSetRef">
 		<xs:annotation>
-			<xs:documentation>The InValueSet operator returns true if the given code, or list of codes, is in the given value set.</xs:documentation>
+			<xs:documentation>The ValueSetRef expression allows a previously defined named value set to be referenced within an expression. Conceptually, referencing a value set returns the expansion set for the value set as a list of codes.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="UnaryExpression">
-				<xs:attribute name="id" type="xs:string" use="required">
-					<xs:annotation>
-						<xs:documentation>The unique identifier of the value set to be retrieved. This identifier is evaluated within the context of the authority.</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="version" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:documentation>The version of the value set to be retrieved. If an asterisk (*) is used, the current version of the value set is returned.</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

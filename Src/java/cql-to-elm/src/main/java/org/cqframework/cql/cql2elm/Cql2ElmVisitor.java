@@ -291,13 +291,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public ValueSetDef visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
         ValueSetDef vs = of.createValueSetDef()
                 .withName(parseString(ctx.identifier()))
-                .withValueSet(of.createValueSet().withId(parseString(ctx.valuesetId()))
-                        .withVersion(parseString(ctx.versionSpecifier()))
-                        .withCodeSystemVersions(
-                                ctx.codeSystemVersions() != null ?
-                                        (String)visit(ctx.codeSystemVersions())
-                                        : null
-                        )
+                .withId(parseString(ctx.valuesetId()))
+                .withVersion(parseString(ctx.versionSpecifier()))
+                .withCodeSystemVersions(
+                        ctx.codeSystemVersions() != null
+                                ? (String)visit(ctx.codeSystemVersions())
+                                : null
                 );
         addToLibrary(vs);
 
