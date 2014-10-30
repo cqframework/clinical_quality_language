@@ -1,15 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.hl7.elm.r1.Retrieve;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.FunctionRef;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.Literal;
-import org.hl7.elm.r1.UsingDef;
-import org.hl7.elm.r1.ObjectFactory;
-import org.hl7.elm.r1.ValueSetDef;
-import org.hl7.elm.r1.ValueSetRef;
+import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -106,13 +98,9 @@ public class CMS146ElmTest {
         assertThat(actualVS, is(expectedVS));
     }
 
-    private FunctionRef createValueSetFunctionRef(String oid) {
-        return of.createFunctionRef()
-                .withName("ValueSet")
-                .withOperand(
-                        of.createLiteral()
-                                .withValueType(new QName("http://www.w3.org/2001/XMLSchema", "string"))
-                                .withValue(oid));
+    private ValueSet createValueSetFunctionRef(String oid) {
+        return of.createValueSet()
+                .withId(oid);
     }
 
     @Test
@@ -167,7 +155,7 @@ public class CMS146ElmTest {
 
         for (ValueSetDef vs : library.getValueSets().getDef()) {
             int expectedNumbers[] = {0, 0, 0, 0};
-            switch (((Literal) ((FunctionRef) vs.getValueSet()).getOperand().get(0)).getValue()) {
+            switch (vs.getValueSet().getId()) {
                 case "2.16.840.1.113883.3.464.1003.102.12.1011":
                     expectedNumbers = new int[] {7, 1, 7, 83};
                     break;

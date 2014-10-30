@@ -272,11 +272,32 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public String visitCodeSystemVersion(@NotNull cqlParser.CodeSystemVersionContext ctx) {
+        return parseString(ctx.codeSystemId()) + ' ' + parseString(ctx.versionSpecifier());
+    }
+
+    @Override
+    public String visitCodeSystemVersions(@NotNull cqlParser.CodeSystemVersionsContext ctx) {
+        String result = "";
+        for (cqlParser.CodeSystemVersionContext childCtx : ctx.codeSystemVersion()) {
+            String codeSystemVersion = (String)visit(childCtx);
+            result = result + (!result.equals("") ? " " : "") + codeSystemVersion;
+        }
+
+        return result;
+    }
+
+    @Override
     public ValueSetDef visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
         ValueSetDef vs = of.createValueSetDef()
                 .withName(parseString(ctx.identifier()))
                 .withValueSet(of.createValueSet().withId(parseString(ctx.valuesetId()))
                         .withVersion(parseString(ctx.versionSpecifier()))
+                        .withCodeSystemVersions(
+                                ctx.codeSystemVersions() != null ?
+                                        (String)visit(ctx.codeSystemVersions())
+                                        : null
+                        )
                 );
         addToLibrary(vs);
 

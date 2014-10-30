@@ -39,7 +39,19 @@ parameterDefinition
     ;
 
 valuesetDefinition
-    : 'valueset' identifier '=' valuesetId ('version' versionSpecifier)?
+    : 'valueset' identifier '=' valuesetId ('version' versionSpecifier)? codeSystemVersions?
+    ;
+
+codeSystemVersions
+    : 'code' 'systems' '(' codeSystemVersion (',' codeSystemVersion)* ')'
+    ;
+
+codeSystemVersion
+    : codeSystemId 'version' versionSpecifier
+    ;
+
+codeSystemId
+    : STRING
     ;
 
 valuesetId

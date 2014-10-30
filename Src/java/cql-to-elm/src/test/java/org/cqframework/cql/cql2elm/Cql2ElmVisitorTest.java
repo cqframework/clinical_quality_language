@@ -2,57 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.cql2elm.model.Identifier;
-import org.hl7.elm.r1.Add;
-import org.hl7.elm.r1.AliasRef;
-import org.hl7.elm.r1.AliasedQuerySource;
-import org.hl7.elm.r1.And;
-import org.hl7.elm.r1.Start;
-import org.hl7.elm.r1.BinaryExpression;
-import org.hl7.elm.r1.ByExpression;
-import org.hl7.elm.r1.Retrieve;
-import org.hl7.elm.r1.DaysBetween;
-import org.hl7.elm.r1.Divide;
-import org.hl7.elm.r1.End;
-import org.hl7.elm.r1.Equal;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.ExpressionRef;
-import org.hl7.elm.r1.FunctionRef;
-import org.hl7.elm.r1.Greater;
-import org.hl7.elm.r1.GreaterOrEqual;
-import org.hl7.elm.r1.IncludedIn;
-import org.hl7.elm.r1.Interval;
-import org.hl7.elm.r1.IsNull;
-import org.hl7.elm.r1.Less;
-import org.hl7.elm.r1.LessOrEqual;
-import org.hl7.elm.r1.Modulo;
-import org.hl7.elm.r1.Multiply;
-import org.hl7.elm.r1.Not;
-import org.hl7.elm.r1.NotEqual;
-import org.hl7.elm.r1.Null;
-import org.hl7.elm.r1.Tuple;
-import org.hl7.elm.r1.Or;
-import org.hl7.elm.r1.OverlapsAfter;
-import org.hl7.elm.r1.ParameterRef;
-import org.hl7.elm.r1.Power;
-import org.hl7.elm.r1.Property;
-import org.hl7.elm.r1.TupleElement;
-import org.hl7.elm.r1.Quantity;
-import org.hl7.elm.r1.Query;
-import org.hl7.elm.r1.RelationshipClause;
-import org.hl7.elm.r1.SameAs;
-import org.hl7.elm.r1.SameDayAs;
-import org.hl7.elm.r1.SameHourAs;
-import org.hl7.elm.r1.SameMinuteAs;
-import org.hl7.elm.r1.SameMonthAs;
-import org.hl7.elm.r1.SameSecondAs;
-import org.hl7.elm.r1.SameYearAs;
-import org.hl7.elm.r1.SortClause;
-import org.hl7.elm.r1.SortDirection;
-import org.hl7.elm.r1.Subtract;
-import org.hl7.elm.r1.ValueSetRef;
-import org.hl7.elm.r1.With;
-import org.hl7.elm.r1.Xor;
+import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -335,6 +285,43 @@ public class Cql2ElmVisitorTest {
             assertTrackable(left);
             assertTrackable(right);
         }
+    }
+
+    @Test
+    public void testBasicValueSet() {
+        String cql = "valueset \"Female Administrative Sex\" = '2.16.840.1.113883.3.560.100.2'";
+        Library l = visitLibrary(cql);
+        ValueSetDef def = l.getValueSets().getDef().get(0);
+        assertThat(def.getName(), is("Female Administrative Sex"));
+        ValueSet vs = def.getValueSet();
+        assertThat(vs.getId(), is("2.16.840.1.113883.3.560.100.2"));
+        assertThat(vs.getVersion(), is(nullValue()));
+        assertThat(vs.getCodeSystemVersions(), is(nullValue()));
+    }
+
+    @Test
+    public void testVersionedValueSet() {
+        String cql = "valueset \"Female Administrative Sex\" = '2.16.840.1.113883.3.560.100.2' version '1'";
+        Library l = visitLibrary(cql);
+        ValueSetDef def = l.getValueSets().getDef().get(0);
+        assertThat(def.getName(), is("Female Administrative Sex"));
+        ValueSet vs = def.getValueSet();
+        assertThat(vs.getId(), is("2.16.840.1.113883.3.560.100.2"));
+        assertThat(vs.getVersion(), is("1"));
+        assertThat(vs.getCodeSystemVersions(), is(nullValue()));
+    }
+
+    @Test
+    public void testStaticallyBoundValueSet() {
+        String cql = "valueset \"Female Administrative Sex\" = '2.16.840.1.113883.3.560.100.2' version '1'\n" +
+                "    code systems ( 'SNOMED-CT' version '2014', 'ICD-9' version '2014' )\n";
+        Library l = visitLibrary(cql);
+        ValueSetDef def = l.getValueSets().getDef().get(0);
+        assertThat(def.getName(), is("Female Administrative Sex"));
+        ValueSet vs = def.getValueSet();
+        assertThat(vs.getId(), is("2.16.840.1.113883.3.560.100.2"));
+        assertThat(vs.getVersion(), is("1"));
+        assertThat(vs.getCodeSystemVersions(), is("SNOMED-CT 2014 ICD-9 2014"));
     }
 
     @Test

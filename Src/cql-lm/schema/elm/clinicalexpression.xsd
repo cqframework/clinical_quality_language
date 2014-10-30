@@ -81,7 +81,7 @@ Note that this property could potentially be specified elsewhere as part of an i
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
-					<xs:element name="valueSet" type="Expression" minOccurs="1" maxOccurs="1">
+					<xs:element name="valueSet" type="ValueSet" minOccurs="1" maxOccurs="1">
 						<xs:annotation>
 							<xs:documentation>An expression of type List of Code that returns the ValueSet. Note that this does not imply that an implementation would be required to materialize all ValueSet references, they may be preserved as ValueSets and a terminology server may be used to perform the required value set testing operations.</xs:documentation>
 						</xs:annotation>
@@ -104,20 +104,33 @@ Note that this property could potentially be specified elsewhere as part of an i
 	</xs:complexType>
 	<xs:complexType name="ValueSet">
 		<xs:annotation>
-			<xs:documentation>The ValueSet operator returns a list of codes whose elements are defined by the given value set authority for the given value set id and version. If version is an asterisk (*), the current version of the value set is returned.
+			<xs:documentation>The ValueSet operator returns the expansion set for a value set as a list of codes whose elements are defined by the value set definition specified by the id. 
+
+If version is specified, it will be used to resolve the version of the value set definition to be used. Otherwise, the most current published version of the value set is assumed. 
+
+If codeSystemVersions is specified, it will be used to resolve the versions of code systems used within the value set definition to construct the expansion set. The value of the codeSystemVersions attribute must contain a list of pairs, separated by spaces, where each pair specifies the version of a code system referenced by the value set definition.
+
+Note that the recommended approach to statically binding to an expansion set is to use a value set definition that specifies the version of each code system used. The codeSystemVersions attribute is provided only to ensure static binding can be achieved when the value set definition does not specify code system versions as part of the definition header.
 			
-Note that the id, version, and authority for the value set are specified by attributes, rather than as expression elements. This is deliberately done to ensure that the value sets involved in an artifact can be determined by static analysis.</xs:documentation>
+Note that the id, version, and codeSystemVersions for the value set are specified by attributes, rather than as expression elements. This is deliberately done to ensure that the value sets involved in an artifact can be determined by static analysis.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:attribute name="id" type="xs:string" use="required">
 					<xs:annotation>
-						<xs:documentation>The unique identifier of the value set to be retrieved. This identifier is evaluated within the context of the authority.</xs:documentation>
+						<xs:documentation>The unique identifier of the value set to be retrieved.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="version" type="xs:string" use="optional">
 					<xs:annotation>
-						<xs:documentation>The version of the value set to be retrieved. If an asterisk (*) is used, the current version of the value set is returned.</xs:documentation>
+						<xs:documentation>The version of the value set to be retrieved. If no version is provided, the most current published version of the value set is assumed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codeSystemVersions" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The version of each code system that should be used to construct the expansion set. Note that the recommended approach to statically binding to an expansion set is to use a value set definition that specifies the version of each code system used. The codeSystemVersions attribute is provided only to ensure static binding can be achieved when the value set definition does not specify code system versions as part of the definition header.
+						
+If this attribute is provided, the value must contain a list of pairs, separated by spaces, where each pair specifies the version of a code system referenced by the value set definition.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>

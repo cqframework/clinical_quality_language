@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.hl7.elm.r1.Library;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +28,14 @@ public class TestUtils {
         TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(cqlData));
         ParseTree tree = parseTokenStream(tokens);
         return createElmTranslatorVisitor(tokens, tree).visit(tree);
+    }
+
+    public static Library visitLibrary(String cqlLibrary) {
+        TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(cqlLibrary));
+        ParseTree tree = parseTokenStream(tokens);
+        Cql2ElmVisitor visitor = createElmTranslatorVisitor(tokens, tree);
+        visitor.visit(tree);
+        return visitor.getLibrary();
     }
 
     public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
