@@ -2,7 +2,7 @@ library CMS153_Common version '2'
 
 using QUICK
 
-valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2'
+valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2' version '1'
 valueset "Other Female Reproductive Conditions" = '2.16.840.1.113883.3.464.1003.111.12.1006'
 valueset "Genital Herpes" = '2.16.840.1.113883.3.464.1003.110.12.1049'
 valueset "Genococcal Infections and Venereal Diseases" = '2.16.840.1.113883.3.464.1003.112.12.1001'
@@ -19,7 +19,7 @@ valueset "Chlamydia Screening" = '2.16.840.1.113883.3.464.1003.110.12.1052'
 
 context PATIENT
 
-define ConditionsIndicatingSexualActivity =
+define "Conditions Indicating Sexual Activity" =
 	[Condition: "Other Female Reproductive Conditions"]
 	union [Condition: "Genital Herpes"]
     union [Condition: "Genococcal Infections and Venereal Diseases"]
@@ -29,16 +29,16 @@ define ConditionsIndicatingSexualActivity =
     union [Condition: "Syphilis"]
     union [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
 
-define LaboratoryTestsIndicatingSexualActivity =
+define "Laboratory Tests Indicating Sexual Activity" =
     [LaboratoryTest, Order: "Pregnancy Test"]
     union [LaboratoryTest, Order: "Pap Test"]
     union [LaboratoryTest, Order: "Lab Tests During Pregnancy"]
 	union [LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"]
 
-define TestsPerformedForChlamydia =
+define "Tests Performed For Chlamydia" =
 	[Procedure, Performance: "Chlamydia Screening"]
 
-define ResultsPresentForChlamydiaScreening =
+define "Results Present For Chlamydia Screening" =
     [ObservationResult: "Chlamydia Screening"] R where R.result is not null
 
 
