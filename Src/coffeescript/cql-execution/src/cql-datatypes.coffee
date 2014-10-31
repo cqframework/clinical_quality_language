@@ -28,50 +28,42 @@ class DateTime
   copy: (other) ->
     new DateTime(@year, @month, @day, @hour, @minute, @second)
 
-  sameXAs: (field, other) ->
-    if not(other instanceof DateTime) then return null
-
-    [a, b] = [@[field], other[field]]
-    if (a? and b?) then a is b else null
-
-  before: (other) ->
+  sameAs: (other, precision = DateTime.Unit.SECOND) ->
     if not(other instanceof DateTime) then null
 
     for field in DateTime.FIELDS
-      same = @sameXAs(field, other)
-      if same then continue
-      else if not same? then return null
-      else return @[field] < other[field]
+      [a, b] = [@[field], other[field]]
+      same = if (a? and b?) then a is b else null
+      if not same or field is precision then return same
+
+    true
+
+  before: (other) ->
+    if not(other instanceof DateTime) then return false
+
+    if (@isPrecise() and other.isPrecise())
+      return @toJSDate() < other.toJSDate()
+    else
+      bestCase = @asLowest().before other.asHighest()
+      worstCase = @asHighest().before other.asLowest()
+      if bestCase is worstCase then return bestCase else return null
 
     false
 
   beforeOrSameAs: (other) ->
-    before = @before(other)
-    sameAs = @sameAs(other)
-    if before or sameAs then return true
-    else if before? and sameAs? then return false
-    else return null
+    if not(other instanceof DateTime) then return false
+
+    ThreeValuedLogic.not @after(other)
 
   after: (other) ->
-    if not(other instanceof DateTime) then null
+    if not(other instanceof DateTime) then return false
 
     other.before(@)
 
   afterOrSameAs: (other) ->
-    after = @after(other)
-    sameAs = @sameAs(other)
-    if after or sameAs then return true
-    else if after? and sameAs? then return false
-    else return null
+    if not(other instanceof DateTime) then return false
 
-  sameAs: (other) ->
-    if not(other instanceof DateTime) then null
-
-    for field in DateTime.FIELDS
-      same = @sameXAs(field, other)
-      if not same? or not same then return same
-
-    true
+    ThreeValuedLogic.not @before(other)
 
   add: (offset, field) ->
     result = @copy()
@@ -84,31 +76,104 @@ class DateTime
 
     result
 
+  isPrecise: () ->
+    self = @
+    DateTime.FIELDS.every (field) -> self[field]?
+
+  isImprecise: () ->
+    not @isPrecise()
+
+  asLowest: () ->
+    result = @copy()
+
+    if @isImprecise()
+      result.year ?= 0
+      result.month ?= 1
+      result.day ?= 1
+      result.hour ?= 0
+      result.minute ?= 0
+      result.second ?= 0
+
+    result
+
+  asHighest: () ->
+    result = @copy()
+
+    if @isImprecise()
+      result.year ?= 10000
+      result.month ?= 12
+      # see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setDate
+      result.day ?= (new Date(result.year, result.month, 0)).getDate()
+      result.hour ?= 23
+      result.minute ?= 59
+      result.second ?= 59
+
+    result
+
   toJSDate: () ->
     jsMonth = if @month? then @month-1 else 0
     new Date(@year, jsMonth, @day ? 1, @hour ? 0, @minute ? 0, @second ? 0, 0)
 
 class Interval
-  constructor: (@begin, @end, @beginOpen = false, @endOpen = false) ->
+  constructor: (@low, @high, @lowClosed = true, @highClosed = true) ->
 
   includes: (item) ->
-    if item instanceof DateTime then item = new Interval(item, item, false, false)
+    if @isDateTimeInterval()
+      [low, high] = @_getAdjustedEndpoints()
+      if item instanceof DateTime
+        return ThreeValuedLogic.and low.beforeOrSameAs(item), high.afterOrSameAs(item)
 
-    if item instanceof Interval
-      if ([@begin, @end, item.begin, item.end].every (x) -> x instanceof DateTime)
-        [begin, end] = @getAdjustedEndpoints()
-        [itmBegin, itmEnd] = item.getAdjustedEndpoints()
-        return begin.beforeOrSameAs(itmBegin) and end.afterOrSameAs(itmEnd)
-    else false
+      if item instanceof Interval and item.isDateTimeInterval()
+        [itmLow, itmHigh] = item._getAdjustedEndpoints()
+        return ThreeValuedLogic.and low.beforeOrSameAs(itmLow), high.afterOrSameAs(itmHigh)
+
+    false
+
+  includedIn: (item) ->
+    if item instanceof DateTime and @isDateTimeInterval()
+      return ThreeValuedLogic.and @lowClosed, @highClosed, @low.sameAs(@high), item.sameAs(@low)
+    else if item instanceof Interval
+      return item.includes @
+
+    false
+
+  overlaps: (item) ->
+    if item instanceof DateTime then return @includes item
+
+    if item instanceof Interval and @isDateTimeInterval()
+      [low, high] = @_getAdjustedEndpoints()
+      [itmLow, itmHigh] = item._getAdjustedEndpoints()
+      disjoint = ThreeValuedLogic.or high.before(itmLow), itmHigh.before(low)
+      return ThreeValuedLogic.not disjoint
+
+    false
+
+  isDateTimeInterval: () ->
+    @low instanceof DateTime and @high instanceof DateTime
 
   # Adjusted endpoints are useful for timing calculations with open endpoints
-  getAdjustedEndpoints: () ->
+  _getAdjustedEndpoints: () ->
     [
-      if @beginOpen then @begin.add(1, DateTime.Unit.SECOND) else @begin,
-      if @endOpen then @end.add(-1, DateTime.Unit.SECOND) else @end
+      if @lowClosed then @low else @low.add(1, DateTime.Unit.SECOND),
+      if @highClosed then @high else @high.add(-1, DateTime.Unit.SECOND)
     ]
+
+class ThreeValuedLogic
+  @and: (val...) ->
+    if false in val then false
+    else if null in val then null
+    else true
+
+  @or: (val...) ->
+    if true in val then true
+    else if null in val then null
+    else false
+
+  @not: (val) ->
+    if val? then return not val else return null
 
 module.exports.Code = Code
 module.exports.ValueSet = ValueSet
 module.exports.DateTime = DateTime
 module.exports.Interval = Interval
+module.exports.ThreeValuedLogic = ThreeValuedLogic

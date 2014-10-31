@@ -266,7 +266,7 @@ class List extends Expression
   exec: (ctx) ->
     (item.exec(ctx) for item in @elements)
 
-class IsNotEmpty extends Expression
+class Exists extends Expression
   constructor: (json) ->
     super
 
@@ -276,21 +276,29 @@ class IsNotEmpty extends Expression
 class Interval extends Expression
   constructor: (json) ->
     super
-    @beginOpen = json.beginOpen
-    @endOpen = json.endOpen
-    @begin = build(json.begin)
-    @end = build(json.end)
+    @lowClosed = json.lowClosed
+    @highClosed = json.highClosed
+    @low = build(json.low)
+    @high = build(json.high)
 
   exec: (ctx) ->
-    new DT.Interval(@begin.exec(ctx), @end.exec(ctx), @beginOpen, @endOpen)
+    new DT.Interval(@low.exec(ctx), @high.exec(ctx), @lowClosed, @highClosed)
 
-class Begin extends Expression
+class Includes extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    args = execArgs(ctx)
+    args[0].includes args[1]
+
+class Start extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
     # assumes this is interval
-    @arg.exec(ctx).begin
+    @arg.exec(ctx).low
 
 # Membership
 
@@ -379,9 +387,9 @@ class StringLiteral extends Literal
   exec: (ctx) ->
     @value
 
-# Clinical Requests and Queries
+# Retreives and Queries
 
-class ClinicalRequest extends Expression
+class Retrieve extends Expression
   constructor: (json) ->
     super
     @datatype = json.dataType
@@ -407,12 +415,17 @@ class ClinicalRequest extends Expression
 class Query extends Expression
   constructor: (json) ->
     super
-    @sourceAlias = json.source.alias
-    @source = build json.source.expression
+    # TODO: Support multi-source
+    @sourceAlias = json.source[0].alias
+    @source = build json.source[0].expression
     @relationship = build json.relationship
+    @where = build json.where
 
   exec: (ctx) ->
-    @source.exec(ctx)
+    results = @source.exec(ctx)
+    # TODO: Introduce notion of a "stack" to the Context and push E onto it.
+    # Then incorporate support for reading from the stack and filtering the results.
+    results
 
 module.exports.Library = Library
 module.exports.Context = Context

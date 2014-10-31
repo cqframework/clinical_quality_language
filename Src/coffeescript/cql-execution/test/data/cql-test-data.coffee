@@ -23,21 +23,20 @@ module.exports.InAgeDemographic = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
             "default" : {
-               "beginOpen" : false,
-               "endOpen" : true,
+               "lowClosed" : true,
+               "highClosed" : false,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -54,7 +53,7 @@ module.exports.InAgeDemographic = {
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -86,7 +85,7 @@ module.exports.InAgeDemographic = {
                      "name" : "AgeAt",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "type" : "Begin",
+                        "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
                            "type" : "ParameterRef"
@@ -103,7 +102,7 @@ module.exports.InAgeDemographic = {
                      "name" : "AgeAt",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "type" : "Begin",
+                        "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
                            "type" : "ParameterRef"
@@ -134,11 +133,10 @@ module.exports.ExpressionDef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -169,11 +167,10 @@ module.exports.ExpressionRef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -209,11 +206,10 @@ module.exports.ParameterDef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "parameters" : {
@@ -243,11 +239,10 @@ module.exports.ParameterRef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "parameters" : {
@@ -288,11 +283,10 @@ module.exports.ValueSetDef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -355,11 +349,10 @@ module.exports.ValueSetRef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -406,11 +399,10 @@ module.exports.And = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -564,11 +556,10 @@ module.exports.Or = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -727,11 +718,10 @@ module.exports.XOr = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -991,11 +981,10 @@ module.exports.AgeAtFunctionRef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1078,11 +1067,10 @@ module.exports.DateFunctionRef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1239,11 +1227,10 @@ module.exports.Interval = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1251,10 +1238,10 @@ module.exports.Interval = {
             "name" : "Open",
             "context" : "PATIENT",
             "expression" : {
-               "beginOpen" : true,
-               "endOpen" : true,
+               "lowClosed" : false,
+               "highClosed" : false,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1271,7 +1258,7 @@ module.exports.Interval = {
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1293,10 +1280,10 @@ module.exports.Interval = {
             "name" : "LeftOpen",
             "context" : "PATIENT",
             "expression" : {
-               "beginOpen" : true,
-               "endOpen" : false,
+               "lowClosed" : false,
+               "highClosed" : true,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1313,7 +1300,7 @@ module.exports.Interval = {
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1335,10 +1322,10 @@ module.exports.Interval = {
             "name" : "RightOpen",
             "context" : "PATIENT",
             "expression" : {
-               "beginOpen" : false,
-               "endOpen" : true,
+               "lowClosed" : true,
+               "highClosed" : false,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1355,7 +1342,7 @@ module.exports.Interval = {
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1377,10 +1364,10 @@ module.exports.Interval = {
             "name" : "Closed",
             "context" : "PATIENT",
             "expression" : {
-               "beginOpen" : false,
-               "endOpen" : false,
+               "lowClosed" : true,
+               "highClosed" : true,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1397,7 +1384,7 @@ module.exports.Interval = {
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1435,11 +1422,10 @@ module.exports.Greater = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1508,11 +1494,10 @@ module.exports.GreaterOrEqual = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1581,11 +1566,10 @@ module.exports.Equal = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1654,11 +1638,10 @@ module.exports.LessOrEqual = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1727,11 +1710,10 @@ module.exports.Less = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1802,11 +1784,10 @@ module.exports.List = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1892,7 +1873,7 @@ module.exports.List = {
    }
 }
 
-### IsNotEmpty
+### Exists
 library TestSnippet version '1'
 using QUICK
 context PATIENT
@@ -1900,17 +1881,16 @@ define EmptyList = exists ({})
 define FullList = exists ({ 1, 2, 3 })
 ###
 
-module.exports.IsNotEmpty = {
+module.exports.Exists = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1918,7 +1898,7 @@ module.exports.IsNotEmpty = {
             "name" : "EmptyList",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "IsNotEmpty",
+               "type" : "Exists",
                "operand" : {
                   "type" : "List"
                }
@@ -1927,7 +1907,7 @@ module.exports.IsNotEmpty = {
             "name" : "FullList",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "IsNotEmpty",
+               "type" : "Exists",
                "operand" : {
                   "type" : "List",
                   "element" : [ {
@@ -1950,24 +1930,23 @@ module.exports.IsNotEmpty = {
    }
 }
 
-### Begin
+### Start
 library TestSnippet version '1'
 using QUICK
 context PATIENT
 define Foo = start of interval[Date(2012, 1, 1), Date(2013, 1, 1)]
 ###
 
-module.exports.Begin = {
+module.exports.Start = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -1975,12 +1954,12 @@ module.exports.Begin = {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "Begin",
+               "type" : "Start",
                "operand" : {
-                  "beginOpen" : false,
-                  "endOpen" : false,
+                  "lowClosed" : true,
+                  "highClosed" : true,
                   "type" : "Interval",
-                  "begin" : {
+                  "low" : {
                      "name" : "Date",
                      "type" : "FunctionRef",
                      "operand" : [ {
@@ -1997,7 +1976,7 @@ module.exports.Begin = {
                         "type" : "Literal"
                      } ]
                   },
-                  "end" : {
+                  "high" : {
                      "name" : "Date",
                      "type" : "FunctionRef",
                      "operand" : [ {
@@ -2035,11 +2014,10 @@ module.exports.InList = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -2124,11 +2102,10 @@ module.exports.InValueSet = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -2377,11 +2354,10 @@ module.exports.InValueSetFunction = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -2648,11 +2624,10 @@ module.exports.PatientPropertyInValueSet = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -2699,11 +2674,10 @@ module.exports.Add = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -2844,11 +2818,10 @@ module.exports.Subtract = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -2947,11 +2920,10 @@ module.exports.Multiply = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -3058,11 +3030,10 @@ module.exports.Divide = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -3173,11 +3144,10 @@ module.exports.MathPrecedence = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -3275,11 +3245,10 @@ module.exports.Literal = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -3328,7 +3297,7 @@ module.exports.Literal = {
    }
 }
 
-### ClinicalRequest
+### Retrieve
 library TestSnippet version '1'
 using QUICK
 context PATIENT
@@ -3345,17 +3314,16 @@ define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
 define WrongCodeProperty = [Encounter, Performance: class in "Annual Wellness Visit"]
 ###
 
-module.exports.ClinicalRequest = {
+module.exports.Retrieve = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {
@@ -3400,14 +3368,14 @@ module.exports.ClinicalRequest = {
             "context" : "PATIENT",
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
-               "type" : "ClinicalRequest"
+               "type" : "Retrieve"
             }
          }, {
             "name" : "Encounters",
             "context" : "PATIENT",
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
-               "type" : "ClinicalRequest"
+               "type" : "Retrieve"
             }
          }, {
             "name" : "PharyngitisConditions",
@@ -3415,7 +3383,7 @@ module.exports.ClinicalRequest = {
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
                "codeProperty" : "code",
-               "type" : "ClinicalRequest",
+               "type" : "Retrieve",
                "codes" : {
                   "name" : "Acute Pharyngitis",
                   "type" : "ExpressionRef"
@@ -3427,7 +3395,7 @@ module.exports.ClinicalRequest = {
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
                "codeProperty" : "class",
-               "type" : "ClinicalRequest",
+               "type" : "Retrieve",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
                   "type" : "ExpressionRef"
@@ -3439,7 +3407,7 @@ module.exports.ClinicalRequest = {
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
                "codeProperty" : "serviceType",
-               "type" : "ClinicalRequest",
+               "type" : "Retrieve",
                "codes" : {
                   "name" : "Annual Wellness Visit",
                   "type" : "ExpressionRef"
@@ -3451,7 +3419,7 @@ module.exports.ClinicalRequest = {
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}EncounterProposalOccurrence",
                "codeProperty" : "class",
-               "type" : "ClinicalRequest",
+               "type" : "Retrieve",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
                   "type" : "ExpressionRef"
@@ -3463,7 +3431,7 @@ module.exports.ClinicalRequest = {
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
                "codeProperty" : "code",
-               "type" : "ClinicalRequest",
+               "type" : "Retrieve",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
                   "type" : "ExpressionRef"
@@ -3475,7 +3443,7 @@ module.exports.ClinicalRequest = {
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
                "codeProperty" : "class",
-               "type" : "ClinicalRequest",
+               "type" : "Retrieve",
                "codes" : {
                   "name" : "Annual Wellness Visit",
                   "type" : "ExpressionRef"
@@ -3494,6 +3462,7 @@ context PATIENT
 define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
 define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
+define AmbulatoryEncountersIncludedInMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime included in MeasurementPeriod
 ###
 
 module.exports.DateRangeOptimizedQuery = {
@@ -3502,21 +3471,20 @@ module.exports.DateRangeOptimizedQuery = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
             "default" : {
-               "beginOpen" : false,
-               "endOpen" : true,
+               "lowClosed" : true,
+               "highClosed" : false,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -3533,7 +3501,7 @@ module.exports.DateRangeOptimizedQuery = {
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -3571,18 +3539,18 @@ module.exports.DateRangeOptimizedQuery = {
             "context" : "PATIENT",
             "expression" : {
                "type" : "Query",
-               "source" : {
+               "source" : [ {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
                      "dateProperty" : "performanceTime",
-                     "type" : "ClinicalRequest",
+                     "type" : "Retrieve",
                      "dateRange" : {
                         "name" : "MeasurementPeriod",
                         "type" : "ParameterRef"
                      }
                   }
-               },
+               } ],
                "relationship" : [ ]
             }
          }, {
@@ -3590,13 +3558,13 @@ module.exports.DateRangeOptimizedQuery = {
             "context" : "PATIENT",
             "expression" : {
                "type" : "Query",
-               "source" : {
+               "source" : [ {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
                      "codeProperty" : "class",
                      "dateProperty" : "performanceTime",
-                     "type" : "ClinicalRequest",
+                     "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
                         "type" : "ExpressionRef"
@@ -3606,7 +3574,31 @@ module.exports.DateRangeOptimizedQuery = {
                         "type" : "ParameterRef"
                      }
                   }
-               },
+               } ],
+               "relationship" : [ ]
+            }
+         }, {
+            "name" : "AmbulatoryEncountersIncludedInMP",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "codeProperty" : "class",
+                     "dateProperty" : "performanceTime",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Ambulatory/ED Visit",
+                        "type" : "ExpressionRef"
+                     },
+                     "dateRange" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }
+               } ],
                "relationship" : [ ]
             }
          } ]
@@ -3614,36 +3606,35 @@ module.exports.DateRangeOptimizedQuery = {
    }
 }
 
-### OverlapsQuery
+### IncludesQuery
 library TestSnippet version '1'
 using QUICK
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 context PATIENT
 define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define AmbulatoryEncountersOverlapMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime overlaps MeasurementPeriod
+define MPIncludedAmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.performanceTime
 ###
 
-module.exports.OverlapsQuery = {
+module.exports.IncludesQuery = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
             "default" : {
-               "beginOpen" : false,
-               "endOpen" : true,
+               "lowClosed" : true,
+               "highClosed" : false,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -3660,7 +3651,7 @@ module.exports.OverlapsQuery = {
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -3694,32 +3685,32 @@ module.exports.OverlapsQuery = {
                } ]
             }
          }, {
-            "name" : "AmbulatoryEncountersOverlapMP",
+            "name" : "MPIncludedAmbulatoryEncounters",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Query",
-               "source" : {
+               "source" : [ {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
                      "codeProperty" : "class",
-                     "type" : "ClinicalRequest",
+                     "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
                         "type" : "ExpressionRef"
                      }
                   }
-               },
+               } ],
                "relationship" : [ ],
                "where" : {
-                  "type" : "Overlaps",
+                  "type" : "Includes",
                   "operand" : [ {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  }, {
                      "path" : "performanceTime",
                      "scope" : "E",
                      "type" : "Property"
-                  }, {
-                     "name" : "MeasurementPeriod",
-                     "type" : "ParameterRef"
                   } ]
                }
             }
@@ -3741,11 +3732,10 @@ module.exports.ScratchPad = {
          "id" : "TestSnippet",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "statements" : {

@@ -110,7 +110,7 @@ define StringList = { 'a', 'bee', 'see' }
 define MixedList = { 1, 'two', Three }
 define EmptyList = {}
 
-# IsNotEmpty
+# Exists
 define EmptyList = exists ({})
 define FullList = exists ({ 1, 2, 3 })
 
@@ -120,7 +120,7 @@ define LeftOpen = interval(Date(2012, 1, 1), Date(2013, 1, 1)]
 define RightOpen = interval[Date(2012, 1, 1), Date(2013, 1, 1))
 define Closed = interval[Date(2012, 1, 1), Date(2013, 1, 1)]
 
-# Begin
+# Start
 define Foo = start of interval[Date(2012, 1, 1), Date(2013, 1, 1)]
 
 # InList
@@ -199,7 +199,7 @@ define IntOne = 1
 define DecimalTenth = 0.1
 define StringTrue = 'true'
 
-# ClinicalRequest
+# Retrieve
 define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
 define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 define "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
@@ -217,11 +217,12 @@ parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
 define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
 define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
+define AmbulatoryEncountersIncludedInMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime included in MeasurementPeriod
 
-# OverlapsQuery
+# IncludesQuery
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define AmbulatoryEncountersOverlapMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime overlaps MeasurementPeriod
+define MPIncludedAmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.performanceTime
 
 #ScratchPad
 define Foo = "foo"

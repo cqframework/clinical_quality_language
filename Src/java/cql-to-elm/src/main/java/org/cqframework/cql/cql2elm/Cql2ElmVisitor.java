@@ -278,13 +278,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public String visitCodeSystemVersions(@NotNull cqlParser.CodeSystemVersionsContext ctx) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (cqlParser.CodeSystemVersionContext childCtx : ctx.codeSystemVersion()) {
             String codeSystemVersion = (String)visit(childCtx);
-            result = result + (!result.equals("") ? " " : "") + codeSystemVersion;
+            result.append(result.length() > 0 ? " " : "").append(codeSystemVersion);
         }
 
-        return result;
+        return result.toString();
     }
 
     @Override

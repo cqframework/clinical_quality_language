@@ -41,6 +41,10 @@ task watchTestData (dependsOn: 'testClasses', type: JavaExec) {
     args = ["-w", "-i", "${projectDir}/../../coffeescript/cql-execution/test/data/cql-test-data.txt"]
 }
 
+findbugs {
+    toolVersion = "3.0.0"
+}
+
 tasks.withType(FindBugs) {
     reports {
         xml.enabled = false

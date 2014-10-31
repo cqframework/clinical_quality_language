@@ -3,45 +3,44 @@ fs = require 'fs'
 {print} = require 'sys'
 {spawn, exec} = require 'child_process'
 
-build = (callback) ->
-  coffee = spawn 'coffee', ['-c', '-o', 'lib', 'src']
+build = (src, dest, watch = false) ->
+  args = ['-c', '-o', dest, src]
+  if watch then args.unshift '-w'
+
+  coffee = spawn 'coffee', args
   coffee.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
   coffee.stdout.on 'data', (data) ->
     print data.toString()
-  coffee.on 'exit', (code) ->
-    callback?() if code is 0
 
-buildTestData = (callback) ->
-  gradle = spawn './gradlew', [':cql-to-js:generateTestData'], cwd: "../../java/"
+buildTestData = (watch = false) ->
+  args = if watch then [':cql-to-js:watchTestData'] else [':cql-to-js:generateTestData']
+
+  gradle = spawn './gradlew', args, cwd: "../../java/"
   gradle.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
   gradle.stdout.on 'data', (data) ->
     print data.toString()
-  gradle.on 'exit', (code) ->
-    callback?() if code is 0
 
-task 'build', 'Build lib/ from src/', ->
-  build()
-
-task 'watch', 'Watch src/ for changes', ->
-  coffee = spawn 'coffee', ['-w', '-c', '-o', 'lib', 'src']
-  coffee.stderr.on 'data', (data) ->
-    process.stderr.write data.toString()
-  coffee.stdout.on 'data', (data) ->
-    print data.toString()
+task 'build', 'Build lib/ and lib-test/ from src/ and test/', ->
+  build('src', 'lib')
+  build('test', 'lib-test')
 
 task 'build-test-data', 'Build test/data/cql-test-data.coffee from test/data/cql-test-data.txt', ->
   buildTestData()
 
+task "build-all", "Build src/, test/ and test/data/cql-test-data.txt", ->
+  invoke 'build'
+  invoke 'build-test-data'
+
+task 'watch', 'Watch src/ and test/ for changes', ->
+  build('src', 'lib', true)
+  build('test', 'lib-test', true)
+
 task 'watch-test-data', 'Watch test/data/cql-test-data.txt for changes', ->
-  gradle = spawn './gradlew', [':cql-to-js:watchTestData'], cwd: "../../java/"
-  gradle.stderr.on 'data', (data) ->
-    process.stderr.write data.toString()
-  gradle.stdout.on 'data', (data) ->
-    print data.toString()
- 
-task "watch-all", "Watch src/ and test/data/cql-test-data.txt for changes", ->
+  buildTestData(true)
+
+task "watch-all", "Watch src/, test/, and test/data/cql-test-data.txt for changes", ->
   invoke 'watch'
   invoke 'watch-test-data'
 
@@ -52,6 +51,24 @@ task "test", "run tests", ->
     --compilers coffee:coffee-script/register
     --require coffee-script
     --colors
+  ", (err, output) ->
+    throw err if err
+    console.log output
+
+task "debug-test", "run tests", ->
+  invoke 'build'
+
+  console.log 'To debug, you must install and launch node-inspector:'
+  console.log '1) $ npm install -g node-inspector'
+  console.log '2) $ node-inspector'
+  console.log '3) Visit http://127.0.0.1:8080/debug?port=5858'
+  console.log '4) Subsequent tests may require you to reload the page in your browser'
+
+  exec "NODE_ENV=test
+    ./node_modules/.bin/mocha
+    --colors
+    --debug-brk
+    ./lib-test/
   ", (err, output) ->
     throw err if err
     console.log output

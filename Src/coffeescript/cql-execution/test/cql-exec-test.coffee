@@ -348,7 +348,7 @@ describe 'List', ->
   it 'should execute to an empty array', ->
     @emptyList.exec(@ctx).should.eql []
 
-describe 'IsNotEmpty', ->
+describe 'Exists', ->
   @beforeEach ->
     setup @
 
@@ -363,42 +363,42 @@ describe 'Interval', ->
     setup @
 
   it 'should properly represent an open interval', ->
-    @open.beginOpen.should.be.true
-    @open.endOpen.should.be.true
-    @open.begin.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    @open.end.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    @open.lowClosed.should.be.false
+    @open.highClosed.should.be.false
+    @open.low.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
+    @open.high.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
 
   it 'should properly represent a left-open interval', ->
-    @leftOpen.beginOpen.should.be.true
-    @leftOpen.endOpen.should.be.false
-    @leftOpen.begin.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    @leftOpen.end.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    @leftOpen.lowClosed.should.be.false
+    @leftOpen.highClosed.should.be.true
+    @leftOpen.low.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
+    @leftOpen.high.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
 
   it 'should properly represent a right-open interval', ->
-    @rightOpen.beginOpen.should.be.false
-    @rightOpen.endOpen.should.be.true
-    @rightOpen.begin.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    @rightOpen.end.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    @rightOpen.lowClosed.should.be.true
+    @rightOpen.highClosed.should.be.false
+    @rightOpen.low.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
+    @rightOpen.high.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
 
   it 'should properly represent a closed interval', ->
-    @closed.beginOpen.should.be.false
-    @closed.endOpen.should.be.false
-    @closed.begin.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    @closed.end.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    @closed.lowClosed.should.be.true
+    @closed.highClosed.should.be.true
+    @closed.low.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
+    @closed.high.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
 
   it 'should exec to native Interval datatype', ->
     ivl = @open.exec(@cql)
     ivl.should.be.instanceOf DT.Interval
-    ivl.beginOpen.should.equal @open.beginOpen
-    ivl.endOpen.should.equal @open.beginOpen
-    ivl.begin.toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    ivl.end.toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    ivl.lowClosed.should.equal @open.lowClosed
+    ivl.highClosed.should.equal @open.highClosed
+    ivl.low.toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
+    ivl.high.toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
 
-describe 'Begin', ->
+describe 'Start', ->
   @beforeEach ->
     setup @
 
-  it 'should execute as the beginning of the interval', ->
+  it 'should execute as the start of the interval', ->
     @foo.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
 
 describe 'InList', ->
@@ -611,7 +611,7 @@ describe 'Literal', ->
   it 'should execute \'true\' as \'true\'', ->
     @stringTrue.exec(@ctx).should.equal 'true'
 
-describe 'ClinicalRequest', ->
+describe 'Retrieve', ->
   @beforeEach ->
     setup @
     @ctx.withPatients [P.P3]
@@ -709,6 +709,30 @@ describe 'DateRangeOptimizedQuery', ->
 
   it 'should find ambulatory encounters performed during the MP', ->
     e = @ambulatoryEncountersDuringMP.exec(@ctx)
+    e.should.have.length(1)
+    e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+
+  it 'should find ambulatory encounter performances included in the MP', ->
+    e = @ambulatoryEncountersIncludedInMP.exec(@ctx)
+    e.should.have.length(1)
+    e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+
+describe.skip 'IncludesQuery', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients [P.P3]
+    @ctx.withCodeService new CodeService {
+      "2.16.840.1.113883.3.464.1003.101.12.1061" : {
+        "20140501" : [
+          { "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "270427003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "406547006", "system": "2.16.840.1.113883.6.96", "version": "2013-09" }
+        ]
+      }
+    }
+
+  it 'should find ambulatory encounter performances included in the MP', ->
+    e = @mPIncludedAmbulatoryEncounters.exec(@ctx)
     e.should.have.length(1)
     e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
 

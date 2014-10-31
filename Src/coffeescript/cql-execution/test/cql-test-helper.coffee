@@ -9,15 +9,34 @@ adjustPrecision = (x, precisionField) ->
     when DT.DateTime.Unit.MINUTE then new DT.DateTime(x.year, x.month, x.day, x.hour, x.minute)
     else new DT.DateTime(x.year, x.month, x.day, x.hour, x.minute, x.second)
 
+class DateTime
+  @parse: (string) ->
+    DateTime.fromDateTime(DT.DateTime.parse string)
+
+  @fromDateTime: (d) ->
+    new DateTime(d.year, d.month, d.day, d.hour, d.minute, d.second)
+
+  constructor: (year, month = 0, day = 1, hour = 0, minute = 0, second = 0) ->
+    @full = new DT.DateTime(year, month, day, hour, minute, second)
+    @toYear = new DT.DateTime(year)
+    @toMonth = new DT.DateTime(year, month)
+    @toDay = new DT.DateTime(year, month, day)
+    @toHour = new DT.DateTime(year, month, day, hour)
+    @toMinute = new DT.DateTime(year, month, day, hour, minute)
+    @toSecond = new DT.DateTime(year, month, day, hour, minute, second)
+
+
 class Interval
-  constructor: (begin, end) ->
-    @closed = new DT.Interval(begin, end, false, false)
-    @open = new DT.Interval(begin, end, true, true)
-    @toYear = new DT.Interval(adjustPrecision(begin, DT.DateTime.Unit.YEAR), adjustPrecision(end, DT.DateTime.Unit.YEAR))
-    @toMonth = new DT.Interval(adjustPrecision(begin, DT.DateTime.Unit.MONTH), adjustPrecision(end, DT.DateTime.Unit.MONTH))
-    @toDay = new DT.Interval(adjustPrecision(begin, DT.DateTime.Unit.DAY), adjustPrecision(end, DT.DateTime.Unit.DAY))
-    @toHour = new DT.Interval(adjustPrecision(begin, DT.DateTime.Unit.HOUR), adjustPrecision(end, DT.DateTime.Unit.HOUR))
-    @toMinute = new DT.Interval(adjustPrecision(begin, DT.DateTime.Unit.MINUTE), adjustPrecision(end, DT.DateTime.Unit.MINUTE))
-    @toSecond = new DT.Interval(adjustPrecision(begin, DT.DateTime.Unit.SECOND), adjustPrecision(end, DT.DateTime.Unit.SECOND))
+  constructor: (low, high) ->
+    [thLow, thHigh] = [DateTime.fromDateTime(low), DateTime.fromDateTime(high)]
+    @closed = new DT.Interval(low, high, true, true)
+    @open = new DT.Interval(low, high, false, false)
+    @toYear = new DT.Interval(thLow.toYear, thHigh.toYear)
+    @toMonth = new DT.Interval(thLow.toMonth, thHigh.toMonth)
+    @toDay = new DT.Interval(thLow.toDay, thHigh.toDay)
+    @toHour = new DT.Interval(thLow.toHour, thHigh.toHour)
+    @toMinute = new DT.Interval(thLow.toMinute, thHigh.toMinute)
+    @toSecond = new DT.Interval(thLow.toSecond, thHigh.toSecond)
 
 module.exports.Interval = Interval
+module.exports.DateTime = DateTime

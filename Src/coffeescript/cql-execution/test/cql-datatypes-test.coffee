@@ -2,7 +2,7 @@ should = require 'should'
 TH = require './cql-test-helper'
 DT = require '../lib/cql-datatypes'
 
-setupIntervals = (test) ->
+setupIntervalsAndDateTimes = (test) ->
   test['sameAs'] = {
     #    |----------X----------|
     #    |----------Y----------|
@@ -11,14 +11,14 @@ setupIntervals = (test) ->
   }
   test['before'] = {
     #    |----------X----------|
-    #                               |----------Y----------|
+    #                                   |----------Y----------|
     x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-04-01T00:00:00')),
     y: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
   }
   test['meets'] = {
     #    |----------X----------|
-    #                          |-----------Y----------|
-    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-07-01T00:00:00')),
+    #                           |-----------Y----------|
+    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-06-30T23:59:59')),
     y: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
   }
   test['overlaps'] = {
@@ -45,11 +45,14 @@ setupIntervals = (test) ->
     x: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59')),
     y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
   }
+  test['all2012'] = new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+  test['bef2012'] = TH.DateTime.parse('2011-06-01T00:00:00')
+  test['beg2012'] = TH.DateTime.parse('2012-01-01T00:00:00')
+  test['mid2012'] = TH.DateTime.parse('2012-06-01T00:00:00')
+  test['end2012'] = TH.DateTime.parse('2012-12-31T23:59:59')
+  test['aft2012'] = TH.DateTime.parse('2013-06-01T00:00:00')
 
 xy = (obj) -> [obj.x, obj.y]
-
-open = (ivl) ->
-  new DT.Interval(ivl.begin, ivl.end, true, true)
 
 describe 'Code', ->
   @beforeEach ->
@@ -99,6 +102,47 @@ describe 'ValueSet', ->
 
   it 'should not find code with wrong Code object', ->
     @valueSet.hasCode(new DT.Code('DEF', '5.4.3.2.1', '3')).should.be.false
+
+describe 'ThreeValuedLogic.and', ->
+
+  it 'should return true when all is true', ->
+    DT.ThreeValuedLogic.and(true, true, true, true, true).should.be.true
+
+  it 'should return false when at least one is false', ->
+    DT.ThreeValuedLogic.and(true, true, false, true, true).should.be.false
+    DT.ThreeValuedLogic.and(null, null, false, null, null).should.be.false
+    DT.ThreeValuedLogic.and(true, true, false, null, true).should.be.false
+    DT.ThreeValuedLogic.and(false, false, false, false, false).should.be.false
+
+  it 'should return null when there is at least one null with no falses', ->
+    should.not.exist DT.ThreeValuedLogic.and(true, true, null, true, true)
+    should.not.exist DT.ThreeValuedLogic.and(null, null, null, null, null)
+
+describe 'ThreeValuedLogic.or', ->
+
+  it 'should return true when at least one is true', ->
+    DT.ThreeValuedLogic.or(false, false, true, false, false).should.be.true
+    DT.ThreeValuedLogic.or(null, null, true, null, null).should.be.true
+    DT.ThreeValuedLogic.or(false, false, true, null, false).should.be.true
+    DT.ThreeValuedLogic.or(true, true, true, true, true).should.be.true
+
+  it 'should return false when all is false', ->
+    DT.ThreeValuedLogic.or(false, false, false, false, false).should.be.false
+
+  it 'should return null when there is at least one null with no trues', ->
+    should.not.exist DT.ThreeValuedLogic.or(false, false, null, false, false)
+    should.not.exist DT.ThreeValuedLogic.or(null, null, null, null, null)
+
+describe 'ThreeValuedLogic.not', ->
+
+  it 'should return true when input is false', ->
+    DT.ThreeValuedLogic.not(false).should.be.true
+
+  it 'should return false when input is true', ->
+    DT.ThreeValuedLogic.not(true).should.be.false
+
+  it 'should return null when input is null', ->
+    should.not.exist DT.ThreeValuedLogic.not(null)
 
 describe 'DateTime', ->
 
@@ -162,12 +206,44 @@ describe 'DateTime', ->
     copy.should.eql original
     copy.should.not.equal original
 
+  it 'should know if it is precise', ->
+    DT.DateTime.parse('2000-01-01T00:00:00').isPrecise().should.be.true
+    DT.DateTime.parse('2000-01-01T00:00').isPrecise().should.be.false
+    DT.DateTime.parse('2000-01-01T00').isPrecise().should.be.false
+    DT.DateTime.parse('2000-01-01').isPrecise().should.be.false
+    DT.DateTime.parse('2000-01').isPrecise().should.be.false
+    DT.DateTime.parse('2000').isPrecise().should.be.false
+
+  it 'should know if it is imprecise', ->
+    DT.DateTime.parse('2000-01-01T00:00:00').isImprecise().should.be.false
+    DT.DateTime.parse('2000-01-01T00:00').isImprecise().should.be.true
+    DT.DateTime.parse('2000-01-01T00').isImprecise().should.be.true
+    DT.DateTime.parse('2000-01-01').isImprecise().should.be.true
+    DT.DateTime.parse('2000-01').isImprecise().should.be.true
+    DT.DateTime.parse('2000').isImprecise().should.be.true
+
+  it 'should be able to convert imprecise dates to earliest possible date', ->
+    DT.DateTime.parse('2000-03-25T12:15:43').asLowest().should.eql DT.DateTime.parse('2000-03-25T12:15:43')
+    DT.DateTime.parse('2000-03-25T12:15').asLowest().should.eql DT.DateTime.parse('2000-03-25T12:15:00')
+    DT.DateTime.parse('2000-03-25T12').asLowest().should.eql DT.DateTime.parse('2000-03-25T12:00:00')
+    DT.DateTime.parse('2000-03-25').asLowest().should.eql DT.DateTime.parse('2000-03-25T00:00:00')
+    DT.DateTime.parse('2000-03').asLowest().should.eql DT.DateTime.parse('2000-03-01T00:00:00')
+    DT.DateTime.parse('2000').asLowest().should.eql DT.DateTime.parse('2000-01-01T00:00:00')
+
+  it 'should be able to convert imprecise dates to latest possible date', ->
+    DT.DateTime.parse('2000-02-25T12:15:43').asHighest().should.eql DT.DateTime.parse('2000-02-25T12:15:43')
+    DT.DateTime.parse('2000-02-25T12:15').asHighest().should.eql DT.DateTime.parse('2000-02-25T12:15:59')
+    DT.DateTime.parse('2000-02-25T12').asHighest().should.eql DT.DateTime.parse('2000-02-25T12:59:59')
+    DT.DateTime.parse('2000-02-25').asHighest().should.eql DT.DateTime.parse('2000-02-25T23:59:59')
+    DT.DateTime.parse('2000-02').asHighest().should.eql DT.DateTime.parse('2000-02-29T23:59:59')
+    DT.DateTime.parse('1999-02').asHighest().should.eql DT.DateTime.parse('1999-02-28T23:59:59')
+    DT.DateTime.parse('2000').asHighest().should.eql DT.DateTime.parse('2000-12-31T23:59:59')
+
   it 'should convert to javascript Date', ->
     DT.DateTime.parse('2012-10-25T12:55:14').toJSDate().should.eql new Date(2012, 9, 25, 12, 55, 14)
 
   it 'should floor unknown values when it converts to javascript Date', ->
     DT.DateTime.parse('2012').toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-
 
 describe 'DateTime.add', ->
 
@@ -232,6 +308,295 @@ describe 'DateTime.add', ->
     date2 = date1.add(0, DT.DateTime.Unit.SECOND)
     date1.should.eql date2
     date1.should.not.equal date2
+
+describe 'DateTime.sameAs', ->
+  it 'should always accept cases where a is same as b', ->
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:45')).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+
+  it 'should properly calculate cases where the second is different', ->
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:46')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:46'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:46'), DT.DateTime.Unit.MINUTE).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:46'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:46'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:46'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:46'), DT.DateTime.Unit.YEAR).should.be.true
+
+  it 'should properly calculate cases where the minute is different', ->
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36:45')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36:45'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36:45'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36:45'), DT.DateTime.Unit.YEAR).should.be.true
+
+  it 'should properly calculate cases where the hour is different', ->
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13:35:45')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13:35:45'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13:35:45'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+
+  it 'should properly calculate cases where the day is different', ->
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16T12:35:45')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16T12:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16T12:35:45'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16T12:35:45'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+
+  it 'should properly calculate cases where the month is different', ->
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06-15T12:35:45')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+
+  it 'should properly calculate cases where the year is different', ->
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001-05-15T12:35:45')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001-05-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001-05-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.false
+
+  it 'should handle imprecision correctly with missing seconds', ->
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.SECOND)
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.MINUTE).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND)
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.SECOND)
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.MINUTE).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:35'), DT.DateTime.Unit.YEAR).should.be.true
+
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.YEAR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:36').sameAs(DT.DateTime.parse('2000-05-15T12:35:45')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:36').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:36').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:36').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:36').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:36').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:36').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.YEAR).should.be.true
+
+it 'should handle imprecision correctly with missing minutes', ->
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.MINUTE)
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE)
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.MINUTE)
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.YEAR).should.be.true
+
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.YEAR).should.be.true
+    DT.DateTime.parse('2000-05-15T13').sameAs(DT.DateTime.parse('2000-05-15T12:35:45')).should.be.false
+    DT.DateTime.parse('2000-05-15T13').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T13').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T13').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T13').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T13').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T13').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13')).should.be.false
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.YEAR).should.be.true
+
+it 'should handle imprecision correctly with missing hours', ->
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.HOUR)
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'))
+    should.not.exist DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR)
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15'))
+    should.not.exist DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.HOUR)
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.YEAR).should.be.true
+
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.YEAR).should.be.true
+    DT.DateTime.parse('2000-05-16').sameAs(DT.DateTime.parse('2000-05-15T12:35:45')).should.be.false
+    DT.DateTime.parse('2000-05-16').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-16').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-16').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-16').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05-16').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-16').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16')).should.be.false
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.YEAR).should.be.true
+
+it 'should handle imprecision correctly with missing days', ->
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.HOUR)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.DAY)
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'))
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR)
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY)
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05'))
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.HOUR)
+    should.not.exist DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.DAY)
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.YEAR).should.be.true
+
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.MONTH).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.YEAR).should.be.true
+    DT.DateTime.parse('2000-06').sameAs(DT.DateTime.parse('2000-05-15T12:35:45')).should.be.false
+    DT.DateTime.parse('2000-06').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-06').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-06').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-06').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-06').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.false
+    DT.DateTime.parse('2000-06').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06')).should.be.false
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.MONTH).should.be.false
+    DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.YEAR).should.be.true
+
+it 'should handle imprecision correctly with missing months', ->
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000'))
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.HOUR)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.DAY)
+    should.not.exist DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.MONTH)
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'))
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR)
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY)
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH)
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.true
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000'))
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.SECOND)
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.MINUTE)
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.HOUR)
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.DAY)
+    should.not.exist DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.MONTH)
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.YEAR).should.be.true
+
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001')).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.MONTH).should.be.false
+    DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.YEAR).should.be.false
+    DT.DateTime.parse('2001').sameAs(DT.DateTime.parse('2000-05-15T12:35:45')).should.be.false
+    DT.DateTime.parse('2001').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2001').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2001').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2001').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2001').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MONTH).should.be.false
+    DT.DateTime.parse('2001').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.YEAR).should.be.false
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2001')).should.be.false
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.SECOND).should.be.false
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.MINUTE).should.be.false
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.HOUR).should.be.false
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.DAY).should.be.false
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.MONTH).should.be.false
+    DT.DateTime.parse('2000').sameAs(DT.DateTime.parse('2001'), DT.DateTime.Unit.YEAR).should.be.false
 
 describe 'DateTime.before', ->
 
@@ -324,7 +689,7 @@ describe 'DateTime.beforeOrSameAs', ->
   it 'should accept cases where a is b', ->
     DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
 
-  it 'should return null in cases where a is b but there are unknown values', ->
+  it 'should return null in cases where a is b but there are unknown values in a and b', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00'))
     should.not.exist DT.DateTime.parse('2000-01-01T00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00'))
     should.not.exist DT.DateTime.parse('2000-01-01').beforeOrSameAs(DT.DateTime.parse('2000-01-01'))
@@ -332,11 +697,11 @@ describe 'DateTime.beforeOrSameAs', ->
     should.not.exist DT.DateTime.parse('2000').beforeOrSameAs(DT.DateTime.parse('2000'))
 
   it 'should return null in cases where a has unknown values that prevent deterministic result', ->
-    should.not.exist DT.DateTime.parse('2000-01-01T00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01-01T00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01-01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
+    should.not.exist DT.DateTime.parse('2000-01-01T00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:58'))
+    should.not.exist DT.DateTime.parse('2000-01-01T00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:59:58'))
+    should.not.exist DT.DateTime.parse('2000-01-01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T23:59:58'))
+    should.not.exist DT.DateTime.parse('2000-01').beforeOrSameAs(DT.DateTime.parse('2000-01-31T23:59:58'))
+    should.not.exist DT.DateTime.parse('2000').beforeOrSameAs(DT.DateTime.parse('2000-12-31T23:59:58'))
 
   it 'should return null in cases where b has unknown values that prevent deterministic result', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00:01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00'))
@@ -352,19 +717,33 @@ describe 'DateTime.beforeOrSameAs', ->
     DT.DateTime.parse('2000-01').beforeOrSameAs(DT.DateTime.parse('2000-02-01T00:00:00')).should.be.true
     DT.DateTime.parse('2000').beforeOrSameAs(DT.DateTime.parse('2001-01-01T00:00:00')).should.be.true
 
+  it 'should accept cases where a has unknown values but is still deterministicly before or same as b', ->
+    DT.DateTime.parse('2000-01-01T00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59')).should.be.true
+    DT.DateTime.parse('2000-01-01T00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:59:59')).should.be.true
+    DT.DateTime.parse('2000-01-01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T23:59:59')).should.be.true
+    DT.DateTime.parse('2000-01').beforeOrSameAs(DT.DateTime.parse('2000-01-31T23:59:59')).should.be.true
+    DT.DateTime.parse('2000').beforeOrSameAs(DT.DateTime.parse('2001-12-31T23:59:59')).should.be.true
+
   it 'should accept cases where b has unknown values but a is still deterministicly before b', ->
-    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:01')).should.be.true
-    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T01')).should.be.true
-    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-02')).should.be.true
-    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-02')).should.be.true
-    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2001')).should.be.true
+    DT.DateTime.parse('2000-01-01T00:00:59').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:01')).should.be.true
+    DT.DateTime.parse('2000-01-01T00:59:59').beforeOrSameAs(DT.DateTime.parse('2000-01-01T01')).should.be.true
+    DT.DateTime.parse('2000-01-01T23:59:59').beforeOrSameAs(DT.DateTime.parse('2000-01-02')).should.be.true
+    DT.DateTime.parse('2000-01-31T23:59:59').beforeOrSameAs(DT.DateTime.parse('2000-02')).should.be.true
+    DT.DateTime.parse('2000-12-31T23:59:59').beforeOrSameAs(DT.DateTime.parse('2001')).should.be.true
+
+  it 'should accept cases where b has unknown values but a is still deterministicly before or same as b', ->
+    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00')).should.be.true
+    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01')).should.be.true
+    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01')).should.be.true
+    DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000')).should.be.true
 
   it 'should reject cases where a has unknown values but is still deterministicly after b', ->
-    DT.DateTime.parse('2000-01-01T00:01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.false
-    DT.DateTime.parse('2000-01-01T01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.false
-    DT.DateTime.parse('2000-01-02').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.false
-    DT.DateTime.parse('2000-02').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.false
-    DT.DateTime.parse('2001').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.false
+    DT.DateTime.parse('2000-01-01T00:01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59')).should.be.false
+    DT.DateTime.parse('2000-01-01T01').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:59:59')).should.be.false
+    DT.DateTime.parse('2000-01-02').beforeOrSameAs(DT.DateTime.parse('2000-01-01T23:59:59')).should.be.false
+    DT.DateTime.parse('2000-02').beforeOrSameAs(DT.DateTime.parse('2000-01-31T23:59:59')).should.be.false
+    DT.DateTime.parse('2001').beforeOrSameAs(DT.DateTime.parse('2000-12-31T23:59:59')).should.be.false
 
   it 'should reject cases where b has unknown values but a is still deterministicly after b', ->
     DT.DateTime.parse('2000-01-01T00:01:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00')).should.be.false
@@ -402,11 +781,11 @@ describe 'DateTime.after', ->
     should.not.exist DT.DateTime.parse('2000').after(DT.DateTime.parse('2000'))
 
   it 'should return null in cases where a has unknown values that prevent deterministic result', ->
-    should.not.exist DT.DateTime.parse('2000-01-01T00:00').after(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01-01T00').after(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01-01').after(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01').after(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000').after(DT.DateTime.parse('2000-01-01T00:00:59'))
+    should.not.exist DT.DateTime.parse('2000-01-01T00:00').after(DT.DateTime.parse('2000-01-01T00:00:00'))
+    should.not.exist DT.DateTime.parse('2000-01-01T00').after(DT.DateTime.parse('2000-01-01T00:00:00'))
+    should.not.exist DT.DateTime.parse('2000-01-01').after(DT.DateTime.parse('2000-01-01T00:00:00'))
+    should.not.exist DT.DateTime.parse('2000-01').after(DT.DateTime.parse('2000-01-01T00:00:00'))
+    should.not.exist DT.DateTime.parse('2000').after(DT.DateTime.parse('2000-01-01T00:00:00'))
 
   it 'should return null in cases where b has unknown values that prevent deterministic result', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00:01').after(DT.DateTime.parse('2000-01-01T00:00'))
@@ -464,7 +843,7 @@ describe 'DateTime.afterOrSameAs', ->
   it 'should accept cases where a is b', ->
     DT.DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
 
-  it 'should return null in cases where a is b but there are unknown values', ->
+  it 'should return null in cases where a is b but there and b have unknown values', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00'))
     should.not.exist DT.DateTime.parse('2000-01-01T00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00'))
     should.not.exist DT.DateTime.parse('2000-01-01').afterOrSameAs(DT.DateTime.parse('2000-01-01'))
@@ -473,10 +852,10 @@ describe 'DateTime.afterOrSameAs', ->
 
   it 'should return null in cases where a has unknown values that prevent deterministic result', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01-01T00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01-01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000-01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
-    should.not.exist DT.DateTime.parse('2000').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59'))
+    should.not.exist DT.DateTime.parse('2000-01-01T00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:59:59'))
+    should.not.exist DT.DateTime.parse('2000-01-01').afterOrSameAs(DT.DateTime.parse('2000-01-01T23:59:59'))
+    should.not.exist DT.DateTime.parse('2000-01').afterOrSameAs(DT.DateTime.parse('2000-01-31T23:59:59'))
+    should.not.exist DT.DateTime.parse('2000').afterOrSameAs(DT.DateTime.parse('2000-12-31T23:59:59'))
 
   it 'should return null in cases where b has unknown values that prevent deterministic result', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00:01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00'))
@@ -486,11 +865,18 @@ describe 'DateTime.afterOrSameAs', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00:01').afterOrSameAs(DT.DateTime.parse('2000'))
 
   it 'should accept cases where a has unknown values but is still deterministicly after b', ->
-    DT.DateTime.parse('2000-01-01T00:01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
-    DT.DateTime.parse('2000-01-01T01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
-    DT.DateTime.parse('2000-01-02').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
-    DT.DateTime.parse('2000-02').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
-    DT.DateTime.parse('2001').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T00:01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:59')).should.be.true
+    DT.DateTime.parse('2000-01-01T01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:59:59')).should.be.true
+    DT.DateTime.parse('2000-01-02').afterOrSameAs(DT.DateTime.parse('2000-01-01T23:59:59')).should.be.true
+    DT.DateTime.parse('2000-02').afterOrSameAs(DT.DateTime.parse('2000-01-31T23:59:59')).should.be.true
+    DT.DateTime.parse('2001').afterOrSameAs(DT.DateTime.parse('2000-12-31T23:59:59')).should.be.true
+
+  it 'should accept cases where a has unknown values but is still deterministicly after or same as b', ->
+    DT.DateTime.parse('2000-01-01T00:01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:01:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T01').afterOrSameAs(DT.DateTime.parse('2000-01-01T01:00:00')).should.be.true
+    DT.DateTime.parse('2000-01-01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
+    DT.DateTime.parse('2000-01').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
+    DT.DateTime.parse('2000').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00')).should.be.true
 
   it 'should accept cases where b has unknown values but a is still deterministicly after b', ->
     DT.DateTime.parse('2000-01-01T00:01:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00')).should.be.true
@@ -498,6 +884,13 @@ describe 'DateTime.afterOrSameAs', ->
     DT.DateTime.parse('2000-01-02T00:00:00').afterOrSameAs(DT.DateTime.parse('2000-01-01')).should.be.true
     DT.DateTime.parse('2000-02-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2000-01')).should.be.true
     DT.DateTime.parse('2001-01-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2000')).should.be.true
+
+  it 'should accept cases where b has unknown values but a is still deterministicly same as or after b', ->
+    DT.DateTime.parse('2000-01-01T00:00:59').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T00:59:59').afterOrSameAs(DT.DateTime.parse('2000-01-01T00')).should.be.true
+    DT.DateTime.parse('2000-01-01T23:59:59').afterOrSameAs(DT.DateTime.parse('2000-01-01')).should.be.true
+    DT.DateTime.parse('2000-01-31T23:59:59').afterOrSameAs(DT.DateTime.parse('2000-01')).should.be.true
+    DT.DateTime.parse('2000-12-31T23:59:59').afterOrSameAs(DT.DateTime.parse('2000')).should.be.true
 
   it 'should reject cases where a has unknown values but is still deterministicly before b', ->
     DT.DateTime.parse('2000-01-01T00:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:01:00')).should.be.false
@@ -507,73 +900,31 @@ describe 'DateTime.afterOrSameAs', ->
     DT.DateTime.parse('2000').afterOrSameAs(DT.DateTime.parse('2001-01-01T00:00:00')).should.be.false
 
   it 'should reject cases where b has unknown values but a is still deterministicly before b', ->
-    DT.DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:01')).should.be.false
-    DT.DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T01')).should.be.false
-    DT.DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2000-01-02')).should.be.false
-    DT.DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2000-02')).should.be.false
-    DT.DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2001')).should.be.false
+    DT.DateTime.parse('2000-01-01T00:00:59').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:01')).should.be.false
+    DT.DateTime.parse('2000-01-01T00:59:59').afterOrSameAs(DT.DateTime.parse('2000-01-01T01')).should.be.false
+    DT.DateTime.parse('2000-01-01T23:59:59').afterOrSameAs(DT.DateTime.parse('2000-01-02')).should.be.false
+    DT.DateTime.parse('2000-01-31T23:59:59').afterOrSameAs(DT.DateTime.parse('2000-02')).should.be.false
+    DT.DateTime.parse('2000-12-31T23:59:59').afterOrSameAs(DT.DateTime.parse('2001')).should.be.false
 
 describe 'Interval', ->
 
   it 'should properly set all properties when constructed', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01'), DT.DateTime.parse('2013-01-01'), false, true)
-    i.begin.should.eql DT.DateTime.parse '2012-01-01'
-    i.end.should.eql DT.DateTime.parse '2013-01-01'
-    i.beginOpen.should.be.false
-    i.endOpen.should.be.true
+    i = new DT.Interval(DT.DateTime.parse('2012-01-01'), DT.DateTime.parse('2013-01-01'), true, false)
+    i.low.should.eql DT.DateTime.parse '2012-01-01'
+    i.high.should.eql DT.DateTime.parse '2013-01-01'
+    i.lowClosed.should.be.true
+    i.highClosed.should.be.false
 
-  it 'should default beginOpen/endOpen to false', ->
+  it 'should default lowClosed/highClosed to true', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01-01'), DT.DateTime.parse('2013-01-01'))
-    i.begin.should.eql DT.DateTime.parse '2012-01-01'
-    i.end.should.eql DT.DateTime.parse '2013-01-01'
-    i.beginOpen.should.be.false
-    i.endOpen.should.be.false
-
-describe 'Interval.includes(DateTime)', ->
-
-  it 'should detect dates contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'))
-    i.includes(DT.DateTime.parse '2012-06-01T00:00:00').should.be.true
-
-  it 'should detect imprecise dates contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01'), DT.DateTime.parse('2013-01'))
-    i.includes(DT.DateTime.parse '2012-06').should.be.true
-
-  it.skip 'should detect imprecise dates contained by it (edge case)', ->
-    # Should this be supported?
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'), false, true)
-    i.includes(DT.DateTime.parse '2012').should.be.true
-
-  it 'should detect boundary dates contained by it when it is closed', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), false, false)
-    i.includes(DT.DateTime.parse '2012-01-01T00:00:00').should.be.true
-    i.includes(DT.DateTime.parse '2012-12-31T23:59:59').should.be.true
-
-  it 'should detect boundary dates not contained by it when it is open', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'), true, true)
-    i.includes(DT.DateTime.parse '2012-01-01T00:00:00').should.be.false
-    i.includes(DT.DateTime.parse '2012-12-31T23:59:59').should.be.false
-
-  it 'should return null for imprecise boundary dates possibly contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01'), DT.DateTime.parse('2012-12-31'), false, false)
-    should.not.exist i.includes(DT.DateTime.parse '2012-01-01')
-    should.not.exist i.includes(DT.DateTime.parse '2012-12-31')
-
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01'), DT.DateTime.parse('2012-12-31'), true, true)
-    should.not.exist i.includes(DT.DateTime.parse '2012-01-01')
-    should.not.exist i.includes(DT.DateTime.parse '2012-12-31')
-
-  it 'should detect dates not contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2013-01-01T00:00:00'))
-    i.includes(DT.DateTime.parse '2011-06-01T00:00:00').should.be.false
-
-  it 'should detect imprecise dates not contained by it', ->
-    i = new DT.Interval(DT.DateTime.parse('2012-01'), DT.DateTime.parse('2013-01'))
-    i.includes(DT.DateTime.parse '2011-06').should.be.false
+    i.low.should.eql DT.DateTime.parse '2012-01-01'
+    i.high.should.eql DT.DateTime.parse '2013-01-01'
+    i.lowClosed.should.be.true
+    i.highClosed.should.be.true
 
 describe 'Interval.includes(Interval)', ->
   @beforeEach ->
-    setupIntervals @
+    setupIntervalsAndDateTimes @
 
   it 'should properly calculate sameAs intervals', ->
     [x, y] = xy @sameAs
@@ -581,7 +932,6 @@ describe 'Interval.includes(Interval)', ->
     x.closed.includes(y.open).should.be.true
     x.open.includes(y.closed).should.be.false
     x.open.includes(y.open).should.be.true
-
     y.closed.includes(x.closed).should.be.true
     y.closed.includes(x.open).should.be.true
     y.open.includes(x.closed).should.be.false
@@ -654,8 +1004,9 @@ describe 'Interval.includes(Interval)', ->
     y.open.includes(x.open).should.be.true
 
   it 'should properly handle imprecision', ->
+
     [x, y] = xy @sameAs
-    should.not.exist x.closed.includes(y.toMinute)
+    x.closed.includes(y.toMinute).should.be.true
     should.not.exist x.toHour.includes(y.toMinute)
 
     [x, y] = xy @before
@@ -671,7 +1022,7 @@ describe 'Interval.includes(Interval)', ->
     should.not.exist x.toYear.includes(y.closed)
 
     [x, y] = xy @begins
-    should.not.exist x.toMinute.includes(y.toMinute)
+    x.toMinute.includes(y.toMinute).should.be.false
     should.not.exist x.toYear.includes(y.closed)
 
     [x, y] = xy @during
@@ -679,6 +1030,370 @@ describe 'Interval.includes(Interval)', ->
     y.toMonth.includes(x.toMonth).should.be.true
     should.not.exist x.toYear.includes(y.closed)
 
-    [x, y] = xy @begins
-    should.not.exist x.toMinute.includes(y.toMinute)
+    [x, y] = xy @ends
+    x.toMinute.includes(y.toMinute).should.be.false
     should.not.exist x.toYear.includes(y.closed)
+
+describe 'Interval.includes(DateTime)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate dates before it', ->
+    @all2012.closed.includes(@bef2012.full).should.be.false
+
+  it 'should properly calculate the left boundary date', ->
+    @all2012.closed.includes(@beg2012.full).should.be.true
+    @all2012.open.includes(@beg2012.full).should.be.false
+
+  it 'should properly calculate dates in the middle of it', ->
+    @all2012.closed.includes(@mid2012.full).should.be.true
+
+  it 'should properly calculate the right boundary date', ->
+    @all2012.closed.includes(@end2012.full).should.be.true
+    @all2012.open.includes(@end2012.full).should.be.false
+
+  it 'should properly calculate dates after it', ->
+    @all2012.closed.includes(@aft2012.full).should.be.false
+
+  it 'should properly handle imprecision', ->
+    @all2012.closed.includes(@bef2012.toMonth).should.be.false
+    @all2012.closed.includes(@beg2012.toMonth).should.be.true
+    @all2012.closed.includes(@mid2012.toMonth).should.be.true
+    @all2012.closed.includes(@end2012.toMonth).should.be.true
+    @all2012.closed.includes(@aft2012.toMonth).should.be.false
+
+    @all2012.toMonth.includes(@bef2012.toMonth).should.be.false
+    should.not.exist @all2012.toMonth.includes(@beg2012.toMonth)
+    @all2012.toMonth.includes(@mid2012.toMonth).should.be.true
+    should.not.exist @all2012.toMonth.includes(@end2012.toMonth)
+    @all2012.toMonth.includes(@aft2012.toMonth).should.be.false
+
+    @all2012.toMonth.includes(@bef2012.full).should.be.false
+    should.not.exist @all2012.toMonth.includes(@beg2012.full)
+    @all2012.toMonth.includes(@mid2012.full).should.be.true
+    should.not.exist @all2012.toMonth.includes(@end2012.full)
+    @all2012.toMonth.includes(@aft2012.full).should.be.false
+
+    @all2012.closed.includes(@mid2012.toYear).should.be.true
+
+describe 'Interval.includedIn(Interval)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @sameAs
+    x.closed.includedIn(y.closed).should.be.true
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.true
+    x.open.includedIn(y.open).should.be.true
+
+    y.closed.includedIn(x.closed).should.be.true
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.true
+    y.open.includedIn(x.open).should.be.true
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @before
+    x.closed.includedIn(y.closed).should.be.false
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.false
+    x.open.includedIn(y.open).should.be.false
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @meets
+    x.closed.includedIn(y.closed).should.be.false
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.false
+    x.open.includedIn(y.open).should.be.false
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @overlaps
+    x.closed.includedIn(y.closed).should.be.false
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.false
+    x.open.includedIn(y.open).should.be.false
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @begins
+    x.closed.includedIn(y.closed).should.be.true
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.true
+    x.open.includedIn(y.open).should.be.true
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @during
+    x.closed.includedIn(y.closed).should.be.true
+    x.closed.includedIn(y.open).should.be.true
+    x.open.includedIn(y.closed).should.be.true
+    x.open.includedIn(y.open).should.be.true
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @ends
+    x.closed.includedIn(y.closed).should.be.true
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.true
+    x.open.includedIn(y.open).should.be.true
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @sameAs
+    should.not.exist x.closed.includedIn(y.toMinute)
+    should.not.exist x.toHour.includedIn(y.toMinute)
+
+    [x, y] = xy @before
+    x.toMonth.includedIn(y.toMonth).should.be.false
+    should.not.exist x.toYear.includedIn(y.closed)
+
+    [x, y] = xy @meets
+    x.toMonth.includedIn(y.toMonth).should.be.false
+    should.not.exist x.toYear.includedIn(y.closed)
+
+    [x, y] = xy @overlaps
+    x.toMonth.includedIn(y.toMonth).should.be.false
+    should.not.exist x.toYear.includedIn(y.closed)
+
+    [x, y] = xy @begins
+    should.not.exist x.toMinute.includedIn(y.toMinute)
+    x.toYear.includedIn(y.closed).should.be.true
+
+    [x, y] = xy @during
+    x.toMonth.includedIn(y.toMonth).should.be.true
+    y.toMonth.includedIn(x.toMonth).should.be.false
+    x.toYear.includedIn(y.closed).should.be.true
+
+    [x, y] = xy @ends
+    should.not.exist x.toMinute.includedIn(y.toMinute)
+    x.toYear.includedIn(y.closed).should.be.true
+
+describe 'Interval.includedIn(DateTime)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  # Admittedly, most of this doesn't really make sense, but let's be sure the code reflects that!
+
+  it 'should properly calculate dates before it', ->
+    @all2012.closed.includedIn(@bef2012.full).should.be.false
+
+  it 'should properly calculate the left boundary date', ->
+    @all2012.closed.includedIn(@beg2012.full).should.be.false
+    @all2012.open.includedIn(@beg2012.full).should.be.false
+
+  it 'should properly calculate dates in the middle of it', ->
+    @all2012.closed.includedIn(@mid2012.full).should.be.false
+
+  it 'should properly calculate the right boundary date', ->
+    @all2012.closed.includedIn(@end2012.full).should.be.false
+    @all2012.open.includedIn(@end2012.full).should.be.false
+
+  it 'should properly calculate dates after it', ->
+    @all2012.closed.includedIn(@aft2012.full).should.be.false
+
+  it 'should properly handle imprecision', ->
+    @all2012.closed.includedIn(@bef2012.toMonth).should.be.false
+    @all2012.closed.includedIn(@beg2012.toMonth).should.be.false
+    @all2012.closed.includedIn(@mid2012.toMonth).should.be.false
+    @all2012.closed.includedIn(@end2012.toMonth).should.be.false
+    @all2012.closed.includedIn(@aft2012.toMonth).should.be.false
+    @all2012.closed.includedIn(@bef2012.toYear).should.be.false
+    @all2012.closed.includedIn(@beg2012.toYear).should.be.false
+    @all2012.closed.includedIn(@mid2012.toYear).should.be.false
+    @all2012.closed.includedIn(@end2012.toYear).should.be.false
+    @all2012.closed.includedIn(@aft2012.toYear).should.be.false
+
+    @all2012.toMonth.includedIn(@bef2012.toMonth).should.be.false
+    @all2012.toMonth.includedIn(@beg2012.toMonth).should.be.false
+    @all2012.toMonth.includedIn(@mid2012.toMonth).should.be.false
+    @all2012.toMonth.includedIn(@end2012.toMonth).should.be.false
+    @all2012.toMonth.includedIn(@aft2012.toMonth).should.be.false
+    @all2012.toYear.includedIn(@bef2012.toYear).should.be.false
+    should.not.exist @all2012.toYear.includedIn(@beg2012.toYear)
+    should.not.exist @all2012.toYear.includedIn(@mid2012.toYear)
+    should.not.exist @all2012.toYear.includedIn(@end2012.toYear)
+    @all2012.toYear.includedIn(@aft2012.toYear).should.be.false
+
+    @all2012.toMonth.includedIn(@bef2012.full).should.be.false
+    @all2012.toMonth.includedIn(@beg2012.full).should.be.false
+    @all2012.toMonth.includedIn(@mid2012.full).should.be.false
+    @all2012.toMonth.includedIn(@end2012.full).should.be.false
+    @all2012.toMonth.includedIn(@aft2012.full).should.be.false
+    @all2012.toYear.includedIn(@bef2012.full).should.be.false
+    should.not.exist @all2012.toYear.includedIn(@beg2012.full)
+    should.not.exist @all2012.toYear.includedIn(@mid2012.full)
+    should.not.exist @all2012.toYear.includedIn(@end2012.full)
+    @all2012.toYear.includedIn(@aft2012.full).should.be.false
+
+describe 'Interval.overlaps(Interval)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @sameAs
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @before
+    x.closed.overlaps(y.closed).should.be.false
+    x.closed.overlaps(y.open).should.be.false
+    x.open.overlaps(y.closed).should.be.false
+    x.open.overlaps(y.open).should.be.false
+    y.closed.overlaps(x.closed).should.be.false
+    y.closed.overlaps(x.open).should.be.false
+    y.open.overlaps(x.closed).should.be.false
+    y.open.overlaps(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @meets
+    x.closed.overlaps(y.closed).should.be.false
+    x.closed.overlaps(y.open).should.be.false
+    x.open.overlaps(y.closed).should.be.false
+    x.open.overlaps(y.open).should.be.false
+    y.closed.overlaps(x.closed).should.be.false
+    y.closed.overlaps(x.open).should.be.false
+    y.open.overlaps(x.closed).should.be.false
+    y.open.overlaps(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @overlaps
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @begins
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @during
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @ends
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @sameAs
+    x.closed.overlaps(y.toMinute).should.be.true
+    x.toHour.overlaps(y.toMinute).should.be.true
+
+    [x, y] = xy @before
+    x.toMonth.overlaps(y.toMonth).should.be.false
+    should.not.exist x.toYear.overlaps(y.closed)
+
+    [x, y] = xy @meets
+    x.toMonth.overlaps(y.toMonth).should.be.false
+    should.not.exist x.toYear.overlaps(y.closed)
+
+    [x, y] = xy @overlaps
+    x.toMonth.overlaps(y.toMonth).should.be.true
+    should.not.exist x.toYear.overlaps(y.closed)
+
+    [x, y] = xy @begins
+    x.toMinute.overlaps(y.toMinute).should.be.true
+    x.toYear.overlaps(y.closed).should.be.true
+
+    [x, y] = xy @during
+    x.toMonth.overlaps(y.toMonth).should.be.true
+    y.toMonth.overlaps(x.toMonth).should.be.true
+    x.toYear.overlaps(y.closed).should.be.true
+
+    [x, y] = xy @ends
+    x.toMinute.overlaps(y.toMinute).should.be.true
+    x.toYear.overlaps(y.closed).should.be.true
+
+describe 'Interval.overlaps(DateTime)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate dates before it', ->
+    @all2012.closed.overlaps(@bef2012.full).should.be.false
+
+  it 'should properly calculate the left boundary date', ->
+    @all2012.closed.overlaps(@beg2012.full).should.be.true
+    @all2012.open.overlaps(@beg2012.full).should.be.false
+
+  it 'should properly calculate dates in the middle of it', ->
+    @all2012.closed.overlaps(@mid2012.full).should.be.true
+
+  it 'should properly calculate the right boundary date', ->
+    @all2012.closed.overlaps(@end2012.full).should.be.true
+    @all2012.open.overlaps(@end2012.full).should.be.false
+
+  it 'should properly calculate dates after it', ->
+    @all2012.closed.overlaps(@aft2012.full).should.be.false
+
+  it 'should properly handle imprecision', ->
+    @all2012.closed.overlaps(@bef2012.toMonth).should.be.false
+    @all2012.closed.overlaps(@beg2012.toMonth).should.be.true
+    @all2012.closed.overlaps(@mid2012.toMonth).should.be.true
+    @all2012.closed.overlaps(@end2012.toMonth).should.be.true
+    @all2012.closed.overlaps(@aft2012.toMonth).should.be.false
+
+    @all2012.toMonth.overlaps(@bef2012.toMonth).should.be.false
+    should.not.exist @all2012.toMonth.overlaps(@beg2012.toMonth)
+    @all2012.toMonth.overlaps(@mid2012.toMonth).should.be.true
+    should.not.exist @all2012.toMonth.overlaps(@end2012.toMonth)
+    @all2012.toMonth.overlaps(@aft2012.toMonth).should.be.false
+
+    @all2012.toMonth.overlaps(@bef2012.full).should.be.false
+    should.not.exist @all2012.toMonth.overlaps(@beg2012.full)
+    @all2012.toMonth.overlaps(@mid2012.full).should.be.true
+    should.not.exist @all2012.toMonth.overlaps(@end2012.full)
+    @all2012.toMonth.overlaps(@aft2012.full).should.be.false
+
+    @all2012.closed.overlaps(@mid2012.toYear).should.be.true
