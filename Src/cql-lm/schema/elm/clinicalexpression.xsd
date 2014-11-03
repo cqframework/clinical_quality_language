@@ -131,4 +131,196 @@ If this attribute is provided, the value must contain a list of pairs, separated
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="CalculateAgeInYears">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in years of a person born on the given date as of today.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInMonths">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in months of a person born on the given date as of today.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInDays">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in days of a person born on the given date as of today.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInHours">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in hours of a person born at the given time as of now.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInMinutes">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in minutes of a person born at the given time as of now.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInSeconds">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in seconds of a person born at the given time as of now.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInYearsAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in years of a person born on the first date as of the second date.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInMonthsAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in months of a person born on the first date as of the second date.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInDaysAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in days of a person born on the first date as of the second date.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInHoursAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in hours of a person born at the first time as of the second time.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInMinutesAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in minutes of a person born at the first time as of the second time.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeInSecondsAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in seconds of a person born at the first time as of the second time.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInYears">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in years of the patient as of today using their birthdate.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInMonths">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in months of the patient as of today using their birthdate.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInDays">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in days of the patient as of today using their birthdate.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInHours">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in hours of the patient as of now using their birthtime.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInMinutes">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in minutes of the patient as of now using their birthtime.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInSeconds">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in seconds of the patient as of now using their birthtime.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInYearsAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in years of the patient as of the given date using their birthdate.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInMonthsAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in months of the patient as of the given date using their birthdate.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInDaysAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in days of the patient as of the given date using their birthdate.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInHoursAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in hours of the patient as of the given time using their birthtime.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInMinutesAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in minutes of the patient as of the given time using their birthtime.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AgeInSecondsAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in seconds of the patient as of the given time using their birthtime.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>
