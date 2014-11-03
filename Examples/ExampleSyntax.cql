@@ -913,3 +913,53 @@ define TargetEncounters =
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
 		where not exists ([Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime)
 
+
+
+
+Changed “let” to “define”
+Removed “during” from the retrieve expression
+Changed “as” to “called” in library definitions
+Changed “where” to “such that” in with/out clauses
+Quoted identifiers are now allowed for all identifiers
+Removed “define retrieve”
+Removed “u” prefix for quantity literals
+Changed “at least/most” to “or before/after” and “or less/more”
+Removed “started by” and “ended by”
+Added “foreach” and “define” clause to the query
+Now allow “ascending” and “descending” i/o just “asc”/”desc”
+Refined valueset definition syntax
+
+library CMS153_Common version '2'
+
+using QUICK
+
+valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2' version '1'
+valueset "Other Female Reproductive Conditions" = '2.16.840.1.113883.3.464.1003.111.12.1006' version '1'
+valueset "Genital Herpes" = '2.16.840.1.113883.3.464.1003.110.12.1049' version '1'
+...
+
+context PATIENT
+
+define "Conditions Indicating Sexual Activity" =
+	[Condition: "Other Female Reproductive Conditions"]
+	    union [Condition: "Genital Herpes"]
+        union [Condition: "Genococcal Infections and Venereal Diseases"]
+        union [Condition: "Inflammatory Diseases of Female Reproductive Organs"]
+        union [Condition: "Chlamydia"]
+        union [Condition: "HIV"]
+        union [Condition: "Syphilis"]
+        union [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
+
+define "Laboratory Tests Indicating Sexual Activity" =
+    [LaboratoryTest, Order: "Pregnancy Test"]
+        union [LaboratoryTest, Order: "Pap Test"]
+        union [LaboratoryTest, Order: "Lab Tests During Pregnancy"]
+	    union [LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"]
+
+define "Tests Performed For Chlamydia" =
+	[Procedure, Performance: "Chlamydia Screening"]
+
+define "Results Present For Chlamydia Screening" =
+    [ObservationResult: "Chlamydia Screening"] R where R.result is not null
+
+
