@@ -305,18 +305,18 @@ If any argument is null, the resulting list will have null for that element.</xs
 	<!-- Logical Operators -->
 	<xs:complexType name="And">
 		<xs:annotation>
-			<xs:documentation>The And operator returns the logical conjunction of its arguments. Note that this operator is defined as n-ary, allowing any number of arguments. The result of And with no arguments is defined to be false. The result of And with a single argument is defined to be the result of the argument. The result of and with two arguments is defined using 3-valued logic semantics. This means that if either argument is false, the result is false; if both arguments are true, the result is true; otherwise, the result is null. The result of more than two arguments is defined as successive invocations of And.</xs:documentation>
+			<xs:documentation>The And operator returns the logical conjunction of its arguments. Note that this operator is defined using 3-valued logic semantics. This means that if either argument is false, the result is false; if both arguments are true, the result is true; otherwise, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="NaryExpression"/>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Or">
 		<xs:annotation>
-			<xs:documentation>The Or operator returns the logical disjunction of its arguments. Note that this operator is defined as n-ary, allowing any number of arguments. The result of Or with no arguments is defined to be true. The result of Or with a single argument is defined to be the result of the argument. The result of Or with two arguments is defined using 3-valued logic semantics. This means that if either argument is true, the result is true; if both arguments are false, the result is false; otherwise, the result is null. The result of more than two arguments is defined as successive invocations of Or.</xs:documentation>
+			<xs:documentation>The Or operator returns the logical disjunction of its arguments. Note that this operator is defined using 3-valued logic semantics. This means that if either argument is true, the result is true; if both arguments are false, the result is false; otherwise, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="NaryExpression"/>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Xor">
@@ -1479,39 +1479,39 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Union">
 		<xs:annotation>
-			<xs:documentation>The Union operator returns the union of the operands.
+			<xs:documentation>The Union operator returns the union of its arguments.
 			
 This operator has two overloads:
 	List
 	Interval
 
-For the list overload, this operator returns a list with all elements from all operands.
+For the list overload, this operator returns a list with all elements from both arguments.
 
-For the interval overload, this operator returns the interval that starts at the earliest starting point in the arguments, and ends at the latest starting point in the arguments. If the arguments do not overlap, this operator returns null. 
+For the interval overload, this operator returns the interval that starts at the earliest starting point in either argument, and ends at the latest starting point in either argument. If the arguments do not overlap, this operator returns null. 
 
-If any of the arguments are null, the result is null.
+If either argument is null, the result is null.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="NaryExpression"/>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Intersect">
 		<xs:annotation>
-			<xs:documentation>The Intersect operator returns the intersection of the operands. 
+			<xs:documentation>The Intersect operator returns the intersection of its arguments.
 			
 This operator has two overloads:
 	List
 	Interval
 
-For the list overload, this operator returns a list with the elements that appear in all the lists.
+For the list overload, this operator returns a list with the elements that appear in both lists.
 
-For the interval overload, this operator returns the interval that defines the overlapping portion of the arguments. If the arguments do not overlap, this operator returns null.
+For the interval overload, this operator returns the interval that defines the overlapping portion of both arguments. If the arguments do not overlap, this operator returns null.
 
-If any of the arguments are null, the result is null.</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="NaryExpression"/>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Except">
