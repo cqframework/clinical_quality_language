@@ -11,6 +11,43 @@ class ValueSet
     if version? then matches = (c for c in matches when c.version is version)
     return matches.length > 0
 
+class Uncertainty
+  constructor: (@low = null, @high) ->
+    if typeof high is 'undefined' then @high = @low
+    if @low? and @high? and @low > @high then [@low, @high] = [@high, @low]
+
+  isPoint: () ->
+    # Note: Can't use normal equality, as that fails for dates
+    @low? and @high? and @low <= @high and @low >= @high
+
+  equals: (other) ->
+    other = @_convert other
+    ThreeValuedLogic.not ThreeValuedLogic.or(@lessThan(other), @greaterThan(other))
+
+  lessThan: (other) ->
+    other = @_convert other
+    bestCase = not @low? or not other.high? or @low < other.high
+    worstCase = @high? and other.low? and @high < other.low
+    if bestCase is worstCase then return bestCase else return null
+
+  greaterThan: (other) ->
+    other = @_convert other
+    other.lessThan @
+
+  lessThanOrEquals: (other) ->
+    other = @_convert other
+    ThreeValuedLogic.not @greaterThan(other)
+
+  greaterThanOrEquals: (other) ->
+    other = @_convert other
+    ThreeValuedLogic.not @lessThan(other)
+
+  toUncertainty: () ->
+    @
+
+  _convert: (other) ->
+    if other.toUncertainty? then other.toUncertainty() else new Uncertainty(other)
+
 class DateTime
   @Unit: { YEAR: 'year', MONTH: 'month', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second' }
   @FIELDS: [@Unit.YEAR, @Unit.MONTH, @Unit.DAY, @Unit.HOUR, @Unit.MINUTE, @Unit.SECOND]
@@ -41,29 +78,22 @@ class DateTime
   before: (other) ->
     if not(other instanceof DateTime) then return false
 
-    if (@isPrecise() and other.isPrecise())
-      return @toJSDate() < other.toJSDate()
-    else
-      bestCase = @asLowest().before other.asHighest()
-      worstCase = @asHighest().before other.asLowest()
-      if bestCase is worstCase then return bestCase else return null
-
-    false
+    @toUncertainty().lessThan(other.toUncertainty())
 
   beforeOrSameAs: (other) ->
     if not(other instanceof DateTime) then return false
 
-    ThreeValuedLogic.not @after(other)
+    @toUncertainty().lessThanOrEquals(other.toUncertainty())
 
   after: (other) ->
     if not(other instanceof DateTime) then return false
 
-    other.before(@)
+    @toUncertainty().greaterThan(other.toUncertainty())
 
   afterOrSameAs: (other) ->
     if not(other instanceof DateTime) then return false
 
-    ThreeValuedLogic.not @before(other)
+    @toUncertainty().greaterThanOrEquals(other.toUncertainty())
 
   add: (offset, field) ->
     result = @copy()
@@ -77,38 +107,22 @@ class DateTime
     result
 
   isPrecise: () ->
-    self = @
-    DateTime.FIELDS.every (field) -> self[field]?
+    DateTime.FIELDS.every (field) => @[field]?
 
   isImprecise: () ->
     not @isPrecise()
 
-  asLowest: () ->
-    result = @copy()
-
-    if @isImprecise()
-      result.year ?= 0
-      result.month ?= 1
-      result.day ?= 1
-      result.hour ?= 0
-      result.minute ?= 0
-      result.second ?= 0
-
-    result
-
-  asHighest: () ->
-    result = @copy()
-
-    if @isImprecise()
-      result.year ?= 10000
-      result.month ?= 12
+  toUncertainty: () ->
+    low = @toJSDate()
+    high = (new DateTime(
+      @year,
+      @month ? 12,
       # see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/setDate
-      result.day ?= (new Date(result.year, result.month, 0)).getDate()
-      result.hour ?= 23
-      result.minute ?= 59
-      result.second ?= 59
-
-    result
+      @day ? (new Date(@year, @month ? 12, 0)).getDate(),
+      @hour ? 23,
+      @minute ? 59,
+      @second ? 59)).toJSDate()
+    new Uncertainty(low, high)
 
   toJSDate: () ->
     jsMonth = if @month? then @month-1 else 0
@@ -118,44 +132,45 @@ class Interval
   constructor: (@low, @high, @lowClosed = true, @highClosed = true) ->
 
   includes: (item) ->
-    if @isDateTimeInterval()
-      [low, high] = @_getAdjustedEndpoints()
-      if item instanceof DateTime
-        return ThreeValuedLogic.and low.beforeOrSameAs(item), high.afterOrSameAs(item)
-
-      if item instanceof Interval and item.isDateTimeInterval()
-        [itmLow, itmHigh] = item._getAdjustedEndpoints()
-        return ThreeValuedLogic.and low.beforeOrSameAs(itmLow), high.afterOrSameAs(itmHigh)
-
-    false
+    [uLow, uHigh] = @_getEndpointsAsUncertainties()
+    if item instanceof Interval
+      [uItmLow, uItmHigh] = item._getEndpointsAsUncertainties()
+      ThreeValuedLogic.and uLow.lessThanOrEquals(uItmLow), uHigh.greaterThanOrEquals(uItmHigh)
+    else
+      uItem = if item.toUncertainty? then item.toUncertainty() else new Uncertainty(item)
+      ThreeValuedLogic.and uLow.lessThanOrEquals(uItem), uHigh.greaterThanOrEquals(uItem)
 
   includedIn: (item) ->
-    if item instanceof DateTime and @isDateTimeInterval()
-      return ThreeValuedLogic.and @lowClosed, @highClosed, @low.sameAs(@high), item.sameAs(@low)
-    else if item instanceof Interval
-      return item.includes @
-
-    false
+    if item instanceof Interval
+      item.includes @
+    else
+      [uLow, uHigh] = @_getEndpointsAsUncertainties()
+      uItem = if item.toUncertainty? then item.toUncertainty() else new Uncertainty(item)
+      ThreeValuedLogic.and @lowClosed, @highClosed, uLow.equals(uHigh), uLow.equals(uItem), uHigh.equals(uItem)
 
   overlaps: (item) ->
-    if item instanceof DateTime then return @includes item
+    if item instanceof Interval
+      [uLow, uHigh] = @_getEndpointsAsUncertainties()
+      [uItmLow, uItmHigh] = item._getEndpointsAsUncertainties()
+      uLow.lessThanOrEquals(uItmHigh) and uHigh.greaterThanOrEquals(uItmLow)
+    else 
+      @includes item
 
-    if item instanceof Interval and @isDateTimeInterval()
-      [low, high] = @_getAdjustedEndpoints()
-      [itmLow, itmHigh] = item._getAdjustedEndpoints()
-      disjoint = ThreeValuedLogic.or high.before(itmLow), itmHigh.before(low)
-      return ThreeValuedLogic.not disjoint
+  _getEndpointsAsUncertainties: () ->
+    # Since uncertainties are always closed, adjust open endpoints
+    low = switch
+      when @lowClosed then @low
+      when @low instanceof DateTime then @low.add(1, DateTime.Unit.SECOND)
+      else @low + 1
 
-    false
+    high = switch
+      when @highClosed then @high
+      when @high instanceof DateTime then @high.add(-1, DateTime.Unit.SECOND)
+      else @high - 1
 
-  isDateTimeInterval: () ->
-    @low instanceof DateTime and @high instanceof DateTime
-
-  # Adjusted endpoints are useful for timing calculations with open endpoints
-  _getAdjustedEndpoints: () ->
     [
-      if @lowClosed then @low else @low.add(1, DateTime.Unit.SECOND),
-      if @highClosed then @high else @high.add(-1, DateTime.Unit.SECOND)
+      if low.toUncertainty? then low.toUncertainty() else new Uncertainty(low),
+      if high.toUncertainty? then high.toUncertainty() else new Uncertainty(high)
     ]
 
 class ThreeValuedLogic
@@ -174,6 +189,7 @@ class ThreeValuedLogic
 
 module.exports.Code = Code
 module.exports.ValueSet = ValueSet
+module.exports.Uncertainty = Uncertainty
 module.exports.DateTime = DateTime
 module.exports.Interval = Interval
 module.exports.ThreeValuedLogic = ThreeValuedLogic

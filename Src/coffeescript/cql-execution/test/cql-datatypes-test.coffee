@@ -3,54 +3,101 @@ TH = require './cql-test-helper'
 DT = require '../lib/cql-datatypes'
 
 setupIntervalsAndDateTimes = (test) ->
-  test['sameAs'] = {
-    #    |----------X----------|
-    #    |----------Y----------|
-    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59')),
-    y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
-  }
-  test['before'] = {
-    #    |----------X----------|
-    #                                   |----------Y----------|
-    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-04-01T00:00:00')),
-    y: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
-  }
-  test['meets'] = {
-    #    |----------X----------|
-    #                           |-----------Y----------|
-    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-06-30T23:59:59')),
-    y: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
-  }
-  test['overlaps'] = {
-    #    |----------X----------|
-    #                  |----------Y----------|
-    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-09-01T00:00:00')),
-    y: new TH.Interval(DT.DateTime.parse('2012-06-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
-  }
-  test['begins'] = {
-    #    |-----X-----|
-    #    |----------Y----------|
-    x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-07-01T00:00:00')),
-    y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
-  }
-  test['during'] = {
-    #         |-----X-----|
-    #    |----------Y----------|
-    x: new TH.Interval(DT.DateTime.parse('2012-05-01T00:00:00'), DT.DateTime.parse('2012-07-01T00:00:00')),
-    y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
-  }
-  test['ends'] = {
-    #              |-----X-----|
-    #    |----------Y----------|
-    x: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59')),
-    y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
-  }
   test['all2012'] = new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
   test['bef2012'] = TH.DateTime.parse('2011-06-01T00:00:00')
   test['beg2012'] = TH.DateTime.parse('2012-01-01T00:00:00')
   test['mid2012'] = TH.DateTime.parse('2012-06-01T00:00:00')
   test['end2012'] = TH.DateTime.parse('2012-12-31T23:59:59')
   test['aft2012'] = TH.DateTime.parse('2013-06-01T00:00:00')
+  test['dIvl'] = {
+    sameAs: {
+      #    |----------X----------|
+      #    |----------Y----------|
+      x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59')),
+      y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+    },
+    before: {
+      #    |----------X----------|
+      #                                   |----------Y----------|
+      x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-04-01T00:00:00')),
+      y: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+    },
+    meets: {
+      #    |----------X----------|
+      #                           |-----------Y----------|
+      x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-06-30T23:59:59')),
+      y: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+    },
+    overlaps: {
+      #    |----------X----------|
+      #                  |----------Y----------|
+      x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-09-01T00:00:00')),
+      y: new TH.Interval(DT.DateTime.parse('2012-06-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+    },
+    begins: {
+      #    |-----X-----|
+      #    |----------Y----------|
+      x: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-07-01T00:00:00')),
+      y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+    },
+    during: {
+      #         |-----X-----|
+      #    |----------Y----------|
+      x: new TH.Interval(DT.DateTime.parse('2012-05-01T00:00:00'), DT.DateTime.parse('2012-07-01T00:00:00')),
+      y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+    },
+    ends: {
+      #              |-----X-----|
+      #    |----------Y----------|
+      x: new TH.Interval(DT.DateTime.parse('2012-07-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59')),
+      y: new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00'), DT.DateTime.parse('2012-12-31T23:59:59'))
+    }
+  }
+  test['zeroToHundred'] = new TH.Interval(0, 100)
+  test['iIvl'] = {
+    sameAs: {
+      #    |----------X----------|
+      #    |----------Y----------|
+      x: new TH.Interval(0, 100),
+      y: new TH.Interval(0, 100)
+    },
+    before: {
+      #    |----------X----------|
+      #                                   |----------Y----------|
+      x: new TH.Interval(0, 40),
+      y: new TH.Interval(60, 100)
+    },
+    meets: {
+      #    |----------X----------|
+      #                           |-----------Y----------|
+      x: new TH.Interval(0, 50),
+      y: new TH.Interval(51, 100)
+    },
+    overlaps: {
+      #    |----------X----------|
+      #                  |----------Y----------|
+      x: new TH.Interval(0, 60),
+      y: new TH.Interval(40, 100)
+    },
+    begins: {
+      #    |-----X-----|
+      #    |----------Y----------|
+      x: new TH.Interval(0, 60),
+      y: new TH.Interval(0, 100)
+    },
+    during: {
+      #         |-----X-----|
+      #    |----------Y----------|
+      x: new TH.Interval(30, 70),
+      y: new TH.Interval(0, 100)
+    },
+    ends: {
+      #              |-----X-----|
+      #    |----------Y----------|
+      x: new TH.Interval(40, 100),
+      y: new TH.Interval(0, 100)
+    }
+  }
 
 xy = (obj) -> [obj.x, obj.y]
 
@@ -144,6 +191,379 @@ describe 'ThreeValuedLogic.not', ->
   it 'should return null when input is null', ->
     should.not.exist DT.ThreeValuedLogic.not(null)
 
+describe 'Uncertainty', ->
+  
+  it 'should contruct uncertainties with correct properties', ->
+    oneToFive = new DT.Uncertainty(1, 5)
+    oneToFive.low.should.equal 1
+    oneToFive.high.should.equal 5
+
+    oneToPInf = new DT.Uncertainty(1, null)
+    oneToPInf.low.should.equal 1
+    should(oneToPInf.high).be.null
+
+    nInfToFive = new DT.Uncertainty(null, 5)
+    should(nInfToFive.low).be.null
+    nInfToFive.high.should.equal 5
+
+    two = new DT.Uncertainty(2)
+    two.low.should.equal 2
+    two.high.should.equal 2
+
+    everything = new DT.Uncertainty()
+    should(everything.low).be.null
+    should(everything.high).be.null
+
+  it 'should swap low and high when constructed in wrong order', ->
+    fiveToOne = new DT.Uncertainty(5, 1)
+    fiveToOne.low.should.equal 1
+    fiveToOne.high.should.equal 5
+
+  it 'should contruct uncertainties with correct properties', ->
+    oneToFive = new DT.Uncertainty(1,5)
+    oneToFive.low.should.equal 1
+    oneToFive.high.should.equal 5
+
+  it 'should detect zero-width intervals as points', ->
+    new DT.Uncertainty(2).isPoint().should.be.true
+    new DT.Uncertainty(2, 2).isPoint().should.be.true
+    new DT.Uncertainty(null, null).isPoint().should.be.false
+    new DT.Uncertainty(2, null).isPoint().should.be.false
+    new DT.Uncertainty(null, 2).isPoint().should.be.false
+    new DT.Uncertainty(1, 2).isPoint().should.be.false
+    new DT.Uncertainty().isPoint().should.be.false
+
+  it 'should properly calculate equality', ->
+
+    # Equality
+    new DT.Uncertainty(1, 1).equals(new DT.Uncertainty(1, 1)).should.be.true
+
+    # <
+    new DT.Uncertainty(null, 1).equals(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(null, 1).equals(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(null, 1).equals(new DT.Uncertainty(2, null)).should.be.false
+    new DT.Uncertainty(0, 1).equals(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(0, 1).equals(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(0, 1).equals(new DT.Uncertainty(2, null)).should.be.false
+    new DT.Uncertainty(1, 1).equals(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(1, 1).equals(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(1, 1).equals(new DT.Uncertainty(2, null)).should.be.false
+
+    # <=
+    should.not.exist new DT.Uncertainty(null, 1).equals(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(null, 1).equals(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(null, 1).equals(new DT.Uncertainty(1, null))
+    should.not.exist new DT.Uncertainty(0, 1).equals(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(0, 1).equals(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(0, 1).equals(new DT.Uncertainty(1, null))
+    should.not.exist new DT.Uncertainty(1, 1).equals(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(1, 1).equals(new DT.Uncertainty(1, null))
+
+    # overlaps
+    should.not.exist new DT.Uncertainty(null, null).equals(new DT.Uncertainty(null, null))
+    should.not.exist new DT.Uncertainty(null, 10).equals(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(null, 10).equals(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(null, 10).equals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(null, 10).equals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(null, 10).equals(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(null, 10).equals(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(0, 10).equals(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(0, 10).equals(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(0, 10).equals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(0, 10).equals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(0, 10).equals(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(0, 10).equals(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(10, 10).equals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, 10).equals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(10, null).equals(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(10, null).equals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, null).equals(new DT.Uncertainty(5, null))
+
+    # >=
+    should.not.exist new DT.Uncertainty(1, null).equals(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, null).equals(new DT.Uncertainty(0, 1))
+    should.not.exist new DT.Uncertainty(1, null).equals(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(1, 2).equals(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, 2).equals(new DT.Uncertainty(0, 1))
+    should.not.exist new DT.Uncertainty(1, 2).equals(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(1, 1).equals(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, 1).equals(new DT.Uncertainty(0, 1))
+
+    # >
+    new DT.Uncertainty(2, 2).equals(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, 3).equals(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, null).equals(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, 2).equals(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, 3).equals(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, null).equals(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, 2).equals(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(2, 3).equals(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(2, null).equals(new DT.Uncertainty(1, 1)).should.be.false
+
+  it 'should properly calculate "less than" inequality', ->
+
+    # Equality
+    new DT.Uncertainty(1, 1).lessThan(new DT.Uncertainty(1, 1)).should.be.false
+
+    # <
+    new DT.Uncertainty(null, 1).lessThan(new DT.Uncertainty(2, 2)).should.be.true
+    new DT.Uncertainty(null, 1).lessThan(new DT.Uncertainty(2, 3)).should.be.true
+    new DT.Uncertainty(null, 1).lessThan(new DT.Uncertainty(2, null)).should.be.true
+    new DT.Uncertainty(0, 1).lessThan(new DT.Uncertainty(2, 2)).should.be.true
+    new DT.Uncertainty(0, 1).lessThan(new DT.Uncertainty(2, 3)).should.be.true
+    new DT.Uncertainty(0, 1).lessThan(new DT.Uncertainty(2, null)).should.be.true
+    new DT.Uncertainty(1, 1).lessThan(new DT.Uncertainty(2, 2)).should.be.true
+    new DT.Uncertainty(1, 1).lessThan(new DT.Uncertainty(2, 3)).should.be.true
+    new DT.Uncertainty(1, 1).lessThan(new DT.Uncertainty(2, null)).should.be.true
+
+    # <=
+    should.not.exist new DT.Uncertainty(null, 1).lessThan(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(null, 1).lessThan(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(null, 1).lessThan(new DT.Uncertainty(1, null))
+    should.not.exist new DT.Uncertainty(0, 1).lessThan(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(0, 1).lessThan(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(0, 1).lessThan(new DT.Uncertainty(1, null))
+    should.not.exist new DT.Uncertainty(1, 1).lessThan(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(1, 1).lessThan(new DT.Uncertainty(1, null))
+
+    # overlaps
+    should.not.exist new DT.Uncertainty(null, null).lessThan(new DT.Uncertainty(null, null))
+    should.not.exist new DT.Uncertainty(null, 10).lessThan(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(null, 10).lessThan(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(null, 10).lessThan(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(null, 10).lessThan(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(null, 10).lessThan(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(null, 10).lessThan(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(0, 10).lessThan(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(0, 10).lessThan(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(0, 10).lessThan(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(0, 10).lessThan(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(0, 10).lessThan(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(0, 10).lessThan(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(10, 10).lessThan(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, 10).lessThan(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(10, null).lessThan(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, null).lessThan(new DT.Uncertainty(5, null))
+
+    # >=
+    new DT.Uncertainty(1, null).lessThan(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(1, null).lessThan(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(1, null).lessThan(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(1, 2).lessThan(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(1, 2).lessThan(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(1, 2).lessThan(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(1, 1).lessThan(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(1, 1).lessThan(new DT.Uncertainty(0, 1)).should.be.false
+
+    # >
+    new DT.Uncertainty(2, 2).lessThan(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, 3).lessThan(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, null).lessThan(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, 2).lessThan(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, 3).lessThan(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, null).lessThan(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, 2).lessThan(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(2, 3).lessThan(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(2, null).lessThan(new DT.Uncertainty(1, 1)).should.be.false
+
+  it 'should properly calculate "less than or equals" inequality', ->
+
+    # Equality
+    new DT.Uncertainty(1, 1).lessThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+
+    # <
+    new DT.Uncertainty(null, 1).lessThanOrEquals(new DT.Uncertainty(2, 2)).should.be.true
+    new DT.Uncertainty(null, 1).lessThanOrEquals(new DT.Uncertainty(2, 3)).should.be.true
+    new DT.Uncertainty(null, 1).lessThanOrEquals(new DT.Uncertainty(2, null)).should.be.true
+    new DT.Uncertainty(0, 1).lessThanOrEquals(new DT.Uncertainty(2, 2)).should.be.true
+    new DT.Uncertainty(0, 1).lessThanOrEquals(new DT.Uncertainty(2, 3)).should.be.true
+    new DT.Uncertainty(0, 1).lessThanOrEquals(new DT.Uncertainty(2, null)).should.be.true
+    new DT.Uncertainty(1, 1).lessThanOrEquals(new DT.Uncertainty(2, 2)).should.be.true
+    new DT.Uncertainty(1, 1).lessThanOrEquals(new DT.Uncertainty(2, 3)).should.be.true
+    new DT.Uncertainty(1, 1).lessThanOrEquals(new DT.Uncertainty(2, null)).should.be.true
+
+    # <=
+    new DT.Uncertainty(null, 1).lessThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+    new DT.Uncertainty(null, 1).lessThanOrEquals(new DT.Uncertainty(1, 2)).should.be.true
+    new DT.Uncertainty(null, 1).lessThanOrEquals(new DT.Uncertainty(1, null)).should.be.true
+    new DT.Uncertainty(0, 1).lessThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+    new DT.Uncertainty(0, 1).lessThanOrEquals(new DT.Uncertainty(1, 2)).should.be.true
+    new DT.Uncertainty(0, 1).lessThanOrEquals(new DT.Uncertainty(1, null)).should.be.true
+    new DT.Uncertainty(1, 1).lessThanOrEquals(new DT.Uncertainty(1, 2)).should.be.true
+    new DT.Uncertainty(1, 1).lessThanOrEquals(new DT.Uncertainty(1, null)).should.be.true
+
+    # overlaps
+    should.not.exist new DT.Uncertainty(null, null).lessThanOrEquals(new DT.Uncertainty(null, null))
+    should.not.exist new DT.Uncertainty(null, 10).lessThanOrEquals(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(null, 10).lessThanOrEquals(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(null, 10).lessThanOrEquals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(null, 10).lessThanOrEquals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(null, 10).lessThanOrEquals(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(null, 10).lessThanOrEquals(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(0, 10).lessThanOrEquals(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(0, 10).lessThanOrEquals(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(0, 10).lessThanOrEquals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(0, 10).lessThanOrEquals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(0, 10).lessThanOrEquals(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(0, 10).lessThanOrEquals(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(10, 10).lessThanOrEquals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, 10).lessThanOrEquals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(10, null).lessThanOrEquals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, null).lessThanOrEquals(new DT.Uncertainty(5, null))
+
+    # >=
+    should.not.exist new DT.Uncertainty(1, null).lessThanOrEquals(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, null).lessThanOrEquals(new DT.Uncertainty(0, 1))
+    should.not.exist new DT.Uncertainty(1, null).lessThanOrEquals(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(1, 2).lessThanOrEquals(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, 2).lessThanOrEquals(new DT.Uncertainty(0, 1))
+    should.not.exist new DT.Uncertainty(1, 2).lessThanOrEquals(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(1, 1).lessThanOrEquals(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, 1).lessThanOrEquals(new DT.Uncertainty(0, 1))
+
+    # >
+    new DT.Uncertainty(2, 2).lessThanOrEquals(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, 3).lessThanOrEquals(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, null).lessThanOrEquals(new DT.Uncertainty(null, 1)).should.be.false
+    new DT.Uncertainty(2, 2).lessThanOrEquals(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, 3).lessThanOrEquals(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, null).lessThanOrEquals(new DT.Uncertainty(0, 1)).should.be.false
+    new DT.Uncertainty(2, 2).lessThanOrEquals(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(2, 3).lessThanOrEquals(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(2, null).lessThanOrEquals(new DT.Uncertainty(1, 1)).should.be.false
+
+  it 'should properly calculate "greater than" inequality', ->
+
+    # Equality
+    new DT.Uncertainty(1, 1).greaterThan(new DT.Uncertainty(1, 1)).should.be.false
+
+    # <
+    new DT.Uncertainty(null, 1).greaterThan(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(null, 1).greaterThan(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(null, 1).greaterThan(new DT.Uncertainty(2, null)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThan(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThan(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThan(new DT.Uncertainty(2, null)).should.be.false
+    new DT.Uncertainty(1, 1).greaterThan(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(1, 1).greaterThan(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(1, 1).greaterThan(new DT.Uncertainty(2, null)).should.be.false
+
+    # <=
+    new DT.Uncertainty(null, 1).greaterThan(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(null, 1).greaterThan(new DT.Uncertainty(1, 2)).should.be.false
+    new DT.Uncertainty(null, 1).greaterThan(new DT.Uncertainty(1, null)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThan(new DT.Uncertainty(1, 1)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThan(new DT.Uncertainty(1, 2)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThan(new DT.Uncertainty(1, null)).should.be.false
+    new DT.Uncertainty(1, 1).greaterThan(new DT.Uncertainty(1, 2)).should.be.false
+    new DT.Uncertainty(1, 1).greaterThan(new DT.Uncertainty(1, null)).should.be.false
+
+    # overlaps
+    should.not.exist new DT.Uncertainty(null, null).greaterThan(new DT.Uncertainty(null, null))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThan(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThan(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThan(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThan(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThan(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThan(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThan(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThan(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThan(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThan(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThan(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThan(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(10, 10).greaterThan(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, 10).greaterThan(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(10, null).greaterThan(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, null).greaterThan(new DT.Uncertainty(5, null))
+
+    # >=
+    should.not.exist new DT.Uncertainty(1, null).greaterThan(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, null).greaterThan(new DT.Uncertainty(0, 1))
+    should.not.exist new DT.Uncertainty(1, null).greaterThan(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(1, 2).greaterThan(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, 2).greaterThan(new DT.Uncertainty(0, 1))
+    should.not.exist new DT.Uncertainty(1, 2).greaterThan(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(1, 1).greaterThan(new DT.Uncertainty(null, 1))
+    should.not.exist new DT.Uncertainty(1, 1).greaterThan(new DT.Uncertainty(0, 1))
+
+    # >
+    new DT.Uncertainty(2, 2).greaterThan(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(2, 3).greaterThan(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(2, null).greaterThan(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(2, 2).greaterThan(new DT.Uncertainty(0, 1)).should.be.true
+    new DT.Uncertainty(2, 3).greaterThan(new DT.Uncertainty(0, 1)).should.be.true
+    new DT.Uncertainty(2, null).greaterThan(new DT.Uncertainty(0, 1)).should.be.true
+    new DT.Uncertainty(2, 2).greaterThan(new DT.Uncertainty(1, 1)).should.be.true
+    new DT.Uncertainty(2, 3).greaterThan(new DT.Uncertainty(1, 1)).should.be.true
+    new DT.Uncertainty(2, null).greaterThan(new DT.Uncertainty(1, 1)).should.be.true
+
+  it 'should properly calculate "greater than or equals" inequality', ->
+
+    # Equality
+    new DT.Uncertainty(1, 1).greaterThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+
+    # <
+    new DT.Uncertainty(null, 1).greaterThanOrEquals(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(null, 1).greaterThanOrEquals(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(null, 1).greaterThanOrEquals(new DT.Uncertainty(2, null)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThanOrEquals(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThanOrEquals(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(0, 1).greaterThanOrEquals(new DT.Uncertainty(2, null)).should.be.false
+    new DT.Uncertainty(1, 1).greaterThanOrEquals(new DT.Uncertainty(2, 2)).should.be.false
+    new DT.Uncertainty(1, 1).greaterThanOrEquals(new DT.Uncertainty(2, 3)).should.be.false
+    new DT.Uncertainty(1, 1).greaterThanOrEquals(new DT.Uncertainty(2, null)).should.be.false
+
+    # <=
+    should.not.exist new DT.Uncertainty(null, 1).greaterThanOrEquals(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(null, 1).greaterThanOrEquals(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(null, 1).greaterThanOrEquals(new DT.Uncertainty(1, null))
+    should.not.exist new DT.Uncertainty(0, 1).greaterThanOrEquals(new DT.Uncertainty(1, 1))
+    should.not.exist new DT.Uncertainty(0, 1).greaterThanOrEquals(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(0, 1).greaterThanOrEquals(new DT.Uncertainty(1, null))
+    should.not.exist new DT.Uncertainty(1, 1).greaterThanOrEquals(new DT.Uncertainty(1, 2))
+    should.not.exist new DT.Uncertainty(1, 1).greaterThanOrEquals(new DT.Uncertainty(1, null))
+
+    # overlaps
+    should.not.exist new DT.Uncertainty(null, null).greaterThanOrEquals(new DT.Uncertainty(null, null))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThanOrEquals(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThanOrEquals(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThanOrEquals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThanOrEquals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThanOrEquals(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(null, 10).greaterThanOrEquals(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThanOrEquals(new DT.Uncertainty(5, 5))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThanOrEquals(new DT.Uncertainty(5, 10))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThanOrEquals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThanOrEquals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThanOrEquals(new DT.Uncertainty(0, 5))
+    should.not.exist new DT.Uncertainty(0, 10).greaterThanOrEquals(new DT.Uncertainty(null, 5))
+    should.not.exist new DT.Uncertainty(10, 10).greaterThanOrEquals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, 10).greaterThanOrEquals(new DT.Uncertainty(5, null))
+    should.not.exist new DT.Uncertainty(10, null).greaterThanOrEquals(new DT.Uncertainty(5, 15))
+    should.not.exist new DT.Uncertainty(10, null).greaterThanOrEquals(new DT.Uncertainty(5, null))
+
+    # >=
+    new DT.Uncertainty(1, null).greaterThanOrEquals(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(1, null).greaterThanOrEquals(new DT.Uncertainty(0, 1)).should.be.true
+    new DT.Uncertainty(1, null).greaterThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+    new DT.Uncertainty(1, 2).greaterThanOrEquals(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(1, 2).greaterThanOrEquals(new DT.Uncertainty(0, 1)).should.be.true
+    new DT.Uncertainty(1, 2).greaterThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+    new DT.Uncertainty(1, 1).greaterThanOrEquals(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(1, 1).greaterThanOrEquals(new DT.Uncertainty(0, 1)).should.be.true
+
+    # >
+    new DT.Uncertainty(2, 2).greaterThanOrEquals(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(2, 3).greaterThanOrEquals(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(2, null).greaterThanOrEquals(new DT.Uncertainty(null, 1)).should.be.true
+    new DT.Uncertainty(2, 2).greaterThanOrEquals(new DT.Uncertainty(0, 1)).should.be.true
+    new DT.Uncertainty(2, 3).greaterThanOrEquals(new DT.Uncertainty(0, 1)).should.be.true
+    new DT.Uncertainty(2, null).greaterThanOrEquals(new DT.Uncertainty(0, 1)).should.be.true
+    new DT.Uncertainty(2, 2).greaterThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+    new DT.Uncertainty(2, 3).greaterThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+    new DT.Uncertainty(2, null).greaterThanOrEquals(new DT.Uncertainty(1, 1)).should.be.true
+
 describe 'DateTime', ->
 
   it 'should properly set all properties when constructed', ->
@@ -222,22 +642,41 @@ describe 'DateTime', ->
     DT.DateTime.parse('2000-01').isImprecise().should.be.true
     DT.DateTime.parse('2000').isImprecise().should.be.true
 
-  it 'should be able to convert imprecise dates to earliest possible date', ->
-    DT.DateTime.parse('2000-03-25T12:15:43').asLowest().should.eql DT.DateTime.parse('2000-03-25T12:15:43')
-    DT.DateTime.parse('2000-03-25T12:15').asLowest().should.eql DT.DateTime.parse('2000-03-25T12:15:00')
-    DT.DateTime.parse('2000-03-25T12').asLowest().should.eql DT.DateTime.parse('2000-03-25T12:00:00')
-    DT.DateTime.parse('2000-03-25').asLowest().should.eql DT.DateTime.parse('2000-03-25T00:00:00')
-    DT.DateTime.parse('2000-03').asLowest().should.eql DT.DateTime.parse('2000-03-01T00:00:00')
-    DT.DateTime.parse('2000').asLowest().should.eql DT.DateTime.parse('2000-01-01T00:00:00')
+  it 'should correctly convert to uncertainties with JavaScript dates', ->
+    preciseUncertainty = DT.DateTime.parse('2000-02-25T12:15:43').toUncertainty()
+    preciseUncertainty.isPoint().should.be.true
+    preciseUncertainty.low.should.eql new Date(2000, 1, 25, 12, 15, 43)
+    preciseUncertainty.high.should.eql new Date(2000, 1, 25, 12, 15, 43)
 
-  it 'should be able to convert imprecise dates to latest possible date', ->
-    DT.DateTime.parse('2000-02-25T12:15:43').asHighest().should.eql DT.DateTime.parse('2000-02-25T12:15:43')
-    DT.DateTime.parse('2000-02-25T12:15').asHighest().should.eql DT.DateTime.parse('2000-02-25T12:15:59')
-    DT.DateTime.parse('2000-02-25T12').asHighest().should.eql DT.DateTime.parse('2000-02-25T12:59:59')
-    DT.DateTime.parse('2000-02-25').asHighest().should.eql DT.DateTime.parse('2000-02-25T23:59:59')
-    DT.DateTime.parse('2000-02').asHighest().should.eql DT.DateTime.parse('2000-02-29T23:59:59')
-    DT.DateTime.parse('1999-02').asHighest().should.eql DT.DateTime.parse('1999-02-28T23:59:59')
-    DT.DateTime.parse('2000').asHighest().should.eql DT.DateTime.parse('2000-12-31T23:59:59')
+    toMinute = DT.DateTime.parse('2000-02-25T12:15').toUncertainty()
+    toMinute.isPoint().should.be.false
+    toMinute.low.should.eql new Date(2000, 1, 25, 12, 15, 0)
+    toMinute.high.should.eql new Date(2000, 1, 25, 12, 15, 59)
+
+    toHour = DT.DateTime.parse('2000-02-25T12').toUncertainty()
+    toHour.isPoint().should.be.false
+    toHour.low.should.eql new Date(2000, 1, 25, 12, 0, 0)
+    toHour.high.should.eql new Date(2000, 1, 25, 12, 59, 59)
+
+    toDay = DT.DateTime.parse('2000-02-25').toUncertainty()
+    toDay.isPoint().should.be.false
+    toDay.low.should.eql new Date(2000, 1, 25, 0, 0, 0)
+    toDay.high.should.eql new Date(2000, 1, 25, 23, 59, 59)
+
+    toMonthLeapYear = DT.DateTime.parse('2000-02').toUncertainty()
+    toMonthLeapYear.isPoint().should.be.false
+    toMonthLeapYear.low.should.eql new Date(2000, 1, 1, 0, 0, 0)
+    toMonthLeapYear.high.should.eql new Date(2000, 1, 29, 23, 59, 59)
+
+    toMonthNonLeapYear = DT.DateTime.parse('1999-02').toUncertainty()
+    toMonthNonLeapYear.isPoint().should.be.false
+    toMonthNonLeapYear.low.should.eql new Date(1999, 1, 1, 0, 0, 0)
+    toMonthNonLeapYear.high.should.eql new Date(1999, 1, 28, 23, 59, 59)
+
+    toYear = DT.DateTime.parse('2000').toUncertainty()
+    toYear.isPoint().should.be.false
+    toYear.low.should.eql new Date(2000, 0, 1, 0, 0, 0)
+    toYear.high.should.eql new Date(2000, 11, 31, 23, 59, 59) 
 
   it 'should convert to javascript Date', ->
     DT.DateTime.parse('2012-10-25T12:55:14').toJSDate().should.eql new Date(2012, 9, 25, 12, 55, 14)
@@ -908,10 +1347,17 @@ describe 'DateTime.afterOrSameAs', ->
 
 describe 'Interval', ->
 
-  it 'should properly set all properties when constructed', ->
+  it 'should properly set all properties when constructed as DateTime interval', ->
     i = new DT.Interval(DT.DateTime.parse('2012-01-01'), DT.DateTime.parse('2013-01-01'), true, false)
     i.low.should.eql DT.DateTime.parse '2012-01-01'
     i.high.should.eql DT.DateTime.parse '2013-01-01'
+    i.lowClosed.should.be.true
+    i.highClosed.should.be.false
+
+  it 'should properly set all properties when constructed as integer interval', ->
+    i = new DT.Interval(12, 36, true, false)
+    i.low.should.equal 12
+    i.high.should.equal 36
     i.lowClosed.should.be.true
     i.highClosed.should.be.false
 
@@ -922,12 +1368,12 @@ describe 'Interval', ->
     i.lowClosed.should.be.true
     i.highClosed.should.be.true
 
-describe 'Interval.includes(Interval)', ->
+describe 'DateTimeInterval.includes(DateTimeInterval)', ->
   @beforeEach ->
     setupIntervalsAndDateTimes @
 
   it 'should properly calculate sameAs intervals', ->
-    [x, y] = xy @sameAs
+    [x, y] = xy @dIvl.sameAs
     x.closed.includes(y.closed).should.be.true
     x.closed.includes(y.open).should.be.true
     x.open.includes(y.closed).should.be.false
@@ -938,7 +1384,7 @@ describe 'Interval.includes(Interval)', ->
     y.open.includes(x.open).should.be.true
 
   it 'should properly calculate before/after intervals', ->
-    [x, y] = xy @before
+    [x, y] = xy @dIvl.before
     x.closed.includes(y.closed).should.be.false
     x.closed.includes(y.open).should.be.false
     x.open.includes(y.closed).should.be.false
@@ -949,7 +1395,7 @@ describe 'Interval.includes(Interval)', ->
     y.open.includes(x.open).should.be.false
 
   it 'should properly calculate meets intervals', ->
-    [x, y] = xy @meets
+    [x, y] = xy @dIvl.meets
     x.closed.includes(y.closed).should.be.false
     x.closed.includes(y.open).should.be.false
     x.open.includes(y.closed).should.be.false
@@ -960,7 +1406,7 @@ describe 'Interval.includes(Interval)', ->
     y.open.includes(x.open).should.be.false
 
   it 'should properly calculate left/right overlapping intervals', ->
-    [x, y] = xy @overlaps
+    [x, y] = xy @dIvl.overlaps
     x.closed.includes(y.closed).should.be.false
     x.closed.includes(y.open).should.be.false
     x.open.includes(y.closed).should.be.false
@@ -971,7 +1417,7 @@ describe 'Interval.includes(Interval)', ->
     y.open.includes(x.open).should.be.false
 
   it 'should properly calculate begins/begun by intervals', ->
-    [x, y] = xy @begins
+    [x, y] = xy @dIvl.begins
     x.closed.includes(y.closed).should.be.false
     x.closed.includes(y.open).should.be.false
     x.open.includes(y.closed).should.be.false
@@ -982,7 +1428,7 @@ describe 'Interval.includes(Interval)', ->
     y.open.includes(x.open).should.be.true
 
   it 'should properly calculate includes/included by intervals', ->
-    [x, y] = xy @during
+    [x, y] = xy @dIvl.during
     x.closed.includes(y.closed).should.be.false
     x.closed.includes(y.open).should.be.false
     x.open.includes(y.closed).should.be.false
@@ -993,7 +1439,7 @@ describe 'Interval.includes(Interval)', ->
     y.open.includes(x.open).should.be.true
 
   it 'should properly calculate ends/ended by intervals', ->
-    [x, y] = xy @ends
+    [x, y] = xy @dIvl.ends
     x.closed.includes(y.closed).should.be.false
     x.closed.includes(y.open).should.be.false
     x.open.includes(y.closed).should.be.false
@@ -1005,36 +1451,36 @@ describe 'Interval.includes(Interval)', ->
 
   it 'should properly handle imprecision', ->
 
-    [x, y] = xy @sameAs
+    [x, y] = xy @dIvl.sameAs
     x.closed.includes(y.toMinute).should.be.true
     should.not.exist x.toHour.includes(y.toMinute)
 
-    [x, y] = xy @before
+    [x, y] = xy @dIvl.before
     x.toMonth.includes(y.toMonth).should.be.false
     should.not.exist x.toYear.includes(y.closed)
 
-    [x, y] = xy @meets
+    [x, y] = xy @dIvl.meets
     x.toMonth.includes(y.toMonth).should.be.false
     should.not.exist x.toYear.includes(y.closed)
 
-    [x, y] = xy @overlaps
+    [x, y] = xy @dIvl.overlaps
     x.toMonth.includes(y.toMonth).should.be.false
     should.not.exist x.toYear.includes(y.closed)
 
-    [x, y] = xy @begins
+    [x, y] = xy @dIvl.begins
     x.toMinute.includes(y.toMinute).should.be.false
     should.not.exist x.toYear.includes(y.closed)
 
-    [x, y] = xy @during
+    [x, y] = xy @dIvl.during
     x.toMonth.includes(y.toMonth).should.be.false
     y.toMonth.includes(x.toMonth).should.be.true
     should.not.exist x.toYear.includes(y.closed)
 
-    [x, y] = xy @ends
+    [x, y] = xy @dIvl.ends
     x.toMinute.includes(y.toMinute).should.be.false
     should.not.exist x.toYear.includes(y.closed)
 
-describe 'Interval.includes(DateTime)', ->
+describe 'DateTimeInterval.includes(DateTime)', ->
   @beforeEach ->
     setupIntervalsAndDateTimes @
 
@@ -1076,12 +1522,12 @@ describe 'Interval.includes(DateTime)', ->
 
     @all2012.closed.includes(@mid2012.toYear).should.be.true
 
-describe 'Interval.includedIn(Interval)', ->
+describe 'DateTimeInterval.includedIn(DateTimeInterval)', ->
   @beforeEach ->
     setupIntervalsAndDateTimes @
 
   it 'should properly calculate sameAs intervals', ->
-    [x, y] = xy @sameAs
+    [x, y] = xy @dIvl.sameAs
     x.closed.includedIn(y.closed).should.be.true
     x.closed.includedIn(y.open).should.be.false
     x.open.includedIn(y.closed).should.be.true
@@ -1093,7 +1539,7 @@ describe 'Interval.includedIn(Interval)', ->
     y.open.includedIn(x.open).should.be.true
 
   it 'should properly calculate before/after intervals', ->
-    [x, y] = xy @before
+    [x, y] = xy @dIvl.before
     x.closed.includedIn(y.closed).should.be.false
     x.closed.includedIn(y.open).should.be.false
     x.open.includedIn(y.closed).should.be.false
@@ -1104,7 +1550,7 @@ describe 'Interval.includedIn(Interval)', ->
     y.open.includedIn(x.open).should.be.false
 
   it 'should properly calculate meets intervals', ->
-    [x, y] = xy @meets
+    [x, y] = xy @dIvl.meets
     x.closed.includedIn(y.closed).should.be.false
     x.closed.includedIn(y.open).should.be.false
     x.open.includedIn(y.closed).should.be.false
@@ -1115,7 +1561,7 @@ describe 'Interval.includedIn(Interval)', ->
     y.open.includedIn(x.open).should.be.false
 
   it 'should properly calculate left/right overlapping intervals', ->
-    [x, y] = xy @overlaps
+    [x, y] = xy @dIvl.overlaps
     x.closed.includedIn(y.closed).should.be.false
     x.closed.includedIn(y.open).should.be.false
     x.open.includedIn(y.closed).should.be.false
@@ -1126,7 +1572,7 @@ describe 'Interval.includedIn(Interval)', ->
     y.open.includedIn(x.open).should.be.false
 
   it 'should properly calculate begins/begun by intervals', ->
-    [x, y] = xy @begins
+    [x, y] = xy @dIvl.begins
     x.closed.includedIn(y.closed).should.be.true
     x.closed.includedIn(y.open).should.be.false
     x.open.includedIn(y.closed).should.be.true
@@ -1137,7 +1583,7 @@ describe 'Interval.includedIn(Interval)', ->
     y.open.includedIn(x.open).should.be.false
 
   it 'should properly calculate includes/included by intervals', ->
-    [x, y] = xy @during
+    [x, y] = xy @dIvl.during
     x.closed.includedIn(y.closed).should.be.true
     x.closed.includedIn(y.open).should.be.true
     x.open.includedIn(y.closed).should.be.true
@@ -1148,7 +1594,7 @@ describe 'Interval.includedIn(Interval)', ->
     y.open.includedIn(x.open).should.be.false
 
   it 'should properly calculate ends/ended by intervals', ->
-    [x, y] = xy @ends
+    [x, y] = xy @dIvl.ends
     x.closed.includedIn(y.closed).should.be.true
     x.closed.includedIn(y.open).should.be.false
     x.open.includedIn(y.closed).should.be.true
@@ -1159,36 +1605,36 @@ describe 'Interval.includedIn(Interval)', ->
     y.open.includedIn(x.open).should.be.false
 
   it 'should properly handle imprecision', ->
-    [x, y] = xy @sameAs
+    [x, y] = xy @dIvl.sameAs
     should.not.exist x.closed.includedIn(y.toMinute)
     should.not.exist x.toHour.includedIn(y.toMinute)
 
-    [x, y] = xy @before
+    [x, y] = xy @dIvl.before
     x.toMonth.includedIn(y.toMonth).should.be.false
     should.not.exist x.toYear.includedIn(y.closed)
 
-    [x, y] = xy @meets
+    [x, y] = xy @dIvl.meets
     x.toMonth.includedIn(y.toMonth).should.be.false
     should.not.exist x.toYear.includedIn(y.closed)
 
-    [x, y] = xy @overlaps
+    [x, y] = xy @dIvl.overlaps
     x.toMonth.includedIn(y.toMonth).should.be.false
     should.not.exist x.toYear.includedIn(y.closed)
 
-    [x, y] = xy @begins
+    [x, y] = xy @dIvl.begins
     should.not.exist x.toMinute.includedIn(y.toMinute)
     x.toYear.includedIn(y.closed).should.be.true
 
-    [x, y] = xy @during
+    [x, y] = xy @dIvl.during
     x.toMonth.includedIn(y.toMonth).should.be.true
     y.toMonth.includedIn(x.toMonth).should.be.false
     x.toYear.includedIn(y.closed).should.be.true
 
-    [x, y] = xy @ends
+    [x, y] = xy @dIvl.ends
     should.not.exist x.toMinute.includedIn(y.toMinute)
     x.toYear.includedIn(y.closed).should.be.true
 
-describe 'Interval.includedIn(DateTime)', ->
+describe 'DateTimeInterval.includedIn(DateTime)', ->
   @beforeEach ->
     setupIntervalsAndDateTimes @
 
@@ -1210,6 +1656,12 @@ describe 'Interval.includedIn(DateTime)', ->
 
   it 'should properly calculate dates after it', ->
     @all2012.closed.includedIn(@aft2012.full).should.be.false
+
+  it 'should properly calculate zero-width intervals', ->
+    ivl = new DT.Interval(@mid2012.full, @mid2012.full)
+    ivl.includedIn(@beg2012.full).should.be.false
+    ivl.includedIn(@mid2012.full).should.be.true
+    ivl.includedIn(@end2012.full).should.be.false
 
   it 'should properly handle imprecision', ->
     @all2012.closed.includedIn(@bef2012.toMonth).should.be.false
@@ -1245,12 +1697,12 @@ describe 'Interval.includedIn(DateTime)', ->
     should.not.exist @all2012.toYear.includedIn(@end2012.full)
     @all2012.toYear.includedIn(@aft2012.full).should.be.false
 
-describe 'Interval.overlaps(Interval)', ->
+describe 'DateTimeInterval.overlaps(DateTimeInterval)', ->
   @beforeEach ->
     setupIntervalsAndDateTimes @
 
   it 'should properly calculate sameAs intervals', ->
-    [x, y] = xy @sameAs
+    [x, y] = xy @dIvl.sameAs
     x.closed.overlaps(y.closed).should.be.true
     x.closed.overlaps(y.open).should.be.true
     x.open.overlaps(y.closed).should.be.true
@@ -1261,7 +1713,7 @@ describe 'Interval.overlaps(Interval)', ->
     y.open.overlaps(x.open).should.be.true
 
   it 'should properly calculate before/after intervals', ->
-    [x, y] = xy @before
+    [x, y] = xy @dIvl.before
     x.closed.overlaps(y.closed).should.be.false
     x.closed.overlaps(y.open).should.be.false
     x.open.overlaps(y.closed).should.be.false
@@ -1272,7 +1724,7 @@ describe 'Interval.overlaps(Interval)', ->
     y.open.overlaps(x.open).should.be.false
 
   it 'should properly calculate meets intervals', ->
-    [x, y] = xy @meets
+    [x, y] = xy @dIvl.meets
     x.closed.overlaps(y.closed).should.be.false
     x.closed.overlaps(y.open).should.be.false
     x.open.overlaps(y.closed).should.be.false
@@ -1283,7 +1735,7 @@ describe 'Interval.overlaps(Interval)', ->
     y.open.overlaps(x.open).should.be.false
 
   it 'should properly calculate left/right overlapping intervals', ->
-    [x, y] = xy @overlaps
+    [x, y] = xy @dIvl.overlaps
     x.closed.overlaps(y.closed).should.be.true
     x.closed.overlaps(y.open).should.be.true
     x.open.overlaps(y.closed).should.be.true
@@ -1294,7 +1746,7 @@ describe 'Interval.overlaps(Interval)', ->
     y.open.overlaps(x.open).should.be.true
 
   it 'should properly calculate begins/begun by intervals', ->
-    [x, y] = xy @begins
+    [x, y] = xy @dIvl.begins
     x.closed.overlaps(y.closed).should.be.true
     x.closed.overlaps(y.open).should.be.true
     x.open.overlaps(y.closed).should.be.true
@@ -1305,7 +1757,7 @@ describe 'Interval.overlaps(Interval)', ->
     y.open.overlaps(x.open).should.be.true
 
   it 'should properly calculate includes/included by intervals', ->
-    [x, y] = xy @during
+    [x, y] = xy @dIvl.during
     x.closed.overlaps(y.closed).should.be.true
     x.closed.overlaps(y.open).should.be.true
     x.open.overlaps(y.closed).should.be.true
@@ -1316,7 +1768,7 @@ describe 'Interval.overlaps(Interval)', ->
     y.open.overlaps(x.open).should.be.true
 
   it 'should properly calculate ends/ended by intervals', ->
-    [x, y] = xy @ends
+    [x, y] = xy @dIvl.ends
     x.closed.overlaps(y.closed).should.be.true
     x.closed.overlaps(y.open).should.be.true
     x.open.overlaps(y.closed).should.be.true
@@ -1327,36 +1779,36 @@ describe 'Interval.overlaps(Interval)', ->
     y.open.overlaps(x.open).should.be.true
 
   it 'should properly handle imprecision', ->
-    [x, y] = xy @sameAs
+    [x, y] = xy @dIvl.sameAs
     x.closed.overlaps(y.toMinute).should.be.true
     x.toHour.overlaps(y.toMinute).should.be.true
 
-    [x, y] = xy @before
+    [x, y] = xy @dIvl.before
     x.toMonth.overlaps(y.toMonth).should.be.false
     should.not.exist x.toYear.overlaps(y.closed)
 
-    [x, y] = xy @meets
+    [x, y] = xy @dIvl.meets
     x.toMonth.overlaps(y.toMonth).should.be.false
     should.not.exist x.toYear.overlaps(y.closed)
 
-    [x, y] = xy @overlaps
+    [x, y] = xy @dIvl.overlaps
     x.toMonth.overlaps(y.toMonth).should.be.true
     should.not.exist x.toYear.overlaps(y.closed)
 
-    [x, y] = xy @begins
+    [x, y] = xy @dIvl.begins
     x.toMinute.overlaps(y.toMinute).should.be.true
     x.toYear.overlaps(y.closed).should.be.true
 
-    [x, y] = xy @during
+    [x, y] = xy @dIvl.during
     x.toMonth.overlaps(y.toMonth).should.be.true
     y.toMonth.overlaps(x.toMonth).should.be.true
     x.toYear.overlaps(y.closed).should.be.true
 
-    [x, y] = xy @ends
+    [x, y] = xy @dIvl.ends
     x.toMinute.overlaps(y.toMinute).should.be.true
     x.toYear.overlaps(y.closed).should.be.true
 
-describe 'Interval.overlaps(DateTime)', ->
+describe 'DateTimeInterval.overlaps(DateTime)', ->
   @beforeEach ->
     setupIntervalsAndDateTimes @
 
@@ -1397,3 +1849,463 @@ describe 'Interval.overlaps(DateTime)', ->
     @all2012.toMonth.overlaps(@aft2012.full).should.be.false
 
     @all2012.closed.overlaps(@mid2012.toYear).should.be.true
+
+describe 'IntegerInterval.includes(IntegerInterval)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.includes(y.closed).should.be.true
+    x.closed.includes(y.open).should.be.true
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.true
+    y.closed.includes(x.closed).should.be.true
+    y.closed.includes(x.open).should.be.true
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.true
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.false
+    y.closed.includes(x.open).should.be.false
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.false
+    y.closed.includes(x.open).should.be.false
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.false
+    y.closed.includes(x.open).should.be.false
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.true
+    y.closed.includes(x.open).should.be.true
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.true
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.true
+    y.closed.includes(x.open).should.be.true
+    y.open.includes(x.closed).should.be.true
+    y.open.includes(x.open).should.be.true
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.includes(y.closed).should.be.false
+    x.closed.includes(y.open).should.be.false
+    x.open.includes(y.closed).should.be.false
+    x.open.includes(y.open).should.be.false
+    y.closed.includes(x.closed).should.be.true
+    y.closed.includes(x.open).should.be.true
+    y.open.includes(x.closed).should.be.false
+    y.open.includes(x.open).should.be.true
+
+  it 'should properly handle imprecision', ->
+    uIvl = new DT.Interval(new DT.Uncertainty(5,10), new DT.Uncertainty(15, 20))
+
+    ivl = new DT.Interval(0, 100)
+    ivl.includes(uIvl).should.be.true
+    uIvl.includes(ivl).should.be.false
+
+    ivl = new DT.Interval(-100, 0)
+    ivl.includes(uIvl).should.be.false
+    uIvl.includes(ivl).should.be.false
+
+    ivl = new DT.Interval(10, 15)
+    should.not.exist ivl.includes(uIvl)
+    uIvl.includes(ivl).should.be.true
+
+    ivl = new DT.Interval(5, 20)
+    ivl.includes(uIvl).should.be.true
+    should.not.exist uIvl.includes(ivl)
+
+    should.not.exist uIvl.includes(uIvl)
+
+describe 'IntegerInterval.includes(Integer)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate integers less than it', ->
+    @zeroToHundred.closed.includes(-5).should.be.false
+
+  it 'should properly calculate the left boundary integer', ->
+    @zeroToHundred.closed.includes(0).should.be.true
+    @zeroToHundred.open.includes(0).should.be.false
+
+  it 'should properly calculate integers in the middle of it', ->
+    @zeroToHundred.closed.includes(50).should.be.true
+
+  it 'should properly calculate the right boundary integer', ->
+    @zeroToHundred.closed.includes(100).should.be.true
+    @zeroToHundred.open.includes(100).should.be.false
+
+  it 'should properly calculate integers greater than it', ->
+    @zeroToHundred.closed.includes(105).should.be.false
+
+  it 'should properly handle imprecision', ->
+    @zeroToHundred.closed.includes(new DT.Uncertainty(-20,-10)).should.be.false
+    should.not.exist @zeroToHundred.closed.includes(new DT.Uncertainty(-20,20))
+    @zeroToHundred.closed.includes(new DT.Uncertainty(0,100)).should.be.true
+    should.not.exist @zeroToHundred.closed.includes(new DT.Uncertainty(80,120))
+    @zeroToHundred.closed.includes(new DT.Uncertainty(120,140)).should.be.false
+    should.not.exist @zeroToHundred.closed.includes(new DT.Uncertainty(-20,120))
+
+    uIvl = new DT.Interval(new DT.Uncertainty(5,10), new DT.Uncertainty(15, 20))
+
+    uIvl.includes(0).should.be.false
+    should.not.exist uIvl.includes(5)
+    should.not.exist uIvl.includes(6)
+    uIvl.includes(10).should.be.true
+    uIvl.includes(12).should.be.true
+    uIvl.includes(15).should.be.true
+    should.not.exist uIvl.includes(16)
+    should.not.exist uIvl.includes(20)
+    uIvl.includes(25).should.be.false
+
+    uIvl.includes(new DT.Uncertainty(0,4)).should.be.false
+    should.not.exist uIvl.includes(new DT.Uncertainty(0,5))
+    should.not.exist uIvl.includes(new DT.Uncertainty(5,10))
+    uIvl.includes(new DT.Uncertainty(10,15)).should.be.true
+    should.not.exist uIvl.includes(new DT.Uncertainty(15,20))
+    should.not.exist uIvl.includes(new DT.Uncertainty(20,25))
+    uIvl.includes(new DT.Uncertainty(25,30)).should.be.false
+
+describe 'IntegerInterval.includedIn(IntegerInterval)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.includedIn(y.closed).should.be.true
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.true
+    x.open.includedIn(y.open).should.be.true
+
+    y.closed.includedIn(x.closed).should.be.true
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.true
+    y.open.includedIn(x.open).should.be.true
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.includedIn(y.closed).should.be.false
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.false
+    x.open.includedIn(y.open).should.be.false
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.includedIn(y.closed).should.be.false
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.false
+    x.open.includedIn(y.open).should.be.false
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.includedIn(y.closed).should.be.false
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.false
+    x.open.includedIn(y.open).should.be.false
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.includedIn(y.closed).should.be.true
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.true
+    x.open.includedIn(y.open).should.be.true
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.includedIn(y.closed).should.be.true
+    x.closed.includedIn(y.open).should.be.true
+    x.open.includedIn(y.closed).should.be.true
+    x.open.includedIn(y.open).should.be.true
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.includedIn(y.closed).should.be.true
+    x.closed.includedIn(y.open).should.be.false
+    x.open.includedIn(y.closed).should.be.true
+    x.open.includedIn(y.open).should.be.true
+    y.closed.includedIn(x.closed).should.be.false
+    y.closed.includedIn(x.open).should.be.false
+    y.open.includedIn(x.closed).should.be.false
+    y.open.includedIn(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    uIvl = new DT.Interval(new DT.Uncertainty(5,10), new DT.Uncertainty(15, 20))
+
+    ivl = new DT.Interval(0, 100)
+    ivl.includedIn(uIvl).should.be.false
+    uIvl.includedIn(ivl).should.be.true
+
+    ivl = new DT.Interval(-100, 0)
+    ivl.includedIn(uIvl).should.be.false
+    uIvl.includedIn(ivl).should.be.false
+
+    ivl = new DT.Interval(10, 15)
+    ivl.includedIn(uIvl).should.be.true
+    should.not.exist uIvl.includedIn(ivl)
+
+    ivl = new DT.Interval(5, 20)
+    should.not.exist ivl.includedIn(uIvl)
+    uIvl.includedIn(ivl).should.be.true
+
+    should.not.exist uIvl.includedIn(uIvl)
+
+describe 'IntegerInterval.includedIn(Integer)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  # Admittedly, most of this doesn't really make sense, but let's be sure the code reflects that!
+
+  it 'should properly calculate integers less than it', ->
+    @zeroToHundred.closed.includedIn(-5).should.be.false
+
+  it 'should properly calculate the left boundary integer', ->
+    @zeroToHundred.closed.includedIn(0).should.be.false
+    @zeroToHundred.open.includedIn(0).should.be.false
+
+  it 'should properly calculate integers in the middle of it', ->
+    @zeroToHundred.closed.includedIn(50).should.be.false
+
+  it 'should properly calculate the right boundary integer', ->
+    @zeroToHundred.closed.includedIn(100).should.be.false
+    @zeroToHundred.open.includedIn(100).should.be.false
+
+  it 'should properly calculate integers greater than it', ->
+    @zeroToHundred.closed.includedIn(105).should.be.false
+
+  it 'should properly calculate for zero-width intervals', ->
+    ivl = new DT.Interval(50, 50)
+    ivl.includedIn(25).should.be.false
+    ivl.includedIn(50).should.be.true
+    ivl.includedIn(75).should.be.false
+
+  it 'should properly handle imprecision', ->
+    @zeroToHundred.closed.includedIn(new DT.Uncertainty(-20,-10)).should.be.false
+    @zeroToHundred.closed.includedIn(new DT.Uncertainty(-20,20)).should.be.false
+    @zeroToHundred.closed.includedIn(new DT.Uncertainty(0,100)).should.be.false
+    @zeroToHundred.closed.includedIn(new DT.Uncertainty(80,120)).should.be.false
+    @zeroToHundred.closed.includedIn(new DT.Uncertainty(120,140)).should.be.false
+    @zeroToHundred.closed.includedIn(new DT.Uncertainty(-20,120)).should.be.false
+
+    uIvl = new DT.Interval(new DT.Uncertainty(5,10), new DT.Uncertainty(15, 20))
+
+    uIvl.includedIn(0).should.be.false
+    uIvl.includedIn(12).should.be.false
+    uIvl.includedIn(25).should.be.false
+
+    uIvl.includedIn(new DT.Uncertainty(0,4)).should.be.false
+    uIvl.includedIn(new DT.Uncertainty(0,5)).should.be.false
+    uIvl.includedIn(new DT.Uncertainty(10,15)).should.be.false
+    uIvl.includedIn(new DT.Uncertainty(20,25)).should.be.false
+    uIvl.includedIn(new DT.Uncertainty(25,30)).should.be.false
+
+    ivl = new DT.Interval(5, 5)
+    ivl.includedIn(new DT.Uncertainty(0,4)).should.be.false
+    ivl.includedIn(new DT.Uncertainty(5,5)).should.be.true
+    should.not.exist ivl.includedIn(new DT.Uncertainty(0,10))
+    ivl.includedIn(new DT.Uncertainty(6,10)).should.be.false
+
+describe 'IntegerInterval.overlaps(IntegerInterval)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.overlaps(y.closed).should.be.false
+    x.closed.overlaps(y.open).should.be.false
+    x.open.overlaps(y.closed).should.be.false
+    x.open.overlaps(y.open).should.be.false
+    y.closed.overlaps(x.closed).should.be.false
+    y.closed.overlaps(x.open).should.be.false
+    y.open.overlaps(x.closed).should.be.false
+    y.open.overlaps(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.overlaps(y.closed).should.be.false
+    x.closed.overlaps(y.open).should.be.false
+    x.open.overlaps(y.closed).should.be.false
+    x.open.overlaps(y.open).should.be.false
+    y.closed.overlaps(x.closed).should.be.false
+    y.closed.overlaps(x.open).should.be.false
+    y.open.overlaps(x.closed).should.be.false
+    y.open.overlaps(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.overlaps(y.closed).should.be.true
+    x.closed.overlaps(y.open).should.be.true
+    x.open.overlaps(y.closed).should.be.true
+    x.open.overlaps(y.open).should.be.true
+    y.closed.overlaps(x.closed).should.be.true
+    y.closed.overlaps(x.open).should.be.true
+    y.open.overlaps(x.closed).should.be.true
+    y.open.overlaps(x.open).should.be.true
+
+  it 'should properly handle imprecision', ->
+    uIvl = new DT.Interval(new DT.Uncertainty(5,10), new DT.Uncertainty(15, 20))
+
+    ivl = new DT.Interval(0, 100)
+    ivl.overlaps(uIvl).should.be.true
+    uIvl.overlaps(ivl).should.be.true
+
+    ivl = new DT.Interval(-100, 0)
+    ivl.overlaps(uIvl).should.be.false
+    uIvl.overlaps(ivl).should.be.false
+
+    ivl = new DT.Interval(10, 15)
+    ivl.overlaps(uIvl).should.be.true
+    uIvl.overlaps(ivl).should.be.true
+
+    ivl = new DT.Interval(5, 20)
+    ivl.overlaps(uIvl).should.be.true
+    uIvl.overlaps(ivl).should.be.true
+
+    uIvl.overlaps(uIvl).should.be.true
+
+describe 'IntegerInterval.overlaps(Integer)', ->
+  @beforeEach ->
+    setupIntervalsAndDateTimes @
+
+  it 'should properly calculate integers less than it', ->
+    @zeroToHundred.closed.overlaps(-5).should.be.false
+
+  it 'should properly calculate the left boundary integer', ->
+    @zeroToHundred.closed.overlaps(0).should.be.true
+    @zeroToHundred.open.overlaps(0).should.be.false
+
+  it 'should properly calculate integers in the middle of it', ->
+    @zeroToHundred.closed.overlaps(50).should.be.true
+
+  it 'should properly calculate the right boundary integer', ->
+    @zeroToHundred.closed.overlaps(100).should.be.true
+    @zeroToHundred.open.overlaps(100).should.be.false
+
+  it 'should properly calculate integers greater than it', ->
+    @zeroToHundred.closed.overlaps(105).should.be.false
+
+  it 'should properly handle imprecision', ->
+    @zeroToHundred.closed.overlaps(new DT.Uncertainty(-20,-10)).should.be.false
+    should.not.exist @zeroToHundred.closed.overlaps(new DT.Uncertainty(-20,20))
+    @zeroToHundred.closed.overlaps(new DT.Uncertainty(0,100)).should.be.true
+    should.not.exist @zeroToHundred.closed.overlaps(new DT.Uncertainty(80,120))
+    @zeroToHundred.closed.overlaps(new DT.Uncertainty(120,140)).should.be.false
+    should.not.exist @zeroToHundred.closed.overlaps(new DT.Uncertainty(-20,120))
+
+    uIvl = new DT.Interval(new DT.Uncertainty(5,10), new DT.Uncertainty(15, 20))
+
+    uIvl.overlaps(0).should.be.false
+    should.not.exist uIvl.overlaps(5)
+    should.not.exist uIvl.overlaps(6)
+    uIvl.overlaps(10).should.be.true
+    uIvl.overlaps(12).should.be.true
+    uIvl.overlaps(15).should.be.true
+    should.not.exist uIvl.overlaps(16)
+    should.not.exist uIvl.overlaps(20)
+    uIvl.overlaps(25).should.be.false
+
+    uIvl.overlaps(new DT.Uncertainty(0,4)).should.be.false
+    should.not.exist uIvl.overlaps(new DT.Uncertainty(0,5))
+    should.not.exist uIvl.overlaps(new DT.Uncertainty(5,10))
+    uIvl.overlaps(new DT.Uncertainty(10,15)).should.be.true
+    should.not.exist uIvl.overlaps(new DT.Uncertainty(15,20))
+    should.not.exist uIvl.overlaps(new DT.Uncertainty(20,25))
+    uIvl.overlaps(new DT.Uncertainty(25,30)).should.be.false
