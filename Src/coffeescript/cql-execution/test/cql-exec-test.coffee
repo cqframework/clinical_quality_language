@@ -1,13 +1,15 @@
 should = require 'should'
 { Library, Context, Results } =  require '../lib/cql-exec'
 { CodeService } = require '../lib/cql-code-service'
+PAT = require '../lib/cql-patient'
 DT = require '../lib/cql-datatypes'
 D = require './data/cql-test-data'
 P = require './data/cql-test-patients'
 
 setup = (test, patients=[], parameters={}) ->
   test.lib = new Library(D[test.test.parent.title])
-  test.ctx = new Context(test.lib, patients, parameters)
+  psource = new PAT.PatientSource(patients)  
+  test.ctx = new Context(test.lib, psource, parameters)
   for k,v of test.lib.expressions
     test[k[0].toLowerCase() + k[1..-1]] = v.expression
 
@@ -530,11 +532,11 @@ describe.skip 'PatientPropertyInValueSet', ->
     }
 
   it 'should find that John is not female', ->
-    @ctx = @ctx.withPatients [ P.P1 ]
+    @ctx = @ctx.withPatients new PAT.PatientSource([ P.P1 ])
     @isFemale.exec(@ctx).should.be.false
 
   it 'should find that Sally is female', ->
-    @ctx = @ctx.withPatients [ P.P2 ]
+    @ctx = @ctx.withPatients new PAT.PatientSource([ P.P2 ])
     @isFemale.exec(@ctx).should.be.true
 
 describe 'Add', ->
@@ -646,7 +648,7 @@ describe 'Nil', ->
 describe 'Retrieve', ->
   @beforeEach ->
     setup @
-    @ctx.withPatients [P.P3]
+    @ctx.withPatients new PAT.PatientSource([P.P3])
     @ctx.withCodeService new CodeService {
       "2.16.840.1.113883.3.464.1003.102.12.1011" : {
         "20140501" : [
@@ -723,7 +725,7 @@ describe 'Retrieve', ->
 describe 'DateRangeOptimizedQuery', ->
   @beforeEach ->
     setup @
-    @ctx.withPatients [P.P3]
+    @ctx.withPatients new PAT.PatientSource([P.P3])
     @ctx.withCodeService new CodeService {
       "2.16.840.1.113883.3.464.1003.101.12.1061" : {
         "20140501" : [
@@ -752,7 +754,7 @@ describe 'DateRangeOptimizedQuery', ->
 describe.skip 'IncludesQuery', ->
   @beforeEach ->
     setup @
-    @ctx.withPatients [P.P3]
+    @ctx.withPatients new PAT.PatientSource([P.P3])
     @ctx.withCodeService new CodeService {
       "2.16.840.1.113883.3.464.1003.101.12.1061" : {
         "20140501" : [

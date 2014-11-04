@@ -43,4 +43,17 @@ class Patient
   findRecords: (datatype) ->
     @records[datatype] ? []
 
+
+class PatientSource 
+    constructor: (@patients) ->
+      @index = 0
+    currentPatient: ->
+      if @patients[@index]
+        new Patient(@patients[@index])
+    
+    nextPatient: ->
+      @index++;
+      @currentPatient()
+
 module.exports.Patient = Patient
+module.exports.PatientSource = PatientSource

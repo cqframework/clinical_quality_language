@@ -30,6 +30,9 @@ buildLiteral = (json) ->
     when "{http://www.w3.org/2001/XMLSchema}string" then new StringLiteral(json)
     else new Literal(json)
 
+Function::property = (prop, desc) ->
+  Object.defineProperty @prototype, prop, desc
+
 # Key Classes
 
 class Library
@@ -41,37 +44,72 @@ class Library
     for expr in json.library.statements?.def ? []
       @expressions[expr.name] = new ExpressionDef(expr)
 
+  get: (identifier) ->
+     @expressions[identifier]
+
+  getParameter: (name) ->
+    @parameters[name]
+
   exec: (ctx) ->
     Results r = new Results()
-    while ctx.currentPatient()
+    while p = ctx.currentPatient()
+      patient_ctx = ctx.childContext({"PATIENT" : p})
       for key,expr of @expressions when expr.context is "PATIENT"
-        r.recordPatientResult(ctx.currentPatient().id, key, expr.exec(ctx))
+        patient_ctx.set key, expr.exec(patient_ctx)
+        r.recordPatientResult(patient_ctx.currentPatient().id, key, expr.exec(patient_ctx))
       ctx.nextPatient()
     r
 
 class Context
-  constructor: (@measure, patients = [], @parameters = {}, @codeService) ->
-    @withPatients patients
-    @patientIndex = 0
+  
 
-  withPatients: (patients = []) ->
-    @patients = (new Patient(p) for p in patients)
+  constructor: (@parent, @_patientSource,@_parameters, @_codeService) ->
+    @context_values = {}
+
+  @property "parameters" ,
+    get: -> @_parameters || @parent?.parameters
+    set: (params) ->  @_parameters = params
+
+  @property "patientSource" ,
+    get: -> @_patientSource || @parent?.patientSource
+    set: (ps) -> @_patientSource = ps  
+
+  @property "codeService" ,
+    get: -> @_codeService || @parent?.codeService
+    set: (cs) -> @_codeService = cs  
+
+  withPatients: (patientSource) ->
+    @patientSource=patientSource
     @
 
-  withParameters: (p) ->
-    @parameters = p ? {}
+  withParameters: (params) ->
+    @parameters = params ? {}
     @
 
   withCodeService: (cs) ->
     @codeService = cs
     @
 
+  childContext: (context_values = {}) ->
+    ctx = new Context(@)
+    ctx.context_values = context_values
+    ctx
+
+  getParameter: (name) ->
+    @parent?.getParameter(name)
+
+  get: (identifier) ->
+    @context_values[identifier] || @parent?.get(identifier)
+
+  set: (identifier, value) ->
+    @context_values[identifier] = value
+
   currentPatient: () ->
-    if @patientIndex < @patients.length then @patients[@patientIndex] else null
+    @patientSource.currentPatient()
 
   nextPatient:() ->
-    @patientIndex++
-    @currentPatient()
+    @patientSource.nextPatient()
+
 
 class Results
   constructor: () ->
@@ -118,7 +156,7 @@ class ExpressionRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.measure.expressions[@name]?.exec(ctx)
+    ctx.get(@name)?.exec(ctx)
 
 # Parameters
 
@@ -138,7 +176,7 @@ class ParameterRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.measure.parameters[@name]?.exec(ctx)
+    ctx.getParameter(@name)?.exec(ctx)
 
 # Logical Operators
 
@@ -296,6 +334,15 @@ class Includes extends Expression
     args = execArgs(ctx)
     args[0].includes args[1]
 
+class Identifier extends Expression
+  constructor: (json) ->
+    super
+    @identifier = json
+
+  exec: (ctx) ->
+    ctx.get(@identifier)
+    
+
 class Start extends Expression
   constructor: (json) ->
     super
@@ -449,20 +496,83 @@ class Retrieve extends Expression
 
     records
 
+
+class MultiSource
+  constructor: (@sources) ->
+    @sources = if typeIsArray(@sources) then @sources else [@sources]
+    @alias = @sources[0].alias
+    @expression = build @sources[0].expression
+
+    if @sources.length > 1 
+      @rest = new MultiSource(@sources.slice(1)) 
+
+  aliases: ->
+    a = [@alias] 
+    if @rest
+      a = a.concat rest.aliases
+    a
+      
+  forEach: (ctx, func) ->
+    @records ||= @expression.exec(ctx)
+    self = @
+    results = for rec in @records
+      rctx = new Context(ctx)
+      rctx.set(@alias,rec)
+      if @rest
+        rest.forEach(rctx,func)
+      else
+        func(rctx)
+    results
+ 
+allTrue = (things) ->
+  if typeIsArray things
+    if things.length > 0
+      things.reduce (a,b) -> a && b
+    else
+      true
+  else
+    things
+
 class Query extends Expression
   constructor: (json) ->
     super
-    # TODO: Support multi-source
-    @sourceAlias = json.source[0].alias
-    @source = build json.source[0].expression
+    @sources = new MultiSource(json.source)
+    @definitions = json.definitions || []
     @relationship = build json.relationship
     @where = build json.where
+    @return = build json.return
+    @aliases = @sources.aliases()
 
   exec: (ctx) ->
-    results = @source.exec(ctx)
-    # TODO: Introduce notion of a "stack" to the Context and push E onto it.
-    # Then incorporate support for reading from the stack and filtering the results.
-    results
+    self = @
+    returnedValues = []
+    multisourceDefault = {}
+    for a in @aliases
+      multisourceDefault[a] = []
+
+    @sources.forEach(ctx, (rctx) ->
+     for def in self.definitions
+       def.exec(rctx) 
+     relations = for rel in self.relationship
+        child_ctx = rctx.childContext()
+        rel.exec(child_ctx)
+     passed = allTrue(relations)
+     passed = passed && if self.where then self.where.exec(rctx) else passed
+     if passed 
+       if self.ret
+         returnedValues << self.ret.exec(rctx)
+       else
+         if self.aliases.length == 1
+           returnedValues.push rctx.get(self.aliases[0])
+         else
+           for a in self.aliases
+             aValue = rctx.get(a)
+             if !multisourceDefault[a].indexOf(aValue)
+               multisourceDefault[a].push(aValue)
+    )
+    if @return || @aliases.length == 1 then returnedValues else multisourceDefault
+
+
 
 module.exports.Library = Library
 module.exports.Context = Context
