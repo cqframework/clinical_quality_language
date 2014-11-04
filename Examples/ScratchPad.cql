@@ -242,9 +242,70 @@ interval[uncertainty[1, 10], uncertainty[20, 30]]
 
 uncertainty[uncertainty[1, 10], uncertainty[20, 30]] // equivalent to uncertainty[1, 30]
 
+uncertainty[1, 5]
+uncertainty[5, 10]
+
+uncertainty[1, 4] > uncertainty[5, 10] // false
+uncertainty[1, 4] >= uncertainty[5, 10] // false
+uncertainty[1, 4] = uncertainty[5, 10] // false
+uncertainty[1, 4] <= uncertainty[5, 10] // true
+uncertainty[1, 4] < uncertainty[5, 10] // true
+
+uncertainty[5, 10] > uncertainty[1, 4] // true
+uncertainty[5, 10] >= uncertainty[1, 4] // true
+uncertainty[5, 10] = uncertainty[1, 4] // false
+uncertainty[5, 10] <= uncertainty[1, 4] // false
+uncertainty[5, 10] < uncertainty[1, 4] // false
+
+uncertainty[1, 5] > uncertainty[5, 10] // false
+uncertainty[1, 5] >= uncertainty[5, 10] // unknown
+uncertainty[1, 5] = uncertainty[5, 10] // unknown
+uncertainty[1, 5] <= uncertainty[5, 10] // true
+uncertainty[1, 5] < uncertainty[5, 10] // unknown
+
+uncertainty[5, 10] > uncertainty[1, 5] // unknown
+uncertainty[5, 10] >= uncertainty[1, 5] // true
+uncertainty[5, 10] = uncertainty[1, 5] // unknown
+uncertainty[5, 10] <= uncertainty[1, 5] // unknown
+uncertainty[5, 10] < uncertainty[1, 5] // false
+
+uncertainty[1, 6] > uncertainty[5, 10] // unknown
+uncertainty[1, 6] >= uncertainty[5, 10] // unknown
+uncertainty[1, 6] = uncertainty[5, 10] // unknown
+uncertainty[1, 6] <= uncertainty[5, 10] // unknown
+uncertainty[1, 6] < uncertainty[5, 10] // unknown
+
+uncertainty[5, 10] > uncertainty[1, 6] // unknown
+uncertainty[5, 10] >= uncertainty[1, 6] // unknown
+uncertainty[5, 10] = uncertainty[1, 6] // unknown
+uncertainty[5, 10] <= uncertainty[1, 6] // unknown
+uncertainty[5, 10] < uncertainty[1, 6] // unknown
+
+parameter "Measure Period" default interval[Date(2012, 1, 1, 0, 0, 0), Date(2013, 1, 1, 0, 0, 0))
+
+define MyEncounter.low = Date(2012, 1, 1)
+
+MyEncounter starts same day or after start of "Measure Period"
+
+MyEncounter during "Measure Period"
+
+define MyEncounter.effectiveTime = interval[Date(2012), Date(2012)]
+
+MyEncounter during "Measure Period"
+
+interval[Date(2012), Date(2012)] during interval[Date(2012, 1, 1, 0, 0, 0), Date(2013, 1, 1, 0, 0, 0))
+
+Date(2012) >= Date(2012, 1, 1, 0, 0, 0) and Date(2012) <= Date(2012, 12, 31, 23, 59, 59)
+
+Date(2012) >= Date(2012, 1, 1, 0, 0, 0)
+
+Date(2012) = Date(2012, 1, 1, 0, 0, 0) or Date(2012) > Date(2012, 1, 1, 0, 0, 0)
 
 
+define A = uncertainty[0, 5]
+define B = uncertainty[5, 10]
 
-
-
-
+A = B // unknown
+A < B // unknown
+A <= B // unknown
+A > B // false
