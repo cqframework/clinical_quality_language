@@ -147,24 +147,28 @@ class And extends Expression
     super
 
   exec: (ctx) ->
-    results = @execArgs(ctx)
-    results.reduce (a,b) -> a and b
+    DT.ThreeValuedLogic.and @execArgs(ctx)...
 
 class Or extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    results = @execArgs(ctx)
-    results.reduce (a,b) -> a or b
+    DT.ThreeValuedLogic.or @execArgs(ctx)...
 
 class Xor extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    results = @execArgs(ctx)
-    results.reduce (a,b) -> (!a ^ !b) is 1
+    DT.ThreeValuedLogic.xor @execArgs(ctx)...
+
+class Not extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    DT.ThreeValuedLogic.not @execArgs(ctx)
 
 # Functions
 
@@ -300,6 +304,32 @@ class Start extends Expression
     # assumes this is interval
     @arg.exec(ctx).low
 
+class Union extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    # TODO: Support intervals
+    @execArgs(ctx).reduce (x, y) -> x.concat y
+
+class Intersect extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    # TODO: Support intervals
+    @execArgs(ctx).reduce (x, y) -> (itm for itm in x when itm in y)
+
+class Distinct extends Expression
+  constructor: (json) ->
+    super
+    @source = build json.source
+
+  exec: (ctx) ->
+    container = {}
+    container[itm] = itm for itm in @source.exec(ctx)
+    value for key, value of container
+
 # Membership
 
 class In extends Expression
@@ -386,6 +416,13 @@ class StringLiteral extends Literal
 
   exec: (ctx) ->
     @value
+
+class Null extends Literal
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    null
 
 # Retreives and Queries
 

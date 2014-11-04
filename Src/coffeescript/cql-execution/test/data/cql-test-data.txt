@@ -32,35 +32,41 @@ define Foo = "Acute Pharyngitis"
 
 # And
 define TT = true and true
-define FF = false and false
 define TF = true and false
+define TN = true and null
+define FF = false and false
 define FT = false and true
-define TTT = true and true and true
-define FFF = false and false and false
-define TFT = true and false and true
+define FN = false and null
+define NN = null and null
+define NT = null and true
+define NF = null and false
 
 # Or
 define TT = true or true
-define FF = false or false
 define TF = true or false
+define TN = true or null
+define FF = false or false
 define FT = false or true
-define TTT = true or true or true
-define FFF = false or false or false
-define TFT = true or false or true
+define FN = false or null
+define NN = null or null
+define NT = null or true
+define NF = null or false
 
 # XOr
 define TT = true xor true
-define FF = false xor false
 define TF = true xor false
+define TN = true xor null
+define FF = false xor false
 define FT = false xor true
-define TTT = true xor true xor true
-define TTF = true xor true xor false
-define TFT = true xor false xor true
-define TFF = true xor false xor false
-define FTT = false xor true xor true
-define FTF = false xor true xor false
-define FFT = false xor false xor true
-define FFF = false xor false xor false
+define FN = false xor null
+define NN = null xor null
+define NT = null xor true
+define NF = null xor false
+
+# Not
+define NotTrue = not true
+define NotFalse = not false
+define NotNull = not null
 
 # AgeAtFunctionRef
 define AgeAt2012 = AgeAt(Date(2012))
@@ -159,6 +165,23 @@ define WrongLongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6')
 define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
 define IsFemale = gender in "Female Administrative Sex"
 
+# Union
+define OneToTen = {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}
+define OneToFiveOverlapped = {1, 2, 3, 4} union {3, 4, 5}
+define Disjoint = {1, 2} union {4, 5}
+define NestedToFifteen = {1, 2, 3} union {4, 5, 6} union {7 ,8 , 9} union {10, 11, 12} union {13, 14, 15}
+
+# Intersect
+define NoIntersection = {1, 2, 3} intersect {4, 5, 6}
+define IntersectOnFive = {4, 5, 6} intersect {1, 3, 5, 7}
+define IntersectOnEvens = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} intersect {0, 2, 4, 6, 8, 10, 12}
+define IntersectOnAll = {1, 2, 3, 4, 5} intersect {5, 4, 3, 2, 1}
+define NestedIntersects = {1, 2, 3, 4, 5} intersect {2, 3, 4, 5, 6} intersect {3, 4, 5, 6, 7} intersect {4, 5, 6, 7, 8}
+
+# Distinct
+define LotsOfDups = distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
+define NoDups = distinct {2, 4, 6, 8, 10}
+
 # Add
 define Ten = 10
 define Eleven = 11
@@ -198,6 +221,9 @@ define BoolFalse = false
 define IntOne = 1
 define DecimalTenth = 0.1
 define StringTrue = 'true'
+
+# Nil
+define Nil = null
 
 # Retrieve
 define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')

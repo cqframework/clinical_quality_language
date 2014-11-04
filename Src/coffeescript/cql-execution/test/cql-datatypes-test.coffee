@@ -177,8 +177,34 @@ describe 'ThreeValuedLogic.or', ->
     DT.ThreeValuedLogic.or(false, false, false, false, false).should.be.false
 
   it 'should return null when there is at least one null with no trues', ->
-    should.not.exist DT.ThreeValuedLogic.or(false, false, null, false, false)
-    should.not.exist DT.ThreeValuedLogic.or(null, null, null, null, null)
+    should(DT.ThreeValuedLogic.or(false, false, null, false, false)).be.null
+    should(DT.ThreeValuedLogic.or(null, null, null, null, null)).be.null
+
+describe 'ThreeValuedLogic.xor', ->
+
+  it 'should return true when exlusive', ->
+    DT.ThreeValuedLogic.xor(false, true).should.be.true
+    DT.ThreeValuedLogic.xor(false, true).should.be.true
+    DT.ThreeValuedLogic.xor(true, false, false, false).should.be.true
+    DT.ThreeValuedLogic.xor(false, true, false, false).should.be.true
+    DT.ThreeValuedLogic.xor(true, true, true, false, false).should.be.true
+    DT.ThreeValuedLogic.xor(false, false, true, false, false).should.be.true
+
+  it 'should return false when not exlcusive', ->
+    DT.ThreeValuedLogic.xor(true, true).should.be.false
+    DT.ThreeValuedLogic.xor(false, false).should.be.false
+    DT.ThreeValuedLogic.xor(true, false, true).should.be.false
+    DT.ThreeValuedLogic.xor(false, true, true).should.be.false
+    DT.ThreeValuedLogic.xor(true, true, false).should.be.false
+    DT.ThreeValuedLogic.xor(false, false, false).should.be.false
+    DT.ThreeValuedLogic.xor(false, false, true, false, true).should.be.false
+
+  it 'should return null when there is at least one null', ->
+    should(DT.ThreeValuedLogic.xor(true, null)).be.null
+    should(DT.ThreeValuedLogic.xor(false, null)).be.null
+    should(DT.ThreeValuedLogic.xor(true, false, null)).be.null
+    should(DT.ThreeValuedLogic.xor(false, true, null)).be.null
+    should(DT.ThreeValuedLogic.xor(false, false, true, null, false)).be.null
 
 describe 'ThreeValuedLogic.not', ->
 

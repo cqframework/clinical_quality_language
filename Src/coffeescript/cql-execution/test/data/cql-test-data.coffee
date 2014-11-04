@@ -385,12 +385,14 @@ library TestSnippet version '1'
 using QUICK
 context PATIENT
 define TT = true and true
-define FF = false and false
 define TF = true and false
+define TN = true and null
+define FF = false and false
 define FT = false and true
-define TTT = true and true and true
-define FFF = false and false and false
-define TFT = true and false and true
+define FN = false and null
+define NN = null and null
+define NT = null and true
+define NF = null and false
 ###
 
 module.exports.And = {
@@ -422,13 +424,13 @@ module.exports.And = {
                } ]
             }
          }, {
-            "name" : "FF",
+            "name" : "TF",
             "context" : "PATIENT",
             "expression" : {
                "type" : "And",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
+                  "value" : "true",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
@@ -437,13 +439,26 @@ module.exports.And = {
                } ]
             }
          }, {
-            "name" : "TF",
+            "name" : "TN",
             "context" : "PATIENT",
             "expression" : {
                "type" : "And",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "FF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
@@ -467,68 +482,52 @@ module.exports.And = {
                } ]
             }
          }, {
-            "name" : "TTT",
+            "name" : "FN",
             "context" : "PATIENT",
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "type" : "And",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "FFF",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "And",
-               "operand" : [ {
-                  "type" : "And",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
-               }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "false",
                   "type" : "Literal"
+               }, {
+                  "type" : "Null"
                } ]
             }
          }, {
-            "name" : "TFT",
+            "name" : "NN",
             "context" : "PATIENT",
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "type" : "And",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Null"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "NT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "Null"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "NF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "Null"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
                   "type" : "Literal"
                } ]
             }
@@ -542,12 +541,14 @@ library TestSnippet version '1'
 using QUICK
 context PATIENT
 define TT = true or true
-define FF = false or false
 define TF = true or false
+define TN = true or null
+define FF = false or false
 define FT = false or true
-define TTT = true or true or true
-define FFF = false or false or false
-define TFT = true or false or true
+define FN = false or null
+define NN = null or null
+define NT = null or true
+define NF = null or false
 ###
 
 module.exports.Or = {
@@ -579,13 +580,13 @@ module.exports.Or = {
                } ]
             }
          }, {
-            "name" : "FF",
+            "name" : "TF",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
+                  "value" : "true",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
@@ -594,13 +595,26 @@ module.exports.Or = {
                } ]
             }
          }, {
-            "name" : "TF",
+            "name" : "TN",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "FF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
@@ -624,68 +638,52 @@ module.exports.Or = {
                } ]
             }
          }, {
-            "name" : "TTT",
+            "name" : "FN",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "type" : "Or",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "FFF",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "Or",
-               "operand" : [ {
-                  "type" : "Or",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
-               }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "false",
                   "type" : "Literal"
+               }, {
+                  "type" : "Null"
                } ]
             }
          }, {
-            "name" : "TFT",
+            "name" : "NN",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "type" : "Or",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Null"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "NT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "type" : "Null"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "NF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "type" : "Null"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
                   "type" : "Literal"
                } ]
             }
@@ -699,17 +697,14 @@ library TestSnippet version '1'
 using QUICK
 context PATIENT
 define TT = true xor true
-define FF = false xor false
 define TF = true xor false
+define TN = true xor null
+define FF = false xor false
 define FT = false xor true
-define TTT = true xor true xor true
-define TTF = true xor true xor false
-define TFT = true xor false xor true
-define TFF = true xor false xor false
-define FTT = false xor true xor true
-define FTF = false xor true xor false
-define FFT = false xor false xor true
-define FFF = false xor false xor false
+define FN = false xor null
+define NN = null xor null
+define NT = null xor true
+define NF = null xor false
 ###
 
 module.exports.XOr = {
@@ -741,13 +736,13 @@ module.exports.XOr = {
                } ]
             }
          }, {
-            "name" : "FF",
+            "name" : "TF",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
+                  "value" : "true",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
@@ -756,13 +751,26 @@ module.exports.XOr = {
                } ]
             }
          }, {
-            "name" : "TF",
+            "name" : "TN",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "FF",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
@@ -786,21 +794,36 @@ module.exports.XOr = {
                } ]
             }
          }, {
-            "name" : "TTT",
+            "name" : "FN",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "type" : "Xor",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  } ]
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "NN",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Null"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "NT",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Xor",
+               "operand" : [ {
+                  "type" : "Null"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "true",
@@ -808,158 +831,75 @@ module.exports.XOr = {
                } ]
             }
          }, {
-            "name" : "TTF",
+            "name" : "NF",
             "context" : "PATIENT",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "type" : "Xor",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Null"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "false",
                   "type" : "Literal"
                } ]
             }
-         }, {
-            "name" : "TFT",
+         } ]
+      }
+   }
+}
+
+### Not
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define NotTrue = not true
+define NotFalse = not false
+define NotNull = not null
+###
+
+module.exports.Not = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "NotTrue",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Xor",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
-               }, {
+               "type" : "Not",
+               "operand" : {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "true",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
-            "name" : "TFF",
+            "name" : "NotFalse",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Xor",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
-               }, {
+               "type" : "Not",
+               "operand" : {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                   "value" : "false",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
-            "name" : "FTT",
+            "name" : "NotNull",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Xor",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "FTF",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Xor",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "FFT",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Xor",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "FFF",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Xor",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
-                  "type" : "Literal"
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Null"
+               }
             }
          } ]
       }
@@ -2657,6 +2597,736 @@ module.exports.PatientPropertyInValueSet = {
    }
 }
 
+### Union
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define OneToTen = {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}
+define OneToFiveOverlapped = {1, 2, 3, 4} union {3, 4, 5}
+define Disjoint = {1, 2} union {4, 5}
+define NestedToFifteen = {1, 2, 3} union {4, 5, 6} union {7 ,8 , 9} union {10, 11, 12} union {13, 14, 15}
+###
+
+module.exports.Union = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "OneToTen",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "8",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "9",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "OneToFiveOverlapped",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "Disjoint",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "NestedToFifteen",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "type" : "Union",
+                  "operand" : [ {
+                     "type" : "Union",
+                     "operand" : [ {
+                        "type" : "Union",
+                        "operand" : [ {
+                           "type" : "List",
+                           "element" : [ {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }, {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }, {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "3",
+                              "type" : "Literal"
+                           } ]
+                        }, {
+                           "type" : "List",
+                           "element" : [ {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "4",
+                              "type" : "Literal"
+                           }, {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "5",
+                              "type" : "Literal"
+                           }, {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "6",
+                              "type" : "Literal"
+                           } ]
+                        } ]
+                     }, {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "7",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "8",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "9",
+                           "type" : "Literal"
+                        } ]
+                     } ]
+                  }, {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "10",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "11",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "12",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "14",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "15",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Intersect
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define NoIntersection = {1, 2, 3} intersect {4, 5, 6}
+define IntersectOnFive = {4, 5, 6} intersect {1, 3, 5, 7}
+define IntersectOnEvens = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} intersect {0, 2, 4, 6, 8, 10, 12}
+define IntersectOnAll = {1, 2, 3, 4, 5} intersect {5, 4, 3, 2, 1}
+define NestedIntersects = {1, 2, 3, 4, 5} intersect {2, 3, 4, 5, 6} intersect {3, 4, 5, 6, 7} intersect {4, 5, 6, 7, 8}
+###
+
+module.exports.Intersect = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "NoIntersection",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Intersect",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "IntersectOnFive",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Intersect",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "7",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "IntersectOnEvens",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Intersect",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "8",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "9",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "8",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "12",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "IntersectOnAll",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Intersect",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "NestedIntersects",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Intersect",
+               "operand" : [ {
+                  "type" : "Intersect",
+                  "operand" : [ {
+                     "type" : "Intersect",
+                     "operand" : [ {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }, {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "5",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "6",
+                           "type" : "Literal"
+                        } ]
+                     } ]
+                  }, {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "7",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "8",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Distinct
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define LotsOfDups = distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
+define NoDups = distinct {2, 4, 6, 8, 10}
+###
+
+module.exports.Distinct = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "LotsOfDups",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Distinct",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "NoDups",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Distinct",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "8",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         } ]
+      }
+   }
+}
+
 ### Add
 library TestSnippet version '1'
 using QUICK
@@ -3291,6 +3961,37 @@ module.exports.Literal = {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
                "value" : "true",
                "type" : "Literal"
+            }
+         } ]
+      }
+   }
+}
+
+### Nil
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define Nil = null
+###
+
+module.exports.Nil = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Nil",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Null"
             }
          } ]
       }

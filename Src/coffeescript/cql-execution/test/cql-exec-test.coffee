@@ -118,91 +118,71 @@ describe 'And', ->
   @beforeEach ->
     setup @
 
-  it 'should execute T and T as T', ->
+  it 'should execute true and...', ->
     @tT.exec(@ctx).should.be.true
-
-  it 'should execute F and F as F', ->
-    @fF.exec(@ctx).should.be.false
-
-  it 'should execute T and F as F', ->
     @tF.exec(@ctx).should.be.false
+    should(@tN.exec(@ctx)).be.null
 
-  it 'should execute F and T as F', ->
+  it 'should execute false and...', ->
+    @fF.exec(@ctx).should.be.false
     @fT.exec(@ctx).should.be.false
+    @fN.exec(@ctx).should.be.false
 
-  it 'should execute T and T and T as T', ->
-    @tTT.exec(@ctx).should.be.true
-
-  it 'should execute F and F and F as F', ->
-    @fFF.exec(@ctx).should.be.false
-
-  it 'should execute T and F and T as F', ->
-    @tFT.exec(@ctx).should.be.false
+  it 'should execute null and...', ->
+    should(@nN.exec(@ctx)).be.null
+    should(@nT.exec(@ctx)).be.null
+    @nF.exec(@ctx).should.be.false
 
 describe 'Or', ->
   @beforeEach ->
     setup @
 
-  it 'should execute T or T as T', ->
+  it 'should execute true or...', ->
     @tT.exec(@ctx).should.be.true
-
-  it 'should execute F or F as F', ->
-    @fF.exec(@ctx).should.be.false
-
-  it 'should execute T or F as T', ->
     @tF.exec(@ctx).should.be.true
+    @tN.exec(@ctx).should.be.true
 
-  it 'should execute F or T as T', ->
+  it 'should execute false or...', ->
+    @fF.exec(@ctx).should.be.false
     @fT.exec(@ctx).should.be.true
+    should(@fN.exec(@ctx)).be.null
 
-  it 'should execute T or T or T as T', ->
-    @tTT.exec(@ctx).should.be.true
-
-  it 'should execute F or F or F as F', ->
-    @fFF.exec(@ctx).should.be.false
-
-  it 'should execute T or F or T as T', ->
-    @tFT.exec(@ctx).should.be.true
+  it 'should execute null or...', ->
+    should(@nN.exec(@ctx)).be.null
+    @nT.exec(@ctx).should.be.true
+    should(@nF.exec(@ctx)).be.null
 
 describe 'XOr', ->
   @beforeEach ->
     setup @
 
-  it 'should execute T xor T as F', ->
+  it 'should execute true xor...', ->
     @tT.exec(@ctx).should.be.false
-
-  it 'should execute F xor F as F', ->
-    @fF.exec(@ctx).should.be.false
-
-  it 'should execute T xor F as T', ->
     @tF.exec(@ctx).should.be.true
+    should(@tN.exec(@ctx)).be.null
 
-  it 'should execute F xor T as T', ->
+  it 'should execute false xor...', ->
+    @fF.exec(@ctx).should.be.false
     @fT.exec(@ctx).should.be.true
+    should(@fN.exec(@ctx)).be.null
 
-  it 'should execute T xor T xor T as T', ->
-    @tTT.exec(@ctx).should.be.true
+  it 'should execute null xor...', ->
+    should(@nN.exec(@ctx)).be.null
+    should(@nT.exec(@ctx)).be.null
+    should(@nF.exec(@ctx)).be.null
 
-  it 'should execute T xor T xor F as F', ->
-    @tTF.exec(@ctx).should.be.false
+describe 'Not', ->
+  @beforeEach ->
+    setup @
 
-  it 'should execute T xor F xor T as F', ->
-    @tFT.exec(@ctx).should.be.false
+  it 'should execute not true as false', ->
+    @notTrue.exec(@ctx).should.be.false
 
-  it 'should execute T xor F xor F as T', ->
-    @tFF.exec(@ctx).should.be.true
+  it 'should execute not false as true', ->
+    @notFalse.exec(@ctx).should.be.true
 
-  it 'should execute F xor T xor T as F', ->
-    @fTT.exec(@ctx).should.be.false
-
-  it 'should execute F xor T xor F as T', ->
-    @fTF.exec(@ctx).should.be.true
-
-  it 'should execute F xor F xor T as T', ->
-    @fFT.exec(@ctx).should.be.true
-
-  it 'should execute F xor F xor F as F', ->
-    @fFF.exec(@ctx).should.be.false
+  it 'should execute not null as null', ->
+    should(@notNull.exec(@ctx)).be.null
 
 describe 'AgeAtFunctionRef', ->
   @beforeEach ->
@@ -411,6 +391,51 @@ describe 'InList', ->
   it 'should execute to false when item is not in list', ->
     @isNotIn.exec(@ctx).should.be.false
 
+describe 'Union', ->
+  @beforeEach ->
+    setup @
+
+  it 'should union two lists to a single list', ->
+    @oneToTen.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+  it 'should maintain duplicate elements (according to CQL spec)', ->
+    @oneToFiveOverlapped.exec(@ctx).should.eql [1, 2, 3, 4, 3, 4, 5]
+
+  it 'should not fill in values in a disjoint union', ->
+    @disjoint.exec(@ctx).should.eql [1, 2, 4, 5]
+
+  it 'should return one list for multiple nested unions', ->
+    @nestedToFifteen.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+describe 'Intersect', ->
+  @beforeEach ->
+    setup @
+
+  it 'should intersect two disjoint lists  to an empty list', ->
+    @noIntersection.exec(@ctx).should.eql []
+
+  it 'should intersect two lists with a single common element', ->
+    @intersectOnFive.exec(@ctx).should.eql [5]
+
+  it 'should intersect two lists with several common elements', ->
+    @intersectOnEvens.exec(@ctx).should.eql [2, 4, 6, 8, 10]
+
+  it 'should intersect two identical lists to the same list', ->
+    @intersectOnAll.exec(@ctx).should.eql [1, 2, 3, 4, 5]
+
+  it 'should intersect multiple lists to only those elements common across all', ->
+    @nestedIntersects.exec(@ctx).should.eql [4, 5]
+
+describe 'Distinct', ->
+  @beforeEach ->
+    setup @
+
+  it 'should remove duplicates', ->
+    @lotsOfDups.exec(@ctx).should.eql [1, 2, 3, 4, 5]
+
+  it 'should do nothing to an already distinct array', ->
+    @noDups.exec(@ctx).should.eql [2, 4, 6, 8, 10]
+
 describe 'InValueSet', ->
   @beforeEach ->
     setup @
@@ -610,6 +635,13 @@ describe 'Literal', ->
 
   it 'should execute \'true\' as \'true\'', ->
     @stringTrue.exec(@ctx).should.equal 'true'
+
+describe 'Nil', ->
+  @beforeEach ->
+    setup @
+
+  it 'should execute as null', ->
+    should(@nil.exec(@ctx)).be.null
 
 describe 'Retrieve', ->
   @beforeEach ->

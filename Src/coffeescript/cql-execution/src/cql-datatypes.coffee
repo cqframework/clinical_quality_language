@@ -184,6 +184,10 @@ class ThreeValuedLogic
     else if null in val then null
     else false
 
+  @xor: (val...) ->
+    if null in val then null
+    else val.reduce (a,b) -> (!a ^ !b) is 1
+
   @not: (val) ->
     if val? then return not val else return null
 
