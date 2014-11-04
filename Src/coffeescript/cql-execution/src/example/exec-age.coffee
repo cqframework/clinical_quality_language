@@ -3,14 +3,14 @@ measure = require './age'
 
 lib = new Library(measure)
 ctx = new Context(lib)
-ctx.patients = [ {
+ctx.withPatients [ {
     "id": 1,
     "name": "John Smith",
-    "birthdate" : new Date(1980, 2, 17, 6, 15)
+    "birthdate" : "1980-02-17T06:15"
   }, {
     "id": 2,
     "name": "Sally Smith",
-    "birthdate" : new Date(2007, 8, 2, 11, 47)
+    "birthdate" : "2007-08-02T11:47"
 } ]
 
 result = lib.exec(ctx)

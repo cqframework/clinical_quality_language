@@ -4,21 +4,20 @@ module.exports = {
          "id" : "AgeAtMP",
          "version" : "1"
       },
-      "dataModels" : {
-         "modelReference" : [ {
-            "referencedModel" : {
-               "value" : "http://org.hl7.fhir"
-            }
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
          } ]
       },
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
             "default" : {
-               "beginOpen" : false,
-               "endOpen" : true,
+               "lowClosed" : true,
+               "highClosed" : false,
                "type" : "Interval",
-               "begin" : {
+               "low" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -35,7 +34,7 @@ module.exports = {
                      "type" : "Literal"
                   } ]
                },
-               "end" : {
+               "high" : {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -67,7 +66,7 @@ module.exports = {
                      "name" : "AgeAt",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "type" : "Begin",
+                        "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
                            "type" : "ParameterRef"
@@ -84,7 +83,7 @@ module.exports = {
                      "name" : "AgeAt",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "type" : "Begin",
+                        "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
                            "type" : "ParameterRef"
