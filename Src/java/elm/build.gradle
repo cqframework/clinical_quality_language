@@ -42,7 +42,7 @@ task generateSources << {
     }
 
     ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/cqlannotations.xsd") {
-        arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString')
+        arg(line: '-npa -disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString')
     }
 }
 

@@ -187,7 +187,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitLogic(@NotNull cqlParser.LogicContext ctx) {
-        library = of.createLibrary();
+        library = of.createLibrary()
+                .withSchemaIdentifier(of.createVersionedIdentifier()
+                        .withId("urn:hl7-org:elm") // TODO: Pull this from the ELM library namespace
+                        .withVersion("r1"));
 
         Object lastResult = null;
 
