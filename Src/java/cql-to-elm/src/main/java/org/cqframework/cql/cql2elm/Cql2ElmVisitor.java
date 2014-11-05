@@ -1750,6 +1750,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             switch (ctx.getChild(1).getText()) {
                 case "all" : returnClause.setDistinct(false); break;
                 case "distinct" : returnClause.setDistinct(true); break;
+                default : break;
             }
         }
         for (cqlParser.ExpressionContext expression : ctx.expression()) {
