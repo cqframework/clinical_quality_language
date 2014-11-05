@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:cqla="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1" xsi:schemaLocation="urn:hl7-org:elm:r1 ..\src\cql-lm\schema\elm\library.xsd urn:hl7-org:cql-annotations:r1 ..\src\cql-lm\schema\elm\cqlannotations.xsd">
     <identifier id="CMS153_CDS" version="2"/>
+    <schemaIdentifier id="urn:hl7-org-elm" version="r1"/>
     <usings>
         <def localId="1" localIdentifier="QUICK" uri="http://org.hl7.fhir"/>
     </usings>
@@ -23,19 +24,19 @@
     </valueSets>
     <statements>
         <def localId="30" name="InDemographic" context="PATIENT">
-            <annotation xsi:type="cqla:Annotation">
-                <ns0:s r="30">define  =&#xd;
-                    <ns0:s r="29">
-                        <ns0:s r="25">
-                            <ns0:s r="20">AgeInYears() <ns0:s r="18">
-                                <ns0:s r="17"/>()</ns0:s> >= <ns0:s r="19">16</ns0:s>
-                            </ns0:s> and <ns0:s r="24">AgeInYears() <ns0:s r="22">
-                            <ns0:s r="21"/>()</ns0:s> &lt; <ns0:s r="23">24</ns0:s>
-                        </ns0:s>
-                        </ns0:s> and <ns0:s r="28">
-                        <ns0:s r="26"/> in <ns0:s r="27"/></ns0:s>
-                    </ns0:s>
-                </ns0:s>
+            <annotation xsi:type="a:Annotation">
+                <a:s r="30">define  =&#xd;
+                    <a:s r="29">
+                        <a:s r="25">
+                            <a:s r="20">AgeInYears() <a:s r="18">
+                                <a:s r="17"/>()</a:s> >= <a:s r="19">16</a:s>
+                            </a:s> and <a:s r="24">AgeInYears() <a:s r="22">
+                            <a:s r="21"/>()</a:s> &lt; <a:s r="23">24</a:s>
+                        </a:s>
+                        </a:s> and <a:s r="28">
+                        <a:s r="26"/> in <a:s r="27"/></a:s>
+                    </a:s>
+                </a:s>
             </annotation>
             <expression localId="29" xsi:type="And">
                 <operand localId="25" xsi:type="And">
@@ -49,49 +50,49 @@
                     </operand>
                 </operand>
                 <operand localId="28" xsi:type="In">
-                    <operand localId="26"/>
+                    <operand localId="26" xsi:type="Property" path="gender"/>
                     <operand localId="27" name="Female Administrative Sex" xsi:type="ValueSetRef"/>
                 </operand>
             </expression>
         </def>
         <def localId="66" name="SexuallyActive" context="PATIENT">
-            <annotation xsi:type="cqla:Annotation">
-                <ns0:s r="66">define  =&#xd;
-                    <ns0:s r="65">
-                        <ns0:s r="62">
-                            <ns0:s r="59">
-                                <ns0:s r="56">
-                                    <ns0:s r="53">
-                                        <ns0:s r="50">
-                                            <ns0:s r="47">
-                                                <ns0:s r="44">
-                                                    <ns0:s r="41">
-                                                        <ns0:s r="38">
-                                                            <ns0:s r="35">
-                                                                <ns0:s r="32">exists (<ns0:s r="31">[: ]</ns0:s>)</ns0:s>&#xd;
-                                                                or <ns0:s r="34">exists (<ns0:s r="33">[: ]</ns0:s>)</ns0:s>
-                                                            </ns0:s>&#xd;
-                                                            or <ns0:s r="37">exists (<ns0:s r="36">[: ]</ns0:s>)</ns0:s>
-                                                        </ns0:s>&#xd;
-                                                        or <ns0:s r="40">exists (<ns0:s r="39">[: ]</ns0:s>)</ns0:s>
-                                                    </ns0:s>&#xd;
-                                                    or <ns0:s r="43">exists (<ns0:s r="42">[: ]</ns0:s>)</ns0:s>
-                                                </ns0:s>&#xd;
-                                                or <ns0:s r="46">exists (<ns0:s r="45">[: ]</ns0:s>)</ns0:s>
-                                            </ns0:s>&#xd;
-                                            or <ns0:s r="49">exists (<ns0:s r="48">[: ]</ns0:s>)</ns0:s>
-                                        </ns0:s>&#xd;
-                                        or <ns0:s r="52">exists (<ns0:s r="51">[: ]</ns0:s>)</ns0:s>
-                                    </ns0:s>&#xd;
-                                    or <ns0:s r="55">exists (<ns0:s r="54">[, : ]</ns0:s>)</ns0:s>
-                                </ns0:s>&#xd;
-                                or <ns0:s r="58">exists (<ns0:s r="57">[, : ]</ns0:s>)</ns0:s>
-                            </ns0:s>&#xd;
-                            or <ns0:s r="61">exists (<ns0:s r="60">[, : ]</ns0:s>)</ns0:s>
-                        </ns0:s>&#xd;
-                        or <ns0:s r="64">exists (<ns0:s r="63">[, : ]</ns0:s>)</ns0:s>
-                    </ns0:s>
-                </ns0:s>
+            <annotation xsi:type="a:Annotation">
+                <a:s r="66">define  =&#xd;
+                    <a:s r="65">
+                        <a:s r="62">
+                            <a:s r="59">
+                                <a:s r="56">
+                                    <a:s r="53">
+                                        <a:s r="50">
+                                            <a:s r="47">
+                                                <a:s r="44">
+                                                    <a:s r="41">
+                                                        <a:s r="38">
+                                                            <a:s r="35">
+                                                                <a:s r="32">exists (<a:s r="31">[: ]</a:s>)</a:s>&#xd;
+                                                                or <a:s r="34">exists (<a:s r="33">[: ]</a:s>)</a:s>
+                                                            </a:s>&#xd;
+                                                            or <a:s r="37">exists (<a:s r="36">[: ]</a:s>)</a:s>
+                                                        </a:s>&#xd;
+                                                        or <a:s r="40">exists (<a:s r="39">[: ]</a:s>)</a:s>
+                                                    </a:s>&#xd;
+                                                    or <a:s r="43">exists (<a:s r="42">[: ]</a:s>)</a:s>
+                                                </a:s>&#xd;
+                                                or <a:s r="46">exists (<a:s r="45">[: ]</a:s>)</a:s>
+                                            </a:s>&#xd;
+                                            or <a:s r="49">exists (<a:s r="48">[: ]</a:s>)</a:s>
+                                        </a:s>&#xd;
+                                        or <a:s r="52">exists (<a:s r="51">[: ]</a:s>)</a:s>
+                                    </a:s>&#xd;
+                                    or <a:s r="55">exists (<a:s r="54">[, : ]</a:s>)</a:s>
+                                </a:s>&#xd;
+                                or <a:s r="58">exists (<a:s r="57">[, : ]</a:s>)</a:s>
+                            </a:s>&#xd;
+                            or <a:s r="61">exists (<a:s r="60">[, : ]</a:s>)</a:s>
+                        </a:s>&#xd;
+                        or <a:s r="64">exists (<a:s r="63">[, : ]</a:s>)</a:s>
+                    </a:s>
+                </a:s>
             </annotation>
             <expression localId="65" xsi:type="Or">
                 <operand localId="62" xsi:type="Or">
@@ -177,32 +178,32 @@
             </expression>
         </def>
         <def localId="102" name="NoScreening" context="PATIENT">
-            <annotation xsi:type="cqla:Annotation">
-                <ns0:s r="102">define  =&#xd;
-                    <ns0:s r="101">
-                        <ns0:s r="97">
-                            <ns0:s r="85">not <ns0:s r="84">exists (<ns0:s r="83"> where <ns0:s r="82">
-                                <ns0:s r="70">
-                                    <ns0:s r="69"/>.</ns0:s> during <ns0:s r="77">interval[<ns0:s r="74">
-                                <ns0:s r="72">
-                                    <ns0:s r="71"/>()</ns0:s> - <ns0:s r="73">1 years</ns0:s>
-                            </ns0:s>, <ns0:s r="76">
-                                <ns0:s r="75"/>()</ns0:s>]</ns0:s>
-                                <ns0:s r="78">during</ns0:s> interval[Today() - 1 years, Today()] and <ns0:s r="81">
-                                <ns0:s r="80">
-                                    <ns0:s r="79"/>.</ns0:s> is not null</ns0:s>
-                            </ns0:s>
-                            </ns0:s>)</ns0:s>
-                            </ns0:s>&#xd;
-                            and <ns0:s r="96">not <ns0:s r="95">exists (<ns0:s r="94"> where <ns0:s r="88"/>. during <ns0:s r="92">interval[<ns0:s r="90">
-                            <ns0:s r="89"/>()</ns0:s>, <ns0:s r="91">null</ns0:s>]</ns0:s>
-                            <ns0:s r="93">during</ns0:s> interval[Today(), null]</ns0:s>)</ns0:s>
-                        </ns0:s>
-                        </ns0:s>&#xd;
-                        and <ns0:s r="100">not <ns0:s r="99">exists (<ns0:s r="98">[: ]</ns0:s>)</ns0:s>
-                    </ns0:s>
-                    </ns0:s>
-                </ns0:s>
+            <annotation xsi:type="a:Annotation">
+                <a:s r="102">define  =&#xd;
+                    <a:s r="101">
+                        <a:s r="97">
+                            <a:s r="85">not <a:s r="84">exists (<a:s r="83"> where <a:s r="82">
+                                <a:s r="70">
+                                    <a:s r="69"/>.</a:s> during <a:s r="77">interval[<a:s r="74">
+                                <a:s r="72">
+                                    <a:s r="71"/>()</a:s> - <a:s r="73">1 years</a:s>
+                            </a:s>, <a:s r="76">
+                                <a:s r="75"/>()</a:s>]</a:s>
+                                <a:s r="78">during</a:s> interval[Today() - 1 years, Today()] and <a:s r="81">
+                                <a:s r="80">
+                                    <a:s r="79"/>.</a:s> is not null</a:s>
+                            </a:s>
+                            </a:s>)</a:s>
+                            </a:s>&#xd;
+                            and <a:s r="96">not <a:s r="95">exists (<a:s r="94"> where <a:s r="88"/>. during <a:s r="92">interval[<a:s r="90">
+                            <a:s r="89"/>()</a:s>, <a:s r="91">null</a:s>]</a:s>
+                            <a:s r="93">during</a:s> interval[Today(), null]</a:s>)</a:s>
+                        </a:s>
+                        </a:s>&#xd;
+                        and <a:s r="100">not <a:s r="99">exists (<a:s r="98">[: ]</a:s>)</a:s>
+                    </a:s>
+                    </a:s>
+                </a:s>
             </annotation>
             <expression localId="101" xsi:type="And">
                 <operand localId="97" xsi:type="And">
@@ -243,7 +244,7 @@
                                     </expression>
                                 </source>
                                 <where localId="93" xsi:type="IncludedIn">
-                                    <operand localId="88"/>
+                                    <operand localId="88" xsi:type="Property" path="performanceTime"/>
                                     <operand localId="92" lowClosed="true" highClosed="true" xsi:type="Interval">
                                         <low localId="90" name="Today" xsi:type="FunctionRef"/>
                                         <high localId="91" xsi:type="Null"/>
@@ -263,11 +264,11 @@
             </expression>
         </def>
         <def localId="108" name="NeedScreening" context="PATIENT">
-            <annotation xsi:type="cqla:Annotation">
-                <ns0:s r="108">define  = <ns0:s r="107">
-                    <ns0:s r="105">
-                        <ns0:s r="103"/> and <ns0:s r="104"/></ns0:s> and <ns0:s r="106"/></ns0:s>
-                </ns0:s>
+            <annotation xsi:type="a:Annotation">
+                <a:s r="108">define  = <a:s r="107">
+                    <a:s r="105">
+                        <a:s r="103"/> and <a:s r="104"/></a:s> and <a:s r="106"/></a:s>
+                </a:s>
             </annotation>
             <expression localId="107" xsi:type="And">
                 <operand localId="105" xsi:type="And">
