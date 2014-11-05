@@ -309,3 +309,35 @@ A = B // unknown
 A < B // unknown
 A <= B // unknown
 A > B // false
+
+[Encounter, Performance: "Inpatient"] E with [MedicationTreatment: "Warfarin"] M such that E.effectiveTime overlaps M.administeredTime
+
+as opposed to:
+
+foreach [Encounter, Performance: "Inpatient"] E, [MedicationTreatment: "Warfarin"] M where E.effectiveTime overlaps M.administeredTime
+
+foreach
+    [Encounter, Performance: "Inpatient"] E,
+    [MedicationTreatment: "Warfarin"] M
+
+would return:
+
+tuple { E: typeof([Encounter, Performance]), M: typeof([MedicationTreatment]) }
+
+And there would be a row for each possible combination of the rows from each source.
+
+Which is basically equivalent to:
+
+foreach
+    [Encounter, Performance: "Inpatient"] E,
+    [MedicationTreatment: "Warfarin"] M
+    return E, M
+
+If only one source is referenced:
+
+foreach
+    [Encounter, Performance: "Inpatient"] E,
+    [MedicationTreatment: "Warfarin"] M
+    return E
+
+Then the result is a 

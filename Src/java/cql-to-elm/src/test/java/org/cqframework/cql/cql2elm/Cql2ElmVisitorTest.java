@@ -976,7 +976,8 @@ public class Cql2ElmVisitorTest {
         assertThat(where.getOperand().get(1), literalFor(120));
 
         // Then check the return statement
-        Tuple rtn = (Tuple) query.getReturn();
+        ReturnClause returnClause = query.getReturn();
+        Tuple rtn = (Tuple) returnClause.getExpression().get(0);
         // TODO: Bug in translator!  Doesn't detect object type (intentional?)
         // assertThat(rtn.getObjectType(), is(notNullValue()));
         assertThat(rtn.getElement(), hasSize(2));

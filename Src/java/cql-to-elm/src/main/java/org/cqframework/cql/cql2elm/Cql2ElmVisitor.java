@@ -1472,7 +1472,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
             }
 
-            Expression ret = ctx.returnClause() != null ? (Expression) visit(ctx.returnClause()) : null;
+            ReturnClause ret = ctx.returnClause() != null ? (ReturnClause) visit(ctx.returnClause()) : null;
             SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
 
             return of.createQuery()
@@ -1745,7 +1745,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitReturnClause(@NotNull cqlParser.ReturnClauseContext ctx) {
-        return visit(ctx.expression());
+        ReturnClause returnClause = of.createReturnClause();
+        if (ctx.getChild(1) instanceof TerminalNode) {
+            switch (ctx.getChild(1).getText()) {
+                case "all" : returnClause.setDistinct(false); break;
+                case "distinct" : returnClause.setDistinct(true); break;
+            }
+        }
+        for (cqlParser.ExpressionContext expression : ctx.expression()) {
+            returnClause.getExpression().add(parseExpression(expression));
+        }
+
+        return returnClause;
     }
 
     @Override

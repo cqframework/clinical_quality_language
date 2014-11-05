@@ -1965,6 +1965,16 @@ Property expressions can also be used to access the individual points and open i
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ReturnClause">
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="expression" type="Expression" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="distinct" type="xs:boolean" default="true" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Query">
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -1973,7 +1983,7 @@ Property expressions can also be used to access the individual points and open i
 					<xs:element name="define" type="DefineClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="relationship" type="RelationshipClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="where" type="Expression" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="return" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="return" type="ReturnClause" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="sort" type="SortClause" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
