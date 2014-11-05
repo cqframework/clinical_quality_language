@@ -55,7 +55,6 @@ class Library
     while p = ctx.currentPatient()
       patient_ctx = ctx.childContext({"PATIENT" : p})
       for key,expr of @expressions when expr.context is "PATIENT"
-        patient_ctx.set key, expr.exec(patient_ctx)
         r.recordPatientResult(patient_ctx.currentPatient().id, key, expr.exec(patient_ctx))
       ctx.nextPatient()
     r
@@ -89,6 +88,9 @@ class Context
   withCodeService: (cs) ->
     @codeService = cs
     @
+
+  rootContext:  -> 
+    if (@parent instanceof Library) then @ else @parent?.rootContext()
 
   childContext: (context_values = {}) ->
     ctx = new Context(@)
@@ -148,7 +150,9 @@ class ExpressionDef extends Expression
     @expression = build(json.expression)
 
   exec: (ctx) ->
-    @expression.exec(ctx)
+    value = @expression.exec(ctx)
+    ctx.rootContext().set @name,value
+    value
 
 class ExpressionRef extends Expression
   constructor: (json) ->
@@ -156,7 +160,11 @@ class ExpressionRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.get(@name)?.exec(ctx)
+    value = ctx.get(@name)
+    if value instanceof Expression  
+      value = value.exec(ctx)
+    value
+      
 
 # Parameters
 
@@ -513,23 +521,19 @@ class MultiSource
     a
       
   forEach: (ctx, func) ->
-    @records ||= @expression.exec(ctx)
-    self = @
-    results = for rec in @records
+    @records?= @expression.exec(ctx)
+    for rec in @records
       rctx = new Context(ctx)
       rctx.set(@alias,rec)
       if @rest
         rest.forEach(rctx,func)
       else
         func(rctx)
-    results
+
  
 allTrue = (things) ->
   if typeIsArray things
-    if things.length > 0
-      things.reduce (a,b) -> a && b
-    else
-      true
+    things.every (x) -> x
   else
     things
 
