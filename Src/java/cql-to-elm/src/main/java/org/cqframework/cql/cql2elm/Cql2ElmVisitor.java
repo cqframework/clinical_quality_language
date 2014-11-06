@@ -819,15 +819,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Expression resolveIdentifier(String identifier) {
         // An Identifier will always be:
         // 1: The name of an alias
-        // 2: The name of an expression
-        // 3: The name of a valueset
-        // 4: The name of a parameter
-        // 5: The name of a library
-        // 6: An unresolved identifier that must be resolved later (by a method or accessor)
+        // 2: The name of query define clause
+        // 3: The name of an expression
+        // 4: The name of a valueset
+        // 5: The name of a parameter
+        // 6: The name of a library
+        // 7: An unresolved identifier that must be resolved later (by a method or accessor)
 
         String alias = resolveAlias(identifier);
         if (alias != null) {
             return of.createAliasRef().withName(identifier);
+        }
+
+        String define = resolveQueryDefine(identifier);
+        if (define != null) {
+            return of.createQueryDefineRef().withName(define);
         }
 
         String expressionName = resolveExpressionName(identifier);
@@ -1449,14 +1455,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
         List<AliasedQuerySource> sources = (List<AliasedQuerySource>)visit(ctx.sourceClause());
-        for (AliasedQuerySource aqs : sources) {
-            queryContext.addQuerySource(aqs);
-        }
+        queryContext.addQuerySources(sources);
         queries.push(queryContext);
         try {
 
             List<DefineClause> dfcx = ctx.defineClause() != null ? (List<DefineClause>)visit(ctx.defineClause()) : null;
-            // TODO: Add defined items to the query context and identifier resolution
+            if (dfcx != null) {
+                queryContext.addDefineClauses(dfcx);
+            }
 
             List<RelationshipClause> qicx = new ArrayList<>();
             if (ctx.queryInclusionClause() != null) {
@@ -1995,6 +2001,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             AliasedQuerySource source = query.resolveAlias(identifier);
             if (source != null) {
                 return source.getAlias();
+            }
+        }
+
+        return null;
+    }
+
+    private String resolveQueryDefine(String identifier) {
+        for (QueryContext query : queries) {
+            DefineClause define = query.resolveDefine(identifier);
+            if (define != null) {
+                return define.getIdentifier();
             }
         }
 

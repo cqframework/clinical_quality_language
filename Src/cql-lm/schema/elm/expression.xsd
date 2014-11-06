@@ -17,6 +17,7 @@
 		Added MeetsBefore/MeetsAfter and BegunBy/EndedBy
 		Moved annotations from Expression to the new Element
 		Added ForEach and Define clauses to the Query construct
+		Added QueryDefineRef for referencing query Define clauses
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
@@ -1990,6 +1991,13 @@ Property expressions can also be used to access the individual points and open i
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="AliasRef">
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="QueryDefineRef">
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:attribute name="name" type="xs:string"/>

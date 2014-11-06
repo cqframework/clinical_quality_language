@@ -1,28 +1,46 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.hl7.elm.r1.AliasedQuerySource;
+import org.hl7.elm.r1.DefineClause;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 public class QueryContext {
-    private final List<AliasedQuerySource> sources = new ArrayList<>();
+    private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
+    private final HashMap<String, DefineClause> defines = new HashMap<>();
+
+    public void addQuerySources(Collection<AliasedQuerySource> sources) {
+        for (AliasedQuerySource source : sources) {
+            addQuerySource(source);
+        }
+    }
 
     public void addQuerySource(AliasedQuerySource source) {
-        sources.add(source);
+        sources.put(source.getAlias(), source);
     }
 
     public void removeQuerySource(AliasedQuerySource source) {
-        sources.remove(source);
+        sources.remove(source.getAlias());
+    }
+
+    public void addDefineClauses(Collection<DefineClause> defines) {
+        for (DefineClause define : defines) {
+            addDefineClause(define);
+        }
+    }
+
+    public void addDefineClause(DefineClause define) {
+        defines.put(define.getIdentifier(), define);
     }
 
     public AliasedQuerySource resolveAlias(String identifier) {
-        for (AliasedQuerySource source : sources) {
-            if (identifier.equals(source.getAlias())) {
-                return source;
-            }
-        }
+        return sources.get(identifier);
+    }
 
-        return null;
+    public DefineClause resolveDefine(String identifier) {
+        return defines.get(identifier);
     }
 }
