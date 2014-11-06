@@ -1473,6 +1473,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
 
             ReturnClause ret = ctx.returnClause() != null ? (ReturnClause) visit(ctx.returnClause()) : null;
+            if ((ret == null) && (sources.size() > 1)) {
+                ret = of.createReturnClause()
+                        .withDistinct(true);
+
+                Tuple returnExpression = of.createTuple();
+                for (AliasedQuerySource aqs : sources) {
+                    returnExpression.getElement().add(
+                            of.createTupleElement()
+                                    .withName(aqs.getAlias())
+                                    .withValue(of.createAliasRef().withName(aqs.getAlias()))
+                    );
+                }
+
+                ret.setExpression(returnExpression);
+            }
+
             SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
 
             return of.createQuery()
@@ -1753,9 +1769,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 default : break;
             }
         }
-        for (cqlParser.ExpressionContext expression : ctx.expression()) {
-            returnClause.getExpression().add(parseExpression(expression));
-        }
+
+        returnClause.setExpression(parseExpression(ctx.expression()));
 
         return returnClause;
     }

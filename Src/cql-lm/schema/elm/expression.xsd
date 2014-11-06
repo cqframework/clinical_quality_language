@@ -1969,7 +1969,7 @@ Property expressions can also be used to access the individual points and open i
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
-					<xs:element name="expression" type="Expression" minOccurs="1" maxOccurs="unbounded"/>
+					<xs:element name="expression" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="distinct" type="xs:boolean" default="true" use="optional"/>
 			</xs:extension>

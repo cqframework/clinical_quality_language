@@ -220,7 +220,7 @@ whereClause
     ;
 
 returnClause
-    : 'return' ('all' | 'distinct')? expression (',' expression)*
+    : 'return' ('all' | 'distinct')? expression
     ;
 
 sortClause
