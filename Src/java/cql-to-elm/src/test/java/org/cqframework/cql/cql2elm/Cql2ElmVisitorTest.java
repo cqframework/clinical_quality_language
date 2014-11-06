@@ -1046,9 +1046,8 @@ public class Cql2ElmVisitorTest {
         assertThat(dfc.getExpression(), literalFor(1));
 
         // Then check the return
-        assertThat(query.getReturn().getExpression(), hasSize(1));
-        assertThat(query.getReturn().getExpression().get(0), instanceOf(QueryDefineRef.class));
-        QueryDefineRef qdr = (QueryDefineRef) query.getReturn().getExpression().get(0);
+        assertThat(query.getReturn().getExpression(), instanceOf(QueryDefineRef.class));
+        QueryDefineRef qdr = (QueryDefineRef) query.getReturn().getExpression();
         assertThat(qdr.getName(), is("a"));
 
         // Then check the rest
