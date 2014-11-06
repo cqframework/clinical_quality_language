@@ -1015,6 +1015,49 @@ public class Cql2ElmVisitorTest {
     }
 
     @Test
+    public void testQueryThatReturnsDefine() {
+        String cql =
+            "valueset \"Inpatient\" = ValueSet('2.16.840.1.113883.3.666.5.307')\n" +
+            "define st =  [Encounter, Performance: \"Inpatient\"] E\n" +
+            "    define a = 1\n" +
+            "    return a";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        Query query = (Query) def.getExpression();
+
+        // First check the source
+        AliasedQuerySource source = query.getSource().get(0);
+        assertThat(source.getAlias(), is("E"));
+        Retrieve request = (Retrieve) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("EncounterPerformanceOccurrence"));
+        assertThat(request.getCodeProperty(), is("class"));
+        ValueSetRef code = (ValueSetRef) request.getCodes();
+        assertThat(code.getName(), is("Inpatient"));
+        assertThat(code.getLibraryName(), is(nullValue()));
+        assertThat(request.getDateProperty(), is(nullValue()));
+        assertThat(request.getDateRange(), is(nullValue()));
+        assertThat(request.getScope(), is(nullValue()));
+        assertThat(request.getIdProperty(), is(nullValue()));
+        assertThat(request.getTemplateId(), is(nullValue()));
+
+        // Then check the define
+        assertThat(query.getDefine(), hasSize(1));
+        DefineClause dfc = query.getDefine().get(0);
+        assertThat(dfc.getIdentifier(), is("a"));
+        assertThat(dfc.getExpression(), literalFor(1));
+
+        // Then check the return
+        assertThat(query.getReturn().getExpression(), hasSize(1));
+        assertThat(query.getReturn().getExpression().get(0), instanceOf(QueryDefineRef.class));
+        QueryDefineRef qdr = (QueryDefineRef) query.getReturn().getExpression().get(0);
+        assertThat(qdr.getName(), is("a"));
+
+        // Then check the rest
+        assertThat(query.getRelationship(), is(empty()));
+        assertThat(query.getWhere(), is(nullValue()));
+        assertThat(query.getSort(), is(nullValue()));
+    }
+
+    @Test
     public void testSameAs() {
         String where = "P same as E";
         SameAs sameAs = (SameAs) testInpatientWithPharyngitisWhere(where);
