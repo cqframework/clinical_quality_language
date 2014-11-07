@@ -479,6 +479,39 @@ class Null extends Literal
   exec: (ctx) ->
     null
 
+class Property extends Expression
+  constructor: (json) ->
+    super
+    @scope = json.scope
+    @path = json.path
+  exec: (ctx) ->
+    obj = ctx.get(@scope)
+    obj =  if obj instanceof Expression then obj.exec(ctx) else obj
+    val = obj?[@path] ? obj?.get?(@path)
+
+    if !val 
+      parts = @path.split(".")
+      curr_obj = obj
+      curr_val = null
+      for part in parts
+        _obj = curr_obj?[part] ? curr_obj?.get?(part)
+        curr_obj = if _obj instanceof Function then _obj() else _obj
+      val = curr_obj
+    val  
+
+class Tuple extends Expression
+  constructor: (json) ->
+    super
+    @elements = for el in json.element
+      name: el.name
+      value: build el.value
+
+  exec: (ctx) ->
+    val = {}
+    for el in @elements
+      val[el.name] = el.value?.exec(ctx)
+    val  
+
 # Retreives and Queries
 
 class Retrieve extends Expression
@@ -504,37 +537,7 @@ class Retrieve extends Expression
 
     records
 
-class Property extends Expression
-  constructor: (json) ->
-    super
-    @scope = json.scope
-    @path = json.path
-  exec: (ctx) ->
-    obj = ctx.get(@scope)
-    obj = if obj instanceof Expression then obj.exec(ctx) else obj
-    val = obj?[@path]
-    if !val 
-      parts = @path.split(".")
-      curr_obj = obj
-      curr_val = null
-      for part in parts
-        _obj = curr_obj?[part]
-        curr_obj = if _obj instanceof Function then _obj() else _obj
-      val = curr_obj
-    val  
 
-class Tuple extends Expression
-  constructor: (json) ->
-    super
-    @elements = for el in json.element
-      name: el.name
-      value: build el.value
-
-  exec: (ctx) ->
-    val = {}
-    for el in @elements
-      val[el.name] = el.value?.exec(ctx)
-    val  
 
 class AliasRef extends Expression
   constructor: (json) ->
@@ -548,6 +551,25 @@ class QueryDefineRef extends AliasRef
   constructor: (json) ->
     super
    
+class With extends Expression
+  constructor: (json) ->
+    super
+    @alias = json.alias
+    @expression = build json.expression
+    @suchThat = build json.suchThat
+  exec: (ctx) ->
+    records = @expression.exec(ctx)
+    returns = for rec in records
+      childCtx = ctx.childContext()
+      childCtx.set @alias, rec
+      @suchThat.exec(childCtx)
+    returns.some (x) -> x
+
+class Without extends With
+  constructor: (json) ->
+    super
+  exec: (ctx) ->
+    !super(ctx)
 
 class MultiSource
   constructor: (@sources) ->

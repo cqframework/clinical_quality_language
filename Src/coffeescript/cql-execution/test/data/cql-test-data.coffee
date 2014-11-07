@@ -4617,12 +4617,10 @@ parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 context PATIENT
 define msQueryWhere = foreach [Encounter, Performance] E, 
                               [Condition] C 
-                              define a = 1
                               where E.performanceTime included in MeasurementPeriod
 
 define msQueryWhere2 = foreach [Encounter, Performance] E, [Condition] C 
-  define a = 1
-  where  E.performanceTime  included in MeasurementPeriod and  C.observedAtTime starts before E.performanceTime
+  where  E.performanceTime  included in MeasurementPeriod and  C.identifier.id = 'http://cqframework.org/3/2'
 
 define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C}
 ###
@@ -4711,14 +4709,6 @@ module.exports.MultiSourceQuery = {
                      "type" : "Retrieve"
                   }
                } ],
-               "define" : [ {
-                  "identifier" : "a",
-                  "expression" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }
-               } ],
                "relationship" : [ ],
                "return" : {
                   "distinct" : true,
@@ -4763,28 +4753,17 @@ module.exports.MultiSourceQuery = {
                      "type" : "Retrieve"
                   }
                } ],
-               "define" : [ {
-                  "identifier" : "a",
-                  "expression" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }
-               } ],
                "relationship" : [ ],
                "where" : {
-                  "type" : "Before",
+                  "type" : "Equal",
                   "operand" : [ {
-                     "type" : "Start",
-                     "operand" : {
-                        "path" : "observedAtTime",
-                        "scope" : "C",
-                        "type" : "Property"
-                     }
-                  }, {
-                     "path" : "performanceTime",
-                     "scope" : "E",
+                     "path" : "identifier.id",
+                     "scope" : "C",
                      "type" : "Property"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "http://cqframework.org/3/2",
+                     "type" : "Literal"
                   } ]
                },
                "return" : {
@@ -4999,6 +4978,178 @@ module.exports.Tuple = {
                      } ]
                   }
                }
+            }
+         } ]
+      }
+   }
+}
+
+### QueryRelationship
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+ 
+ define withQuery =  [Encounter, Performance] E 
+   with [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
+ 
+ define withQuery2 =  [Encounter, Performance] E 
+   with [Condition] C such that C.identifier.id = 'http://cqframework.org/3'
+
+ define withOutQuery =  [Encounter, Performance] E 
+   without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/'
+
+ define withOutQuery2 =  [Encounter, Performance] E 
+   without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
+###
+
+module.exports.QueryRelationship = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "withQuery",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "With",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "type" : "Retrieve"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "identifier.id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "http://cqframework.org/3/2",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "withQuery2",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "With",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "type" : "Retrieve"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "identifier.id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "http://cqframework.org/3",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "withOutQuery",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "Without",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "type" : "Retrieve"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "identifier.id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "http://cqframework.org/3/",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "withOutQuery2",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "Without",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "type" : "Retrieve"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "identifier.id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "http://cqframework.org/3/2",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          } ]
       }

@@ -768,13 +768,36 @@ describe 'MultiSourceQuery', ->
   it 'should find all Encounters performed and Conditions', ->
     e = @msQuery.exec(@ctx)
     e.should.have.length(6)
-    # e["E"].should.have.length(3)
-    # e["C"].should.have.length(2)
   
   it 'should find encounters performed during the MP and All conditions', ->
     e = @msQueryWhere.exec(@ctx)
     e.should.have.length(2)
+
+  it 'should be able to filter items in the where clause', ->
+    e = @msQueryWhere2.exec(@ctx)
+    e.should.have.length(1)
+
+describe 'QueryRelationship', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
   
+  it 'should be able to filter items with a with clause', ->
+    e = @withQuery.exec(@ctx)
+    e.should.have.length(3)
+  
+  it 'with clause should filter out items not available', ->
+    e = @withQuery2.exec(@ctx)
+    e.should.have.length(0)
+
+  it 'should be able to filter items with a without clause', ->
+    e = @withOutQuery.exec(@ctx)
+    e.should.have.length(3)
+
+  it 'wiothout clause should be able to filter items with a without clause', ->
+    e = @withOutQuery2.exec(@ctx)
+    e.should.have.length(0)
+
 describe 'QueryDefine', ->
   @beforeEach ->
     setup @

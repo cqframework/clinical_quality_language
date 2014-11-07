@@ -257,12 +257,10 @@ define Foo = "foo"
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 define msQueryWhere = foreach [Encounter, Performance] E, 
                               [Condition] C 
-                              define a = 1
                               where E.performanceTime included in MeasurementPeriod
 
 define msQueryWhere2 = foreach [Encounter, Performance] E, [Condition] C 
-  define a = 1
-  where  E.performanceTime  included in MeasurementPeriod and  C.observedAtTime starts before E.performanceTime
+  where  E.performanceTime  included in MeasurementPeriod and  C.identifier.id = 'http://cqframework.org/3/2'
 
 define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C}
 
@@ -274,3 +272,19 @@ define query =  [Encounter, Performance] E
 #Tuple
 define tup = {a: 1, b: 2}
 define query =  [Encounter, Performance] E return {id: E.id, thing: E.status}
+
+#QueryRelationship
+ 
+ define withQuery =  [Encounter, Performance] E 
+   with [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
+ 
+ define withQuery2 =  [Encounter, Performance] E 
+   with [Condition] C such that C.identifier.id = 'http://cqframework.org/3'
+
+ define withOutQuery =  [Encounter, Performance] E 
+   without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/'
+
+ define withOutQuery2 =  [Encounter, Performance] E 
+   without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
+
+
