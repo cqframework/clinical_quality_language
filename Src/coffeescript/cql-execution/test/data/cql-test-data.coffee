@@ -23,6 +23,10 @@ module.exports.InAgeDemographic = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -133,6 +137,10 @@ module.exports.ExpressionDef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -166,6 +174,10 @@ module.exports.ExpressionRef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -206,6 +218,10 @@ module.exports.ParameterDef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -238,6 +254,10 @@ module.exports.ParameterRef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -282,6 +302,10 @@ module.exports.ValueSetDef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -349,6 +373,10 @@ module.exports.ValueSetRef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -400,6 +428,10 @@ module.exports.And = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -557,6 +589,10 @@ module.exports.Or = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -713,6 +749,10 @@ module.exports.XOr = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -863,6 +903,10 @@ module.exports.Not = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -920,6 +964,10 @@ module.exports.AgeAtFunctionRef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1006,6 +1054,10 @@ module.exports.DateFunctionRef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1166,6 +1218,10 @@ module.exports.Interval = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1362,6 +1418,10 @@ module.exports.Greater = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -1433,6 +1493,10 @@ module.exports.GreaterOrEqual = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1506,6 +1570,10 @@ module.exports.Equal = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -1578,6 +1646,10 @@ module.exports.LessOrEqual = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -1649,6 +1721,10 @@ module.exports.Less = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1723,6 +1799,10 @@ module.exports.List = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1827,6 +1907,10 @@ module.exports.Exists = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -1882,6 +1966,10 @@ module.exports.Start = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1953,6 +2041,10 @@ module.exports.InList = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -2041,6 +2133,10 @@ module.exports.InValueSet = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -2293,6 +2389,10 @@ module.exports.InValueSetFunction = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -2564,6 +2664,10 @@ module.exports.PatientPropertyInValueSet = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -2612,6 +2716,10 @@ module.exports.Union = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -2855,6 +2963,10 @@ module.exports.Intersect = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -3199,6 +3311,10 @@ module.exports.Distinct = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3344,6 +3460,10 @@ module.exports.Add = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3488,6 +3608,10 @@ module.exports.Subtract = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3589,6 +3713,10 @@ module.exports.Multiply = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -3699,6 +3827,10 @@ module.exports.Divide = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -3814,6 +3946,10 @@ module.exports.MathPrecedence = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3915,6 +4051,10 @@ module.exports.Literal = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3980,6 +4120,10 @@ module.exports.Nil = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -4020,6 +4164,10 @@ module.exports.Retrieve = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -4172,6 +4320,10 @@ module.exports.DateRangeOptimizedQuery = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -4322,6 +4474,10 @@ module.exports.IncludesQuery = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -4433,6 +4589,10 @@ module.exports.ScratchPad = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -4444,6 +4604,401 @@ module.exports.ScratchPad = {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
+            }
+         } ]
+      }
+   }
+}
+
+### MultiSourceQuery
+library TestSnippet version '1'
+using QUICK
+parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+context PATIENT
+define msQueryWhere = foreach [Encounter, Performance] E, 
+                              [Condition] C 
+                              define a = 1
+                              where E.performanceTime included in MeasurementPeriod
+
+define msQueryWhere2 = foreach [Encounter, Performance] E, [Condition] C 
+  define a = 1
+  where  E.performanceTime  included in MeasurementPeriod and  C.observedAtTime starts before E.performanceTime
+
+define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C}
+###
+
+module.exports.MultiSourceQuery = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "MeasurementPeriod",
+            "default" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "name" : "Date",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               },
+               "high" : {
+                  "name" : "Date",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "msQueryWhere",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dateProperty" : "performanceTime",
+                     "type" : "Retrieve",
+                     "dateRange" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }
+               }, {
+                  "alias" : "C",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "define" : [ {
+                  "identifier" : "a",
+                  "expression" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "C",
+                        "value" : {
+                           "name" : "C",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "msQueryWhere2",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dateProperty" : "performanceTime",
+                     "type" : "Retrieve",
+                     "dateRange" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }
+               }, {
+                  "alias" : "C",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "define" : [ {
+                  "identifier" : "a",
+                  "expression" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Before",
+                  "operand" : [ {
+                     "type" : "Start",
+                     "operand" : {
+                        "path" : "observedAtTime",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }
+                  }, {
+                     "path" : "performanceTime",
+                     "scope" : "E",
+                     "type" : "Property"
+                  } ]
+               },
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "C",
+                        "value" : {
+                           "name" : "C",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "msQuery",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               }, {
+                  "alias" : "C",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "C",
+                        "value" : {
+                           "name" : "C",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               }
+            }
+         } ]
+      }
+   }
+}
+
+### QueryDefine
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define query =  [Encounter, Performance] E 
+ define a = E
+ return {E: E, a:a}
+###
+
+module.exports.QueryDefine = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "query",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "define" : [ {
+                  "identifier" : "a",
+                  "expression" : {
+                     "name" : "E",
+                     "type" : "AliasRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "a",
+                        "value" : {
+                           "name" : "a",
+                           "type" : "QueryDefineRef"
+                        }
+                     } ]
+                  }
+               }
+            }
+         } ]
+      }
+   }
+}
+
+### Tuple
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define tup = {a: 1, b: 2}
+define query =  [Encounter, Performance] E return {id: E.id, thing: E.status}
+###
+
+module.exports.Tuple = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "tup",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Tuple",
+               "element" : [ {
+                  "name" : "a",
+                  "value" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "b",
+                  "value" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "query",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "id",
+                        "value" : {
+                           "path" : "id",
+                           "scope" : "E",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "thing",
+                        "value" : {
+                           "path" : "status",
+                           "scope" : "E",
+                           "type" : "Property"
+                        }
+                     } ]
+                  }
+               }
             }
          } ]
       }

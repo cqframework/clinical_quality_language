@@ -252,3 +252,25 @@ define MPIncludedAmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED 
 
 #ScratchPad
 define Foo = "foo"
+
+#MultiSourceQuery
+parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+define msQueryWhere = foreach [Encounter, Performance] E, 
+                              [Condition] C 
+                              define a = 1
+                              where E.performanceTime included in MeasurementPeriod
+
+define msQueryWhere2 = foreach [Encounter, Performance] E, [Condition] C 
+  define a = 1
+  where  E.performanceTime  included in MeasurementPeriod and  C.observedAtTime starts before E.performanceTime
+
+define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C}
+
+#QueryDefine
+define query =  [Encounter, Performance] E 
+ define a = E
+ return {E: E, a:a}
+
+#Tuple
+define tup = {a: 1, b: 2}
+define query =  [Encounter, Performance] E return {id: E.id, thing: E.status}

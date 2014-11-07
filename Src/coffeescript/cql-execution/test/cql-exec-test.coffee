@@ -751,6 +751,57 @@ describe 'DateRangeOptimizedQuery', ->
     e.should.have.length(1)
     e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
 
+describe 'MultiSourceQuery', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+    @ctx.withCodeService new CodeService {
+      "2.16.840.1.113883.3.464.1003.101.12.1061" : {
+        "20140501" : [
+          { "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "270427003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "406547006", "system": "2.16.840.1.113883.6.96", "version": "2013-09" }
+        ]
+      }
+    }
+
+  it 'should find all Encounters performed and Conditions', ->
+    e = @msQuery.exec(@ctx)
+    e.should.have.length(6)
+    # e["E"].should.have.length(3)
+    # e["C"].should.have.length(2)
+  
+  it 'should find encounters performed during the MP and All conditions', ->
+    e = @msQueryWhere.exec(@ctx)
+    e.should.have.length(2)
+  
+describe 'QueryDefine', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+
+  it 'should be able to define a variable in a query and use it', ->
+    e = @query.exec(@ctx)
+    e.should.have.length(3)
+    e[0]["a"].should.equal  e[0]["E"]
+    e[1]["a"].should.equal  e[1]["E"]
+    e[2]["a"].should.equal  e[2]["E"]
+
+describe 'Tuple', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+    
+  it 'should be able to define a tuple', ->
+    e = @tup.exec(@ctx)
+    e["a"].should.equal 1
+    e["b"].should.equal 2
+  
+  it 'should be able to return tuple from a query', ->
+    e = @query.exec(@ctx)
+    e.should.have.length(3)
+
+
 describe.skip 'IncludesQuery', ->
   @beforeEach ->
     setup @

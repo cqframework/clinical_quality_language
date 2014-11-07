@@ -504,6 +504,50 @@ class Retrieve extends Expression
 
     records
 
+class Property extends Expression
+  constructor: (json) ->
+    super
+    @scope = json.scope
+    @path = json.path
+  exec: (ctx) ->
+    obj = ctx.get(@scope)
+    obj = if obj instanceof Expression then obj.exec(ctx) else obj
+    val = obj?[@path]
+    if !val 
+      parts = @path.split(".")
+      curr_obj = obj
+      curr_val = null
+      for part in parts
+        _obj = curr_obj?[part]
+        curr_obj = if _obj instanceof Function then _obj() else _obj
+      val = curr_obj
+    val  
+
+class Tuple extends Expression
+  constructor: (json) ->
+    super
+    @elements = for el in json.element
+      name: el.name
+      value: build el.value
+
+  exec: (ctx) ->
+    val = {}
+    for el in @elements
+      val[el.name] = el.value?.exec(ctx)
+    val  
+
+class AliasRef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+
+  exec: (ctx) ->
+    ctx?.get(@name)
+
+class QueryDefineRef extends AliasRef
+  constructor: (json) ->
+    super
+   
 
 class MultiSource
   constructor: (@sources) ->
@@ -517,7 +561,7 @@ class MultiSource
   aliases: ->
     a = [@alias] 
     if @rest
-      a = a.concat rest.aliases
+      a = a.concat @rest.aliases()
     a
       
   forEach: (ctx, func) ->
@@ -526,7 +570,7 @@ class MultiSource
       rctx = new Context(ctx)
       rctx.set(@alias,rec)
       if @rest
-        rest.forEach(rctx,func)
+        @rest.forEach(rctx,func)
       else
         func(rctx)
 
@@ -541,40 +585,39 @@ class Query extends Expression
   constructor: (json) ->
     super
     @sources = new MultiSource(json.source)
-    @definitions = json.definitions || []
+    @definitions = for d in json.define ? []
+                     identifier: d.identifier
+                     expression: build d.expression
+
     @relationship = build json.relationship
     @where = build json.where
-    @return = build json.return
+    @return = build json.return?.expression
     @aliases = @sources.aliases()
-
+    
   exec: (ctx) ->
     self = @
     returnedValues = []
-    multisourceDefault = {}
-    for a in @aliases
-      multisourceDefault[a] = []
-
     @sources.forEach(ctx, (rctx) ->
      for def in self.definitions
-       def.exec(rctx) 
+       rctx.set def.identifier, def.expression.exec(rctx)
+
      relations = for rel in self.relationship
         child_ctx = rctx.childContext()
         rel.exec(child_ctx)
      passed = allTrue(relations)
      passed = passed && if self.where then self.where.exec(rctx) else passed
      if passed 
-       if self.ret
-         returnedValues << self.ret.exec(rctx)
+       if self.return
+         val = self.return.exec(rctx)
+         if returnedValues.indexOf(val) == -1
+           returnedValues.push val 
        else
          if self.aliases.length == 1
            returnedValues.push rctx.get(self.aliases[0])
          else
-           for a in self.aliases
-             aValue = rctx.get(a)
-             if !multisourceDefault[a].indexOf(aValue)
-               multisourceDefault[a].push(aValue)
+           returnedValues.push rctx.context_values
     )
-    if @return || @aliases.length == 1 then returnedValues else multisourceDefault
+    returnedValues 
 
 
 
