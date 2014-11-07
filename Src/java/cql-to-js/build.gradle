@@ -27,6 +27,10 @@ dependencies {
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
     testCompile group: 'uk.co.datumedge', name: 'hamcrest-json', version: '0.2'
     testCompile group: 'org.mozilla', name: 'rhino', version: '1.7R4'
+    pmd(
+            'net.sourceforge.pmd:pmd-core:5.2.1',
+            'net.sourceforge.pmd:pmd-java:5.2.1'
+    )
 }
 
 task generateTestData (dependsOn: 'testClasses', type: JavaExec) {
@@ -43,6 +47,10 @@ task watchTestData (dependsOn: 'testClasses', type: JavaExec) {
 
 findbugs {
     toolVersion = "3.0.0"
+}
+
+pmd {
+    toolVersion = "5.2.1"
 }
 
 jacoco {

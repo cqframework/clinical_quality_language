@@ -1452,6 +1452,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    @SuppressWarnings("PMD.UselessParentheses")
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
         List<AliasedQuerySource> sources = (List<AliasedQuerySource>)visit(ctx.sourceClause());

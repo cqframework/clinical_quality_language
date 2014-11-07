@@ -22,10 +22,18 @@ dependencies {
     compile project(':quick')
     testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+    pmd(
+            'net.sourceforge.pmd:pmd-core:5.2.1',
+            'net.sourceforge.pmd:pmd-java:5.2.1'
+    )
 }
 
 findbugs {
     toolVersion = "3.0.0"
+}
+
+pmd {
+    toolVersion = "5.2.1"
 }
 
 jacoco {

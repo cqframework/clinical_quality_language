@@ -1,5 +1,9 @@
 apply plugin: 'idea'
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+
 idea {
   project {
     languageLevel = '1.7'
