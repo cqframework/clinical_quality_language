@@ -23,6 +23,10 @@ module.exports.InAgeDemographic = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -133,6 +137,10 @@ module.exports.ExpressionDef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -166,6 +174,10 @@ module.exports.ExpressionRef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -206,6 +218,10 @@ module.exports.ParameterDef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -238,6 +254,10 @@ module.exports.ParameterRef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -282,6 +302,10 @@ module.exports.ValueSetDef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -349,6 +373,10 @@ module.exports.ValueSetRef = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -400,6 +428,10 @@ module.exports.And = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -557,6 +589,10 @@ module.exports.Or = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -713,6 +749,10 @@ module.exports.XOr = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -863,6 +903,10 @@ module.exports.Not = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -920,6 +964,10 @@ module.exports.AgeAtFunctionRef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1006,6 +1054,10 @@ module.exports.DateFunctionRef = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1166,6 +1218,10 @@ module.exports.Interval = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1362,6 +1418,10 @@ module.exports.Greater = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -1433,6 +1493,10 @@ module.exports.GreaterOrEqual = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1506,6 +1570,10 @@ module.exports.Equal = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -1578,6 +1646,10 @@ module.exports.LessOrEqual = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -1649,6 +1721,10 @@ module.exports.Less = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1723,6 +1799,10 @@ module.exports.List = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1827,6 +1907,10 @@ module.exports.Exists = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -1882,6 +1966,10 @@ module.exports.Start = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -1953,6 +2041,10 @@ module.exports.InList = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -2041,6 +2133,10 @@ module.exports.InValueSet = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -2293,6 +2389,10 @@ module.exports.InValueSetFunction = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -2564,6 +2664,10 @@ module.exports.PatientPropertyInValueSet = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -2612,6 +2716,10 @@ module.exports.Union = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -2855,6 +2963,10 @@ module.exports.Intersect = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -3199,6 +3311,10 @@ module.exports.Distinct = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3344,6 +3460,10 @@ module.exports.Add = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3488,6 +3608,10 @@ module.exports.Subtract = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3589,6 +3713,10 @@ module.exports.Multiply = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -3699,6 +3827,10 @@ module.exports.Divide = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -3814,6 +3946,10 @@ module.exports.MathPrecedence = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -3898,6 +4034,769 @@ module.exports.MathPrecedence = {
    }
 }
 
+### TimeBetween
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define NewYear2013 = Date(2013, 1, 1, 0, 0, 0)
+define NewYear2014 = Date(2014, 1, 1, 0, 0, 0)
+define January2014 = Date(2014, 1)
+define YearsBetween = years between NewYear2013 and NewYear2014
+define MonthsBetween = months between NewYear2013 and NewYear2014
+define DaysBetween = days between NewYear2013 and NewYear2014
+define HoursBetween = hours between NewYear2013 and NewYear2014
+define MinutesBetween = minutes between NewYear2013 and NewYear2014
+define SecondsBetween = seconds between NewYear2013 and NewYear2014
+define SecondsBetweenReversed = seconds between NewYear2014 and NewYear2013
+define YearsBetweenUncertainty = years between NewYear2014 and January2014
+define MonthsBetweenUncertainty = months between NewYear2014 and January2014
+define DaysBetweenUncertainty = days between NewYear2014 and January2014
+define HoursBetweenUncertainty = hours between NewYear2014 and January2014
+define MinutesBetweenUncertainty = minutes between NewYear2014 and January2014
+define SecondsBetweenUncertainty = seconds between NewYear2014 and January2014
+define SecondsBetweenReversedUncertainty = seconds between January2014 and NewYear2014
+###
+
+module.exports.TimeBetween = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "NewYear2013",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2013",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "NewYear2014",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2014",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "January2014",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2014",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "YearsBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "YearsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MonthsBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "MonthsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "DaysBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "DaysBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "HoursBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "HoursBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MinutesBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "MinutesBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SecondsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetweenReversed",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SecondsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "YearsBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "YearsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MonthsBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "MonthsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "DaysBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "DaysBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "HoursBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "HoursBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MinutesBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "MinutesBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SecondsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetweenReversedUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SecondsBetween",
+               "operand" : [ {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### TimeBetweenComparisons
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define NewYear2014 = Date(2014, 1, 1, 0, 0, 0)
+define February2014 = Date(2014, 2)
+define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
+define GreaterThan40DaysAfter = days between NewYear2014 and February2014 > 40
+define GreaterThan80DaysAfter = days between NewYear2014 and February2014 > 80
+define GreaterOrEqualTo25DaysAfter = days between NewYear2014 and February2014 >= 25
+define GreaterOrEqualTo40DaysAfter = days between NewYear2014 and February2014 >= 40
+define GreaterOrEqualTo80DaysAfter = days between NewYear2014 and February2014 >= 80
+define EqualTo25DaysAfter = days between NewYear2014 and February2014 = 25
+define EqualTo40DaysAfter = days between NewYear2014 and February2014 = 40
+define EqualTo80DaysAfter = days between NewYear2014 and February2014 = 80
+define LessOrEqualTo25DaysAfter = days between NewYear2014 and February2014 <= 25
+define LessOrEqualTo40DaysAfter = days between NewYear2014 and February2014 <= 40
+define LessOrEqualTo80DaysAfter = days between NewYear2014 and February2014 <= 80
+define LessThan25DaysAfter = days between NewYear2014 and February2014 < 25
+define LessThan40DaysAfter = days between NewYear2014 and February2014 < 40
+define LessThan80DaysAfter = days between NewYear2014 and February2014 < 80
+define TwentyFiveDaysLessThanDaysBetween = 25 < days between NewYear2014 and February2014
+define FortyDaysEqualToDaysBetween = 40 = days between NewYear2014 and February2014
+define TwentyFiveDaysGreaterThanDaysBetween = 25 > days between NewYear2014 and February2014
+###
+
+module.exports.TimeBetweenComparisons = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "NewYear2014",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2014",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "February2014",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2014",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterThan25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterThan40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterThan80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterOrEqualTo25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterOrEqualTo40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterOrEqualTo80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "EqualTo25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "EqualTo40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "EqualTo80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessOrEqualTo25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessOrEqualTo40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessOrEqualTo80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessThan25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessThan40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessThan80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TwentyFiveDaysLessThanDaysBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               }, {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "FortyDaysEqualToDaysBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               }, {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "TwentyFiveDaysGreaterThanDaysBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               }, {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
 ### Literal
 library TestSnippet version '1'
 using QUICK
@@ -3914,6 +4813,10 @@ module.exports.Literal = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -3980,6 +4883,10 @@ module.exports.Nil = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -4020,6 +4927,10 @@ module.exports.Retrieve = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {
@@ -4172,6 +5083,10 @@ module.exports.DateRangeOptimizedQuery = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -4322,6 +5237,10 @@ module.exports.IncludesQuery = {
          "id" : "TestSnippet",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -4432,6 +5351,10 @@ module.exports.ScratchPad = {
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
       },
       "usings" : {
          "def" : [ {

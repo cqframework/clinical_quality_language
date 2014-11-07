@@ -225,40 +225,40 @@ class Greater extends Expression
     super
 
   exec: (ctx) ->
-    args = @execArgs(ctx)
-    args[0] > args[1]
+    args = @execArgs(ctx).map (x) -> DT.Uncertainty.from x
+    args[0].greaterThan args[1]
 
 class GreaterOrEqual extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    args = @execArgs(ctx)
-    args[0] >= args[1]
+    args = @execArgs(ctx).map (x) -> DT.Uncertainty.from x
+    args[0].greaterThanOrEquals args[1]
 
 class Equal extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    args = @execArgs(ctx)
-    args[0] == args[1]
+    args = @execArgs(ctx).map (x) -> DT.Uncertainty.from x
+    args[0].equals args[1]
 
 class LessOrEqual extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    args = @execArgs(ctx)
-    args[0] <= args[1]
+    args = @execArgs(ctx).map (x) -> DT.Uncertainty.from x
+    args[0].lessThanOrEquals args[1]
 
 class Less extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    args = @execArgs(ctx)
-    args[0] < args[1]
+    args = @execArgs(ctx).map (x) -> DT.Uncertainty.from x
+    args[0].lessThan args[1]
 
 # Lists and Intervals
 
@@ -374,6 +374,41 @@ class Divide extends Expression
 
   exec: (ctx) ->
     @execArgs(ctx).reduce (x,y) -> x / y
+
+# DateMath
+
+class TimeBetween extends Expression
+  constructor: (json, @unit) ->
+    super
+
+  exec: (ctx) ->
+    args = @execArgs(ctx)
+    result = args[0].timeBetween(args[1], @unit)
+    if result.isPoint() then result.low else result
+
+class YearsBetween extends TimeBetween
+  constructor: (json) ->
+    super json, DT.DateTime.Unit.YEAR
+
+class MonthsBetween extends TimeBetween
+  constructor: (json) ->
+    super json, DT.DateTime.Unit.MONTH
+
+class DaysBetween extends TimeBetween
+  constructor: (json) ->
+    super json, DT.DateTime.Unit.DAY
+
+class HoursBetween extends TimeBetween
+  constructor: (json) ->
+    super json, DT.DateTime.Unit.HOUR
+
+class MinutesBetween extends TimeBetween
+  constructor: (json) ->
+    super json, DT.DateTime.Unit.MINUTE
+
+class SecondsBetween extends TimeBetween
+  constructor: (json) ->
+    super json, DT.DateTime.Unit.SECOND
 
 # Literals
 

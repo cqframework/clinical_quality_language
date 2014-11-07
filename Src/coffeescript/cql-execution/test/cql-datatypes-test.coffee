@@ -774,6 +774,156 @@ describe 'DateTime.add', ->
     date1.should.eql date2
     date1.should.not.equal date2
 
+describe 'DateTime.timeBetween', ->
+  it 'should calculate time between two full specified dates', ->
+    a = DT.DateTime.parse '2009-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-06-15T12:37:45'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(0)
+
+    a = DT.DateTime.parse '2009-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-06-15T12:37:52'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(7)
+
+    a = DT.DateTime.parse '2009-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-06-15T12:56:17'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(19)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(1112)
+
+    a = DT.DateTime.parse '2009-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-06-15T14:56:50'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(2)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(139)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(8345)
+
+    a = DT.DateTime.parse '2009-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-06-20T17:56:50'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(5)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(125)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(7519)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(451145)
+
+    a = DT.DateTime.parse '2009-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-07-04T12:56:50'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(1)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(19)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(456)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(27379)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(1642745)
+
+    a = DT.DateTime.parse '2000-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-07-04T12:56:50'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(9)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(109)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(3306)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(79344)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(4760659)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(285639545)
+
+    a = DT.DateTime.parse '2001-01-01T00:00:00'
+    b = DT.DateTime.parse '2001-12-31T23:59:59'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(11)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(364)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(8759)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(525599)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(31535999)
+
+  it 'should handle leap year', ->
+    a = DT.DateTime.parse '1999-02-01T00:00:00'
+    b = DT.DateTime.parse '2000-02-01T00:00:00'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(1)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(12)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(365)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(8760)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(525600)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(31536000)
+
+    a = DT.DateTime.parse '2000-02-01T00:00:00'
+    b = DT.DateTime.parse '2001-02-01T00:00:00'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(1)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(12)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(366)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(8784)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(527040)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(31622400)
+
+  it 'should handle imprecision', ->
+    a = DT.DateTime.parse '2009-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-06-15T12:37'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(-45,14)
+
+    a = DT.DateTime.parse '2009-06-15T12:37:45'
+    b = DT.DateTime.parse '2009-06-15T14'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(2)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(83, 142)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(4935, 8534)
+
+    a = DT.DateTime.parse '2000-06-15T12:37:45'
+    b = DT.DateTime.parse '2009'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(9)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(103, 114)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(3122, 3486)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(74917, 83676)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(4494983, 5020582)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(269698935, 301234934)
+
+    a = DT.DateTime.parse '2009-06-15T12:37'
+    b = DT.DateTime.parse '2009-06-15T12:37'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(-59,59)
+
+  it 'should return negative values for going backwards', ->
+    a = DT.DateTime.parse '2009-07-04T12:56:50'
+    b = DT.DateTime.parse '2000-06-15T12:37:45'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(-9)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(-109)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(-3306)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(-79344)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(-4760659)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(-285639545)
+
+    a = DT.DateTime.parse '2009-06-15T12:37'
+    b = DT.DateTime.parse '2009-06-15T12:37:45'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(-14,45)
+
+
 describe 'DateTime.sameAs', ->
   it 'should always accept cases where a is same as b', ->
     DT.DateTime.parse('2000-05-15T12:35:45').sameAs(DT.DateTime.parse('2000-05-15T12:35:45')).should.be.true

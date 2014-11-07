@@ -12,6 +12,9 @@ class ValueSet
     return matches.length > 0
 
 class Uncertainty
+  @from: (obj) ->
+    if obj.toUncertainty? then obj.toUncertainty() else new Uncertainty(obj)
+
   constructor: (@low = null, @high) ->
     if typeof high is 'undefined' then @high = @low
     if @low? and @high? and @low > @high then [@low, @high] = [@high, @low]
@@ -21,32 +24,29 @@ class Uncertainty
     @low? and @high? and @low <= @high and @low >= @high
 
   equals: (other) ->
-    other = @_convert other
+    other = Uncertainty.from other
     ThreeValuedLogic.not ThreeValuedLogic.or(@lessThan(other), @greaterThan(other))
 
   lessThan: (other) ->
-    other = @_convert other
+    other = Uncertainty.from other
     bestCase = not @low? or not other.high? or @low < other.high
     worstCase = @high? and other.low? and @high < other.low
     if bestCase is worstCase then return bestCase else return null
 
   greaterThan: (other) ->
-    other = @_convert other
+    other = Uncertainty.from other
     other.lessThan @
 
   lessThanOrEquals: (other) ->
-    other = @_convert other
+    other = Uncertainty.from other
     ThreeValuedLogic.not @greaterThan(other)
 
   greaterThanOrEquals: (other) ->
-    other = @_convert other
+    other = Uncertainty.from other
     ThreeValuedLogic.not @lessThan(other)
 
   toUncertainty: () ->
     @
-
-  _convert: (other) ->
-    if other.toUncertainty? then other.toUncertainty() else new Uncertainty(other)
 
 class DateTime
   @Unit: { YEAR: 'year', MONTH: 'month', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second' }
@@ -105,6 +105,33 @@ class DateTime
         result[field] = normalized[field]
 
     result
+
+  timeBetween: (other, unitField) ->
+    if not(other instanceof DateTime) then return null
+
+    a = @toUncertainty()
+    b = other.toUncertainty()
+    new Uncertainty(@_timeBetweenDates(a.high, b.low, unitField), @_timeBetweenDates(a.low, b.high, unitField))
+
+  _timeBetweenDates: (a, b, unitField) ->
+    # To count boundaries below month, we need to floor units at lower precisions
+    [a, b] = [a, b].map (x) ->
+      switch unitField
+        when DateTime.Unit.DAY then new Date(x.getFullYear(), x.getMonth(), x.getDate())
+        when DateTime.Unit.HOUR then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours())
+        when DateTime.Unit.MINUTE then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes())
+        when DateTime.Unit.SECOND then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes(), x.getSeconds())
+        else x
+
+    msDiff = b.getTime() - a.getTime()
+    switch unitField
+      when DateTime.Unit.YEAR then b.getFullYear() - a.getFullYear()
+      when DateTime.Unit.MONTH then b.getMonth() - a.getMonth() + 12 * @_timeBetweenDates(a, b, DateTime.Unit.YEAR)
+      when DateTime.Unit.DAY then Math.floor(@_timeBetweenDates(a, b, DateTime.Unit.SECOND) / (24 * 60 * 60))
+      when DateTime.Unit.HOUR then Math.floor(@_timeBetweenDates(a, b, DateTime.Unit.SECOND) / (60 * 60))
+      when DateTime.Unit.MINUTE then Math.floor(msDiff / 60 / 1000)
+      when DateTime.Unit.SECOND then Math.floor((b.getTime() - a.getTime()) / 1000)
+      else null
 
   isPrecise: () ->
     DateTime.FIELDS.every (field) => @[field]?
