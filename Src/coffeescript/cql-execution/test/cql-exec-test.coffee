@@ -824,6 +824,24 @@ describe 'Tuple', ->
     e = @query.exec(@ctx)
     e.should.have.length(3)
 
+describe.only 'Sorting', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+
+  it 'should be able to sort by a single field asc' , ->
+    e = @singleAsc.exec(@ctx)
+    e.should.have.length(3)
+    e[0].E.get("identifier").id.should.equal "http://cqframework.org/3/1"
+    e[1].E.get("identifier").id.should.equal  "http://cqframework.org/3/3"
+    e[2].E.get("identifier").id.should.equal  "http://cqframework.org/3/5"
+
+  it 'should be able to sort by a single field desc', ->
+    e = @singleDesc.exec(@ctx)
+    e.should.have.length(3)
+    e[2].E.get("identifier").id.should.equal "http://cqframework.org/3/1"
+    e[1].E.get("identifier").id.should.equal  "http://cqframework.org/3/3"
+    e[0].E.get("identifier").id.should.equal  "http://cqframework.org/3/5"    
 
 describe.skip 'IncludesQuery', ->
   @beforeEach ->

@@ -571,6 +571,42 @@ class Without extends With
   exec: (ctx) ->
     !super(ctx)
 
+class ByExpression extends Expression 
+  constructor: (json) ->
+    super
+    @expression = build json.expression
+    @direction = json.direction
+    @low_order = if @direction == "asc" then -1 else 1
+    @high_order = @low_order * -1
+   
+   exec: (a,b) ->
+     ctx = new Context()
+     ctx.context_values = a
+     a_val = @expression.exec(ctx)
+     ctx.context_values = b 
+     b_val = @expression.exec(ctx)
+
+     if a_val == b_val
+       0
+     else if a_val < b_val
+       @low_order
+     else 
+       @high_order  
+      
+class Sort 
+  constructor:(json) ->
+    @by = build json?.by
+  
+  sort: (values) ->
+    self = @
+    if @by 
+      values.sort (a,b) ->
+        order = 0
+        for item in self.by
+          order = item.exec(a,b)
+          if order != 0 then break
+        order
+        
 class MultiSource
   constructor: (@sources) ->
     @sources = if typeIsArray(@sources) then @sources else [@sources]
@@ -615,7 +651,7 @@ class Query extends Expression
     @where = build json.where
     @return = build json.return?.expression
     @aliases = @sources.aliases()
-    
+    @sort = new Sort(json.sort)
   exec: (ctx) ->
     self = @
     returnedValues = []
@@ -639,6 +675,8 @@ class Query extends Expression
          else
            returnedValues.push rctx.context_values
     )
+
+    @sort?.sort(returnedValues)
     returnedValues 
 
 

@@ -4622,7 +4622,7 @@ define msQueryWhere = foreach [Encounter, Performance] E,
 define msQueryWhere2 = foreach [Encounter, Performance] E, [Condition] C 
   where  E.performanceTime  included in MeasurementPeriod and  C.identifier.id = 'http://cqframework.org/3/2'
 
-define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C}
+define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C} 
 ###
 
 module.exports.MultiSourceQuery = {
@@ -5150,6 +5150,110 @@ module.exports.QueryRelationship = {
                      } ]
                   }
                } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Sorting
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define singleAsc =  [Encounter, Performance] E  return {E : E} sort by E.identifier.id
+define singleDesc =  [Encounter, Performance] E return {E : E} sort by E.identifier.id desc
+###
+
+module.exports.Sorting = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "singleAsc",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByExpression",
+                     "expression" : {
+                        "path" : "identifier.id",
+                        "scope" : "E",
+                        "type" : "Property"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "singleDesc",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "desc",
+                     "type" : "ByExpression",
+                     "expression" : {
+                        "path" : "identifier.id",
+                        "scope" : "E",
+                        "type" : "Property"
+                     }
+                  } ]
+               }
             }
          } ]
       }

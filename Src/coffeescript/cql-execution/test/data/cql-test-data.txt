@@ -262,7 +262,7 @@ define msQueryWhere = foreach [Encounter, Performance] E,
 define msQueryWhere2 = foreach [Encounter, Performance] E, [Condition] C 
   where  E.performanceTime  included in MeasurementPeriod and  C.identifier.id = 'http://cqframework.org/3/2'
 
-define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C}
+define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C} 
 
 #QueryDefine
 define query =  [Encounter, Performance] E 
@@ -288,3 +288,6 @@ define query =  [Encounter, Performance] E return {id: E.id, thing: E.status}
    without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
 
 
+#Sorting
+define singleAsc =  [Encounter, Performance] E  return {E : E} sort by E.identifier.id
+define singleDesc =  [Encounter, Performance] E return {E : E} sort by E.identifier.id desc
