@@ -80,6 +80,7 @@ define Day = Date(2012, 4, 15)
 define Hour = Date(2012, 4, 15, 12)
 define Minute = Date(2012, 4, 15, 12, 10)
 define Second = Date(2012, 4, 15, 12, 10, 59)
+define Millisecond = Date(2012, 4, 15, 12, 10, 59, 456)
 
 # Interval
 define Foo = interval[1, 4]
@@ -216,8 +217,8 @@ define Mixed = 1 + 5 * 10 - 15 / 3
 define Parenthetical = (1 + 5) * (10 - 15) / 3
 
 # TimeBetween
-define NewYear2013 = Date(2013, 1, 1, 0, 0, 0)
-define NewYear2014 = Date(2014, 1, 1, 0, 0, 0)
+define NewYear2013 = Date(2013, 1, 1, 0, 0, 0, 0)
+define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
 define January2014 = Date(2014, 1)
 define YearsBetween = years between NewYear2013 and NewYear2014
 define MonthsBetween = months between NewYear2013 and NewYear2014
@@ -235,7 +236,7 @@ define SecondsBetweenUncertainty = seconds between NewYear2014 and January2014
 define SecondsBetweenReversedUncertainty = seconds between January2014 and NewYear2014
 
 # TimeBetweenComparisons
-define NewYear2014 = Date(2014, 1, 1, 0, 0, 0)
+define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
 define February2014 = Date(2014, 2)
 define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
 define GreaterThan40DaysAfter = days between NewYear2014 and February2014 > 40

@@ -1047,6 +1047,7 @@ define Day = Date(2012, 4, 15)
 define Hour = Date(2012, 4, 15, 12)
 define Minute = Date(2012, 4, 15, 12, 10)
 define Second = Date(2012, 4, 15, 12, 10, 59)
+define Millisecond = Date(2012, 4, 15, 12, 10, 59, 456)
 ###
 
 module.exports.DateFunctionRef = {
@@ -1195,6 +1196,42 @@ module.exports.DateFunctionRef = {
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                   "value" : "59",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "Millisecond",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2012",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "4",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "15",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "12",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "59",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "456",
                   "type" : "Literal"
                } ]
             }
@@ -4038,8 +4075,8 @@ module.exports.MathPrecedence = {
 library TestSnippet version '1'
 using QUICK
 context PATIENT
-define NewYear2013 = Date(2013, 1, 1, 0, 0, 0)
-define NewYear2014 = Date(2014, 1, 1, 0, 0, 0)
+define NewYear2013 = Date(2013, 1, 1, 0, 0, 0, 0)
+define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
 define January2014 = Date(2014, 1)
 define YearsBetween = years between NewYear2013 and NewYear2014
 define MonthsBetween = months between NewYear2013 and NewYear2014
@@ -4104,6 +4141,10 @@ module.exports.TimeBetween = {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                   "value" : "0",
                   "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
                } ]
             }
          }, {
@@ -4123,6 +4164,10 @@ module.exports.TimeBetween = {
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                   "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -4345,7 +4390,7 @@ module.exports.TimeBetween = {
 library TestSnippet version '1'
 using QUICK
 context PATIENT
-define NewYear2014 = Date(2014, 1, 1, 0, 0, 0)
+define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
 define February2014 = Date(2014, 2)
 define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
 define GreaterThan40DaysAfter = days between NewYear2014 and February2014 > 40
@@ -4401,6 +4446,10 @@ module.exports.TimeBetweenComparisons = {
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                   "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
                   "type" : "Literal"
                }, {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",

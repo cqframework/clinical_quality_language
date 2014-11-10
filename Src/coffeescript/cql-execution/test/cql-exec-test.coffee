@@ -15,12 +15,12 @@ describe 'InAgeDemographic', ->
   @beforeEach ->
     setup @, P.P1AndP2
     @results = @lib.exec(@ctx)
-  
+
   it 'should have correct patient results', ->
     @results.patientResults['1'].InDemographic.should.equal false
     @results.patientResults['2'].InDemographic.should.equal true
 
-  it 'should have empty population results', ->  
+  it 'should have empty population results', ->
     @results.populationResults.should.be.empty
 
 describe 'ExpressionDef', ->
@@ -92,7 +92,7 @@ describe 'ValueSetDef', ->
     vs.oid.should.equal '2.16.840.1.113883.3.464.1003.101.12.1061'
     vs.version.should.equal '20140501'
     vs.codes.length.should.equal 3
-  
+
   it 'should execute one-arg to ValueSet with ID', ->
     vs = @['unknown One Arg'].exec(@ctx)
     vs.oid.should.equal '1.2.3.4.5.6.7.8.9'
@@ -204,20 +204,20 @@ describe 'DateFunctionRef', ->
   it 'should execute year precision correctly', ->
     d = @year.exec(@ctx)
     d.year.should.equal 2012
-    should.not.exist(d[field]) for field in [ 'month', 'day', 'hour', 'minute', 'second' ]
+    should.not.exist(d[field]) for field in [ 'month', 'day', 'hour', 'minute', 'second', 'millisecond' ]
 
   it 'should execute month precision correctly', ->
     d = @month.exec(@ctx)
     d.year.should.equal 2012
     d.month.should.equal 4
-    should.not.exist(d[field]) for field in [ 'day', 'hour', 'minute', 'second' ]
+    should.not.exist(d[field]) for field in [ 'day', 'hour', 'minute', 'second', 'millisecond' ]
 
   it 'should execute day precision correctly', ->
     d = @day.exec(@ctx)
     d.year.should.equal 2012
     d.month.should.equal 4
     d.day.should.equal 15
-    should.not.exist(d[field]) for field in [ 'hour', 'minute', 'second' ]
+    should.not.exist(d[field]) for field in [ 'hour', 'minute', 'second', 'millisecond' ]
 
   it 'should execute hour precision correctly', ->
     d = @hour.exec(@ctx)
@@ -225,7 +225,7 @@ describe 'DateFunctionRef', ->
     d.month.should.equal 4
     d.day.should.equal 15
     d.hour.should.equal 12
-    should.not.exist(d[field]) for field in [ 'minute', 'second' ]
+    should.not.exist(d[field]) for field in [ 'minute', 'second', 'millisecond' ]
 
   it 'should execute minute precision correctly', ->
     d = @minute.exec(@ctx)
@@ -234,7 +234,7 @@ describe 'DateFunctionRef', ->
     d.day.should.equal 15
     d.hour.should.equal 12
     d.minute.should.equal 10
-    should.not.exist(d.second)
+    should.not.exist(d[field]) for field in [ 'second', 'millisecond' ]
 
   it 'should execute second precision correctly', ->
     d = @second.exec(@ctx)
@@ -244,6 +244,17 @@ describe 'DateFunctionRef', ->
     d.hour.should.equal 12
     d.minute.should.equal 10
     d.second.should.equal 59
+    should.not.exist(d.millisecond)
+
+    it 'should execute millisecond precision correctly', ->
+    d = @millisecond.exec(@ctx)
+    d.year.should.equal 2012
+    d.month.should.equal 4
+    d.day.should.equal 15
+    d.hour.should.equal 12
+    d.minute.should.equal 10
+    d.second.should.equal 59
+    d.millisecond.should.equal 456
 
 # TO Comparisons for Dates
 
