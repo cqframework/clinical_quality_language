@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin:'application'
+apply plugin: 'maven'
 
 group = 'org.cqframework'
 version = '0.1'
