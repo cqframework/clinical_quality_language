@@ -216,6 +216,17 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="IdentifierRef">
+		<xs:annotation>
+			<xs:documentation>The IdentifierRef type defines an expression that references an unresolved identifier, usually to an in-context variable, or a property of an in-context variable.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- Literals -->
 	<xs:complexType name="Literal">
 		<xs:annotation>
@@ -1972,7 +1983,7 @@ Property expressions can also be used to access the individual points and open i
 				<xs:sequence>
 					<xs:element name="expression" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
-				<xs:attribute name="distinct" type="xs:boolean" default="true" use="optional"/>
+				<xs:attribute name="distinct" type="xs:boolean" use="optional" default="true"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

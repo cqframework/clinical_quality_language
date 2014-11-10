@@ -178,6 +178,8 @@
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
+                     "name" : "Acute Tonsilitis",
+                     "type" : "IdentifierRef"
                   }
                } ]
             }

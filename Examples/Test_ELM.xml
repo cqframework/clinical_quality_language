@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1" xsi:schemaLocation="urn:hl7-org:elm:r1 ..\Src\cql-lm\schema\elm\library.xsd urn:hl7-org:cql-annotations:r1 ..\src\cql-lm\schema\elm\cqlannotations.xsd">
-   <identifier id="Test"/>
-   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
-   <statements>
-      <def localId="4" name="TestExpression" context="UNKNOWN">
-         <annotation xsi:type="a:Annotation">
-            <a:s r="4">define  = <a:s r="3">
-                  <a:s r="1">1</a:s> + <a:s r="2">1</a:s>
-               </a:s>
-            </a:s>
-         </annotation>
-         <expression localId="3" xsi:type="Add">
-            <operand localId="1" valueType="xsd:int" value="1" xsi:type="Literal"/>
-            <operand localId="2" valueType="xsd:int" value="1" xsi:type="Literal"/>
-         </expression>
-      </def>
-      <def localId="6" name="X" context="UNKNOWN">
-         <annotation xsi:type="a:Annotation">
-            <a:s r="6">define  = <a:s r="5">1</a:s>
-            </a:s>
-         </annotation>
-         <expression localId="5" valueType="xsd:int" value="1" xsi:type="Literal"/>
-      </def>
-      <def localId="8" name="Y" context="UNKNOWN">
-         <annotation xsi:type="a:Annotation">
-            <a:s r="8">define  = <a:s r="7">2</a:s>
-            </a:s>
-         </annotation>
-         <expression localId="7" valueType="xsd:int" value="2" xsi:type="Literal"/>
-      </def>
-      <def localId="12" name="XPlusY" context="UNKNOWN">
-         <annotation xsi:type="a:Annotation">
-            <a:s r="12">define  = <a:s r="11">
-                  <a:s r="9"/> + <a:s r="10"/></a:s>
-            </a:s>
-         </annotation>
-         <expression localId="11" xsi:type="Add">
-            <operand localId="9" name="X" xsi:type="ExpressionRef"/>
-            <operand localId="10" name="Y" xsi:type="ExpressionRef"/>
-         </expression>
-      </def>
-   </statements>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+    <identifier id="Test"/>
+    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+    <statements>
+        <def localId="4" name="TestExpression" context="UNKNOWN">
+            <annotation xsi:type="a:Annotation">
+                <a:s r="4">define TestExpression = <a:s r="3">
+                    <a:s r="1">1</a:s> + <a:s r="2">1</a:s>
+                </a:s>
+                </a:s>
+            </annotation>
+            <expression localId="3" xsi:type="Add">
+                <operand localId="1" valueType="xsd:int" value="1" xsi:type="Literal"/>
+                <operand localId="2" valueType="xsd:int" value="1" xsi:type="Literal"/>
+            </expression>
+        </def>
+        <def localId="6" name="X" context="UNKNOWN">
+            <annotation xsi:type="a:Annotation">
+                <a:s r="6">define X = <a:s r="5">1</a:s>
+                </a:s>
+            </annotation>
+            <expression localId="5" valueType="xsd:int" value="1" xsi:type="Literal"/>
+        </def>
+        <def localId="8" name="Y" context="UNKNOWN">
+            <annotation xsi:type="a:Annotation">
+                <a:s r="8">define Y = <a:s r="7">1</a:s>
+                </a:s>
+            </annotation>
+            <expression localId="7" valueType="xsd:int" value="1" xsi:type="Literal"/>
+        </def>
+        <def localId="12" name="XPlusY" context="UNKNOWN">
+            <annotation xsi:type="a:Annotation">
+                <a:s r="12">define XPlusY = <a:s r="11">
+                    <a:s r="9">X</a:s> + <a:s r="10">Y</a:s>
+                </a:s>
+                </a:s>
+            </annotation>
+            <expression localId="11" xsi:type="Add">
+                <operand localId="9" name="X" xsi:type="ExpressionRef"/>
+                <operand localId="10" name="Y" xsi:type="ExpressionRef"/>
+            </expression>
+        </def>
+    </statements>
 </library>

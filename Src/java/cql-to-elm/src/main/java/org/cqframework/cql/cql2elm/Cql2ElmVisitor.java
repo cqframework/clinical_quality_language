@@ -125,9 +125,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // set the narrative's reference id
                 // if there is a parent narrative
                     // add this narrative to the content of the parent
-            // else
-                // if there is a parent narrative
-                    // add the contents of this narrative to that narrative
+        // else
+            // if there is a parent narrative
+                // add the contents of this narrative to that narrative
         if (o instanceof Element) {
             Element element = (Element)o;
             if (element.getLocalId() == null) {
@@ -154,6 +154,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     Narrative parentNarrative = narratives.peek();
                     parentNarrative.getContent().addAll(currentNarrative.getContent());
                 }
+            }
+        }
+        else {
+            if (!narratives.isEmpty()) {
+                Narrative parentNarrative = narratives.peek();
+                parentNarrative.getContent().addAll(currentNarrative.getContent());
             }
         }
 
@@ -774,9 +780,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withName(memberIdentifier);
             }
 
-            Identifier identifier = new Identifier();
+            IdentifierRef identifier = new IdentifierRef();
             identifier.setLibraryName(((LibraryRef)left).getLibraryName());
-            identifier.setIdentifier(memberIdentifier);
+            identifier.setName(memberIdentifier);
             return identifier;
         }
 
@@ -798,9 +804,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return property;
         }
 
-        else if (left instanceof Identifier) {
-            Identifier identifier = (Identifier)left;
-            identifier.setIdentifier(String.format("%s.%s", identifier.getIdentifier(), memberIdentifier));
+        else if (left instanceof IdentifierRef) {
+            IdentifierRef identifier = (IdentifierRef)left;
+            identifier.setName(String.format("%s.%s", identifier.getName(), memberIdentifier));
             return identifier;
         }
 
@@ -859,8 +865,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return libraryRef;
         }
 
-        Identifier id = new Identifier();
-        id.setIdentifier(identifier);
+        IdentifierRef id = of.createIdentifierRef();
+        id.setName(identifier);
         return id;
     }
 
@@ -1849,9 +1855,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         FunctionRef fun = of.createFunctionRef();
         Expression left = parseExpression(ctx.expressionTerm());
 
-        if (left instanceof Identifier) {
-            fun.setLibraryName(((Identifier)left).getLibraryName());
-            fun.setName(((Identifier)left).getIdentifier());
+        if (left instanceof IdentifierRef) {
+            fun.setLibraryName(((IdentifierRef)left).getLibraryName());
+            fun.setName(((IdentifierRef)left).getName());
         }
 
         if (ctx.expression() != null) {

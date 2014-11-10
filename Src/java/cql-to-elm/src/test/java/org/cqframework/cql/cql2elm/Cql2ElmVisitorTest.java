@@ -1,7 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.Trackable;
-import org.cqframework.cql.cql2elm.model.Identifier;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
@@ -143,10 +142,10 @@ public class Cql2ElmVisitorTest {
     public void testIsTrueExpressions(){
         ExpressionDef def = (ExpressionDef) visitData("define st = X is true");
         Equal equal = (Equal) def.getExpression();
-        Identifier left = (Identifier) equal.getOperand().get(0);
+        IdentifierRef left = (IdentifierRef) equal.getOperand().get(0);
         Expression right = equal.getOperand().get(1);
 
-        assertThat(left.getIdentifier(), is("X"));
+        assertThat(left.getName(), is("X"));
         assertThat(right, literalFor(true));
 
         assertTrackable(equal);
@@ -159,10 +158,10 @@ public class Cql2ElmVisitorTest {
         ExpressionDef def = (ExpressionDef) visitData("define st = X is not true");
         Not not = (Not) def.getExpression();
         Equal equal = (Equal) not.getOperand();
-        Identifier left = (Identifier) equal.getOperand().get(0);
+        IdentifierRef left = (IdentifierRef) equal.getOperand().get(0);
         Expression right = equal.getOperand().get(1);
 
-        assertThat(left.getIdentifier(), is("X"));
+        assertThat(left.getName(), is("X"));
         assertThat(right, literalFor(true));
 
         assertTrackable(not);
@@ -175,9 +174,9 @@ public class Cql2ElmVisitorTest {
     public void testIsNullExpressions(){
         ExpressionDef def = (ExpressionDef) visitData("define st = X is null");
         IsNull isNull = (IsNull) def.getExpression();
-        Identifier id = (Identifier) isNull.getOperand();
+        IdentifierRef id = (IdentifierRef) isNull.getOperand();
 
-        assertThat(id.getIdentifier(), is("X"));
+        assertThat(id.getName(), is("X"));
 
         assertTrackable(isNull);
         assertTrackable(id);
@@ -188,9 +187,9 @@ public class Cql2ElmVisitorTest {
         ExpressionDef def = (ExpressionDef) visitData("define st = X is not null");
         Not not = (Not) def.getExpression();
         IsNull isNull = (IsNull) not.getOperand();
-        Identifier id = (Identifier) isNull.getOperand();
+        IdentifierRef id = (IdentifierRef) isNull.getOperand();
 
-        assertThat(id.getIdentifier(), is("X"));
+        assertThat(id.getName(), is("X"));
 
         assertTrackable(not);
         //assertTrackable(isNull);
@@ -1008,8 +1007,8 @@ public class Cql2ElmVisitorTest {
         // TODO: Confirm this should not be ByColumn
         ByExpression sortBy = (ByExpression) sort.getBy().get(0);
         // TODO: Should this really be using Identifier class here?
-        Identifier id = (Identifier) sortBy.getExpression();
-        assertThat(id.getIdentifier(), is("lengthOfStay"));
+        IdentifierRef id = (IdentifierRef) sortBy.getExpression();
+        assertThat(id.getName(), is("lengthOfStay"));
         assertThat(id.getLibraryName(), is(nullValue()));
         assertThat(sortBy.getDirection(), is(SortDirection.DESC));
     }

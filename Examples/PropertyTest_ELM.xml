@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+    <identifier id="PropertyTest"/>
+    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+    <valueSets>
+        <def localId="1" name="Female Administrative Sex" id="2.16.840.1.113883.3.560.100.2"/>
+    </valueSets>
+    <statements>
+        <def localId="5" name="GenderReference" context="UNKNOWN">
+            <annotation xsi:type="a:Annotation">
+                <a:s r="5">define GenderReference = <a:s r="4">
+                    <a:s r="2">gender</a:s> in <a:s r="3">&quot;Female Administrative Sex&quot;</a:s>
+                </a:s>
+                </a:s>
+            </annotation>
+            <expression localId="4" xsi:type="In">
+                <operand localId="2" name="gender" xsi:type="IdentifierRef"/>
+                <operand localId="3" name="Female Administrative Sex" xsi:type="ValueSetRef"/>
+            </expression>
+        </def>
+    </statements>
+</library>

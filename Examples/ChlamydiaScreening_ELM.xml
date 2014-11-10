@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1" xsi:schemaLocation="urn:hl7-org:elm:r1 ..\src\cql-lm\schema\elm\library.xsd urn:hl7-org:cql-annotations:r1 ..\src\cql-lm\schema\elm\cqlannotations.xsd">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
     <identifier id="CMS153_CDS" version="2"/>
-    <schemaIdentifier id="urn:hl7-org-elm" version="r1"/>
+    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
     <usings>
         <def localId="1" localIdentifier="QUICK" uri="http://org.hl7.fhir"/>
     </usings>
@@ -25,16 +25,17 @@
     <statements>
         <def localId="30" name="InDemographic" context="PATIENT">
             <annotation xsi:type="a:Annotation">
-                <a:s r="30">define  =&#xd;
+                <a:s r="30">define InDemographic =&#xd;
                     <a:s r="29">
                         <a:s r="25">
-                            <a:s r="20">AgeInYears() <a:s r="18">
-                                <a:s r="17"/>()</a:s> >= <a:s r="19">16</a:s>
-                            </a:s> and <a:s r="24">AgeInYears() <a:s r="22">
-                            <a:s r="21"/>()</a:s> &lt; <a:s r="23">24</a:s>
+                            <a:s r="20">AgeInYears() >=<a:s r="18">
+                                <a:s r="17">AgeInYears</a:s>()</a:s> >= <a:s r="19">16</a:s>
+                            </a:s> and <a:s r="24">AgeInYears() &lt;<a:s r="22">
+                            <a:s r="21">AgeInYears</a:s>()</a:s> &lt; <a:s r="23">24</a:s>
                         </a:s>
                         </a:s> and <a:s r="28">
-                        <a:s r="26"/> in <a:s r="27"/></a:s>
+                        <a:s r="26">gender</a:s> in <a:s r="27">&quot;Female Administrative Sex&quot;</a:s>
+                    </a:s>
                     </a:s>
                 </a:s>
             </annotation>
@@ -50,14 +51,14 @@
                     </operand>
                 </operand>
                 <operand localId="28" xsi:type="In">
-                    <operand localId="26" xsi:type="Property" path="gender"/>
+                    <operand localId="26" name="gender" xsi:type="IdentifierRef"/>
                     <operand localId="27" name="Female Administrative Sex" xsi:type="ValueSetRef"/>
                 </operand>
             </expression>
         </def>
         <def localId="66" name="SexuallyActive" context="PATIENT">
             <annotation xsi:type="a:Annotation">
-                <a:s r="66">define  =&#xd;
+                <a:s r="66">define SexuallyActive =&#xd;
                     <a:s r="65">
                         <a:s r="62">
                             <a:s r="59">
@@ -69,28 +70,28 @@
                                                     <a:s r="41">
                                                         <a:s r="38">
                                                             <a:s r="35">
-                                                                <a:s r="32">exists (<a:s r="31">[: ]</a:s>)</a:s>&#xd;
-                                                                or <a:s r="34">exists (<a:s r="33">[: ]</a:s>)</a:s>
+                                                                <a:s r="32">exists (<a:s r="31">[Condition: &quot;Other Female Reproductive Conditions&quot;]</a:s>)</a:s>&#xd;
+                                                                or <a:s r="34">exists (<a:s r="33">[Condition: &quot;Genital Herpes&quot;]</a:s>)</a:s>
                                                             </a:s>&#xd;
-                                                            or <a:s r="37">exists (<a:s r="36">[: ]</a:s>)</a:s>
+                                                            or <a:s r="37">exists (<a:s r="36">[Condition: &quot;Genococcal Infections and Venereal Diseases&quot;]</a:s>)</a:s>
                                                         </a:s>&#xd;
-                                                        or <a:s r="40">exists (<a:s r="39">[: ]</a:s>)</a:s>
+                                                        or <a:s r="40">exists (<a:s r="39">[Condition: &quot;Inflammatory Diseases of Female Reproductive Organs&quot;]</a:s>)</a:s>
                                                     </a:s>&#xd;
-                                                    or <a:s r="43">exists (<a:s r="42">[: ]</a:s>)</a:s>
+                                                    or <a:s r="43">exists (<a:s r="42">[Condition: &quot;Chlamydia&quot;]</a:s>)</a:s>
                                                 </a:s>&#xd;
-                                                or <a:s r="46">exists (<a:s r="45">[: ]</a:s>)</a:s>
+                                                or <a:s r="46">exists (<a:s r="45">[Condition: &quot;HIV&quot;]</a:s>)</a:s>
                                             </a:s>&#xd;
-                                            or <a:s r="49">exists (<a:s r="48">[: ]</a:s>)</a:s>
+                                            or <a:s r="49">exists (<a:s r="48">[Condition: &quot;Syphilis&quot;]</a:s>)</a:s>
                                         </a:s>&#xd;
-                                        or <a:s r="52">exists (<a:s r="51">[: ]</a:s>)</a:s>
+                                        or <a:s r="52">exists (<a:s r="51">[Condition: &quot;Complications of Pregnancy, Childbirth and the Puerperium&quot;]</a:s>)</a:s>
                                     </a:s>&#xd;
-                                    or <a:s r="55">exists (<a:s r="54">[, : ]</a:s>)</a:s>
+                                    or <a:s r="55">exists (<a:s r="54">[LaboratoryTest, Order: &quot;Pregnancy Test&quot;]</a:s>)</a:s>
                                 </a:s>&#xd;
-                                or <a:s r="58">exists (<a:s r="57">[, : ]</a:s>)</a:s>
+                                or <a:s r="58">exists (<a:s r="57">[LaboratoryTest, Order: &quot;Pap Test&quot;]</a:s>)</a:s>
                             </a:s>&#xd;
-                            or <a:s r="61">exists (<a:s r="60">[, : ]</a:s>)</a:s>
+                            or <a:s r="61">exists (<a:s r="60">[LaboratoryTest, Order: &quot;Lab Tests During Pregnancy&quot;]</a:s>)</a:s>
                         </a:s>&#xd;
-                        or <a:s r="64">exists (<a:s r="63">[, : ]</a:s>)</a:s>
+                        or <a:s r="64">exists (<a:s r="63">[LaboratoryTest, Order: &quot;Lab Tests for Sexually Transmitted Infections&quot;]</a:s>)</a:s>
                     </a:s>
                 </a:s>
             </annotation>
@@ -177,36 +178,41 @@
                 </operand>
             </expression>
         </def>
-        <def localId="102" name="NoScreening" context="PATIENT">
+        <def localId="103" name="NoScreening" context="PATIENT">
             <annotation xsi:type="a:Annotation">
-                <a:s r="102">define  =&#xd;
-                    <a:s r="101">
-                        <a:s r="97">
-                            <a:s r="85">not <a:s r="84">exists (<a:s r="83"> where <a:s r="82">
+                <a:s r="103">define NoScreening =&#xd;
+                    <a:s r="102">
+                        <a:s r="98">
+                            <a:s r="85">not <a:s r="84">exists (<a:s r="83">
+                                <a:s r="68">
+                                    <a:s r="67">[SimpleObservation: &quot;Chlamydia Screening&quot;]</a:s> R</a:s> where <a:s r="82">
                                 <a:s r="70">
-                                    <a:s r="69"/>.</a:s> during <a:s r="77">interval[<a:s r="74">
+                                    <a:s r="69">R</a:s>.observedAtTime</a:s> during <a:s r="77">interval[<a:s r="74">
                                 <a:s r="72">
-                                    <a:s r="71"/>()</a:s> - <a:s r="73">1 years</a:s>
+                                    <a:s r="71">Today</a:s>()</a:s> - <a:s r="73">1 years</a:s>
                             </a:s>, <a:s r="76">
-                                <a:s r="75"/>()</a:s>]</a:s>
+                                <a:s r="75">Today</a:s>()</a:s>]</a:s>
                                 <a:s r="78">during</a:s> interval[Today() - 1 years, Today()] and <a:s r="81">
                                 <a:s r="80">
-                                    <a:s r="79"/>.</a:s> is not null</a:s>
+                                    <a:s r="79">R</a:s>.result</a:s> is not null</a:s>
                             </a:s>
                             </a:s>)</a:s>
                             </a:s>&#xd;
-                            and <a:s r="96">not <a:s r="95">exists (<a:s r="94"> where <a:s r="88"/>. during <a:s r="92">interval[<a:s r="90">
-                            <a:s r="89"/>()</a:s>, <a:s r="91">null</a:s>]</a:s>
-                            <a:s r="93">during</a:s> interval[Today(), null]</a:s>)</a:s>
+                            and <a:s r="97">not <a:s r="96">exists (<a:s r="95">
+                            <a:s r="87">
+                                <a:s r="86">[Procedure, Plan: &quot;Chlamydia Screening&quot;]</a:s> P</a:s> where <a:s r="89">
+                            <a:s r="88">P</a:s>.plannedTime</a:s> during <a:s r="93">interval[<a:s r="91">
+                            <a:s r="90">Today</a:s>()</a:s>, <a:s r="92">null</a:s>]</a:s>
+                            <a:s r="94">during</a:s> interval[Today(), null]</a:s>)</a:s>
                         </a:s>
                         </a:s>&#xd;
-                        and <a:s r="100">not <a:s r="99">exists (<a:s r="98">[: ]</a:s>)</a:s>
+                        and <a:s r="101">not <a:s r="100">exists (<a:s r="99">[SimpleObservation: &quot;Reason for not performing Chlamydia Screening&quot;]</a:s>)</a:s>
                     </a:s>
                     </a:s>
                 </a:s>
             </annotation>
-            <expression localId="101" xsi:type="And">
-                <operand localId="97" xsi:type="And">
+            <expression localId="102" xsi:type="And">
+                <operand localId="98" xsi:type="And">
                     <operand localId="85" xsi:type="Not">
                         <operand localId="84" xsi:type="Exists">
                             <operand localId="83" xsi:type="Query">
@@ -235,47 +241,49 @@
                             </operand>
                         </operand>
                     </operand>
-                    <operand localId="96" xsi:type="Not">
-                        <operand localId="95" xsi:type="Exists">
-                            <operand localId="94" xsi:type="Query">
+                    <operand localId="97" xsi:type="Not">
+                        <operand localId="96" xsi:type="Exists">
+                            <operand localId="95" xsi:type="Query">
                                 <source localId="87" alias="P">
                                     <expression localId="86" dataType="xsd:ProcedurePlanOccurrence" xsi:type="Retrieve">
                                         <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
                                     </expression>
                                 </source>
-                                <where localId="93" xsi:type="IncludedIn">
-                                    <operand localId="88" xsi:type="Property" path="performanceTime"/>
-                                    <operand localId="92" lowClosed="true" highClosed="true" xsi:type="Interval">
-                                        <low localId="90" name="Today" xsi:type="FunctionRef"/>
-                                        <high localId="91" xsi:type="Null"/>
+                                <where localId="94" xsi:type="IncludedIn">
+                                    <operand localId="89" path="plannedTime" scope="P" xsi:type="Property"/>
+                                    <operand localId="93" lowClosed="true" highClosed="true" xsi:type="Interval">
+                                        <low localId="91" name="Today" xsi:type="FunctionRef"/>
+                                        <high localId="92" xsi:type="Null"/>
                                     </operand>
                                 </where>
                             </operand>
                         </operand>
                     </operand>
                 </operand>
-                <operand localId="100" xsi:type="Not">
-                    <operand localId="99" xsi:type="Exists">
-                        <operand localId="98" dataType="quick:SimpleObservationOccurrence" codeProperty="code" xsi:type="Retrieve">
+                <operand localId="101" xsi:type="Not">
+                    <operand localId="100" xsi:type="Exists">
+                        <operand localId="99" dataType="quick:SimpleObservationOccurrence" codeProperty="code" xsi:type="Retrieve">
                             <codes name="Reason for not performing Chlamydia Screening" xsi:type="ValueSetRef"/>
                         </operand>
                     </operand>
                 </operand>
             </expression>
         </def>
-        <def localId="108" name="NeedScreening" context="PATIENT">
+        <def localId="109" name="NeedScreening" context="PATIENT">
             <annotation xsi:type="a:Annotation">
-                <a:s r="108">define  = <a:s r="107">
-                    <a:s r="105">
-                        <a:s r="103"/> and <a:s r="104"/></a:s> and <a:s r="106"/></a:s>
+                <a:s r="109">define NeedScreening = <a:s r="108">
+                    <a:s r="106">
+                        <a:s r="104">InDemographic</a:s> and <a:s r="105">SexuallyActive</a:s>
+                    </a:s> and <a:s r="107">NoScreening</a:s>
+                </a:s>
                 </a:s>
             </annotation>
-            <expression localId="107" xsi:type="And">
-                <operand localId="105" xsi:type="And">
-                    <operand localId="103" name="InDemographic" xsi:type="ExpressionRef"/>
-                    <operand localId="104" name="SexuallyActive" xsi:type="ExpressionRef"/>
+            <expression localId="108" xsi:type="And">
+                <operand localId="106" xsi:type="And">
+                    <operand localId="104" name="InDemographic" xsi:type="ExpressionRef"/>
+                    <operand localId="105" name="SexuallyActive" xsi:type="ExpressionRef"/>
                 </operand>
-                <operand localId="106" name="NoScreening" xsi:type="ExpressionRef"/>
+                <operand localId="107" name="NoScreening" xsi:type="ExpressionRef"/>
             </expression>
         </def>
     </statements>
