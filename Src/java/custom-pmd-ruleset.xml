@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<ruleset name="CQL Custom PMD Ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+      This ruleset checks stuff we care about
+  </description>
+
+  <rule ref="rulesets/java/basic.xml"/>
+
+  <rule ref="rulesets/java/braces.xml"/>
+
+  <rule ref="rulesets/java/controversial.xml/DontImportSun"/>
+
+  <rule ref="rulesets/java/empty.xml"/>
+
+  <rule ref="rulesets/java/imports.xml/UnusedImports"/>
+
+  <rule ref="rulesets/java/naming.xml">
+    <exclude name="ShortVariable"/>
+    <exclude name="LongVariable"/>
+    <exclude name="ShortMethodName"/>
+    <exclude name="ShortClassName"/>
+  </rule>
+
+  <rule ref="rulesets/java/unnecessary.xml">
+    <exclude name="UselessParentheses"/>
+  </rule>
+
+  <rule ref="rulesets/java/unusedcode.xml"/>
+
+</ruleset>

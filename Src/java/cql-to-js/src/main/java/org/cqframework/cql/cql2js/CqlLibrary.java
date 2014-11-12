@@ -18,8 +18,6 @@ import javax.xml.bind.Marshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
@@ -56,7 +54,7 @@ public class CqlLibrary {
         this.json = convertToJSON(is, options);
     }
 
-    private CqlLibrary(Library library, Options... options) throws JAXBException {
+    private CqlLibrary(Library library) throws JAXBException {
         this.json = convertToJSON(library);
     }
 

@@ -35,6 +35,8 @@ findbugs {
 
 pmd {
     toolVersion = "5.2.1"
+    ruleSetFiles = files("${projectDir}/../custom-pmd-ruleset.xml")
+    ruleSets = []
 }
 
 jacoco {

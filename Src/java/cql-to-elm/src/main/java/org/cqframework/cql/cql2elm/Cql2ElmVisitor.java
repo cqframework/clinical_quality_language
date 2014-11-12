@@ -82,7 +82,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return nextLocalId++;
     }
 
-    private void PushNarrative(@NotNull ParseTree tree) {
+    private void pushNarrative(@NotNull ParseTree tree) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
 
         // If there is a parent narrative
@@ -104,7 +104,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         narratives.push(newNarrative);
     }
 
-    private Narrative PopNarrative(@NotNull ParseTree tree, Object o) {
+    private Narrative popNarrative(@NotNull ParseTree tree, Object o) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
 
         // Pop the narrative off the narrative stack
@@ -169,7 +169,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visit(@NotNull ParseTree tree) {
         if (annotate) {
-            PushNarrative(tree);
+            pushNarrative(tree);
         }
         Object o = null;
         try {
@@ -177,7 +177,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         finally {
             if (annotate) {
-                PopNarrative(tree, o);
+                popNarrative(tree, o);
             }
         }
 
@@ -185,7 +185,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             this.track((Trackable) o, (ParserRuleContext) tree);
         }
         if (o instanceof Expression) {
-            addExpression(tree, (Expression) o);
+            addExpression((Expression) o);
         }
 
         return o;
@@ -1458,7 +1458,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    @SuppressWarnings("PMD.UselessParentheses")
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
         List<AliasedQuerySource> sources = (List<AliasedQuerySource>)visit(ctx.sourceClause());
@@ -1952,16 +1951,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
-    private QName resolveAxisType(String occurrence, String topic, String modality) {
-        ClassDetail detail = getModelHelper().getClassDetail(occurrence, topic, modality);
-
-        if (detail != null) {
-            return resolveNamedType(detail.getClassInfo().getName());
-        }
-
-        return resolveNamedType(String.format("%s%s%s", topic, modality, occurrence));
-    }
-
     private QName resolveTypeSpecifierToQName(TypeSpecifier typeSpecifier) {
         if (typeSpecifier instanceof NamedTypeSpecifier) {
             return ((NamedTypeSpecifier)typeSpecifier).getName();
@@ -2101,26 +2090,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return null;
     }
 
-    private String resolveFunctionName(String identifier) {
-        if (libraryInfo != null) {
-            return libraryInfo.resolveFunctionName(identifier);
-        }
-
-        return null;
-    }
-
-    private String resolveFunctionName(Library library, String identifier) {
-        if (library.getStatements() != null) {
-            for (ExpressionDef current : library.getStatements().getDef()) {
-                if (current instanceof FunctionDef && current.getName().equals(identifier)) {
-                    return identifier;
-                }
-            }
-        }
-
-        return null;
-    }
-
     private void addToLibrary(ParameterDef paramDef) {
         if (library.getParameters() == null) {
             library.setParameters(of.createLibraryParameters());
@@ -2128,7 +2097,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         library.getParameters().getDef().add(paramDef);
     }
 
-    private void addExpression(ParseTree ctx, Expression expression) {
+    private void addExpression(Expression expression) {
         expressions.add(expression);
     }
 
@@ -2202,7 +2171,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public static void main(String[] args) throws IOException, JAXBException {
         String inputFile = null;
-        if (args.length > 0) inputFile = args[0];
+        if (args.length > 0) {
+            inputFile = args[0];
+        }
         InputStream is = System.in;
         if (inputFile != null) {
             is = new FileInputStream(inputFile);

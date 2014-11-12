@@ -6,11 +6,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.Literal;
-import org.hl7.elm.r1.ObjectFactory;
 
-import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 
 public class LiteralFor extends TypeSafeDiagnosingMatcher<JsonNode> {

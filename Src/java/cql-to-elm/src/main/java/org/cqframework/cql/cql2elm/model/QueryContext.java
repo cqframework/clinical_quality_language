@@ -3,10 +3,8 @@ package org.cqframework.cql.cql2elm.model;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.DefineClause;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 public class QueryContext {
     private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
