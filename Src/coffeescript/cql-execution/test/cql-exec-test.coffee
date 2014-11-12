@@ -204,20 +204,20 @@ describe 'DateFunctionRef', ->
   it 'should execute year precision correctly', ->
     d = @year.exec(@ctx)
     d.year.should.equal 2012
-    should.not.exist(d[field]) for field in [ 'month', 'day', 'hour', 'minute', 'second', 'millisecond' ]
+    should.not.exist(d[field]) for field in [ 'month', 'day', 'hour', 'minute', 'second', 'millisecond', 'timeZoneOffset' ]
 
   it 'should execute month precision correctly', ->
     d = @month.exec(@ctx)
     d.year.should.equal 2012
     d.month.should.equal 4
-    should.not.exist(d[field]) for field in [ 'day', 'hour', 'minute', 'second', 'millisecond' ]
+    should.not.exist(d[field]) for field in [ 'day', 'hour', 'minute', 'second', 'millisecond', 'timeZoneOffset' ]
 
   it 'should execute day precision correctly', ->
     d = @day.exec(@ctx)
     d.year.should.equal 2012
     d.month.should.equal 4
     d.day.should.equal 15
-    should.not.exist(d[field]) for field in [ 'hour', 'minute', 'second', 'millisecond' ]
+    should.not.exist(d[field]) for field in [ 'hour', 'minute', 'second', 'millisecond', 'timeZoneOffset' ]
 
   it 'should execute hour precision correctly', ->
     d = @hour.exec(@ctx)
@@ -225,7 +225,7 @@ describe 'DateFunctionRef', ->
     d.month.should.equal 4
     d.day.should.equal 15
     d.hour.should.equal 12
-    should.not.exist(d[field]) for field in [ 'minute', 'second', 'millisecond' ]
+    should.not.exist(d[field]) for field in [ 'minute', 'second', 'millisecond', 'timeZoneOffset' ]
 
   it 'should execute minute precision correctly', ->
     d = @minute.exec(@ctx)
@@ -234,7 +234,7 @@ describe 'DateFunctionRef', ->
     d.day.should.equal 15
     d.hour.should.equal 12
     d.minute.should.equal 10
-    should.not.exist(d[field]) for field in [ 'second', 'millisecond' ]
+    should.not.exist(d[field]) for field in [ 'second', 'millisecond', 'timeZoneOffset' ]
 
   it 'should execute second precision correctly', ->
     d = @second.exec(@ctx)
@@ -244,9 +244,9 @@ describe 'DateFunctionRef', ->
     d.hour.should.equal 12
     d.minute.should.equal 10
     d.second.should.equal 59
-    should.not.exist(d.millisecond)
+    should.not.exist(d[field]) for field in [ 'millisecond', 'timeZoneOffset' ]
 
-    it 'should execute millisecond precision correctly', ->
+  it 'should execute millisecond precision correctly', ->
     d = @millisecond.exec(@ctx)
     d.year.should.equal 2012
     d.month.should.equal 4
@@ -255,6 +255,18 @@ describe 'DateFunctionRef', ->
     d.minute.should.equal 10
     d.second.should.equal 59
     d.millisecond.should.equal 456
+    should.not.exist(d.timeZoneOffset)
+
+  it 'should execute timezone offsets correctly', ->
+    d = @timeZoneOffset.exec(@ctx)
+    d.year.should.equal 2012
+    d.month.should.equal 4
+    d.day.should.equal 15
+    d.hour.should.equal 12
+    d.minute.should.equal 10
+    d.second.should.equal 59
+    d.millisecond.should.equal 456
+    d.timeZoneOffset.should.equal -5
 
 # TO Comparisons for Dates
 
@@ -602,6 +614,13 @@ describe 'Divide', ->
 
   it 'should divide variables', ->
     @divideVariables.exec(@ctx).should.equal 25
+
+describe 'Negate', ->
+  @beforeEach ->
+    setup @
+
+  it 'should negate a number', ->
+    @negativeOne.exec(@ctx).should.equal -1
 
 describe 'MathPrecedence', ->
   @beforeEach ->

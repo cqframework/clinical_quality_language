@@ -1048,6 +1048,7 @@ define Hour = Date(2012, 4, 15, 12)
 define Minute = Date(2012, 4, 15, 12, 10)
 define Second = Date(2012, 4, 15, 12, 10, 59)
 define Millisecond = Date(2012, 4, 15, 12, 10, 59, 456)
+define TimeZoneOffset = Date(2012, 4, 15, 12, 10, 59, 456, -5)
 ###
 
 module.exports.DateFunctionRef = {
@@ -1233,6 +1234,49 @@ module.exports.DateFunctionRef = {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                   "value" : "456",
                   "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TimeZoneOffset",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2012",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "4",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "15",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "12",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "59",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "456",
+                  "type" : "Literal"
+               }, {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
                } ]
             }
          } ]
@@ -2730,7 +2774,11 @@ module.exports.PatientPropertyInValueSet = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
+                  "name" : "gender",
+                  "type" : "IdentifierRef"
                }, {
+                  "name" : "Female Administrative Sex",
+                  "type" : "IdentifierRef"
                } ]
             }
          } ]
@@ -3963,6 +4011,46 @@ module.exports.Divide = {
                   "name" : "Four",
                   "type" : "ExpressionRef"
                } ]
+            }
+         } ]
+      }
+   }
+}
+
+### Negate
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define NegativeOne = -1
+###
+
+module.exports.Negate = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "NegativeOne",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Negate",
+               "operand" : {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }
             }
          } ]
       }
@@ -5416,6 +5504,8 @@ module.exports.ScratchPad = {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
+               "name" : "foo",
+               "type" : "IdentifierRef"
             }
          } ]
       }

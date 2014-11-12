@@ -375,6 +375,13 @@ class Divide extends Expression
   exec: (ctx) ->
     @execArgs(ctx).reduce (x,y) -> x / y
 
+class Negate extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @execArgs(ctx) * -1
+
 # DateMath
 
 class TimeBetween extends Expression

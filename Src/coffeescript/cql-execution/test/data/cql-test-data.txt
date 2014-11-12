@@ -81,6 +81,7 @@ define Hour = Date(2012, 4, 15, 12)
 define Minute = Date(2012, 4, 15, 12, 10)
 define Second = Date(2012, 4, 15, 12, 10, 59)
 define Millisecond = Date(2012, 4, 15, 12, 10, 59, 456)
+define TimeZoneOffset = Date(2012, 4, 15, 12, 10, 59, 456, -5)
 
 # Interval
 define Foo = interval[1, 4]
@@ -211,6 +212,9 @@ define TenDividedByTwo = 10 / 2
 define TenDividedByFour = 10 / 4
 define DivideMultiple = 1000 / 4 / 10 / 5
 define DivideVariables = Hundred / Four
+
+# Negate
+define NegativeOne = -1
 
 # MathPrecedence
 define Mixed = 1 + 5 * 10 - 15 / 3

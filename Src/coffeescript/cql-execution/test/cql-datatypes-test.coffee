@@ -593,7 +593,7 @@ describe 'Uncertainty', ->
 describe 'DateTime', ->
 
   it 'should properly set all properties when constructed', ->
-    d = new DT.DateTime(2000, 12, 1, 3, 25, 59, 246)
+    d = new DT.DateTime(2000, 12, 1, 3, 25, 59, 246, 5.5)
     d.year.should.equal 2000
     d.month.should.equal 12
     d.day.should.equal 1
@@ -601,6 +601,7 @@ describe 'DateTime', ->
     d.minute.should.equal 25
     d.second.should.equal 59
     d.millisecond.should.equal 246
+    d.timeZoneOffset.should.equal 5.5
 
   it 'should leave unset properties as undefined', ->
     d = new DT.DateTime(2000)
@@ -611,6 +612,7 @@ describe 'DateTime', ->
     should.not.exist d.minute
     should.not.exist d.second
     should.not.exist d.millisecond
+    should.not.exist d.timeZoneOffset
 
   it 'should parse yyyy', ->
     d = DT.DateTime.parse '2012'
@@ -624,19 +626,25 @@ describe 'DateTime', ->
     d = DT.DateTime.parse '2012-10-25'
     d.should.eql new DT.DateTime(2012, 10, 25)
 
-  it 'should parse yyyy-mm-ddThh', ->
+  it 'should parse yyyy-mm-ddThh with and without timezone offset', ->
     d = DT.DateTime.parse '2012-10-25T12'
     d.should.eql new DT.DateTime(2012, 10, 25, 12)
+    d = DT.DateTime.parse '2012-10-25T12-05'
+    d.should.eql new DT.DateTime(2012, 10, 25, 12, null, null, null, -5)
 
-  it 'should parse yyyy-mm-ddThh:mm', ->
+  it 'should parse yyyy-mm-ddThh:mm with and without timezone offset', ->
     d = DT.DateTime.parse '2012-10-25T12:55'
     d.should.eql new DT.DateTime(2012, 10, 25, 12, 55)
+    d = DT.DateTime.parse '2012-10-25T12:55+05:30'
+    d.should.eql new DT.DateTime(2012, 10, 25, 12, 55, null, null, 5.5)
 
-  it 'should parse yyyy-mm-ddThh:mm:ss', ->
+  it 'should parse yyyy-mm-ddThh:mm:ss with and without timezone offset', ->
     d = DT.DateTime.parse '2012-10-25T12:55:14'
     d.should.eql new DT.DateTime(2012, 10, 25, 12, 55, 14)
+    d = DT.DateTime.parse '2012-10-25T12:55:14+01'
+    d.should.eql new DT.DateTime(2012, 10, 25, 12, 55, 14, null, 1)
 
-  it 'should parse yyyy-mm-ddThh:mm:ss.s', ->
+  it 'should parse yyyy-mm-ddThh:mm:ss.s with and without timezone offset', ->
     d = DT.DateTime.parse '2012-10-25T12:55:14.9'
     d.should.eql new DT.DateTime(2012, 10, 25, 12, 55, 14, 900)
 
@@ -649,14 +657,21 @@ describe 'DateTime', ->
     d = DT.DateTime.parse '2012-10-25T12:55:14.9641368'
     d.should.eql new DT.DateTime(2012, 10, 25, 12, 55, 14, 964)
 
+    d = DT.DateTime.parse '2012-10-25T12:55:14.953-01'
+    d.should.eql new DT.DateTime(2012, 10, 25, 12, 55, 14, 953, -1)
+
   it 'should not parse invalid strings', ->
     should.not.exist DT.DateTime.parse '20121025'
 
   it 'should construct from a javascript date', ->
     DT.DateTime.fromDate(new Date(1999, 1, 16, 13, 56, 24, 123)).should.eql DT.DateTime.parse('1999-02-16T13:56:24.123')
 
+  it 'should construct from a javascript date into a target timezone', ->
+    DT.DateTime.fromDate(new Date(Date.UTC(1999, 1, 16, 13, 56, 24, 123)), -5).should.eql DT.DateTime.parse('1999-02-16T08:56:24.123-05:00')
+    DT.DateTime.fromDate(new Date(Date.UTC(1999, 1, 16, 13, 56, 24, 123)), +4.5).should.eql DT.DateTime.parse('1999-02-16T18:26:24.123+04:30')
+
   it 'should copy a fully define DateTime', ->
-    original = DT.DateTime.parse('1999-02-16T13:56:24.123')
+    original = DT.DateTime.parse('1999-02-16T13:56:24.123+04:30')
     copy = original.copy()
     copy.should.eql original
     copy.should.not.equal original
@@ -667,7 +682,14 @@ describe 'DateTime', ->
     copy.should.eql original
     copy.should.not.equal original
 
+  it 'should convert to other timezone offsets', ->
+    original = DT.DateTime.parse('1999-02-16T13:56:24.123+04:30')
+    converted = original.convertToTimeZoneOffset(-5)
+    converted.should.not.eql original
+    converted.should.eql DT.DateTime.parse('1999-02-16T04:26:24.123-05:00')
+
   it 'should know if it is precise', ->
+    DT.DateTime.parse('2000-01-01T00:00:00.0-05:00').isPrecise().should.be.true
     DT.DateTime.parse('2000-01-01T00:00:00.0').isPrecise().should.be.true
     DT.DateTime.parse('2000-01-01T00:00:00').isPrecise().should.be.false
     DT.DateTime.parse('2000-01-01T00:00').isPrecise().should.be.false
@@ -677,6 +699,7 @@ describe 'DateTime', ->
     DT.DateTime.parse('2000').isPrecise().should.be.false
 
   it 'should know if it is imprecise', ->
+    DT.DateTime.parse('2000-01-01T00:00:00.0-05:00').isImprecise().should.be.false
     DT.DateTime.parse('2000-01-01T00:00:00.0').isImprecise().should.be.false
     DT.DateTime.parse('2000-01-01T00:00:00').isImprecise().should.be.true
     DT.DateTime.parse('2000-01-01T00:00').isImprecise().should.be.true
@@ -729,6 +752,11 @@ describe 'DateTime', ->
   it 'should convert to javascript Date', ->
     DT.DateTime.parse('2012-10-25T12:55:14.456').toJSDate().should.eql new Date(2012, 9, 25, 12, 55, 14, 456)
 
+  it 'should convert to javascript Date w/ time zone offsets', ->
+    DT.DateTime.parse('2012-10-25T12:55:14.456+04:30').toJSDate().should.eql new Date('2012-10-25T12:55:14.456+04:30')
+    DT.DateTime.parse('2012-10-25T12:55:14.456+00:00').toJSDate().should.eql new Date('2012-10-25T12:55:14.456Z')
+    DT.DateTime.parse('2012-10-25T12:55:14.0-05').toJSDate().should.eql new Date('25 Oct 2012 12:55:14 EST')
+
   it 'should floor unknown values when it converts to javascript Date', ->
     DT.DateTime.parse('2012').toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0, 0)
 
@@ -763,6 +791,15 @@ describe 'DateTime.add', ->
     almostMidnight.add(1, DT.DateTime.Unit.SECOND).should.eql DT.DateTime.parse('2001-01-01T00:00:00.999')
     almostMidnight.add(1, DT.DateTime.Unit.MILLISECOND).should.eql DT.DateTime.parse('2001-01-01T00:00:00.0')
 
+  it 'should rollover when you add past a boundary w/ timezone offsets', ->
+    almostMidnight = DT.DateTime.parse('2000-12-31T23:59:59.999+00:00')
+    almostMidnight.add(1, DT.DateTime.Unit.MONTH).should.eql DT.DateTime.parse('2001-01-31T23:59:59.999+00:00')
+    almostMidnight.add(1, DT.DateTime.Unit.DAY).should.eql DT.DateTime.parse('2001-01-01T23:59:59.999+00:00')
+    almostMidnight.add(1, DT.DateTime.Unit.HOUR).should.eql DT.DateTime.parse('2001-01-01T00:59:59.999+00:00')
+    almostMidnight.add(1, DT.DateTime.Unit.MINUTE).should.eql DT.DateTime.parse('2001-01-01T00:00:59.999+00:00')
+    almostMidnight.add(1, DT.DateTime.Unit.SECOND).should.eql DT.DateTime.parse('2001-01-01T00:00:00.999+00:00')
+    almostMidnight.add(1, DT.DateTime.Unit.MILLISECOND).should.eql DT.DateTime.parse('2001-01-01T00:00:00.0+00:00')
+
   it 'should rollover when you subtract past a boundary', ->
     midnight = DT.DateTime.parse('2001-01-01T00:00:00.0')
     midnight.add(-1, DT.DateTime.Unit.MONTH).should.eql DT.DateTime.parse('2000-12-01T00:00:00.0')
@@ -771,6 +808,15 @@ describe 'DateTime.add', ->
     midnight.add(-1, DT.DateTime.Unit.MINUTE).should.eql DT.DateTime.parse('2000-12-31T23:59:00.0')
     midnight.add(-1, DT.DateTime.Unit.SECOND).should.eql DT.DateTime.parse('2000-12-31T23:59:59.0')
     midnight.add(-1, DT.DateTime.Unit.MILLISECOND).should.eql DT.DateTime.parse('2000-12-31T23:59:59.999')
+
+  it 'should rollover when you subtract past a boundary w/ timezone offsets', ->
+    midnight = DT.DateTime.parse('2001-01-01T00:00:00.0+00:00')
+    midnight.add(-1, DT.DateTime.Unit.MONTH).should.eql DT.DateTime.parse('2000-12-01T00:00:00.0+00:00')
+    midnight.add(-1, DT.DateTime.Unit.DAY).should.eql DT.DateTime.parse('2000-12-31T00:00:00.0+00:00')
+    midnight.add(-1, DT.DateTime.Unit.HOUR).should.eql DT.DateTime.parse('2000-12-31T23:00:00.0+00:00')
+    midnight.add(-1, DT.DateTime.Unit.MINUTE).should.eql DT.DateTime.parse('2000-12-31T23:59:00.0+00:00')
+    midnight.add(-1, DT.DateTime.Unit.SECOND).should.eql DT.DateTime.parse('2000-12-31T23:59:59.0+00:00')
+    midnight.add(-1, DT.DateTime.Unit.MILLISECOND).should.eql DT.DateTime.parse('2000-12-31T23:59:59.999+00:00')
 
   it 'should still work for imprecise numbers, when adding to a defined field', ->
     DT.DateTime.parse('2000-06-15T10:20:40').add(30, DT.DateTime.Unit.SECOND).should.eql DT.DateTime.parse('2000-06-15T10:21:10')
@@ -913,6 +959,24 @@ describe 'DateTime.timeBetween', ->
     a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(527040)
     a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(31622400)
     a.timeBetween(b, DT.DateTime.Unit.MILLISECOND).should.eql new DT.Uncertainty(31622400000)
+
+  it 'should handle different timezones', ->
+
+    a = DT.DateTime.parse '2001-01-01T00:00:00.0+00:00'
+    b = DT.DateTime.parse '2000-12-31T19:00:00.0-05:00'
+    a.timeBetween(b, DT.DateTime.Unit.YEAR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MONTH).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.DAY).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.HOUR).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MINUTE).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.SECOND).should.eql new DT.Uncertainty(0)
+    a.timeBetween(b, DT.DateTime.Unit.MILLISECOND).should.eql new DT.Uncertainty(0)
+
+    # TODO: When a and b are different timezones, which do we use to count boundaries?
+    # 1) a's timezone
+    # 2) b's timezone
+    # 3) default timezone (right now, the environment's timezone)
+    # 4) UTC
 
   it 'should handle imprecision', ->
     a = DT.DateTime.parse '2009-06-15T12:37:45.250'
@@ -1067,6 +1131,16 @@ describe 'DateTime.sameAs', ->
     DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2001-05-15T12:35:45.123'), DT.DateTime.Unit.DAY).should.be.false
     DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2001-05-15T12:35:45.123'), DT.DateTime.Unit.MONTH).should.be.false
     DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2001-05-15T12:35:45.123'), DT.DateTime.Unit.YEAR).should.be.false
+
+it 'should handle different time zones', ->
+    DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30')).should.be.true
+    DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.MILLISECOND).should.be.true
+    DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.SECOND).should.be.true
+    DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.MINUTE).should.be.true
+    DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.HOUR).should.be.true
+    DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.DAY).should.be.true
+    DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.MONTH).should.be.true
+    DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.YEAR).should.be.true
 
 it 'should handle imprecision correctly with missing milliseconds', ->
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'))
@@ -1397,6 +1471,11 @@ describe 'DateTime.before', ->
   it 'should reject cases where a is b', ->
     DT.DateTime.parse('2000-01-01T00:00:00.0').before(DT.DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
 
+  it 'should work with different timezone offsets', ->
+    DT.DateTime.parse('2000-01-01T12:00:00.0+01:00').before(DT.DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T12:00:00.0+01:00').before(DT.DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.false
+    DT.DateTime.parse('2000-01-01T07:00:00.0-05:00').before(DT.DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.false
+
   it 'should return null in cases where a is b but there are unknown values', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00:00').before(DT.DateTime.parse('2000-01-01T00:00:00'))
     should.not.exist DT.DateTime.parse('2000-01-01T00:00').before(DT.DateTime.parse('2000-01-01T00:00'))
@@ -1475,6 +1554,11 @@ describe 'DateTime.beforeOrSameAs', ->
 
   it 'should accept cases where a is b', ->
     DT.DateTime.parse('2000-01-01T00:00:00.0').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+
+  it 'should work with different timezone offsets', ->
+    DT.DateTime.parse('2000-01-01T12:00:00.0+01:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T12:00:00.0+01:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T07:00:00.0-05:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.false
 
   it 'should return null in cases where a is b but there are unknown values in a and b', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00'))
@@ -1571,6 +1655,11 @@ describe 'DateTime.after', ->
   it 'should reject cases where a is b', ->
     DT.DateTime.parse('2000-01-01T00:00:00.0').after(DT.DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
 
+  it 'should work with different timezone offsets', ->
+    DT.DateTime.parse('2000-01-01T07:00:00.0-05:00').after(DT.DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T12:00:00.0+01:00').after(DT.DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.false
+    DT.DateTime.parse('2000-01-01T12:00:00.0+01:00').after(DT.DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.false
+
   it 'should return null in cases where a is b but there are unknown values', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00:00').after(DT.DateTime.parse('2000-01-01T00:00:00'))
     should.not.exist DT.DateTime.parse('2000-01-01T00:00').after(DT.DateTime.parse('2000-01-01T00:00'))
@@ -1649,6 +1738,11 @@ describe 'DateTime.afterOrSameAs', ->
 
   it 'should accept cases where a is b', ->
     DT.DateTime.parse('2000-01-01T00:00:00.0').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+
+  it 'should work with different timezone offsets', ->
+    DT.DateTime.parse('2000-01-01T07:00:00.0-05:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T12:00:00.0+01:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.true
+    DT.DateTime.parse('2000-01-01T12:00:00.0+01:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.false
 
   it 'should return null in cases where a is b but there and b have unknown values', ->
     should.not.exist DT.DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DT.DateTime.parse('2000-01-01T00:00:00'))
