@@ -1698,6 +1698,14 @@ It is an error to invoke the Current operator outside the context of a scoped op
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ElementOf">
+		<xs:annotation>
+			<xs:documentation>The ElementOf expression extracts a single tuple from the source list. If the source list is empty, the result is null. If the source list contains one element, that element is returned. If the list contains more than one element, a run-time error is thrown.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- Aggregate Operators -->
 	<!-- TODO: Support grouping? -->
 	<xs:complexType name="AggregateExpression" abstract="true">

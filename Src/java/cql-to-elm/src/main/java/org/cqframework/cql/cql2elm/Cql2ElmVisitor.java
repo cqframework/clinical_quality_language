@@ -45,7 +45,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private LibraryInfo libraryInfo = null;
     private Library library = null;
-    private String currentContext = "UNKNOWN";
+    private String currentContext = "Patient"; // default context to patient
 
     //Put them here for now, but eventually somewhere else?
     private final HashMap<String, Library> libraries = new HashMap<>();
@@ -57,6 +57,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final List<Retrieve> retrieves= new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
+    private boolean implicitPatientCreated = false;
 
     public void enableAnnotations() { annotate = true; }
     public void disableAnnotations() { annotate = false; }
@@ -313,8 +314,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public String visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
+    public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
         currentContext = parseString(ctx.identifier());
+
+        // If this is the first time a context definition is encountered, output a patient definition:
+        // define Patient = element of [<Patient model type>]
+        if (!implicitPatientCreated) {
+            ExpressionDef patientExpressionDef = of.createExpressionDef()
+                    .withName("Patient")
+                    .withContext(currentContext)
+                    .withExpression(of.createElementOf().withOperand(
+                                    of.createRetrieve()
+                                            .withDataType(resolveNamedType(getModelHelper().getModelInfo().getPatientClassName()))
+                            )
+                    );
+            addToLibrary(patientExpressionDef);
+            implicitPatientCreated = true;
+            return patientExpressionDef;
+        }
 
         return currentContext;
     }
@@ -1865,7 +1882,39 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
+        // Process Age-related functions
+        if (fun.getLibraryName() == null) {
+            String ageRelatedFunctionName = resolveAgeRelatedFunction(fun.getName());
+            if (ageRelatedFunctionName != null) {
+                fun.setName(resolveAgeRelatedFunction(fun.getName()));
+                fun.getOperand().add(
+                        0,
+                        of.createProperty()
+                                .withPath(getModelHelper().getModelInfo().getPatientBirthDatePropertyName())
+                                .withSource(of.createExpressionRef().withName("Patient"))
+                );
+            }
+        }
+
         return fun;
+    }
+
+    private String resolveAgeRelatedFunction(String functionName) {
+        switch (functionName) {
+            case "AgeInYears":
+            case "AgeInMonths":
+            case "AgeInDays":
+            case "AgeInHours":
+            case "AgeInMinutes":
+            case "AgeInSeconds":
+            case "AgeInYearsAt":
+            case "AgeInMonthsAt":
+            case "AgeInDaysAt":
+            case "AgeInHoursAt":
+            case "AgeInMinutesAt":
+            case "AgeInSecondsAt": return "Calculate" + functionName;
+            default: return null;
+        }
     }
 
     @Override

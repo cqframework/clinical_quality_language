@@ -9,4 +9,3 @@ context Patient
 define InDemographic =
     AgeInYears() >= 18
         and Patient.gender in "Female Administrative Sex"
-

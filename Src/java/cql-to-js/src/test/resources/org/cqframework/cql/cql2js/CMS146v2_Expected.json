@@ -61,7 +61,7 @@
       "statements" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
-            "context" : "UNKNOWN",
+            "context" : "Patient",
             "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
@@ -73,7 +73,7 @@
             }
          }, {
             "name" : "Acute Tonsillitis",
-            "context" : "UNKNOWN",
+            "context" : "Patient",
             "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
@@ -85,7 +85,7 @@
             }
          }, {
             "name" : "Ambulatory/ED Visit",
-            "context" : "UNKNOWN",
+            "context" : "Patient",
             "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
@@ -97,7 +97,7 @@
             }
          }, {
             "name" : "Antibiotic Medications",
-            "context" : "UNKNOWN",
+            "context" : "Patient",
             "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
@@ -109,7 +109,7 @@
             }
          }, {
             "name" : "Group A Streptococcus Test",
-            "context" : "UNKNOWN",
+            "context" : "Patient",
             "expression" : {
                "name" : "ValueSet",
                "type" : "FunctionRef",
@@ -118,6 +118,16 @@
                   "value" : "2.16.840.1.113883.3.464.1003.198.12.1012",
                   "type" : "Literal"
                } ]
+            }
+         }, {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "ElementOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
             }
          }, {
             "name" : "InDemographic",

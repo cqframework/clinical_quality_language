@@ -12,6 +12,9 @@ import org.hl7.elm.r1.Library;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TestUtils {
 
@@ -25,30 +28,22 @@ public class TestUtils {
     }
 
     public static Object visitData(String cqlData) {
-        TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(cqlData));
-        ParseTree tree = parseTokenStream(tokens);
-        return createElmTranslatorVisitor(tokens, tree).visit(tree);
+        return CqlTranslator.fromText(cqlData).toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
-        TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(cqlLibrary));
-        ParseTree tree = parseTokenStream(tokens);
-        Cql2ElmVisitor visitor = createElmTranslatorVisitor(tokens, tree);
-        visitor.visit(tree);
-        return visitor.getLibrary();
+        return CqlTranslator.fromText(cqlLibrary).toELM();
     }
 
     public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
-        TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(cqlData));
-        ParseTree tree = parseTokenStream(tokens);
-        Cql2ElmVisitor visitor = createElmTranslatorVisitor(tokens, tree);
+        List<CqlTranslator.Options> options = new ArrayList<>();
         if (enableAnnotations) {
-            visitor.enableAnnotations();
+            options.add(CqlTranslator.Options.EnableAnnotations);
         }
         if (enableDateRangeOptimization) {
-            visitor.enableDateRangeOptimization();
+            options.add(CqlTranslator.Options.EnableDateRangeOptimization);
         }
-        return visitor.visit(tree);
+        return CqlTranslator.fromText(cqlData, options.toArray(new CqlTranslator.Options[options.size()])).toObject();
     }
 
     private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {

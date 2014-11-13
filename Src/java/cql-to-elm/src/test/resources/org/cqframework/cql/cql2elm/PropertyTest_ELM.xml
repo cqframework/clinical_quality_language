@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://org.hl7.fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+    <identifier id="PropertyTest"/>
+    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+    <usings>
+        <def localIdentifier="QUICK" uri="http://org.hl7.fhir"/>
+    </usings>
+    <valueSets>
+        <def name="Female Administrative Sex" id="2.16.840.1.113883.3.560.100.2"/>
+    </valueSets>
+    <statements>
+        <def name="Patient" context="Patient">
+            <expression xsi:type="ElementOf">
+                <operand dataType="quick:Patient" xsi:type="Retrieve"/>
+            </expression>
+        </def>
+        <def name="InDemographic" context="Patient">
+            <expression xsi:type="And">
+                <operand xsi:type="GreaterOrEqual">
+                    <operand name="CalculateAgeInYears" xsi:type="FunctionRef">
+                        <operand path="birthDate" xsi:type="Property">
+                            <source name="Patient" xsi:type="ExpressionRef"/>
+                        </operand>
+                    </operand>
+                    <operand valueType="xsd:int" value="18" xsi:type="Literal"/>
+                </operand>
+                <operand xsi:type="In">
+                    <operand path="gender" xsi:type="Property">
+                        <source name="Patient" xsi:type="ExpressionRef"/>
+                    </operand>
+                    <operand name="Female Administrative Sex" xsi:type="ValueSetRef"/>
+                </operand>
+            </expression>
+        </def>
+    </statements>
+</library>
