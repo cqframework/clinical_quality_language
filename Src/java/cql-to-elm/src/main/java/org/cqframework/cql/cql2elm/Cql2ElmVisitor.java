@@ -323,7 +323,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             ExpressionDef patientExpressionDef = of.createExpressionDef()
                     .withName("Patient")
                     .withContext(currentContext)
-                    .withExpression(of.createElementOf().withOperand(
+                    .withExpression(of.createSingletonOf().withOperand(
                                     of.createRetrieve()
                                             .withDataType(resolveNamedType(getModelHelper().getModelInfo().getPatientClassName()))
                             )
@@ -504,6 +504,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitSuccessorExpressionTerm(@NotNull cqlParser.SuccessorExpressionTermContext ctx) {
         return of.createSucc().withOperand(parseExpression(ctx.expressionTerm()));
+    }
+
+    @Override
+    public Object visitElementExtractorExpressionTerm(@NotNull cqlParser.ElementExtractorExpressionTermContext ctx) {
+        return of.createSingletonOf().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
