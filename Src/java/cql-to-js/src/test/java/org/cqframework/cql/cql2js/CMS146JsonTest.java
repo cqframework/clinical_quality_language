@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2js;
 
+import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -17,7 +18,7 @@ public class CMS146JsonTest {
         String expectedJson = new Scanner(expectedJsonFile, "UTF-8").useDelimiter("\\Z").next();
 
         File cms146 = new File(CMS146JsonTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
-        String actualJson = CqlLibrary.loadCql(cms146).asJson();
+        String actualJson = CqlTranslator.fromFile(cms146).toJson();
         assertThat(actualJson, sameJSONAs(expectedJson));
     }
 }

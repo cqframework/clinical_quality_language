@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.*;
@@ -13,9 +11,7 @@ import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.model.*;
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.cql2elm.preprocessor.LibraryInfo;
-import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
@@ -24,9 +20,6 @@ import org.hl7.elm_modelinfo.r1.ClassInfo;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -2221,50 +2214,5 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         trackable.getTrackbacks().add(tb);
 
         return tb;
-    }
-
-    public static void main(String[] args) throws IOException, JAXBException {
-        String inputFile = null;
-        if (args.length > 0) {
-            inputFile = args[0];
-        }
-        InputStream is = System.in;
-        if (inputFile != null) {
-            is = new FileInputStream(inputFile);
-        }
-        ANTLRInputStream input = new ANTLRInputStream(is);
-        cqlLexer lexer = new cqlLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        cqlParser parser = new cqlParser(tokens);
-        parser.setBuildParseTree(true);
-        ParseTree tree = parser.logic();
-
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
-        preprocessor.visit(tree);
-
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
-        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
-        visitor.setTokenStream(tokens);
-        visitor.enableAnnotations();
-        visitor.visit(tree);
-
-        /* ToString output
-        System.out.println(visitor.getLibrary().toString());
-        */
-
-        /* XML output */
-        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class, org.hl7.fhir.ClinicalStatement.class);
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(new ObjectFactory().createLibrary(visitor.getLibrary()), System.out);
-        //JAXB.marshal((new ObjectFactory()).createLibrary(visitor.getLibrary()), System.out);
-
-        /* JSON output
-        JAXBContext jc = JAXBContext.newInstance(Library.class);
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty("eclipselink.media-type", "application/json");
-        marshaller.marshal(new ObjectFactory().createLibrary(visitor.getLibrary()), System.out);
-        */
     }
 }

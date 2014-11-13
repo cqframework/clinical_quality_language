@@ -3,7 +3,7 @@ package org.cqframework.cql.cql2js.utilities;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import org.cqframework.cql.cql2js.CqlLibrary;
+import org.cqframework.cql.cql2elm.CqlTranslator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -79,7 +79,7 @@ public class CoffeeScriptTestDataGenerator {
             updateSnippet(entry.getValue());
             String name = entry.getKey();
             String snippet = entry.getValue().toString();
-            String json = CqlLibrary.loadCql(snippet, CqlLibrary.Options.EnableDateRangeOptimization).asJson();
+            String json = CqlTranslator.fromText(snippet, CqlTranslator.Options.EnableDateRangeOptimization).toJson();
             pw.println("### " + name);
             pw.println(snippet);
             pw.println("###");

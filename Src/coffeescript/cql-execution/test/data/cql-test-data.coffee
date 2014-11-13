@@ -79,6 +79,16 @@ module.exports.InAgeDemographic = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "InDemographic",
             "context" : "PATIENT",
             "expression" : {
@@ -149,6 +159,16 @@ module.exports.ExpressionDef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
@@ -187,6 +207,16 @@ module.exports.ExpressionRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Life",
             "context" : "PATIENT",
             "expression" : {
@@ -277,6 +307,16 @@ module.exports.ParameterRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
@@ -315,6 +355,16 @@ module.exports.ValueSetDef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Known",
             "context" : "PATIENT",
             "expression" : {
@@ -385,6 +435,16 @@ module.exports.ValueSetRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Acute Pharyngitis",
             "context" : "PATIENT",
             "expression" : {
@@ -441,6 +501,16 @@ module.exports.And = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "TT",
             "context" : "PATIENT",
             "expression" : {
@@ -601,6 +671,16 @@ module.exports.Or = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "TT",
             "context" : "PATIENT",
             "expression" : {
@@ -761,6 +841,16 @@ module.exports.XOr = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "TT",
             "context" : "PATIENT",
             "expression" : {
@@ -915,6 +1005,16 @@ module.exports.Not = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "NotTrue",
             "context" : "PATIENT",
             "expression" : {
@@ -977,6 +1077,16 @@ module.exports.AgeAtFunctionRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AgeAt2012",
             "context" : "PATIENT",
             "expression" : {
@@ -1069,6 +1179,16 @@ module.exports.DateFunctionRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Year",
             "context" : "PATIENT",
             "expression" : {
@@ -1312,6 +1432,16 @@ module.exports.Interval = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Open",
             "context" : "PATIENT",
             "expression" : {
@@ -1511,6 +1641,16 @@ module.exports.Greater = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1587,6 +1727,16 @@ module.exports.GreaterOrEqual = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1663,6 +1813,16 @@ module.exports.Equal = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1739,6 +1899,16 @@ module.exports.LessOrEqual = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1815,6 +1985,16 @@ module.exports.Less = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1893,6 +2073,16 @@ module.exports.List = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Three",
             "context" : "PATIENT",
             "expression" : {
@@ -2000,6 +2190,16 @@ module.exports.Exists = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "EmptyList",
             "context" : "PATIENT",
             "expression" : {
@@ -2060,6 +2260,16 @@ module.exports.Start = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
@@ -2135,6 +2345,16 @@ module.exports.InList = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "IsIn",
             "context" : "PATIENT",
             "expression" : {
@@ -2227,6 +2447,16 @@ module.exports.InValueSet = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Female",
             "context" : "PATIENT",
             "expression" : {
@@ -2483,6 +2713,16 @@ module.exports.InValueSetFunction = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Female",
             "context" : "PATIENT",
             "expression" : {
@@ -2757,6 +2997,16 @@ module.exports.PatientPropertyInValueSet = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Female",
             "context" : "PATIENT",
             "expression" : {
@@ -2814,6 +3064,16 @@ module.exports.Union = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "OneToTen",
             "context" : "PATIENT",
             "expression" : {
@@ -3061,6 +3321,16 @@ module.exports.Intersect = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "NoIntersection",
             "context" : "PATIENT",
             "expression" : {
@@ -3408,6 +3678,16 @@ module.exports.Distinct = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "LotsOfDups",
             "context" : "PATIENT",
             "expression" : {
@@ -3557,6 +3837,16 @@ module.exports.Add = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ten",
             "context" : "PATIENT",
             "expression" : {
@@ -3705,6 +3995,16 @@ module.exports.Subtract = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ten",
             "context" : "PATIENT",
             "expression" : {
@@ -3811,6 +4111,16 @@ module.exports.Multiply = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ten",
             "context" : "PATIENT",
             "expression" : {
@@ -3925,6 +4235,16 @@ module.exports.Divide = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Hundred",
             "context" : "PATIENT",
             "expression" : {
@@ -4042,6 +4362,16 @@ module.exports.Negate = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "NegativeOne",
             "context" : "PATIENT",
             "expression" : {
@@ -4083,6 +4413,16 @@ module.exports.MathPrecedence = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Mixed",
             "context" : "PATIENT",
             "expression" : {
@@ -4200,6 +4540,16 @@ module.exports.TimeBetween = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "NewYear2013",
             "context" : "PATIENT",
             "expression" : {
@@ -4518,6 +4868,16 @@ module.exports.TimeBetweenComparisons = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "NewYear2014",
             "context" : "PATIENT",
             "expression" : {
@@ -4963,6 +5323,16 @@ module.exports.Literal = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "BoolTrue",
             "context" : "PATIENT",
             "expression" : {
@@ -5032,6 +5402,16 @@ module.exports.Nil = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Nil",
             "context" : "PATIENT",
             "expression" : {
@@ -5077,6 +5457,16 @@ module.exports.Retrieve = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Acute Pharyngitis",
             "context" : "PATIENT",
             "expression" : {
@@ -5276,6 +5666,16 @@ module.exports.DateRangeOptimizedQuery = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ambulatory/ED Visit",
             "context" : "PATIENT",
             "expression" : {
@@ -5430,6 +5830,16 @@ module.exports.IncludesQuery = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ambulatory/ED Visit",
             "context" : "PATIENT",
             "expression" : {
@@ -5501,6 +5911,16 @@ module.exports.ScratchPad = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {

@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -46,12 +44,22 @@ public class CqlTranslator {
         translateToELM(is, options);
     }
 
-    public String toXml() throws JAXBException {
-        return convertToXML(library);
+    public String toXml() {
+        try {
+            return convertToXML(library);
+        }
+        catch (JAXBException e) {
+            throw new IllegalArgumentException("Could not convert library to XML.", e);
+        }
     }
 
-    public String toJson() throws JAXBException {
-        return convertToJSON(library);
+    public String toJson() {
+        try {
+            return convertToJSON(library);
+        }
+        catch (JAXBException e) {
+            throw new IllegalArgumentException("Could not convert library to JSON.", e);
+        }
     }
 
     //public JsonNode toJsonNode() throws JAXBException, IOException {
@@ -119,7 +127,10 @@ public class CqlTranslator {
 
     public static void main(String[] args) throws IOException, JAXBException {
         String inputFile = null;
-        if (args.length > 0) inputFile = args[0];
+        if (args.length > 0) {
+            inputFile = args[0];
+        }
+
         InputStream is = System.in;
         if (inputFile != null) {
             is = new FileInputStream(inputFile);
