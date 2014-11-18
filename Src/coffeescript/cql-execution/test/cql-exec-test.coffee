@@ -8,7 +8,7 @@ P = require './data/cql-test-patients'
 
 setup = (test, patients=[], parameters={}) ->
   test.lib = new Library(D[test.test.parent.title])
-  psource = new PAT.PatientSource(patients)  
+  psource = new PAT.PatientSource(patients)
   test.ctx = new Context(test.lib, psource, parameters)
   for k,v of test.lib.expressions
     test[k[0].toLowerCase() + k[1..-1]] = v.expression
@@ -17,12 +17,12 @@ describe 'InAgeDemographic', ->
   @beforeEach ->
     setup @, P.P1AndP2
     @results = @lib.exec(@ctx)
-  
+
   it 'should have correct patient results', ->
     @results.patientResults['1'].InDemographic.should.equal false
     @results.patientResults['2'].InDemographic.should.equal true
 
-  it 'should have empty population results', ->  
+  it 'should have empty population results', ->
     @results.populationResults.should.be.empty
 
 describe 'ExpressionDef', ->
@@ -94,7 +94,7 @@ describe 'ValueSetDef', ->
     vs.oid.should.equal '2.16.840.1.113883.3.464.1003.101.12.1061'
     vs.version.should.equal '20140501'
     vs.codes.length.should.equal 3
-  
+
   it 'should execute one-arg to ValueSet with ID', ->
     vs = @['unknown One Arg'].exec(@ctx)
     vs.oid.should.equal '1.2.3.4.5.6.7.8.9'
@@ -768,7 +768,7 @@ describe 'MultiSourceQuery', ->
   it 'should find all Encounters performed and Conditions', ->
     e = @msQuery.exec(@ctx)
     e.should.have.length(6)
-  
+
   it 'should find encounters performed during the MP and All conditions', ->
     e = @msQueryWhere.exec(@ctx)
     e.should.have.length(2)
@@ -781,11 +781,11 @@ describe 'QueryRelationship', ->
   @beforeEach ->
     setup @
     @ctx.withPatients new PAT.PatientSource([P.P3])
-  
+
   it 'should be able to filter items with a with clause', ->
     e = @withQuery.exec(@ctx)
     e.should.have.length(3)
-  
+
   it 'with clause should filter out items not available', ->
     e = @withQuery2.exec(@ctx)
     e.should.have.length(0)
@@ -814,17 +814,17 @@ describe 'Tuple', ->
   @beforeEach ->
     setup @
     @ctx.withPatients new PAT.PatientSource([P.P3])
-    
+
   it 'should be able to define a tuple', ->
     e = @tup.exec(@ctx)
     e["a"].should.equal 1
     e["b"].should.equal 2
-  
+
   it 'should be able to return tuple from a query', ->
     e = @query.exec(@ctx)
     e.should.have.length(3)
 
-describe.only 'Sorting', ->
+describe 'Sorting', ->
   @beforeEach ->
     setup @
     @ctx.withPatients new PAT.PatientSource([P.P3])
@@ -841,7 +841,7 @@ describe.only 'Sorting', ->
     e.should.have.length(3)
     e[2].E.get("identifier").id.should.equal "http://cqframework.org/3/1"
     e[1].E.get("identifier").id.should.equal  "http://cqframework.org/3/3"
-    e[0].E.get("identifier").id.should.equal  "http://cqframework.org/3/5"    
+    e[0].E.get("identifier").id.should.equal  "http://cqframework.org/3/5"
 
 describe.skip 'IncludesQuery', ->
   @beforeEach ->

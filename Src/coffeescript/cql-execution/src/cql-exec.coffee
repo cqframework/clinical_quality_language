@@ -62,7 +62,7 @@ class Library
 class Context
   
 
-  constructor: (@parent, @_patientSource,@_parameters, @_codeService) ->
+  constructor: (@parent, @_patientSource, @_parameters = {}, @_codeService) ->
     @context_values = {}
 
   @property "parameters" ,
