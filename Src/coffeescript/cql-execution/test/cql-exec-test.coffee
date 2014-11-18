@@ -1,13 +1,15 @@
 should = require 'should'
 { Library, Context, Results } =  require '../lib/cql-exec'
 { CodeService } = require '../lib/cql-code-service'
+PAT = require '../lib/cql-patient'
 DT = require '../lib/cql-datatypes'
 D = require './data/cql-test-data'
 P = require './data/cql-test-patients'
 
 setup = (test, patients=[], parameters={}) ->
   test.lib = new Library(D[test.test.parent.title])
-  test.ctx = new Context(test.lib, patients, parameters)
+  psource = new PAT.PatientSource(patients)
+  test.ctx = new Context(test.lib, psource, parameters)
   for k,v of test.lib.expressions
     test[k[0].toLowerCase() + k[1..-1]] = v.expression
 
@@ -553,11 +555,11 @@ describe.skip 'PatientPropertyInValueSet', ->
     }
 
   it 'should find that John is not female', ->
-    @ctx = @ctx.withPatients [ P.P1 ]
+    @ctx = @ctx.withPatients new PAT.PatientSource([ P.P1 ])
     @isFemale.exec(@ctx).should.be.false
 
   it 'should find that Sally is female', ->
-    @ctx = @ctx.withPatients [ P.P2 ]
+    @ctx = @ctx.withPatients new PAT.PatientSource([ P.P2 ])
     @isFemale.exec(@ctx).should.be.true
 
 describe 'Add', ->
@@ -756,7 +758,7 @@ describe 'Nil', ->
 describe 'Retrieve', ->
   @beforeEach ->
     setup @
-    @ctx.withPatients [P.P3]
+    @ctx.withPatients new PAT.PatientSource([P.P3])
     @ctx.withCodeService new CodeService {
       "2.16.840.1.113883.3.464.1003.102.12.1011" : {
         "20140501" : [
@@ -833,7 +835,7 @@ describe 'Retrieve', ->
 describe 'DateRangeOptimizedQuery', ->
   @beforeEach ->
     setup @
-    @ctx.withPatients [P.P3]
+    @ctx.withPatients new PAT.PatientSource([P.P3])
     @ctx.withCodeService new CodeService {
       "2.16.840.1.113883.3.464.1003.101.12.1061" : {
         "20140501" : [
@@ -859,10 +861,102 @@ describe 'DateRangeOptimizedQuery', ->
     e.should.have.length(1)
     e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
 
+describe 'MultiSourceQuery', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+    @ctx.withCodeService new CodeService {
+      "2.16.840.1.113883.3.464.1003.101.12.1061" : {
+        "20140501" : [
+          { "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "270427003", "system": "2.16.840.1.113883.6.96", "version": "2013-09" },
+          { "code": "406547006", "system": "2.16.840.1.113883.6.96", "version": "2013-09" }
+        ]
+      }
+    }
+
+  it 'should find all Encounters performed and Conditions', ->
+    e = @msQuery.exec(@ctx)
+    e.should.have.length(6)
+
+  it 'should find encounters performed during the MP and All conditions', ->
+    e = @msQueryWhere.exec(@ctx)
+    e.should.have.length(2)
+
+  it 'should be able to filter items in the where clause', ->
+    e = @msQueryWhere2.exec(@ctx)
+    e.should.have.length(1)
+
+describe 'QueryRelationship', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+
+  it 'should be able to filter items with a with clause', ->
+    e = @withQuery.exec(@ctx)
+    e.should.have.length(3)
+
+  it 'with clause should filter out items not available', ->
+    e = @withQuery2.exec(@ctx)
+    e.should.have.length(0)
+
+  it 'should be able to filter items with a without clause', ->
+    e = @withOutQuery.exec(@ctx)
+    e.should.have.length(3)
+
+  it 'wiothout clause should be able to filter items with a without clause', ->
+    e = @withOutQuery2.exec(@ctx)
+    e.should.have.length(0)
+
+describe 'QueryDefine', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+
+  it 'should be able to define a variable in a query and use it', ->
+    e = @query.exec(@ctx)
+    e.should.have.length(3)
+    e[0]["a"].should.equal  e[0]["E"]
+    e[1]["a"].should.equal  e[1]["E"]
+    e[2]["a"].should.equal  e[2]["E"]
+
+describe 'Tuple', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+
+  it 'should be able to define a tuple', ->
+    e = @tup.exec(@ctx)
+    e["a"].should.equal 1
+    e["b"].should.equal 2
+
+  it 'should be able to return tuple from a query', ->
+    e = @query.exec(@ctx)
+    e.should.have.length(3)
+
+describe 'Sorting', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+
+  it 'should be able to sort by a single field asc' , ->
+    e = @singleAsc.exec(@ctx)
+    e.should.have.length(3)
+    e[0].E.get("identifier").id.should.equal "http://cqframework.org/3/1"
+    e[1].E.get("identifier").id.should.equal  "http://cqframework.org/3/3"
+    e[2].E.get("identifier").id.should.equal  "http://cqframework.org/3/5"
+
+  it 'should be able to sort by a single field desc', ->
+    e = @singleDesc.exec(@ctx)
+    e.should.have.length(3)
+    e[2].E.get("identifier").id.should.equal "http://cqframework.org/3/1"
+    e[1].E.get("identifier").id.should.equal  "http://cqframework.org/3/3"
+    e[0].E.get("identifier").id.should.equal  "http://cqframework.org/3/5"
+
 describe.skip 'IncludesQuery', ->
   @beforeEach ->
     setup @
-    @ctx.withPatients [P.P3]
+    @ctx.withPatients new PAT.PatientSource([P.P3])
     @ctx.withCodeService new CodeService {
       "2.16.840.1.113883.3.464.1003.101.12.1061" : {
         "20140501" : [
