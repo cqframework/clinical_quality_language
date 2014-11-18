@@ -14,6 +14,7 @@
 		<xs:attribute name="schemaLocation" type="xs:string" use="optional"/>
 		<xs:attribute name="targetQualifier" type="xs:QName" use="optional"/>
 		<xs:attribute name="patientClassName" type="xs:string" use="optional"/>
+		<xs:attribute name="patientBirthDatePropertyName" type="xs:string" use="optional"/>
 	</xs:complexType>
 	<xs:complexType name="ClassInfo">
 		<xs:attribute name="name" type="xs:string" use="required"/>

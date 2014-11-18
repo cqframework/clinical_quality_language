@@ -79,6 +79,16 @@ module.exports.InAgeDemographic = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "InDemographic",
             "context" : "PATIENT",
             "expression" : {
@@ -149,6 +159,16 @@ module.exports.ExpressionDef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
@@ -187,6 +207,16 @@ module.exports.ExpressionRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Life",
             "context" : "PATIENT",
             "expression" : {
@@ -277,6 +307,16 @@ module.exports.ParameterRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
@@ -315,6 +355,16 @@ module.exports.ValueSetDef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Known",
             "context" : "PATIENT",
             "expression" : {
@@ -385,6 +435,16 @@ module.exports.ValueSetRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Acute Pharyngitis",
             "context" : "PATIENT",
             "expression" : {
@@ -441,6 +501,16 @@ module.exports.And = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "TT",
             "context" : "PATIENT",
             "expression" : {
@@ -601,6 +671,16 @@ module.exports.Or = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "TT",
             "context" : "PATIENT",
             "expression" : {
@@ -761,6 +841,16 @@ module.exports.XOr = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "TT",
             "context" : "PATIENT",
             "expression" : {
@@ -915,6 +1005,16 @@ module.exports.Not = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "NotTrue",
             "context" : "PATIENT",
             "expression" : {
@@ -977,6 +1077,16 @@ module.exports.AgeAtFunctionRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AgeAt2012",
             "context" : "PATIENT",
             "expression" : {
@@ -1047,6 +1157,8 @@ define Day = Date(2012, 4, 15)
 define Hour = Date(2012, 4, 15, 12)
 define Minute = Date(2012, 4, 15, 12, 10)
 define Second = Date(2012, 4, 15, 12, 10, 59)
+define Millisecond = Date(2012, 4, 15, 12, 10, 59, 456)
+define TimeZoneOffset = Date(2012, 4, 15, 12, 10, 59, 456, -5)
 ###
 
 module.exports.DateFunctionRef = {
@@ -1067,6 +1179,16 @@ module.exports.DateFunctionRef = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Year",
             "context" : "PATIENT",
             "expression" : {
@@ -1198,6 +1320,85 @@ module.exports.DateFunctionRef = {
                   "type" : "Literal"
                } ]
             }
+         }, {
+            "name" : "Millisecond",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2012",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "4",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "15",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "12",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "59",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "456",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TimeZoneOffset",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2012",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "4",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "15",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "12",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "59",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "456",
+                  "type" : "Literal"
+               }, {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
          } ]
       }
    }
@@ -1231,6 +1432,16 @@ module.exports.Interval = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Open",
             "context" : "PATIENT",
             "expression" : {
@@ -1430,6 +1641,16 @@ module.exports.Greater = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1506,6 +1727,16 @@ module.exports.GreaterOrEqual = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1582,6 +1813,16 @@ module.exports.Equal = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1658,6 +1899,16 @@ module.exports.LessOrEqual = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1734,6 +1985,16 @@ module.exports.Less = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "AGtB_Int",
             "context" : "PATIENT",
             "expression" : {
@@ -1812,6 +2073,16 @@ module.exports.List = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Three",
             "context" : "PATIENT",
             "expression" : {
@@ -1919,6 +2190,16 @@ module.exports.Exists = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "EmptyList",
             "context" : "PATIENT",
             "expression" : {
@@ -1979,6 +2260,16 @@ module.exports.Start = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
@@ -2054,6 +2345,16 @@ module.exports.InList = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "IsIn",
             "context" : "PATIENT",
             "expression" : {
@@ -2146,6 +2447,16 @@ module.exports.InValueSet = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Female",
             "context" : "PATIENT",
             "expression" : {
@@ -2402,6 +2713,16 @@ module.exports.InValueSetFunction = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Female",
             "context" : "PATIENT",
             "expression" : {
@@ -2676,6 +2997,16 @@ module.exports.PatientPropertyInValueSet = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Female",
             "context" : "PATIENT",
             "expression" : {
@@ -2693,7 +3024,11 @@ module.exports.PatientPropertyInValueSet = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
+                  "name" : "gender",
+                  "type" : "IdentifierRef"
                }, {
+                  "name" : "Female Administrative Sex",
+                  "type" : "IdentifierRef"
                } ]
             }
          } ]
@@ -2729,6 +3064,16 @@ module.exports.Union = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "OneToTen",
             "context" : "PATIENT",
             "expression" : {
@@ -2976,6 +3321,16 @@ module.exports.Intersect = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "NoIntersection",
             "context" : "PATIENT",
             "expression" : {
@@ -3323,6 +3678,16 @@ module.exports.Distinct = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "LotsOfDups",
             "context" : "PATIENT",
             "expression" : {
@@ -3472,6 +3837,16 @@ module.exports.Add = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ten",
             "context" : "PATIENT",
             "expression" : {
@@ -3620,6 +3995,16 @@ module.exports.Subtract = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ten",
             "context" : "PATIENT",
             "expression" : {
@@ -3726,6 +4111,16 @@ module.exports.Multiply = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ten",
             "context" : "PATIENT",
             "expression" : {
@@ -3840,6 +4235,16 @@ module.exports.Divide = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Hundred",
             "context" : "PATIENT",
             "expression" : {
@@ -3932,6 +4337,56 @@ module.exports.Divide = {
    }
 }
 
+### Negate
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define NegativeOne = -1
+###
+
+module.exports.Negate = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "NegativeOne",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Negate",
+               "operand" : {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }
+            }
+         } ]
+      }
+   }
+}
+
 ### MathPrecedence
 library TestSnippet version '1'
 using QUICK
@@ -3958,6 +4413,16 @@ module.exports.MathPrecedence = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Mixed",
             "context" : "PATIENT",
             "expression" : {
@@ -4034,6 +4499,801 @@ module.exports.MathPrecedence = {
    }
 }
 
+### TimeBetween
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define NewYear2013 = Date(2013, 1, 1, 0, 0, 0, 0)
+define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
+define January2014 = Date(2014, 1)
+define YearsBetween = years between NewYear2013 and NewYear2014
+define MonthsBetween = months between NewYear2013 and NewYear2014
+define DaysBetween = days between NewYear2013 and NewYear2014
+define HoursBetween = hours between NewYear2013 and NewYear2014
+define MinutesBetween = minutes between NewYear2013 and NewYear2014
+define SecondsBetween = seconds between NewYear2013 and NewYear2014
+define SecondsBetweenReversed = seconds between NewYear2014 and NewYear2013
+define YearsBetweenUncertainty = years between NewYear2014 and January2014
+define MonthsBetweenUncertainty = months between NewYear2014 and January2014
+define DaysBetweenUncertainty = days between NewYear2014 and January2014
+define HoursBetweenUncertainty = hours between NewYear2014 and January2014
+define MinutesBetweenUncertainty = minutes between NewYear2014 and January2014
+define SecondsBetweenUncertainty = seconds between NewYear2014 and January2014
+define SecondsBetweenReversedUncertainty = seconds between January2014 and NewYear2014
+###
+
+module.exports.TimeBetween = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "NewYear2013",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2013",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "NewYear2014",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2014",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "January2014",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2014",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "YearsBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "YearsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MonthsBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "MonthsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "DaysBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "DaysBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "HoursBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "HoursBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MinutesBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "MinutesBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SecondsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetweenReversed",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SecondsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "YearsBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "YearsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MonthsBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "MonthsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "DaysBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "DaysBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "HoursBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "HoursBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MinutesBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "MinutesBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetweenUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SecondsBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetweenReversedUncertainty",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SecondsBetween",
+               "operand" : [ {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### TimeBetweenComparisons
+library TestSnippet version '1'
+using QUICK
+context PATIENT
+define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
+define February2014 = Date(2014, 2)
+define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
+define GreaterThan40DaysAfter = days between NewYear2014 and February2014 > 40
+define GreaterThan80DaysAfter = days between NewYear2014 and February2014 > 80
+define GreaterOrEqualTo25DaysAfter = days between NewYear2014 and February2014 >= 25
+define GreaterOrEqualTo40DaysAfter = days between NewYear2014 and February2014 >= 40
+define GreaterOrEqualTo80DaysAfter = days between NewYear2014 and February2014 >= 80
+define EqualTo25DaysAfter = days between NewYear2014 and February2014 = 25
+define EqualTo40DaysAfter = days between NewYear2014 and February2014 = 40
+define EqualTo80DaysAfter = days between NewYear2014 and February2014 = 80
+define LessOrEqualTo25DaysAfter = days between NewYear2014 and February2014 <= 25
+define LessOrEqualTo40DaysAfter = days between NewYear2014 and February2014 <= 40
+define LessOrEqualTo80DaysAfter = days between NewYear2014 and February2014 <= 80
+define LessThan25DaysAfter = days between NewYear2014 and February2014 < 25
+define LessThan40DaysAfter = days between NewYear2014 and February2014 < 40
+define LessThan80DaysAfter = days between NewYear2014 and February2014 < 80
+define TwentyFiveDaysLessThanDaysBetween = 25 < days between NewYear2014 and February2014
+define FortyDaysEqualToDaysBetween = 40 = days between NewYear2014 and February2014
+define TwentyFiveDaysGreaterThanDaysBetween = 25 > days between NewYear2014 and February2014
+###
+
+module.exports.TimeBetweenComparisons = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "NewYear2014",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2014",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "February2014",
+            "context" : "PATIENT",
+            "expression" : {
+               "name" : "Date",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2014",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterThan25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterThan40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterThan80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterOrEqualTo25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterOrEqualTo40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "GreaterOrEqualTo80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "EqualTo25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "EqualTo40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "EqualTo80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessOrEqualTo25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessOrEqualTo40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessOrEqualTo80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessThan25DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessThan40DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "LessThan80DaysAfter",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "80",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "TwentyFiveDaysLessThanDaysBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               }, {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "FortyDaysEqualToDaysBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "40",
+                  "type" : "Literal"
+               }, {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "TwentyFiveDaysGreaterThanDaysBetween",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "25",
+                  "type" : "Literal"
+               }, {
+                  "type" : "DaysBetween",
+                  "operand" : [ {
+                     "name" : "NewYear2014",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "February2014",
+                     "type" : "ExpressionRef"
+                  } ]
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
 ### Literal
 library TestSnippet version '1'
 using QUICK
@@ -4063,6 +5323,16 @@ module.exports.Literal = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "BoolTrue",
             "context" : "PATIENT",
             "expression" : {
@@ -4132,6 +5402,16 @@ module.exports.Nil = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Nil",
             "context" : "PATIENT",
             "expression" : {
@@ -4177,6 +5457,16 @@ module.exports.Retrieve = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Acute Pharyngitis",
             "context" : "PATIENT",
             "expression" : {
@@ -4376,6 +5666,16 @@ module.exports.DateRangeOptimizedQuery = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ambulatory/ED Visit",
             "context" : "PATIENT",
             "expression" : {
@@ -4530,6 +5830,16 @@ module.exports.IncludesQuery = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Ambulatory/ED Visit",
             "context" : "PATIENT",
             "expression" : {
@@ -4601,9 +5911,21 @@ module.exports.ScratchPad = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "Foo",
             "context" : "PATIENT",
             "expression" : {
+               "name" : "foo",
+               "type" : "IdentifierRef"
             }
          } ]
       }
@@ -4687,6 +6009,16 @@ module.exports.MultiSourceQuery = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "msQueryWhere",
             "context" : "PATIENT",
             "expression" : {
@@ -4856,6 +6188,16 @@ module.exports.QueryDefine = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "query",
             "context" : "PATIENT",
             "expression" : {
@@ -4925,6 +6267,16 @@ module.exports.Tuple = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "tup",
             "context" : "PATIENT",
             "expression" : {
@@ -5020,6 +6372,16 @@ module.exports.QueryRelationship = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "withQuery",
             "context" : "PATIENT",
             "expression" : {
@@ -5182,6 +6544,16 @@ module.exports.Sorting = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "SingletonOf",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "singleAsc",
             "context" : "PATIENT",
             "expression" : {

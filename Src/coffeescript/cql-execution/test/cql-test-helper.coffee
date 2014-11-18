@@ -1,29 +1,21 @@
 DT = require '../lib/cql-datatypes'
 
-adjustPrecision = (x, precisionField) ->
-  switch precisionField
-    when DT.DateTime.Unit.YEAR then new DT.DateTime(x.year)
-    when DT.DateTime.Unit.MONTH then new DT.DateTime(x.year, x.month)
-    when DT.DateTime.Unit.DAY then new DT.DateTime(x.year, x.month, x.day)
-    when DT.DateTime.Unit.HOUR then new DT.DateTime(x.year, x.month, x.day, x.hour)
-    when DT.DateTime.Unit.MINUTE then new DT.DateTime(x.year, x.month, x.day, x.hour, x.minute)
-    else new DT.DateTime(x.year, x.month, x.day, x.hour, x.minute, x.second)
-
 class DateTime
   @parse: (string) ->
     DateTime.fromDateTime(DT.DateTime.parse string)
 
   @fromDateTime: (d) ->
-    new DateTime(d.year, d.month, d.day, d.hour, d.minute, d.second)
+    new DateTime(d.year, d.month, d.day, d.hour, d.minute, d.second, d.millisecond)
 
-  constructor: (year, month = 0, day = 1, hour = 0, minute = 0, second = 0) ->
-    @full = new DT.DateTime(year, month, day, hour, minute, second)
+  constructor: (year, month = 0, day = 1, hour = 0, minute = 0, second = 0, millisecond = 0) ->
+    @full = new DT.DateTime(year, month, day, hour, minute, second, millisecond)
     @toYear = new DT.DateTime(year)
     @toMonth = new DT.DateTime(year, month)
     @toDay = new DT.DateTime(year, month, day)
     @toHour = new DT.DateTime(year, month, day, hour)
     @toMinute = new DT.DateTime(year, month, day, hour, minute)
     @toSecond = new DT.DateTime(year, month, day, hour, minute, second)
+    @toMillisecond = new DT.DateTime(year, month, day, hour, minute, second, millisecond)
 
 
 class Interval
@@ -37,6 +29,7 @@ class Interval
     @toHour = new DT.Interval(thLow.toHour, thHigh.toHour)
     @toMinute = new DT.Interval(thLow.toMinute, thHigh.toMinute)
     @toSecond = new DT.Interval(thLow.toSecond, thHigh.toSecond)
+    @toMillisecond = new DT.Interval(thLow.toMillisecond, thHigh.toMillisecond)
 
 module.exports.Interval = Interval
 module.exports.DateTime = DateTime

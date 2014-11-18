@@ -1,4 +1,9 @@
 apply plugin: 'idea'
+apply plugin: 'maven'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
 
 idea {
   project {

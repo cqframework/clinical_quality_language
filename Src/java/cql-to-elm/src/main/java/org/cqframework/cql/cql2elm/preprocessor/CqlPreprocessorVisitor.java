@@ -8,6 +8,7 @@ import org.cqframework.cql.gen.cqlParser;
 
 public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     private LibraryInfo libraryInfo = new LibraryInfo();
+    private boolean implicitPatientCreated = false;
 
     public LibraryInfo getLibraryInfo() {
         return libraryInfo;
@@ -61,6 +62,17 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         parameterDefinition.setDefinition(ctx);
         libraryInfo.addParameterDefinition(parameterDefinition);
         return parameterDefinition;
+    }
+
+    @Override
+    public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
+        if (!implicitPatientCreated) {
+            ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
+            expressionDefinition.setName("Patient");
+            libraryInfo.addExpressionDefinition(expressionDefinition);
+            implicitPatientCreated = true;
+        }
+        return visit(ctx.identifier());
     }
 
     @Override

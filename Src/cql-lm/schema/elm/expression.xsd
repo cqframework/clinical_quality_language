@@ -216,6 +216,17 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="IdentifierRef">
+		<xs:annotation>
+			<xs:documentation>The IdentifierRef type defines an expression that references an unresolved identifier, usually to an in-context variable, or a property of an in-context variable.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- Literals -->
 	<xs:complexType name="Literal">
 		<xs:annotation>
@@ -1687,6 +1698,14 @@ It is an error to invoke the Current operator outside the context of a scoped op
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="SingletonOf">
+		<xs:annotation>
+			<xs:documentation>The SingletonOf expression extracts a single tuple from the source list. If the source list is empty, the result is null. If the source list contains one element, that element is returned. If the list contains more than one element, a run-time error is thrown.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- Aggregate Operators -->
 	<!-- TODO: Support grouping? -->
 	<xs:complexType name="AggregateExpression" abstract="true">
@@ -1972,7 +1991,7 @@ Property expressions can also be used to access the individual points and open i
 				<xs:sequence>
 					<xs:element name="expression" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
-				<xs:attribute name="distinct" type="xs:boolean" default="true" use="optional"/>
+				<xs:attribute name="distinct" type="xs:boolean" use="optional" default="true"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

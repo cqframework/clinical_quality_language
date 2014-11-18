@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.*;
@@ -13,9 +11,7 @@ import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.model.*;
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.cql2elm.preprocessor.LibraryInfo;
-import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
@@ -24,9 +20,6 @@ import org.hl7.elm_modelinfo.r1.ClassInfo;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -45,7 +38,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private LibraryInfo libraryInfo = null;
     private Library library = null;
-    private String currentContext = "UNKNOWN";
+    private String currentContext = "Patient"; // default context to patient
 
     //Put them here for now, but eventually somewhere else?
     private final HashMap<String, Library> libraries = new HashMap<>();
@@ -57,6 +50,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final List<Retrieve> retrieves= new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private ModelHelper modelHelper = null;
+    private boolean implicitPatientCreated = false;
 
     public void enableAnnotations() { annotate = true; }
     public void disableAnnotations() { annotate = false; }
@@ -82,7 +76,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return nextLocalId++;
     }
 
-    private void PushNarrative(@NotNull ParseTree tree) {
+    private void pushNarrative(@NotNull ParseTree tree) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
 
         // If there is a parent narrative
@@ -104,7 +98,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         narratives.push(newNarrative);
     }
 
-    private Narrative PopNarrative(@NotNull ParseTree tree, Object o) {
+    private Narrative popNarrative(@NotNull ParseTree tree, Object o) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
 
         // Pop the narrative off the narrative stack
@@ -125,9 +119,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // set the narrative's reference id
                 // if there is a parent narrative
                     // add this narrative to the content of the parent
-            // else
-                // if there is a parent narrative
-                    // add the contents of this narrative to that narrative
+        // else
+            // if there is a parent narrative
+                // add the contents of this narrative to that narrative
         if (o instanceof Element) {
             Element element = (Element)o;
             if (element.getLocalId() == null) {
@@ -156,6 +150,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
             }
         }
+        else {
+            if (!narratives.isEmpty()) {
+                Narrative parentNarrative = narratives.peek();
+                parentNarrative.getContent().addAll(currentNarrative.getContent());
+            }
+        }
 
         return currentNarrative;
     }
@@ -163,7 +163,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visit(@NotNull ParseTree tree) {
         if (annotate) {
-            PushNarrative(tree);
+            pushNarrative(tree);
         }
         Object o = null;
         try {
@@ -171,7 +171,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         finally {
             if (annotate) {
-                PopNarrative(tree, o);
+                popNarrative(tree, o);
             }
         }
 
@@ -179,7 +179,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             this.track((Trackable) o, (ParserRuleContext) tree);
         }
         if (o instanceof Expression) {
-            addExpression(tree, (Expression) o);
+            addExpression((Expression) o);
         }
 
         return o;
@@ -307,8 +307,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public String visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
+    public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
         currentContext = parseString(ctx.identifier());
+
+        // If this is the first time a context definition is encountered, output a patient definition:
+        // define Patient = element of [<Patient model type>]
+        if (!implicitPatientCreated) {
+            ExpressionDef patientExpressionDef = of.createExpressionDef()
+                    .withName("Patient")
+                    .withContext(currentContext)
+                    .withExpression(of.createSingletonOf().withOperand(
+                                    of.createRetrieve()
+                                            .withDataType(resolveNamedType(getModelHelper().getModelInfo().getPatientClassName()))
+                            )
+                    );
+            addToLibrary(patientExpressionDef);
+            implicitPatientCreated = true;
+            return patientExpressionDef;
+        }
 
         return currentContext;
     }
@@ -481,6 +497,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitSuccessorExpressionTerm(@NotNull cqlParser.SuccessorExpressionTermContext ctx) {
         return of.createSucc().withOperand(parseExpression(ctx.expressionTerm()));
+    }
+
+    @Override
+    public Object visitElementExtractorExpressionTerm(@NotNull cqlParser.ElementExtractorExpressionTermContext ctx) {
+        return of.createSingletonOf().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
@@ -774,9 +795,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withName(memberIdentifier);
             }
 
-            Identifier identifier = new Identifier();
+            IdentifierRef identifier = new IdentifierRef();
             identifier.setLibraryName(((LibraryRef)left).getLibraryName());
-            identifier.setIdentifier(memberIdentifier);
+            identifier.setName(memberIdentifier);
             return identifier;
         }
 
@@ -798,9 +819,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return property;
         }
 
-        else if (left instanceof Identifier) {
-            Identifier identifier = (Identifier)left;
-            identifier.setIdentifier(String.format("%s.%s", identifier.getIdentifier(), memberIdentifier));
+        else if (left instanceof IdentifierRef) {
+            IdentifierRef identifier = (IdentifierRef)left;
+            identifier.setName(String.format("%s.%s", identifier.getName(), memberIdentifier));
             return identifier;
         }
 
@@ -859,8 +880,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return libraryRef;
         }
 
-        Identifier id = new Identifier();
-        id.setIdentifier(identifier);
+        IdentifierRef id = of.createIdentifierRef();
+        id.setName(identifier);
         return id;
     }
 
@@ -1848,9 +1869,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         FunctionRef fun = of.createFunctionRef();
         Expression left = parseExpression(ctx.expressionTerm());
 
-        if (left instanceof Identifier) {
-            fun.setLibraryName(((Identifier)left).getLibraryName());
-            fun.setName(((Identifier)left).getIdentifier());
+        if (left instanceof IdentifierRef) {
+            fun.setLibraryName(((IdentifierRef)left).getLibraryName());
+            fun.setName(((IdentifierRef)left).getName());
         }
 
         if (ctx.expression() != null) {
@@ -1859,7 +1880,39 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
+        // Process Age-related functions
+        if (fun.getLibraryName() == null) {
+            String ageRelatedFunctionName = resolveAgeRelatedFunction(fun.getName());
+            if (ageRelatedFunctionName != null) {
+                fun.setName(resolveAgeRelatedFunction(fun.getName()));
+                fun.getOperand().add(
+                        0,
+                        of.createProperty()
+                                .withPath(getModelHelper().getModelInfo().getPatientBirthDatePropertyName())
+                                .withSource(of.createExpressionRef().withName("Patient"))
+                );
+            }
+        }
+
         return fun;
+    }
+
+    private String resolveAgeRelatedFunction(String functionName) {
+        switch (functionName) {
+            case "AgeInYears":
+            case "AgeInMonths":
+            case "AgeInDays":
+            case "AgeInHours":
+            case "AgeInMinutes":
+            case "AgeInSeconds":
+            case "AgeInYearsAt":
+            case "AgeInMonthsAt":
+            case "AgeInDaysAt":
+            case "AgeInHoursAt":
+            case "AgeInMinutesAt":
+            case "AgeInSecondsAt": return "Calculate" + functionName;
+            default: return null;
+        }
     }
 
     @Override
@@ -1943,16 +1996,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             case "DateTime": return "datetime";
             default: return null;
         }
-    }
-
-    private QName resolveAxisType(String occurrence, String topic, String modality) {
-        ClassDetail detail = getModelHelper().getClassDetail(occurrence, topic, modality);
-
-        if (detail != null) {
-            return resolveNamedType(detail.getClassInfo().getName());
-        }
-
-        return resolveNamedType(String.format("%s%s%s", topic, modality, occurrence));
     }
 
     private QName resolveTypeSpecifierToQName(TypeSpecifier typeSpecifier) {
@@ -2094,26 +2137,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return null;
     }
 
-    private String resolveFunctionName(String identifier) {
-        if (libraryInfo != null) {
-            return libraryInfo.resolveFunctionName(identifier);
-        }
-
-        return null;
-    }
-
-    private String resolveFunctionName(Library library, String identifier) {
-        if (library.getStatements() != null) {
-            for (ExpressionDef current : library.getStatements().getDef()) {
-                if (current instanceof FunctionDef && current.getName().equals(identifier)) {
-                    return identifier;
-                }
-            }
-        }
-
-        return null;
-    }
-
     private void addToLibrary(ParameterDef paramDef) {
         if (library.getParameters() == null) {
             library.setParameters(of.createLibraryParameters());
@@ -2121,7 +2144,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         library.getParameters().getDef().add(paramDef);
     }
 
-    private void addExpression(ParseTree ctx, Expression expression) {
+    private void addExpression(Expression expression) {
         expressions.add(expression);
     }
 
@@ -2191,48 +2214,5 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         trackable.getTrackbacks().add(tb);
 
         return tb;
-    }
-
-    public static void main(String[] args) throws IOException, JAXBException {
-        String inputFile = null;
-        if (args.length > 0) inputFile = args[0];
-        InputStream is = System.in;
-        if (inputFile != null) {
-            is = new FileInputStream(inputFile);
-        }
-        ANTLRInputStream input = new ANTLRInputStream(is);
-        cqlLexer lexer = new cqlLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        cqlParser parser = new cqlParser(tokens);
-        parser.setBuildParseTree(true);
-        ParseTree tree = parser.logic();
-
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
-        preprocessor.visit(tree);
-
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
-        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
-        visitor.setTokenStream(tokens);
-        visitor.enableAnnotations();
-        visitor.visit(tree);
-
-        /* ToString output
-        System.out.println(visitor.getLibrary().toString());
-        */
-
-        /* XML output */
-        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class, org.hl7.fhir.ClinicalStatement.class);
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(new ObjectFactory().createLibrary(visitor.getLibrary()), System.out);
-        //JAXB.marshal((new ObjectFactory()).createLibrary(visitor.getLibrary()), System.out);
-
-        /* JSON output
-        JAXBContext jc = JAXBContext.newInstance(Library.class);
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty("eclipselink.media-type", "application/json");
-        marshaller.marshal(new ObjectFactory().createLibrary(visitor.getLibrary()), System.out);
-        */
     }
 }

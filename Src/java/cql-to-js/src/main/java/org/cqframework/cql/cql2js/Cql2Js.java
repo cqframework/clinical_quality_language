@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2js;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
+import org.cqframework.cql.cql2elm.CqlTranslator;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,19 +11,21 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import static org.cqframework.cql.cql2elm.CqlTranslator.*;
+
 
 public class Cql2Js {
     private static enum Format { JSON, COFFEESCRIPT }
 
     private static void writeJs(File inFile, PrintWriter pw, Format format, boolean dateRangeOptimizations, boolean annotations) throws IOException {
-        ArrayList<CqlLibrary.Options> options = new ArrayList<>();
+        ArrayList<CqlTranslator.Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
-            options.add(CqlLibrary.Options.EnableDateRangeOptimization);
+            options.add(Options.EnableDateRangeOptimization);
         }
         if (annotations) {
-            options.add(CqlLibrary.Options.EnableAnnotations);
+            options.add(Options.EnableAnnotations);
         }
-        String lib = CqlLibrary.loadCql(inFile, options.toArray(new CqlLibrary.Options[options.size()])).asJson();
+        String lib = fromFile(inFile, options.toArray(new Options[options.size()])).toJson();
         if (format == Format.COFFEESCRIPT) {
             pw.print("module.exports = ");
         }

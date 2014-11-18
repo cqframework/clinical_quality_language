@@ -39,7 +39,7 @@ define SexuallyActive =
 		
 define NoScreening =
     not exists ([SimpleObservation: "Chlamydia Screening"] R where R.observedAtTime during interval[Today() - 1 years, Today()] and R.result is not null)
-    and not exists ([Procedure, Plan: "Chlamydia Screening"] P where R.plannedTime during interval[Today(), null])
+    and not exists ([Procedure, Plan: "Chlamydia Screening"] P where P.plannedTime during interval[Today(), null])
 	and not exists ([SimpleObservation: "Reason for not performing Chlamydia Screening"])
 
 define NeedScreening = InDemographic and SexuallyActive and NoScreening

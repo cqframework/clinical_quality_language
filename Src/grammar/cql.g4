@@ -288,6 +288,7 @@ expressionTerm
     | 'width' 'of' expressionTerm                                        # widthExpressionTerm
     | 'successor' 'of' expressionTerm                                    # successorExpressionTerm
     | 'predecessor' 'of' expressionTerm                                  # predecessorExpressionTerm
+    | 'singleton' 'of' expressionTerm                                    # elementExtractorExpressionTerm
     | expressionTerm '^' expressionTerm                                  # powerExpressionTerm
     | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm          # multiplicationExpressionTerm
     | expressionTerm ('+' | '-') expressionTerm                          # additionExpressionTerm

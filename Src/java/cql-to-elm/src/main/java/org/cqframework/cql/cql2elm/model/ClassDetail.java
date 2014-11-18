@@ -5,21 +5,21 @@ import org.hl7.elm_modelinfo.r1.ClassInfo;
 
 public class ClassDetail {
     public ClassInfo getClassInfo() {
-        return _classInfo;
+        return classInfo;
     }
 
     public void setClassInfo(@NotNull ClassInfo classInfo) {
-        _classInfo = classInfo;
+        this.classInfo = classInfo;
     }
 
     public Class getModelClass() {
-        return _modelClass;
+        return modelClass;
     }
 
     public void setModelClass(@NotNull Class modelClass) {
-        _modelClass = modelClass;
+        this.modelClass = modelClass;
     }
 
-    private ClassInfo _classInfo;
-    private Class _modelClass;
+    private ClassInfo classInfo;
+    private Class modelClass;
 }

@@ -19,14 +19,14 @@ import static org.testng.Assert.*;
 
 public class CMS146ElmTest {
 
-    private Cql2ElmVisitor visitor;
+    private CqlTranslator translator;
     private Library library;
     private ObjectFactory of;
 
     @BeforeTest
     public void setup() throws IOException {
-        visitor = visitFile("CMS146v2_Test_CQM.cql", true);
-        library = visitor.getLibrary();
+        translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"));
+        library = translator.toELM();
         of = new ObjectFactory();
     }
 
@@ -44,7 +44,7 @@ public class CMS146ElmTest {
 
     @Test
     public void testClinicalRequests() {
-        Collection<Retrieve> actualCR = visitor.getRetrieves();
+        Collection<Retrieve> actualCR = translator.toRetrieves();
 
         Collection<Retrieve> expectedCR = Arrays.asList(
                 of.createRetrieve()
@@ -105,7 +105,7 @@ public class CMS146ElmTest {
             actualVars.add(def.getName());
         }
 
-        Collection<String> expectedVars = Arrays.asList("InDemographic", "Pharyngitis", "Antibiotics", "TargetEncounters",
+        Collection<String> expectedVars = Arrays.asList("Patient", "InDemographic", "Pharyngitis", "Antibiotics", "TargetEncounters",
                 "TargetDiagnoses", "HasPriorAntibiotics", "HasTargetEncounter", "InInitialPopulation", "InDenominator",
                 "InDenominatorExclusions", "InNumerator");
 
@@ -115,7 +115,7 @@ public class CMS146ElmTest {
     // TODO: Disabled the test for now, needs to be updated to use annotations, will update after all syntax changes.
     @Test(enabled=false)
     public void testTrackBacks() {
-        for (Retrieve dc : visitor.getRetrieves()) {
+        for (Retrieve dc : translator.toRetrieves()) {
             int expectedNumbers[] = {0, 0, 0, 0};
             switch (((ValueSetRef) dc.getCodes()).getName()) {
                 case "Acute Pharyngitis":
