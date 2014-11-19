@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: 'eclipse'
 
 group = 'org.cqframework.example'
 version = '0.1'
