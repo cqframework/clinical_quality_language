@@ -5,6 +5,7 @@ apply plugin: 'pmd'
 apply plugin: 'idea'
 apply plugin:'application'
 apply plugin: 'maven'
+apply plugin: 'eclipse'
 
 group = 'org.cqframework'
 version = '0.1'
