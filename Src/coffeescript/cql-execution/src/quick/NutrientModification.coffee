@@ -37,9 +37,9 @@ require './Range'
 require './CodeableConcept'
 ###*
 @class NutrientModification
-@exports  NutrientModification as quick.NutrientModification
+@exports  NutrientModification as NutrientModification
 ###
-class QUICK.NutrientModification
+class NutrientModification
   constructor: (@json) ->
  
   ###*
@@ -55,4 +55,4 @@ class QUICK.NutrientModification
  
  
 
-module.exports.QUICK = QUICK
+module.exports.NutrientModification = NutrientModification

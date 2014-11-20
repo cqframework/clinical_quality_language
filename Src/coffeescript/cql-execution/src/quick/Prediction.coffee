@@ -42,9 +42,9 @@ require './CodeableConcept'
 require './Element'
 ###*
 @class Prediction
-@exports  Prediction as quick.Prediction
+@exports  Prediction as Prediction
 ###
-class QUICK.Prediction
+class Prediction
   constructor: (@json) ->
  
   ###*
@@ -94,4 +94,4 @@ class QUICK.Prediction
         new QUICK.Period(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Prediction = Prediction

@@ -39,9 +39,9 @@ require './BodySite'
 require './CodeableConcept'
 ###*
 @class RespiratoryCare
-@exports  RespiratoryCare as quick.RespiratoryCare
+@exports  RespiratoryCare as RespiratoryCare
 ###
-class QUICK.RespiratoryCare
+class RespiratoryCare
   constructor: (@json) ->
  
   ###*
@@ -204,4 +204,4 @@ Examples:Assist Control (AC), Synchronized Intermittent Mandatory Ventilation (S
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.RespiratoryCare = RespiratoryCare

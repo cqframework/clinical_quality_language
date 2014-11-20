@@ -39,9 +39,9 @@ require './Act'
 require './CodeableConcept'
 ###*
 @class Contraindication
-@exports  Contraindication as quick.Contraindication
+@exports  Contraindication as Contraindication
 ###
-class QUICK.Contraindication
+class Contraindication
   constructor: (@json) ->
  
   ###*
@@ -79,4 +79,4 @@ A relative contraindication means that the course of action SHOULD be avoided bu
         new QUICK.Inference(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Contraindication = Contraindication

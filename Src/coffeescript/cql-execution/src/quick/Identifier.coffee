@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Identifier
-@exports  Identifier as quick.Identifier
+@exports  Identifier as Identifier
 ###
-class QUICK.Identifier
+class Identifier
   constructor: (@json) ->
  
   extension: -> 
@@ -49,4 +49,4 @@ class QUICK.Identifier
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Identifier = Identifier

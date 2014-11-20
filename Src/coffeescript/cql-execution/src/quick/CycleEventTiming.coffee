@@ -34,9 +34,9 @@ Identifies a repeating pattern to the intended time periods such as the number o
 require './CodeableConcept'
 ###*
 @class CycleEventTiming
-@exports  CycleEventTiming as quick.CycleEventTiming
+@exports  CycleEventTiming as CycleEventTiming
 ###
-class QUICK.CycleEventTiming
+class CycleEventTiming
   constructor: (@json) ->
  
   ###*
@@ -59,4 +59,4 @@ PCV PCV event occurs [duration] after dinner (from the Latin post cibus vesperti
  
  
 
-module.exports.QUICK = QUICK
+module.exports.CycleEventTiming = CycleEventTiming

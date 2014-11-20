@@ -39,9 +39,9 @@ require './CodeableConcept'
 require './RelatedObservation'
 ###*
 @class MicrobiologySensitivityResult
-@exports  MicrobiologySensitivityResult as quick.MicrobiologySensitivityResult
+@exports  MicrobiologySensitivityResult as MicrobiologySensitivityResult
 ###
-class QUICK.MicrobiologySensitivityResult
+class MicrobiologySensitivityResult
   constructor: (@json) ->
  
   ###*
@@ -134,4 +134,4 @@ Observations are not made on specimens themselves; they are made on a subject, b
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.MicrobiologySensitivityResult = MicrobiologySensitivityResult

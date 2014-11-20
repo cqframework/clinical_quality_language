@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Duration
-@exports  Duration as quick.Duration
+@exports  Duration as Duration
 ###
-class QUICK.Duration
+class Duration
   constructor: (@json) ->
  
   code: ->  @json['code'] 
@@ -61,4 +61,4 @@ class QUICK.Duration
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Duration = Duration

@@ -36,9 +36,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class ComputerSystem
-@exports  ComputerSystem as quick.ComputerSystem
+@exports  ComputerSystem as ComputerSystem
 ###
-class QUICK.ComputerSystem
+class ComputerSystem
   constructor: (@json) ->
  
   ###*
@@ -80,4 +80,4 @@ class QUICK.ComputerSystem
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.ComputerSystem = ComputerSystem

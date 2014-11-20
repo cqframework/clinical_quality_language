@@ -40,9 +40,9 @@ require './Extension'
 require './Cycle'
 ###*
 @class Schedule
-@exports  Schedule as quick.Schedule
+@exports  Schedule as Schedule
 ###
-class QUICK.Schedule
+class Schedule
   constructor: (@json) ->
  
   ###*
@@ -74,4 +74,4 @@ Some schedules are just explicit lists of times.
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Schedule = Schedule

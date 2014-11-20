@@ -35,9 +35,9 @@ require './ClinicalStatement'
 require './CodeableConcept'
 ###*
 @class Inference
-@exports  Inference as quick.Inference
+@exports  Inference as Inference
 ###
-class QUICK.Inference
+class Inference
   constructor: (@json) ->
  
   ###*
@@ -57,4 +57,4 @@ class QUICK.Inference
         new QUICK.ClinicalStatement(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Inference = Inference

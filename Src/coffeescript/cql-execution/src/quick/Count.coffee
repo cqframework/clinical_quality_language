@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Count
-@exports  Count as quick.Count
+@exports  Count as Count
 ###
-class QUICK.Count
+class Count
   constructor: (@json) ->
  
   code: ->  @json['code'] 
@@ -61,4 +61,4 @@ class QUICK.Count
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Count = Count

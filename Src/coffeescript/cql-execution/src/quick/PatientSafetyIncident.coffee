@@ -36,9 +36,9 @@ require './ClinicalStatement'
 require './CodeableConcept'
 ###*
 @class PatientSafetyIncident
-@exports  PatientSafetyIncident as quick.PatientSafetyIncident
+@exports  PatientSafetyIncident as PatientSafetyIncident
 ###
-class QUICK.PatientSafetyIncident
+class PatientSafetyIncident
   constructor: (@json) ->
  
   ###*
@@ -60,4 +60,4 @@ class QUICK.PatientSafetyIncident
  
  
 
-module.exports.QUICK = QUICK
+module.exports.PatientSafetyIncident = PatientSafetyIncident

@@ -34,9 +34,9 @@ Description of diet/nutrition to be administered to a patient.
 require './NutritionItem'
 ###*
 @class Diet
-@exports  Diet as quick.Diet
+@exports  Diet as Diet
 ###
-class QUICK.Diet
+class Diet
   constructor: (@json) ->
  
   ###*
@@ -54,4 +54,4 @@ class QUICK.Diet
         new QUICK.NutritionItem(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Diet = Diet

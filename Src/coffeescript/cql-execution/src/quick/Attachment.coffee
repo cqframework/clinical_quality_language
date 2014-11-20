@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Attachment
-@exports  Attachment as quick.Attachment
+@exports  Attachment as Attachment
 ###
-class QUICK.Attachment
+class Attachment
   constructor: (@json) ->
  
   contentType: ->  @json['contentType'] 
@@ -67,4 +67,4 @@ class QUICK.Attachment
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Attachment = Attachment

@@ -33,10 +33,10 @@ The topic of a clinical statement. Generally statement topics fall into two broa
 ###
 ###*
 @class StatementTopic
-@exports  StatementTopic as quick.StatementTopic
+@exports  StatementTopic as StatementTopic
 ###
-class QUICK.StatementTopic
+class StatementTopic
   constructor: (@json) ->
  
 
-module.exports.QUICK = QUICK
+module.exports.StatementTopic = StatementTopic

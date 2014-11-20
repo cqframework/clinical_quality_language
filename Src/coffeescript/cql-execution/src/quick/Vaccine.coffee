@@ -36,9 +36,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class Vaccine
-@exports  Vaccine as quick.Vaccine
+@exports  Vaccine as Vaccine
 ###
-class QUICK.Vaccine
+class Vaccine
   constructor: (@json) ->
  
   ###*
@@ -90,4 +90,4 @@ class QUICK.Vaccine
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Vaccine = Vaccine

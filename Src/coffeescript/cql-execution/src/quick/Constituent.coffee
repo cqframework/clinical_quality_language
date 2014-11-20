@@ -36,9 +36,9 @@ require './CodeableConcept'
 require './MedicationIngredient'
 ###*
 @class Constituent
-@exports  Constituent as quick.Constituent
+@exports  Constituent as Constituent
 ###
-class QUICK.Constituent
+class Constituent
   constructor: (@json) ->
  
   ###*
@@ -60,4 +60,4 @@ class QUICK.Constituent
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Constituent = Constituent

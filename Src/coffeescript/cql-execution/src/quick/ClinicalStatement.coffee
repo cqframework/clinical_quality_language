@@ -46,9 +46,9 @@ require './Person'
 require './Entity'
 ###*
 @class ClinicalStatement
-@exports  ClinicalStatement as quick.ClinicalStatement
+@exports  ClinicalStatement as ClinicalStatement
 ###
-class QUICK.ClinicalStatement
+class ClinicalStatement
   constructor: (@json) ->
  
   ###*
@@ -126,4 +126,4 @@ The statement author is the person creating the statement in the medical record.
  
  
 
-module.exports.QUICK = QUICK
+module.exports.ClinicalStatement = ClinicalStatement

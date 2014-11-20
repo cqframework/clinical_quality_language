@@ -41,9 +41,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class Patient
-@exports  Patient as quick.Patient
+@exports  Patient as Patient
 ###
-class QUICK.Patient
+class Patient
   constructor: (@json) ->
  
   ###*
@@ -161,4 +161,4 @@ class QUICK.Patient
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Patient = Patient

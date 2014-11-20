@@ -33,9 +33,9 @@ require './Extension'
 require './Quantity'
 ###*
 @class Ratio
-@exports  Ratio as quick.Ratio
+@exports  Ratio as Ratio
 ###
-class QUICK.Ratio
+class Ratio
   constructor: (@json) ->
  
   denominator: -> 
@@ -57,4 +57,4 @@ class QUICK.Ratio
         new QUICK.Quantity(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Ratio = Ratio

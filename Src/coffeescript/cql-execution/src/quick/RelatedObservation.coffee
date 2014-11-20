@@ -35,9 +35,9 @@ require './StatementOfOccurrence'
 require './CodeableConcept'
 ###*
 @class RelatedObservation
-@exports  RelatedObservation as quick.RelatedObservation
+@exports  RelatedObservation as RelatedObservation
 ###
-class QUICK.RelatedObservation
+class RelatedObservation
   constructor: (@json) ->
  
   ###*
@@ -53,4 +53,4 @@ class QUICK.RelatedObservation
  
  
 
-module.exports.QUICK = QUICK
+module.exports.RelatedObservation = RelatedObservation

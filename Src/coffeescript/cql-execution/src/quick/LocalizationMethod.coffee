@@ -35,9 +35,9 @@ require './Schedule'
 require './CodeableConcept'
 ###*
 @class LocalizationMethod
-@exports  LocalizationMethod as quick.LocalizationMethod
+@exports  LocalizationMethod as LocalizationMethod
 ###
-class QUICK.LocalizationMethod
+class LocalizationMethod
   constructor: (@json) ->
  
   ###*
@@ -63,4 +63,4 @@ class QUICK.LocalizationMethod
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.LocalizationMethod = LocalizationMethod

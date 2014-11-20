@@ -33,9 +33,9 @@ require './Extension'
 require './Quantity'
 ###*
 @class SampledData
-@exports  SampledData as quick.SampledData
+@exports  SampledData as SampledData
 ###
-class QUICK.SampledData
+class SampledData
   constructor: (@json) ->
  
   data: ->  @json['data'] 
@@ -68,4 +68,4 @@ class QUICK.SampledData
  
  
 
-module.exports.QUICK = QUICK
+module.exports.SampledData = SampledData

@@ -62,9 +62,9 @@ require './Person'
 require './Entity'
 ###*
 @class EncounterProposalOccurrence
-@exports  EncounterProposalOccurrence as quick.EncounterProposalOccurrence
+@exports  EncounterProposalOccurrence as EncounterProposalOccurrence
 ###
-class QUICK.EncounterProposalOccurrence
+class EncounterProposalOccurrence
   constructor: (@json) ->
  
   ###*
@@ -298,4 +298,4 @@ The statement author is the person creating the statement in the medical record.
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.EncounterProposalOccurrence = EncounterProposalOccurrence

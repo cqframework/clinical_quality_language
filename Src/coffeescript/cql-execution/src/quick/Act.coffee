@@ -33,10 +33,10 @@ The object of an action, the specific healthcare thing that is being done or pro
 ###
 ###*
 @class Act
-@exports  Act as quick.Act
+@exports  Act as Act
 ###
-class QUICK.Act
+class Act
   constructor: (@json) ->
  
 
-module.exports.QUICK = QUICK
+module.exports.Act = Act

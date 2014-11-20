@@ -36,9 +36,9 @@ require './NutritionProduct'
 require './DosageInstruction'
 ###*
 @class EnteralFormula
-@exports  EnteralFormula as quick.EnteralFormula
+@exports  EnteralFormula as EnteralFormula
 ###
-class QUICK.EnteralFormula
+class EnteralFormula
   constructor: (@json) ->
  
   ###*
@@ -64,4 +64,4 @@ class QUICK.EnteralFormula
  
  
 
-module.exports.QUICK = QUICK
+module.exports.EnteralFormula = EnteralFormula

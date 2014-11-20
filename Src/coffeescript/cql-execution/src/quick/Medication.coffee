@@ -37,9 +37,9 @@ require './MedicationIngredient'
 require './Identifier'
 ###*
 @class Medication
-@exports  Medication as quick.Medication
+@exports  Medication as Medication
 ###
-class QUICK.Medication
+class Medication
   constructor: (@json) ->
  
   ###*
@@ -113,4 +113,4 @@ class QUICK.Medication
         new QUICK.Identifier(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Medication = Medication

@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Coding
-@exports  Coding as quick.Coding
+@exports  Coding as Coding
 ###
-class QUICK.Coding
+class Coding
   constructor: (@json) ->
  
   code: ->  @json['code'] 
@@ -64,4 +64,4 @@ class QUICK.Coding
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Coding = Coding

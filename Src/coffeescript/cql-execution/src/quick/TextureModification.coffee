@@ -34,9 +34,9 @@ TextureModification specifies or modifies the texture for one or more types of f
 require './CodeableConcept'
 ###*
 @class TextureModification
-@exports  TextureModification as quick.TextureModification
+@exports  TextureModification as TextureModification
 ###
-class QUICK.TextureModification
+class TextureModification
   constructor: (@json) ->
  
   ###*
@@ -60,4 +60,4 @@ class QUICK.TextureModification
  
  
 
-module.exports.QUICK = QUICK
+module.exports.TextureModification = TextureModification

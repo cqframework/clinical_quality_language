@@ -49,9 +49,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class RelatedPerson
-@exports  RelatedPerson as quick.RelatedPerson
+@exports  RelatedPerson as RelatedPerson
 ###
-class QUICK.RelatedPerson
+class RelatedPerson
   constructor: (@json) ->
  
   ###*
@@ -171,4 +171,4 @@ class QUICK.RelatedPerson
         new QUICK.Contact(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.RelatedPerson = RelatedPerson

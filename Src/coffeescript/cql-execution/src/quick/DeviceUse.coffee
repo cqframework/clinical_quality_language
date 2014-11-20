@@ -36,9 +36,9 @@ require './Schedule'
 require './Device'
 ###*
 @class DeviceUse
-@exports  DeviceUse as quick.DeviceUse
+@exports  DeviceUse as DeviceUse
 ###
-class QUICK.DeviceUse
+class DeviceUse
   constructor: (@json) ->
  
   ###*
@@ -64,4 +64,4 @@ class QUICK.DeviceUse
         new QUICK.BodySite(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.DeviceUse = DeviceUse

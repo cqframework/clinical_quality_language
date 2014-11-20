@@ -60,9 +60,9 @@ require './Person'
 require './Entity'
 ###*
 @class SimpleObservationOccurrence
-@exports  SimpleObservationOccurrence as quick.SimpleObservationOccurrence
+@exports  SimpleObservationOccurrence as SimpleObservationOccurrence
 ###
-class QUICK.SimpleObservationOccurrence
+class SimpleObservationOccurrence
   constructor: (@json) ->
  
   ###*
@@ -237,4 +237,4 @@ The statement author is the person creating the statement in the medical record.
         new QUICK.Element(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.SimpleObservationOccurrence = SimpleObservationOccurrence

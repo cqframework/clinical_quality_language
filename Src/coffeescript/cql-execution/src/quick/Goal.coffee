@@ -36,9 +36,9 @@ require './CodeableConcept'
 require './Element'
 ###*
 @class Goal
-@exports  Goal as quick.Goal
+@exports  Goal as Goal
 ###
-class QUICK.Goal
+class Goal
   constructor: (@json) ->
  
   ###*
@@ -71,4 +71,4 @@ The end time of the interval may be "open" or not stated, if the goal is being i
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Goal = Goal

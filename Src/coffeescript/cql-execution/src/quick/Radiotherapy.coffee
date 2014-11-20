@@ -41,9 +41,9 @@ require './LocalizationMethod'
 require './MotionManagement'
 ###*
 @class Radiotherapy
-@exports  Radiotherapy as quick.Radiotherapy
+@exports  Radiotherapy as Radiotherapy
 ###
-class QUICK.Radiotherapy
+class Radiotherapy
   constructor: (@json) ->
  
   ###*
@@ -130,4 +130,4 @@ Please note the following guidance vis-a-vis dose:
         new QUICK.Dosage(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Radiotherapy = Radiotherapy

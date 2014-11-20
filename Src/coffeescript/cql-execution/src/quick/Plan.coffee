@@ -38,9 +38,9 @@ require './CodeableConcept'
 require './Person'
 ###*
 @class Plan
-@exports  Plan as quick.Plan
+@exports  Plan as Plan
 ###
-class QUICK.Plan
+class Plan
   constructor: (@json) ->
  
   ###*
@@ -116,4 +116,4 @@ class QUICK.Plan
         new QUICK.ActionStatus(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Plan = Plan

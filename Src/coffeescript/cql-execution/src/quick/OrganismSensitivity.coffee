@@ -34,9 +34,9 @@ Sensitivity of an organism to a specified antimicrobial agent
 require './CodeableConcept'
 ###*
 @class OrganismSensitivity
-@exports  OrganismSensitivity as quick.OrganismSensitivity
+@exports  OrganismSensitivity as OrganismSensitivity
 ###
-class QUICK.OrganismSensitivity
+class OrganismSensitivity
   constructor: (@json) ->
  
   ###*
@@ -58,4 +58,4 @@ class QUICK.OrganismSensitivity
  
  
 
-module.exports.QUICK = QUICK
+module.exports.OrganismSensitivity = OrganismSensitivity

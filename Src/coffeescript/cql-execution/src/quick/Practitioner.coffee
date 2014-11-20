@@ -53,9 +53,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class Practitioner
-@exports  Practitioner as quick.Practitioner
+@exports  Practitioner as Practitioner
 ###
-class QUICK.Practitioner
+class Practitioner
   constructor: (@json) ->
  
   ###*
@@ -185,4 +185,4 @@ class QUICK.Practitioner
         new QUICK.Contact(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Practitioner = Practitioner

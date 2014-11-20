@@ -45,9 +45,9 @@ require './CodeableConcept'
 require './ManifestedSymptom'
 ###*
 @class AdverseOutcome
-@exports  AdverseOutcome as quick.AdverseOutcome
+@exports  AdverseOutcome as AdverseOutcome
 ###
-class QUICK.AdverseOutcome
+class AdverseOutcome
   constructor: (@json) ->
  
   ###*
@@ -87,4 +87,4 @@ class QUICK.AdverseOutcome
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.AdverseOutcome = AdverseOutcome

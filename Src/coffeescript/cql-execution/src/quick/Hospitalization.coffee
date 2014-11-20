@@ -34,9 +34,9 @@ Details about an admission to a hospital.
 require './CodeableConcept'
 ###*
 @class Hospitalization
-@exports  Hospitalization as quick.Hospitalization
+@exports  Hospitalization as Hospitalization
 ###
-class QUICK.Hospitalization
+class Hospitalization
   constructor: (@json) ->
  
   ###*
@@ -56,4 +56,4 @@ class QUICK.Hospitalization
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Hospitalization = Hospitalization

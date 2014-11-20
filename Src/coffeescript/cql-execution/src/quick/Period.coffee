@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Period
-@exports  Period as quick.Period
+@exports  Period as Period
 ###
-class QUICK.Period
+class Period
   constructor: (@json) ->
  
   end: ->  @json['end'] 
@@ -52,4 +52,4 @@ class QUICK.Period
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Period = Period

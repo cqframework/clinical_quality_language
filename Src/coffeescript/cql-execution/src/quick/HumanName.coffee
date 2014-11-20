@@ -33,9 +33,9 @@ require './Period'
 require './Extension'
 ###*
 @class HumanName
-@exports  HumanName as quick.HumanName
+@exports  HumanName as HumanName
 ###
-class QUICK.HumanName
+class HumanName
   constructor: (@json) ->
  
   extension: -> 
@@ -70,4 +70,4 @@ class QUICK.HumanName
  
  
 
-module.exports.QUICK = QUICK
+module.exports.HumanName = HumanName

@@ -40,9 +40,9 @@ require './Person'
 require './Entity'
 ###*
 @class StatementOfUnknownOccurrence
-@exports  StatementOfUnknownOccurrence as quick.StatementOfUnknownOccurrence
+@exports  StatementOfUnknownOccurrence as StatementOfUnknownOccurrence
 ###
-class QUICK.StatementOfUnknownOccurrence
+class StatementOfUnknownOccurrence
   constructor: (@json) ->
  
   ###*
@@ -120,4 +120,4 @@ The statement author is the person creating the statement in the medical record.
  
  
 
-module.exports.QUICK = QUICK
+module.exports.StatementOfUnknownOccurrence = StatementOfUnknownOccurrence

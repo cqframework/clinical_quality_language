@@ -39,9 +39,9 @@ require './CodeableConcept'
 require './TextureModification'
 ###*
 @class OralDiet
-@exports  OralDiet as quick.OralDiet
+@exports  OralDiet as OralDiet
 ###
-class QUICK.OralDiet
+class OralDiet
   constructor: (@json) ->
  
   ###*
@@ -91,4 +91,4 @@ class QUICK.OralDiet
         new QUICK.TextureModification(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.OralDiet = OralDiet

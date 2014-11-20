@@ -35,9 +35,9 @@ require './EntityCharacteristic'
 require './Identifier'
 ###*
 @class Entity
-@exports  Entity as quick.Entity
+@exports  Entity as Entity
 ###
-class QUICK.Entity
+class Entity
   constructor: (@json) ->
  
   ###*
@@ -65,4 +65,4 @@ class QUICK.Entity
         new QUICK.Identifier(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Entity = Entity

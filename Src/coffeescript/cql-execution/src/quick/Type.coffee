@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Type
-@exports  Type as quick.Type
+@exports  Type as Type
 ###
-class QUICK.Type
+class Type
   constructor: (@json) ->
  
   extension: -> 
@@ -46,4 +46,4 @@ class QUICK.Type
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Type = Type

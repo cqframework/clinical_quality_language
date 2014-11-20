@@ -36,9 +36,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class CareProgramParticipation
-@exports  CareProgramParticipation as quick.CareProgramParticipation
+@exports  CareProgramParticipation as CareProgramParticipation
 ###
-class QUICK.CareProgramParticipation
+class CareProgramParticipation
   constructor: (@json) ->
  
   ###*
@@ -72,4 +72,4 @@ This status is different than the status of the action, e.g., proposal to enroll
  
  
 
-module.exports.QUICK = QUICK
+module.exports.CareProgramParticipation = CareProgramParticipation

@@ -36,9 +36,9 @@ require './Dispense'
 require './Dosage'
 ###*
 @class MedicationTreatment
-@exports  MedicationTreatment as quick.MedicationTreatment
+@exports  MedicationTreatment as MedicationTreatment
 ###
-class QUICK.MedicationTreatment
+class MedicationTreatment
   constructor: (@json) ->
  
   ###*
@@ -66,4 +66,4 @@ class QUICK.MedicationTreatment
         new QUICK.Medication(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.MedicationTreatment = MedicationTreatment

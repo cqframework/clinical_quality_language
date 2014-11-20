@@ -55,9 +55,9 @@ require './Person'
 require './Entity'
 ###*
 @class ObservationResultGroupOccurrence
-@exports  ObservationResultGroupOccurrence as quick.ObservationResultGroupOccurrence
+@exports  ObservationResultGroupOccurrence as ObservationResultGroupOccurrence
 ###
-class QUICK.ObservationResultGroupOccurrence
+class ObservationResultGroupOccurrence
   constructor: (@json) ->
  
   ###*
@@ -232,4 +232,4 @@ The statement author is the person creating the statement in the medical record.
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.ObservationResultGroupOccurrence = ObservationResultGroupOccurrence

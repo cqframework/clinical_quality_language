@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Structure
-@exports  Structure as quick.Structure
+@exports  Structure as Structure
 ###
-class QUICK.Structure
+class Structure
   constructor: (@json) ->
  
   extension: -> 
@@ -46,4 +46,4 @@ class QUICK.Structure
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Structure = Structure

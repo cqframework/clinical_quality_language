@@ -38,9 +38,9 @@ require './MedicationTreatment'
 require './CodeableConcept'
 ###*
 @class DiagnosticImaging
-@exports  DiagnosticImaging as quick.DiagnosticImaging
+@exports  DiagnosticImaging as DiagnosticImaging
 ###
-class QUICK.DiagnosticImaging
+class DiagnosticImaging
   constructor: (@json) ->
  
   ###*
@@ -134,4 +134,4 @@ class QUICK.DiagnosticImaging
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.DiagnosticImaging = DiagnosticImaging

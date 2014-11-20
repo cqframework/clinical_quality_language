@@ -38,9 +38,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class Specimen
-@exports  Specimen as quick.Specimen
+@exports  Specimen as Specimen
 ###
-class QUICK.Specimen
+class Specimen
   constructor: (@json) ->
  
   ###*
@@ -98,4 +98,4 @@ class QUICK.Specimen
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Specimen = Specimen

@@ -35,9 +35,9 @@ require './CodeableConcept'
 require './Element'
 ###*
 @class Qualifier
-@exports  Qualifier as quick.Qualifier
+@exports  Qualifier as Qualifier
 ###
-class QUICK.Qualifier
+class Qualifier
   constructor: (@json) ->
  
   ###*
@@ -53,4 +53,4 @@ class QUICK.Qualifier
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Qualifier = Qualifier

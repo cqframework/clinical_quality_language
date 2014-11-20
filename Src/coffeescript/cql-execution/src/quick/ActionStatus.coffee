@@ -34,9 +34,9 @@ Class describing the status of an action.
 require './CodeableConcept'
 ###*
 @class ActionStatus
-@exports  ActionStatus as quick.ActionStatus
+@exports  ActionStatus as ActionStatus
 ###
-class QUICK.ActionStatus
+class ActionStatus
   constructor: (@json) ->
  
   ###*
@@ -60,4 +60,4 @@ class QUICK.ActionStatus
  
  
 
-module.exports.QUICK = QUICK
+module.exports.ActionStatus = ActionStatus
