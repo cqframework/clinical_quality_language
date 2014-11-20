@@ -41,9 +41,9 @@ require './Location'
 require './CodeableConcept'
 ###*
 @class Encounter
-@exports  Encounter as quick.Encounter
+@exports  Encounter as Encounter
 ###
-class QUICK.Encounter
+class Encounter
   constructor: (@json) ->
  
   ###*
@@ -121,4 +121,4 @@ Value Set http://hl7.org/fhir/vs/encounter-type
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Encounter = Encounter

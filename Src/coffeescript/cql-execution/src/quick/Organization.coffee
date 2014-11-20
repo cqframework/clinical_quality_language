@@ -38,9 +38,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class Organization
-@exports  Organization as quick.Organization
+@exports  Organization as Organization
 ###
-class QUICK.Organization
+class Organization
   constructor: (@json) ->
  
   ###*
@@ -98,4 +98,4 @@ class QUICK.Organization
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Organization = Organization

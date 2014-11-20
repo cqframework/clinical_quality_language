@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class Element
-@exports  Element as quick.Element
+@exports  Element as Element
 ###
-class QUICK.Element
+class Element
   constructor: (@json) ->
  
   extension: -> 
@@ -46,4 +46,4 @@ class QUICK.Element
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Element = Element

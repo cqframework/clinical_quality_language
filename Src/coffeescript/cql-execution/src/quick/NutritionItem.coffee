@@ -33,10 +33,10 @@ The details of the nutrition item, with specific attributes depending on the mod
 ###
 ###*
 @class NutritionItem
-@exports  NutritionItem as quick.NutritionItem
+@exports  NutritionItem as NutritionItem
 ###
-class QUICK.NutritionItem
+class NutritionItem
   constructor: (@json) ->
  
 
-module.exports.QUICK = QUICK
+module.exports.NutritionItem = NutritionItem

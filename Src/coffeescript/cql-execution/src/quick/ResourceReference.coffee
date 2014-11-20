@@ -32,9 +32,9 @@ this.QUICK ||= {}
 require './Extension'
 ###*
 @class ResourceReference
-@exports  ResourceReference as quick.ResourceReference
+@exports  ResourceReference as ResourceReference
 ###
-class QUICK.ResourceReference
+class ResourceReference
   constructor: (@json) ->
  
   display: ->  @json['display'] 
@@ -52,4 +52,4 @@ class QUICK.ResourceReference
  
  
 
-module.exports.QUICK = QUICK
+module.exports.ResourceReference = ResourceReference

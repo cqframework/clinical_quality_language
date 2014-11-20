@@ -35,9 +35,9 @@ require './BodySite'
 require './CodeableConcept'
 ###*
 @class ManifestedSymptom
-@exports  ManifestedSymptom as quick.ManifestedSymptom
+@exports  ManifestedSymptom as ManifestedSymptom
 ###
-class QUICK.ManifestedSymptom
+class ManifestedSymptom
   constructor: (@json) ->
  
   ###*
@@ -71,4 +71,4 @@ class QUICK.ManifestedSymptom
  
  
 
-module.exports.QUICK = QUICK
+module.exports.ManifestedSymptom = ManifestedSymptom

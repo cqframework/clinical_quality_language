@@ -34,9 +34,9 @@ Specification of a repetitive schedule element as a code
 require './CodeableConcept'
 ###*
 @class CodedRecurringEvent
-@exports  CodedRecurringEvent as quick.CodedRecurringEvent
+@exports  CodedRecurringEvent as CodedRecurringEvent
 ###
-class QUICK.CodedRecurringEvent
+class CodedRecurringEvent
   constructor: (@json) ->
  
   ###*
@@ -65,4 +65,4 @@ PCV PCV event occurs [duration] after dinner (from the Latin post cibus vesperti
  
  
 
-module.exports.QUICK = QUICK
+module.exports.CodedRecurringEvent = CodedRecurringEvent

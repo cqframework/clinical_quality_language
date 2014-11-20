@@ -35,9 +35,9 @@ require './ClinicalStatement'
 require './CodeableConcept'
 ###*
 @class CareExperience
-@exports  CareExperience as quick.CareExperience
+@exports  CareExperience as CareExperience
 ###
-class QUICK.CareExperience
+class CareExperience
   constructor: (@json) ->
  
   ###*
@@ -53,4 +53,4 @@ class QUICK.CareExperience
  
  
 
-module.exports.QUICK = QUICK
+module.exports.CareExperience = CareExperience

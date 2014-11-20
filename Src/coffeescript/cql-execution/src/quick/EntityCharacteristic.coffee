@@ -34,9 +34,9 @@ Specific factors about a patient, clinician, provider, or facility. Included are
 require './CodeableConcept'
 ###*
 @class EntityCharacteristic
-@exports  EntityCharacteristic as quick.EntityCharacteristic
+@exports  EntityCharacteristic as EntityCharacteristic
 ###
-class QUICK.EntityCharacteristic
+class EntityCharacteristic
   constructor: (@json) ->
  
   ###*
@@ -52,4 +52,4 @@ class QUICK.EntityCharacteristic
  
  
 
-module.exports.QUICK = QUICK
+module.exports.EntityCharacteristic = EntityCharacteristic

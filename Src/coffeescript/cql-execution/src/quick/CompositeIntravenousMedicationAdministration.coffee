@@ -38,9 +38,9 @@ require './Constituent'
 require './Dosage'
 ###*
 @class CompositeIntravenousMedicationAdministration
-@exports  CompositeIntravenousMedicationAdministration as quick.CompositeIntravenousMedicationAdministration
+@exports  CompositeIntravenousMedicationAdministration as CompositeIntravenousMedicationAdministration
 ###
-class QUICK.CompositeIntravenousMedicationAdministration
+class CompositeIntravenousMedicationAdministration
   constructor: (@json) ->
  
   ###*
@@ -84,4 +84,4 @@ class QUICK.CompositeIntravenousMedicationAdministration
         new QUICK.Quantity(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.CompositeIntravenousMedicationAdministration = CompositeIntravenousMedicationAdministration

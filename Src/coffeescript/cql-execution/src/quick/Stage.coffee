@@ -35,9 +35,9 @@ require './ClinicalStatement'
 require './CodeableConcept'
 ###*
 @class Stage
-@exports  Stage as quick.Stage
+@exports  Stage as Stage
 ###
-class QUICK.Stage
+class Stage
   constructor: (@json) ->
  
   ###*
@@ -55,4 +55,4 @@ class QUICK.Stage
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Stage = Stage

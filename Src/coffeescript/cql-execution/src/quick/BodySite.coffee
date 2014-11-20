@@ -34,9 +34,9 @@ A location on a person's body.  E.g., left breast, heart.
 require './CodeableConcept'
 ###*
 @class BodySite
-@exports  BodySite as quick.BodySite
+@exports  BodySite as BodySite
 ###
-class QUICK.BodySite
+class BodySite
   constructor: (@json) ->
  
   ###*
@@ -62,4 +62,4 @@ class QUICK.BodySite
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.BodySite = BodySite

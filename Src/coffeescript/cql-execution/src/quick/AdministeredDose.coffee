@@ -38,9 +38,9 @@ require './Schedule'
 require './CodeableConcept'
 ###*
 @class AdministeredDose
-@exports  AdministeredDose as quick.AdministeredDose
+@exports  AdministeredDose as AdministeredDose
 ###
-class QUICK.AdministeredDose
+class AdministeredDose
   constructor: (@json) ->
  
   ###*
@@ -140,4 +140,4 @@ class QUICK.AdministeredDose
         new QUICK.BodySite(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.AdministeredDose = AdministeredDose

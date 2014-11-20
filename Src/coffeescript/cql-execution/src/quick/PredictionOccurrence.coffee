@@ -58,9 +58,9 @@ require './Element'
 require './Entity'
 ###*
 @class PredictionOccurrence
-@exports  PredictionOccurrence as quick.PredictionOccurrence
+@exports  PredictionOccurrence as PredictionOccurrence
 ###
-class QUICK.PredictionOccurrence
+class PredictionOccurrence
   constructor: (@json) ->
  
   ###*
@@ -192,4 +192,4 @@ The statement author is the person creating the statement in the medical record.
  
  
 
-module.exports.QUICK = QUICK
+module.exports.PredictionOccurrence = PredictionOccurrence

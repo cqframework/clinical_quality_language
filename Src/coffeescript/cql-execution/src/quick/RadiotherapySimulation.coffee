@@ -35,9 +35,9 @@ require './Range'
 require './CodeableConcept'
 ###*
 @class RadiotherapySimulation
-@exports  RadiotherapySimulation as quick.RadiotherapySimulation
+@exports  RadiotherapySimulation as RadiotherapySimulation
 ###
-class QUICK.RadiotherapySimulation
+class RadiotherapySimulation
   constructor: (@json) ->
  
   ###*
@@ -95,4 +95,4 @@ class QUICK.RadiotherapySimulation
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.RadiotherapySimulation = RadiotherapySimulation

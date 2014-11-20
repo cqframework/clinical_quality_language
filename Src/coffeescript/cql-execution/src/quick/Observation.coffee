@@ -34,9 +34,9 @@ Indicates that the statement is concerned about observations made about a patien
 require './Period'
 ###*
 @class Observation
-@exports  Observation as quick.Observation
+@exports  Observation as Observation
 ###
-class QUICK.Observation
+class Observation
   constructor: (@json) ->
  
   ###*
@@ -48,4 +48,4 @@ class QUICK.Observation
         new QUICK.Period(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Observation = Observation

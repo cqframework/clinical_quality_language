@@ -31,9 +31,9 @@ this.QUICK ||= {}
 ###
 ###*
 @class Repeat
-@exports  Repeat as quick.Repeat
+@exports  Repeat as Repeat
 ###
-class QUICK.Repeat
+class Repeat
   constructor: (@json) ->
  
   count: ->  @json['count'] 
@@ -55,4 +55,4 @@ class QUICK.Repeat
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Repeat = Repeat

@@ -36,9 +36,9 @@ require './ActionStatus'
 require './CodeableConcept'
 ###*
 @class ProposalAgainst
-@exports  ProposalAgainst as quick.ProposalAgainst
+@exports  ProposalAgainst as ProposalAgainst
 ###
-class QUICK.ProposalAgainst
+class ProposalAgainst
   constructor: (@json) ->
  
   ###*
@@ -88,4 +88,4 @@ class QUICK.ProposalAgainst
         new QUICK.ActionStatus(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.ProposalAgainst = ProposalAgainst

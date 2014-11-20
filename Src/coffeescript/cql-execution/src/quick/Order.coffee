@@ -39,9 +39,9 @@ require './CodeableConcept'
 require './Practitioner'
 ###*
 @class Order
-@exports  Order as quick.Order
+@exports  Order as Order
 ###
-class QUICK.Order
+class Order
   constructor: (@json) ->
  
   ###*
@@ -141,4 +141,4 @@ Reasons such as "SpO2 less than x%" should be addressed as a PRN Instruction rat
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Order = Order

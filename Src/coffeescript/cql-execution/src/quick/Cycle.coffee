@@ -44,9 +44,9 @@ require './Quantity'
 require './CycleEventTiming'
 ###*
 @class Cycle
-@exports  Cycle as quick.Cycle
+@exports  Cycle as Cycle
 ###
-class QUICK.Cycle
+class Cycle
   constructor: (@json) ->
  
   ###*
@@ -88,4 +88,4 @@ class QUICK.Cycle
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Cycle = Cycle

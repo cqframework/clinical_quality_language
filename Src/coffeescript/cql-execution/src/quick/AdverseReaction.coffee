@@ -40,9 +40,9 @@ require './CodeableConcept'
 require './ManifestedSymptom'
 ###*
 @class AdverseReaction
-@exports  AdverseReaction as quick.AdverseReaction
+@exports  AdverseReaction as AdverseReaction
 ###
-class QUICK.AdverseReaction
+class AdverseReaction
   constructor: (@json) ->
  
   ###*
@@ -90,4 +90,4 @@ class QUICK.AdverseReaction
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.AdverseReaction = AdverseReaction

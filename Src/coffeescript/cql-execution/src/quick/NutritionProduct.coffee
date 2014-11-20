@@ -36,9 +36,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class NutritionProduct
-@exports  NutritionProduct as quick.NutritionProduct
+@exports  NutritionProduct as NutritionProduct
 ###
-class QUICK.NutritionProduct
+class NutritionProduct
   constructor: (@json) ->
  
   ###*
@@ -98,4 +98,4 @@ class QUICK.NutritionProduct
  
  
 
-module.exports.QUICK = QUICK
+module.exports.NutritionProduct = NutritionProduct

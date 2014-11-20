@@ -31,9 +31,9 @@ this.QUICK ||= {}
 ###
 ###*
 @class Extension
-@exports  Extension as quick.Extension
+@exports  Extension as Extension
 ###
-class QUICK.Extension
+class Extension
   constructor: (@json) ->
  
   extension: -> 
@@ -48,4 +48,4 @@ class QUICK.Extension
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Extension = Extension

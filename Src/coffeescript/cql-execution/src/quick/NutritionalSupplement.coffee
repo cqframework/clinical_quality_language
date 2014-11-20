@@ -36,9 +36,9 @@ require './Schedule'
 require './NutritionProduct'
 ###*
 @class NutritionalSupplement
-@exports  NutritionalSupplement as quick.NutritionalSupplement
+@exports  NutritionalSupplement as NutritionalSupplement
 ###
-class QUICK.NutritionalSupplement
+class NutritionalSupplement
   constructor: (@json) ->
  
   ###*
@@ -72,4 +72,4 @@ class QUICK.NutritionalSupplement
         new QUICK.Range(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.NutritionalSupplement = NutritionalSupplement

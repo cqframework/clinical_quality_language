@@ -36,9 +36,9 @@ require './Organization'
 require './CodeableConcept'
 ###*
 @class Qualification
-@exports  Qualification as quick.Qualification
+@exports  Qualification as Qualification
 ###
-class QUICK.Qualification
+class Qualification
   constructor: (@json) ->
  
   ###*
@@ -66,4 +66,4 @@ class QUICK.Qualification
         new QUICK.Period(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Qualification = Qualification

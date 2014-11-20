@@ -35,9 +35,9 @@ require './StatementOfOccurrence'
 require './CodeableConcept'
 ###*
 @class EncounterCondition
-@exports  EncounterCondition as quick.EncounterCondition
+@exports  EncounterCondition as EncounterCondition
 ###
-class QUICK.EncounterCondition
+class EncounterCondition
   constructor: (@json) ->
  
   ###*
@@ -53,4 +53,4 @@ class QUICK.EncounterCondition
  
  
 
-module.exports.QUICK = QUICK
+module.exports.EncounterCondition = EncounterCondition

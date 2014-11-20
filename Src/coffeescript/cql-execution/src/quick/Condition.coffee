@@ -39,9 +39,9 @@ require './CodeableConcept'
 require './Stage'
 ###*
 @class Condition
-@exports  Condition as quick.Condition
+@exports  Condition as Condition
 ###
-class QUICK.Condition
+class Condition
   constructor: (@json) ->
  
   ###*
@@ -149,4 +149,4 @@ Qualifiers should not change the meaning of the condition other than making the 
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Condition = Condition

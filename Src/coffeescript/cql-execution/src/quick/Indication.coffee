@@ -37,9 +37,9 @@ require './ClinicalStatement'
 require './CodeableConcept'
 ###*
 @class Indication
-@exports  Indication as quick.Indication
+@exports  Indication as Indication
 ###
-class QUICK.Indication
+class Indication
   constructor: (@json) ->
  
   ###*
@@ -65,4 +65,4 @@ class QUICK.Indication
         new QUICK.ClinicalStatement(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Indication = Indication

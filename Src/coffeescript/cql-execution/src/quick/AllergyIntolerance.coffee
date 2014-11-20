@@ -35,9 +35,9 @@ require './Period'
 require './CodeableConcept'
 ###*
 @class AllergyIntolerance
-@exports  AllergyIntolerance as quick.AllergyIntolerance
+@exports  AllergyIntolerance as AllergyIntolerance
 ###
-class QUICK.AllergyIntolerance
+class AllergyIntolerance
   constructor: (@json) ->
  
   ###*
@@ -81,4 +81,4 @@ A substance is a physical entity and for purposes of this aspect of the model ca
  
  
 
-module.exports.QUICK = QUICK
+module.exports.AllergyIntolerance = AllergyIntolerance

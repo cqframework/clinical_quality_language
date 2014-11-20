@@ -39,9 +39,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class Device
-@exports  Device as quick.Device
+@exports  Device as Device
 ###
-class QUICK.Device
+class Device
   constructor: (@json) ->
  
   ###*
@@ -145,4 +145,4 @@ class QUICK.Device
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Device = Device

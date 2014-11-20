@@ -55,9 +55,9 @@ require './Person'
 require './Entity'
 ###*
 @class ConditionOccurrence
-@exports  ConditionOccurrence as quick.ConditionOccurrence
+@exports  ConditionOccurrence as ConditionOccurrence
 ###
-class QUICK.ConditionOccurrence
+class ConditionOccurrence
   constructor: (@json) ->
  
   ###*
@@ -247,4 +247,4 @@ The statement author is the person creating the statement in the medical record.
  
  
 
-module.exports.QUICK = QUICK
+module.exports.ConditionOccurrence = ConditionOccurrence

@@ -40,9 +40,9 @@ require './Ratio'
 require './CodeableConcept'
 ###*
 @class DosageInstruction
-@exports  DosageInstruction as quick.DosageInstruction
+@exports  DosageInstruction as DosageInstruction
 ###
-class QUICK.DosageInstruction
+class DosageInstruction
   constructor: (@json) ->
  
   ###*
@@ -196,4 +196,4 @@ class QUICK.DosageInstruction
         new QUICK.Period(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.DosageInstruction = DosageInstruction

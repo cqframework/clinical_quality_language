@@ -35,9 +35,9 @@ require './BodySite'
 require './CodeableConcept'
 ###*
 @class MotionManagement
-@exports  MotionManagement as quick.MotionManagement
+@exports  MotionManagement as MotionManagement
 ###
-class QUICK.MotionManagement
+class MotionManagement
   constructor: (@json) ->
  
   ###*
@@ -70,4 +70,4 @@ class QUICK.MotionManagement
         new QUICK.BodySite(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.MotionManagement = MotionManagement

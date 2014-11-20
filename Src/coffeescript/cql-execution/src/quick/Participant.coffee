@@ -35,9 +35,9 @@ require './CodeableConcept'
 require './Person'
 ###*
 @class Participant
-@exports  Participant as quick.Participant
+@exports  Participant as Participant
 ###
-class QUICK.Participant
+class Participant
   constructor: (@json) ->
  
   ###*
@@ -55,4 +55,4 @@ class QUICK.Participant
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Participant = Participant

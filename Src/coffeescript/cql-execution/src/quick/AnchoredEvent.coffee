@@ -38,9 +38,9 @@ require './Cycle'
 require './CodeableConcept'
 ###*
 @class AnchoredEvent
-@exports  AnchoredEvent as quick.AnchoredEvent
+@exports  AnchoredEvent as AnchoredEvent
 ###
-class QUICK.AnchoredEvent
+class AnchoredEvent
   constructor: (@json) ->
  
   ###*
@@ -79,4 +79,4 @@ PCV PCV event occurs [duration] after dinner (from the Latin post cibus vesperti
  
  
 
-module.exports.QUICK = QUICK
+module.exports.AnchoredEvent = AnchoredEvent

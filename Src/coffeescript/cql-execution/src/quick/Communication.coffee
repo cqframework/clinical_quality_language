@@ -37,9 +37,9 @@ require './CodeableConcept'
 require './Entity'
 ###*
 @class Communication
-@exports  Communication as quick.Communication
+@exports  Communication as Communication
 ###
-class QUICK.Communication
+class Communication
   constructor: (@json) ->
  
   ###*
@@ -83,4 +83,4 @@ class QUICK.Communication
         new QUICK.Entity(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Communication = Communication

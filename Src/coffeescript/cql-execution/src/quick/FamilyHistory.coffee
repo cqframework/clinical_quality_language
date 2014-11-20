@@ -38,9 +38,9 @@ require './CodeableConcept'
 require './RelatedPerson'
 ###*
 @class FamilyHistory
-@exports  FamilyHistory as quick.FamilyHistory
+@exports  FamilyHistory as FamilyHistory
 ###
-class QUICK.FamilyHistory
+class FamilyHistory
   constructor: (@json) ->
  
   ###*
@@ -72,4 +72,4 @@ class QUICK.FamilyHistory
  
  
 
-module.exports.QUICK = QUICK
+module.exports.FamilyHistory = FamilyHistory

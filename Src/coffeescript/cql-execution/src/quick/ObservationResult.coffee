@@ -48,9 +48,9 @@ require './RelatedObservation'
 require './Element'
 ###*
 @class ObservationResult
-@exports  ObservationResult as quick.ObservationResult
+@exports  ObservationResult as ObservationResult
 ###
-class QUICK.ObservationResult
+class ObservationResult
   constructor: (@json) ->
  
   ###*
@@ -143,4 +143,4 @@ Observations are not made on specimens themselves; they are made on a subject, b
         new QUICK.Element(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.ObservationResult = ObservationResult

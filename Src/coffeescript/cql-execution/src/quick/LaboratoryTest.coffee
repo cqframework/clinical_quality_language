@@ -37,9 +37,9 @@ require './BodySite'
 require './CodeableConcept'
 ###*
 @class LaboratoryTest
-@exports  LaboratoryTest as quick.LaboratoryTest
+@exports  LaboratoryTest as LaboratoryTest
 ###
-class QUICK.LaboratoryTest
+class LaboratoryTest
   constructor: (@json) ->
  
   ###*
@@ -113,4 +113,4 @@ class QUICK.LaboratoryTest
         new QUICK.BodySite(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.LaboratoryTest = LaboratoryTest

@@ -36,9 +36,9 @@ require './StatementOfOccurrence'
 require './CodeableConcept'
 ###*
 @class Exposure
-@exports  Exposure as quick.Exposure
+@exports  Exposure as Exposure
 ###
-class QUICK.Exposure
+class Exposure
   constructor: (@json) ->
  
   ###*
@@ -74,4 +74,4 @@ class QUICK.Exposure
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Exposure = Exposure

@@ -42,9 +42,9 @@ require './CodeableConcept'
 require './RelatedObservation'
 ###*
 @class ObservationResultBase
-@exports  ObservationResultBase as quick.ObservationResultBase
+@exports  ObservationResultBase as ObservationResultBase
 ###
-class QUICK.ObservationResultBase
+class ObservationResultBase
   constructor: (@json) ->
  
   ###*
@@ -129,4 +129,4 @@ Observations are not made on specimens themselves; they are made on a subject, b
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.ObservationResultBase = ObservationResultBase

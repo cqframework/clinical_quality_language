@@ -37,9 +37,9 @@ require './ActionStatus'
 require './CodeableConcept'
 ###*
 @class Proposal
-@exports  Proposal as quick.Proposal
+@exports  Proposal as Proposal
 ###
-class QUICK.Proposal
+class Proposal
   constructor: (@json) ->
  
   ###*
@@ -125,4 +125,4 @@ Reasons such as "SpO2 less than x%" should be addressed as a PRN Instruction rat
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Proposal = Proposal

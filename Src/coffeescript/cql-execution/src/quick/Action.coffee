@@ -36,9 +36,9 @@ require './ActionStatus'
 require './CodeableConcept'
 ###*
 @class Action
-@exports  Action as quick.Action
+@exports  Action as Action
 ###
-class QUICK.Action
+class Action
   constructor: (@json) ->
  
   ###*
@@ -82,4 +82,4 @@ class QUICK.Action
         new QUICK.ActionStatus(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Action = Action

@@ -33,10 +33,10 @@ The modality of a Clinical Statement describes the way the topic exists, happens
 ###
 ###*
 @class StatementModality
-@exports  StatementModality as quick.StatementModality
+@exports  StatementModality as StatementModality
 ###
-class QUICK.StatementModality
+class StatementModality
   constructor: (@json) ->
  
 
-module.exports.QUICK = QUICK
+module.exports.StatementModality = StatementModality

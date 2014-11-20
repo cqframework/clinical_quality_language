@@ -33,9 +33,9 @@ require './Period'
 require './Extension'
 ###*
 @class Address
-@exports  Address as quick.Address
+@exports  Address as Address
 ###
-class QUICK.Address
+class Address
   constructor: (@json) ->
  
   city: ->  @json['city'] 
@@ -73,4 +73,4 @@ class QUICK.Address
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Address = Address

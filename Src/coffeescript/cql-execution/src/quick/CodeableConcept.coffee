@@ -33,9 +33,9 @@ require './Extension'
 require './Coding'
 ###*
 @class CodeableConcept
-@exports  CodeableConcept as quick.CodeableConcept
+@exports  CodeableConcept as CodeableConcept
 ###
-class QUICK.CodeableConcept
+class CodeableConcept
   constructor: (@json) ->
  
   coding: -> 
@@ -55,4 +55,4 @@ class QUICK.CodeableConcept
  
  
 
-module.exports.QUICK = QUICK
+module.exports.CodeableConcept = CodeableConcept

@@ -39,9 +39,9 @@ require './Participant'
 require './CodeableConcept'
 ###*
 @class Performance
-@exports  Performance as quick.Performance
+@exports  Performance as Performance
 ###
-class QUICK.Performance
+class Performance
   constructor: (@json) ->
  
   ###*
@@ -141,4 +141,4 @@ A performance may have many participants In comparison, an order or a plan has o
         new QUICK.ActionStatus(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Performance = Performance

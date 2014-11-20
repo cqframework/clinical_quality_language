@@ -33,9 +33,9 @@ require './Extension'
 require './Quantity'
 ###*
 @class Range
-@exports  Range as quick.Range
+@exports  Range as Range
 ###
-class QUICK.Range
+class Range
   constructor: (@json) ->
  
   extension: -> 
@@ -57,4 +57,4 @@ class QUICK.Range
         new QUICK.Quantity(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Range = Range

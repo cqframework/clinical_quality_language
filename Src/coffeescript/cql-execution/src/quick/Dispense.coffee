@@ -38,9 +38,9 @@ require './Duration'
 require './CodeableConcept'
 ###*
 @class Dispense
-@exports  Dispense as quick.Dispense
+@exports  Dispense as Dispense
 ###
-class QUICK.Dispense
+class Dispense
   constructor: (@json) ->
  
   ###*
@@ -100,4 +100,4 @@ class QUICK.Dispense
         new QUICK.Period(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Dispense = Dispense

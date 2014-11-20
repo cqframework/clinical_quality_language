@@ -33,9 +33,9 @@ require './Period'
 require './Extension'
 ###*
 @class Contact
-@exports  Contact as quick.Contact
+@exports  Contact as Contact
 ###
-class QUICK.Contact
+class Contact
   constructor: (@json) ->
  
   extension: -> 
@@ -61,4 +61,4 @@ class QUICK.Contact
  
  
 
-module.exports.QUICK = QUICK
+module.exports.Contact = Contact

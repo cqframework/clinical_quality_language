@@ -33,10 +33,10 @@ The outcome of medical investigations or diagnostics. "<i>Clinical findings</i>"
 ###
 ###*
 @class Observable
-@exports  Observable as quick.Observable
+@exports  Observable as Observable
 ###
-class QUICK.Observable
+class Observable
   constructor: (@json) ->
  
 
-module.exports.QUICK = QUICK
+module.exports.Observable = Observable

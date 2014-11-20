@@ -36,9 +36,9 @@ require './Organization'
 require './CodeableConcept'
 ###*
 @class VaccinationProtocol
-@exports  VaccinationProtocol as quick.VaccinationProtocol
+@exports  VaccinationProtocol as VaccinationProtocol
 ###
-class QUICK.VaccinationProtocol
+class VaccinationProtocol
   constructor: (@json) ->
  
   ###*
@@ -96,4 +96,4 @@ class QUICK.VaccinationProtocol
  
  
 
-module.exports.QUICK = QUICK
+module.exports.VaccinationProtocol = VaccinationProtocol

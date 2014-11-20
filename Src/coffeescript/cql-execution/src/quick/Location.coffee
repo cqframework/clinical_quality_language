@@ -48,9 +48,9 @@ require './CodeableConcept'
 require './Identifier'
 ###*
 @class Location
-@exports  Location as quick.Location
+@exports  Location as Location
 ###
-class QUICK.Location
+class Location
   constructor: (@json) ->
  
   ###*
@@ -116,4 +116,4 @@ class QUICK.Location
         new QUICK.Contact(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Location = Location

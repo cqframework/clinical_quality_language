@@ -39,9 +39,9 @@ require './ObservationResultBase'
 require './RelatedObservation'
 ###*
 @class ObservationResultGroup
-@exports  ObservationResultGroup as quick.ObservationResultGroup
+@exports  ObservationResultGroup as ObservationResultGroup
 ###
-class QUICK.ObservationResultGroup
+class ObservationResultGroup
   constructor: (@json) ->
  
   ###*
@@ -134,4 +134,4 @@ Observations are not made on specimens themselves; they are made on a subject, b
         new QUICK.CodeableConcept(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.ObservationResultGroup = ObservationResultGroup

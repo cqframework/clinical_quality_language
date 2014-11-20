@@ -37,9 +37,9 @@ require './Range'
 require './CodeableConcept'
 ###*
 @class RecurringEvent
-@exports  RecurringEvent as quick.RecurringEvent
+@exports  RecurringEvent as RecurringEvent
 ###
-class QUICK.RecurringEvent
+class RecurringEvent
   constructor: (@json) ->
  
   ###*
@@ -79,4 +79,4 @@ PCV PCV event occurs [duration] after dinner (from the Latin post cibus vesperti
  
  
 
-module.exports.QUICK = QUICK
+module.exports.RecurringEvent = RecurringEvent

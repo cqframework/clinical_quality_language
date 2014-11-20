@@ -35,9 +35,9 @@ require './Quantity'
 require './CodeableConcept'
 ###*
 @class MedicationIngredient
-@exports  MedicationIngredient as quick.MedicationIngredient
+@exports  MedicationIngredient as MedicationIngredient
 ###
-class QUICK.MedicationIngredient
+class MedicationIngredient
   constructor: (@json) ->
  
   ###*
@@ -53,4 +53,4 @@ class QUICK.MedicationIngredient
  
  
 
-module.exports.QUICK = QUICK
+module.exports.MedicationIngredient = MedicationIngredient

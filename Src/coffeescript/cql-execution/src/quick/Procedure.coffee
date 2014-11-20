@@ -36,9 +36,9 @@ require './BodySite'
 require './CodeableConcept'
 ###*
 @class Procedure
-@exports  Procedure as quick.Procedure
+@exports  Procedure as Procedure
 ###
-class QUICK.Procedure
+class Procedure
   constructor: (@json) ->
  
   ###*
@@ -80,4 +80,4 @@ class QUICK.Procedure
         new QUICK.BodySite(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.Procedure = Procedure

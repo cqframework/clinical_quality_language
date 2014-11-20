@@ -35,9 +35,9 @@ require './EntityCharacteristic'
 require './Identifier'
 ###*
 @class ManufacturedProduct
-@exports  ManufacturedProduct as quick.ManufacturedProduct
+@exports  ManufacturedProduct as ManufacturedProduct
 ###
-class QUICK.ManufacturedProduct
+class ManufacturedProduct
   constructor: (@json) ->
  
   ###*
@@ -83,4 +83,4 @@ class QUICK.ManufacturedProduct
         new QUICK.Identifier(x)
        
 
-module.exports.QUICK = QUICK
+module.exports.ManufacturedProduct = ManufacturedProduct
