@@ -525,7 +525,7 @@ For object types, this means that equality returns true if and only if the objec
 
 For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using the same semantics.
 
-For interval types, equality returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the interval.
+For interval types, equality returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the interval as determined by the Start and End operators.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -586,14 +586,6 @@ The LessOrEqual operator is defined for the Integer, Real, String, Timestamp, an
 If either argument is null, the result is null.
 
 The GreaterOrEqual operator is defined for the Integer, Real, String, Timestamp, and PhysicalQuantity types.</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="Compare">
-		<xs:annotation>
-			<xs:documentation>The Compare operator compares the arguments and returns 0 if the arguments are equal, -1 if the first argument is less than the second, and 1 if the first argument is greater than the second. If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1053,7 +1045,7 @@ If any of year, month, or day is null, the result is null. The hour, minute, sec
 	</xs:complexType>
 	<xs:complexType name="SameAs">
 		<xs:annotation>
-			<xs:documentation>The SameAs operator compares two date/time values to the specified precision for equality. If the values are the same up to the specified precision, the result is true. If the values are specified to the given precision, but are not the same, the result is false. If either or both values are not specified up to the given precision, the result is null. If either or both arguments are null, the result is null.
+			<xs:documentation>The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. If either or both arguments are null, the result is null.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1833,6 +1825,9 @@ Property expressions can also be used to access the individual points and closed
 	</xs:complexType>
 	<!-- Queries -->
 	<xs:complexType name="AliasedQuerySource">
+		<xs:annotation>
+			<xs:documentation>The AliasedQuerySource element defines a single source for inclusion in a query context. The type of the source is determined by the expression element, and the source can be accessed within the query context by the given alias.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
@@ -1843,6 +1838,9 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="DefineClause">
+		<xs:annotation>
+			<xs:documentation>The DefineClause element allows any number of expression definitions to be introduced within a query context. Defined expressions can be referenced by name within the query context.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
@@ -1853,6 +1851,9 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="RelationshipClause" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The RelationshipClause element allows related sources to be used to restrict the elements included from another source in a query context. Note that the elements referenced by the relationship clause can only be accessed within the suchThat condition, and that elements of the related source are not included in the query context.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AliasedQuerySource">
 				<xs:sequence>
@@ -1862,11 +1863,17 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="With">
+		<xs:annotation>
+			<xs:documentation>The With clause restricts the elements of a given source to only those elements that have elements in the related source that satisfy the suchThat condition. This operation is known as a semi-join in database languages.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="RelationshipClause"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Without">
+		<xs:annotation>
+			<xs:documentation>The Without clause restricts the elements of a given source to only those elements that do not have elements in the related source that satisfy the suchThat condition. This operation is known as a semi-difference in database languages.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="RelationshipClause"/>
 		</xs:complexContent>
@@ -1887,11 +1894,17 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ByDirection">
+		<xs:annotation>
+			<xs:documentation>The ByDirection element specifies that the sort should be performed using the given direction. This approach is used when the result of the query is a list of non-tuple elements and only the sort direction needs to be specified.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="SortByItem"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ByColumn">
+		<xs:annotation>
+			<xs:documentation>The ByColumn element specifies that the sort should be performed using the given column and direction. This approach is used to specify the sort order for a query when the result is a list of tuples.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="SortByItem">
 				<xs:attribute name="path" type="xs:string"/>
@@ -1899,6 +1912,9 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ByExpression">
+		<xs:annotation>
+			<xs:documentation>The ByExpression element specifies that the sort should be performed using the given expression and direction. This approach is used to specify the sort order as a calculated expression.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="SortByItem">
 				<xs:sequence>
@@ -1908,6 +1924,9 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="SortClause">
+		<xs:annotation>
+			<xs:documentation>The SortClause element defines the sort order for the query.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
@@ -1917,6 +1936,9 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ReturnClause">
+		<xs:annotation>
+			<xs:documentation>The ReturnClause element defines the shape of the result set of the query.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
@@ -1927,6 +1949,9 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Query">
+		<xs:annotation>
+			<xs:documentation>The Query operator represents a clause-based query. The result of the query is determined by the type of sources included, as well as the clauses used in the query.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:sequence>
@@ -1941,6 +1966,9 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="AliasRef">
+		<xs:annotation>
+			<xs:documentation>The AliasRef expression allows for the reference of a specific source within the context of a query.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:attribute name="name" type="xs:string"/>
@@ -1948,6 +1976,9 @@ Property expressions can also be used to access the individual points and closed
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="QueryDefineRef">
+		<xs:annotation>
+			<xs:documentation>The QueryDefineRef expression allows for the reference of a specific define within the context of a query.</xs:documentation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:attribute name="name" type="xs:string"/>
