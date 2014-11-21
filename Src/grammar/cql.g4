@@ -378,8 +378,6 @@ quantityLiteral
 unit
     : dateTimePrecision
     | pluralDateTimePrecision
-    | 'week'
-    | 'weeks'
     | STRING // UCUM syntax for units of measure
     ;
 

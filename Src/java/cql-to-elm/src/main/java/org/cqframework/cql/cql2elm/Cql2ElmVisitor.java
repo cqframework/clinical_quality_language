@@ -1256,10 +1256,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private BinaryExpression resolveBetweenOperator(String unit, Expression left, Expression right) {
         if (unit != null) {
-            if (unit.equals("week") || unit.equals("weeks")) {
-                return of.createMultiply().withOperand(of.createDurationBetween().withPrecision(DateTimePrecision.DAY).withOperand(left, right), createLiteral(7));
-            }
-
             return of.createDurationBetween().withPrecision(parseDateTimePrecision(unit)).withOperand(left, right);
         }
 

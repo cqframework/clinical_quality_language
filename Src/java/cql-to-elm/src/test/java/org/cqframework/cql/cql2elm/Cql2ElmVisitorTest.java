@@ -62,11 +62,6 @@ public class Cql2ElmVisitorTest {
         assertThat(quantity.getValue(), is(BigDecimal.valueOf(1.1)));
         assertThat(quantity.getUnit(), is("'mm'"));
         assertTrackable(quantity);
-
-        def = (ExpressionDef) visitData("define st = 1.1 weeks");
-        quantity = (Quantity) def.getExpression();
-        assertThat(quantity.getValue(), is(BigDecimal.valueOf(1.1)));
-        assertThat(quantity.getUnit(), is("weeks"));
     }
 
     @Test
