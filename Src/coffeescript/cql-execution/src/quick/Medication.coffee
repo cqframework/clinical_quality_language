@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Primarily used for identification and definition of Medication, but also covers ingredients and packaging.
  
@@ -53,7 +52,7 @@ class Medication
   ###*
   A code (or set of codes) that identify this medication. Usage note: This could be a standard drug code such as a drug regulator code, RxNorm code, SNOMED CT code, etc. It could also be a local formulary code, optionally with translations to the standard drug codes.
   ### 
-  code: -> if @json['code'] then new QUICK.CodeableConcept( @json['code'] )
+  code: -> if @json['code'] then new CodeableConcept( @json['code'] )
  
  
   ###*

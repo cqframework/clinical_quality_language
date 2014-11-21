@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Abstract class for concepts that represent how a medication is to be used by or administered to the patient.
  

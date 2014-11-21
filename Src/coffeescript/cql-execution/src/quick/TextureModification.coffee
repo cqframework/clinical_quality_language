@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 TextureModification specifies or modifies the texture for one or more types of food in a diet, e.g., ground, chopped, or puree. Texture modification is part of the diet specification and may have different textures ordered for different food groups, e.g., ground meat.
  
@@ -42,7 +41,7 @@ class TextureModification
   ###*
   Indicates the type of food to which the texture modification applies.
   ### 
-  foodType: -> if @json['foodType'] then new QUICK.CodeableConcept( @json['foodType'] )
+  foodType: -> if @json['foodType'] then new CodeableConcept( @json['foodType'] )
  
  
   ###*
@@ -56,7 +55,7 @@ class TextureModification
   ###*
   A code that identifies any texture  modifications that should be made, e.g., Pureed, Easy to Chew
   ### 
-  textureType: -> if @json['textureType'] then new QUICK.CodeableConcept( @json['textureType'] )
+  textureType: -> if @json['textureType'] then new CodeableConcept( @json['textureType'] )
  
  
 

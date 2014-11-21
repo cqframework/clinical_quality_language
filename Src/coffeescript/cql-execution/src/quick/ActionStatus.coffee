@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Class describing the status of an action.
  
@@ -50,7 +49,7 @@ class ActionStatus
   ###*
   A coded value for the status, e.g., Completed, Rejected, Pending. The allowed values might differ in various subtypes of Action.
   ### 
-  status: -> if @json['status'] then new QUICK.CodeableConcept( @json['status'] )
+  status: -> if @json['status'] then new CodeableConcept( @json['status'] )
  
  
   ###*

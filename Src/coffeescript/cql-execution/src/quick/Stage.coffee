@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Clinical stage or grade of a condition. May include formal severity assessments.
  
@@ -51,7 +50,7 @@ class Stage
   ###*
   A simple summary of the stage such as "Stage 3". The determination of the stage is disease-specific.
   ### 
-  summary: -> if @json['summary'] then new QUICK.CodeableConcept( @json['summary'] )
+  summary: -> if @json['summary'] then new CodeableConcept( @json['summary'] )
  
  
 

@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Description of the participation of a patient in a recognized program of care such as a care plan, a chemotherapy protocol, or a clinical trial.
  
@@ -54,7 +53,7 @@ class CareProgramParticipation
 
 This status is different than the status of the action, e.g., proposal to enroll a patient in a care plan will have status as "accepted", but the patient may still not be enrolled.
   ### 
-  participationStatus: -> if @json['participationStatus'] then new QUICK.CodeableConcept( @json['participationStatus'] )
+  participationStatus: -> if @json['participationStatus'] then new CodeableConcept( @json['participationStatus'] )
  
  
   ###*
@@ -68,7 +67,7 @@ This status is different than the status of the action, e.g., proposal to enroll
   ###*
   The type of the care program such as Care Plan, Clinical Trial, Chemotherapy Protocol
   ### 
-  programType: -> if @json['programType'] then new QUICK.CodeableConcept( @json['programType'] )
+  programType: -> if @json['programType'] then new CodeableConcept( @json['programType'] )
  
  
 

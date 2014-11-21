@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Application or use of equipment or device for the patient. E.g., wheelchair, Holter monitor, pacemaker, intra-uterine contraceptive device
  
@@ -52,7 +51,7 @@ class DeviceUse
   ###*
   The details of the device used or to be used.
   ### 
-  device: -> if @json['device'] then new QUICK.Device( @json['device'] )
+  device: -> if @json['device'] then new Device( @json['device'] )
  
  
   ###*

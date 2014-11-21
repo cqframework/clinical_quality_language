@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Person playing a specified role in an action.
  
@@ -43,7 +42,7 @@ class Participant
   ###*
   The healthcare professional or related person participating in the encounter.
   ### 
-  individual: -> if @json['individual'] then new QUICK.Person( @json['individual'] )
+  individual: -> if @json['individual'] then new Person( @json['individual'] )
  
  
   ###*

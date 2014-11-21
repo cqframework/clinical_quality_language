@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A way to provide food through a tube placed in the nose, mouth, the stomach, or the small intestine. 
  
@@ -60,7 +59,7 @@ class EnteralFormula
   ###*
   The nutritional product to be administered
   ### 
-  product: -> if @json['product'] then new QUICK.NutritionProduct( @json['product'] )
+  product: -> if @json['product'] then new NutritionProduct( @json['product'] )
  
  
 

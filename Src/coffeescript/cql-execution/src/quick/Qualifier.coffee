@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Further qualifies the concept it modifies. For instance, when associated with a condition, a qualifier may describe the intensity of pain or the criticality of the condition.
  
@@ -43,13 +42,13 @@ class Qualifier
   ###*
   What detail about the condition is being specified. e.g.., intensity of the pain condition
   ### 
-  property: -> if @json['property'] then new QUICK.CodeableConcept( @json['property'] )
+  property: -> if @json['property'] then new CodeableConcept( @json['property'] )
  
  
   ###*
   The value of this detail property, e.g., mild, severe for the value of pain intensity
   ### 
-  value: -> if @json['value'] then new QUICK.Element( @json['value'] )
+  value: -> if @json['value'] then new Element( @json['value'] )
  
  
 

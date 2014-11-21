@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The composition of the medication.
  
@@ -43,13 +42,13 @@ class MedicationIngredient
   ###*
   The actual ingredient item that makes up this medication.
   ### 
-  item: -> if @json['item'] then new QUICK.CodeableConcept( @json['item'] )
+  item: -> if @json['item'] then new CodeableConcept( @json['item'] )
  
  
   ###*
   How many (or how much) of the items there are in this Medication. E.g. 250 mg per tablet.
   ### 
-  strength: -> if @json['strength'] then new QUICK.Quantity( @json['strength'] )
+  strength: -> if @json['strength'] then new Quantity( @json['strength'] )
  
  
 

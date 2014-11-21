@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Patient Controlled Analgesia administration. For instance, morphine PCA, 5 mg loading dose, followed by 10 mg/hr basal rate, 1 mg demand dose, lockout interval 10 min.
  
@@ -61,7 +60,7 @@ class PatientControlledAnalgesia
   ###*
   The amount of time that must elapse after a PCA demand dose is administered before the next PCA demand dose can be delivered. For example, 10 minutes.
   ### 
-  lockoutInterval: -> if @json['lockoutInterval'] then new QUICK.Range( @json['lockoutInterval'] )
+  lockoutInterval: -> if @json['lockoutInterval'] then new Range( @json['lockoutInterval'] )
  
  
   ###*

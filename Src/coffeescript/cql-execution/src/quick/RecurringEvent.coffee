@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Specifies timing as a number of times the event occurs in the cycleLength and whether the time interval is important. 
 
@@ -45,7 +44,7 @@ class RecurringEvent
   ###*
   Indicates how often the event should occur. If one specifies a range for frequencyPerCycle, it shall be interpreted as a frequency which may range from Low to High.
   ### 
-  frequencyPerCycle: -> if @json['frequencyPerCycle'] then new QUICK.Range( @json['frequencyPerCycle'] )
+  frequencyPerCycle: -> if @json['frequencyPerCycle'] then new Range( @json['frequencyPerCycle'] )
  
  
   ###*
@@ -75,7 +74,7 @@ PCM PCM event occurs [duration] after breakfast (from the Latin post cibus matut
 PCD PCD event occurs [duration] after lunch (from the Latin post cibus diurnus).
 PCV PCV event occurs [duration] after dinner (from the Latin post cibus vespertinus).
   ### 
-  when: -> if @json['when'] then new QUICK.CodeableConcept( @json['when'] )
+  when: -> if @json['when'] then new CodeableConcept( @json['when'] )
  
  
 

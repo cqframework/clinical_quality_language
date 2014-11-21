@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 ###
 require './Extension'
@@ -58,7 +57,7 @@ class SampledData
   lowerLimit: ->  @json['lowerLimit'] 
  
  
-  origin: -> if @json['origin'] then new QUICK.Quantity( @json['origin'] )
+  origin: -> if @json['origin'] then new Quantity( @json['origin'] )
  
  
   period: ->  @json['period'] 

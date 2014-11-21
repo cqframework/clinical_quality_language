@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The outcome of medical investigations or diagnostics. "<i>Clinical findings</i>" are the observations made during the history and physical.
  

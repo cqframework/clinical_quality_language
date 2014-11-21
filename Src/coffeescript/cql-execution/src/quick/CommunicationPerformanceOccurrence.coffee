@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A communication event that is occurring or has occurred. E.g., an alert that was sent, a Direct message that was sent.
 
@@ -163,7 +162,7 @@ let VancoDoseAdmin =
   ###*
   The modality of a Clinical Statement describes the way the topic exists, happens, or is experienced.
   ### 
-  modality: -> if @json['modality'] then new QUICK.StatementModality( @json['modality'] )
+  modality: -> if @json['modality'] then new StatementModality( @json['modality'] )
  
  
   ###*
@@ -269,13 +268,13 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The patient described by this statement.
   ### 
-  subject: -> if @json['subject'] then new QUICK.Patient( @json['subject'] )
+  subject: -> if @json['subject'] then new Patient( @json['subject'] )
  
  
   ###*
   The subject matter of this clinical statement. The topic may be an action like medication administration, or a finding or other observations about the patient.
   ### 
-  topic: -> if @json['topic'] then new QUICK.StatementTopic( @json['topic'] )
+  topic: -> if @json['topic'] then new StatementTopic( @json['topic'] )
  
  
 

@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a Diagnosis during an Encounter; populating a problem List or a Summary Statement, such as a Discharge Summary.
  
@@ -71,7 +70,7 @@ class Condition
   ###*
   Identification of the condition, problem or diagnosis. e.g., diabetes mellitus type II, headache.
   ### 
-  code: -> if @json['code'] then new QUICK.CodeableConcept( @json['code'] )
+  code: -> if @json['code'] then new CodeableConcept( @json['code'] )
  
  
   ###*

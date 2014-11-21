@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Assertions and measurements made about a patient, device or other subject.
 
@@ -74,7 +73,7 @@ class ObservationResultBase
   ###*
   Identifies what type of observation was performed. e.g., body temperature
   ### 
-  name: -> if @json['name'] then new QUICK.CodeableConcept( @json['name'] )
+  name: -> if @json['name'] then new CodeableConcept( @json['name'] )
  
  
   ###*

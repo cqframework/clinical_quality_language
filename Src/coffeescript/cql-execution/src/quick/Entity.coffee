@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A physical thing, group of physical things or an organization. It is a concrete class that can be used as is or specialized as needed.
  

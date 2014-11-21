@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Procedure to administer treatment using high energy radiation.
  
@@ -81,7 +80,7 @@ class Radiotherapy
   ###*
   This is the code that identifies the procedure with as much specificity as available, or as required.  E.g., appendectomy, coronary artery bypass graft surgery.
   ### 
-  procedureCode: -> if @json['procedureCode'] then new QUICK.CodeableConcept( @json['procedureCode'] )
+  procedureCode: -> if @json['procedureCode'] then new CodeableConcept( @json['procedureCode'] )
  
  
   ###*

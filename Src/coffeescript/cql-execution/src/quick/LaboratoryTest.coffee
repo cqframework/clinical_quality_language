@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A procedure to test a tissue or fluid specimen from a patient, e.g., complete blood count, blood culture.
  
@@ -61,7 +60,7 @@ class LaboratoryTest
   ###*
   This is the code that identifies the procedure with as much specificity as available, or as required.  E.g., appendectomy, coronary artery bypass graft surgery.
   ### 
-  procedureCode: -> if @json['procedureCode'] then new QUICK.CodeableConcept( @json['procedureCode'] )
+  procedureCode: -> if @json['procedureCode'] then new CodeableConcept( @json['procedureCode'] )
  
  
   ###*

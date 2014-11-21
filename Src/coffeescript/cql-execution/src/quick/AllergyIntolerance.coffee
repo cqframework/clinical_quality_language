@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A description of an undesirable physiologic or other reaction to an external stimulus.
  
@@ -67,7 +66,7 @@ class AllergyIntolerance
   ###*
   A code that indicates whether this sensitivity is of an allergic nature or an intolerance to a stimulus.
   ### 
-  sensitivityType: -> if @json['sensitivityType'] then new QUICK.CodeableConcept( @json['sensitivityType'] )
+  sensitivityType: -> if @json['sensitivityType'] then new CodeableConcept( @json['sensitivityType'] )
  
  
   ###*
@@ -77,7 +76,7 @@ The stimulus may be a substance (amount of a substance that would not produce a 
 
 A substance is a physical entity and for purposes of this aspect of the model can mean a drug or biologic, food, chemical agent, plants, animals, plastics etc.
   ### 
-  stimulus: -> if @json['stimulus'] then new QUICK.CodeableConcept( @json['stimulus'] )
+  stimulus: -> if @json['stimulus'] then new CodeableConcept( @json['stimulus'] )
  
  
 

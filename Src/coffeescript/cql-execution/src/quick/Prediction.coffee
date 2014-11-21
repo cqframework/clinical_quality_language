@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Concept representing the likely course of an existing disease or condition or the likelihood (risk) of acquiring a condition that is not currently manifested.
 
@@ -74,7 +73,7 @@ class Prediction
   ###*
   The outcomes that is being predicted for the patient (e.g. remission, death, a particular condition).
   ### 
-  outcome: -> if @json['outcome'] then new QUICK.CodeableConcept( @json['outcome'] )
+  outcome: -> if @json['outcome'] then new CodeableConcept( @json['outcome'] )
  
  
   ###*

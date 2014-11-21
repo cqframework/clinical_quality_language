@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The details of the nutrition item, with specific attributes depending on the mode by which the nutrition is administered.
  

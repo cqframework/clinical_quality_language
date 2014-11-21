@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Procedures that encompass supplemental oxygen (eg, nasal cannula, face mask), BiPAP/CPAP, and mechanical ventilation.  
 
@@ -135,7 +134,7 @@ class RespiratoryCare
   ###*
   This is the code that identifies the procedure with as much specificity as available, or as required.  E.g., appendectomy, coronary artery bypass graft surgery.
   ### 
-  procedureCode: -> if @json['procedureCode'] then new QUICK.CodeableConcept( @json['procedureCode'] )
+  procedureCode: -> if @json['procedureCode'] then new CodeableConcept( @json['procedureCode'] )
  
  
   ###*

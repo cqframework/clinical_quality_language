@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A manufactured item that is administered for a patient's nutrition
  
@@ -94,7 +93,7 @@ class NutritionProduct
   ###*
   A code that indicates the general classification of the product. This can be a class of products (e.g. Vegetables), a specific product (e.g. Broccoli).
   ### 
-  type: -> if @json['type'] then new QUICK.CodeableConcept( @json['type'] )
+  type: -> if @json['type'] then new CodeableConcept( @json['type'] )
  
  
 

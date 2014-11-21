@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Specification of a repetitive schedule element as a code
  
@@ -42,7 +41,7 @@ class CodedRecurringEvent
   ###*
   A code indicating the frequency of the occurrence. For instance, Q8H or TID
   ### 
-  repeatCode: -> if @json['repeatCode'] then new QUICK.CodeableConcept( @json['repeatCode'] )
+  repeatCode: -> if @json['repeatCode'] then new CodeableConcept( @json['repeatCode'] )
  
  
   ###*
@@ -61,7 +60,7 @@ PCM PCM event occurs [duration] after breakfast (from the Latin post cibus matut
 PCD PCD event occurs [duration] after lunch (from the Latin post cibus diurnus).
 PCV PCV event occurs [duration] after dinner (from the Latin post cibus vespertinus).
   ### 
-  when: -> if @json['when'] then new QUICK.CodeableConcept( @json['when'] )
+  when: -> if @json['when'] then new CodeableConcept( @json['when'] )
  
  
 

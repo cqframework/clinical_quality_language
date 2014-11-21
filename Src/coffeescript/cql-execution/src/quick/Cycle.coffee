@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Represents a predictable periodic interval where events may occur at specific points within this interval. Examples may include:
 
@@ -52,19 +51,19 @@ class Cycle
   ###*
   Positive offset between the end of the first cycle and the start of the second one. That is, the start of the next cycle shall start after then end of the previous cycle.
   ### 
-  cycleLagTime: -> if @json['cycleLagTime'] then new QUICK.Quantity( @json['cycleLagTime'] )
+  cycleLagTime: -> if @json['cycleLagTime'] then new Quantity( @json['cycleLagTime'] )
  
  
   ###*
   Negative offset between the end of the previous cycle and the start of the next cycle. That is, the start of the next cycle shall start before the end of the previous cycle.
   ### 
-  cycleLeadTime: -> if @json['cycleLeadTime'] then new QUICK.Quantity( @json['cycleLeadTime'] )
+  cycleLeadTime: -> if @json['cycleLeadTime'] then new Quantity( @json['cycleLeadTime'] )
  
  
   ###*
   The duration of the overall cycle or subcycle.
   ### 
-  cycleLength: -> if @json['cycleLength'] then new QUICK.Quantity( @json['cycleLength'] )
+  cycleLength: -> if @json['cycleLength'] then new Quantity( @json['cycleLength'] )
  
  
   ###*
@@ -78,13 +77,13 @@ class Cycle
   ###*
   Point in time when the cycle should end.
   ### 
-  endsOn: -> if @json['endsOn'] then new QUICK.Period( @json['endsOn'] )
+  endsOn: -> if @json['endsOn'] then new Period( @json['endsOn'] )
  
  
   ###*
   Number of times to repeat the cycle including the first one. When not specified, assumed to be 1.
   ### 
-  totalCycleCount: -> if @json['totalCycleCount'] then new QUICK.Quantity( @json['totalCycleCount'] )
+  totalCycleCount: -> if @json['totalCycleCount'] then new Quantity( @json['totalCycleCount'] )
  
  
 

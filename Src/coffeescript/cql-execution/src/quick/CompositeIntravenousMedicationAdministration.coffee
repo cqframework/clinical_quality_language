@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 IV fluid administration that may consist of one or more additives mixed into a diluent. Additives and diluents are represented as constituents with the appropriate constituentType.
  

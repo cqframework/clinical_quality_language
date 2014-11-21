@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A statement forecasting the course or probable outcome of a condition in a specified time period, e.g., recovery of function after a spinal cord injury, risk of heart disease in the next 10 years, survival from cancer.
 
@@ -112,7 +111,7 @@ class PredictionOccurrence
   ###*
   The modality of a Clinical Statement describes the way the topic exists, happens, or is experienced.
   ### 
-  modality: -> if @json['modality'] then new QUICK.StatementModality( @json['modality'] )
+  modality: -> if @json['modality'] then new StatementModality( @json['modality'] )
  
  
   ###*
@@ -126,7 +125,7 @@ class PredictionOccurrence
   ###*
   The outcomes that is being predicted for the patient (e.g. remission, death, a particular condition).
   ### 
-  outcome: -> if @json['outcome'] then new QUICK.CodeableConcept( @json['outcome'] )
+  outcome: -> if @json['outcome'] then new CodeableConcept( @json['outcome'] )
  
  
   ###*
@@ -174,7 +173,7 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The patient described by this statement.
   ### 
-  subject: -> if @json['subject'] then new QUICK.Patient( @json['subject'] )
+  subject: -> if @json['subject'] then new Patient( @json['subject'] )
  
  
   ###*
@@ -188,7 +187,7 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The subject matter of this clinical statement. The topic may be an action like medication administration, or a finding or other observations about the patient.
   ### 
-  topic: -> if @json['topic'] then new QUICK.StatementTopic( @json['topic'] )
+  topic: -> if @json['topic'] then new StatementTopic( @json['topic'] )
  
  
 

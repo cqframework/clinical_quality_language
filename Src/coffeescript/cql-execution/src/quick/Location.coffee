@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Details for a physical place where services are provided and resources and participants may be stored, found, contained or accommodated.
 

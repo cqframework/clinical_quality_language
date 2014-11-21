@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The proposal may be a recommendation from a clinical decision support system or advice from a consultation.
  

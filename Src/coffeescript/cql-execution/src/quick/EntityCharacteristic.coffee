@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Specific factors about a patient, clinician, provider, or facility. Included are demographics, behavioral factors, social or cultural factors, available resources, and preferences. Behaviors reference responses or actions that affect (either positively or negatively) health or healthcare. Included in this category are mental- health issues, adherence issues unrelated to other factors or resources, coping ability, grief issues, and substance use/abuse. Social/cultural factors are characteristics of an individual related to family/caregiver support, education and literacy (including health literacy), primary language, cultural beliefs (including health beliefs), persistent life stressors, spiritual and religious beliefs, immigration status, and history of abuse or neglect. Resources are means available to a patient to meet health and healthcare needs, which would include caregiver support, insurance coverage, financial resources, and community resources to which the patient is already connected and receiving benefit. Preferences are choices made by patients and their caregivers relative to options for care or treatment (including scheduling, care experience, and meeting of personal health goals) and the sharing and disclosure of their health information. In the quality data element the attribute source is used to indicate whether it relates to the patient or the provider
  
@@ -42,7 +41,7 @@ class EntityCharacteristic
   ###*
   A code specifying the characteristic or feature
   ### 
-  code: -> if @json['code'] then new QUICK.CodeableConcept( @json['code'] )
+  code: -> if @json['code'] then new CodeableConcept( @json['code'] )
  
  
   ###*

@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A sample of tissue, blood, urine, water, air, etc., taken for the purposes of diagnostic examination or evaluation.
  
@@ -94,7 +93,7 @@ class Specimen
   ###*
   The kind of material, e.g., blood, urine, tissue
   ### 
-  type: -> if @json['type'] then new QUICK.CodeableConcept( @json['type'] )
+  type: -> if @json['type'] then new CodeableConcept( @json['type'] )
  
  
 

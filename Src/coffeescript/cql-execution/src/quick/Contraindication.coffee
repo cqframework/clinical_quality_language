@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Describes a contraindication to a healthcare related action, e.g., medication intake, procedure.
 
@@ -47,7 +46,7 @@ class Contraindication
   ###*
   The action that is to be withheld in the context of the contraindication. Note that a contraindication may apply to the administration of a substance or to the performance of a procedure, for instance.
   ### 
-  contraindicatedAct: -> if @json['contraindicatedAct'] then new QUICK.Act( @json['contraindicatedAct'] )
+  contraindicatedAct: -> if @json['contraindicatedAct'] then new Act( @json['contraindicatedAct'] )
  
  
   ###*
