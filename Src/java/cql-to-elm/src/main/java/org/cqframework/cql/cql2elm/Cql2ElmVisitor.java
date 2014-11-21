@@ -298,7 +298,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withVersion(parseString(ctx.versionSpecifier()))
                 .withCodeSystemVersions(
                         ctx.codeSystemVersions() != null
-                                ? (String)visit(ctx.codeSystemVersions())
+                                ? (String) visit(ctx.codeSystemVersions())
                                 : null
                 );
         addToLibrary(vs);
@@ -1916,13 +1916,53 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (fun.getLibraryName() == null) {
             String ageRelatedFunctionName = resolveAgeRelatedFunction(fun.getName());
             if (ageRelatedFunctionName != null) {
-                fun.setName(resolveAgeRelatedFunction(fun.getName()));
-                fun.getOperand().add(
-                        0,
-                        of.createProperty()
-                                .withPath(getModelHelper().getModelInfo().getPatientBirthDatePropertyName())
-                                .withSource(of.createExpressionRef().withName("Patient"))
-                );
+                switch (ageRelatedFunctionName) {
+                    case "CalculateAgeInYears":
+                    case "CalculateAgeInMonths":
+                    case "CalculateAgeInDays":
+                    case "CalculateAgeInHours":
+                    case "CalculateAgeInMinutes":
+                    case "CalculateAgeInSeconds":
+                    case "CalculateAgeInMilliseconds": {
+                        CalculateAge operator = of.createCalculateAge()
+                                .withPrecision(resolveAgeRelatedFunctionPrecision(fun.getName()));
+
+                        if (fun.getOperand().size() > 0) {
+                            operator.setOperand(fun.getOperand().get(0));
+                        }
+                        else {
+                            operator.setOperand(
+                                    of.createProperty()
+                                            .withPath(getModelHelper().getModelInfo().getPatientBirthDatePropertyName())
+                                            .withSource(of.createExpressionRef().withName("Patient"))
+                            );
+                        }
+
+                        return operator;
+                    }
+
+                    case "CalculateAgeInYearsAt":
+                    case "CalculateAgeInMonthsAt":
+                    case "CalculateAgeInDaysAt":
+                    case "CalculateAgeInHoursAt":
+                    case "CalculateAgeInMinutesAt":
+                    case "CalculateAgeInSecondsAt":
+                    case "CalculateAgeInMillisecondsAt": {
+                        CalculateAgeAt operator = of.createCalculateAgeAt()
+                                .withPrecision(resolveAgeRelatedFunctionPrecision(ageRelatedFunctionName));
+
+                        operator.getOperand().addAll(fun.getOperand());
+                        if (operator.getOperand().size() == 1) {
+                            operator.getOperand().add(0,
+                                of.createProperty()
+                                        .withPath(getModelHelper().getModelInfo().getPatientBirthDatePropertyName())
+                                        .withSource(of.createExpressionRef().withName("Patient"))
+                            );
+                        }
+
+                        return operator;
+                    }
+                }
             }
         }
 
@@ -1937,13 +1977,35 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             case "AgeInHours":
             case "AgeInMinutes":
             case "AgeInSeconds":
+            case "AgeInMilliseconds":
             case "AgeInYearsAt":
             case "AgeInMonthsAt":
             case "AgeInDaysAt":
             case "AgeInHoursAt":
             case "AgeInMinutesAt":
-            case "AgeInSecondsAt": return "Calculate" + functionName;
+            case "AgeInSecondsAt":
+            case "AgeInMillisecondsAt": return "Calculate" + functionName;
             default: return null;
+        }
+    }
+
+    private DateTimePrecision resolveAgeRelatedFunctionPrecision(String functionName) {
+        switch (functionName) {
+            case "CalculateAgeInYears":
+            case "CalculateAgeInYearsAt": return DateTimePrecision.YEAR;
+            case "CalculateAgeInMonths":
+            case "CalculateAgeInMonthsAt": return DateTimePrecision.MONTH;
+            case "CalculateAgeInDays":
+            case "CalculateAgeInDaysAt": return DateTimePrecision.DAY;
+            case "CalculateAgeInHours":
+            case "CalculateAgeInHoursAt": return DateTimePrecision.HOUR;
+            case "CalculateAgeInMinutes":
+            case "CalculateAgeInMinutesAt": return DateTimePrecision.MINUTE;
+            case "CalculateAgeInSeconds":
+            case "CalculateAgeInSecondsAt": return DateTimePrecision.SECOND;
+            case "CalculateAgeInMilliseconds":
+            case "CalculateAgeInMillisecondsAt": return DateTimePrecision.MILLISECOND;
+            default: throw new IllegalArgumentException(String.format("Unknown precision '%s'.", functionName));
         }
     }
 

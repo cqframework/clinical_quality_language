@@ -58,68 +58,26 @@
             }
          } ]
       },
-      "statements" : {
+      "valueSets" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
-            "context" : "Patient",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
-                  "type" : "Literal"
-               } ]
-            }
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1011"
          }, {
             "name" : "Acute Tonsillitis",
-            "context" : "Patient",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1012",
-                  "type" : "Literal"
-               } ]
-            }
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1012"
          }, {
             "name" : "Ambulatory/ED Visit",
-            "context" : "Patient",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
-                  "type" : "Literal"
-               } ]
-            }
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
          }, {
             "name" : "Antibiotic Medications",
-            "context" : "Patient",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.196.12.1001",
-                  "type" : "Literal"
-               } ]
-            }
+            "id" : "2.16.840.1.113883.3.464.1003.196.12.1001"
          }, {
             "name" : "Group A Streptococcus Test",
-            "context" : "Patient",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.198.12.1012",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
+            "id" : "2.16.840.1.113883.3.464.1003.198.12.1012"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
             "name" : "Patient",
             "context" : "PATIENT",
             "expression" : {
@@ -137,9 +95,16 @@
                "operand" : [ {
                   "type" : "GreaterOrEqual",
                   "operand" : [ {
-                     "name" : "AgeAt",
-                     "type" : "FunctionRef",
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
                      "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
                         "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
@@ -154,9 +119,16 @@
                }, {
                   "type" : "Less",
                   "operand" : [ {
-                     "name" : "AgeAt",
-                     "type" : "FunctionRef",
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
                      "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
                         "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
@@ -182,7 +154,7 @@
                   "type" : "Retrieve",
                   "codes" : {
                      "name" : "Acute Pharyngitis",
-                     "type" : "ExpressionRef"
+                     "type" : "ValueSetRef"
                   }
                }, {
                   "dataType" : "{http://org.hl7.fhir}Condition",
@@ -190,17 +162,119 @@
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
-                     "name" : "Acute Tonsilitis",
-                     "type" : "IdentifierRef"
+                     "name" : "Acute Tonsillitis",
+                     "type" : "ValueSetRef"
                   }
                } ]
             }
          }, {
             "name" : "Antibiotics",
-            "context" : "PATIENT"
+            "context" : "PATIENT",
+            "expression" : {
+               "dataType" : "{http://org.hl7.fhir}MedicationTreatment",
+               "templateId" : "quick-medicationtreatment-order",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "Antibiotic Medications",
+                  "type" : "ValueSetRef"
+               }
+            }
          }, {
             "name" : "TargetEncounters",
-            "context" : "PATIENT"
+            "context" : "PATIENT",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "quick-encounter",
+                     "codeProperty" : "class",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Ambulatory/ED Visit",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "P",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "Pharyngitis",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "OverlapsAfter",
+                     "operand" : [ {
+                        "path" : "effectiveTime",
+                        "scope" : "P",
+                        "type" : "Property"
+                     }, {
+                        "path" : "performedAtTime",
+                        "scope" : "E",
+                        "type" : "Property"
+                     } ]
+                  }
+               }, {
+                  "alias" : "A",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "Antibiotics",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "In",
+                     "operand" : [ {
+                        "precision" : "Day",
+                        "type" : "DurationBetween",
+                        "operand" : [ {
+                           "type" : "Start",
+                           "operand" : {
+                              "path" : "orderedAtTime",
+                              "scope" : "A",
+                              "type" : "Property"
+                           }
+                        }, {
+                           "type" : "Start",
+                           "operand" : {
+                              "path" : "performedAtTime",
+                              "scope" : "E",
+                              "type" : "Property"
+                           }
+                        } ]
+                     }, {
+                        "lowClosed" : true,
+                        "highClosed" : false,
+                        "type" : "Interval",
+                        "low" : {
+                           "type" : "Negate",
+                           "operand" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "3",
+                              "type" : "Literal"
+                           }
+                        },
+                        "high" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  }
+               } ],
+               "where" : {
+                  "type" : "IncludedIn",
+                  "operand" : [ {
+                     "path" : "performedAtTime",
+                     "scope" : "E",
+                     "type" : "Property"
+                  }, {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  } ]
+               }
+            }
          }, {
             "name" : "TargetDiagnoses",
             "context" : "PATIENT",
@@ -342,12 +416,13 @@
                   "source" : [ {
                      "alias" : "R",
                      "expression" : {
-                        "dataType" : "{http://www.w3.org/2001/XMLSchema}SimpleObservation",
-                        "templateId" : "SimpleObservation",
+                        "dataType" : "{http://org.hl7.fhir}Observation",
+                        "templateId" : "quick-observation",
+                        "codeProperty" : "code",
                         "type" : "Retrieve",
                         "codes" : {
                            "name" : "Group A Streptococcus Test",
-                           "type" : "ExpressionRef"
+                           "type" : "ValueSetRef"
                         }
                      }
                   } ],
