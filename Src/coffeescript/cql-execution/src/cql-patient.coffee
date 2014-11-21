@@ -45,14 +45,17 @@ class Patient
 
 class PatientSource
     constructor: (@patients) ->
-      @index = 0
+      @current = @patients.shift();
+
     currentPatient: ->
-      if @patients[@index]
-        new Patient(@patients[@index])
+      if @current != null
+        new Patient(@current)
+      else null
 
     nextPatient: ->
-      @index++;
+      @current = @patients.shift();
       @currentPatient()
+
 
 module.exports.Patient = Patient
 module.exports.PatientSource = PatientSource
