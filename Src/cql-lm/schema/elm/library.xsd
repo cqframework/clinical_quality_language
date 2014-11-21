@@ -79,7 +79,12 @@
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
-					<xs:element name="identifier" type="VersionedIdentifier"/>
+					<xs:element name="identifier" type="VersionedIdentifier">
+						<xs:annotation>
+							<xs:documentation>The identifier element defines a unique identifier for this library, and optionally, a version.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 					<xs:element name="schemaIdentifier" type="VersionedIdentifier">
 						<xs:annotation>
 							<xs:documentation>This is the identifier of the XML schema (and its version) which governs the structure of this Library.</xs:documentation>
@@ -95,10 +100,8 @@
 							<xs:sequence>
 								<xs:element name="def" type="UsingDef" maxOccurs="unbounded">
 									<xs:annotation>
-										<xs:documentation>A reference for the data models that are
-											used in the artifact, e..g., the Virtual Medical Record. In
-											this case, the name could be "vmr" and the value is
-											the namespace universal resource identifier of the HL7 VMR schema
+										<xs:documentation>A reference to a data model that is
+											used in the artifact, e..g., the Virtual Medical Record.
 										</xs:documentation>
 									</xs:annotation>
 								</xs:element>
@@ -107,13 +110,13 @@
 					</xs:element>
 					<xs:element name="includes" minOccurs="0">
 						<xs:annotation>
-							<xs:documentation>Set of libraries referenced by this artifact. Components of referenced libraries may be referenced by this artifact.</xs:documentation>
+							<xs:documentation>Set of libraries referenced by this artifact. Components of referenced libraries may be used within this artifact.</xs:documentation>
 						</xs:annotation>
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="def" type="IncludeDef" maxOccurs="unbounded">
 									<xs:annotation>
-										<xs:documentation>A reference to a library whose component can be referenced 
+										<xs:documentation>A reference to a library whose components can be used
 										within the artifact.
 										</xs:documentation>
 									</xs:annotation>
@@ -122,6 +125,9 @@
 						</xs:complexType>
 					</xs:element>
 					<xs:element name="parameters" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The parameters defined within this library.</xs:documentation>
+						</xs:annotation>
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="def" type="ParameterDef" minOccurs="0" maxOccurs="unbounded"/>
@@ -129,6 +135,9 @@
 						</xs:complexType>
 					</xs:element>
 					<xs:element name="valueSets" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The value sets defined within this library.</xs:documentation>
+						</xs:annotation>
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="def" type="ValueSetDef" minOccurs="0" maxOccurs="unbounded"/>
@@ -136,6 +145,9 @@
 						</xs:complexType>
 					</xs:element>
 					<xs:element name="statements" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The statements section contains the expression and function definitions for the library.</xs:documentation>
+						</xs:annotation>
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="def" type="ExpressionDef" minOccurs="0" maxOccurs="unbounded"/>

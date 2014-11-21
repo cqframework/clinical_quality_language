@@ -316,7 +316,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             ExpressionDef patientExpressionDef = of.createExpressionDef()
                     .withName("Patient")
                     .withContext(currentContext)
-                    .withExpression(of.createSingletonOf().withOperand(
+                    .withExpression(of.createSingletonFrom().withOperand(
                                     of.createRetrieve()
                                             .withDataType(resolveNamedType(getModelHelper().getModelInfo().getPatientClassName()))
                             )
@@ -491,17 +491,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitPredecessorExpressionTerm(@NotNull cqlParser.PredecessorExpressionTermContext ctx) {
-        return of.createPred().withOperand(parseExpression(ctx.expressionTerm()));
+        return of.createPredecessor().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
     public Object visitSuccessorExpressionTerm(@NotNull cqlParser.SuccessorExpressionTermContext ctx) {
-        return of.createSucc().withOperand(parseExpression(ctx.expressionTerm()));
+        return of.createSuccessor().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
     public Object visitElementExtractorExpressionTerm(@NotNull cqlParser.ElementExtractorExpressionTermContext ctx) {
-        return of.createSingletonOf().withOperand(parseExpression(ctx.expressionTerm()));
+        return of.createSingletonFrom().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
@@ -511,78 +511,60 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 : of.createEnd().withOperand(parseExpression(ctx.expressionTerm()));
     }
 
+    private DateTimePrecision parseDateTimePrecision(String dateTimePrecision) {
+        switch (dateTimePrecision) {
+            case "year":
+            case "years": return DateTimePrecision.YEAR;
+            case "month":
+            case "months": return DateTimePrecision.MONTH;
+            case "day":
+            case "days": return DateTimePrecision.DAY;
+            case "hour":
+            case "hours": return DateTimePrecision.HOUR;
+            case "minute":
+            case "minutes": return DateTimePrecision.MINUTE;
+            case "second":
+            case "seconds": return DateTimePrecision.SECOND;
+            case "millisecond":
+            case "milliseconds": return DateTimePrecision.MILLISECOND;
+            default: throw new IllegalArgumentException(String.format("Unknown precision '%s'.", dateTimePrecision));
+        }
+    }
+
     @Override
     public Object visitTimeUnitExpressionTerm(@NotNull cqlParser.TimeUnitExpressionTermContext ctx) {
         String component = ctx.dateTimeComponent().getText();
 
         switch (component) {
             case "date":
-                return of.createDateOf().withOperand(parseExpression(ctx.expressionTerm()));
+                return of.createDateFrom().withOperand(parseExpression(ctx.expressionTerm()));
             case "time":
-                return of.createTimeOf().withOperand(parseExpression(ctx.expressionTerm()));
+                return of.createTimeFrom().withOperand(parseExpression(ctx.expressionTerm()));
             case "timezone":
-                return of.createTimezoneOf().withOperand(parseExpression(ctx.expressionTerm()));
+                return of.createTimezoneFrom().withOperand(parseExpression(ctx.expressionTerm()));
             case "year":
-                return of.createYearOf().withOperand(parseExpression(ctx.expressionTerm()));
             case "month":
-                return of.createMonthOf().withOperand(parseExpression(ctx.expressionTerm()));
             case "day":
-                return of.createDayOf().withOperand(parseExpression(ctx.expressionTerm()));
             case "hour":
-                return of.createHourOf().withOperand(parseExpression(ctx.expressionTerm()));
             case "minute":
-                return of.createMinuteOf().withOperand(parseExpression(ctx.expressionTerm()));
             case "second":
-                return of.createSecondOf().withOperand(parseExpression(ctx.expressionTerm()));
             case "millisecond":
-                return of.createMillisecondOf().withOperand(parseExpression(ctx.expressionTerm()));
+                return of.createDateTimeComponentFrom()
+                        .withOperand(parseExpression(ctx.expressionTerm()))
+                        .withPrecision(parseDateTimePrecision(component));
+            default: throw new IllegalArgumentException(String.format("Unknown precision '%s'.", component));
         }
-
-        return of.createNull();
     }
 
     @Override
     public Object visitDurationExpressionTerm(@NotNull cqlParser.DurationExpressionTermContext ctx) {
         // duration in days of X <=> days between start of X and end of X
-        switch (ctx.pluralDateTimePrecision().getText()) {
-            case "years" :
-                return of.createYearsBetween().withOperand(
+        return of.createDurationBetween()
+                .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
+                .withOperand(
                         of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
                         of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
                 );
-            case "months" :
-                return of.createMonthsBetween().withOperand(
-                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
-                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
-                );
-            case "days" :
-                return of.createDaysBetween().withOperand(
-                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
-                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
-                );
-            case "hours" :
-                return of.createHoursBetween().withOperand(
-                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
-                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
-                );
-            case "minutes" :
-                return of.createMinutesBetween().withOperand(
-                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
-                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
-                );
-            case "seconds" :
-                return of.createSecondsBetween().withOperand(
-                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
-                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
-                );
-            case "milliseconds" :
-                return of.createMillisecondsBetween().withOperand(
-                        of.createStart().withOperand(parseExpression(ctx.expressionTerm())),
-                        of.createEnd().withOperand(parseExpression(ctx.expressionTerm()))
-                );
-        }
-
-        return of.createNull();
     }
 
     @Override
@@ -603,33 +585,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTimeRangeExpression(@NotNull cqlParser.TimeRangeExpressionContext ctx) {
-        String component = ctx.pluralDateTimePrecision().getText();
-
-        switch (component) {
-            case "years":
-                return of.createYearsBetween()
-                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
-            case "months":
-                return of.createMonthsBetween()
-                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
-            case "days":
-                return of.createDaysBetween()
-                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
-            case "hours":
-                return of.createHoursBetween()
-                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
-            case "minutes":
-                return of.createMinutesBetween()
-                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
-            case "seconds":
-                return of.createSecondsBetween()
-                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
-            case "milliseconds":
-                return of.createMillisecondsBetween()
-                        .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
-        }
-
-        return of.createNull();
+        return of.createDurationBetween()
+                .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
+                .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
     }
 
     @Override
@@ -648,15 +606,36 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         switch (operator) {
             case "in":
-                return of.createIn().withOperand(
-                        parseExpression(ctx.expression(0)),
-                        parseExpression(ctx.expression(1))
-                );
+                if (ctx.dateTimePrecisionSpecifier() != null) {
+                    return of.createIn()
+                            .withPrecision(parseDateTimePrecision(ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()))
+                            .withOperand(
+                                    parseExpression(ctx.expression(0)),
+                                    parseExpression(ctx.expression(1))
+                            );
+                }
+                else {
+                    return of.createIn().withOperand(
+                            parseExpression(ctx.expression(0)),
+                            parseExpression(ctx.expression(1))
+                    );
+                }
             case "contains":
-                return of.createContains().withOperand(
-                        parseExpression(ctx.expression(0)),
-                        parseExpression(ctx.expression(1))
-                );
+                if (ctx.dateTimePrecisionSpecifier() != null) {
+                    return of.createContains()
+                            .withPrecision(parseDateTimePrecision(ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()))
+                            .withOperand(
+                                    parseExpression(ctx.expression(0)),
+                                    parseExpression(ctx.expression(1))
+                            );
+
+                }
+                else {
+                    return of.createContains().withOperand(
+                            parseExpression(ctx.expression(0)),
+                            parseExpression(ctx.expression(1))
+                    );
+                }
         }
 
         return of.createNull();
@@ -983,7 +962,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitConcurrentWithIntervalOperatorPhrase(@NotNull cqlParser.ConcurrentWithIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends')? relativeQualifier? 'same' dateTimePrecision? 'as' ('start' | 'end')?
+        // ('starts' | 'ends')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?
 
         TimingOperatorContext timingOperator = timingOperators.peek();
         ParseTree firstChild = ctx.getChild(0);
@@ -1005,47 +984,46 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         BinaryExpression operator = null;
-        if (ctx.dateTimePrecision() != null) {
-            switch (ctx.dateTimePrecision().getText()) {
-                case "year": operator = of.createSameYearAs(); break;
-                case "month": operator = of.createSameMonthAs(); break;
-                case "day": operator = of.createSameDayAs(); break;
-                case "hour": operator = of.createSameHourAs(); break;
-                case "minute": operator = of.createSameMinuteAs(); break;
-                case "second": operator = of.createSameSecondAs(); break;
-                // NOTE: No milliseconds here, because same millisecond as is equivalent to same as
-                default: operator = of.createSameAs(); break;
+        if (ctx.relativeQualifier() == null) {
+            if (ctx.dateTimePrecision() != null) {
+
+                operator = of.createSameAs().withPrecision(parseDateTimePrecision(ctx.dateTimePrecision().getText()));
+            } else {
+                operator = of.createSameAs();
             }
         }
-
-        if (operator == null) {
-            operator = of.createSameAs();
+        else {
+            switch (ctx.relativeQualifier().getText()) {
+                case "or after": {
+                    if (ctx.dateTimePrecision() != null) {
+                        operator = of.createSameOrAfter().withPrecision(parseDateTimePrecision(ctx.dateTimePrecision().getText()));
+                    }
+                    else {
+                        operator = of.createSameOrAfter();
+                    }
+                }
+                break;
+                case "or before": {
+                    if (ctx.dateTimePrecision() != null) {
+                        operator = of.createSameOrBefore().withPrecision(parseDateTimePrecision(ctx.dateTimePrecision().getText()));
+                    }
+                    else {
+                        operator = of.createSameOrBefore();
+                    }
+                }
+                break;
+                default: throw new IllegalArgumentException(String.format("Unknown relative qualifier: '%s'.", ctx.relativeQualifier().getText()));
+            }
         }
 
         operator = operator.withOperand(timingOperator.getLeft(), timingOperator.getRight());
-
-        if (ctx.relativeQualifier() != null) {
-            switch (ctx.relativeQualifier().getText()) {
-                case "or after":
-                    return of.createOr().withOperand(
-                            operator,
-                            of.createGreater().withOperand(timingOperator.getLeft(), timingOperator.getRight())
-                    );
-
-                case "or before":
-                    return of.createOr().withOperand(
-                            operator,
-                            of.createLess().withOperand(timingOperator.getLeft(), timingOperator.getRight())
-                    );
-            }
-        }
 
         return operator;
     }
 
     @Override
     public Object visitIncludesIntervalOperatorPhrase(@NotNull cqlParser.IncludesIntervalOperatorPhraseContext ctx) {
-        // properly? includes (start | end)?
+        // 'properly'? 'includes' dateTimePrecisionSpecifier? ('start' | 'end')?
         boolean isProper = false;
         boolean isRightPoint = false;
         TimingOperatorContext timingOperator = timingOperators.peek();
@@ -1068,13 +1046,33 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
+        String dateTimePrecision = ctx.dateTimePrecisionSpecifier() != null
+                ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
+                : null;
+
         if (isRightPoint) {
             // TODO: Handle is proper (no ELM representation for ProperContains)
+            if (dateTimePrecision != null) {
+                return of.createContains().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+            }
+
             return of.createContains().withOperand(timingOperator.getLeft(), timingOperator.getRight());
         }
 
         if (isProper) {
+
+            if (dateTimePrecision != null) {
+                return of.createProperIncludes().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+            }
+
             return of.createProperIncludes().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+        }
+
+        if (dateTimePrecision != null) {
+            return of.createIncludes().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    .withOperand(timingOperator.getLeft(), timingOperator.getRight());
         }
 
         return of.createIncludes().withOperand(timingOperator.getLeft(), timingOperator.getRight());
@@ -1082,7 +1080,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIncludedInIntervalOperatorPhrase(@NotNull cqlParser.IncludedInIntervalOperatorPhraseContext ctx) {
-        // (starts | ends)? properly? (during | included in)
+        // ('starts' | 'ends')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?
         boolean isProper = false;
         boolean isLeftPoint = false;
         TimingOperatorContext timingOperator = timingOperators.peek();
@@ -1105,13 +1103,32 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
+        String dateTimePrecision = ctx.dateTimePrecisionSpecifier() != null
+                ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
+                : null;
+
         if (isLeftPoint) {
             // TODO: Handle is proper (no ELM representation for ProperIn)
+            if (dateTimePrecision != null) {
+                return of.createIn().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+            }
+
             return of.createIn().withOperand(timingOperator.getLeft(), timingOperator.getRight());
         }
 
         if (isProper) {
+            if (dateTimePrecision != null) {
+                return of.createProperIncludedIn().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+            }
+
             return of.createProperIncludedIn().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+        }
+
+        if (dateTimePrecision != null) {
+            return of.createIncludedIn().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    .withOperand(timingOperator.getLeft(), timingOperator.getRight());
         }
 
         return of.createIncludedIn().withOperand(timingOperator.getLeft(), timingOperator.getRight());
@@ -1239,26 +1256,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private BinaryExpression resolveBetweenOperator(String unit, Expression left, Expression right) {
         if (unit != null) {
-            switch (unit) {
-                case "year":
-                case "years": return of.createYearsBetween().withOperand(left, right);
-                case "month":
-                case "months": return of.createMonthsBetween().withOperand(left, right);
-                case "week":
-                case "weeks": return of.createMultiply().withOperand(
-                        of.createDaysBetween().withOperand(left, right),
-                        createLiteral(7));
-                case "day":
-                case "days": return of.createDaysBetween().withOperand(left, right);
-                case "hour":
-                case "hours": return of.createHoursBetween().withOperand(left, right);
-                case "minute":
-                case "minutes": return of.createMinutesBetween().withOperand(left, right);
-                case "second":
-                case "seconds": return of.createSecondsBetween().withOperand(left, right);
-                case "millisecond":
-                case "milliseconds": return of.createMillisecondsBetween().withOperand(left, right);
+            if (unit.equals("week") || unit.equals("weeks")) {
+                return of.createMultiply().withOperand(of.createDurationBetween().withPrecision(DateTimePrecision.DAY).withOperand(left, right), createLiteral(7));
             }
+
+            return of.createDurationBetween().withPrecision(parseDateTimePrecision(unit)).withOperand(left, right);
         }
 
         return null;
@@ -1317,15 +1319,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitMeetsIntervalOperatorPhrase(@NotNull cqlParser.MeetsIntervalOperatorPhraseContext ctx) {
         BinaryExpression operator;
-        if (ctx.getChildCount() == 1) {
-            operator = of.createMeets();
+        String dateTimePrecision = ctx.dateTimePrecisionSpecifier() != null
+                ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
+                : null;
+
+        if (ctx.getChildCount() == (1 + (dateTimePrecision == null ? 0 : 1))) {
+            operator = dateTimePrecision != null
+                ? of.createMeets().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                : of.createMeets();
         }
         else {
             if ("before".equals(ctx.getChild(1).getText())) {
-                operator = of.createMeetsBefore();
+                operator = dateTimePrecision != null
+                    ? of.createMeetsBefore().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    : of.createMeetsBefore();
             }
             else {
-                operator = of.createMeetsAfter();
+                operator = dateTimePrecision != null
+                    ? of.createMeetsAfter().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    : of.createMeetsAfter();
             }
         }
 
@@ -1335,15 +1347,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitOverlapsIntervalOperatorPhrase(@NotNull cqlParser.OverlapsIntervalOperatorPhraseContext ctx) {
         BinaryExpression operator;
-        if (ctx.getChildCount() == 1) {
-            operator = of.createOverlaps();
+        String dateTimePrecision = ctx.dateTimePrecisionSpecifier() != null
+                ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
+                : null;
+
+        if (ctx.getChildCount() == (1 + dateTimePrecision == null ? 0 : 1)) {
+            operator = dateTimePrecision != null
+                    ? of.createOverlaps().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    : of.createOverlaps();
         }
         else {
             if ("before".equals(ctx.getChild(1).getText())) {
-                operator = of.createOverlapsBefore();
+                operator = dateTimePrecision != null
+                        ? of.createOverlapsBefore().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        : of.createOverlapsBefore();
             }
             else {
-                operator = of.createOverlapsAfter();
+                operator = dateTimePrecision != null
+                        ? of.createOverlapsAfter().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        : of.createOverlapsAfter();
             }
         }
 
@@ -1352,12 +1374,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitStartsIntervalOperatorPhrase(@NotNull cqlParser.StartsIntervalOperatorPhraseContext ctx) {
-        return of.createStarts().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+        String dateTimePrecision = ctx.dateTimePrecisionSpecifier() != null
+                ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
+                : null;
+
+        return (dateTimePrecision != null
+                    ? of.createStarts().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    : of.createStarts()
+                ).withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
     }
 
     @Override
     public Object visitEndsIntervalOperatorPhrase(@NotNull cqlParser.EndsIntervalOperatorPhraseContext ctx) {
-        return of.createEnds().withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+        String dateTimePrecision = ctx.dateTimePrecisionSpecifier() != null
+                ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
+                : null;
+
+        return (dateTimePrecision != null
+                    ? of.createEnds().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    : of.createEnds()
+                ).withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
     }
 
     @Override
@@ -1428,16 +1464,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Retrieve visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
         // TODO: Model prefixes are currently ignored here...
-        String occ = ctx.occurrence() != null ? parseString(ctx.occurrence().namedTypeSpecifier().identifier()) : "Occurrence"; // TODO: Default occurrence label by model?
         String topic = parseString(ctx.topic().namedTypeSpecifier().identifier());
-        String modality = ctx.modality() != null ? parseString(ctx.modality().namedTypeSpecifier().identifier()) : "";
-        ClassDetail detail = getModelHelper().getClassDetail(occ, topic, modality);
+        ClassDetail detail = getModelHelper().getClassDetail(topic);
 
         Retrieve retrieve = of.createRetrieve()
                 .withDataType(resolveNamedType(
                         detail != null
                                 ? detail.getClassInfo().getName()
-                                : String.format("%s%s%s", topic, modality, occ)));
+                                : topic))
+                .withTemplateId(detail != null ? detail.getClassInfo().getIdentifier() : topic);
 
         if (ctx.valueset() != null) {
             if (ctx.valuesetPathIdentifier() != null) {
@@ -1651,9 +1686,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String propertyName = null;
         if (lhs instanceof AliasRef) {
             QName datatype = retrieve.getDataType();
+            String identifier = retrieve.getTemplateId();
             if (getModelHelper().getModelInfo().getUrl().equals(datatype.getNamespaceURI())) {
                 for (ClassInfo info : getModelHelper().getModelInfo().getClassInfo()) {
-                    if (datatype.getLocalPart().equals(info.getName())) {
+                    if (identifier.equals(info.getIdentifier())) {
                         lhs = of.createProperty().withScope(((AliasRef) lhs).getName()).withPath(info.getPrimaryDateAttribute());
                         break;
                     }

@@ -48,22 +48,27 @@ public class CMS146ElmTest {
 
         Collection<Retrieve> expectedCR = Arrays.asList(
                 of.createRetrieve()
-                        .withDataType(quickDataType("ConditionOccurrence"))
+                        .withDataType(quickDataType("Condition"))
+                        .withTemplateId("quick-condition")
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
                 of.createRetrieve()
-                        .withDataType(quickDataType("ConditionOccurrence"))
+                        .withDataType(quickDataType("Condition"))
+                        .withTemplateId("quick-condition")
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
                 of.createRetrieve()
-                        .withDataType(quickDataType("MedicationTreatmentOrderOccurrence"))
+                        .withDataType(quickDataType("MedicationTreatment"))
+                        .withTemplateId("quick-medicationtreatment-order")
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createRetrieve()
-                        .withDataType(quickDataType("EncounterPerformanceOccurrence"))
+                        .withDataType(quickDataType("Encounter"))
+                        .withTemplateId("quick-encounter")
                         .withCodeProperty("class")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createRetrieve()
-                        .withDataType(quickDataType("SimpleObservationOccurrence"))
+                        .withDataType(quickDataType("Observation"))
+                        .withTemplateId("quick-observation")
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );

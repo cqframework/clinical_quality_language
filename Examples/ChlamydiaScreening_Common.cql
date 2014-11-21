@@ -2,8 +2,10 @@ library CMS153_Common version '2'
 
 using QUICK
 
-valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2' version '1'
-    code systems ( 'SNOMED-CT' version '2014', 'ICD-9' version '2014' )
+valueset "Female Administrative Sex (v1)" = '2.16.840.1.113883.3.560.100.2' 
+    binding ( version '1', code systems ( 'SNOMED-CT' version '2014.AA', 'ICD-9' version '2014' ) )
+valueset "Female Administrative Sex (v2)" = '2.16.840.1.113883.3.560.100.2' 
+    binding ( version '2', code systems ( 'SNOMED-CT' version '2014.AB', 'ICD-9' version '2014' ) )
 valueset "Other Female Reproductive Conditions" = '2.16.840.1.113883.3.464.1003.111.12.1006'
 valueset "Genital Herpes" = '2.16.840.1.113883.3.464.1003.110.12.1049'
 valueset "Genococcal Infections and Venereal Diseases" = '2.16.840.1.113883.3.464.1003.112.12.1001'
@@ -19,6 +21,8 @@ valueset "Lab Tests for Sexually Transmitted Infections" = '2.16.840.1.113883.3.
 valueset "Chlamydia Screening" = '2.16.840.1.113883.3.464.1003.110.12.1052'
 
 context PATIENT
+
+define "Female Administrative Sex" = "Female Administrative Sex (v1)" union "Female Administrative Sex (v2)"
 
 define "Conditions Indicating Sexual Activity" =
 	[Condition: "Other Female Reproductive Conditions"]

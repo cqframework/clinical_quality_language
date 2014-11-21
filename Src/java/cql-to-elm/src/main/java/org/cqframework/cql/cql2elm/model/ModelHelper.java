@@ -16,12 +16,7 @@ public class ModelHelper {
             ClassDetail classDetail = new ClassDetail();
             classDetail.setClassInfo(classInfo);
             classDetail.setModelClass(resolveClass(classInfo.getName()));
-            index.put(
-                    computeKey(
-                            classInfo.getOccurrenceAxis(),
-                            classInfo.getTopicAxis(),
-                            classInfo.getModalityAxis()),
-                    classDetail);
+            index.put(classInfo.getTopic(), classDetail);
         }
     }
 
@@ -30,21 +25,8 @@ public class ModelHelper {
 
     private HashMap<String, ClassDetail> index;
 
-    private String computeKey(String occurrence, @NotNull String topic, String modality) {
-        String key = topic;
-        if (modality != null) {
-            key += modality;
-        }
-
-        if (occurrence != null) {
-            key = occurrence + key;
-        }
-
-        return key;
-    }
-
-    public ClassDetail getClassDetail(String occurrence, @NotNull String topic, String modality) {
-        return index.get(computeKey(occurrence, topic, modality));
+    public ClassDetail getClassDetail(@NotNull String topic) {
+        return index.get(topic);
     }
 
     public Class resolveClass(String unqualifiedClassName) {

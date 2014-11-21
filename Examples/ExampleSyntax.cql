@@ -963,3 +963,5 @@ define "Results Present For Chlamydia Screening" =
     [ObservationResult: "Chlamydia Screening"] R where R.result is not null
 
 
+
+

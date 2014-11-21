@@ -123,7 +123,7 @@
             "name" : "Patient",
             "context" : "PATIENT",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
                   "type" : "Retrieve"
@@ -176,7 +176,8 @@
             "expression" : {
                "type" : "Union",
                "operand" : [ {
-                  "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                  "dataType" : "{http://org.hl7.fhir}Condition",
+                  "templateId" : "quick-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
@@ -184,7 +185,8 @@
                      "type" : "ExpressionRef"
                   }
                }, {
-                  "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                  "dataType" : "{http://org.hl7.fhir}Condition",
+                  "templateId" : "quick-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
@@ -195,109 +197,10 @@
             }
          }, {
             "name" : "Antibiotics",
-            "context" : "PATIENT",
-            "expression" : {
-               "dataType" : "{http://org.hl7.fhir}MedicationTreatmentOrderOccurrence",
-               "type" : "Retrieve",
-               "codes" : {
-                  "name" : "Antibiotic Medications",
-                  "type" : "ExpressionRef"
-               }
-            }
+            "context" : "PATIENT"
          }, {
             "name" : "TargetEncounters",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "Query",
-               "source" : [ {
-                  "alias" : "E",
-                  "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
-                     "codeProperty" : "class",
-                     "type" : "Retrieve",
-                     "codes" : {
-                        "name" : "Ambulatory/ED Visit",
-                        "type" : "ExpressionRef"
-                     }
-                  }
-               } ],
-               "relationship" : [ {
-                  "alias" : "P",
-                  "type" : "With",
-                  "expression" : {
-                     "name" : "Pharyngitis",
-                     "type" : "ExpressionRef"
-                  },
-                  "suchThat" : {
-                     "type" : "OverlapsAfter",
-                     "operand" : [ {
-                        "path" : "effectiveTime",
-                        "scope" : "P",
-                        "type" : "Property"
-                     }, {
-                        "path" : "performedAtTime",
-                        "scope" : "E",
-                        "type" : "Property"
-                     } ]
-                  }
-               }, {
-                  "alias" : "A",
-                  "type" : "With",
-                  "expression" : {
-                     "name" : "Antibiotics",
-                     "type" : "ExpressionRef"
-                  },
-                  "suchThat" : {
-                     "type" : "In",
-                     "operand" : [ {
-                        "type" : "DaysBetween",
-                        "operand" : [ {
-                           "type" : "Start",
-                           "operand" : {
-                              "path" : "orderedAtTime",
-                              "scope" : "A",
-                              "type" : "Property"
-                           }
-                        }, {
-                           "type" : "Start",
-                           "operand" : {
-                              "path" : "performedAtTime",
-                              "scope" : "E",
-                              "type" : "Property"
-                           }
-                        } ]
-                     }, {
-                        "lowClosed" : true,
-                        "highClosed" : false,
-                        "type" : "Interval",
-                        "low" : {
-                           "type" : "Negate",
-                           "operand" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                              "value" : "3",
-                              "type" : "Literal"
-                           }
-                        },
-                        "high" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "0",
-                           "type" : "Literal"
-                        }
-                     } ]
-                  }
-               } ],
-               "where" : {
-                  "type" : "IncludedIn",
-                  "operand" : [ {
-                     "path" : "performedAtTime",
-                     "scope" : "E",
-                     "type" : "Property"
-                  }, {
-                     "name" : "MeasurementPeriod",
-                     "type" : "ParameterRef"
-                  } ]
-               }
-            }
+            "context" : "PATIENT"
          }, {
             "name" : "TargetDiagnoses",
             "context" : "PATIENT",
@@ -355,7 +258,8 @@
                      "suchThat" : {
                         "type" : "In",
                         "operand" : [ {
-                           "type" : "DaysBetween",
+                           "precision" : "Day",
+                           "type" : "DurationBetween",
                            "operand" : [ {
                               "type" : "Start",
                               "operand" : {
@@ -438,8 +342,8 @@
                   "source" : [ {
                      "alias" : "R",
                      "expression" : {
-                        "dataType" : "{http://org.hl7.fhir}SimpleObservationOccurrence",
-                        "codeProperty" : "code",
+                        "dataType" : "{http://www.w3.org/2001/XMLSchema}SimpleObservation",
+                        "templateId" : "SimpleObservation",
                         "type" : "Retrieve",
                         "codes" : {
                            "name" : "Group A Streptococcus Test",

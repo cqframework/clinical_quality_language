@@ -301,9 +301,89 @@ Date(2012) >= Date(2012, 1, 1, 0, 0, 0)
 
 Date(2012) = Date(2012, 1, 1, 0, 0, 0) or Date(2012) > Date(2012, 1, 1, 0, 0, 0)
 
+Date(2012) >= Date(2012, 1, 1)
+
+A_year, A_month, A_day, B_year, B_month, B_day
+
+uncertainty[1, 5]
+uncertainty[5, 10]
+uncertainty[10, 15]
+
+uncertainty[1, 5] = uncertainty[5, 10]
+uncertainty[1, 5] <= uncertainty[5, 10]
+
+// Using Chris' proposed truth table for Compare:
+uncertainty[1, 5] ?= uncertainty[5, 10] // -1
+uncertainty[5, 10] ?= uncertainty[1, 5] // 1
 
 define A = uncertainty[0, 5]
 define B = uncertainty[5, 10]
+
+A_low, A_high, B_low, B_high
+
+A = B == 
+    if A_low <= B_high and A_high >= B_low
+        then if A_low = A_high and B_low = B_high 
+            then true 
+            else null
+        else false
+
+A > B ==
+    case
+        when A_high <= B_low then false
+        when A_low > B_high then true
+        else null
+    end
+
+A >= B ==
+    case
+        when A_high < B_low then false
+        when A_low >= B_high then true
+        else null
+    end
+
+A < B ==
+    case
+        when A_high < B_low then true
+        when A_low >= B_high then false
+        else null
+    end
+
+A <= B ==
+    case
+        when A_high <= B_low then true
+        when A_low > B_high then false
+        else null
+    end
+
+uncertainty[1, 1] <= uncertainty[1, 1]
+
+
+
+Date(2014) < Date(2014, 2, 15)
+
+Date(2014) < Date(2014, 1, 1)
+
+uncertainty[Date(2014, 1, 1, 0, 0, 0), Date(2014, 12, 31, 23, 59, 59)] < uncertainty[Date(2014, 1, 1, 0, 0, 0), Date(2014, 1, 1, 23, 59, 59)]
+
+A after B
+A same day or after B
+A to the minute after B
+A same minute or after B
+A same minute as B
+A to the minute same as B
+A to the minute same or after B
+A before B to the minute
+A after B to the minute
+A same as B to the minute
+A same or after B to the minute
+A starts same or before B to the minute
+A starts same minute or before B
+
+uncertainty[1, 1] = uncertainty[1, 1] true
+uncertainty[1, 1] = uncertainty[2, 2] false
+uncertainty[1, 2] = uncertainty[1, 2] null
+uncertainty[1, 2] = uncertainty[2, 3] null
 
 A = B // unknown
 A < B // unknown
@@ -341,3 +421,21 @@ foreach
     return E
 
 Then the result is a 
+
+
+A >= B
+
+year of A > year of B
+    or (year of A = year of B and month of A > month of B)
+    or (year of A = year of B and month of A = month of B and day of A > day of B)
+
+
+[Encounter] E where E.effectiveTime year during MeasurementPeriod
+
+[Encounter] E where E.effectiveTime starts during MeasurementPeriod
+
+
+Date(2012) >= Date(2012, 1, 1)
+
+
+    

@@ -19,10 +19,10 @@ define Pharyngitis =
     [Condition: "Acute Pharyngitis"] union [Condition: "Acute Tonsillitis"]
 
 define Antibiotics =
-    [MedicationTreatment, Order: "Antibiotic Medications"]
+    [MedicationTreatmentOrder: "Antibiotic Medications"]
 
 define TargetEncounters =
-    [Encounter, Performance: "Ambulatory/ED Visit"] E
+    [Encounter: "Ambulatory/ED Visit"] E
         with Pharyngitis P such that P.effectiveTime overlaps after E.performedAtTime
         with Antibiotics A such that A.orderedAtTime starts 3 days or less after start E.performedAtTime
         where E.performedAtTime during MeasurementPeriod
@@ -46,4 +46,4 @@ define InDenominatorExclusions =
     HasPriorAntibiotics
 
 define InNumerator =
-    exists ([SimpleObservation: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod and R.result is not null)
+    exists ([Observation: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod and R.result is not null)

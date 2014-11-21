@@ -43,7 +43,7 @@ valuesetDefinition
     ;
 
 codeSystemVersions
-    : 'code' 'systems' '(' codeSystemVersion (',' codeSystemVersion)* ')'
+    : 'code systems' '(' codeSystemVersion (',' codeSystemVersion)* ')'
     ;
 
 codeSystemVersion
@@ -163,18 +163,10 @@ withoutClause
     ;
 
 retrieve
-    : '[' (occurrence 'of')? topic (',' modality)? (':' (valuesetPathIdentifier 'in')? valueset)? ']'
-    ;
-
-occurrence
-    : namedTypeSpecifier
+    : '[' topic (':' (valuesetPathIdentifier 'in')? valueset)? ']'
     ;
 
 topic
-    : namedTypeSpecifier
-    ;
-
-modality
     : namedTypeSpecifier
     ;
 
@@ -244,7 +236,7 @@ expression
     : expressionTerm                                                         # termExpression
     | retrieve                                                               # retrieveExpression
     | query                                                                  # queryExpression
-    | expression 'is' 'not'? ( 'null' | 'true' | 'false' )                   # booleanExpression
+    | expression 'is' 'not'? ('null' | 'true' | 'false')                     # booleanExpression
     | expression ('is' | 'as') typeSpecifier                                 # typeExpression
     | 'cast' expression 'as' typeSpecifier                                   # castExpression
     | 'not' expression                                                       # notExpression
@@ -254,7 +246,7 @@ expression
     | expression ('<=' | '<' | '>' | '>=') expression                        # inequalityExpression
     | expression intervalOperatorPhrase expression                           # timingExpression
     | expression ('=' | '<>') expression                                     # equalityExpression
-    | expression ('in' | 'contains' ) expression							 # membershipExpression
+    | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression  # membershipExpression
     | expression 'and' expression                                            # andExpression
     | expression ('or' | 'xor') expression                                   # orExpression
     | expression ('union' | 'intersect' | 'except') expression               # inFixSetExpression
@@ -283,12 +275,12 @@ expressionTerm
     | 'convert' expression 'to' typeSpecifier                            # conversionExpressionTerm
     | ('+' | '-') expressionTerm                                         # polarityExpressionTerm
     | ('start' | 'end') 'of' expressionTerm                              # timeBoundaryExpressionTerm
-    | dateTimeComponent 'of' expressionTerm                              # timeUnitExpressionTerm
+    | dateTimeComponent 'from' expressionTerm                            # timeUnitExpressionTerm
     | 'duration' 'in' pluralDateTimePrecision 'of' expressionTerm        # durationExpressionTerm
     | 'width' 'of' expressionTerm                                        # widthExpressionTerm
     | 'successor' 'of' expressionTerm                                    # successorExpressionTerm
     | 'predecessor' 'of' expressionTerm                                  # predecessorExpressionTerm
-    | 'singleton' 'of' expressionTerm                                    # elementExtractorExpressionTerm
+    | 'singleton' 'from' expressionTerm                                  # elementExtractorExpressionTerm
     | expressionTerm '^' expressionTerm                                  # powerExpressionTerm
     | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm          # multiplicationExpressionTerm
     | expressionTerm ('+' | '-') expressionTerm                          # additionExpressionTerm
@@ -300,6 +292,10 @@ expressionTerm
 
 caseExpressionItem
     : 'when' expression 'then' expression
+    ;
+
+dateTimePrecisionSpecifier
+    : dateTimePrecision 'of'
     ;
 
 relativeQualifier
@@ -317,16 +313,15 @@ quantityOffset
     ;
 
 intervalOperatorPhrase
-    : ('starts' | 'ends')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?
-                                                                                            #concurrentWithIntervalOperatorPhrase
-    | 'properly'? 'includes' ('start' | 'end')?                                             #includesIntervalOperatorPhrase
-    | ('starts' | 'ends')? 'properly'? ('during' | 'included in')                           #includedInIntervalOperatorPhrase
-    | ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')?          #beforeOrAfterIntervalOperatorPhrase
-    | ('starts' | 'ends')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?     #withinIntervalOperatorPhrase
-    | 'meets' ('before' | 'after')?                                                         #meetsIntervalOperatorPhrase
-    | 'overlaps' ('before' | 'after')?                                                      #overlapsIntervalOperatorPhrase
-    | 'starts'                                                                              #startsIntervalOperatorPhrase
-    | 'ends'                                                                                #endsIntervalOperatorPhrase
+    : ('starts' | 'ends')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?   #concurrentWithIntervalOperatorPhrase
+    | 'properly'? 'includes' dateTimePrecisionSpecifier? ('start' | 'end')?                          #includesIntervalOperatorPhrase
+    | ('starts' | 'ends')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?        #includedInIntervalOperatorPhrase
+    | ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')?                   #beforeOrAfterIntervalOperatorPhrase
+    | ('starts' | 'ends')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?              #withinIntervalOperatorPhrase
+    | 'meets' ('before' | 'after')? dateTimePrecisionSpecifier?                                      #meetsIntervalOperatorPhrase
+    | 'overlaps' ('before' | 'after')? dateTimePrecisionSpecifier?                                   #overlapsIntervalOperatorPhrase
+    | 'starts' dateTimePrecisionSpecifier?                                                           #startsIntervalOperatorPhrase
+    | 'ends' dateTimePrecisionSpecifier?                                                             #endsIntervalOperatorPhrase
     ;
 
 term
