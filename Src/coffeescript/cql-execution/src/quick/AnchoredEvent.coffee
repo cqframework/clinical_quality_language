@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Identifies the timing of a point-in-time occurrence and optionally a sub-cycle in a cycle that starts at a specific point in the cycle and may span a duration of time. 
 
@@ -56,7 +55,7 @@ For instance, give medication X on day 5 of a 22 day cycle, three times a day fo
   ###*
   The point within the cycle. For instance, for a cycle of 21 days, the 5th day in the cycle is equivalent to a pointInCycle = 5 day (read as Day 5).
   ### 
-  pointInCycle: -> if @json['pointInCycle'] then new QUICK.Quantity( @json['pointInCycle'] )
+  pointInCycle: -> if @json['pointInCycle'] then new Quantity( @json['pointInCycle'] )
  
  
   ###*
@@ -75,7 +74,7 @@ PCM PCM event occurs [duration] after breakfast (from the Latin post cibus matut
 PCD PCD event occurs [duration] after lunch (from the Latin post cibus diurnus).
 PCV PCV event occurs [duration] after dinner (from the Latin post cibus vespertinus).
   ### 
-  when: -> if @json['when'] then new QUICK.CodeableConcept( @json['when'] )
+  when: -> if @json['when'] then new CodeableConcept( @json['when'] )
  
  
 

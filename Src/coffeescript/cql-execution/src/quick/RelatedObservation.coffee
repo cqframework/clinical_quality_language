@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A class enabling relationships to be specified between two statements about ObservationResults.
  
@@ -43,13 +42,13 @@ class RelatedObservation
   ###*
   The kind of relationship that exists with the target observation.
   ### 
-  relationshipType: -> if @json['relationshipType'] then new QUICK.CodeableConcept( @json['relationshipType'] )
+  relationshipType: -> if @json['relationshipType'] then new CodeableConcept( @json['relationshipType'] )
  
  
   ###*
   The observation that is related to this observation.
   ### 
-  target: -> if @json['target'] then new QUICK.StatementOfOccurrence( @json['target'] )
+  target: -> if @json['target'] then new StatementOfOccurrence( @json['target'] )
  
  
 

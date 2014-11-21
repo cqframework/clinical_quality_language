@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Sensitivity of an organism to a specified antimicrobial agent
  
@@ -42,19 +41,19 @@ class OrganismSensitivity
   ###*
   The antimicrobial agent that was tested for sensitivity, e.g., vancomycin
   ### 
-  antiMicrobialAgent: -> if @json['antiMicrobialAgent'] then new QUICK.CodeableConcept( @json['antiMicrobialAgent'] )
+  antiMicrobialAgent: -> if @json['antiMicrobialAgent'] then new CodeableConcept( @json['antiMicrobialAgent'] )
  
  
   ###*
   The microorganism whose sensitivity is being tested.
   ### 
-  organism: -> if @json['organism'] then new QUICK.CodeableConcept( @json['organism'] )
+  organism: -> if @json['organism'] then new CodeableConcept( @json['organism'] )
  
  
   ###*
   The response of the microorgranism to the agent. For example, resistant, susceptible.
   ### 
-  sensitivity: -> if @json['sensitivity'] then new QUICK.CodeableConcept( @json['sensitivity'] )
+  sensitivity: -> if @json['sensitivity'] then new CodeableConcept( @json['sensitivity'] )
  
  
 

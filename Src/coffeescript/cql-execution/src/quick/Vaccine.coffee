@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Details about the vaccine product administered to the patient
  
@@ -86,7 +85,7 @@ class Vaccine
   ###*
   The kind of vaccine that is or was or was not administered, e.g., DTaP, pertussis, influenze whole
   ### 
-  vaccineType: -> if @json['vaccineType'] then new QUICK.CodeableConcept( @json['vaccineType'] )
+  vaccineType: -> if @json['vaccineType'] then new CodeableConcept( @json['vaccineType'] )
  
  
 

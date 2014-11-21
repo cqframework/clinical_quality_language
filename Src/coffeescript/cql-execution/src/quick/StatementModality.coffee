@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The modality of a Clinical Statement describes the way the topic exists, happens, or is experienced.
  

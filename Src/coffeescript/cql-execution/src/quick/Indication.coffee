@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 An asserted clinical reason to perform a test, prescribe a medication, procedure, or perform a procedure, or perform any act.
 

@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Information about the protocol(s) under which the vaccine was administered
  
@@ -58,7 +57,7 @@ class VaccinationProtocol
   ###*
   Nominal position of dose in a series.
   ### 
-  doseSequence: -> if @json['doseSequence'] then new QUICK.Quantity( @json['doseSequence'] )
+  doseSequence: -> if @json['doseSequence'] then new Quantity( @json['doseSequence'] )
  
  
   ###*
@@ -80,7 +79,7 @@ class VaccinationProtocol
   ###*
   The targeted disease.
   ### 
-  doseTarget: -> if @json['doseTarget'] then new QUICK.CodeableConcept( @json['doseTarget'] )
+  doseTarget: -> if @json['doseTarget'] then new CodeableConcept( @json['doseTarget'] )
  
  
   ###*
@@ -92,7 +91,7 @@ class VaccinationProtocol
   ###*
   The recommended number of doses to achieve immunity
   ### 
-  seriesDoses: -> if @json['seriesDoses'] then new QUICK.Quantity( @json['seriesDoses'] )
+  seriesDoses: -> if @json['seriesDoses'] then new Quantity( @json['seriesDoses'] )
  
  
 

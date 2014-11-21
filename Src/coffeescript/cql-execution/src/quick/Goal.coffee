@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A defined target or measure to be achieved in the process of patient care; a desired outcome. A typical goal is expressed as a change in status expected at a defined future time.
  
@@ -52,7 +51,7 @@ class Goal
   ###*
   The metric that is the clinical subject of the goal.  Typically a measurable clinical attribute of the subject.  E.g., weight, blood pressure, hemoglobin A1c level.
   ### 
-  goalFocus: -> if @json['goalFocus'] then new QUICK.CodeableConcept( @json['goalFocus'] )
+  goalFocus: -> if @json['goalFocus'] then new CodeableConcept( @json['goalFocus'] )
  
  
   ###*
@@ -67,7 +66,7 @@ The end time of the interval may be "open" or not stated, if the goal is being i
   ###*
   The metric whose achievement would signify the fulfillment of the goal.  E.g., 150 pounds, 7.0%.
   ### 
-  goalValue: -> if @json['goalValue'] then new QUICK.Element( @json['goalValue'] )
+  goalValue: -> if @json['goalValue'] then new Element( @json['goalValue'] )
  
  
 

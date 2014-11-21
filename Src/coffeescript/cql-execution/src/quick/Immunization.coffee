@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Descriptor for the administration of vaccines to patients across all healthcare disciplines in all care settings and all regions. This does not include the administration of non-vaccine agents, even those that may have or claim immunological effects.
  
@@ -69,7 +68,7 @@ class Immunization
   ###*
   The vaccine product that is administered
   ### 
-  vaccine: -> if @json['vaccine'] then new QUICK.Vaccine( @json['vaccine'] )
+  vaccine: -> if @json['vaccine'] then new Vaccine( @json['vaccine'] )
  
  
 

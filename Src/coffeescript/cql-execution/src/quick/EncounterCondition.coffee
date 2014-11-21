@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A condition that is considered within the encounter and the role that the condition played within the encounter, e.g., diagnosis at discharge.
  
@@ -43,13 +42,13 @@ class EncounterCondition
   ###*
   The reference to the condition such as a problem.
   ### 
-  condition: -> if @json['condition'] then new QUICK.StatementOfOccurrence( @json['condition'] )
+  condition: -> if @json['condition'] then new StatementOfOccurrence( @json['condition'] )
  
  
   ###*
   The role of the condition within an encounter, e.g., chief complaint, admission diagnosis, discharge diagnosis, comorbidity
   ### 
-  conditionRole: -> if @json['conditionRole'] then new QUICK.CodeableConcept( @json['conditionRole'] )
+  conditionRole: -> if @json['conditionRole'] then new CodeableConcept( @json['conditionRole'] )
  
  
 

@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A group of related result values such as a laboratory result panel.  e.g., complete blood count, blood pressure
  
@@ -79,7 +78,7 @@ class ObservationResultGroup
   ###*
   Identifies what type of observation was performed. e.g., body temperature
   ### 
-  name: -> if @json['name'] then new QUICK.CodeableConcept( @json['name'] )
+  name: -> if @json['name'] then new CodeableConcept( @json['name'] )
  
  
   ###*

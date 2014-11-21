@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 An patient safety incident (a type of adverse event) is an unintended action or workflow such administering the wrong dose, administering the medication to the wrong patient, administering a medication by the wrong route, a patient falling out of bed.  An adverse event might or might not result in an adverse reaction or harm to the patient.
  
@@ -44,19 +43,19 @@ class PatientSafetyIncident
   ###*
   The clinical statement for the action that was unintentionally performed, if relevant and available.
   ### 
-  action: -> if @json['action'] then new QUICK.ClinicalStatement( @json['action'] )
+  action: -> if @json['action'] then new ClinicalStatement( @json['action'] )
  
  
   ###*
   The type of adverse action. For instance, a code representing an unintentional and invalid medication administration.
   ### 
-  code: -> if @json['code'] then new QUICK.CodeableConcept( @json['code'] )
+  code: -> if @json['code'] then new CodeableConcept( @json['code'] )
  
  
   ###*
   The time period during which the adverse event occurred.
   ### 
-  effectiveTime: -> if @json['effectiveTime'] then new QUICK.Period( @json['effectiveTime'] )
+  effectiveTime: -> if @json['effectiveTime'] then new Period( @json['effectiveTime'] )
  
  
 

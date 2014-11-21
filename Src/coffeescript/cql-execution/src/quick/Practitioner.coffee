@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Demographics and qualification information for an individual who is directly or indirectly involved in the provisioning of healthcare.
 

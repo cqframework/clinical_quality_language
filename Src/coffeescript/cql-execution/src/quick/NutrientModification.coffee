@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Nutrient modifications allows specification of constraints on the quantity of components of diet. 
 
@@ -45,13 +44,13 @@ class NutrientModification
   ###*
   The type of nutrient that this diet contains. Nutrient types include: carbohydrates, lipids and fats, salts such as Sodium or Potassium, fibers, and also fluids.
   ### 
-  nutrientType: -> if @json['nutrientType'] then new QUICK.CodeableConcept( @json['nutrientType'] )
+  nutrientType: -> if @json['nutrientType'] then new CodeableConcept( @json['nutrientType'] )
  
  
   ###*
   Indicates how much of the nutrient is to be or was administered
   ### 
-  quantity: -> if @json['quantity'] then new QUICK.Range( @json['quantity'] )
+  quantity: -> if @json['quantity'] then new Range( @json['quantity'] )
  
  
 

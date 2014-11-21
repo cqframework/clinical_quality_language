@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 An order is an instruction by a healthcare provider to another healthcare provider to perform some act.
  
@@ -63,7 +62,7 @@ class Order
   ###*
   Identifies a proposal that led to this order.
   ### 
-  fromProposal: -> if @json['fromProposal'] then new QUICK.StatementOfOccurrence( @json['fromProposal'] )
+  fromProposal: -> if @json['fromProposal'] then new StatementOfOccurrence( @json['fromProposal'] )
  
  
   ###*

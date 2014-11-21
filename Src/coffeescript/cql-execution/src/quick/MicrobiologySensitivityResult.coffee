@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Findings of the microbiology sensitivity test. This element is used to specify traditional, culture-isolate- run susceptibilities. It is not used to specify genetic methods for organism sensitivity.
  
@@ -71,7 +70,7 @@ class MicrobiologySensitivityResult
   ###*
   Identifies what type of observation was performed. e.g., body temperature
   ### 
-  name: -> if @json['name'] then new QUICK.CodeableConcept( @json['name'] )
+  name: -> if @json['name'] then new CodeableConcept( @json['name'] )
  
  
   ###*

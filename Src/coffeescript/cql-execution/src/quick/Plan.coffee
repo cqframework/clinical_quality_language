@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A plan to perform an act. Typically, this would include a time at which the action is expected or scheduled to be performed.
  
@@ -60,13 +59,13 @@ class Plan
   ###*
   Identifies a proposal that led to this order.
   ### 
-  fromProposal: -> if @json['fromProposal'] then new QUICK.StatementOfOccurrence( @json['fromProposal'] )
+  fromProposal: -> if @json['fromProposal'] then new StatementOfOccurrence( @json['fromProposal'] )
  
  
   ###*
   Identifies an order that is partly or wholly filled by the performance of this act
   ### 
-  fulfillsOrder: -> if @json['fulfillsOrder'] then new QUICK.StatementOfOccurrence( @json['fulfillsOrder'] )
+  fulfillsOrder: -> if @json['fulfillsOrder'] then new StatementOfOccurrence( @json['fulfillsOrder'] )
  
  
   ###*

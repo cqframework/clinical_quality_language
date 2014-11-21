@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A location on a person's body.  E.g., left breast, heart.
  
@@ -42,7 +41,7 @@ class BodySite
   ###*
   A location on a patient's body.  May or may not encompass laterality. E.g., lung, left lung.
   ### 
-  anatomicalLocation: -> if @json['anatomicalLocation'] then new QUICK.CodeableConcept( @json['anatomicalLocation'] )
+  anatomicalLocation: -> if @json['anatomicalLocation'] then new CodeableConcept( @json['anatomicalLocation'] )
  
  
   ###*

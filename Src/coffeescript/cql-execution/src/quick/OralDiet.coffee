@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Concept generally representing food and/or a nutritional supplement prepared from food ingredients that is self-administered by a patient and consumed orally. 
 

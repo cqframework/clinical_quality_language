@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The signs and symptoms that were observed as part of the event.
  
@@ -67,7 +66,7 @@ class ManifestedSymptom
   ###*
   The specific sign or symptom that was observed.
   ### 
-  symptomCode: -> if @json['symptomCode'] then new QUICK.CodeableConcept( @json['symptomCode'] )
+  symptomCode: -> if @json['symptomCode'] then new CodeableConcept( @json['symptomCode'] )
  
  
 

@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Unfavorable healthcare event (e.g., death, rash, difficulty breathing, a fall, or an adverse surgical event) that may or may not have been caused by exposure to some agent (e.g., a medication, immunization, food, or environmental agent) or to some action.
 
@@ -61,7 +60,7 @@ class AdverseOutcome
   ###*
   The type of adverse outcome. For instance, a fall, a hospital-acquired infection, or a reaction to a substance.
   ### 
-  code: -> if @json['code'] then new QUICK.CodeableConcept( @json['code'] )
+  code: -> if @json['code'] then new CodeableConcept( @json['code'] )
  
  
   ###*
@@ -75,7 +74,7 @@ class AdverseOutcome
   ###*
   The time period during which the adverse event occurred.
   ### 
-  effectiveTime: -> if @json['effectiveTime'] then new QUICK.Period( @json['effectiveTime'] )
+  effectiveTime: -> if @json['effectiveTime'] then new Period( @json['effectiveTime'] )
  
  
   ###*

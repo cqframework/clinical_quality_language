@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The actual event of performing a procedure.
 
@@ -148,7 +147,7 @@ let VancoDoseAdmin =
   ###*
   The modality of a Clinical Statement describes the way the topic exists, happens, or is experienced.
   ### 
-  modality: -> if @json['modality'] then new QUICK.StatementModality( @json['modality'] )
+  modality: -> if @json['modality'] then new StatementModality( @json['modality'] )
  
  
   ###*
@@ -180,7 +179,7 @@ A performance may have many participants In comparison, an order or a plan has o
   ###*
   This is the code that identifies the procedure with as much specificity as available, or as required.  E.g., appendectomy, coronary artery bypass graft surgery.
   ### 
-  procedureCode: -> if @json['procedureCode'] then new QUICK.CodeableConcept( @json['procedureCode'] )
+  procedureCode: -> if @json['procedureCode'] then new CodeableConcept( @json['procedureCode'] )
  
  
   ###*
@@ -252,7 +251,7 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The patient described by this statement.
   ### 
-  subject: -> if @json['subject'] then new QUICK.Patient( @json['subject'] )
+  subject: -> if @json['subject'] then new Patient( @json['subject'] )
  
  
   ###*
@@ -266,7 +265,7 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The subject matter of this clinical statement. The topic may be an action like medication administration, or a finding or other observations about the patient.
   ### 
-  topic: -> if @json['topic'] then new QUICK.StatementTopic( @json['topic'] )
+  topic: -> if @json['topic'] then new StatementTopic( @json['topic'] )
  
  
 

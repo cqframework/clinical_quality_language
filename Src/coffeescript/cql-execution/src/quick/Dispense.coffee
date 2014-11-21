@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Details of the dispensation such as the days supply and quantity of medication (to be) dispensed.
  

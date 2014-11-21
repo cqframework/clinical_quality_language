@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A preparation intended to supplement the diet and provide calories or nutrients, such as vitamins, minerals, fiber, fatty acids, carbohydrates, or amino acids, that may be missing or may not be consumed in sufficient quantity in a person's diet. Such products may be ordered in addition to the diet (either general or therapeutic) to enhance a person’s intake. Supplemental food products provide some but not all of a patient’s nutritional needs. 
  
@@ -52,7 +51,7 @@ class NutritionalSupplement
   ###*
   The base supplement to be provided or administered, e.g., standard formula
   ### 
-  baseProduct: -> if @json['baseProduct'] then new QUICK.NutritionProduct( @json['baseProduct'] )
+  baseProduct: -> if @json['baseProduct'] then new NutritionProduct( @json['baseProduct'] )
  
  
   ###*

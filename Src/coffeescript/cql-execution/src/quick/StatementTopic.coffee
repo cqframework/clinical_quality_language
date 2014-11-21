@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The topic of a clinical statement. Generally statement topics fall into two broad categories: (1) statements about things that are observed (e.g., a clinical observation such as elevated blood pressure or a condition such as diabetes) and (2) statements about clinical actions that ought to be, may have been, have been, or will be done (e.g., a proposal for an imaging procedure or the performance of an angioplasty).
  

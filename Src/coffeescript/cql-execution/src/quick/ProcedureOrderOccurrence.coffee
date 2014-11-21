@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 An order for a procedure to be performed.
 
@@ -104,7 +103,7 @@ class ProcedureOrderOccurrence
   ###*
   Identifies a proposal that led to this order.
   ### 
-  fromProposal: -> if @json['fromProposal'] then new QUICK.StatementOfOccurrence( @json['fromProposal'] )
+  fromProposal: -> if @json['fromProposal'] then new StatementOfOccurrence( @json['fromProposal'] )
  
  
   ###*
@@ -126,7 +125,7 @@ class ProcedureOrderOccurrence
   ###*
   The modality of a Clinical Statement describes the way the topic exists, happens, or is experienced.
   ### 
-  modality: -> if @json['modality'] then new QUICK.StatementModality( @json['modality'] )
+  modality: -> if @json['modality'] then new StatementModality( @json['modality'] )
  
  
   ###*
@@ -174,7 +173,7 @@ Reasons such as "SpO2 less than x%" should be addressed as a PRN Instruction rat
   ###*
   This is the code that identifies the procedure with as much specificity as available, or as required.  E.g., appendectomy, coronary artery bypass graft surgery.
   ### 
-  procedureCode: -> if @json['procedureCode'] then new QUICK.CodeableConcept( @json['procedureCode'] )
+  procedureCode: -> if @json['procedureCode'] then new CodeableConcept( @json['procedureCode'] )
  
  
   ###*
@@ -246,7 +245,7 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The patient described by this statement.
   ### 
-  subject: -> if @json['subject'] then new QUICK.Patient( @json['subject'] )
+  subject: -> if @json['subject'] then new Patient( @json['subject'] )
  
  
   ###*
@@ -260,7 +259,7 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The subject matter of this clinical statement. The topic may be an action like medication administration, or a finding or other observations about the patient.
   ### 
-  topic: -> if @json['topic'] then new QUICK.StatementTopic( @json['topic'] )
+  topic: -> if @json['topic'] then new StatementTopic( @json['topic'] )
  
  
   ###*

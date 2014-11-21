@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 The imaging modality and the frequency with which it will be used to confirm that a tumor/target is in the same position at the time of treatment as it was at the time of simulation are defined.  For example, an order may indicate that a cone-beam CT (CBCT) should be acquired just prior to each treatment to confirm that a lung tumor is within a target volume.
  

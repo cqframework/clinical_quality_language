@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Significant health event or condition for people related to the subject, relevant in the context of care for the subject.
 
@@ -46,7 +45,7 @@ class FamilyHistory
   ###*
   Condition that the related person had.
   ### 
-  condition: -> if @json['condition'] then new QUICK.CodeableConcept( @json['condition'] )
+  condition: -> if @json['condition'] then new CodeableConcept( @json['condition'] )
  
  
   ###*
@@ -68,7 +67,7 @@ class FamilyHistory
   ###*
   The person, related to the patient, who is affected by the condition.
   ### 
-  subject: -> if @json['subject'] then new QUICK.RelatedPerson( @json['subject'] )
+  subject: -> if @json['subject'] then new RelatedPerson( @json['subject'] )
  
  
 

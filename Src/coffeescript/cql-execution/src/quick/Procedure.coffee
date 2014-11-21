@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A procedure is an activity that is performed with or on a patient as part of the provision of care. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy. Examples include surgical procedures, diagnostic procedures, endoscopic procedures, biopsies, and exclude things for which there are specific types of acts defined, such as those for immunizations, medication administrations, nutrition administration, and use of devices.
  
@@ -52,7 +51,7 @@ class Procedure
   ###*
   This is the code that identifies the procedure with as much specificity as available, or as required.  E.g., appendectomy, coronary artery bypass graft surgery.
   ### 
-  procedureCode: -> if @json['procedureCode'] then new QUICK.CodeableConcept( @json['procedureCode'] )
+  procedureCode: -> if @json['procedureCode'] then new CodeableConcept( @json['procedureCode'] )
  
  
   ###*

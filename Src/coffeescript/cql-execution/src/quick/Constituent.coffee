@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A component of a multi-component substance administration. May be an additive in a composite IV.
  
@@ -44,19 +43,19 @@ class Constituent
   ###*
   Generally the ingredient of the constituent (e.g., dopamine) and the quantity such as an additive in a composite IV.
   ### 
-  constituent: -> if @json['constituent'] then new QUICK.MedicationIngredient( @json['constituent'] )
+  constituent: -> if @json['constituent'] then new MedicationIngredient( @json['constituent'] )
  
  
   ###*
   Indicates the category of the constituent. For instance, for a composite IV, the constituent may be either a 'diluent' or an 'additive'. For a TPN order, the constituent category may be a nutrient grouping such as 'electrolyte' or 'lipid', etc.
   ### 
-  constituentType: -> if @json['constituentType'] then new QUICK.CodeableConcept( @json['constituentType'] )
+  constituentType: -> if @json['constituentType'] then new CodeableConcept( @json['constituentType'] )
  
  
   ###*
   The dose of the constituent that makes up the whole. E.g., 500ml 50% Dextrose solution
   ### 
-  dose: -> if @json['dose'] then new QUICK.Dosage( @json['dose'] )
+  dose: -> if @json['dose'] then new Dosage( @json['dose'] )
  
  
 

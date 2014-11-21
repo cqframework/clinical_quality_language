@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A method to control the positioning and movement of a specific area of the body. Such motion management may be conducted during a procedure.
  

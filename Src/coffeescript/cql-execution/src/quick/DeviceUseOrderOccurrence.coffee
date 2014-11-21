@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 A provider's order to dispense and use a medical device.
 
@@ -87,7 +86,7 @@ class DeviceUseOrderOccurrence
   ###*
   The details of the device used or to be used.
   ### 
-  device: -> if @json['device'] then new QUICK.Device( @json['device'] )
+  device: -> if @json['device'] then new Device( @json['device'] )
  
  
   ###*
@@ -109,7 +108,7 @@ class DeviceUseOrderOccurrence
   ###*
   Identifies a proposal that led to this order.
   ### 
-  fromProposal: -> if @json['fromProposal'] then new QUICK.StatementOfOccurrence( @json['fromProposal'] )
+  fromProposal: -> if @json['fromProposal'] then new StatementOfOccurrence( @json['fromProposal'] )
  
  
   ###*
@@ -131,7 +130,7 @@ class DeviceUseOrderOccurrence
   ###*
   The modality of a Clinical Statement describes the way the topic exists, happens, or is experienced.
   ### 
-  modality: -> if @json['modality'] then new QUICK.StatementModality( @json['modality'] )
+  modality: -> if @json['modality'] then new StatementModality( @json['modality'] )
  
  
   ###*
@@ -229,7 +228,7 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The patient described by this statement.
   ### 
-  subject: -> if @json['subject'] then new QUICK.Patient( @json['subject'] )
+  subject: -> if @json['subject'] then new Patient( @json['subject'] )
  
  
   ###*
@@ -243,7 +242,7 @@ The statement author is the person creating the statement in the medical record.
   ###*
   The subject matter of this clinical statement. The topic may be an action like medication administration, or a finding or other observations about the patient.
   ### 
-  topic: -> if @json['topic'] then new QUICK.StatementTopic( @json['topic'] )
+  topic: -> if @json['topic'] then new StatementTopic( @json['topic'] )
  
  
   ###*

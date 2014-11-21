@@ -26,7 +26,6 @@
 ###*
 @namespacing scoping into the QUICK namespace
 ###
-this.QUICK ||= {}
 ###*
 Identifies a repeating pattern to the intended time periods such as the number of occurrences in a given time period, the days in a multi-day cycle, or a code representing the frequency of occurrence for a given cycle.
  
@@ -55,7 +54,7 @@ PCM PCM event occurs [duration] after breakfast (from the Latin post cibus matut
 PCD PCD event occurs [duration] after lunch (from the Latin post cibus diurnus).
 PCV PCV event occurs [duration] after dinner (from the Latin post cibus vespertinus).
   ### 
-  when: -> if @json['when'] then new QUICK.CodeableConcept( @json['when'] )
+  when: -> if @json['when'] then new CodeableConcept( @json['when'] )
  
  
 
