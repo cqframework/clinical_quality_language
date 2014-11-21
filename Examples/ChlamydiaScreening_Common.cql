@@ -2,10 +2,7 @@ library CMS153_Common version '2'
 
 using QUICK
 
-valueset "Female Administrative Sex (v1)" = '2.16.840.1.113883.3.560.100.2' 
-    version '1', code systems ( 'SNOMED-CT' version '2014.AA', 'ICD-9' version '2014' )
-valueset "Female Administrative Sex (v2)" = '2.16.840.1.113883.3.560.100.2' 
-    version '2', code systems ( 'SNOMED-CT' version '2014.AB', 'ICD-9' version '2014' )
+valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2'
 valueset "Other Female Reproductive Conditions" = '2.16.840.1.113883.3.464.1003.111.12.1006'
 valueset "Genital Herpes" = '2.16.840.1.113883.3.464.1003.110.12.1049'
 valueset "Genococcal Infections and Venereal Diseases" = '2.16.840.1.113883.3.464.1003.112.12.1001'
@@ -20,9 +17,7 @@ valueset "Lab Tests During Pregnancy" = '2.16.840.1.113883.3.464.1003.111.12.100
 valueset "Lab Tests for Sexually Transmitted Infections" = '2.16.840.1.113883.3.464.1003.110.12.1051'
 valueset "Chlamydia Screening" = '2.16.840.1.113883.3.464.1003.110.12.1052'
 
-context PATIENT
-
-define "Female Administrative Sex" = "Female Administrative Sex (v1)" union "Female Administrative Sex (v2)"
+context Patient
 
 define "Conditions Indicating Sexual Activity" =
 	[Condition: "Other Female Reproductive Conditions"]
@@ -35,15 +30,15 @@ define "Conditions Indicating Sexual Activity" =
     union [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
 
 define "Laboratory Tests Indicating Sexual Activity" =
-    [LaboratoryTest, Order: "Pregnancy Test"]
-    union [LaboratoryTest, Order: "Pap Test"]
-    union [LaboratoryTest, Order: "Lab Tests During Pregnancy"]
-	union [LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"]
+    [LaboratoryTestOrder: "Pregnancy Test"]
+    union [LaboratoryTestOrder: "Pap Test"]
+    union [LaboratoryTestOrder: "Lab Tests During Pregnancy"]
+	union [LaboratoryTestOrder: "Lab Tests for Sexually Transmitted Infections"]
 
 define "Tests Performed For Chlamydia" =
-	[Procedure, Performance: "Chlamydia Screening"]
+	[Procedure: "Chlamydia Screening"]
 
 define "Results Present For Chlamydia Screening" =
-    [ObservationResult: "Chlamydia Screening"] R where R.result is not null
+    [Observation: "Chlamydia Screening"] R where R.result is not null
 
 

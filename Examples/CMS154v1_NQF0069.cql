@@ -69,19 +69,19 @@ Supplemental Data Elements
 
 using QUICK
 
-context PATIENT
+context Patient
 
 define InDemographic =
     AgeInMonthsAt(start of MeasurementPeriod) >= 3
         and AgeInYearsAt(start of MeasurementPeriod) <= 18 years
 
 define ValidEncounters =
-	[Encounter, Performance: "Office Visit"]
-		union [Encounter, Performance: "Emergency Department Visit"]
-		union [Encounter, Performance: "Preventive Care- Initial Office Visit, 0 to 17"]
-		union [Encounter, Performance: "Preventive Care - Established Office Visit, 0 to 17"]
-		union [Encounter, Performance: "Hospital Observation Care - Initial"]
-		union [Encounter, Performance: "Face-to-Face Interaction"]
+	[Encounter: "Office Visit"]
+		union [Encounter: "Emergency Department Visit"]
+		union [Encounter: "Preventive Care- Initial Office Visit, 0 to 17"]
+		union [Encounter: "Preventive Care - Established Office Visit, 0 to 17"]
+		union [Encounter: "Hospital Observation Care - Initial"]
+		union [Encounter: "Face-to-Face Interaction"]
 
 define EncountersDuringMeasurementPeriod =
 	ValidEncounters E where E.effectiveTime during MeasurementPeriod
@@ -104,7 +104,7 @@ define Denominator =
 define Numerator =
 	ValidDiagnosis V where not exists ([Medication, Order: "Antibiotic Medications"] M where M.orderTime starts at most 3 days after start of V.effectiveTime)
 
-context POPULATION
+context Population
 
 define MeasureScore = (Count(Numerator) / Count(Denominator)) * 100
 

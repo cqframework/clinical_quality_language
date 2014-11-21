@@ -48,7 +48,7 @@ valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
 valueset "Antibiotic Medications" = '2.16.840.1.113883.3.464.1003.196.12.1001'
 valueset "Group A Streptococcus Test" = '2.16.840.1.113883.3.464.1003.198.12.1012'
 
-context PATIENT
+context Patient
 
 define InDemographic =
     AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
@@ -60,7 +60,7 @@ define Antibiotics =
     [MedicationPrescription: "Antibiotic Medications"]
 
 define TargetEncounters =
-    [Encounter, Performance: "Ambulatory/ED Visit"] E
+    [Encounter: "Ambulatory/ED Visit"] E
         with Pharyngitis P such that P.effectiveTime overlaps after E.performedAtTime
         with Antibiotics A such that A.orderedAtTime starts 3 days or less after start E.performedAtTime
         where E.performedAtTime during MeasurementPeriod

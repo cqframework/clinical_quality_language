@@ -2,7 +2,7 @@ library Common version '1'
 
 using QUICK
 
-context PATIENT
+context Patient
 
 define Patient = tuple from [Patient]
 define Patient = [Patient][]

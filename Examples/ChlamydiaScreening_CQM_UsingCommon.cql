@@ -6,7 +6,7 @@ include CMS153_Common version '2' called Common
 
 parameter "Measurement Period" default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
-context PATIENT
+context Patient
 
 define "In Demographic" =
     AgeInYearsAt(start of "Measurement Period") >= 16

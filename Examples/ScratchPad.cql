@@ -438,4 +438,12 @@ year of A > year of B
 Date(2012) >= Date(2012, 1, 1)
 
 
-    
+// Example of static version binding to reference multiple versions of a valueset witin the same artifact:
+
+valueset "Female Administrative Sex (v1)" = '2.16.840.1.113883.3.560.100.2'
+    version '1' code systems ( 'SNOMED-CT' version '2014.AA', 'ICD-9' version '2014' )
+valueset "Female Administrative Sex (v2)" = '2.16.840.1.113883.3.560.100.2'
+    version '2' code systems ( 'SNOMED-CT' version '2014.AB', 'ICD-9' version '2014' )
+
+define "Female Administrative Sex" = "Female Administrative Sex (v1)" union "Female Administrative Sex (v2)"
+

@@ -13,23 +13,23 @@ valueset "Office Visit" = '2.16.840.1.113883.3.464.1003.101.12.1001'
 valueset "Valvular Heart Disease" = '2.16.840.1.113883.3.464.1003.104.12.1017'
 valueset "INR Lab Result" = '2.16.840.1.113883.3.117.1.7.1.213'
 
-context PATIENT
+context Patient
 
 define FlutterDiagnoses = [Condition: "Flutter Diagnosis"]
-define WarfarinMedications = [Medication, Administered: "Warfarin Medication"]
-define FaceToFaceEncounters = [Encounter, Performance: "Face-to-face Encounter"]
-define OfficeVisitEncounters = [Encounter, Performance: "Office Visit"]
+define WarfarinMedications = [MedicationTreatment: "Warfarin Medication"]
+define FaceToFaceEncounters = [Encounter: "Face-to-face Encounter"]
+define OfficeVisitEncounters = [Encounter: "Office Visit"]
 define ValvularHeartDiseaseDiagnoses = [Condition: "Valvular Heart Disease"]
-define INRLabResults = [ObservationResult: "INR Lab Result"]
+define INRLabResults = [Observation: "INR Lab Result"]
 
 define InDemographic =
-	AgeInYearsAt(start of MeasurementPeriod) >= 18 years
+	AgeInYearsAt(start of MeasurementPeriod) >= 18
 
 define InpatientEncounters = FaceToFaceEncounters union OfficeVisitEncounters
 define ActiveFlutterDiagnoses = FlutterDiagnoses F where F.effectiveTime overlaps before MeasurementPeriod
 define ActiveValvularHeartDiseaseDiagnoses = ValvularHeartDiseaseDiagnoses D where D.effectiveTime overlaps before MeasurementPeriod
 
-define LookbackInterval = interval[MeasurePeriodStart - 200 days, MeasurePeriodStart]
+define LookbackInterval = interval[start of MeasurementPeriod - 200 days, start of MeasurementPeriod]
 
 define ActiveWarfarinDuringLookback =
 	WarfarinMedications M where M.administeredTime overlaps LookbackInterval
@@ -127,7 +127,7 @@ define MeasurePopulation =
 define MeasureObservation =
 	TherapeuticTimeInRange
 
-context POPULATION
+context Population
 
 define MeasureScore = Avg(MeasureObservation)
 

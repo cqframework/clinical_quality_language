@@ -49,15 +49,15 @@ using QUICK
 valueset "Inpatient" = '2.16.840.1.113883.3.666.5.307'
 valueset "Emergency Department Visit" = '2.16.840.1.113883.3.117.1.7.1.293'
 
-context PATIENT
+context Patient
 
 define InpatientEncounters =
-	[Encounter, Performance: "Inpatient"] E 
+	[Encounter: "Inpatient"] E
 		where E.lengthOfStay <= 120 days 
 			and E.dischargeDateTime during MeasurementPeriod
 
 define EDEncounters =
-	[Encounter, Performance: "Emergency Department Visit"] ED
+	[Encounter: "Emergency Department Visit"] ED
 		with InpatientEncounters E such that ED.effectiveTime ends 1 hour or less before start of E.effectiveTime
 
 define MeasureObservation =
@@ -66,7 +66,7 @@ define MeasureObservation =
 			and E.facilityLocationDepartureDateTime is not null
 		return minutes between E.facilityLocationArrivalDateTime and E.facilityLocationDepartureDateTime
 
-context POPULATION
+context Population
 
 define MeasureScore = Median(MeasureObservation)
 
