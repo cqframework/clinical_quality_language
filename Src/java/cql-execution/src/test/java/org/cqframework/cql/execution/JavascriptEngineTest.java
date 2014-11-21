@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.Require;
@@ -20,12 +21,8 @@ public class JavascriptEngineTest {
 	{
 		Context context = Context.enter();
 		Scriptable scope = context.initStandardObjects();
-		
 		String javascript = "true";
-		
 		Object result = context.evaluateString(scope, javascript, "org.cqframework.cql.execution.JavascriptEngineTest.testJavascriptEngine", 1, null);
-
-		System.out.println( Context.toString(result) );
 		Context.exit();
 		
 		Assert.assertTrue( Context.toBoolean(result) );
@@ -44,25 +41,51 @@ public class JavascriptEngineTest {
 		javascript.append("\nrhinoVersion");
 		
 		Object result = context.evaluateString(scope, javascript.toString(), "org.cqframework.cql.execution.JavascriptEngineTest.testJavascriptVersion", 1, null);
-
-		System.out.println( Context.toString(result) );
 		Context.exit();
 		
 		Assert.assertTrue( Context.toString(result).contains("Rhino") );		
 	}
 	
 	@Test
+	public void testJavascriptResults()
+	{
+		Context context = Context.enter();
+		Scriptable scope = new ImporterTopLevel(context);
+		
+		TestPatientSource patients = new TestPatientSource();
+		patients.initialize(context, scope);
+		Engine.setPatientSource(patients);
+		Engine.reset();
+		
+		StringBuilder javascript = new StringBuilder();
+		javascript.append("importPackage(org.cqframework.cql.execution);");
+		javascript.append("\nvar source = Engine.getPatientSource();");
+		javascript.append("\nvar patient = null;");
+		javascript.append("\nwhile( (patient = source.shift()) != null) {");
+		javascript.append("\n  Engine.add( JSON.stringify(patient) );");
+		javascript.append("\n}");
+		javascript.append("\n");
+		
+		context.evaluateString(scope, javascript.toString(), "org.cqframework.cql.execution.JavascriptEngineTest.testJavascriptResults", 1, null);
+		Context.exit();
+		
+		Engine.dump();
+		
+		Assert.assertEquals( Engine.getLastResults().results.size(), TestPatientSource.maxPatients);		
+	}
+	
+	@Test
 	public void testJavascriptRequire()
 	{
-		final Context context = Context.enter();
-		final ScriptableObject scope = context.initStandardObjects();
+		Context context = Context.enter();
+		ScriptableObject scope = context.initStandardObjects();
 		
 		Global global = new Global(context);
 		boolean sandboxed = false;
 		List<String> modulePath = new ArrayList<String>();
 		String mainModule = "../../coffeescript/cql-execution/lib/";
 		modulePath.add(mainModule);
-		final Require require = global.installRequire(context, modulePath, sandboxed);
+		Require require = global.installRequire(context, modulePath, sandboxed);
 		require.install(scope);
 		
 //		String[] names = { "print", "load" };
@@ -71,13 +94,13 @@ public class JavascriptEngineTest {
 	    Scriptable arguments = context.newArray(scope, new Object[] {});
 	    scope.defineProperty("arguments", arguments, ScriptableObject.DONTENUM);
 
+		TestPatientSource patients = new TestPatientSource();
+		patients.initialize(context, scope);
+		Engine.setPatientSource(patients);
+		Engine.reset();
+	    
 		Object result = null;
 		try {
-			
-//	        File require = new File(EngineTest.class.getResource("r.js").getFile());
-//			FileReader reader = new FileReader( require );
-//			context.evaluateReader(scope, reader, "r.js", 1, null);
-
 			File lib = new File(mainModule);
 			File script = new File( lib, "age-exec.js" );
 			
@@ -86,54 +109,21 @@ public class JavascriptEngineTest {
 			
 			FileReader reader = new FileReader( script );
 			require.requireMain(context, "age-exec");
-			result = context.evaluateReader(scope, reader, "age-exec", 1, null);
+			//result = context.evaluateReader(scope, reader, "age-exec", 1, null);
+			//Object json = NativeJSON.stringify(context, scope, result, null, null);
 			
-			System.out.println( Context.toString(result) );
+			System.out.println( "Results: " + Engine.getLastResults().results.size() );
+			System.out.flush();
+			Engine.dump();
+			
 		} catch(Exception e) {
-			System.err.println(e.getLocalizedMessage());
+			System.err.println(e.getClass().getName() + " -- " + e.getLocalizedMessage());
 			File f = new File(".");
 			System.err.println(f.getAbsolutePath());
 			Assert.fail(e.getLocalizedMessage());
-		} finally {
-			Context.exit();
 		}
 		
-		Assert.assertNotNull( Context.toString(result) );		
-	}
-	
-	public void testJavascriptIncludes()
-	{
-		RhinoSupport support = new RhinoSupport();
-		Context context = Context.enter();
-		ScriptableObject scope = context.initStandardObjects(support, true);
-		
-		String[] names = { "print", "load" };
-		scope.defineFunctionProperties(names, scope.getClass(), ScriptableObject.DONTENUM);
-
-	    Scriptable arguments = context.newArray(scope, new Object[] {});
-	    scope.defineProperty("arguments", arguments, ScriptableObject.DONTENUM);
-
-		Object result = null;
-		try {
-			
-	        File require = new File(EngineTest.class.getResource("r.js").getFile());
-			FileReader reader = new FileReader( require );
-			context.evaluateReader(scope, reader, "r.js", 1, null);
-
-			File lib = new File("../../coffeescript/cql-execution/lib/");
-			reader = new FileReader( new File( lib, "age-exec.js") );
-			result = context.evaluateReader(scope, reader, "age-exec.js", 1, null);
-			
-			System.out.println( Context.toString(result) );
-		} catch(Exception e) {
-			System.err.println(e.getLocalizedMessage());
-			File f = new File(".");
-			System.err.println(f.getAbsolutePath());
-			Assert.fail(e.getLocalizedMessage());
-		} finally {
-			Context.exit();
-		}
-		
-		Assert.assertNotNull( Context.toString(result) );		
+		Assert.assertNotNull( Context.toString(result) );	
+		Context.exit();
 	}
 }
