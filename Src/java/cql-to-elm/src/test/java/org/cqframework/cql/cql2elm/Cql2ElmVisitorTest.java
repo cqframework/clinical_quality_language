@@ -228,6 +228,16 @@ public class Cql2ElmVisitorTest {
     }
 
     @Test
+    public void testInValueSetExpression() {
+        String cql =
+                "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
+                "define m = 'Value' in \"Acute Pharyngitis\"";
+        ExpressionDef def = (ExpressionDef) visitData(cql);
+        InValueSet ivs = (InValueSet)def.getExpression();
+        assertThat(ivs.getValueset().getName(), is("Acute Pharyngitis"));
+    }
+
+    @Test
     public void testFunctionReference() {
         String cql =
                 "define function MyFunction() { return true }\n" +

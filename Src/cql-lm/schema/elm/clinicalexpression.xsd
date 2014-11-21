@@ -16,7 +16,7 @@ The following changes were made since the informative ballot in September 2014:
 		Collapsed RequestBase/DataRequest and ClinicalRequest into Retrieve
 		Removed RequestCardinality
 		Removed subjectProperty, isInitial, useValueSets and useSubsumption attributes from the Retrieve
-		Removed the ValueSet, InValueSet, IsEquivalent, Subsumes, and SetSubsumes operators
+		Removed the ValueSet, IsEquivalent, Subsumes, and SetSubsumes operators
 		Added CalculateAge, CalculateAgeAt
 		Added dateLowProperty and dateHighProperty to the Retrieve
 -->
@@ -147,6 +147,21 @@ If this attribute is provided, the value must contain a list of pairs, separated
 			<xs:extension base="Expression">
 				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InValueSet">
+		<xs:annotation>
+			<xs:documentation>The InValueSet operator returns true if the given code is in the given value set.
+			
+Note that this operator explicitly requires a ValueSetRef as its valueset argument. This allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="code" type="Expression"/>
+					<xs:element name="valueset" type="ValueSetRef"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

@@ -615,10 +615,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             );
                 }
                 else {
-                    return of.createIn().withOperand(
-                            parseExpression(ctx.expression(0)),
-                            parseExpression(ctx.expression(1))
-                    );
+                    Expression left = parseExpression(ctx.expression(0));
+                    Expression right = parseExpression(ctx.expression(1));
+                    if (right instanceof ValueSetRef) {
+                        return of.createInValueSet()
+                                .withCode(left)
+                                .withValueset((ValueSetRef)right);
+                    }
+
+                    return of.createIn().withOperand(left, right);
                 }
             case "contains":
                 if (ctx.dateTimePrecisionSpecifier() != null) {
@@ -628,13 +633,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                     parseExpression(ctx.expression(0)),
                                     parseExpression(ctx.expression(1))
                             );
-
                 }
                 else {
-                    return of.createContains().withOperand(
-                            parseExpression(ctx.expression(0)),
-                            parseExpression(ctx.expression(1))
-                    );
+                    Expression left = parseExpression(ctx.expression(0));
+                    Expression right = parseExpression(ctx.expression(1));
+                    if (left instanceof ValueSetRef) {
+                        return of.createInValueSet()
+                                .withCode(right)
+                                .withValueset((ValueSetRef)left);
+                    }
+
+                    return of.createContains().withOperand(left, right);
                 }
         }
 
