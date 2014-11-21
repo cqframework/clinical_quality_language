@@ -1562,6 +1562,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
+    // TODO: Expand this optimization to work the DateLow/DateHigh property attributes
+
     /**
      * Some systems may wish to optimize performance by restricting retrieves with available date ranges.  Specifying
      * date ranges in a retrieve was removed from the CQL grammar, but it is still possible to extract date ranges from

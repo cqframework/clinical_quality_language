@@ -18,6 +18,7 @@ The following changes were made since the informative ballot in September 2014:
 		Removed subjectProperty, isInitial, useValueSets and useSubsumption attributes from the Retrieve
 		Removed the ValueSet, InValueSet, IsEquivalent, Subsumes, and SetSubsumes operators
 		Added CalculateAge, CalculateAgeAt
+		Added dateLowProperty and dateHighProperty to the Retrieve
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
@@ -69,8 +70,30 @@ Note that this property could potentially be specified elsewhere as part of an i
 				<xs:attribute name="dateProperty" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The dateProperty attribute optionally specifies which property of the model contains the clinically relevant date for the clinical statement.
+						
+This property is expected to reference a property that is either a DateTime, or an interval of DateTime. In either case, the result set will only include instances where the value of the dateProperty is during the date range. For date/time values, this means the date is both the same or after the beginning of the range, and the same or before the end of the range. For date/time interval values, this means that the entire interval is included in the date range.
 
-Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing them at the request expression level gives the most flexibility.</xs:documentation>
+Instances with no value for the dateProperty will not be included in the result set if a date range is specified.
+
+Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateLowProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateLowProperty attribute optionally specifies which property of the model contains the low component of the clinically relevant date for the clinical statement.
+						
+Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
+
+If the dateLowProperty is present, the dateHighProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateHighProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateHighProperty attribute optionally specifies which property of the model contains the high component of the clinically relevant date for the clinical statement.
+
+Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
+
+If the dateHighProperty is present, the dateLowProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="scope" type="xs:string" use="optional">

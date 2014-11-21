@@ -22,5 +22,7 @@
 		<xs:attribute name="topic" type="xs:string" use="required"/>
 		<xs:attribute name="primaryCodeAttribute" type="xs:string" use="optional"/>
 		<xs:attribute name="primaryDateAttribute" type="xs:string" use="optional"/>
+		<xs:attribute name="primaryDateLowAttribute" type="xs:string" use="optional"/>
+		<xs:attribute name="primaryDateHighAttribute" type="xs:string" use="optional"/>
 	</xs:complexType>
 </xs:schema>

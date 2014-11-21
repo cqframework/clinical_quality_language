@@ -2,7 +2,7 @@
 <modelInfo name="QUICK" xsi:schemaLocation="urn:hl7-org:elm-modelinfo:r1 modelinfo.xsd" xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	url="http://org.hl7.fhir" patientClassName="Patient" patientBirthDatePropertyName="birthDate" schemaLocation="http://org.hl7.fhir quick.xsd" targetQualifier="quick">
 	<classInfo name="Prediction" topic="Prediction" identifier="quick-prediction" primaryCodeAttribute="outcome" primaryDateAttribute="observedAtTime"/>
-	<classInfo name="Condition"  topic="Condition" identifier="quick-condition" primaryCodeAttribute="code" primaryDateAttribute="observedAtTime"/>
+	<classInfo name="Condition"  topic="Condition" identifier="quick-condition" primaryCodeAttribute="code" primaryDateLowAttribute="onsetDateTime" primaryDateHighAttribute="abatementDateTime"/>
 	<classInfo name="Encounter"  topic="EncounterProposal" identifier="quick-encounter-proposal" primaryCodeAttribute="class" primaryDateAttribute="proposedAtTime"/>
 	<classInfo name="Encounter"  topic="Encounter" identifier="quick-encounter" primaryCodeAttribute="class" primaryDateAttribute="performanceTime"/>
 	<classInfo name="MedicationTreatment"  topic="MedicationTreatment" identifier="quick-medicationtreatment" primaryDateAttribute="performanceTime"/>
