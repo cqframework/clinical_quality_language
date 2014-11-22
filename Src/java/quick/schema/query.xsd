@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2011+, HL7, Inc.
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification, 
+  are permitted provided that the following conditions are met:
+  
+   * Redistributions of source code must retain the above copyright notice, this 
+     list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice, 
+     this list of conditions and the following disclaimer in the documentation 
+     and/or other materials provided with the distribution.
+   * Neither the name of HL7 nor the names of its contributors may be used to 
+     endorse or promote products derived from this software without specific 
+     prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+  POSSIBILITY OF SUCH DAMAGE.
+  
+
+  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+  <xs:include schemaLocation="fhir-base.xsd"/>
+  <xs:element name="Query" type="Query">
+    <xs:annotation>
+      <xs:documentation>A description of a query with a set of parameters.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Query">
+    <xs:annotation>
+      <xs:documentation>A description of a query with a set of parameters.</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="DomainResource">
+        <xs:sequence>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="uri">
+            <xs:annotation>
+              <xs:documentation>Links query and its response(s).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="parameter" minOccurs="1" maxOccurs="unbounded" type="Extension">
+            <xs:annotation>
+              <xs:documentation>Set of query parameters with values.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="response" type="Query.Response" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>If this is a response to a query.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Query.Response">
+    <xs:annotation>
+      <xs:documentation>A description of a query with a set of parameters.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="uri">
+            <xs:annotation>
+              <xs:documentation>Links response to source query.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="outcome" minOccurs="1" maxOccurs="1" type="QueryOutcome">
+            <xs:annotation>
+              <xs:documentation>Outcome of processing the query.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="total" minOccurs="0" maxOccurs="1" type="integer">
+            <xs:annotation>
+              <xs:documentation>Total number of matching records.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="Extension">
+            <xs:annotation>
+              <xs:documentation>Parameters server used.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="first" minOccurs="0" maxOccurs="unbounded" type="Extension">
+            <xs:annotation>
+              <xs:documentation>To get first page (if paged).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="previous" minOccurs="0" maxOccurs="unbounded" type="Extension">
+            <xs:annotation>
+              <xs:documentation>To get previous page (if paged).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="next" minOccurs="0" maxOccurs="unbounded" type="Extension">
+            <xs:annotation>
+              <xs:documentation>To get next page (if paged).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="last" minOccurs="0" maxOccurs="unbounded" type="Extension">
+            <xs:annotation>
+              <xs:documentation>To get last page (if paged).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="reference" minOccurs="0" maxOccurs="unbounded" type="Reference">
+            <xs:annotation>
+              <xs:documentation>Resources that are the results of the search.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="QueryOutcome-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ok">
+        <xs:annotation>
+          <xs:documentation>The query was processed successfully.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="limited">
+        <xs:annotation>
+          <xs:documentation>The query was processed successfully, but some additional limitations were added.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="refused">
+        <xs:annotation>
+          <xs:documentation>The server refused to process the query.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="error">
+        <xs:annotation>
+          <xs:documentation>The server tried to process the query, but some error occurred.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="QueryOutcome">
+    <xs:annotation>
+      <xs:documentation>The outcome of processing a query request</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="QueryOutcome-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

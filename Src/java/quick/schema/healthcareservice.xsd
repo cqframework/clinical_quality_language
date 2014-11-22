@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2011+, HL7, Inc.
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification, 
+  are permitted provided that the following conditions are met:
+  
+   * Redistributions of source code must retain the above copyright notice, this 
+     list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice, 
+     this list of conditions and the following disclaimer in the documentation 
+     and/or other materials provided with the distribution.
+   * Neither the name of HL7 nor the names of its contributors may be used to 
+     endorse or promote products derived from this software without specific 
+     prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+  POSSIBILITY OF SUCH DAMAGE.
+  
+
+  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+  <xs:include schemaLocation="fhir-base.xsd"/>
+  <xs:element name="HealthcareService" type="HealthcareService">
+    <xs:annotation>
+      <xs:documentation>(informative) The details of a Healthcare Service available at a location.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="HealthcareService">
+    <xs:annotation>
+      <xs:documentation>(informative) The details of a Healthcare Service available at a location.</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="DomainResource">
+        <xs:sequence>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
+            <xs:annotation>
+              <xs:documentation>External Ids for this item.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="location" minOccurs="1" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The location where this healthcare service may be provided.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="serviceCategory" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Identifies the broad category of service being performed or delivered. Selecting a Service Category then determines the list of relevant service types that can be selected in the Primary Service Type.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="serviceType" type="HealthcareService.ServiceType" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>A specific type of service that may be delivered or performed.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="serviceName" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Further description of the service as it would be presented to a consumer while searching.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="comment" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Additional description of the  or any specific issues not covered by the other attributes, which can be displayed as further detail under the serviceName.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="extraDetails" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Extra details about the service that can't be placed in the other fields.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="freeProvisionCode" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>The free provision code provides a link to the Free Provision reference entity to enable the selection of one free provision type.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="eligibility" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Does this service have specific eligibility requirements that need to be met in order to use the service.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="eligibilityNote" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The description of service eligibility should, in general, not exceed one or two paragraphs. It should be sufficient for a prospective consumer to determine if they are likely to be eligible or not. Where eligibility requirements and conditions are complex, it may simply be noted that an eligibility assessment is required. Where eligibility is determined by an outside source, such as an Act of Parliament, this should be noted, preferably with a reference to a commonly available copy of the source document such as a web page.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="appointmentRequired" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Indicates whether or not a prospective consumer will require an appointment for a particular service at a Site to be provided by the Organization. Indicates if an appointment is required for access to this service. If this flag is 'NotDefined', then this flag is overridden by the Site's availability flag. (ConditionalIndicator Enum).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="imageURI" minOccurs="0" maxOccurs="1" type="uri">
+            <xs:annotation>
+              <xs:documentation>If there is an image associated with this Service Site, its URI can be included here.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="availableTime" type="HealthcareService.AvailableTime" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>A Collection of times that the Service Site is available.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="notAvailableTime" type="HealthcareService.NotAvailableTime" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>Not avail times - need better description.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="availabilityExceptions" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>A description of Site availability exceptions, e.g., public holiday availability. Succinctly describing all possible exceptions to normal Site availability as details in the Available Times and Not Available Times.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="publicKey" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The public part of the 'keys' allocated to an Organization by an accredited body to support secure exchange of data over the internet. To be provided by the Organization, where available.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="programName" minOccurs="0" maxOccurs="unbounded" type="string">
+            <xs:annotation>
+              <xs:documentation>Program Names that can be used to categorize the service.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="contactPoint" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+            <xs:annotation>
+              <xs:documentation>List of contacts related to this specific healthcare service. If this is empty, then refer to the location's contacts.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="characteristic" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Collection of Characteristics (attributes).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="referralMethod" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Ways that the service accepts referrals.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="setting" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>The setting where this service can be provided, such is in home, or at location in organisation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="targetGroup" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Collection of Target Groups for the Service Site (The target audience that this service is for).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="coverageArea" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Need better description.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="catchmentArea" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Need better description.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="serviceCode" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>List of the specific.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="HealthcareService.ServiceType">
+    <xs:annotation>
+      <xs:documentation>(informative) The details of a Healthcare Service available at a location.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="type" minOccurs="1" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>The specific type of service being delivered or performed.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="specialty" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Collection of Specialties handled by the Service Site. This is more of a Medical Term.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="HealthcareService.AvailableTime">
+    <xs:annotation>
+      <xs:documentation>(informative) The details of a Healthcare Service available at a location.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="daysOfWeek" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Indicates which Days of the week are available between the Start and End Times.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="allDay" minOccurs="0" maxOccurs="1" type="boolean">
+            <xs:annotation>
+              <xs:documentation>Is this always available? (hence times are irrelevant) e.g. 24 hour service.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="availableStartTime" minOccurs="0" maxOccurs="1" type="dateTime">
+            <xs:annotation>
+              <xs:documentation>The opening time of day (the date is not included). Note: If the AllDay flag is set, then this time is ignored.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="availableEndTime" minOccurs="0" maxOccurs="1" type="dateTime">
+            <xs:annotation>
+              <xs:documentation>The closing time of day (the date is not included). Note: If the AllDay flag is set, then this time is ignored.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="HealthcareService.NotAvailableTime">
+    <xs:annotation>
+      <xs:documentation>(informative) The details of a Healthcare Service available at a location.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="description" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The reason that can be presented to the user as to why this time is not available.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="startDate" minOccurs="0" maxOccurs="1" type="dateTime">
+            <xs:annotation>
+              <xs:documentation>Service is not available (seasonally or for a public holiday) from this date.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="endDate" minOccurs="0" maxOccurs="1" type="dateTime">
+            <xs:annotation>
+              <xs:documentation>Service is not available (seasonally or for a public holiday) until this date.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

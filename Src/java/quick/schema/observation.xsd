@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2011+, HL7, Inc.
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification, 
+  are permitted provided that the following conditions are met:
+  
+   * Redistributions of source code must retain the above copyright notice, this 
+     list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice, 
+     this list of conditions and the following disclaimer in the documentation 
+     and/or other materials provided with the distribution.
+   * Neither the name of HL7 nor the names of its contributors may be used to 
+     endorse or promote products derived from this software without specific 
+     prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+  POSSIBILITY OF SUCH DAMAGE.
+  
+
+  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+  <xs:include schemaLocation="fhir-base.xsd"/>
+  <xs:element name="Observation" type="Observation">
+    <xs:annotation>
+      <xs:documentation>Measurements and simple assertions made about a patient, device or other subject.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Observation">
+    <xs:annotation>
+      <xs:documentation>Measurements and simple assertions made about a patient, device or other subject.</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="DomainResource">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="1" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Describes what was observed. Sometimes this is called the observation &quot;code&quot;.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:choice minOccurs="0" maxOccurs="1" >
+            <xs:annotation>
+              <xs:documentation>The information determined as a result of making the observation, if the information has a simple value.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="valueQuantity" type="Quantity"/>
+            <xs:element name="valueCodeableConcept" type="CodeableConcept"/>
+            <xs:element name="valueAttachment" type="Attachment"/>
+            <xs:element name="valueRatio" type="Ratio"/>
+            <xs:element name="valueDateTime" type="dateTime"/>
+            <xs:element name="valuePeriod" type="Period"/>
+            <xs:element name="valueSampledData" type="SampledData"/>
+            <xs:element name="valueString" type="string"/>
+            <xs:element name="valueTime" type="time"/>
+          </xs:choice>
+          <xs:element name="dataAbsentReason" minOccurs="0" maxOccurs="1" type="DataAbsentReason">
+            <xs:annotation>
+              <xs:documentation>Provides a reason why the expected value in the element Observation.value[x] is missing.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="interpretation" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>The assessment made based on the result of the observation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="comments" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>May include statements about significant, unexpected or unreliable values, or information about the source of the value where this may be relevant to the interpretation of the result.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:choice minOccurs="0" maxOccurs="1" >
+            <xs:annotation>
+              <xs:documentation>The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the &quot;physiologically relevant time&quot;. This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="appliesDateTime" type="dateTime"/>
+            <xs:element name="appliesPeriod" type="Period"/>
+          </xs:choice>
+          <xs:element name="issued" minOccurs="0" maxOccurs="1" type="instant">
+            <xs:annotation>
+              <xs:documentation>The date and time this observation was made available.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ObservationStatus">
+            <xs:annotation>
+              <xs:documentation>The status of the result value.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="reliability" minOccurs="0" maxOccurs="1" type="ObservationReliability">
+            <xs:annotation>
+              <xs:documentation>An estimate of the degree to which quality issues have impacted on the value reported.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="bodySite" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Indicates the site on the subject's body where the observation was made ( i.e. the target site).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="method" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Indicates the mechanism used to perform the observation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation>A unique identifier for the simple observation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="subject" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The thing the observation is being made about.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="specimen" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The specimen that was used when this observation was made.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="performer" minOccurs="0" maxOccurs="unbounded" type="Reference">
+            <xs:annotation>
+              <xs:documentation>Who was responsible for asserting the observed value as &quot;true&quot;.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="encounter" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The healthcare event  ( e.g. a patient and healthcare provider interaction ) that relates to this observation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="referenceRange" type="Observation.ReferenceRange" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>Guidance on how to interpret the value by comparison to a normal or recommended range.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="related" type="Observation.Related" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>Related observations - either components, or previous observations, or statements of derivation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Observation.ReferenceRange">
+    <xs:annotation>
+      <xs:documentation>Measurements and simple assertions made about a patient, device or other subject.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="low" minOccurs="0" maxOccurs="1" type="Quantity">
+            <xs:annotation>
+              <xs:documentation>The value of the low bound of the reference range. If this is omitted, the low bound of the reference range is assumed to be meaningless. E.g. &lt;2.3.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="high" minOccurs="0" maxOccurs="1" type="Quantity">
+            <xs:annotation>
+              <xs:documentation>The value of the high bound of the reference range. If this is omitted, the high bound of the reference range is assumed to be meaningless. E.g. &gt;5.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="meaning" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Code for the meaning of the reference range.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="age" minOccurs="0" maxOccurs="1" type="Range">
+            <xs:annotation>
+              <xs:documentation>The age at which this reference range is applicable. This is a neonatal age (e.g. number of weeks at term) if the meaning says so.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="text" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Text based reference range in an observation which may be used when a quantitative range is not appropriate for an observation.  An example would be a reference value of &quot;Negative&quot; or a list or table of 'normals'.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Observation.Related">
+    <xs:annotation>
+      <xs:documentation>Measurements and simple assertions made about a patient, device or other subject.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="type" minOccurs="0" maxOccurs="1" type="ObservationRelationshipType">
+            <xs:annotation>
+              <xs:documentation>A code specifying the kind of relationship that exists with the target observation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="target" minOccurs="1" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>A reference to the observation that is related to this observation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="ObservationReliability-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ok">
+        <xs:annotation>
+          <xs:documentation>The result has no reliability concerns.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ongoing">
+        <xs:annotation>
+          <xs:documentation>An early estimate of value; measurement is still occurring.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="early">
+        <xs:annotation>
+          <xs:documentation>An early estimate of value; processing is still occurring.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="questionable">
+        <xs:annotation>
+          <xs:documentation>The observation value should be treated with care.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="calibrating">
+        <xs:annotation>
+          <xs:documentation>The result has been generated while calibration is occurring.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="error">
+        <xs:annotation>
+          <xs:documentation>The observation could not be completed because of an error.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="unknown">
+        <xs:annotation>
+          <xs:documentation>No observation  reliability value was available.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ObservationReliability">
+    <xs:annotation>
+      <xs:documentation>Codes that provide an estimate of the degree to which quality issues have impacted on the value of an observation</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="ObservationReliability-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="ObservationStatus-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="registered">
+        <xs:annotation>
+          <xs:documentation>The existence of the observation is registered, but there is no result yet available.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="preliminary">
+        <xs:annotation>
+          <xs:documentation>This is an initial or interim observation: data may be incomplete or unverified.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="final">
+        <xs:annotation>
+          <xs:documentation>The observation is complete and verified by an authorized person.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="amended">
+        <xs:annotation>
+          <xs:documentation>The observation has been modified subsequent to being Final, and is complete and verified by an authorized person.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="cancelled">
+        <xs:annotation>
+          <xs:documentation>The observation is unavailable because the measurement was not started or not completed (also sometimes called &quot;aborted&quot;).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="entered in error">
+        <xs:annotation>
+          <xs:documentation>The observation has been withdrawn following previous Final release.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ObservationStatus">
+    <xs:annotation>
+      <xs:documentation>Codes providing the status of an observation</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="ObservationStatus-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="ObservationRelationshipType-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="has-component">
+        <xs:annotation>
+          <xs:documentation>The target observation is a component of this observation (e.g. Systolic and Diastolic Blood Pressure).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="has-member">
+        <xs:annotation>
+          <xs:documentation>This observation is a group observation (e.g. a battery, a panel of tests, a set of vital sign measurements) that includes the target as a member of the group.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="derived-from">
+        <xs:annotation>
+          <xs:documentation>The target observation is part of the information from which this observation value is derived (e.g. calculated anion gap, Apgar score).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="sequel-to">
+        <xs:annotation>
+          <xs:documentation>This observation follows the target observation (e.g. timed tests such as Glucose Tolerance Test).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="replaces">
+        <xs:annotation>
+          <xs:documentation>This observation replaces a previous observation (i.e. a revised value). The target observation is now obsolete.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="qualified-by">
+        <xs:annotation>
+          <xs:documentation>The value of the target observation qualifies (refines) the semantics of the source observation (e.g. a lipaemia measure target from a plasma measure).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="interfered-by">
+        <xs:annotation>
+          <xs:documentation>The value of the target observation interferes (degardes quality, or prevents valid observation) with the semantics of the source observation (e.g. a hemolysis measure target from a plasma potassium measure which has no value).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ObservationRelationshipType">
+    <xs:annotation>
+      <xs:documentation>Codes specifying how two observations are related</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="ObservationRelationshipType-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

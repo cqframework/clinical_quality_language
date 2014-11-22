@@ -25,6 +25,7 @@ dependencies {
 
 ext.xjc = [
     schema:  "${projectDir}/schema/quick.xsd",
+    binding:  "${projectDir}/schema/quick-binding.xjb",
     destDir: 'src/generated/java'
 ]
 
@@ -32,7 +33,7 @@ task generateSources << {
     file(xjc.destDir).mkdirs()
 
     ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
-    ant.xjc(destdir: xjc.destDir, schema: xjc.schema) {
+    ant.xjc(destdir: xjc.destDir, schema: xjc.schema, binding: xjc.binding) {
         arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString')
     }
 }

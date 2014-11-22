@@ -206,13 +206,13 @@ public class Cql2ElmVisitorTest {
     public void testPropertyReference() {
         String cql =
                 "define X = [Condition]\n" +
-                "define st = X.effectiveTime";
+                "define st = X.onsetDateTime";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Property prop = (Property) def.getExpression();
         ExpressionRef source = (ExpressionRef) prop.getSource();
         assertThat(source.getName(), is("X"));
         assertThat(source.getLibraryName(), is(nullValue()));
-        assertThat(prop.getPath(), is("effectiveTime"));
+        assertThat(prop.getPath(), is("onsetDateTime"));
         assertThat(prop.getScope(), is(nullValue()));
     }
 
@@ -336,7 +336,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("quick-condition"));
+        assertThat(request.getTemplateId(), is("cqf-condition"));
     }
 
     @Test
@@ -355,7 +355,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("quick-condition"));
+        assertThat(request.getTemplateId(), is("cqf-condition"));
     }
 
     @Test
@@ -374,7 +374,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("quick-condition"));
+        assertThat(request.getTemplateId(), is("cqf-condition"));
     }
 
     @Test
@@ -382,13 +382,13 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
+                "    where E.period during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         Interval ivl = (Interval) request.getDateRange();
         assertTrue(ivl.isLowClosed());
         assertFalse(ivl.isHighClosed());
@@ -420,7 +420,7 @@ public class Cql2ElmVisitorTest {
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
-        assertThat(request.getDateProperty(), is("performanceTime"));
+        assertThat(request.getDateProperty(), is("period"));
         Interval ivl = (Interval) request.getDateRange();
         assertTrue(ivl.isLowClosed());
         assertFalse(ivl.isHighClosed());
@@ -447,13 +447,13 @@ public class Cql2ElmVisitorTest {
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during MeasurementPeriod";
+                "    where E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
@@ -468,13 +468,13 @@ public class Cql2ElmVisitorTest {
                 "parameter MeasurementPeriod : interval<DateTime>\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during MeasurementPeriod";
+                "    where E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
@@ -489,13 +489,13 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define twentyThirteen = interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during twentyThirteen";
+                "    where E.period during twentyThirteen";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during twentyThirteen" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ExpressionRef ivl = (ExpressionRef) request.getDateRange();
         assertThat(ivl.getName(), is("twentyThirteen"));
         assertThat(ivl.getLibraryName(), is(nullValue()));
@@ -509,13 +509,13 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during Date(2013, 6)";
+                "    where E.period during Date(2013, 6)";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during Date(2013, 6)" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         FunctionRef dtFun = (FunctionRef) request.getDateRange();
         assertThat(dtFun.getName(), is("Date"));
         assertThat(dtFun.getOperand(), hasSize(2));
@@ -532,13 +532,13 @@ public class Cql2ElmVisitorTest {
                 "parameter MyDate default Date(2013, 6)\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during MyDate";
+                "    where E.period during MyDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MyDate" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ParameterRef myDate = (ParameterRef) request.getDateRange();
         assertThat(myDate.getName(), is("MyDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
@@ -553,13 +553,13 @@ public class Cql2ElmVisitorTest {
                 "parameter MyDate : DateTime\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during MyDate";
+                "    where E.period during MyDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MyDate" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ParameterRef myDate = (ParameterRef) request.getDateRange();
         assertThat(myDate.getName(), is("MyDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
@@ -574,13 +574,13 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define myDate = Date(2013, 6)\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during myDate";
+                "    where E.period during myDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during myDate" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ExpressionRef myDate = (ExpressionRef) request.getDateRange();
         assertThat(myDate.getName(), is("myDate"));
         assertThat(myDate.getLibraryName(), is(nullValue()));
@@ -596,13 +596,13 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
-                "    and E.effectiveTime during MeasurementPeriod";
+                "    and E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
@@ -626,14 +626,14 @@ public class Cql2ElmVisitorTest {
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
                 "    and E.length < 14 days\n" +
-                "    and E.location.name = 'The Good Hospital'\n" +
-                "    and E.effectiveTime during MeasurementPeriod";
+                "    and E.location.location.name = 'The Good Hospital'\n" +
+                "    and E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        assertThat(request.getDateProperty(), is("effectiveTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
@@ -660,7 +660,7 @@ public class Cql2ElmVisitorTest {
         Equal rhs = (Equal) where.getOperand().get(1);
         Property eqLhs = (Property) rhs.getOperand().get(0);
         assertThat(eqLhs.getScope(), is("E"));
-        assertThat(eqLhs.getPath(), is("location.name"));
+        assertThat(eqLhs.getPath(), is("location.location.name"));
         assertThat(eqLhs.getSource(), is(nullValue()));
         assertThat(rhs.getOperand().get(1), literalFor("The Good Hospital"));
     }
@@ -671,14 +671,14 @@ public class Cql2ElmVisitorTest {
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.performanceTime during MeasurementPeriod\n" +
-                "    and E.effectiveTime during MeasurementPeriod";
+                "    where E.period during MeasurementPeriod\n" +
+                "    and E.hospitalization.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
         // First check the source and ensure the "during MeasurementPeriod" migrated up!
-        assertThat(request.getDateProperty(), is("performanceTime"));
+        assertThat(request.getDateProperty(), is("period"));
         ParameterRef mp = (ParameterRef) request.getDateRange();
         assertThat(mp.getName(), is("MeasurementPeriod"));
         assertThat(mp.getLibraryName(), is(nullValue()));
@@ -687,7 +687,7 @@ public class Cql2ElmVisitorTest {
         IncludedIn where = (IncludedIn) query.getWhere();
         Property lhs = (Property) where.getOperand().get(0);
         assertThat(lhs.getScope(), is("E"));
-        assertThat(lhs.getPath(), is("effectiveTime"));
+        assertThat(lhs.getPath(), is("hospitalization.period"));
         assertThat(lhs.getSource(), is(nullValue()));
         ParameterRef rhs = (ParameterRef) where.getOperand().get(1);
         assertThat(rhs.getName(), is("MeasurementPeriod"));
@@ -700,7 +700,7 @@ public class Cql2ElmVisitorTest {
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during MeasurementPeriod";
+                "    where E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql, false);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
@@ -713,7 +713,7 @@ public class Cql2ElmVisitorTest {
         IncludedIn where = (IncludedIn) query.getWhere();
         Property lhs = (Property) where.getOperand().get(0);
         assertThat(lhs.getScope(), is("E"));
-        assertThat(lhs.getPath(), is("effectiveTime"));
+        assertThat(lhs.getPath(), is("period"));
         assertThat(lhs.getSource(), is(nullValue()));
         ParameterRef rhs = (ParameterRef) where.getOperand().get(1);
         assertThat(rhs.getName(), is("MeasurementPeriod"));
@@ -728,7 +728,7 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
                 "define pharyngitis = [Condition: \"Acute Pharyngitis\"]\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.effectiveTime during pharyngitis";
+                "    where E.period during pharyngitis";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
@@ -741,7 +741,7 @@ public class Cql2ElmVisitorTest {
         IncludedIn where = (IncludedIn) query.getWhere();
         Property lhs = (Property) where.getOperand().get(0);
         assertThat(lhs.getScope(), is("E"));
-        assertThat(lhs.getPath(), is("effectiveTime"));
+        assertThat(lhs.getPath(), is("period"));
         assertThat(lhs.getSource(), is(nullValue()));
         ExpressionRef rhs = (ExpressionRef) where.getOperand().get(1);
         assertThat(rhs.getName(), is("pharyngitis"));
@@ -766,7 +766,7 @@ public class Cql2ElmVisitorTest {
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("quick-encounter"));
+        assertThat(request.getTemplateId(), is("cqf-encounter"));
 
         return query;
     }
@@ -779,9 +779,9 @@ public class Cql2ElmVisitorTest {
             "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
             "define st = [Encounter: \"Inpatient\"] E\n" +
             "    with [Condition: \"Acute Pharyngitis\"] P\n" +
-            "        such that P.effectiveTime overlaps after E.performanceTime\n" +
-            "    where duration in days of E.performanceTime >= 120\n" +
-            "    return tuple { id: E.id, lengthOfStay: duration in days of E.performanceTime }\n" +
+            "        such that interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period\n" +
+            "    where duration in days of E.period >= 120\n" +
+            "    return tuple { id: E.id, lengthOfStay: duration in days of E.period }\n" +
             "    sort by lengthOfStay desc";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Query query = (Query) def.getExpression();
@@ -799,7 +799,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("quick-encounter"));
+        assertThat(request.getTemplateId(), is("cqf-encounter"));
 
         // Then check the with statement
         assertThat(query.getRelationship(), hasSize(1));
@@ -816,16 +816,23 @@ public class Cql2ElmVisitorTest {
         assertThat(withRequest.getDateRange(), is(nullValue()));
         assertThat(withRequest.getScope(), is(nullValue()));
         assertThat(withRequest.getIdProperty(), is(nullValue()));
-        assertThat(withRequest.getTemplateId(), is("quick-condition"));
+        assertThat(withRequest.getTemplateId(), is("cqf-condition"));
         OverlapsAfter withWhere = (OverlapsAfter) relationship.getSuchThat();
         assertThat(withWhere.getOperand(), hasSize(2));
-        Property overlapsLHS = (Property) withWhere.getOperand().get(0);
-        assertThat(overlapsLHS.getScope(), is("P"));
-        assertThat(overlapsLHS.getPath(), is("effectiveTime"));
-        assertThat(overlapsLHS.getSource(), is(nullValue()));
+        Interval overlapsLHS = (Interval) withWhere.getOperand().get(0);
+        assertThat(overlapsLHS.isLowClosed(), is(true));
+        Property overlapsLHSLow = (Property) overlapsLHS.getLow();
+        assertThat(overlapsLHSLow.getScope(), is("P"));
+        assertThat(overlapsLHSLow.getPath(), is("onsetDateTime"));
+        assertThat(overlapsLHSLow.getSource(), is(nullValue()));
+        assertThat(overlapsLHS.isHighClosed(), is(true));
+        Property overlapsLHSHigh = (Property) overlapsLHS.getHigh();
+        assertThat(overlapsLHSHigh.getScope(), is("P"));
+        assertThat(overlapsLHSHigh.getPath(), is("abatementDateTime"));
+        assertThat(overlapsLHSHigh.getSource(), is(nullValue()));
         Property overlapsRHS = (Property) withWhere.getOperand().get(1);
         assertThat(overlapsRHS.getScope(), is("E"));
-        assertThat(overlapsRHS.getPath(), is("performanceTime"));
+        assertThat(overlapsRHS.getPath(), is("period"));
         assertThat(overlapsRHS.getSource(), is(nullValue()));
 
         // Then check where statement
@@ -837,12 +844,12 @@ public class Cql2ElmVisitorTest {
         Start whereLHSBegin = (Start) whereLHS.getOperand().get(0);
         Property whereLHSBeginProp = (Property) whereLHSBegin.getOperand();
         assertThat(whereLHSBeginProp.getScope(), is("E"));
-        assertThat(whereLHSBeginProp.getPath(), is("performanceTime"));
+        assertThat(whereLHSBeginProp.getPath(), is("period"));
         assertThat(whereLHSBeginProp.getSource(), is(nullValue()));
         End whereLHSEnd = (End) whereLHS.getOperand().get(1);
         Property whereLHSEndProp = (Property) whereLHSEnd.getOperand();
         assertThat(whereLHSEndProp.getScope(), is("E"));
-        assertThat(whereLHSEndProp.getPath(), is("performanceTime"));
+        assertThat(whereLHSEndProp.getPath(), is("period"));
         assertThat(whereLHSEndProp.getSource(), is(nullValue()));
         assertThat(where.getOperand().get(1), literalFor(120));
 
@@ -866,12 +873,12 @@ public class Cql2ElmVisitorTest {
         Start rtnP2ValBegin = (Start) rtnP2Val.getOperand().get(0);
         Property rtnP2ValBeginProp = (Property) rtnP2ValBegin.getOperand();
         assertThat(rtnP2ValBeginProp.getScope(), is("E"));
-        assertThat(rtnP2ValBeginProp.getPath(), is("performanceTime"));
+        assertThat(rtnP2ValBeginProp.getPath(), is("period"));
         assertThat(rtnP2ValBeginProp.getSource(), is(nullValue()));
         End rtnP2ValEnd = (End) rtnP2Val.getOperand().get(1);
         Property rtnP2ValEndProp = (Property) rtnP2ValEnd.getOperand();
         assertThat(rtnP2ValEndProp.getScope(), is("E"));
-        assertThat(rtnP2ValEndProp.getPath(), is("performanceTime"));
+        assertThat(rtnP2ValEndProp.getPath(), is("period"));
         assertThat(rtnP2ValEndProp.getSource(), is(nullValue()));
 
         // Finally test sort
@@ -909,7 +916,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("quick-encounter"));
+        assertThat(request.getTemplateId(), is("cqf-encounter"));
 
         // Then check the define
         assertThat(query.getDefine(), hasSize(1));

@@ -10,7 +10,7 @@ valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
 valueset "Antibiotic Medications" = '2.16.840.1.113883.3.464.1003.196.12.1001'
 valueset "Group A Streptococcus Test" = '2.16.840.1.113883.3.464.1003.198.12.1012'
 
-context PATIENT
+context Patient
 
 define InDemographic =
     AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
@@ -19,19 +19,19 @@ define Pharyngitis =
     [Condition: "Acute Pharyngitis"] union [Condition: "Acute Tonsillitis"]
 
 define Antibiotics =
-    [MedicationTreatmentOrder: "Antibiotic Medications"]
+    [MedicationPrescription: "Antibiotic Medications"]
 
 define TargetEncounters =
     [Encounter: "Ambulatory/ED Visit"] E
-        with Pharyngitis P such that P.effectiveTime overlaps after E.performedAtTime
-        with Antibiotics A such that A.orderedAtTime starts 3 days or less after start E.performedAtTime
-        where E.performedAtTime during MeasurementPeriod
+        with Pharyngitis P such that interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period
+        with Antibiotics A such that A.orderedOn starts 3 days or less after start of E.period
+        where E.period during MeasurementPeriod
 
 define TargetDiagnoses =
-    Pharyngitis P with TargetEncounters E such that P.effectiveTime overlaps after E.performedAtTime
+    Pharyngitis P with TargetEncounters E such that interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period
 
 define HasPriorAntibiotics =
-    exists (Antibiotics A with TargetDiagnoses D such that A.orderedAtTime starts 30 days or less before start D.effectiveTime)
+    exists (Antibiotics A with TargetDiagnoses D such that A.orderedOn starts 30 days or less before D.onsetDateTime)
 
 define HasTargetEncounter =
     exists (TargetEncounters)
@@ -46,4 +46,4 @@ define InDenominatorExclusions =
     HasPriorAntibiotics
 
 define InNumerator =
-    exists ([Observation: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod and R.result is not null)
+    exists ([Observation: "Group A Streptococcus Test"] R where R.issued during MeasurementPeriod and R.value is not null)

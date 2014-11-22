@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2011+, HL7, Inc.
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification, 
+  are permitted provided that the following conditions are met:
+  
+   * Redistributions of source code must retain the above copyright notice, this 
+     list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice, 
+     this list of conditions and the following disclaimer in the documentation 
+     and/or other materials provided with the distribution.
+   * Neither the name of HL7 nor the names of its contributors may be used to 
+     endorse or promote products derived from this software without specific 
+     prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+  POSSIBILITY OF SUCH DAMAGE.
+  
+
+  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+  <xs:include schemaLocation="fhir-base.xsd"/>
+  <xs:element name="DataElement" type="DataElement">
+    <xs:annotation>
+      <xs:documentation>The formal description of a single piece of information that can be gathered and reported.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="DataElement">
+    <xs:annotation>
+      <xs:documentation>The formal description of a single piece of information that can be gathered and reported.</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="DomainResource">
+        <xs:sequence>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation>The identifier that is used to identify this data element when it is referenced in a Profile, Questionnaire or an instance.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The identifier that is used to identify this version of the data element when it is referenced in a Profile, Questionnaire or instance. This is an arbitrary value managed by the definition author manually.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="publisher" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Details of the individual or organization who accepts responsibility for publishing the data element.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+            <xs:annotation>
+              <xs:documentation>Contact details to assist a user in finding and communicating with the publisher.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ResourceDataElementStatus">
+            <xs:annotation>
+              <xs:documentation>The status of the data element.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="date" minOccurs="0" maxOccurs="1" type="dateTime">
+            <xs:annotation>
+              <xs:documentation>The date that this version of the data element was published.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The term used by humans to refer to the data element.  Should ideally be unique within the context in which the data element is expected to be used.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="category" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>A set of terms from external terminologies that may be used to assist with indexing and searching of data element definitions.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="code" minOccurs="0" maxOccurs="unbounded" type="Coding">
+            <xs:annotation>
+              <xs:documentation>A code that provides the meaning for a data element according to a particular terminology.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="question" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The default/suggested phrasing to use when prompting a human to capture the data element.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="definition" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Provides a complete explanation of the meaning of the data element for human readability.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="comments" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Comments about the use of the element, including notes about how to use the data properly, exceptions to proper use, etc.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="requirements" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Explains why this element is needed and why it's been constrained as it has.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="synonym" minOccurs="0" maxOccurs="unbounded" type="string">
+            <xs:annotation>
+              <xs:documentation>Identifies additional names by which this element might also be known.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="type" minOccurs="0" maxOccurs="1" type="code">
+            <xs:annotation>
+              <xs:documentation>The FHIR data type that is the type for this element.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:choice minOccurs="0" maxOccurs="1" >
+            <xs:annotation>
+              <xs:documentation>An example value for this element.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="exampleBoolean" type="boolean"/>
+            <xs:element name="exampleInteger" type="integer"/>
+            <xs:element name="exampleDecimal" type="decimal"/>
+            <xs:element name="exampleBase64Binary" type="base64Binary"/>
+            <xs:element name="exampleInstant" type="instant"/>
+            <xs:element name="exampleString" type="string"/>
+            <xs:element name="exampleUri" type="uri"/>
+            <xs:element name="exampleDate" type="date"/>
+            <xs:element name="exampleDateTime" type="dateTime"/>
+            <xs:element name="exampleTime" type="time"/>
+            <xs:element name="exampleCode" type="code"/>
+            <xs:element name="exampleOid" type="oid"/>
+            <xs:element name="exampleUuid" type="uuid"/>
+            <xs:element name="exampleId" type="id"/>
+            <xs:element name="exampleAttachment" type="Attachment"/>
+            <xs:element name="exampleIdentifier" type="Identifier"/>
+            <xs:element name="exampleCodeableConcept" type="CodeableConcept"/>
+            <xs:element name="exampleCoding" type="Coding"/>
+            <xs:element name="exampleQuantity" type="Quantity"/>
+            <xs:element name="exampleRange" type="Range"/>
+            <xs:element name="examplePeriod" type="Period"/>
+            <xs:element name="exampleRatio" type="Ratio"/>
+            <xs:element name="exampleReference" type="Reference"/>
+            <xs:element name="exampleSampledData" type="SampledData"/>
+            <xs:element name="exampleHumanName" type="HumanName"/>
+            <xs:element name="exampleAddress" type="Address"/>
+            <xs:element name="exampleContactPoint" type="ContactPoint"/>
+            <xs:element name="exampleTiming" type="Timing"/>
+            <xs:element name="exampleElementDefinition" type="ElementDefinition"/>
+          </xs:choice>
+          <xs:element name="maxLength" minOccurs="0" maxOccurs="1" type="integer">
+            <xs:annotation>
+              <xs:documentation>Indicates the shortest length that SHALL be supported by conformant instances without truncation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="units" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>Identifies the units of measure in which the data element should be captured or expressed.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="binding" type="DataElement.Binding" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Binds to a value set if this element is coded (code, Coding, CodeableConcept).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="mapping" type="DataElement.Mapping" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>Identifies a concept from an external specification that roughly corresponds to this element.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DataElement.Binding">
+    <xs:annotation>
+      <xs:documentation>The formal description of a single piece of information that can be gathered and reported.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="isExtensible" minOccurs="1" maxOccurs="1" type="boolean">
+            <xs:annotation>
+              <xs:documentation>If true, then conformant systems may use additional codes or (where the data type permits) text alone to convey concepts not covered by the set of codes identified in the binding.  If false, then conformant systems are constrained to the provided codes alone.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="conformance" minOccurs="0" maxOccurs="1" type="BindingConformance">
+            <xs:annotation>
+              <xs:documentation>Indicates the degree of conformance expectations associated with this binding.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Describes the intended use of this particular set of codes.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="valueSet" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>Points to the value set that identifies the set of codes to be used.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DataElement.Mapping">
+    <xs:annotation>
+      <xs:documentation>The formal description of a single piece of information that can be gathered and reported.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="uri" minOccurs="0" maxOccurs="1" type="uri">
+            <xs:annotation>
+              <xs:documentation>A URI that identifies the specification that this mapping is expressed to.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>A name for the specification that is being mapped to.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="comments" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Comments about this mapping, including version notes, issues, scope limitations, and other important notes for usage.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="map" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Expresses what part of the target specification corresponds to this element.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="ResourceDataElementStatus-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="draft">
+        <xs:annotation>
+          <xs:documentation>This data element is still under development.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="active">
+        <xs:annotation>
+          <xs:documentation>This data element is ready for normal use.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="retired">
+        <xs:annotation>
+          <xs:documentation>This data element has been deprecated, withdrawn or superseded and should no longer be used.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ResourceDataElementStatus">
+    <xs:annotation>
+      <xs:documentation>The lifecycle status of a Resource data element</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="ResourceDataElementStatus-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

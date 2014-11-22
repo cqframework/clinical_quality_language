@@ -49,26 +49,27 @@ public class CMS146ElmTest {
         Collection<Retrieve> expectedCR = Arrays.asList(
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
-                        .withTemplateId("quick-condition")
+                        .withTemplateId("cqf-condition")
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
-                        .withTemplateId("quick-condition")
+                        .withTemplateId("cqf-condition")
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
                 of.createRetrieve()
-                        .withDataType(quickDataType("MedicationTreatment"))
-                        .withTemplateId("quick-medicationtreatment-order")
+                        .withDataType(quickDataType("MedicationPrescription"))
+                        .withTemplateId("cqf-medicationprescription")
+                        .withCodeProperty("medication.code")
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Encounter"))
-                        .withTemplateId("quick-encounter")
+                        .withTemplateId("cqf-encounter")
                         .withCodeProperty("class")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))
-                        .withTemplateId("quick-observation")
+                        .withTemplateId("cqf-observation")
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );

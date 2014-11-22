@@ -79,7 +79,7 @@
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
@@ -89,7 +89,7 @@
             }
          }, {
             "name" : "InDemographic",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -144,12 +144,12 @@
             }
          }, {
             "name" : "Pharyngitis",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
                   "dataType" : "{http://org.hl7.fhir}Condition",
-                  "templateId" : "quick-condition",
+                  "templateId" : "cqf-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
@@ -158,7 +158,7 @@
                   }
                }, {
                   "dataType" : "{http://org.hl7.fhir}Condition",
-                  "templateId" : "quick-condition",
+                  "templateId" : "cqf-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
@@ -169,10 +169,11 @@
             }
          }, {
             "name" : "Antibiotics",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}MedicationTreatment",
-               "templateId" : "quick-medicationtreatment-order",
+               "dataType" : "{http://org.hl7.fhir}MedicationPrescription",
+               "templateId" : "cqf-medicationprescription",
+               "codeProperty" : "medication.code",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Antibiotic Medications",
@@ -181,14 +182,14 @@
             }
          }, {
             "name" : "TargetEncounters",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}Encounter",
-                     "templateId" : "quick-encounter",
+                     "templateId" : "cqf-encounter",
                      "codeProperty" : "class",
                      "type" : "Retrieve",
                      "codes" : {
@@ -207,11 +208,21 @@
                   "suchThat" : {
                      "type" : "OverlapsAfter",
                      "operand" : [ {
-                        "path" : "effectiveTime",
-                        "scope" : "P",
-                        "type" : "Property"
+                        "lowClosed" : true,
+                        "highClosed" : true,
+                        "type" : "Interval",
+                        "low" : {
+                           "path" : "onsetDateTime",
+                           "scope" : "P",
+                           "type" : "Property"
+                        },
+                        "high" : {
+                           "path" : "abatementDateTime",
+                           "scope" : "P",
+                           "type" : "Property"
+                        }
                      }, {
-                        "path" : "performedAtTime",
+                        "path" : "period",
                         "scope" : "E",
                         "type" : "Property"
                      } ]
@@ -231,14 +242,14 @@
                         "operand" : [ {
                            "type" : "Start",
                            "operand" : {
-                              "path" : "orderedAtTime",
+                              "path" : "orderedOn",
                               "scope" : "A",
                               "type" : "Property"
                            }
                         }, {
                            "type" : "Start",
                            "operand" : {
-                              "path" : "performedAtTime",
+                              "path" : "period",
                               "scope" : "E",
                               "type" : "Property"
                            }
@@ -266,7 +277,7 @@
                "where" : {
                   "type" : "IncludedIn",
                   "operand" : [ {
-                     "path" : "performedAtTime",
+                     "path" : "period",
                      "scope" : "E",
                      "type" : "Property"
                   }, {
@@ -277,7 +288,7 @@
             }
          }, {
             "name" : "TargetDiagnoses",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -297,11 +308,21 @@
                   "suchThat" : {
                      "type" : "OverlapsAfter",
                      "operand" : [ {
-                        "path" : "effectiveTime",
-                        "scope" : "P",
-                        "type" : "Property"
+                        "lowClosed" : true,
+                        "highClosed" : true,
+                        "type" : "Interval",
+                        "low" : {
+                           "path" : "onsetDateTime",
+                           "scope" : "P",
+                           "type" : "Property"
+                        },
+                        "high" : {
+                           "path" : "abatementDateTime",
+                           "scope" : "P",
+                           "type" : "Property"
+                        }
                      }, {
-                        "path" : "performedAtTime",
+                        "path" : "period",
                         "scope" : "E",
                         "type" : "Property"
                      } ]
@@ -310,7 +331,7 @@
             }
          }, {
             "name" : "HasPriorAntibiotics",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -337,17 +358,14 @@
                            "operand" : [ {
                               "type" : "Start",
                               "operand" : {
-                                 "path" : "orderedAtTime",
+                                 "path" : "orderedOn",
                                  "scope" : "A",
                                  "type" : "Property"
                               }
                            }, {
-                              "type" : "Start",
-                              "operand" : {
-                                 "path" : "effectiveTime",
-                                 "scope" : "D",
-                                 "type" : "Property"
-                              }
+                              "path" : "onsetDateTime",
+                              "scope" : "D",
+                              "type" : "Property"
                            } ]
                         }, {
                            "lowClosed" : false,
@@ -370,7 +388,7 @@
             }
          }, {
             "name" : "HasTargetEncounter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -380,7 +398,7 @@
             }
          }, {
             "name" : "InInitialPopulation",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -393,7 +411,7 @@
             }
          }, {
             "name" : "InDenominator",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                "value" : "true",
@@ -401,14 +419,14 @@
             }
          }, {
             "name" : "InDenominatorExclusions",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "HasPriorAntibiotics",
                "type" : "ExpressionRef"
             }
          }, {
             "name" : "InNumerator",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -417,7 +435,7 @@
                      "alias" : "R",
                      "expression" : {
                         "dataType" : "{http://org.hl7.fhir}Observation",
-                        "templateId" : "quick-observation",
+                        "templateId" : "cqf-observation",
                         "codeProperty" : "code",
                         "type" : "Retrieve",
                         "codes" : {
@@ -432,7 +450,7 @@
                      "operand" : [ {
                         "type" : "IncludedIn",
                         "operand" : [ {
-                           "path" : "observedAtTime",
+                           "path" : "issued",
                            "scope" : "R",
                            "type" : "Property"
                         }, {
@@ -444,7 +462,7 @@
                         "operand" : {
                            "type" : "IsNull",
                            "operand" : {
-                              "path" : "result",
+                              "path" : "value",
                               "scope" : "R",
                               "type" : "Property"
                            }

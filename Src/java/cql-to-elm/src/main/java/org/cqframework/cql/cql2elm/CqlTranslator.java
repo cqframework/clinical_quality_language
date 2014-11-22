@@ -105,7 +105,7 @@ public class CqlTranslator {
     }
 
     private String convertToXML(Library library) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class, org.hl7.fhir.ClinicalStatement.class);
+        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class);
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 

@@ -1,0 +1,17 @@
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb"
+          xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema"
+          version="2.1">
+    <bindings schemaLocation="fhir-xhtml.xsd" version="1.0">
+        <bindings node="//xs:element[@name='bdo']">
+            <bindings node=".//xs:attribute[@name='lang']">
+                <property name="LangAttribute"/>
+            </bindings>
+        </bindings>
+        <bindings node="//xs:attributeGroup[@name='i18n']">
+            <bindings node=".//xs:attribute[@name='lang']">
+                <property name="LangAttribute"/>
+            </bindings>
+        </bindings>
+    </bindings>
+</bindings>
