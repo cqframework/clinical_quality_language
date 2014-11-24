@@ -4,15 +4,15 @@ measure = require './age'
 
 lib = new Library(measure)
 psource = new PatientSource [ {
-    "id": 1,
+    "identifier": { "value": "1" },
     "name": "John Smith",
     "gender": "M",
-    "birthdate" : "1980-02-17T06:15",
+    "birthDate" : "1980-02-17T06:15",
   }, {
-    "id": 2,
+    "identifier": { "value": "2" },
     "name": "Sally Smith",
     "gender": "F",
-    "birthdate" : "2007-08-02T11:47",
+    "birthDate" : "2007-08-02T11:47",
   } ]
 ctx = new Context(lib, psource)
 

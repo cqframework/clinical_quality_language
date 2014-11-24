@@ -31,26 +31,25 @@ class Record
 
 class Patient
   constructor: (json) ->
-    @id = json.id
+    @identifier = json.identifier
     @name = json.name
     @gender = json.gender
-    @birthdate = if json.birthdate? then DT.DateTime.parse json.birthdate
+    @birthDate = if json.birthDate? then DT.DateTime.parse json.birthDate
     @records = {}
     for r in json.records ? []
-      @records[r.datatype] ?= []
-      @records[r.datatype].push new Record(r)
+      @records[r.profile] ?= []
+      @records[r.profile].push new Record(r)
 
-  findRecords: (datatype) ->
-    @records[datatype] ? []
+  findRecords: (profile) ->
+    if profile is 'cqf-patient' then [@] else @records[profile] ? []
 
-
-class PatientSource 
+class PatientSource
     constructor: (@patients) ->
       @index = 0
     currentPatient: ->
       if @patients[@index]
         new Patient(@patients[@index])
-    
+
     nextPatient: ->
       @index++;
       @currentPatient()

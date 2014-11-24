@@ -40,12 +40,18 @@ class Library
     @parameters = {}
     for param in json.library.parameters?.def ? []
       @parameters[param.name] = new ParameterDef(param)
+    @valuesets = {}
+    for valueset in json.library.valueSets?.def ? []
+      @valuesets[valueset.name] = new ValueSetDef(valueset)
     @expressions = {}
     for expr in json.library.statements?.def ? []
       @expressions[expr.name] = new ExpressionDef(expr)
 
   get: (identifier) ->
-     @expressions[identifier]
+    @expressions[identifier]
+
+  getValueSet: (identifier) ->
+    @valuesets[identifier]
 
   getParameter: (name) ->
     @parameters[name]
@@ -54,13 +60,13 @@ class Library
     Results r = new Results()
     while p = ctx.currentPatient()
       patient_ctx = ctx.childContext({"Patient" : p})
-      for key,expr of @expressions when expr.context is "PATIENT"
-        r.recordPatientResult(patient_ctx.currentPatient().id, key, expr.exec(patient_ctx))
+      for key,expr of @expressions when expr.context is "Patient"
+        r.recordPatientResult(patient_ctx.currentPatient().identifier.value, key, expr.exec(patient_ctx))
       ctx.nextPatient()
     r
 
 class Context
-  
+
 
   constructor: (@parent, @_patientSource, @_parameters = {}, @_codeService) ->
     @context_values = {}
@@ -71,11 +77,11 @@ class Context
 
   @property "patientSource" ,
     get: -> @_patientSource || @parent?.patientSource
-    set: (ps) -> @_patientSource = ps  
+    set: (ps) -> @_patientSource = ps
 
   @property "codeService" ,
     get: -> @_codeService || @parent?.codeService
-    set: (cs) -> @_codeService = cs  
+    set: (cs) -> @_codeService = cs
 
   withPatients: (patientSource) ->
     @patientSource=patientSource
@@ -89,7 +95,7 @@ class Context
     @codeService = cs
     @
 
-  rootContext:  -> 
+  rootContext:  ->
     if (@parent instanceof Library) then @ else @parent?.rootContext()
 
   childContext: (context_values = {}) ->
@@ -99,6 +105,9 @@ class Context
 
   getParameter: (name) ->
     @parent?.getParameter(name)
+
+  getValueSet: (name) ->
+    @parent?.getValueSet(name)
 
   get: (identifier) ->
     @context_values[identifier] || @parent?.get(identifier)
@@ -161,10 +170,36 @@ class ExpressionRef extends Expression
 
   exec: (ctx) ->
     value = ctx.get(@name)
-    if value instanceof Expression  
+    if value instanceof Expression
       value = value.exec(ctx)
     value
-      
+
+# ValueSets
+
+class ValueSetDef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+    @id = json.id
+    @version = json.version
+    #todo: code systems and versions
+
+  exec: (ctx) ->
+    valueset = ctx.codeService.findValueSet(@id, @version) ? new DT.ValueSet(@id, @version)
+    ctx.rootContext().set @name, valueset
+    valueset
+
+class ValueSetRef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+
+  exec: (ctx) ->
+    # TODO: This calls the code service every time-- should be optimized
+    valueset = ctx.getValueSet(@name)
+    if valueset instanceof Expression
+      valueset = valueset.exec(ctx)
+    valueset
 
 # Parameters
 
@@ -229,7 +264,7 @@ class AgeAtFunctionRef extends FunctionRef
 
   exec: (ctx) ->
     date = @execArgs(ctx)[0].toJSDate()
-    ageInMS = date.getTime() - ctx.currentPatient().birthdate.toJSDate().getTime()
+    ageInMS = date.getTime() - ctx.currentPatient().birthDate.toJSDate().getTime()
     # Doesn't account for leap year, but close enough for now
     Math.floor(ageInMS / (1000 * 60 * 60 * 24 * 365))
 
@@ -256,14 +291,6 @@ class DateFunctionRef extends FunctionRef
 
   exec: (ctx) ->
     new DT.DateTime(@execArgs(ctx)...)
-
-class ValueSetFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-
-  exec: (ctx) ->
-    args = @execArgs(ctx)
-    ctx.codeService.findValueSet(args...) ? new DT.ValueSet(args...)
 
 # Comparisons
 class Greater extends Expression
@@ -339,7 +366,7 @@ class Includes extends Expression
     super
 
   exec: (ctx) ->
-    args = execArgs(ctx)
+    args = @execArgs(ctx)
     args[0].includes args[1]
 
 class Identifier extends Expression
@@ -349,7 +376,7 @@ class Identifier extends Expression
 
   exec: (ctx) ->
     ctx.get(@identifier)
-    
+
 
 class Start extends Expression
   constructor: (json) ->
@@ -385,6 +412,16 @@ class Distinct extends Expression
     container[itm] = itm for itm in @source.exec(ctx)
     value for key, value of container
 
+class SingletonFrom extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs ctx
+    if arg.length > 1 then throw 'IllegalArgument: \'SingletonFrom\' requires a 0 or 1 arg array'
+    else if arg.length is 1 then return arg[0]
+    else return null
+
 # Membership
 
 class In extends Expression
@@ -399,6 +436,17 @@ class In extends Expression
         return item in container
       when container instanceof DT.ValueSet
         return container.hasCode item
+
+class InValueSet extends Expression
+  constructor: (json) ->
+    super
+    @code = build json.code
+    @valueset = new ValueSetRef json.valueset
+
+  exec: (ctx) ->
+    code = @code.exec(ctx)
+    valueset = @valueset.exec(ctx)
+    if code? and valueset? then valueset.hasCode code else false
 
 # Math
 
@@ -439,38 +487,15 @@ class Negate extends Expression
 
 # DateMath
 
-class TimeBetween extends Expression
-  constructor: (json, @unit) ->
+class DurationBetween extends Expression
+  constructor: (json) ->
     super
+    @precision = json.precision
 
   exec: (ctx) ->
     args = @execArgs(ctx)
-    result = args[0].timeBetween(args[1], @unit)
+    result = args[0].durationBetween(args[1], @precision?.toLowerCase())
     if result.isPoint() then result.low else result
-
-class YearsBetween extends TimeBetween
-  constructor: (json) ->
-    super json, DT.DateTime.Unit.YEAR
-
-class MonthsBetween extends TimeBetween
-  constructor: (json) ->
-    super json, DT.DateTime.Unit.MONTH
-
-class DaysBetween extends TimeBetween
-  constructor: (json) ->
-    super json, DT.DateTime.Unit.DAY
-
-class HoursBetween extends TimeBetween
-  constructor: (json) ->
-    super json, DT.DateTime.Unit.HOUR
-
-class MinutesBetween extends TimeBetween
-  constructor: (json) ->
-    super json, DT.DateTime.Unit.MINUTE
-
-class SecondsBetween extends TimeBetween
-  constructor: (json) ->
-    super json, DT.DateTime.Unit.SECOND
 
 # Literals
 
@@ -525,13 +550,15 @@ class Property extends Expression
   constructor: (json) ->
     super
     @scope = json.scope
+    @source = build json.source
     @path = json.path
+
   exec: (ctx) ->
-    obj = ctx.get(@scope)
-    obj =  if obj instanceof Expression then obj.exec(ctx) else obj
+    obj = if @scope? then ctx.get(@scope) else @source
+    if obj instanceof Expression then obj = obj.exec(ctx)
     val = obj?[@path] ? obj?.get?(@path)
 
-    if !val 
+    if !val
       parts = @path.split(".")
       curr_obj = obj
       curr_val = null
@@ -539,7 +566,7 @@ class Property extends Expression
         _obj = curr_obj?[part] ? curr_obj?.get?(part)
         curr_obj = if _obj instanceof Function then _obj() else _obj
       val = curr_obj
-    val  
+    val
 
 class Tuple extends Expression
   constructor: (json) ->
@@ -552,7 +579,7 @@ class Tuple extends Expression
     val = {}
     for el in @elements
       val[el.name] = el.value?.exec(ctx)
-    val  
+    val
 
 # Retreives and Queries
 
@@ -560,16 +587,14 @@ class Retrieve extends Expression
   constructor: (json) ->
     super
     @datatype = json.dataType
+    @templateId = json.templateId
     @codeProperty = json.codeProperty
     @codes = build json.codes
     @dateProperty = json.dateProperty
     @dateRange = build json.dateRange
 
   exec: (ctx) ->
-    if @datatype[...21] is '{http://org.hl7.fhir}' then name = @datatype[21..]
-    else name = @datatype
-
-    records = ctx.currentPatient()?.findRecords([name])
+    records = ctx.currentPatient()?.findRecords(@templateId)
     if @codes
       valueset = @codes.exec(ctx)
       records = (r for r in records when valueset.hasCode(r.getCode(@codeProperty)))
@@ -578,8 +603,6 @@ class Retrieve extends Expression
       records = (r for r in records when range.includes(r.getDateOrInterval(@dateProperty)))
 
     records
-
-
 
 class AliasRef extends Expression
   constructor: (json) ->
@@ -592,7 +615,7 @@ class AliasRef extends Expression
 class QueryDefineRef extends AliasRef
   constructor: (json) ->
     super
-   
+
 class With extends Expression
   constructor: (json) ->
     super
@@ -613,57 +636,57 @@ class Without extends With
   exec: (ctx) ->
     !super(ctx)
 
-class ByExpression extends Expression 
+class ByExpression extends Expression
   constructor: (json) ->
     super
     @expression = build json.expression
     @direction = json.direction
     @low_order = if @direction == "asc" then -1 else 1
     @high_order = @low_order * -1
-   
+
    exec: (a,b) ->
      ctx = new Context()
      ctx.context_values = a
      a_val = @expression.exec(ctx)
-     ctx.context_values = b 
+     ctx.context_values = b
      b_val = @expression.exec(ctx)
 
      if a_val == b_val
        0
      else if a_val < b_val
        @low_order
-     else 
-       @high_order  
-      
-class Sort 
+     else
+       @high_order
+
+class Sort
   constructor:(json) ->
     @by = build json?.by
-  
+
   sort: (values) ->
     self = @
-    if @by 
+    if @by
       values.sort (a,b) ->
         order = 0
         for item in self.by
           order = item.exec(a,b)
           if order != 0 then break
         order
-        
+
 class MultiSource
   constructor: (@sources) ->
     @sources = if typeIsArray(@sources) then @sources else [@sources]
     @alias = @sources[0].alias
     @expression = build @sources[0].expression
 
-    if @sources.length > 1 
-      @rest = new MultiSource(@sources.slice(1)) 
+    if @sources.length > 1
+      @rest = new MultiSource(@sources.slice(1))
 
   aliases: ->
-    a = [@alias] 
+    a = [@alias]
     if @rest
       a = a.concat @rest.aliases()
     a
-      
+
   forEach: (ctx, func) ->
     @records?= @expression.exec(ctx)
     for rec in @records
@@ -674,7 +697,7 @@ class MultiSource
       else
         func(rctx)
 
- 
+
 allTrue = (things) ->
   if typeIsArray things
     things.every (x) -> x
@@ -706,11 +729,11 @@ class Query extends Expression
         rel.exec(child_ctx)
      passed = allTrue(relations)
      passed = passed && if self.where then self.where.exec(rctx) else passed
-     if passed 
+     if passed
        if self.return
          val = self.return.exec(rctx)
          if returnedValues.indexOf(val) == -1
-           returnedValues.push val 
+           returnedValues.push val
        else
          if self.aliases.length == 1
            returnedValues.push rctx.get(self.aliases[0])
@@ -719,7 +742,7 @@ class Query extends Expression
     )
 
     @sort?.sort(returnedValues)
-    returnedValues 
+    returnedValues
 
 
 

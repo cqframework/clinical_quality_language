@@ -57,7 +57,7 @@ module.exports = {
       "statements" : {
          "def" : [ {
             "name" : "InDemographic",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {

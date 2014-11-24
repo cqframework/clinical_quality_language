@@ -313,14 +313,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // If this is the first time a context definition is encountered, output a patient definition:
         // define Patient = element of [<Patient model type>]
         if (!implicitPatientCreated) {
+            Retrieve patientRetrieve = of.createRetrieve()
+                    .withDataType(resolveNamedType(getModelHelper().getModelInfo().getPatientClassName()));
+            if (getModelHelper().getModelInfo().getPatientClassIdentifier() != null) {
+                patientRetrieve.setTemplateId(getModelHelper().getModelInfo().getPatientClassIdentifier());
+            }
             ExpressionDef patientExpressionDef = of.createExpressionDef()
                     .withName("Patient")
                     .withContext(currentContext)
-                    .withExpression(of.createSingletonFrom().withOperand(
-                                    of.createRetrieve()
-                                            .withDataType(resolveNamedType(getModelHelper().getModelInfo().getPatientClassName()))
-                            )
-                    );
+                    .withExpression(of.createSingletonFrom().withOperand(patientRetrieve));
             addToLibrary(patientExpressionDef);
             implicitPatientCreated = true;
             return patientExpressionDef;

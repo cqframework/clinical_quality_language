@@ -11,7 +11,7 @@ library TestSnippet version '1'
 using QUICK
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
-context PATIENT
+context Patient
 
 define InDemographic =
     AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
@@ -80,17 +80,18 @@ module.exports.InAgeDemographic = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "InDemographic",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -137,7 +138,7 @@ module.exports.InAgeDemographic = {
 ### ExpressionDef
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Foo = 'Bar'
 ###
 
@@ -160,17 +161,18 @@ module.exports.ExpressionDef = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Foo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
                "value" : "Bar",
@@ -184,7 +186,7 @@ module.exports.ExpressionDef = {
 ### ExpressionRef
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Life = 42
 define Foo = Life
 ###
@@ -208,17 +210,18 @@ module.exports.ExpressionRef = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Life",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "42",
@@ -226,7 +229,7 @@ module.exports.ExpressionRef = {
             }
          }, {
             "name" : "Foo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Life",
                "type" : "ExpressionRef"
@@ -275,7 +278,7 @@ module.exports.ParameterDef = {
 library TestSnippet version '1'
 using QUICK
 parameter FooP default 'Bar'
-context PATIENT
+context Patient
 define Foo = FooP
 ###
 
@@ -308,17 +311,18 @@ module.exports.ParameterRef = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Foo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "FooP",
                "type" : "ParameterRef"
@@ -331,10 +335,9 @@ module.exports.ParameterRef = {
 ### ValueSetDef
 library TestSnippet version '1'
 using QUICK
-context PATIENT
-define "Known" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define "Unknown One Arg" = ValueSet('1.2.3.4.5.6.7.8.9')
-define "Unknown Two Arg" = ValueSet('1.2.3.4.5.6.7.8.9', '1')
+valueset "Known" = '2.16.840.1.113883.3.464.1003.101.12.1061'
+valueset "Unknown One Arg" = '1.2.3.4.5.6.7.8.9'
+valueset "Unknown Two Arg" = '1.2.3.4.5.6.7.8.9' version '1'
 ###
 
 module.exports.ValueSetDef = {
@@ -353,57 +356,17 @@ module.exports.ValueSetDef = {
             "uri" : "http://org.hl7.fhir"
          } ]
       },
-      "statements" : {
+      "valueSets" : {
          "def" : [ {
-            "name" : "Patient",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "SingletonOf",
-               "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
-                  "type" : "Retrieve"
-               }
-            }
-         }, {
             "name" : "Known",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
-                  "type" : "Literal"
-               } ]
-            }
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
          }, {
             "name" : "Unknown One Arg",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "1.2.3.4.5.6.7.8.9",
-                  "type" : "Literal"
-               } ]
-            }
+            "id" : "1.2.3.4.5.6.7.8.9"
          }, {
             "name" : "Unknown Two Arg",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "1.2.3.4.5.6.7.8.9",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "1",
-                  "type" : "Literal"
-               } ]
-            }
+            "id" : "1.2.3.4.5.6.7.8.9",
+            "version" : "1"
          } ]
       }
    }
@@ -412,8 +375,8 @@ module.exports.ValueSetDef = {
 ### ValueSetRef
 library TestSnippet version '1'
 using QUICK
-context PATIENT
-define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
+valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.101.12.1001'
+context Patient
 define Foo = "Acute Pharyngitis"
 ###
 
@@ -433,35 +396,30 @@ module.exports.ValueSetRef = {
             "uri" : "http://org.hl7.fhir"
          } ]
       },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Acute Pharyngitis",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1001"
+         } ]
+      },
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
-            "name" : "Acute Pharyngitis",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1001",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
             "name" : "Foo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Acute Pharyngitis",
-               "type" : "ExpressionRef"
+               "type" : "ValueSetRef"
             }
          } ]
       }
@@ -471,7 +429,7 @@ module.exports.ValueSetRef = {
 ### And
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define TT = true and true
 define TF = true and false
 define TN = true and null
@@ -502,17 +460,18 @@ module.exports.And = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "TT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -527,7 +486,7 @@ module.exports.And = {
             }
          }, {
             "name" : "TF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -542,7 +501,7 @@ module.exports.And = {
             }
          }, {
             "name" : "TN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -555,7 +514,7 @@ module.exports.And = {
             }
          }, {
             "name" : "FF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -570,7 +529,7 @@ module.exports.And = {
             }
          }, {
             "name" : "FT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -585,7 +544,7 @@ module.exports.And = {
             }
          }, {
             "name" : "FN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -598,7 +557,7 @@ module.exports.And = {
             }
          }, {
             "name" : "NN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -609,7 +568,7 @@ module.exports.And = {
             }
          }, {
             "name" : "NT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -622,7 +581,7 @@ module.exports.And = {
             }
          }, {
             "name" : "NF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -641,7 +600,7 @@ module.exports.And = {
 ### Or
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define TT = true or true
 define TF = true or false
 define TN = true or null
@@ -672,17 +631,18 @@ module.exports.Or = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "TT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -697,7 +657,7 @@ module.exports.Or = {
             }
          }, {
             "name" : "TF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -712,7 +672,7 @@ module.exports.Or = {
             }
          }, {
             "name" : "TN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -725,7 +685,7 @@ module.exports.Or = {
             }
          }, {
             "name" : "FF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -740,7 +700,7 @@ module.exports.Or = {
             }
          }, {
             "name" : "FT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -755,7 +715,7 @@ module.exports.Or = {
             }
          }, {
             "name" : "FN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -768,7 +728,7 @@ module.exports.Or = {
             }
          }, {
             "name" : "NN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -779,7 +739,7 @@ module.exports.Or = {
             }
          }, {
             "name" : "NT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -792,7 +752,7 @@ module.exports.Or = {
             }
          }, {
             "name" : "NF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -811,7 +771,7 @@ module.exports.Or = {
 ### XOr
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define TT = true xor true
 define TF = true xor false
 define TN = true xor null
@@ -842,17 +802,18 @@ module.exports.XOr = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "TT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -867,7 +828,7 @@ module.exports.XOr = {
             }
          }, {
             "name" : "TF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -882,7 +843,7 @@ module.exports.XOr = {
             }
          }, {
             "name" : "TN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -895,7 +856,7 @@ module.exports.XOr = {
             }
          }, {
             "name" : "FF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -910,7 +871,7 @@ module.exports.XOr = {
             }
          }, {
             "name" : "FT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -925,7 +886,7 @@ module.exports.XOr = {
             }
          }, {
             "name" : "FN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -938,7 +899,7 @@ module.exports.XOr = {
             }
          }, {
             "name" : "NN",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -949,7 +910,7 @@ module.exports.XOr = {
             }
          }, {
             "name" : "NT",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -962,7 +923,7 @@ module.exports.XOr = {
             }
          }, {
             "name" : "NF",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -981,7 +942,7 @@ module.exports.XOr = {
 ### Not
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define NotTrue = not true
 define NotFalse = not false
 define NotNull = not null
@@ -1006,17 +967,18 @@ module.exports.Not = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "NotTrue",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1027,7 +989,7 @@ module.exports.Not = {
             }
          }, {
             "name" : "NotFalse",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1038,7 +1000,7 @@ module.exports.Not = {
             }
          }, {
             "name" : "NotNull",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1053,7 +1015,7 @@ module.exports.Not = {
 ### AgeAtFunctionRef
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define AgeAt2012 = AgeAt(Date(2012))
 define AgeAt19810216 = AgeAt(Date(1981, 2, 16))
 define AgeAt1975 = AgeAt(Date(1975))
@@ -1078,17 +1040,18 @@ module.exports.AgeAtFunctionRef = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "AgeAt2012",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "AgeAt",
                "type" : "FunctionRef",
@@ -1104,7 +1067,7 @@ module.exports.AgeAtFunctionRef = {
             }
          }, {
             "name" : "AgeAt19810216",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "AgeAt",
                "type" : "FunctionRef",
@@ -1128,7 +1091,7 @@ module.exports.AgeAtFunctionRef = {
             }
          }, {
             "name" : "AgeAt1975",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "AgeAt",
                "type" : "FunctionRef",
@@ -1150,7 +1113,7 @@ module.exports.AgeAtFunctionRef = {
 ### DateFunctionRef
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Year = Date(2012)
 define Month = Date(2012, 4)
 define Day = Date(2012, 4, 15)
@@ -1180,17 +1143,18 @@ module.exports.DateFunctionRef = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Year",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -1202,7 +1166,7 @@ module.exports.DateFunctionRef = {
             }
          }, {
             "name" : "Month",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -1218,7 +1182,7 @@ module.exports.DateFunctionRef = {
             }
          }, {
             "name" : "Day",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -1238,7 +1202,7 @@ module.exports.DateFunctionRef = {
             }
          }, {
             "name" : "Hour",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -1262,7 +1226,7 @@ module.exports.DateFunctionRef = {
             }
          }, {
             "name" : "Minute",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -1290,7 +1254,7 @@ module.exports.DateFunctionRef = {
             }
          }, {
             "name" : "Second",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -1322,7 +1286,7 @@ module.exports.DateFunctionRef = {
             }
          }, {
             "name" : "Millisecond",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -1358,7 +1322,7 @@ module.exports.DateFunctionRef = {
             }
          }, {
             "name" : "TimeZoneOffset",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -1407,7 +1371,7 @@ module.exports.DateFunctionRef = {
 ### Interval
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Open = interval(Date(2012, 1, 1), Date(2013, 1, 1))
 define LeftOpen = interval(Date(2012, 1, 1), Date(2013, 1, 1)]
 define RightOpen = interval[Date(2012, 1, 1), Date(2013, 1, 1))
@@ -1433,17 +1397,18 @@ module.exports.Interval = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Open",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "lowClosed" : false,
                "highClosed" : false,
@@ -1485,7 +1450,7 @@ module.exports.Interval = {
             }
          }, {
             "name" : "LeftOpen",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "lowClosed" : false,
                "highClosed" : true,
@@ -1527,7 +1492,7 @@ module.exports.Interval = {
             }
          }, {
             "name" : "RightOpen",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -1569,7 +1534,7 @@ module.exports.Interval = {
             }
          }, {
             "name" : "Closed",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -1617,7 +1582,7 @@ module.exports.Interval = {
 ### Greater
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define AGtB_Int = 5 > 4
 define AEqB_Int = 5 > 5
 define ALtB_Int = 5 > 6
@@ -1642,17 +1607,18 @@ module.exports.Greater = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "AGtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -1667,7 +1633,7 @@ module.exports.Greater = {
             }
          }, {
             "name" : "AEqB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -1682,7 +1648,7 @@ module.exports.Greater = {
             }
          }, {
             "name" : "ALtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -1703,7 +1669,7 @@ module.exports.Greater = {
 ### GreaterOrEqual
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define AGtB_Int = 5 >= 4
 define AEqB_Int = 5 >= 5
 define ALtB_Int = 5 >= 6
@@ -1728,17 +1694,18 @@ module.exports.GreaterOrEqual = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "AGtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
@@ -1753,7 +1720,7 @@ module.exports.GreaterOrEqual = {
             }
          }, {
             "name" : "AEqB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
@@ -1768,7 +1735,7 @@ module.exports.GreaterOrEqual = {
             }
          }, {
             "name" : "ALtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
@@ -1789,7 +1756,7 @@ module.exports.GreaterOrEqual = {
 ### Equal
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define AGtB_Int = 5 = 4
 define AEqB_Int = 5 = 5
 define ALtB_Int = 5 = 6
@@ -1814,17 +1781,18 @@ module.exports.Equal = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "AGtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -1839,7 +1807,7 @@ module.exports.Equal = {
             }
          }, {
             "name" : "AEqB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -1854,7 +1822,7 @@ module.exports.Equal = {
             }
          }, {
             "name" : "ALtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -1875,7 +1843,7 @@ module.exports.Equal = {
 ### LessOrEqual
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define AGtB_Int = 5 <= 4
 define AEqB_Int = 5 <= 5
 define ALtB_Int = 5 <= 6
@@ -1900,17 +1868,18 @@ module.exports.LessOrEqual = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "AGtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -1925,7 +1894,7 @@ module.exports.LessOrEqual = {
             }
          }, {
             "name" : "AEqB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -1940,7 +1909,7 @@ module.exports.LessOrEqual = {
             }
          }, {
             "name" : "ALtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -1961,7 +1930,7 @@ module.exports.LessOrEqual = {
 ### Less
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define AGtB_Int = 5 < 4
 define AEqB_Int = 5 < 5
 define ALtB_Int = 5 < 6
@@ -1986,17 +1955,18 @@ module.exports.Less = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "AGtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -2011,7 +1981,7 @@ module.exports.Less = {
             }
          }, {
             "name" : "AEqB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -2026,7 +1996,7 @@ module.exports.Less = {
             }
          }, {
             "name" : "ALtB_Int",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -2047,7 +2017,7 @@ module.exports.Less = {
 ### List
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Three = 1 + 2
 define IntList = { 9, 7, 8 }
 define StringList = { 'a', 'bee', 'see' }
@@ -2074,17 +2044,18 @@ module.exports.List = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Three",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -2099,7 +2070,7 @@ module.exports.List = {
             }
          }, {
             "name" : "IntList",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "List",
                "element" : [ {
@@ -2118,7 +2089,7 @@ module.exports.List = {
             }
          }, {
             "name" : "StringList",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "List",
                "element" : [ {
@@ -2137,7 +2108,7 @@ module.exports.List = {
             }
          }, {
             "name" : "MixedList",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "List",
                "element" : [ {
@@ -2155,7 +2126,7 @@ module.exports.List = {
             }
          }, {
             "name" : "EmptyList",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "List"
             }
@@ -2167,7 +2138,7 @@ module.exports.List = {
 ### Exists
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define EmptyList = exists ({})
 define FullList = exists ({ 1, 2, 3 })
 ###
@@ -2191,17 +2162,18 @@ module.exports.Exists = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "EmptyList",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -2210,7 +2182,7 @@ module.exports.Exists = {
             }
          }, {
             "name" : "FullList",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -2238,7 +2210,7 @@ module.exports.Exists = {
 ### Start
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Foo = start of interval[Date(2012, 1, 1), Date(2013, 1, 1)]
 ###
 
@@ -2261,17 +2233,18 @@ module.exports.Start = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Foo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Start",
                "operand" : {
@@ -2322,7 +2295,7 @@ module.exports.Start = {
 ### InList
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define IsIn = 4 in { 3, 4, 5 }
 define IsNotIn = 4 in { 3, 5, 6 }
 ###
@@ -2346,17 +2319,18 @@ module.exports.InList = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "IsIn",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -2382,7 +2356,7 @@ module.exports.InList = {
             }
          }, {
             "name" : "IsNotIn",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -2414,9 +2388,9 @@ module.exports.InList = {
 ### InValueSet
 library TestSnippet version '1'
 using QUICK
-context PATIENT
-define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-define "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+valueset "Female" = '2.16.840.1.113883.3.560.100.2'
+valueset "Versioned Female" = '2.16.840.1.113883.3.560.100.2' version '20121025'
+context Patient
 define String = 'F' in "Female"
 define StringInVersionedValueSet = 'F' in "Versioned Female"
 define ShortCode = Code('F') in "Female"
@@ -2445,79 +2419,62 @@ module.exports.InValueSet = {
             "uri" : "http://org.hl7.fhir"
          } ]
       },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Female",
+            "id" : "2.16.840.1.113883.3.560.100.2"
+         }, {
+            "name" : "Versioned Female",
+            "id" : "2.16.840.1.113883.3.560.100.2",
+            "version" : "20121025"
+         } ]
+      },
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
-            "name" : "Female",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.560.100.2",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "Versioned Female",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.560.100.2",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "20121025",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
             "name" : "String",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
                   "value" : "F",
                   "type" : "Literal"
-               }, {
-                  "name" : "Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "StringInVersionedValueSet",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
                   "value" : "F",
                   "type" : "Literal"
-               }, {
-                  "name" : "Versioned Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Versioned Female"
+               }
             }
          }, {
             "name" : "ShortCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "name" : "Code",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -2525,17 +2482,17 @@ module.exports.InValueSet = {
                      "value" : "F",
                      "type" : "Literal"
                   } ]
-               }, {
-                  "name" : "Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "MediumCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "name" : "Code",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -2547,17 +2504,17 @@ module.exports.InValueSet = {
                      "value" : "2.16.840.1.113883.18.2",
                      "type" : "Literal"
                   } ]
-               }, {
-                  "name" : "Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "LongCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "name" : "Code",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -2573,45 +2530,45 @@ module.exports.InValueSet = {
                      "value" : "HL7V2.5",
                      "type" : "Literal"
                   } ]
-               }, {
-                  "name" : "Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongString",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
                   "value" : "M",
                   "type" : "Literal"
-               }, {
-                  "name" : "Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongStringInVersionedValueSet",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
                   "value" : "M",
                   "type" : "Literal"
-               }, {
-                  "name" : "Versioned Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Versioned Female"
+               }
             }
          }, {
             "name" : "WrongShortCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "name" : "Code",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -2619,17 +2576,17 @@ module.exports.InValueSet = {
                      "value" : "M",
                      "type" : "Literal"
                   } ]
-               }, {
-                  "name" : "Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongMediumCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "name" : "Code",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -2641,17 +2598,17 @@ module.exports.InValueSet = {
                      "value" : "3.16.840.1.113883.18.2",
                      "type" : "Literal"
                   } ]
-               }, {
-                  "name" : "Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongLongCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
+               "type" : "InValueSet",
+               "code" : {
                   "name" : "Code",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -2667,10 +2624,10 @@ module.exports.InValueSet = {
                      "value" : "HL7V2.6",
                      "type" : "Literal"
                   } ]
-               }, {
-                  "name" : "Female",
-                  "type" : "ExpressionRef"
-               } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          } ]
       }
@@ -2680,9 +2637,9 @@ module.exports.InValueSet = {
 ### InValueSetFunction
 library TestSnippet version '1'
 using QUICK
-context PATIENT
-define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-define "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+valueset "Female" = '2.16.840.1.113883.3.560.100.2'
+valueset "Versioned Female" = '2.16.840.1.113883.3.560.100.2' version '20121025'
+context Patient
 define String = InValueSet('F', '2.16.840.1.113883.3.560.100.2')
 define StringInVersionedValueSet = InValueSet('F', '2.16.840.1.113883.3.560.100.2', '20121025')
 define ShortCode = InValueSet(Code('F'), '2.16.840.1.113883.3.560.100.2')
@@ -2711,48 +2668,31 @@ module.exports.InValueSetFunction = {
             "uri" : "http://org.hl7.fhir"
          } ]
       },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Female",
+            "id" : "2.16.840.1.113883.3.560.100.2"
+         }, {
+            "name" : "Versioned Female",
+            "id" : "2.16.840.1.113883.3.560.100.2",
+            "version" : "20121025"
+         } ]
+      },
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
-            "name" : "Female",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.560.100.2",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "Versioned Female",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.560.100.2",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "20121025",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
             "name" : "String",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2768,7 +2708,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "StringInVersionedValueSet",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2788,7 +2728,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "ShortCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2808,7 +2748,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "MediumCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2832,7 +2772,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "LongCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2860,7 +2800,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "WrongString",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2876,7 +2816,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "WrongStringInVersionedValueSet",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2896,7 +2836,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "WrongShortCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2916,7 +2856,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "WrongMediumCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2940,7 +2880,7 @@ module.exports.InValueSetFunction = {
             }
          }, {
             "name" : "WrongLongCode",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "InValueSet",
                "type" : "FunctionRef",
@@ -2974,9 +2914,9 @@ module.exports.InValueSetFunction = {
 ### PatientPropertyInValueSet
 library TestSnippet version '1'
 using QUICK
-context PATIENT
-define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-define IsFemale = gender in "Female Administrative Sex"
+valueset "Female" = '2.16.840.1.113883.3.560.100.2'
+context Patient
+define IsFemale = Patient.gender in "Female"
 ###
 
 module.exports.PatientPropertyInValueSet = {
@@ -2995,41 +2935,40 @@ module.exports.PatientPropertyInValueSet = {
             "uri" : "http://org.hl7.fhir"
          } ]
       },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Female",
+            "id" : "2.16.840.1.113883.3.560.100.2"
+         } ]
+      },
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
-            "name" : "Female",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.560.100.2",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
             "name" : "IsFemale",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "name" : "gender",
-                  "type" : "IdentifierRef"
-               }, {
-                  "name" : "Female Administrative Sex",
-                  "type" : "IdentifierRef"
-               } ]
+               "type" : "InValueSet",
+               "code" : {
+                  "path" : "gender",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          } ]
       }
@@ -3039,7 +2978,7 @@ module.exports.PatientPropertyInValueSet = {
 ### Union
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define OneToTen = {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}
 define OneToFiveOverlapped = {1, 2, 3, 4} union {3, 4, 5}
 define Disjoint = {1, 2} union {4, 5}
@@ -3065,17 +3004,18 @@ module.exports.Union = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "OneToTen",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -3128,7 +3068,7 @@ module.exports.Union = {
             }
          }, {
             "name" : "OneToFiveOverlapped",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -3169,7 +3109,7 @@ module.exports.Union = {
             }
          }, {
             "name" : "Disjoint",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -3198,7 +3138,7 @@ module.exports.Union = {
             }
          }, {
             "name" : "NestedToFifteen",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -3295,7 +3235,7 @@ module.exports.Union = {
 ### Intersect
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define NoIntersection = {1, 2, 3} intersect {4, 5, 6}
 define IntersectOnFive = {4, 5, 6} intersect {1, 3, 5, 7}
 define IntersectOnEvens = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} intersect {0, 2, 4, 6, 8, 10, 12}
@@ -3322,17 +3262,18 @@ module.exports.Intersect = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "NoIntersection",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -3369,7 +3310,7 @@ module.exports.Intersect = {
             }
          }, {
             "name" : "IntersectOnFive",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -3410,7 +3351,7 @@ module.exports.Intersect = {
             }
          }, {
             "name" : "IntersectOnEvens",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -3491,7 +3432,7 @@ module.exports.Intersect = {
             }
          }, {
             "name" : "IntersectOnAll",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -3544,7 +3485,7 @@ module.exports.Intersect = {
             }
          }, {
             "name" : "NestedIntersects",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -3655,7 +3596,7 @@ module.exports.Intersect = {
 ### Distinct
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define LotsOfDups = distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
 define NoDups = distinct {2, 4, 6, 8, 10}
 ###
@@ -3679,17 +3620,18 @@ module.exports.Distinct = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "LotsOfDups",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Distinct",
                "source" : {
@@ -3775,7 +3717,7 @@ module.exports.Distinct = {
             }
          }, {
             "name" : "NoDups",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Distinct",
                "source" : {
@@ -3811,7 +3753,7 @@ module.exports.Distinct = {
 ### Add
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Ten = 10
 define Eleven = 11
 define OnePlusTwo = 1 + 2
@@ -3838,17 +3780,18 @@ module.exports.Add = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Ten",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "10",
@@ -3856,7 +3799,7 @@ module.exports.Add = {
             }
          }, {
             "name" : "Eleven",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "11",
@@ -3864,7 +3807,7 @@ module.exports.Add = {
             }
          }, {
             "name" : "OnePlusTwo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -3879,7 +3822,7 @@ module.exports.Add = {
             }
          }, {
             "name" : "AddMultiple",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -3950,7 +3893,7 @@ module.exports.Add = {
             }
          }, {
             "name" : "AddVariables",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -3969,7 +3912,7 @@ module.exports.Add = {
 ### Subtract
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Ten = 10
 define Eleven = 11
 define FiveMinusTwo = 5 - 2
@@ -3996,17 +3939,18 @@ module.exports.Subtract = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Ten",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "10",
@@ -4014,7 +3958,7 @@ module.exports.Subtract = {
             }
          }, {
             "name" : "Eleven",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "11",
@@ -4022,7 +3966,7 @@ module.exports.Subtract = {
             }
          }, {
             "name" : "FiveMinusTwo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
@@ -4037,7 +3981,7 @@ module.exports.Subtract = {
             }
          }, {
             "name" : "SubtractMultiple",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
@@ -4066,7 +4010,7 @@ module.exports.Subtract = {
             }
          }, {
             "name" : "SubtractVariables",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
@@ -4085,7 +4029,7 @@ module.exports.Subtract = {
 ### Multiply
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Ten = 10
 define Eleven = 11
 define FiveTimesTwo = 5 * 2
@@ -4112,17 +4056,18 @@ module.exports.Multiply = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Ten",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "10",
@@ -4130,7 +4075,7 @@ module.exports.Multiply = {
             }
          }, {
             "name" : "Eleven",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "11",
@@ -4138,7 +4083,7 @@ module.exports.Multiply = {
             }
          }, {
             "name" : "FiveTimesTwo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
@@ -4153,7 +4098,7 @@ module.exports.Multiply = {
             }
          }, {
             "name" : "MultiplyMultiple",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
@@ -4189,7 +4134,7 @@ module.exports.Multiply = {
             }
          }, {
             "name" : "MultiplyVariables",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
@@ -4208,7 +4153,7 @@ module.exports.Multiply = {
 ### Divide
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Hundred = 100
 define Four = 4
 define TenDividedByTwo = 10 / 2
@@ -4236,17 +4181,18 @@ module.exports.Divide = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Hundred",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "100",
@@ -4254,7 +4200,7 @@ module.exports.Divide = {
             }
          }, {
             "name" : "Four",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "4",
@@ -4262,7 +4208,7 @@ module.exports.Divide = {
             }
          }, {
             "name" : "TenDividedByTwo",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -4277,7 +4223,7 @@ module.exports.Divide = {
             }
          }, {
             "name" : "TenDividedByFour",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -4292,7 +4238,7 @@ module.exports.Divide = {
             }
          }, {
             "name" : "DivideMultiple",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -4321,7 +4267,7 @@ module.exports.Divide = {
             }
          }, {
             "name" : "DivideVariables",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -4340,7 +4286,7 @@ module.exports.Divide = {
 ### Negate
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define NegativeOne = -1
 ###
 
@@ -4363,17 +4309,18 @@ module.exports.Negate = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "NegativeOne",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Negate",
                "operand" : {
@@ -4390,7 +4337,7 @@ module.exports.Negate = {
 ### MathPrecedence
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Mixed = 1 + 5 * 10 - 15 / 3
 define Parenthetical = (1 + 5) * (10 - 15) / 3
 ###
@@ -4414,17 +4361,18 @@ module.exports.MathPrecedence = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Mixed",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
@@ -4460,7 +4408,7 @@ module.exports.MathPrecedence = {
             }
          }, {
             "name" : "Parenthetical",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -4499,10 +4447,10 @@ module.exports.MathPrecedence = {
    }
 }
 
-### TimeBetween
+### DurationBetween
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define NewYear2013 = Date(2013, 1, 1, 0, 0, 0, 0)
 define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
 define January2014 = Date(2014, 1)
@@ -4512,17 +4460,19 @@ define DaysBetween = days between NewYear2013 and NewYear2014
 define HoursBetween = hours between NewYear2013 and NewYear2014
 define MinutesBetween = minutes between NewYear2013 and NewYear2014
 define SecondsBetween = seconds between NewYear2013 and NewYear2014
-define SecondsBetweenReversed = seconds between NewYear2014 and NewYear2013
+define MillisecondsBetween = milliseconds between NewYear2013 and NewYear2014
+define MillisecondsBetweenReversed = milliseconds between NewYear2014 and NewYear2013
 define YearsBetweenUncertainty = years between NewYear2014 and January2014
 define MonthsBetweenUncertainty = months between NewYear2014 and January2014
 define DaysBetweenUncertainty = days between NewYear2014 and January2014
 define HoursBetweenUncertainty = hours between NewYear2014 and January2014
 define MinutesBetweenUncertainty = minutes between NewYear2014 and January2014
 define SecondsBetweenUncertainty = seconds between NewYear2014 and January2014
-define SecondsBetweenReversedUncertainty = seconds between January2014 and NewYear2014
+define MillisecondsBetweenUncertainty = milliseconds between NewYear2014 and January2014
+define MillisecondsBetweenReversedUncertainty = milliseconds between January2014 and NewYear2014
 ###
 
-module.exports.TimeBetween = {
+module.exports.DurationBetween = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -4541,17 +4491,18 @@ module.exports.TimeBetween = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "NewYear2013",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -4587,7 +4538,7 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "NewYear2014",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -4623,7 +4574,7 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "January2014",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -4639,9 +4590,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "YearsBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "YearsBetween",
+               "precision" : "Year",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2013",
                   "type" : "ExpressionRef"
@@ -4652,9 +4604,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "MonthsBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "MonthsBetween",
+               "precision" : "Month",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2013",
                   "type" : "ExpressionRef"
@@ -4665,9 +4618,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "DaysBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "DaysBetween",
+               "precision" : "Day",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2013",
                   "type" : "ExpressionRef"
@@ -4678,9 +4632,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "HoursBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "HoursBetween",
+               "precision" : "Hour",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2013",
                   "type" : "ExpressionRef"
@@ -4691,9 +4646,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "MinutesBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "MinutesBetween",
+               "precision" : "Minute",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2013",
                   "type" : "ExpressionRef"
@@ -4704,9 +4660,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "SecondsBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SecondsBetween",
+               "precision" : "Second",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2013",
                   "type" : "ExpressionRef"
@@ -4716,10 +4673,25 @@ module.exports.TimeBetween = {
                } ]
             }
          }, {
-            "name" : "SecondsBetweenReversed",
-            "context" : "PATIENT",
+            "name" : "MillisecondsBetween",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SecondsBetween",
+               "precision" : "Millisecond",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MillisecondsBetweenReversed",
+            "context" : "Patient",
+            "expression" : {
+               "precision" : "Millisecond",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2014",
                   "type" : "ExpressionRef"
@@ -4730,9 +4702,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "YearsBetweenUncertainty",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "YearsBetween",
+               "precision" : "Year",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2014",
                   "type" : "ExpressionRef"
@@ -4743,9 +4716,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "MonthsBetweenUncertainty",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "MonthsBetween",
+               "precision" : "Month",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2014",
                   "type" : "ExpressionRef"
@@ -4756,9 +4730,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "DaysBetweenUncertainty",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "DaysBetween",
+               "precision" : "Day",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2014",
                   "type" : "ExpressionRef"
@@ -4769,9 +4744,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "HoursBetweenUncertainty",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "HoursBetween",
+               "precision" : "Hour",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2014",
                   "type" : "ExpressionRef"
@@ -4782,9 +4758,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "MinutesBetweenUncertainty",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "MinutesBetween",
+               "precision" : "Minute",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2014",
                   "type" : "ExpressionRef"
@@ -4795,9 +4772,10 @@ module.exports.TimeBetween = {
             }
          }, {
             "name" : "SecondsBetweenUncertainty",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SecondsBetween",
+               "precision" : "Second",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2014",
                   "type" : "ExpressionRef"
@@ -4807,10 +4785,25 @@ module.exports.TimeBetween = {
                } ]
             }
          }, {
-            "name" : "SecondsBetweenReversedUncertainty",
-            "context" : "PATIENT",
+            "name" : "MillisecondsBetweenUncertainty",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SecondsBetween",
+               "precision" : "Millisecond",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MillisecondsBetweenReversedUncertainty",
+            "context" : "Patient",
+            "expression" : {
+               "precision" : "Millisecond",
+               "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "January2014",
                   "type" : "ExpressionRef"
@@ -4824,10 +4817,10 @@ module.exports.TimeBetween = {
    }
 }
 
-### TimeBetweenComparisons
+### DurationBetweenComparisons
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
 define February2014 = Date(2014, 2)
 define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
@@ -4850,7 +4843,7 @@ define FortyDaysEqualToDaysBetween = 40 = days between NewYear2014 and February2
 define TwentyFiveDaysGreaterThanDaysBetween = 25 > days between NewYear2014 and February2014
 ###
 
-module.exports.TimeBetweenComparisons = {
+module.exports.DurationBetweenComparisons = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -4869,17 +4862,18 @@ module.exports.TimeBetweenComparisons = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "NewYear2014",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -4915,7 +4909,7 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "February2014",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "name" : "Date",
                "type" : "FunctionRef",
@@ -4931,11 +4925,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "GreaterThan25DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -4951,11 +4946,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "GreaterThan40DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -4971,11 +4967,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "GreaterThan80DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -4991,11 +4988,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "GreaterOrEqualTo25DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5011,11 +5009,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "GreaterOrEqualTo40DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5031,11 +5030,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "GreaterOrEqualTo80DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5051,11 +5051,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "EqualTo25DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5071,11 +5072,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "EqualTo40DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5091,11 +5093,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "EqualTo80DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5111,11 +5114,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "LessOrEqualTo25DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5131,11 +5135,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "LessOrEqualTo40DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5151,11 +5156,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "LessOrEqualTo80DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5171,11 +5177,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "LessThan25DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5191,11 +5198,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "LessThan40DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5211,11 +5219,12 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "LessThan80DaysAfter",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5231,7 +5240,7 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "TwentyFiveDaysLessThanDaysBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -5239,7 +5248,8 @@ module.exports.TimeBetweenComparisons = {
                   "value" : "25",
                   "type" : "Literal"
                }, {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5251,7 +5261,7 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "FortyDaysEqualToDaysBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -5259,7 +5269,8 @@ module.exports.TimeBetweenComparisons = {
                   "value" : "40",
                   "type" : "Literal"
                }, {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5271,7 +5282,7 @@ module.exports.TimeBetweenComparisons = {
             }
          }, {
             "name" : "TwentyFiveDaysGreaterThanDaysBetween",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -5279,7 +5290,8 @@ module.exports.TimeBetweenComparisons = {
                   "value" : "25",
                   "type" : "Literal"
                }, {
-                  "type" : "DaysBetween",
+                  "precision" : "Day",
+                  "type" : "DurationBetween",
                   "operand" : [ {
                      "name" : "NewYear2014",
                      "type" : "ExpressionRef"
@@ -5297,7 +5309,7 @@ module.exports.TimeBetweenComparisons = {
 ### Literal
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define BoolTrue = true
 define BoolFalse = false
 define IntOne = 1
@@ -5324,17 +5336,18 @@ module.exports.Literal = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "BoolTrue",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                "value" : "true",
@@ -5342,7 +5355,7 @@ module.exports.Literal = {
             }
          }, {
             "name" : "BoolFalse",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
                "value" : "false",
@@ -5350,7 +5363,7 @@ module.exports.Literal = {
             }
          }, {
             "name" : "IntOne",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                "value" : "1",
@@ -5358,7 +5371,7 @@ module.exports.Literal = {
             }
          }, {
             "name" : "DecimalTenth",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
                "value" : "0.1",
@@ -5366,7 +5379,7 @@ module.exports.Literal = {
             }
          }, {
             "name" : "StringTrue",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
                "value" : "true",
@@ -5380,7 +5393,7 @@ module.exports.Literal = {
 ### Nil
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define Nil = null
 ###
 
@@ -5403,17 +5416,18 @@ module.exports.Nil = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "Nil",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Null"
             }
@@ -5425,18 +5439,18 @@ module.exports.Nil = {
 ### Retrieve
 library TestSnippet version '1'
 using QUICK
-context PATIENT
-define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
-define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
+valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.102.12.1011'
+valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
+valueset "Annual Wellness Visit" = '2.16.840.1.113883.3.526.3.1240'
+context Patient
 define Conditions = [Condition]
-define Encounters = [Encounter, Performance]
+define Encounters = [Encounter]
 define PharyngitisConditions = [Condition: "Acute Pharyngitis"]
-define AmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED Visit"]
-define EncountersByServiceType = [Encounter, Performance: serviceType in "Annual Wellness Visit"]
-define WrongDataType = [Encounter, Proposal: "Ambulatory/ED Visit"]
+define AmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"]
+define EncountersByServiceType = [Encounter: type in "Annual Wellness Visit"]
+define WrongDataType = [EncounterProposal: "Ambulatory/ED Visit"]
 define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
-define WrongCodeProperty = [Encounter, Performance: class in "Annual Wellness Visit"]
+define WrongCodeProperty = [Encounter: class in "Annual Wellness Visit"]
 ###
 
 module.exports.Retrieve = {
@@ -5455,137 +5469,121 @@ module.exports.Retrieve = {
             "uri" : "http://org.hl7.fhir"
          } ]
       },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Acute Pharyngitis",
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1011"
+         }, {
+            "name" : "Ambulatory/ED Visit",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
+         }, {
+            "name" : "Annual Wellness Visit",
+            "id" : "2.16.840.1.113883.3.526.3.1240"
+         } ]
+      },
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
-            "name" : "Acute Pharyngitis",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.102.12.1011",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "Ambulatory/ED Visit",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "Annual Wellness Visit",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.526.3.1240",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
             "name" : "Conditions",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+               "dataType" : "{http://org.hl7.fhir}Condition",
+               "templateId" : "cqf-condition",
                "type" : "Retrieve"
             }
          }, {
             "name" : "Encounters",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+               "dataType" : "{http://org.hl7.fhir}Encounter",
+               "templateId" : "cqf-encounter",
                "type" : "Retrieve"
             }
          }, {
             "name" : "PharyngitisConditions",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+               "dataType" : "{http://org.hl7.fhir}Condition",
+               "templateId" : "cqf-condition",
                "codeProperty" : "code",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Acute Pharyngitis",
-                  "type" : "ExpressionRef"
+                  "type" : "ValueSetRef"
                }
             }
          }, {
             "name" : "AmbulatoryEncounters",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+               "dataType" : "{http://org.hl7.fhir}Encounter",
+               "templateId" : "cqf-encounter",
                "codeProperty" : "class",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
-                  "type" : "ExpressionRef"
+                  "type" : "ValueSetRef"
                }
             }
          }, {
             "name" : "EncountersByServiceType",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
-               "codeProperty" : "serviceType",
+               "dataType" : "{http://org.hl7.fhir}Encounter",
+               "templateId" : "cqf-encounter",
+               "codeProperty" : "type",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Annual Wellness Visit",
-                  "type" : "ExpressionRef"
+                  "type" : "ValueSetRef"
                }
             }
          }, {
             "name" : "WrongDataType",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}EncounterProposalOccurrence",
-               "codeProperty" : "class",
+               "dataType" : "{http://www.w3.org/2001/XMLSchema}EncounterProposal",
+               "templateId" : "EncounterProposal",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
-                  "type" : "ExpressionRef"
+                  "type" : "ValueSetRef"
                }
             }
          }, {
             "name" : "WrongValueSet",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+               "dataType" : "{http://org.hl7.fhir}Condition",
+               "templateId" : "cqf-condition",
                "codeProperty" : "code",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
-                  "type" : "ExpressionRef"
+                  "type" : "ValueSetRef"
                }
             }
          }, {
             "name" : "WrongCodeProperty",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+               "dataType" : "{http://org.hl7.fhir}Encounter",
+               "templateId" : "cqf-encounter",
                "codeProperty" : "class",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Annual Wellness Visit",
-                  "type" : "ExpressionRef"
+                  "type" : "ValueSetRef"
                }
             }
          } ]
@@ -5597,11 +5595,11 @@ module.exports.Retrieve = {
 library TestSnippet version '1'
 using QUICK
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-context PATIENT
-define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
-define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
-define AmbulatoryEncountersIncludedInMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime included in MeasurementPeriod
+valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
+context Patient
+define EncountersDuringMP = [Encounter] E where E.period during MeasurementPeriod
+define AmbulatoryEncountersDuringMP = [Encounter: "Ambulatory/ED Visit"] E where E.period during MeasurementPeriod
+define AmbulatoryEncountersIncludedInMP = [Encounter: "Ambulatory/ED Visit"] E where E.period included in MeasurementPeriod
 ###
 
 module.exports.DateRangeOptimizedQuery = {
@@ -5664,39 +5662,35 @@ module.exports.DateRangeOptimizedQuery = {
             }
          } ]
       },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Ambulatory/ED Visit",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
+         } ]
+      },
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
-            "name" : "Ambulatory/ED Visit",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
             "name" : "EncountersDuringMP",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
-                     "dateProperty" : "performanceTime",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
+                     "dateProperty" : "period",
                      "type" : "Retrieve",
                      "dateRange" : {
                         "name" : "MeasurementPeriod",
@@ -5708,19 +5702,20 @@ module.exports.DateRangeOptimizedQuery = {
             }
          }, {
             "name" : "AmbulatoryEncountersDuringMP",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "codeProperty" : "class",
-                     "dateProperty" : "performanceTime",
+                     "dateProperty" : "period",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
-                        "type" : "ExpressionRef"
+                        "type" : "ValueSetRef"
                      },
                      "dateRange" : {
                         "name" : "MeasurementPeriod",
@@ -5732,19 +5727,20 @@ module.exports.DateRangeOptimizedQuery = {
             }
          }, {
             "name" : "AmbulatoryEncountersIncludedInMP",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "codeProperty" : "class",
-                     "dateProperty" : "performanceTime",
+                     "dateProperty" : "period",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
-                        "type" : "ExpressionRef"
+                        "type" : "ValueSetRef"
                      },
                      "dateRange" : {
                         "name" : "MeasurementPeriod",
@@ -5763,9 +5759,9 @@ module.exports.DateRangeOptimizedQuery = {
 library TestSnippet version '1'
 using QUICK
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-context PATIENT
-define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define MPIncludedAmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.performanceTime
+valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
+context Patient
+define MPIncludedAmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.period
 ###
 
 module.exports.IncludesQuery = {
@@ -5828,43 +5824,39 @@ module.exports.IncludesQuery = {
             }
          } ]
       },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Ambulatory/ED Visit",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
+         } ]
+      },
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
-            "name" : "Ambulatory/ED Visit",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "ValueSet",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "2.16.840.1.113883.3.464.1003.101.12.1061",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
             "name" : "MPIncludedAmbulatoryEncounters",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "codeProperty" : "class",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
-                        "type" : "ExpressionRef"
+                        "type" : "ValueSetRef"
                      }
                   }
                } ],
@@ -5875,7 +5867,7 @@ module.exports.IncludesQuery = {
                      "name" : "MeasurementPeriod",
                      "type" : "ParameterRef"
                   }, {
-                     "path" : "performanceTime",
+                     "path" : "period",
                      "scope" : "E",
                      "type" : "Property"
                   } ]
@@ -5886,65 +5878,19 @@ module.exports.IncludesQuery = {
    }
 }
 
-### ScratchPad
-library TestSnippet version '1'
-using QUICK
-context PATIENT
-define Foo = "foo"
-###
-
-module.exports.ScratchPad = {
-   "library" : {
-      "identifier" : {
-         "id" : "TestSnippet",
-         "version" : "1"
-      },
-      "schemaIdentifier" : {
-         "id" : "urn:hl7-org:elm",
-         "version" : "r1"
-      },
-      "usings" : {
-         "def" : [ {
-            "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
-            "name" : "Patient",
-            "context" : "PATIENT",
-            "expression" : {
-               "type" : "SingletonOf",
-               "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
-                  "type" : "Retrieve"
-               }
-            }
-         }, {
-            "name" : "Foo",
-            "context" : "PATIENT",
-            "expression" : {
-               "name" : "foo",
-               "type" : "IdentifierRef"
-            }
-         } ]
-      }
-   }
-}
-
 ### MultiSourceQuery
 library TestSnippet version '1'
 using QUICK
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-context PATIENT
-define msQueryWhere = foreach [Encounter, Performance] E, 
-                              [Condition] C 
-                              where E.performanceTime included in MeasurementPeriod
+context Patient
+define msQueryWhere = foreach [Encounter] E,
+                              [Condition] C
+                              where E.period included in MeasurementPeriod
 
-define msQueryWhere2 = foreach [Encounter, Performance] E, [Condition] C 
-  where  E.performanceTime  included in MeasurementPeriod and  C.identifier.id = 'http://cqframework.org/3/2'
+define msQueryWhere2 = foreach [Encounter] E, [Condition] C
+  where  E.period  included in MeasurementPeriod and  C.identifier.value = 'http://cqframework.org/3/2'
 
-define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C} 
+define msQuery = foreach [Encounter] E, [Condition] C return {E: E, C:C}
 ###
 
 module.exports.MultiSourceQuery = {
@@ -6010,24 +5956,26 @@ module.exports.MultiSourceQuery = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "msQueryWhere",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
-                     "dateProperty" : "performanceTime",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
+                     "dateProperty" : "period",
                      "type" : "Retrieve",
                      "dateRange" : {
                         "name" : "MeasurementPeriod",
@@ -6037,7 +5985,8 @@ module.exports.MultiSourceQuery = {
                }, {
                   "alias" : "C",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Condition",
+                     "templateId" : "cqf-condition",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6064,14 +6013,15 @@ module.exports.MultiSourceQuery = {
             }
          }, {
             "name" : "msQueryWhere2",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
-                     "dateProperty" : "performanceTime",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
+                     "dateProperty" : "period",
                      "type" : "Retrieve",
                      "dateRange" : {
                         "name" : "MeasurementPeriod",
@@ -6081,7 +6031,8 @@ module.exports.MultiSourceQuery = {
                }, {
                   "alias" : "C",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Condition",
+                     "templateId" : "cqf-condition",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6089,7 +6040,7 @@ module.exports.MultiSourceQuery = {
                "where" : {
                   "type" : "Equal",
                   "operand" : [ {
-                     "path" : "identifier.id",
+                     "path" : "identifier.value",
                      "scope" : "C",
                      "type" : "Property"
                   }, {
@@ -6120,19 +6071,21 @@ module.exports.MultiSourceQuery = {
             }
          }, {
             "name" : "msQuery",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                }, {
                   "alias" : "C",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Condition",
+                     "templateId" : "cqf-condition",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6164,8 +6117,8 @@ module.exports.MultiSourceQuery = {
 ### QueryDefine
 library TestSnippet version '1'
 using QUICK
-context PATIENT
-define query =  [Encounter, Performance] E 
+context Patient
+define query =  [Encounter] E
  define a = E
  return {E: E, a:a}
 ###
@@ -6189,23 +6142,25 @@ module.exports.QueryDefine = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "query",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6244,9 +6199,9 @@ module.exports.QueryDefine = {
 ### Tuple
 library TestSnippet version '1'
 using QUICK
-context PATIENT
+context Patient
 define tup = {a: 1, b: 2}
-define query =  [Encounter, Performance] E return {id: E.id, thing: E.status}
+define query =  [Encounter] E return {id: E.id, thing: E.status}
 ###
 
 module.exports.Tuple = {
@@ -6268,17 +6223,18 @@ module.exports.Tuple = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "tup",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Tuple",
                "element" : [ {
@@ -6299,13 +6255,14 @@ module.exports.Tuple = {
             }
          }, {
             "name" : "query",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6339,19 +6296,19 @@ module.exports.Tuple = {
 ### QueryRelationship
 library TestSnippet version '1'
 using QUICK
-context PATIENT
- 
- define withQuery =  [Encounter, Performance] E 
-   with [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
- 
- define withQuery2 =  [Encounter, Performance] E 
-   with [Condition] C such that C.identifier.id = 'http://cqframework.org/3'
+context Patient
 
- define withOutQuery =  [Encounter, Performance] E 
-   without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/'
+define withQuery =  [Encounter] E
+  with [Condition] C such that C.identifier.value = 'http://cqframework.org/3/2'
 
- define withOutQuery2 =  [Encounter, Performance] E 
-   without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
+define withQuery2 =  [Encounter] E
+  with [Condition] C such that C.identifier.value = 'http://cqframework.org/3'
+
+define withOutQuery =  [Encounter] E
+  without [Condition] C such that C.identifier.value = 'http://cqframework.org/3/'
+
+define withOutQuery2 =  [Encounter] E
+  without [Condition] C such that C.identifier.value = 'http://cqframework.org/3/2'
 ###
 
 module.exports.QueryRelationship = {
@@ -6373,23 +6330,25 @@ module.exports.QueryRelationship = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "withQuery",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6397,13 +6356,14 @@ module.exports.QueryRelationship = {
                   "alias" : "C",
                   "type" : "With",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Condition",
+                     "templateId" : "cqf-condition",
                      "type" : "Retrieve"
                   },
                   "suchThat" : {
                      "type" : "Equal",
                      "operand" : [ {
-                        "path" : "identifier.id",
+                        "path" : "identifier.value",
                         "scope" : "C",
                         "type" : "Property"
                      }, {
@@ -6416,13 +6376,14 @@ module.exports.QueryRelationship = {
             }
          }, {
             "name" : "withQuery2",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6430,13 +6391,14 @@ module.exports.QueryRelationship = {
                   "alias" : "C",
                   "type" : "With",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Condition",
+                     "templateId" : "cqf-condition",
                      "type" : "Retrieve"
                   },
                   "suchThat" : {
                      "type" : "Equal",
                      "operand" : [ {
-                        "path" : "identifier.id",
+                        "path" : "identifier.value",
                         "scope" : "C",
                         "type" : "Property"
                      }, {
@@ -6449,13 +6411,14 @@ module.exports.QueryRelationship = {
             }
          }, {
             "name" : "withOutQuery",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6463,13 +6426,14 @@ module.exports.QueryRelationship = {
                   "alias" : "C",
                   "type" : "Without",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Condition",
+                     "templateId" : "cqf-condition",
                      "type" : "Retrieve"
                   },
                   "suchThat" : {
                      "type" : "Equal",
                      "operand" : [ {
-                        "path" : "identifier.id",
+                        "path" : "identifier.value",
                         "scope" : "C",
                         "type" : "Property"
                      }, {
@@ -6482,13 +6446,14 @@ module.exports.QueryRelationship = {
             }
          }, {
             "name" : "withOutQuery2",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6496,13 +6461,14 @@ module.exports.QueryRelationship = {
                   "alias" : "C",
                   "type" : "Without",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}ConditionOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Condition",
+                     "templateId" : "cqf-condition",
                      "type" : "Retrieve"
                   },
                   "suchThat" : {
                      "type" : "Equal",
                      "operand" : [ {
-                        "path" : "identifier.id",
+                        "path" : "identifier.value",
                         "scope" : "C",
                         "type" : "Property"
                      }, {
@@ -6521,9 +6487,9 @@ module.exports.QueryRelationship = {
 ### Sorting
 library TestSnippet version '1'
 using QUICK
-context PATIENT
-define singleAsc =  [Encounter, Performance] E  return {E : E} sort by E.identifier.id
-define singleDesc =  [Encounter, Performance] E return {E : E} sort by E.identifier.id desc
+context Patient
+define singleAsc =  [Encounter] E  return {E : E} sort by E.identifier.value
+define singleDesc =  [Encounter] E return {E : E} sort by E.identifier.value desc
 ###
 
 module.exports.Sorting = {
@@ -6545,23 +6511,25 @@ module.exports.Sorting = {
       "statements" : {
          "def" : [ {
             "name" : "Patient",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
-               "type" : "SingletonOf",
+               "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }
          }, {
             "name" : "singleAsc",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6583,7 +6551,7 @@ module.exports.Sorting = {
                      "direction" : "asc",
                      "type" : "ByExpression",
                      "expression" : {
-                        "path" : "identifier.id",
+                        "path" : "identifier.value",
                         "scope" : "E",
                         "type" : "Property"
                      }
@@ -6592,13 +6560,14 @@ module.exports.Sorting = {
             }
          }, {
             "name" : "singleDesc",
-            "context" : "PATIENT",
+            "context" : "Patient",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}EncounterPerformanceOccurrence",
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -6620,12 +6589,59 @@ module.exports.Sorting = {
                      "direction" : "desc",
                      "type" : "ByExpression",
                      "expression" : {
-                        "path" : "identifier.id",
+                        "path" : "identifier.value",
                         "scope" : "E",
                         "type" : "Property"
                      }
                   } ]
                }
+            }
+         } ]
+      }
+   }
+}
+
+### ScratchPad
+library TestSnippet version '1'
+using QUICK
+context Patient
+define Foo = "foo"
+###
+
+module.exports.ScratchPad = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Foo",
+            "context" : "Patient",
+            "expression" : {
+               "name" : "foo",
+               "type" : "IdentifierRef"
             }
          } ]
       }

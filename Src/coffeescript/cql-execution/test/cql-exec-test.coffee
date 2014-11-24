@@ -10,6 +10,8 @@ setup = (test, patients=[], parameters={}) ->
   test.lib = new Library(D[test.test.parent.title])
   psource = new PAT.PatientSource(patients)
   test.ctx = new Context(test.lib, psource, parameters)
+  for k,v of test.lib.valuesets
+    test[k[0].toLowerCase() + k[1..-1]] = v
   for k,v of test.lib.expressions
     test[k[0].toLowerCase() + k[1..-1]] = v.expression
 
@@ -34,7 +36,7 @@ describe 'ExpressionDef', ->
     @def.name.should.equal 'Foo'
 
   it 'should have the correct context', ->
-    @def.context.should.equal 'PATIENT'
+    @def.context.should.equal 'Patient'
 
   it 'should execute to its value', ->
     @def.exec(@ctx).should.equal 'Bar'
@@ -502,6 +504,7 @@ describe 'InValueSet', ->
   it 'should not find long code in value set', ->
     @wrongLongCode.exec(@ctx).should.be.false
 
+# TODO: Is this still how InValueSet works?
 describe 'InValueSetFunction', ->
   @beforeEach ->
     setup @
@@ -543,7 +546,7 @@ describe 'InValueSetFunction', ->
   it 'should not find long code in value set', ->
     @wrongLongCode.exec(@ctx).should.be.false
 
-describe.skip 'PatientPropertyInValueSet', ->
+describe 'PatientPropertyInValueSet', ->
   @beforeEach ->
     setup @
     @ctx.withCodeService new CodeService {
@@ -634,7 +637,7 @@ describe 'MathPrecedence', ->
   it 'should allow parentheses to override order of operations', ->
     @parenthetical.exec(@ctx).should.equal -10
 
-describe 'TimeBetween', ->
+describe 'DurationBetween', ->
   @beforeEach ->
     setup @
 
@@ -656,8 +659,11 @@ describe 'TimeBetween', ->
   it 'should properly execute seconds between', ->
     @secondsBetween.exec(@ctx).should.equal 60 * 60 * 24 * 365
 
-  it 'should properly execute seconds between when date 1 is after date 2', ->
-    @secondsBetweenReversed.exec(@ctx).should.equal -1 * 60 * 60 * 24 * 365
+  it 'should properly execute milliseconds between', ->
+    @millisecondsBetween.exec(@ctx).should.equal 1000 * 60 * 60 * 24 * 365
+
+  it 'should properly execute milliseconds between when date 1 is after date 2', ->
+    @millisecondsBetweenReversed.exec(@ctx).should.equal -1 * 1000 * 60 * 60 * 24 * 365
 
   it 'should properly execute years between with an uncertainty', ->
     @yearsBetweenUncertainty.exec(@ctx).should.equal 0
@@ -677,10 +683,13 @@ describe 'TimeBetween', ->
   it 'should properly execute seconds between with an uncertainty', ->
     @secondsBetweenUncertainty.exec(@ctx).should.eql new DT.Uncertainty(0, 2678399)
 
-  it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
-    @secondsBetweenReversedUncertainty.exec(@ctx).should.eql new DT.Uncertainty(-2678399, 0)
+  it 'should properly execute milliseconds between with an uncertainty', ->
+    @millisecondsBetweenUncertainty.exec(@ctx).should.eql new DT.Uncertainty(0, 2678399999)
 
-describe 'TimeBetweenComparisons', ->
+  it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
+    @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new DT.Uncertainty(-2678399999, 0)
+
+describe 'DurationBetweenComparisons', ->
   @beforeEach ->
     setup @
 
@@ -792,33 +801,33 @@ describe 'Retrieve', ->
   it 'should find observations', ->
     c = @conditions.exec(@ctx)
     c.should.have.length(2)
-    c[0].get('identifier').id.should.equal 'http://cqframework.org/3/2'
-    c[1].get('identifier').id.should.equal 'http://cqframework.org/3/4'
+    c[0].get('identifier').value.should.equal 'http://cqframework.org/3/2'
+    c[1].get('identifier').value.should.equal 'http://cqframework.org/3/4'
 
   it 'should find encounter performances', ->
     e = @encounters.exec(@ctx)
     e.should.have.length(3)
-    e[0].get('identifier').id.should.equal 'http://cqframework.org/3/1'
-    e[1].get('identifier').id.should.equal 'http://cqframework.org/3/3'
-    e[2].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/1'
+    e[1].get('identifier').value.should.equal 'http://cqframework.org/3/3'
+    e[2].get('identifier').value.should.equal 'http://cqframework.org/3/5'
 
   it 'should find observations with a value set', ->
     p = @pharyngitisConditions.exec(@ctx)
     p.should.have.length(1)
-    p[0].get('identifier').id.should.equal 'http://cqframework.org/3/2'
+    p[0].get('identifier').value.should.equal 'http://cqframework.org/3/2'
 
   it 'should find encounter performances with a value set', ->
     a = @ambulatoryEncounters.exec(@ctx)
     a.should.have.length(3)
-    a[0].get('identifier').id.should.equal 'http://cqframework.org/3/1'
-    a[1].get('identifier').id.should.equal 'http://cqframework.org/3/3'
-    a[2].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+    a[0].get('identifier').value.should.equal 'http://cqframework.org/3/1'
+    a[1].get('identifier').value.should.equal 'http://cqframework.org/3/3'
+    a[2].get('identifier').value.should.equal 'http://cqframework.org/3/5'
 
   it 'should find encounter performances by service type', ->
     e = @encountersByServiceType.exec(@ctx)
     e.should.have.length(2)
-    e[0].get('identifier').id.should.equal 'http://cqframework.org/3/1'
-    e[1].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/1'
+    e[1].get('identifier').value.should.equal 'http://cqframework.org/3/5'
 
   it 'should not find encounter proposals when they don\'t exist', ->
     e = @wrongDataType.exec(@ctx)
@@ -849,17 +858,17 @@ describe 'DateRangeOptimizedQuery', ->
   it 'should find encounters performed during the MP', ->
     e = @encountersDuringMP.exec(@ctx)
     e.should.have.length(1)
-    e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/5'
 
   it 'should find ambulatory encounters performed during the MP', ->
     e = @ambulatoryEncountersDuringMP.exec(@ctx)
     e.should.have.length(1)
-    e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/5'
 
   it 'should find ambulatory encounter performances included in the MP', ->
     e = @ambulatoryEncountersIncludedInMP.exec(@ctx)
     e.should.have.length(1)
-    e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/5'
 
 describe 'MultiSourceQuery', ->
   @beforeEach ->
@@ -904,7 +913,7 @@ describe 'QueryRelationship', ->
     e = @withOutQuery.exec(@ctx)
     e.should.have.length(3)
 
-  it 'wiothout clause should be able to filter items with a without clause', ->
+  it 'without clause should be able to filter items with a without clause', ->
     e = @withOutQuery2.exec(@ctx)
     e.should.have.length(0)
 
@@ -942,16 +951,16 @@ describe 'Sorting', ->
   it 'should be able to sort by a single field asc' , ->
     e = @singleAsc.exec(@ctx)
     e.should.have.length(3)
-    e[0].E.get("identifier").id.should.equal "http://cqframework.org/3/1"
-    e[1].E.get("identifier").id.should.equal  "http://cqframework.org/3/3"
-    e[2].E.get("identifier").id.should.equal  "http://cqframework.org/3/5"
+    e[0].E.get('identifier').value.should.equal "http://cqframework.org/3/1"
+    e[1].E.get('identifier').value.should.equal  "http://cqframework.org/3/3"
+    e[2].E.get('identifier').value.should.equal  "http://cqframework.org/3/5"
 
   it 'should be able to sort by a single field desc', ->
     e = @singleDesc.exec(@ctx)
     e.should.have.length(3)
-    e[2].E.get("identifier").id.should.equal "http://cqframework.org/3/1"
-    e[1].E.get("identifier").id.should.equal  "http://cqframework.org/3/3"
-    e[0].E.get("identifier").id.should.equal  "http://cqframework.org/3/5"
+    e[2].E.get('identifier').value.should.equal "http://cqframework.org/3/1"
+    e[1].E.get('identifier').value.should.equal  "http://cqframework.org/3/3"
+    e[0].E.get('identifier').value.should.equal  "http://cqframework.org/3/5"
 
 describe.skip 'IncludesQuery', ->
   @beforeEach ->
@@ -970,7 +979,7 @@ describe.skip 'IncludesQuery', ->
   it 'should find ambulatory encounter performances included in the MP', ->
     e = @mPIncludedAmbulatoryEncounters.exec(@ctx)
     e.should.have.length(1)
-    e[0].get('identifier').id.should.equal 'http://cqframework.org/3/5'
+    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/5'
 
 ###
 describe.only 'ScratchPad', ->

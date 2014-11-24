@@ -143,14 +143,14 @@ class DateTime
 
     result
 
-  timeBetween: (other, unitField) ->
+  durationBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
 
     a = @toUncertainty()
     b = other.toUncertainty()
-    new Uncertainty(@_timeBetweenDates(a.high, b.low, unitField), @_timeBetweenDates(a.low, b.high, unitField))
+    new Uncertainty(@_durationBetweenDates(a.high, b.low, unitField), @_durationBetweenDates(a.low, b.high, unitField))
 
-  _timeBetweenDates: (a, b, unitField) ->
+  _durationBetweenDates: (a, b, unitField) ->
     # To count boundaries below month, we need to floor units at lower precisions
     [a, b] = [a, b].map (x) ->
       switch unitField

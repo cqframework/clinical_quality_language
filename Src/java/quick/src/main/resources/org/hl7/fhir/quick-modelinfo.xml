@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modelInfo name="QUICK" xsi:schemaLocation="urn:hl7-org:elm-modelinfo:r1 modelinfo.xsd" xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	url="http://org.hl7.fhir" patientClassName="Patient" patientBirthDatePropertyName="birthDate" schemaLocation="http://org.hl7.fhir quick.xsd" targetQualifier="quick">
+	url="http://org.hl7.fhir" patientClassName="Patient" patientClassIdentifier="cqf-patient" patientBirthDatePropertyName="birthDate" schemaLocation="http://org.hl7.fhir quick.xsd" targetQualifier="quick">
+	<classInfo name="Patient"  topic="Patient" identifier="cqf-patient"/>
 	<classInfo name="Condition"  topic="Condition" identifier="cqf-condition" primaryCodeAttribute="code" primaryDateLowAttribute="onsetDateTime" primaryDateHighAttribute="abatementDateTime"/>
 	<classInfo name="Encounter"  topic="Encounter" identifier="cqf-encounter" primaryCodeAttribute="class" primaryDateAttribute="period"/>
 	<classInfo name="MedicationStatement"  topic="MedicationStatement" identifier="cqf-medicationstatement" primaryCodeAttribute="medication.code" primaryDateAttribute="whenGiven"/>

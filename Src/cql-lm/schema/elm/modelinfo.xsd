@@ -37,6 +37,11 @@
 				<xs:documentation>The patientClassName attribute specifies the name of the Patient class within the model.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="patientClassIdentifier" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The patientClassIdentifier attribute specifies a unique name for the Patient class that may be independent of the name. In FHIR, this corresponds to the Patient profile identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="patientBirthDatePropertyName" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>The patientBirthDatePropertyName attribute specifies the name of the birthdate property on the Patient model.</xs:documentation>
@@ -75,14 +80,14 @@
 		<xs:attribute name="primaryDateLowAttribute" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>The primaryDateLowAttribute attribute specifies the name of the attribute of the class that should be used to perform date range filtering, if the class has a primary date range specified by low and high attributes, rather than a single interval-valued attribute.
-				
+
 Note that the primaryDateLowAttribute must be used in concert with the primaryDateHighAttribute and has no affect if the primaryDateAttribute is set.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="primaryDateHighAttribute" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>The primaryDateHighAttribute attribute specifies the name of the attribute of the class that should be used to perform date range filtering, if the class has a primary date range specified by low and high attributes, rather than a single interval-valued attribute.
-				
+
 Note that the primaryDateHighAttribute must be used in concert with the primaryDateLowAttribute and has no affect if the primaryDateAttribute is set.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>

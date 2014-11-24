@@ -84,6 +84,7 @@
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
             }

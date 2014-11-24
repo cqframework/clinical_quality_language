@@ -1,13 +1,13 @@
 # InAgeDemographic
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 
-context PATIENT
+context Patient
 
 define InDemographic =
     AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
 
 # ExpressionDef
-context PATIENT
+context Patient
 define Foo = 'Bar'
 
 # ExpressionRef
@@ -22,12 +22,12 @@ parameter FooP default 'Bar'
 define Foo = FooP
 
 # ValueSetDef
-define "Known" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define "Unknown One Arg" = ValueSet('1.2.3.4.5.6.7.8.9')
-define "Unknown Two Arg" = ValueSet('1.2.3.4.5.6.7.8.9', '1')
+valueset "Known" = '2.16.840.1.113883.3.464.1003.101.12.1061'
+valueset "Unknown One Arg" = '1.2.3.4.5.6.7.8.9'
+valueset "Unknown Two Arg" = '1.2.3.4.5.6.7.8.9' version '1'
 
 # ValueSetRef
-define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1001')
+valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.101.12.1001'
 define Foo = "Acute Pharyngitis"
 
 # And
@@ -136,8 +136,8 @@ define IsIn = 4 in { 3, 4, 5 }
 define IsNotIn = 4 in { 3, 5, 6 }
 
 # InValueSet
-define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-define "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+valueset "Female" = '2.16.840.1.113883.3.560.100.2'
+valueset "Versioned Female" = '2.16.840.1.113883.3.560.100.2' version '20121025'
 define String = 'F' in "Female"
 define StringInVersionedValueSet = 'F' in "Versioned Female"
 define ShortCode = Code('F') in "Female"
@@ -150,8 +150,8 @@ define WrongMediumCode = Code('F', '3.16.840.1.113883.18.2') in "Female"
 define WrongLongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6') in "Female"
 
 # InValueSetFunction
-define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-define "Versioned Female" = ValueSet('2.16.840.1.113883.3.560.100.2', '20121025')
+valueset "Female" = '2.16.840.1.113883.3.560.100.2'
+valueset "Versioned Female" = '2.16.840.1.113883.3.560.100.2' version '20121025'
 define String = InValueSet('F', '2.16.840.1.113883.3.560.100.2')
 define StringInVersionedValueSet = InValueSet('F', '2.16.840.1.113883.3.560.100.2', '20121025')
 define ShortCode = InValueSet(Code('F'), '2.16.840.1.113883.3.560.100.2')
@@ -164,8 +164,8 @@ define WrongMediumCode = InValueSet(Code('F', '3.16.840.1.113883.18.2'), '2.16.8
 define WrongLongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6'), '2.16.840.1.113883.3.560.100.2')
 
 # PatientPropertyInValueSet
-define "Female" = ValueSet('2.16.840.1.113883.3.560.100.2')
-define IsFemale = gender in "Female Administrative Sex"
+valueset "Female" = '2.16.840.1.113883.3.560.100.2'
+define IsFemale = Patient.gender in "Female"
 
 # Union
 define OneToTen = {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}
@@ -220,7 +220,7 @@ define NegativeOne = -1
 define Mixed = 1 + 5 * 10 - 15 / 3
 define Parenthetical = (1 + 5) * (10 - 15) / 3
 
-# TimeBetween
+# DurationBetween
 define NewYear2013 = Date(2013, 1, 1, 0, 0, 0, 0)
 define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
 define January2014 = Date(2014, 1)
@@ -230,16 +230,18 @@ define DaysBetween = days between NewYear2013 and NewYear2014
 define HoursBetween = hours between NewYear2013 and NewYear2014
 define MinutesBetween = minutes between NewYear2013 and NewYear2014
 define SecondsBetween = seconds between NewYear2013 and NewYear2014
-define SecondsBetweenReversed = seconds between NewYear2014 and NewYear2013
+define MillisecondsBetween = milliseconds between NewYear2013 and NewYear2014
+define MillisecondsBetweenReversed = milliseconds between NewYear2014 and NewYear2013
 define YearsBetweenUncertainty = years between NewYear2014 and January2014
 define MonthsBetweenUncertainty = months between NewYear2014 and January2014
 define DaysBetweenUncertainty = days between NewYear2014 and January2014
 define HoursBetweenUncertainty = hours between NewYear2014 and January2014
 define MinutesBetweenUncertainty = minutes between NewYear2014 and January2014
 define SecondsBetweenUncertainty = seconds between NewYear2014 and January2014
-define SecondsBetweenReversedUncertainty = seconds between January2014 and NewYear2014
+define MillisecondsBetweenUncertainty = milliseconds between NewYear2014 and January2014
+define MillisecondsBetweenReversedUncertainty = milliseconds between January2014 and NewYear2014
 
-# TimeBetweenComparisons
+# DurationBetweenComparisons
 define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
 define February2014 = Date(2014, 2)
 define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
@@ -272,68 +274,67 @@ define StringTrue = 'true'
 define Nil = null
 
 # Retrieve
-define "Acute Pharyngitis" = ValueSet('2.16.840.1.113883.3.464.1003.102.12.1011')
-define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define "Annual Wellness Visit" = ValueSet('2.16.840.1.113883.3.526.3.1240')
+valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.102.12.1011'
+valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
+valueset "Annual Wellness Visit" = '2.16.840.1.113883.3.526.3.1240'
 define Conditions = [Condition]
-define Encounters = [Encounter, Performance]
+define Encounters = [Encounter]
 define PharyngitisConditions = [Condition: "Acute Pharyngitis"]
-define AmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED Visit"]
-define EncountersByServiceType = [Encounter, Performance: serviceType in "Annual Wellness Visit"]
-define WrongDataType = [Encounter, Proposal: "Ambulatory/ED Visit"]
+define AmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"]
+define EncountersByServiceType = [Encounter: type in "Annual Wellness Visit"]
+define WrongDataType = [EncounterProposal: "Ambulatory/ED Visit"]
 define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
-define WrongCodeProperty = [Encounter, Performance: class in "Annual Wellness Visit"]
+define WrongCodeProperty = [Encounter: class in "Annual Wellness Visit"]
 
 # DateRangeOptimizedQuery
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define EncountersDuringMP = [Encounter, Performance] E where E.performanceTime during MeasurementPeriod
-define AmbulatoryEncountersDuringMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime during MeasurementPeriod
-define AmbulatoryEncountersIncludedInMP = [Encounter, Performance: "Ambulatory/ED Visit"] E where E.performanceTime included in MeasurementPeriod
+valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
+define EncountersDuringMP = [Encounter] E where E.period during MeasurementPeriod
+define AmbulatoryEncountersDuringMP = [Encounter: "Ambulatory/ED Visit"] E where E.period during MeasurementPeriod
+define AmbulatoryEncountersIncludedInMP = [Encounter: "Ambulatory/ED Visit"] E where E.period included in MeasurementPeriod
 
 # IncludesQuery
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-define "Ambulatory/ED Visit" = ValueSet('2.16.840.1.113883.3.464.1003.101.12.1061')
-define MPIncludedAmbulatoryEncounters = [Encounter, Performance: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.performanceTime
-
-#ScratchPad
-define Foo = "foo"
+valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
+define MPIncludedAmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.period
 
 #MultiSourceQuery
 parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
-define msQueryWhere = foreach [Encounter, Performance] E, 
-                              [Condition] C 
-                              where E.performanceTime included in MeasurementPeriod
+define msQueryWhere = foreach [Encounter] E,
+                              [Condition] C
+                              where E.period included in MeasurementPeriod
 
-define msQueryWhere2 = foreach [Encounter, Performance] E, [Condition] C 
-  where  E.performanceTime  included in MeasurementPeriod and  C.identifier.id = 'http://cqframework.org/3/2'
+define msQueryWhere2 = foreach [Encounter] E, [Condition] C
+  where  E.period  included in MeasurementPeriod and  C.identifier.value = 'http://cqframework.org/3/2'
 
-define msQuery = foreach [Encounter, Performance] E, [Condition] C return {E: E, C:C} 
+define msQuery = foreach [Encounter] E, [Condition] C return {E: E, C:C}
 
 #QueryDefine
-define query =  [Encounter, Performance] E 
+define query =  [Encounter] E
  define a = E
  return {E: E, a:a}
 
 #Tuple
 define tup = {a: 1, b: 2}
-define query =  [Encounter, Performance] E return {id: E.id, thing: E.status}
+define query =  [Encounter] E return {id: E.id, thing: E.status}
 
 #QueryRelationship
- 
- define withQuery =  [Encounter, Performance] E 
-   with [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
- 
- define withQuery2 =  [Encounter, Performance] E 
-   with [Condition] C such that C.identifier.id = 'http://cqframework.org/3'
 
- define withOutQuery =  [Encounter, Performance] E 
-   without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/'
+define withQuery =  [Encounter] E
+  with [Condition] C such that C.identifier.value = 'http://cqframework.org/3/2'
 
- define withOutQuery2 =  [Encounter, Performance] E 
-   without [Condition] C such that C.identifier.id = 'http://cqframework.org/3/2'
+define withQuery2 =  [Encounter] E
+  with [Condition] C such that C.identifier.value = 'http://cqframework.org/3'
 
+define withOutQuery =  [Encounter] E
+  without [Condition] C such that C.identifier.value = 'http://cqframework.org/3/'
+
+define withOutQuery2 =  [Encounter] E
+  without [Condition] C such that C.identifier.value = 'http://cqframework.org/3/2'
 
 #Sorting
-define singleAsc =  [Encounter, Performance] E  return {E : E} sort by E.identifier.id
-define singleDesc =  [Encounter, Performance] E return {E : E} sort by E.identifier.id desc
+define singleAsc =  [Encounter] E  return {E : E} sort by E.identifier.value
+define singleDesc =  [Encounter] E return {E : E} sort by E.identifier.value desc
+
+#ScratchPad
+define Foo = "foo"

@@ -97,7 +97,7 @@ _test/data/cql-test-data.coffee_ file containing the following exported variable
     ### And
     library TestSnippet version '1'
     using QUICK
-    context PATIENT
+    context Patient
     define AllTrue = true and true
     define AllFalse = false and false
     define SomeTrue = true and false
@@ -119,7 +119,7 @@ _test/data/cql-test-data.coffee_ file containing the following exported variable
           "statements" : {
              "def" : [ {
                 "name" : "AllTrue",
-                "context" : "PATIENT",
+                "context" : "Patient",
                 "expression" : {
                    "type" : "And",
                    "operand" : [ {
@@ -134,7 +134,7 @@ _test/data/cql-test-data.coffee_ file containing the following exported variable
                 }
              }, {
                 "name" : "AllFalse",
-                "context" : "PATIENT",
+                "context" : "Patient",
                 "expression" : {
                    "type" : "And",
                    "operand" : [ {
@@ -149,7 +149,7 @@ _test/data/cql-test-data.coffee_ file containing the following exported variable
                 }
              }, {
                 "name" : "SomeTrue",
-                "context" : "PATIENT",
+                "context" : "Patient",
                 "expression" : {
                    "type" : "And",
                    "operand" : [ {

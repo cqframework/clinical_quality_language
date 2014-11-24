@@ -96,7 +96,7 @@ public class CoffeeScriptTestDataGenerator {
         if (! CONTEXT_CHECK.matcher(snippet).find()) {
             Matcher defineMatcher = DEFINE_CHECK.matcher(snippet);
             if (defineMatcher.find()) {
-                snippet.insert(defineMatcher.start(), "context PATIENT\n");
+                snippet.insert(defineMatcher.start(), "context Patient\n");
             }
         }
         if (! USING_CHECK.matcher(snippet).find()) {
