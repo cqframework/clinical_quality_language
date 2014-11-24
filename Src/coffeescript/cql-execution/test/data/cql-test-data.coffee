@@ -14,7 +14,7 @@ parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 context Patient
 
 define InDemographic =
-    AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
+    AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 ###
 
 module.exports.InAgeDemographic = {
@@ -97,9 +97,16 @@ module.exports.InAgeDemographic = {
                "operand" : [ {
                   "type" : "GreaterOrEqual",
                   "operand" : [ {
-                     "name" : "AgeAt",
-                     "type" : "FunctionRef",
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
                      "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
                         "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
@@ -114,9 +121,16 @@ module.exports.InAgeDemographic = {
                }, {
                   "type" : "Less",
                   "operand" : [ {
-                     "name" : "AgeAt",
-                     "type" : "FunctionRef",
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
                      "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
                         "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
@@ -1012,16 +1026,16 @@ module.exports.Not = {
    }
 }
 
-### AgeAtFunctionRef
+### CalculateAgeAt
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AgeAt2012 = AgeAt(Date(2012))
-define AgeAt19810216 = AgeAt(Date(1981, 2, 16))
-define AgeAt1975 = AgeAt(Date(1975))
+define AgeAt2012 = AgeInYearsAt(Date(2012))
+define AgeAt19810216 = AgeInYearsAt(Date(1981, 2, 16))
+define AgeAt1975 = AgeInYearsAt(Date(1975))
 ###
 
-module.exports.AgeAtFunctionRef = {
+module.exports.CalculateAgeAt = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -1053,9 +1067,16 @@ module.exports.AgeAtFunctionRef = {
             "name" : "AgeAt2012",
             "context" : "Patient",
             "expression" : {
-               "name" : "AgeAt",
-               "type" : "FunctionRef",
+               "precision" : "Year",
+               "type" : "CalculateAgeAt",
                "operand" : [ {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }, {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1069,9 +1090,16 @@ module.exports.AgeAtFunctionRef = {
             "name" : "AgeAt19810216",
             "context" : "Patient",
             "expression" : {
-               "name" : "AgeAt",
-               "type" : "FunctionRef",
+               "precision" : "Year",
+               "type" : "CalculateAgeAt",
                "operand" : [ {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }, {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {
@@ -1093,9 +1121,16 @@ module.exports.AgeAtFunctionRef = {
             "name" : "AgeAt1975",
             "context" : "Patient",
             "expression" : {
-               "name" : "AgeAt",
-               "type" : "FunctionRef",
+               "precision" : "Year",
+               "type" : "CalculateAgeAt",
                "operand" : [ {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }, {
                   "name" : "Date",
                   "type" : "FunctionRef",
                   "operand" : [ {

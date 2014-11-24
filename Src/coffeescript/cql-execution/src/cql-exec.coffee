@@ -258,16 +258,6 @@ class FunctionRef extends Expression
     super
     @name = json.name
 
-class AgeAtFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-
-  exec: (ctx) ->
-    date = @execArgs(ctx)[0].toJSDate()
-    ageInMS = date.getTime() - ctx.currentPatient().birthDate.toJSDate().getTime()
-    # Doesn't account for leap year, but close enough for now
-    Math.floor(ageInMS / (1000 * 60 * 60 * 24 * 365))
-
 class CodeFunctionRef extends FunctionRef
   constructor: (json) ->
     super
@@ -496,6 +486,27 @@ class DurationBetween extends Expression
     args = @execArgs(ctx)
     result = args[0].durationBetween(args[1], @precision?.toLowerCase())
     if result.isPoint() then result.low else result
+
+class CalculateAgeAt extends FunctionRef
+  constructor: (json) ->
+    super
+    @precision = json.precision
+
+  exec: (ctx) ->
+    args = @execArgs(ctx)
+    date0 = args[0].toJSDate().getTime()
+    date1 = args[1].toJSDate().getTime()
+    ageInMS = date1 - date0
+    # Not quite precise (leap years, months, etc) but close enough for now
+    divisor = switch (@precision)
+      when 'Year' then 1000 * 60 * 60 * 24 * 365
+      when 'Month' then (1000 * 60 * 60 * 24 * 365) / 12
+      when 'Day' then 1000 * 60 * 60 * 24
+      when 'Hour' then 1000 * 60 * 60
+      when 'Minute' then 1000 * 60
+      when 'Second' then 1000
+      else 1
+    Math.floor(ageInMS / divisor)
 
 # Literals
 

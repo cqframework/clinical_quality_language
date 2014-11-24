@@ -4,7 +4,7 @@ parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 context Patient
 
 define InDemographic =
-    AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
+    AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
 # ExpressionDef
 context Patient
@@ -68,10 +68,10 @@ define NotTrue = not true
 define NotFalse = not false
 define NotNull = not null
 
-# AgeAtFunctionRef
-define AgeAt2012 = AgeAt(Date(2012))
-define AgeAt19810216 = AgeAt(Date(1981, 2, 16))
-define AgeAt1975 = AgeAt(Date(1975))
+# CalculateAgeAt
+define AgeAt2012 = AgeInYearsAt(Date(2012))
+define AgeAt19810216 = AgeInYearsAt(Date(1981, 2, 16))
+define AgeAt1975 = AgeInYearsAt(Date(1975))
 
 # DateFunctionRef
 define Year = Date(2012)

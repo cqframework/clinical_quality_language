@@ -7,4 +7,4 @@ parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
 context Patient
 
 define InDemographic =
-    AgeAt(start of MeasurementPeriod) >= 2 and AgeAt(start of MeasurementPeriod) < 18
+    AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18

@@ -188,7 +188,7 @@ describe 'Not', ->
   it 'should execute not null as null', ->
     should(@notNull.exec(@ctx)).be.null
 
-describe 'AgeAtFunctionRef', ->
+describe 'CalculateAgeAt', ->
   @beforeEach ->
     setup @, [P.P1]
 

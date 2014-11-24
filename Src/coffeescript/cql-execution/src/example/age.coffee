@@ -4,6 +4,10 @@ module.exports = {
          "id" : "AgeAtMP",
          "version" : "1"
       },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
       "usings" : {
          "def" : [ {
             "localIdentifier" : "QUICK",
@@ -56,6 +60,17 @@ module.exports = {
       },
       "statements" : {
          "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
             "name" : "InDemographic",
             "context" : "Patient",
             "expression" : {
@@ -63,9 +78,16 @@ module.exports = {
                "operand" : [ {
                   "type" : "GreaterOrEqual",
                   "operand" : [ {
-                     "name" : "AgeAt",
-                     "type" : "FunctionRef",
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
                      "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
                         "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
@@ -80,9 +102,16 @@ module.exports = {
                }, {
                   "type" : "Less",
                   "operand" : [ {
-                     "name" : "AgeAt",
-                     "type" : "FunctionRef",
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
                      "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
                         "type" : "Start",
                         "operand" : {
                            "name" : "MeasurementPeriod",
