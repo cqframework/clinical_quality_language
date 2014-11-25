@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ContactComponent
 @exports  ContactComponent as ContactComponent
 ###
-class ContactComponent
+class ContactComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -84,7 +86,7 @@ class ContactComponent
 @class AnimalComponent
 @exports  AnimalComponent as AnimalComponent
 ###
-class AnimalComponent
+class AnimalComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -111,7 +113,7 @@ class AnimalComponent
 @class PatientLinkComponent
 @exports  PatientLinkComponent as PatientLinkComponent
 ###
-class PatientLinkComponent
+class PatientLinkComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -131,8 +133,9 @@ Demographics and other administrative information about a person or animal recei
 @class Patient
 @exports Patient as Patient
 ###
-class Patient 
+class Patient extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   An identifier that applies to this person as a patient.
   @returns {Array} an array of {@link Identifier} objects

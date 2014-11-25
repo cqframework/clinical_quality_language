@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ConformanceSoftwareComponent
 @exports  ConformanceSoftwareComponent as ConformanceSoftwareComponent
 ###
-class ConformanceSoftwareComponent
+class ConformanceSoftwareComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -60,7 +62,7 @@ class ConformanceSoftwareComponent
 @class ConformanceImplementationComponent
 @exports  ConformanceImplementationComponent as ConformanceImplementationComponent
 ###
-class ConformanceImplementationComponent
+class ConformanceImplementationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -81,7 +83,7 @@ class ConformanceImplementationComponent
 @class ConformanceRestSecurityCertificateComponent
 @exports  ConformanceRestSecurityCertificateComponent as ConformanceRestSecurityCertificateComponent
 ###
-class ConformanceRestSecurityCertificateComponent
+class ConformanceRestSecurityCertificateComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -102,7 +104,7 @@ class ConformanceRestSecurityCertificateComponent
 @class ConformanceRestSecurityComponent
 @exports  ConformanceRestSecurityComponent as ConformanceRestSecurityComponent
 ###
-class ConformanceRestSecurityComponent
+class ConformanceRestSecurityComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -141,7 +143,7 @@ class ConformanceRestSecurityComponent
 @class ResourceInteractionComponent
 @exports  ResourceInteractionComponent as ResourceInteractionComponent
 ###
-class ResourceInteractionComponent
+class ResourceInteractionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -162,7 +164,7 @@ class ResourceInteractionComponent
 @class ConformanceRestResourceSearchParamComponent
 @exports  ConformanceRestResourceSearchParamComponent as ConformanceRestResourceSearchParamComponent
 ###
-class ConformanceRestResourceSearchParamComponent
+class ConformanceRestResourceSearchParamComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -207,7 +209,7 @@ class ConformanceRestResourceSearchParamComponent
 @class ConformanceRestResourceComponent
 @exports  ConformanceRestResourceComponent as ConformanceRestResourceComponent
 ###
-class ConformanceRestResourceComponent
+class ConformanceRestResourceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -264,7 +266,7 @@ class ConformanceRestResourceComponent
 @class SystemInteractionComponent
 @exports  SystemInteractionComponent as SystemInteractionComponent
 ###
-class SystemInteractionComponent
+class SystemInteractionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -285,7 +287,7 @@ class SystemInteractionComponent
 @class ConformanceRestOperationComponent
 @exports  ConformanceRestOperationComponent as ConformanceRestOperationComponent
 ###
-class ConformanceRestOperationComponent
+class ConformanceRestOperationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -306,7 +308,7 @@ class ConformanceRestOperationComponent
 @class ConformanceRestComponent
 @exports  ConformanceRestComponent as ConformanceRestComponent
 ###
-class ConformanceRestComponent
+class ConformanceRestComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -366,7 +368,7 @@ class ConformanceRestComponent
 @class ConformanceMessagingEventComponent
 @exports  ConformanceMessagingEventComponent as ConformanceMessagingEventComponent
 ###
-class ConformanceMessagingEventComponent
+class ConformanceMessagingEventComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -426,7 +428,7 @@ class ConformanceMessagingEventComponent
 @class ConformanceMessagingComponent
 @exports  ConformanceMessagingComponent as ConformanceMessagingComponent
 ###
-class ConformanceMessagingComponent
+class ConformanceMessagingComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -462,7 +464,7 @@ class ConformanceMessagingComponent
 @class ConformanceDocumentComponent
 @exports  ConformanceDocumentComponent as ConformanceDocumentComponent
 ###
-class ConformanceDocumentComponent
+class ConformanceDocumentComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -488,8 +490,9 @@ A conformance statement is a set of requirements for a desired implementation or
 @class Conformance
 @exports Conformance as Conformance
 ###
-class Conformance 
+class Conformance extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The identifier that is used to identify this conformance statement when it is referenced in a specification, model, design or an instance (should be globally unique OID, UUID, or URI).
   @returns {Array} an array of {@link String} objects

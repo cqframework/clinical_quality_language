@@ -26,13 +26,16 @@
 ###*
 @namespacing scoping into the FHIR namespace
 ###
+require './element'
+require './resource'
 ###*
 There is a variety of postal address formats defined around the world. This format defines a superset that is the basis for all addresses around the world.
 @class Address
 @exports Address as Address
 ###
-class Address 
+class Address extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The purpose of this address.
   @returns {Array} an array of {@link String} objects
@@ -91,8 +94,9 @@ For referring to data content defined in other formats.
 @class Attachment
 @exports Attachment as Attachment
 ###
-class Attachment 
+class Attachment extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.
   @returns {Array} an array of {@link String} objects
@@ -144,8 +148,9 @@ A concept that may be defined by a formal reference to a terminology or ontology
 @class CodeableConcept
 @exports CodeableConcept as CodeableConcept
 ###
-class CodeableConcept 
+class CodeableConcept extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   A reference to a code defined by a terminology system.
   @returns {Array} an array of {@link Coding} objects
@@ -170,8 +175,9 @@ A reference to a code defined by a terminology system.
 @class Coding
 @exports Coding as Coding
 ###
-class Coding 
+class Coding extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The identification of the code system that defines the meaning of the symbol in the code.
   @returns {Array} an array of {@link String} objects
@@ -217,8 +223,9 @@ Details for All kinds of technology mediated contact points for a person or orga
 @class ContactPoint
 @exports ContactPoint as ContactPoint
 ###
-class ContactPoint 
+class ContactPoint extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   Telecommunications form for contact point - what communications system is required to make use of the contact.
   @returns {Array} an array of {@link String} objects
@@ -252,8 +259,9 @@ Optional Extensions Element - found in all resources.
 @class Extension
 @exports Extension as Extension
 ###
-class Extension 
+class Extension extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   Source of the definition for the extension code - a logical name or a URL.
   @returns {Array} an array of {@link String} objects
@@ -275,8 +283,9 @@ A human's name with the ability to identify parts and usage.
 @class HumanName
 @exports HumanName as HumanName
 ###
-class HumanName 
+class HumanName extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifies the purpose for this name.
   @returns {Array} an array of {@link String} objects
@@ -328,8 +337,9 @@ A technical identifier - identifies some entity uniquely and unambiguously.
 @class Identifier
 @exports Identifier as Identifier
 ###
-class Identifier 
+class Identifier extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The purpose of this identifier.
   @returns {Array} an array of {@link String} objects
@@ -375,8 +385,9 @@ A human-readable formatted text, including images.
 @class Narrative
 @exports Narrative as Narrative
 ###
-class Narrative 
+class Narrative extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data.
   @returns {Array} an array of {@link String} objects
@@ -398,8 +409,9 @@ A time period defined by a start and end date and optionally time.
 @class Period
 @exports Period as Period
 ###
-class Period 
+class Period extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The start of the period. The boundary is inclusive.
   @returns {Date}
@@ -421,8 +433,9 @@ A measured amount (or an amount that can potentially be measured). Note that mea
 @class Quantity
 @exports Quantity as Quantity
 ###
-class Quantity 
+class Quantity extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The value of the measured amount. The value includes an implicit precision in the presentation of the value.
   @returns {Array} an array of {@link Number} objects
@@ -462,8 +475,9 @@ A set of ordered Quantities defined by a low and high limit.
 @class Range
 @exports Range as Range
 ###
-class Range 
+class Range extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The low limit. The boundary is inclusive.
   @returns {Quantity}
@@ -485,8 +499,9 @@ A relationship of two Quantity values - expressed as a numerator and a denominat
 @class Ratio
 @exports Ratio as Ratio
 ###
-class Ratio 
+class Ratio extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The value of the numerator.
   @returns {Quantity}
@@ -508,8 +523,9 @@ A reference from one resource to another.
 @class Reference
 @exports Reference as Reference
 ###
-class Reference 
+class Reference extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   A reference to a location at which the other resource is found. The reference may a relative reference, in which case it is relative to the service base URL, or an absolute URL that resolves to the location where the resource is found. The reference may be version specific or not. If the reference is not to a FHIR RESTful server, then it should be assumed to be version specific. Internal fragment references (start with '#') refer to contained resources.
   @returns {Array} an array of {@link String} objects
@@ -531,8 +547,9 @@ A series of measurements taken by a device, with upper and lower limits. There m
 @class SampledData
 @exports SampledData as SampledData
 ###
-class SampledData 
+class SampledData extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   The base quantity that a measured value of zero represents. In addition, this provides the units of the entire measurement series.
   @returns {Quantity}
@@ -585,7 +602,7 @@ module.exports.SampledData = SampledData
 @class TimingRepeatComponent
 @exports  TimingRepeatComponent as TimingRepeatComponent
 ###
-class TimingRepeatComponent
+class TimingRepeatComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -629,8 +646,9 @@ Specifies an event that may occur multiple times. Timing schedules are used for 
 @class Timing
 @exports Timing as Timing
 ###
-class Timing 
+class Timing extends Element
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifies specific time periods when the event should occur.
   @returns {Array} an array of {@link Period} objects

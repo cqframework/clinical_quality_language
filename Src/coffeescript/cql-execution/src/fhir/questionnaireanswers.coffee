@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class QuestionAnswerComponent
 @exports  QuestionAnswerComponent as QuestionAnswerComponent
 ###
-class QuestionAnswerComponent
+class QuestionAnswerComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -103,7 +105,7 @@ class QuestionAnswerComponent
 @class QuestionComponent
 @exports  QuestionComponent as QuestionComponent
 ###
-class QuestionComponent
+class QuestionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -142,7 +144,7 @@ class QuestionComponent
 @class GroupComponent
 @exports  GroupComponent as GroupComponent
 ###
-class GroupComponent
+class GroupComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -192,8 +194,9 @@ A structured set of questions and their answers. The questions are ordered and g
 @class QuestionnaireAnswers
 @exports QuestionnaireAnswers as QuestionnaireAnswers
 ###
-class QuestionnaireAnswers 
+class QuestionnaireAnswers extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   A business identifier assigned to a particular completed (or partially completed) questionnaire.
   @returns {Identifier}

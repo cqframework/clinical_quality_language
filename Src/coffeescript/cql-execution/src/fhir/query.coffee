@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class QueryResponseComponent
 @exports  QueryResponseComponent as QueryResponseComponent
 ###
-class QueryResponseComponent
+class QueryResponseComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -113,8 +115,9 @@ A description of a query with a set of parameters.
 @class Query
 @exports Query as Query
 ###
-class Query 
+class Query extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Links query and its response(s).
   @returns {Array} an array of {@link String} objects

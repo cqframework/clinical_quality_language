@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class LocationPositionComponent
 @exports  LocationPositionComponent as LocationPositionComponent
 ###
-class LocationPositionComponent
+class LocationPositionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -59,8 +61,9 @@ Details and position information for a physical place where services are provide
 @class Location
 @exports Location as Location
 ###
-class Location 
+class Location extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Unique code or number identifying the location to its users.
   @returns {Array} an array of {@link Identifier} objects

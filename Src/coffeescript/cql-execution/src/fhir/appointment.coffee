@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class AppointmentParticipantComponent
 @exports  AppointmentParticipantComponent as AppointmentParticipantComponent
 ###
-class AppointmentParticipantComponent
+class AppointmentParticipantComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -68,8 +70,9 @@ class AppointmentParticipantComponent
 @class Appointment
 @exports Appointment as Appointment
 ###
-class Appointment 
+class Appointment extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   This records identifiers associated with this appointment concern that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
   @returns {Array} an array of {@link Identifier} objects

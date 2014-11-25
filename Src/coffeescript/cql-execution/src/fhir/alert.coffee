@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 Prospective warnings of potential issues when providing care to the patient.
 @class Alert
 @exports Alert as Alert
 ###
-class Alert 
+class Alert extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifier assigned to the alert for external use (outside the FHIR environment).
   @returns {Array} an array of {@link Identifier} objects

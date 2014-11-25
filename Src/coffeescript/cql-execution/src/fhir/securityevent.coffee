@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class SecurityEventEventComponent
 @exports  SecurityEventEventComponent as SecurityEventEventComponent
 ###
-class SecurityEventEventComponent
+class SecurityEventEventComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -81,7 +83,7 @@ class SecurityEventEventComponent
 @class SecurityEventParticipantNetworkComponent
 @exports  SecurityEventParticipantNetworkComponent as SecurityEventParticipantNetworkComponent
 ###
-class SecurityEventParticipantNetworkComponent
+class SecurityEventParticipantNetworkComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -102,7 +104,7 @@ class SecurityEventParticipantNetworkComponent
 @class SecurityEventParticipantComponent
 @exports  SecurityEventParticipantComponent as SecurityEventParticipantComponent
 ###
-class SecurityEventParticipantComponent
+class SecurityEventParticipantComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -162,7 +164,7 @@ class SecurityEventParticipantComponent
 @class SecurityEventSourceComponent
 @exports  SecurityEventSourceComponent as SecurityEventSourceComponent
 ###
-class SecurityEventSourceComponent
+class SecurityEventSourceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -192,7 +194,7 @@ class SecurityEventSourceComponent
 @class SecurityEventObjectDetailComponent
 @exports  SecurityEventObjectDetailComponent as SecurityEventObjectDetailComponent
 ###
-class SecurityEventObjectDetailComponent
+class SecurityEventObjectDetailComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -213,7 +215,7 @@ class SecurityEventObjectDetailComponent
 @class SecurityEventObjectComponent
 @exports  SecurityEventObjectComponent as SecurityEventObjectComponent
 ###
-class SecurityEventObjectComponent
+class SecurityEventObjectComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -284,8 +286,9 @@ A record of an event made for purposes of maintaining a security log. Typical us
 @class SecurityEvent
 @exports SecurityEvent as SecurityEvent
 ###
-class SecurityEvent 
+class SecurityEvent extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifies the name, action type, time, and disposition of the audited event.
   @returns {SecurityEventEventComponent}

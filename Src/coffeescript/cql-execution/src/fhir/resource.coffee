@@ -26,60 +26,20 @@
 ###*
 @namespacing scoping into the FHIR namespace
 ###
-require './core'
 require './element'
-require './resource'
-
-###* 
- Embedded class
-@class OperationOutcomeIssueComponent
-@exports  OperationOutcomeIssueComponent as OperationOutcomeIssueComponent
-###
-class OperationOutcomeIssueComponent extends Element
-  constructor: (@json) ->
-    super(@json)
-  ###*
-  Indicates whether the issue indicates a variation from successful processing.
-  @returns {Array} an array of {@link String} objects
-  ###
-  severity:-> @json['severity']
-  
-  ###*
-  A code indicating the type of error, warning or information message.
-  @returns {Coding}
-  ###
-  fhirType: -> if @json['fhirType'] then new Coding(@json['fhirType'])
-  
-  ###*
-  Additional description of the issue.
-  @returns {Array} an array of {@link String} objects
-  ###
-  details:-> @json['details']
-  
-  ###*
-  A simple XPath limited to element names, repetition indicators and the default child access that identifies one of the elements in the resource that caused this issue to be raised.
-  @returns {Array} an array of {@link String} objects
-  ###
-  location:-> @json['location']
-  
 ###*
-A collection of error, warning or information messages that result from a system action.
-@class OperationOutcome
-@exports OperationOutcome as OperationOutcome
+Information about a person that is involved in the care for a patient, but who is not the target of healthcare, nor has a formal responsibility in the care process.
+@class Resource
+@exports Resource as Resource
 ###
-class OperationOutcome extends  Resource
-  constructor: (@json) ->
+
+class Resource extends Element
+
+  constructor:(@json) ->
     super(@json)
-  ###*
-  An error, warning or information message that results from a system action.
-  @returns {Array} an array of {@link OperationOutcomeIssueComponent} objects
-  ###
-  issue: ->
-    if @json['issue']
-      for item in @json['issue']
-        new OperationOutcomeIssueComponent(item)
-  
 
+  text: -> @json["text"]
 
+  contained: -> @json["contained"]
 
-module.exports.OperationOutcome = OperationOutcome
+  tags: -> @json["tags"]

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class MedicationDispenseDispenseDosageComponent
 @exports  MedicationDispenseDispenseDosageComponent as MedicationDispenseDispenseDosageComponent
 ###
-class MedicationDispenseDispenseDosageComponent
+class MedicationDispenseDispenseDosageComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -113,7 +115,7 @@ Terminologies used often pre-coordinate this term with the route and or form of 
 @class MedicationDispenseDispenseComponent
 @exports  MedicationDispenseDispenseComponent as MedicationDispenseDispenseComponent
 ###
-class MedicationDispenseDispenseComponent
+class MedicationDispenseDispenseComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -188,7 +190,7 @@ class MedicationDispenseDispenseComponent
 @class MedicationDispenseSubstitutionComponent
 @exports  MedicationDispenseSubstitutionComponent as MedicationDispenseSubstitutionComponent
 ###
-class MedicationDispenseSubstitutionComponent
+class MedicationDispenseSubstitutionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -220,8 +222,9 @@ Dispensing a medication to a named patient.  This includes a description of the 
 @class MedicationDispense
 @exports MedicationDispense as MedicationDispense
 ###
-class MedicationDispense 
+class MedicationDispense extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifier assigned by the dispensing facility - this is an identifier assigned outside FHIR.
   @returns {Identifier}

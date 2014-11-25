@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class NamespaceUniqueIdComponent
 @exports  NamespaceUniqueIdComponent as NamespaceUniqueIdComponent
 ###
-class NamespaceUniqueIdComponent
+class NamespaceUniqueIdComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -66,7 +68,7 @@ class NamespaceUniqueIdComponent
 @class NamespaceContactComponent
 @exports  NamespaceContactComponent as NamespaceContactComponent
 ###
-class NamespaceContactComponent
+class NamespaceContactComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -89,8 +91,9 @@ A curated namespace that issues unique symbols within that namespace for the ide
 @class Namespace
 @exports Namespace as Namespace
 ###
-class Namespace 
+class Namespace extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Indicates the purpose for the namespace - what kinds of things does it make unique?.
   @returns {Array} an array of {@link String} objects

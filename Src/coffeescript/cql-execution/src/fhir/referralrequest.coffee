@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 Used to record and send details about a request for referral service or transfer of a patient to the care of another provider or provider organisation.
 @class ReferralRequest
 @exports ReferralRequest as ReferralRequest
 ###
-class ReferralRequest 
+class ReferralRequest extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The workflow status of the referral or transfer of care request.
   @returns {Array} an array of {@link String} objects

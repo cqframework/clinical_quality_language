@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class DiagnosticOrderEventComponent
 @exports  DiagnosticOrderEventComponent as DiagnosticOrderEventComponent
 ###
-class DiagnosticOrderEventComponent
+class DiagnosticOrderEventComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -66,7 +68,7 @@ class DiagnosticOrderEventComponent
 @class DiagnosticOrderItemComponent
 @exports  DiagnosticOrderItemComponent as DiagnosticOrderItemComponent
 ###
-class DiagnosticOrderItemComponent
+class DiagnosticOrderItemComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -110,8 +112,9 @@ A request for a diagnostic investigation service to be performed.
 @class DiagnosticOrder
 @exports DiagnosticOrder as DiagnosticOrder
 ###
-class DiagnosticOrder 
+class DiagnosticOrder extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Who or what the investigation is to be performed on. This is usually a human patient, but diagnostic tests can also be requested on animals, groups of humans or animals, devices such as dialysis machines, or even locations (typically for environmental scans).
   @returns {Reference}

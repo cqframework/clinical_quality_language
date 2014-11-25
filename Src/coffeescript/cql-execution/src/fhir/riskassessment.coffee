@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class RiskAssessmentPredictionComponent
 @exports  RiskAssessmentPredictionComponent as RiskAssessmentPredictionComponent
 ###
-class RiskAssessmentPredictionComponent
+class RiskAssessmentPredictionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -86,8 +88,9 @@ An assessment of the likely outcome(s) for a patient or other subject as well as
 @class RiskAssessment
 @exports RiskAssessment as RiskAssessment
 ###
-class RiskAssessment 
+class RiskAssessment extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The patient or group the risk assessment applies to.
   @returns {Reference}

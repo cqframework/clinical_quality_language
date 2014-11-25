@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class DiagnosticReportImageComponent
 @exports  DiagnosticReportImageComponent as DiagnosticReportImageComponent
 ###
-class DiagnosticReportImageComponent
+class DiagnosticReportImageComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -53,8 +55,9 @@ The findings and interpretation of diagnostic  tests performed on patients, grou
 @class DiagnosticReport
 @exports DiagnosticReport as DiagnosticReport
 ###
-class DiagnosticReport 
+class DiagnosticReport extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   A code or name that describes this diagnostic report.
   @returns {CodeableConcept}

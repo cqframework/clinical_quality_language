@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class MedicationProductIngredientComponent
 @exports  MedicationProductIngredientComponent as MedicationProductIngredientComponent
 ###
-class MedicationProductIngredientComponent
+class MedicationProductIngredientComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -54,7 +56,7 @@ class MedicationProductIngredientComponent
 @class MedicationProductComponent
 @exports  MedicationProductComponent as MedicationProductComponent
 ###
-class MedicationProductComponent
+class MedicationProductComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -78,7 +80,7 @@ class MedicationProductComponent
 @class MedicationPackageContentComponent
 @exports  MedicationPackageContentComponent as MedicationPackageContentComponent
 ###
-class MedicationPackageContentComponent
+class MedicationPackageContentComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -99,7 +101,7 @@ class MedicationPackageContentComponent
 @class MedicationPackageComponent
 @exports  MedicationPackageComponent as MedicationPackageComponent
 ###
-class MedicationPackageComponent
+class MedicationPackageComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -122,8 +124,9 @@ Primarily used for identification and definition of Medication, but also covers 
 @class Medication
 @exports Medication as Medication
 ###
-class Medication 
+class Medication extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The common/commercial name of the medication absent information such as strength, form, etc.  E.g. Acetaminophen, Tylenol 3, etc.  The fully coordinated name is communicated as the display of Medication.code.
   @returns {Array} an array of {@link String} objects

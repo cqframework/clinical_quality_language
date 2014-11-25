@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ImmunizationExplanationComponent
 @exports  ImmunizationExplanationComponent as ImmunizationExplanationComponent
 ###
-class ImmunizationExplanationComponent
+class ImmunizationExplanationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -60,7 +62,7 @@ class ImmunizationExplanationComponent
 @class ImmunizationReactionComponent
 @exports  ImmunizationReactionComponent as ImmunizationReactionComponent
 ###
-class ImmunizationReactionComponent
+class ImmunizationReactionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -87,7 +89,7 @@ class ImmunizationReactionComponent
 @class ImmunizationVaccinationProtocolComponent
 @exports  ImmunizationVaccinationProtocolComponent as ImmunizationVaccinationProtocolComponent
 ###
-class ImmunizationVaccinationProtocolComponent
+class ImmunizationVaccinationProtocolComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -143,8 +145,9 @@ Immunization event information.
 @class Immunization
 @exports Immunization as Immunization
 ###
-class Immunization 
+class Immunization extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   A unique identifier assigned to this adverse reaction record.
   @returns {Array} an array of {@link Identifier} objects

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class SupplyDispenseComponent
 @exports  SupplyDispenseComponent as SupplyDispenseComponent
 ###
-class SupplyDispenseComponent
+class SupplyDispenseComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -104,8 +106,9 @@ A supply - a  request for something, and provision of what is supplied.
 @class Supply
 @exports Supply as Supply
 ###
-class Supply 
+class Supply extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Category of supply, e.g.  central, non-stock, etc. This is used to support work flows associated with the supply process.
   @returns {CodeableConcept}

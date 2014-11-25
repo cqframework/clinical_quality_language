@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 A response to an order.
 @class OrderResponse
 @exports OrderResponse as OrderResponse
 ###
-class OrderResponse 
+class OrderResponse extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifiers assigned to this order. The identifiers are usually assigned by the system responding to the order, but they may be provided or added to by other systems.
   @returns {Array} an array of {@link Identifier} objects

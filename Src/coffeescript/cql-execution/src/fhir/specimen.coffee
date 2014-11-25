@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class SpecimenSourceComponent
 @exports  SpecimenSourceComponent as SpecimenSourceComponent
 ###
-class SpecimenSourceComponent
+class SpecimenSourceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -57,7 +59,7 @@ class SpecimenSourceComponent
 @class SpecimenCollectionComponent
 @exports  SpecimenCollectionComponent as SpecimenCollectionComponent
 ###
-class SpecimenCollectionComponent
+class SpecimenCollectionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -107,7 +109,7 @@ class SpecimenCollectionComponent
 @class SpecimenTreatmentComponent
 @exports  SpecimenTreatmentComponent as SpecimenTreatmentComponent
 ###
-class SpecimenTreatmentComponent
+class SpecimenTreatmentComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -137,7 +139,7 @@ class SpecimenTreatmentComponent
 @class SpecimenContainerComponent
 @exports  SpecimenContainerComponent as SpecimenContainerComponent
 ###
-class SpecimenContainerComponent
+class SpecimenContainerComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -184,8 +186,9 @@ Sample for analysis.
 @class Specimen
 @exports Specimen as Specimen
 ###
-class Specimen 
+class Specimen extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Id for specimen.
   @returns {Array} an array of {@link Identifier} objects

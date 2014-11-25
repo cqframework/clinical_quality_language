@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class NutritionOrderItemOralDietComponent
 @exports  NutritionOrderItemOralDietComponent as NutritionOrderItemOralDietComponent
 ###
-class NutritionOrderItemOralDietComponent
+class NutritionOrderItemOralDietComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -104,7 +106,7 @@ class NutritionOrderItemOralDietComponent
 @class NutritionOrderItemSupplementComponent
 @exports  NutritionOrderItemSupplementComponent as NutritionOrderItemSupplementComponent
 ###
-class NutritionOrderItemSupplementComponent
+class NutritionOrderItemSupplementComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -134,7 +136,7 @@ class NutritionOrderItemSupplementComponent
 @class NutritionOrderItemEnteralFormulaComponent
 @exports  NutritionOrderItemEnteralFormulaComponent as NutritionOrderItemEnteralFormulaComponent
 ###
-class NutritionOrderItemEnteralFormulaComponent
+class NutritionOrderItemEnteralFormulaComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -191,7 +193,7 @@ class NutritionOrderItemEnteralFormulaComponent
 @class NutritionOrderItemComponent
 @exports  NutritionOrderItemComponent as NutritionOrderItemComponent
 ###
-class NutritionOrderItemComponent
+class NutritionOrderItemComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -234,8 +236,9 @@ A request to supply a diet, formula feeding (enteral) or oral nutritional supple
 @class NutritionOrder
 @exports NutritionOrder as NutritionOrder
 ###
-class NutritionOrder 
+class NutritionOrder extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The person (patient) who needs the nutrition order for an oral diet, nutritional supplement and/or enteral or formula feeding.
   @returns {Reference}

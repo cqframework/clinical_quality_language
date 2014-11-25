@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ConceptDefinitionDesignationComponent
 @exports  ConceptDefinitionDesignationComponent as ConceptDefinitionDesignationComponent
 ###
-class ConceptDefinitionDesignationComponent
+class ConceptDefinitionDesignationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -60,7 +62,7 @@ class ConceptDefinitionDesignationComponent
 @class ConceptDefinitionComponent
 @exports  ConceptDefinitionComponent as ConceptDefinitionComponent
 ###
-class ConceptDefinitionComponent
+class ConceptDefinitionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -111,7 +113,7 @@ class ConceptDefinitionComponent
 @class ValueSetDefineComponent
 @exports  ValueSetDefineComponent as ValueSetDefineComponent
 ###
-class ValueSetDefineComponent
+class ValueSetDefineComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -147,7 +149,7 @@ class ValueSetDefineComponent
 @class ConceptReferenceComponent
 @exports  ConceptReferenceComponent as ConceptReferenceComponent
 ###
-class ConceptReferenceComponent
+class ConceptReferenceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -177,7 +179,7 @@ class ConceptReferenceComponent
 @class ConceptSetFilterComponent
 @exports  ConceptSetFilterComponent as ConceptSetFilterComponent
 ###
-class ConceptSetFilterComponent
+class ConceptSetFilterComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -204,7 +206,7 @@ class ConceptSetFilterComponent
 @class ConceptSetComponent
 @exports  ConceptSetComponent as ConceptSetComponent
 ###
-class ConceptSetComponent
+class ConceptSetComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -243,7 +245,7 @@ class ConceptSetComponent
 @class ValueSetComposeComponent
 @exports  ValueSetComposeComponent as ValueSetComposeComponent
 ###
-class ValueSetComposeComponent
+class ValueSetComposeComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -276,7 +278,7 @@ class ValueSetComposeComponent
 @class ValueSetExpansionContainsComponent
 @exports  ValueSetExpansionContainsComponent as ValueSetExpansionContainsComponent
 ###
-class ValueSetExpansionContainsComponent
+class ValueSetExpansionContainsComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -324,7 +326,7 @@ class ValueSetExpansionContainsComponent
 @class ValueSetExpansionComponent
 @exports  ValueSetExpansionComponent as ValueSetExpansionComponent
 ###
-class ValueSetExpansionComponent
+class ValueSetExpansionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -353,8 +355,9 @@ A value set specifies a set of codes drawn from one or more code systems.
 @class ValueSet
 @exports ValueSet as ValueSet
 ###
-class ValueSet 
+class ValueSet extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The identifier that is used to identify this value set when it is referenced in a specification, model, design or an instance (should be globally unique OID, UUID, or URI).
   @returns {Array} an array of {@link String} objects

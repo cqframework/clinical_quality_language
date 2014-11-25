@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class DataElementBindingComponent
 @exports  DataElementBindingComponent as DataElementBindingComponent
 ###
-class DataElementBindingComponent
+class DataElementBindingComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -66,7 +68,7 @@ class DataElementBindingComponent
 @class DataElementMappingComponent
 @exports  DataElementMappingComponent as DataElementMappingComponent
 ###
-class DataElementMappingComponent
+class DataElementMappingComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -98,8 +100,9 @@ The formal description of a single piece of information that can be gathered and
 @class DataElement
 @exports DataElement as DataElement
 ###
-class DataElement 
+class DataElement extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The identifier that is used to identify this data element when it is referenced in a Profile, Questionnaire or an instance.
   @returns {Identifier}

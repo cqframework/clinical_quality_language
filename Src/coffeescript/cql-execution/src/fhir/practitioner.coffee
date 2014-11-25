@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class PractitionerQualificationComponent
 @exports  PractitionerQualificationComponent as PractitionerQualificationComponent
 ###
-class PractitionerQualificationComponent
+class PractitionerQualificationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -68,8 +70,9 @@ A person who is directly or indirectly involved in the provisioning of healthcar
 @class Practitioner
 @exports Practitioner as Practitioner
 ###
-class Practitioner 
+class Practitioner extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   An identifier that applies to this person in this role.
   @returns {Array} an array of {@link Identifier} objects

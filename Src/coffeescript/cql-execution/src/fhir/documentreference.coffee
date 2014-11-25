@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class DocumentReferenceRelatesToComponent
 @exports  DocumentReferenceRelatesToComponent as DocumentReferenceRelatesToComponent
 ###
-class DocumentReferenceRelatesToComponent
+class DocumentReferenceRelatesToComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -54,7 +56,7 @@ class DocumentReferenceRelatesToComponent
 @class DocumentReferenceServiceParameterComponent
 @exports  DocumentReferenceServiceParameterComponent as DocumentReferenceServiceParameterComponent
 ###
-class DocumentReferenceServiceParameterComponent
+class DocumentReferenceServiceParameterComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -75,7 +77,7 @@ class DocumentReferenceServiceParameterComponent
 @class DocumentReferenceServiceComponent
 @exports  DocumentReferenceServiceComponent as DocumentReferenceServiceComponent
 ###
-class DocumentReferenceServiceComponent
+class DocumentReferenceServiceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -105,7 +107,7 @@ class DocumentReferenceServiceComponent
 @class DocumentReferenceContextComponent
 @exports  DocumentReferenceContextComponent as DocumentReferenceContextComponent
 ###
-class DocumentReferenceContextComponent
+class DocumentReferenceContextComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -134,8 +136,9 @@ A reference to a document.
 @class DocumentReference
 @exports DocumentReference as DocumentReference
 ###
-class DocumentReference 
+class DocumentReference extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Document identifier as assigned by the source of the document. This identifier is specific to this version of the document. This unique identifier may be used elsewhere to identify this version of the document.
   @returns {Identifier}

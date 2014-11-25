@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class SubstanceInstanceComponent
 @exports  SubstanceInstanceComponent as SubstanceInstanceComponent
 ###
-class SubstanceInstanceComponent
+class SubstanceInstanceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -60,7 +62,7 @@ class SubstanceInstanceComponent
 @class SubstanceIngredientComponent
 @exports  SubstanceIngredientComponent as SubstanceIngredientComponent
 ###
-class SubstanceIngredientComponent
+class SubstanceIngredientComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -80,8 +82,9 @@ A homogeneous material with a definite composition.
 @class Substance
 @exports Substance as Substance
 ###
-class Substance 
+class Substance extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   A code (or set of codes) that identify this substance.
   @returns {CodeableConcept}

@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 A manifest that defines a set of documents.
 @class DocumentManifest
 @exports DocumentManifest as DocumentManifest
 ###
-class DocumentManifest 
+class DocumentManifest extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   A single identifier that uniquely identifies this manifest. Principally used to refer to the manifest in non-FHIR contexts.
   @returns {Identifier}

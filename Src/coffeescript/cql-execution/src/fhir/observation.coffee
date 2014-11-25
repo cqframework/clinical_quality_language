@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ObservationReferenceRangeComponent
 @exports  ObservationReferenceRangeComponent as ObservationReferenceRangeComponent
 ###
-class ObservationReferenceRangeComponent
+class ObservationReferenceRangeComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -72,7 +74,7 @@ class ObservationReferenceRangeComponent
 @class ObservationRelatedComponent
 @exports  ObservationRelatedComponent as ObservationRelatedComponent
 ###
-class ObservationRelatedComponent
+class ObservationRelatedComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -92,8 +94,9 @@ Measurements and simple assertions made about a patient, device or other subject
 @class Observation
 @exports Observation as Observation
 ###
-class Observation 
+class Observation extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Describes what was observed. Sometimes this is called the observation "code".
   @returns {CodeableConcept}

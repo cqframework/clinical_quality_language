@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ListEntryComponent
 @exports  ListEntryComponent as ListEntryComponent
 ###
-class ListEntryComponent
+class ListEntryComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -68,8 +70,9 @@ A set of information summarized from a list of other resources.
 @class List
 @exports List as List
 ###
-class List 
+class List extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifier for the List assigned for business purposes outside the context of FHIR.
   @returns {Array} an array of {@link Identifier} objects
