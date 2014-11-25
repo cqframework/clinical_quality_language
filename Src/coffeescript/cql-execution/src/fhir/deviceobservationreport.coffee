@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class DeviceObservationReportVirtualDeviceChannelMetricComponent
 @exports  DeviceObservationReportVirtualDeviceChannelMetricComponent as DeviceObservationReportVirtualDeviceChannelMetricComponent
 ###
-class DeviceObservationReportVirtualDeviceChannelMetricComponent
+class DeviceObservationReportVirtualDeviceChannelMetricComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -48,7 +50,7 @@ class DeviceObservationReportVirtualDeviceChannelMetricComponent
 @class DeviceObservationReportVirtualDeviceChannelComponent
 @exports  DeviceObservationReportVirtualDeviceChannelComponent as DeviceObservationReportVirtualDeviceChannelComponent
 ###
-class DeviceObservationReportVirtualDeviceChannelComponent
+class DeviceObservationReportVirtualDeviceChannelComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -72,7 +74,7 @@ class DeviceObservationReportVirtualDeviceChannelComponent
 @class DeviceObservationReportVirtualDeviceComponent
 @exports  DeviceObservationReportVirtualDeviceComponent as DeviceObservationReportVirtualDeviceComponent
 ###
-class DeviceObservationReportVirtualDeviceComponent
+class DeviceObservationReportVirtualDeviceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -95,8 +97,9 @@ Describes the data produced by a device at a point in time.
 @class DeviceObservationReport
 @exports DeviceObservationReport as DeviceObservationReport
 ###
-class DeviceObservationReport 
+class DeviceObservationReport extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The point in time that the values are reported.
   @returns {Date}

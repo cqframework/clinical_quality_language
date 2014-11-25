@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 Other is a conformant for handling resource concepts not yet defined for FHIR or outside HL7's scope of interest.
 @class Other
 @exports Other as Other
 ###
-class Other 
+class Other extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifier assigned to the resource for business purposes, outside the context of FHIR.
   @returns {Array} an array of {@link Identifier} objects

@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 Information about a person that is involved in the care for a patient, but who is not the target of healthcare, nor has a formal responsibility in the care process.
 @class RelatedPerson
 @exports RelatedPerson as RelatedPerson
 ###
-class RelatedPerson 
+class RelatedPerson extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifier for a person within a particular scope.
   @returns {Array} an array of {@link Identifier} objects

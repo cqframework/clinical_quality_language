@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class CompositionAttesterComponent
 @exports  CompositionAttesterComponent as CompositionAttesterComponent
 ###
-class CompositionAttesterComponent
+class CompositionAttesterComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -60,7 +62,7 @@ class CompositionAttesterComponent
 @class CompositionEventComponent
 @exports  CompositionEventComponent as CompositionEventComponent
 ###
-class CompositionEventComponent
+class CompositionEventComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -93,7 +95,7 @@ class CompositionEventComponent
 @class SectionComponent
 @exports  SectionComponent as SectionComponent
 ###
-class SectionComponent
+class SectionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -164,8 +166,9 @@ A set of healthcare-related information that is assembled together into a single
 @class Composition
 @exports Composition as Composition
 ###
-class Composition 
+class Composition extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Logical Identifier for the composition, assigned when created. This identifier stays constant as the composition is changed over time.
   @returns {Identifier}

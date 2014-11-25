@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class OperationDefinitionParameterComponent
 @exports  OperationDefinitionParameterComponent as OperationDefinitionParameterComponent
 ###
-class OperationDefinitionParameterComponent
+class OperationDefinitionParameterComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -83,8 +85,9 @@ A formal computable definition of an operation (on the RESTful interface) or a n
 @class OperationDefinition
 @exports OperationDefinition as OperationDefinition
 ###
-class OperationDefinition 
+class OperationDefinition extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The identifier that is used to identify this operation definition when it is referenced in a specification, model, design or an instance (should be globally unique OID, UUID, or URI).
   @returns {Array} an array of {@link String} objects

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class OtherElementComponent
 @exports  OtherElementComponent as OtherElementComponent
 ###
-class OtherElementComponent
+class OtherElementComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -60,7 +62,7 @@ class OtherElementComponent
 @class ConceptMapElementMapComponent
 @exports  ConceptMapElementMapComponent as ConceptMapElementMapComponent
 ###
-class ConceptMapElementMapComponent
+class ConceptMapElementMapComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -102,7 +104,7 @@ class ConceptMapElementMapComponent
 @class ConceptMapElementComponent
 @exports  ConceptMapElementComponent as ConceptMapElementComponent
 ###
-class ConceptMapElementComponent
+class ConceptMapElementComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -140,8 +142,9 @@ A statement of relationships from one set of concepts to one or more other conce
 @class ConceptMap
 @exports ConceptMap as ConceptMap
 ###
-class ConceptMap 
+class ConceptMap extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The identifier that is used to identify this concept map when it is referenced in a specification, model, design or an instance (should be globally unique OID, UUID, or URI).
   @returns {Array} an array of {@link String} objects

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class SubscriptionChannelComponent
 @exports  SubscriptionChannelComponent as SubscriptionChannelComponent
 ###
-class SubscriptionChannelComponent
+class SubscriptionChannelComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -66,7 +68,7 @@ class SubscriptionChannelComponent
 @class SubscriptionTagComponent
 @exports  SubscriptionTagComponent as SubscriptionTagComponent
 ###
-class SubscriptionTagComponent
+class SubscriptionTagComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -92,8 +94,9 @@ Todo.
 @class Subscription
 @exports Subscription as Subscription
 ###
-class Subscription 
+class Subscription extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Todo.
   @returns {Array} an array of {@link String} objects

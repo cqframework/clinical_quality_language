@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class QuestionComponent
 @exports  QuestionComponent as QuestionComponent
 ###
-class QuestionComponent
+class QuestionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -96,7 +98,7 @@ class QuestionComponent
 @class GroupComponent
 @exports  GroupComponent as GroupComponent
 ###
-class GroupComponent
+class GroupComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -161,8 +163,9 @@ A structured set of questions intended to guide the collection of answers. The q
 @class Questionnaire
 @exports Questionnaire as Questionnaire
 ###
-class Questionnaire 
+class Questionnaire extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   This records identifiers associated with this question set that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
   @returns {Array} an array of {@link Identifier} objects

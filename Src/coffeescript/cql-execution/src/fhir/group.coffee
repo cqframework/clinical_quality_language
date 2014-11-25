@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class GroupCharacteristicComponent
 @exports  GroupCharacteristicComponent as GroupCharacteristicComponent
 ###
-class GroupCharacteristicComponent
+class GroupCharacteristicComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -74,8 +76,9 @@ Represents a defined collection of entities that may be discussed or acted upon 
 @class Group
 @exports Group as Group
 ###
-class Group 
+class Group extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   A unique business identifier for this group.
   @returns {Identifier}

@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 A reply to an appointment request for a patient and/or practitioner(s), such as a confirmation or rejection.
 @class AppointmentResponse
 @exports AppointmentResponse as AppointmentResponse
 ###
-class AppointmentResponse 
+class AppointmentResponse extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   This records identifiers associated with this appointment concern that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
   @returns {Array} an array of {@link Identifier} objects

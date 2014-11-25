@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class MedicationStatementDosageComponent
 @exports  MedicationStatementDosageComponent as MedicationStatementDosageComponent
 ###
-class MedicationStatementDosageComponent
+class MedicationStatementDosageComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -96,8 +98,9 @@ A record of medication being taken by a patient, or that the medication has been
 @class MedicationStatement
 @exports MedicationStatement as MedicationStatement
 ###
-class MedicationStatement 
+class MedicationStatement extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   External identifier - FHIR will generate its own internal IDs (probably URLs) which do not need to be explicitly managed by the resource.  The identifier here is one that would be used by another non-FHIR system - for example an automated medication pump would provide a record each time it operated; an administration while the patient was off the ward might be made with a different system and entered after the event.  Particularly important if these records have to be updated.
   @returns {Array} an array of {@link Identifier} objects

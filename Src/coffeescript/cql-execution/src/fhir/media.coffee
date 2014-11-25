@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 A photo, video, or audio recording acquired or used in healthcare. The actual content may be inline or provided by direct reference.
 @class Media
 @exports Media as Media
 ###
-class Media 
+class Media extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Whether the media is a photo (still image), an audio recording, or a video recording.
   @returns {Array} an array of {@link String} objects

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class AdverseReactionSymptomComponent
 @exports  AdverseReactionSymptomComponent as AdverseReactionSymptomComponent
 ###
-class AdverseReactionSymptomComponent
+class AdverseReactionSymptomComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -54,7 +56,7 @@ class AdverseReactionSymptomComponent
 @class AdverseReactionExposureComponent
 @exports  AdverseReactionExposureComponent as AdverseReactionExposureComponent
 ###
-class AdverseReactionExposureComponent
+class AdverseReactionExposureComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -86,8 +88,9 @@ Records an unexpected reaction suspected to be related to the exposure of the re
 @class AdverseReaction
 @exports AdverseReaction as AdverseReaction
 ###
-class AdverseReaction 
+class AdverseReaction extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   This records identifiers associated with this reaction that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
   @returns {Array} an array of {@link Identifier} objects

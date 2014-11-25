@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ConditionStageComponent
 @exports  ConditionStageComponent as ConditionStageComponent
 ###
-class ConditionStageComponent
+class ConditionStageComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -57,7 +59,7 @@ class ConditionStageComponent
 @class ConditionEvidenceComponent
 @exports  ConditionEvidenceComponent as ConditionEvidenceComponent
 ###
-class ConditionEvidenceComponent
+class ConditionEvidenceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -81,7 +83,7 @@ class ConditionEvidenceComponent
 @class ConditionLocationComponent
 @exports  ConditionLocationComponent as ConditionLocationComponent
 ###
-class ConditionLocationComponent
+class ConditionLocationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -102,7 +104,7 @@ class ConditionLocationComponent
 @class ConditionRelatedItemComponent
 @exports  ConditionRelatedItemComponent as ConditionRelatedItemComponent
 ###
-class ConditionRelatedItemComponent
+class ConditionRelatedItemComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -128,8 +130,9 @@ Use to record detailed information about conditions, problems or diagnoses recog
 @class Condition
 @exports Condition as Condition
 ###
-class Condition 
+class Condition extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   This records identifiers associated with this condition that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
   @returns {Array} an array of {@link Identifier} objects

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class OrganizationContactComponent
 @exports  OrganizationContactComponent as OrganizationContactComponent
 ###
-class OrganizationContactComponent
+class OrganizationContactComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -74,8 +76,9 @@ A formally or informally recognized grouping of people or organizations formed f
 @class Organization
 @exports Organization as Organization
 ###
-class Organization 
+class Organization extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifier for the organization that is used to identify the organization across multiple disparate systems.
   @returns {Array} an array of {@link Identifier} objects

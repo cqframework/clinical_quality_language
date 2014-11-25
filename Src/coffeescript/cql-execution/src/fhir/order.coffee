@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class OrderWhenComponent
 @exports  OrderWhenComponent as OrderWhenComponent
 ###
-class OrderWhenComponent
+class OrderWhenComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -53,8 +55,9 @@ A request to perform an action.
 @class Order
 @exports Order as Order
 ###
-class Order 
+class Order extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifiers assigned to this order by the orderer or by the receiver.
   @returns {Array} an array of {@link Identifier} objects

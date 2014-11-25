@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class FamilyHistoryRelationConditionComponent
 @exports  FamilyHistoryRelationConditionComponent as FamilyHistoryRelationConditionComponent
 ###
-class FamilyHistoryRelationConditionComponent
+class FamilyHistoryRelationConditionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -72,7 +74,7 @@ class FamilyHistoryRelationConditionComponent
 @class FamilyHistoryRelationComponent
 @exports  FamilyHistoryRelationComponent as FamilyHistoryRelationComponent
 ###
-class FamilyHistoryRelationComponent
+class FamilyHistoryRelationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -157,8 +159,9 @@ Significant health events and conditions for people related to the subject relev
 @class FamilyHistory
 @exports FamilyHistory as FamilyHistory
 ###
-class FamilyHistory 
+class FamilyHistory extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   This records identifiers associated with this family history record that are defined by business processes and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
   @returns {Array} an array of {@link Identifier} objects

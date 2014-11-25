@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class CarePlanParticipantComponent
 @exports  CarePlanParticipantComponent as CarePlanParticipantComponent
 ###
-class CarePlanParticipantComponent
+class CarePlanParticipantComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -54,7 +56,7 @@ class CarePlanParticipantComponent
 @class CarePlanGoalComponent
 @exports  CarePlanGoalComponent as CarePlanGoalComponent
 ###
-class CarePlanGoalComponent
+class CarePlanGoalComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -90,7 +92,7 @@ class CarePlanGoalComponent
 @class CarePlanActivitySimpleComponent
 @exports  CarePlanActivitySimpleComponent as CarePlanActivitySimpleComponent
 ###
-class CarePlanActivitySimpleComponent
+class CarePlanActivitySimpleComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -166,7 +168,7 @@ class CarePlanActivitySimpleComponent
 @class CarePlanActivityComponent
 @exports  CarePlanActivityComponent as CarePlanActivityComponent
 ###
-class CarePlanActivityComponent
+class CarePlanActivityComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -222,8 +224,9 @@ Describes the intention of how one or more practitioners intend to deliver care 
 @class CarePlan
 @exports CarePlan as CarePlan
 ###
-class CarePlan 
+class CarePlan extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   This records identifiers associated with this care plan that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
   @returns {Array} an array of {@link Identifier} objects

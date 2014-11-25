@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ImagingStudySeriesInstanceComponent
 @exports  ImagingStudySeriesInstanceComponent as ImagingStudySeriesInstanceComponent
 ###
-class ImagingStudySeriesInstanceComponent
+class ImagingStudySeriesInstanceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -84,7 +86,7 @@ class ImagingStudySeriesInstanceComponent
 @class ImagingStudySeriesComponent
 @exports  ImagingStudySeriesComponent as ImagingStudySeriesComponent
 ###
-class ImagingStudySeriesComponent
+class ImagingStudySeriesComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -155,8 +157,9 @@ Manifest of a set of images produced in study. The set of images may include eve
 @class ImagingStudy
 @exports ImagingStudy as ImagingStudy
 ###
-class ImagingStudy 
+class ImagingStudy extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Date and Time the study took place.
   @returns {Date}

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ImmunizationRecommendationRecommendationDateCriterionComponent
 @exports  ImmunizationRecommendationRecommendationDateCriterionComponent as ImmunizationRecommendationRecommendationDateCriterionComponent
 ###
-class ImmunizationRecommendationRecommendationDateCriterionComponent
+class ImmunizationRecommendationRecommendationDateCriterionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -54,7 +56,7 @@ class ImmunizationRecommendationRecommendationDateCriterionComponent
 @class ImmunizationRecommendationRecommendationProtocolComponent
 @exports  ImmunizationRecommendationRecommendationProtocolComponent as ImmunizationRecommendationRecommendationProtocolComponent
 ###
-class ImmunizationRecommendationRecommendationProtocolComponent
+class ImmunizationRecommendationRecommendationProtocolComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -87,7 +89,7 @@ class ImmunizationRecommendationRecommendationProtocolComponent
 @class ImmunizationRecommendationRecommendationComponent
 @exports  ImmunizationRecommendationRecommendationComponent as ImmunizationRecommendationRecommendationComponent
 ###
-class ImmunizationRecommendationRecommendationComponent
+class ImmunizationRecommendationRecommendationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -152,8 +154,9 @@ A patient's point-of-time immunization status and recommendation with optional s
 @class ImmunizationRecommendation
 @exports ImmunizationRecommendation as ImmunizationRecommendation
 ###
-class ImmunizationRecommendation 
+class ImmunizationRecommendation extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   A unique identifier assigned to this particular recommendation record.
   @returns {Array} an array of {@link Identifier} objects

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ProcedurePerformerComponent
 @exports  ProcedurePerformerComponent as ProcedurePerformerComponent
 ###
-class ProcedurePerformerComponent
+class ProcedurePerformerComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -54,7 +56,7 @@ class ProcedurePerformerComponent
 @class ProcedureRelatedItemComponent
 @exports  ProcedureRelatedItemComponent as ProcedureRelatedItemComponent
 ###
-class ProcedureRelatedItemComponent
+class ProcedureRelatedItemComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -74,8 +76,9 @@ An action that is performed on a patient. This can be a physical 'thing' like an
 @class Procedure
 @exports Procedure as Procedure
 ###
-class Procedure 
+class Procedure extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   This records identifiers associated with this procedure that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).
   @returns {Array} an array of {@link Identifier} objects

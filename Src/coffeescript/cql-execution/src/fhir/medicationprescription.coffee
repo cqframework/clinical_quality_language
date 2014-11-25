@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class MedicationPrescriptionDosageInstructionComponent
 @exports  MedicationPrescriptionDosageInstructionComponent as MedicationPrescriptionDosageInstructionComponent
 ###
-class MedicationPrescriptionDosageInstructionComponent
+class MedicationPrescriptionDosageInstructionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -119,7 +121,7 @@ Terminologies used often pre-coordinate this term with the route and or form of 
 @class MedicationPrescriptionDispenseComponent
 @exports  MedicationPrescriptionDispenseComponent as MedicationPrescriptionDispenseComponent
 ###
-class MedicationPrescriptionDispenseComponent
+class MedicationPrescriptionDispenseComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -162,7 +164,7 @@ In some situations, this attribute may be used instead of quantity to identify t
 @class MedicationPrescriptionSubstitutionComponent
 @exports  MedicationPrescriptionSubstitutionComponent as MedicationPrescriptionSubstitutionComponent
 ###
-class MedicationPrescriptionSubstitutionComponent
+class MedicationPrescriptionSubstitutionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -182,8 +184,9 @@ An order for both supply of the medication and the instructions for administrati
 @class MedicationPrescription
 @exports MedicationPrescription as MedicationPrescription
 ###
-class MedicationPrescription 
+class MedicationPrescription extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   External identifier - one that would be used by another non-FHIR system - for example a re-imbursement system might issue its own id for each prescription that is created.  This is particularly important where FHIR only provides part of an erntire workflow process where records have to be tracked through an entire system.
   @returns {Array} an array of {@link Identifier} objects

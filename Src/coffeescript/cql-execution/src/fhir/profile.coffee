@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ProfileMappingComponent
 @exports  ProfileMappingComponent as ProfileMappingComponent
 ###
-class ProfileMappingComponent
+class ProfileMappingComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -66,7 +68,7 @@ class ProfileMappingComponent
 @class ElementSlicingComponent
 @exports  ElementSlicingComponent as ElementSlicingComponent
 ###
-class ElementSlicingComponent
+class ElementSlicingComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -93,7 +95,7 @@ class ElementSlicingComponent
 @class TypeRefComponent
 @exports  TypeRefComponent as TypeRefComponent
 ###
-class TypeRefComponent
+class TypeRefComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -120,7 +122,7 @@ class TypeRefComponent
 @class ElementDefinitionConstraintComponent
 @exports  ElementDefinitionConstraintComponent as ElementDefinitionConstraintComponent
 ###
-class ElementDefinitionConstraintComponent
+class ElementDefinitionConstraintComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -159,7 +161,7 @@ class ElementDefinitionConstraintComponent
 @class ElementDefinitionBindingComponent
 @exports  ElementDefinitionBindingComponent as ElementDefinitionBindingComponent
 ###
-class ElementDefinitionBindingComponent
+class ElementDefinitionBindingComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -203,7 +205,7 @@ class ElementDefinitionBindingComponent
 @class ElementDefinitionMappingComponent
 @exports  ElementDefinitionMappingComponent as ElementDefinitionMappingComponent
 ###
-class ElementDefinitionMappingComponent
+class ElementDefinitionMappingComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -224,7 +226,7 @@ class ElementDefinitionMappingComponent
 @class ElementDefinitionComponent
 @exports  ElementDefinitionComponent as ElementDefinitionComponent
 ###
-class ElementDefinitionComponent
+class ElementDefinitionComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -350,7 +352,7 @@ class ElementDefinitionComponent
 @class ElementComponent
 @exports  ElementComponent as ElementComponent
 ###
-class ElementComponent
+class ElementComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -389,7 +391,7 @@ class ElementComponent
 @class ConstraintComponent
 @exports  ConstraintComponent as ConstraintComponent
 ###
-class ConstraintComponent
+class ConstraintComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -407,7 +409,7 @@ class ConstraintComponent
 @class ProfileStructureSearchParamComponent
 @exports  ProfileStructureSearchParamComponent as ProfileStructureSearchParamComponent
 ###
-class ProfileStructureSearchParamComponent
+class ProfileStructureSearchParamComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -446,7 +448,7 @@ class ProfileStructureSearchParamComponent
 @class ProfileStructureComponent
 @exports  ProfileStructureComponent as ProfileStructureComponent
 ###
-class ProfileStructureComponent
+class ProfileStructureComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -506,7 +508,7 @@ class ProfileStructureComponent
 @class ProfileExtensionDefnComponent
 @exports  ProfileExtensionDefnComponent as ProfileExtensionDefnComponent
 ###
-class ProfileExtensionDefnComponent
+class ProfileExtensionDefnComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -547,8 +549,9 @@ A Resource Profile - a statement of use of one or more FHIR Resources.  It may i
 @class Profile
 @exports Profile as Profile
 ###
-class Profile 
+class Profile extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The URL at which this profile is (or will be) published, and which is used to reference this profile in extension urls and tag values in operational FHIR systems.
   @returns {Array} an array of {@link String} objects

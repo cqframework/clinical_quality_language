@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class EncounterParticipantComponent
 @exports  EncounterParticipantComponent as EncounterParticipantComponent
 ###
-class EncounterParticipantComponent
+class EncounterParticipantComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -57,7 +59,7 @@ class EncounterParticipantComponent
 @class EncounterHospitalizationAccomodationComponent
 @exports  EncounterHospitalizationAccomodationComponent as EncounterHospitalizationAccomodationComponent
 ###
-class EncounterHospitalizationAccomodationComponent
+class EncounterHospitalizationAccomodationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -78,7 +80,7 @@ class EncounterHospitalizationAccomodationComponent
 @class EncounterHospitalizationComponent
 @exports  EncounterHospitalizationComponent as EncounterHospitalizationComponent
 ###
-class EncounterHospitalizationComponent
+class EncounterHospitalizationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -168,7 +170,7 @@ class EncounterHospitalizationComponent
 @class EncounterLocationComponent
 @exports  EncounterLocationComponent as EncounterLocationComponent
 ###
-class EncounterLocationComponent
+class EncounterLocationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -188,8 +190,9 @@ An interaction between a patient and healthcare provider(s) for the purpose of p
 @class Encounter
 @exports Encounter as Encounter
 ###
-class Encounter 
+class Encounter extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Identifier(s) by which this encounter is known.
   @returns {Array} an array of {@link Identifier} objects

@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class ContraindicationMitigationComponent
 @exports  ContraindicationMitigationComponent as ContraindicationMitigationComponent
 ###
-class ContraindicationMitigationComponent
+class ContraindicationMitigationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -59,8 +61,9 @@ Indicates an actual or potential clinical issue with or between one or more acti
 @class Contraindication
 @exports Contraindication as Contraindication
 ###
-class Contraindication 
+class Contraindication extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   Indicates the patient whose record the contraindication is associated with.
   @returns {Reference}

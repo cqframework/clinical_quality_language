@@ -27,13 +27,16 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 ###*
 (informative) A container for slot(s) of time that may be available for booking appointments.
 @class Availability
 @exports Availability as Availability
 ###
-class Availability 
+class Availability extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   External Ids for this item.
   @returns {Array} an array of {@link Identifier} objects

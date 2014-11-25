@@ -27,13 +27,15 @@
 @namespacing scoping into the FHIR namespace
 ###
 require './core'
+require './element'
+require './resource'
 
 ###* 
  Embedded class
 @class MessageHeaderResponseComponent
 @exports  MessageHeaderResponseComponent as MessageHeaderResponseComponent
 ###
-class MessageHeaderResponseComponent
+class MessageHeaderResponseComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -60,7 +62,7 @@ class MessageHeaderResponseComponent
 @class MessageSourceComponent
 @exports  MessageSourceComponent as MessageSourceComponent
 ###
-class MessageSourceComponent
+class MessageSourceComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -99,7 +101,7 @@ class MessageSourceComponent
 @class MessageDestinationComponent
 @exports  MessageDestinationComponent as MessageDestinationComponent
 ###
-class MessageDestinationComponent
+class MessageDestinationComponent extends Element
   constructor: (@json) ->
     super(@json)
   ###*
@@ -125,8 +127,9 @@ The header for a message exchange that is either requesting or responding to an 
 @class MessageHeader
 @exports MessageHeader as MessageHeader
 ###
-class MessageHeader 
+class MessageHeader extends  Resource
   constructor: (@json) ->
+    super(@json)
   ###*
   The identifier of this message.
   @returns {Array} an array of {@link String} objects
