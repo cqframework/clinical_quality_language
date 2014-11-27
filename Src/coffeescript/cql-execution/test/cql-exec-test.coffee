@@ -9,7 +9,7 @@ P = require './data/cql-test-patients'
 setup = (test, patients=[], parameters={}) ->
   test.lib = new Library(D[test.test.parent.title])
   psource = new PAT.PatientSource(patients)
-  test.ctx = new Context(test.lib, psource, parameters)
+  test.ctx = new Context(test.lib, psource, null, parameters)
   for k,v of test.lib.valuesets
     test[k[0].toLowerCase() + k[1..-1]] = v
   for k,v of test.lib.expressions

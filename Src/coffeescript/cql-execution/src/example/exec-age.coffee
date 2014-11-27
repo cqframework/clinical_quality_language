@@ -1,9 +1,8 @@
-{ Library, Context } = require '../cql-exec'
-{ PatientSource } = require '../cql-patient'
+cql = require '../cql'
 measure = require './age'
 
-lib = new Library(measure)
-psource = new PatientSource [ {
+lib = new cql.Library(measure)
+psource = new cql.PatientSource [ {
     "identifier": { "value": "1" },
     "name": "John Smith",
     "gender": "M",
@@ -14,7 +13,7 @@ psource = new PatientSource [ {
     "gender": "F",
     "birthDate" : "2007-08-02T11:47",
   } ]
-ctx = new Context(lib, psource)
+ctx = new cql.Context(lib, psource)
 
 result = lib.exec(ctx)
 console.log JSON.stringify(result, undefined, 2)
