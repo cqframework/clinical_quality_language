@@ -277,6 +277,63 @@ define "Number of Female Breast Cancer Patients Age 40-49" = Count(
 
 #82: Example for Every Op in Spec (TBD)
 
+#7 No Operation Left Behind
+
+# These other the ones that seemed most needed
+
+# 2.3 Queries: Query not starting with retrieve
+
+({ 1, 2, 3, 4, 5}) L return L * 2
+
+# Or ObjectRedefine
+
+define FirstInpatientEncounter = First([Encounter] E where E.class = 'inpatient')
+define RedefinedEncounter = FirstInpatientEncounter E
+  return tuple {
+    type: E.type,
+    admissionDate: E.hospitalization.period.start
+    dischargeDate: E.hospitalization.period.end
+  }
+
+define FirstInpatientEncounter = First([Encounter] E where E.class = 'inpatient')
+define RedefinedEncounter = tuple {
+    type: FirstInpatientEncounter.type,
+    admissionDate: FirstInpatientEncounter.hospitalization.period.start
+    dischargeDate: FirstInpatientEncounter.hospitalization.period.end
+  }
+
+# 2.5.1 Comparison Operators: between
+
+4 between 2 and 8
+
+# 2.5.2.1 And
+
+define IsTrue = true and true
+define IsFalse = true and false
+define IsAlsoFalse = false and null
+define IsNull = true and null
+
+# 2.5.2.2 Or
+
+define IsTrue = true or false
+define IsAlsoTrue = true or null
+define IsFalse = false or false
+define IsNull = false or null
+
+# 2.5.6.1 Operating on Lists: First and Last
+
+First({ 1, 2, 3, 4, 5 })
+Last({ 1, 2, 3, 4, 5 })
+First({})
+Last({})
+
+# 2.5.6.2 Comparing Lists: includes, included in
+
+{ 1, 2, 3, 4, 5 } includes { 5, 2, 3 }
+{ 5, 2, 3 } included in { 1, 2, 3, 4, 5 }
+{ 1, 2, 3, 4, 5 } includes { 4, 5, 6 }
+{ 4, 5, 6 } included in { 1, 2, 3, 4, 5 }
+
 #120: Refers to non-existent section in spec.
 
 #135: Complex Where Clause (multiple conditions)
