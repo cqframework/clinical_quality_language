@@ -1,7 +1,6 @@
 package org.cqframework.cql.execution;
 
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +68,7 @@ public class JavascriptEngineTest {
 		context.evaluateString(scope, javascript.toString(), "org.cqframework.cql.execution.JavascriptEngineTest.testJavascriptResults", 1, null);
 		Context.exit();
 		
-		Engine.dump();
+//		Engine.dump();
 		
 		Assert.assertEquals( Engine.getLastResults().results.size(), TestPatientSource.maxPatients);		
 	}
@@ -88,9 +87,6 @@ public class JavascriptEngineTest {
 		Require require = global.installRequire(context, modulePath, sandboxed);
 		require.install(scope);
 		
-//		String[] names = { "print", "load" };
-//		scope.defineFunctionProperties(names, scope.getClass(), ScriptableObject.DONTENUM);
-
 	    Scriptable arguments = context.newArray(scope, new Object[] {});
 	    scope.defineProperty("arguments", arguments, ScriptableObject.DONTENUM);
 
@@ -107,14 +103,11 @@ public class JavascriptEngineTest {
 			String uri = script.toURI().toURL().toExternalForm();
 			ScriptableObject.putProperty(scope, "moduleUri", uri);
 			
-			FileReader reader = new FileReader( script );
 			require.requireMain(context, "age-exec");
-			//result = context.evaluateReader(scope, reader, "age-exec", 1, null);
-			//Object json = NativeJSON.stringify(context, scope, result, null, null);
-			
-			System.out.println( "Results: " + Engine.getLastResults().results.size() );
-			System.out.flush();
-			Engine.dump();
+		
+//			System.out.println( "Results: " + Engine.getLastResults().results.size() );
+//			System.out.flush();
+//			Engine.dump();
 			
 		} catch(Exception e) {
 			System.err.println(e.getClass().getName() + " -- " + e.getLocalizedMessage());
@@ -122,8 +115,8 @@ public class JavascriptEngineTest {
 			System.err.println(f.getAbsolutePath());
 			Assert.fail(e.getLocalizedMessage());
 		}
-		
-		Assert.assertNotNull( Context.toString(result) );	
 		Context.exit();
+
+		Assert.assertNotNull( Context.toString(result) );	
 	}
 }

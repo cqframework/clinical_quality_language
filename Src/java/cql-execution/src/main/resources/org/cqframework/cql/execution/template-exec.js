@@ -6,33 +6,17 @@
 
   PatientSource = require('./cql-patient').PatientSource;
 
-  measure = require('./$MEASURE_SCRIPT$');
+  measure = require('./engine-script');
 
   lib = new Library(measure);
 
   importPackage(org.cqframework.cql.execution);
-  psource = new TestPatientSource();
-  //psource = new PatientSource([
-  //  {
-  //    "id": 1,
-  //    "name": "John Smith",
-  //    "gender": "M",
-  //    "birthdate": "1980-02-17T06:15"
-  //  }, {
-  //    "id": 2,
-  //    "name": "Sally Smith",
-  //    "gender": "F",
-  //    "birthdate": "2007-08-02T11:47"
-  //  }
-  //]);
-
+  psource = new PatientSource(Engine.getPatientSource());
+  
   ctx = new Context(lib, psource);
-
   result = lib.exec(ctx);
 
-  //console.log(JSON.stringify(result, void 0, 2));
   //print(JSON.stringify(result, void 0, 2));
-
-  Results.add( JSON.stringify(result, void 0, 2) );
-
+  Engine.add( JSON.stringify(result, void 0, 2) );
+  
 }).call(this);
