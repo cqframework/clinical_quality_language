@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,23 +24,53 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 ###*
-@namespacing scoping into the FHIR namespace
+A binary resource can contain any content, whether text, image, pdf, zip archive, etc.
+@class Binary
+@exports Binary as Binary
 ###
-require './element'
-###*
-Information about a person that is involved in the care for a patient, but who is not the target of healthcare, nor has a formal responsibility in the care process.
-@class Resource
-@exports Resource as Resource
-###
-
-class Resource extends Element
-
-  constructor:(@json) ->
+class Binary extends Resource
+  constructor: (@json) ->
     super(@json)
+  ###*
+  MimeType of the binary content represented as a standard MimeType (BCP 13).
+  @returns {Array} an array of {@link String} objects
+  ###
+  contentType:-> @json['contentType']
+  
+  ###*
+  The actual content, base64 encoded.
+  @returns {Array} an array of {@link } objects
+  ###
+  content:-> @json['content']
+  
 
-  text: -> @json["text"]
 
-  contained: -> @json["contained"]
 
-  tags: -> @json["tags"]
+module.exports.Binary = Binary

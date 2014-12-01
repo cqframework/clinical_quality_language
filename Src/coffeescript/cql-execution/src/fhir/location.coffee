@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class LocationPositionComponent
 @exports  LocationPositionComponent as LocationPositionComponent
 ###
-class LocationPositionComponent extends Element
+class LocationPositionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -61,7 +82,7 @@ Details and position information for a physical place where services are provide
 @class Location
 @exports Location as Location
 ###
-class Location extends  Resource
+class Location extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -89,7 +110,7 @@ class Location extends  Resource
   Indicates the type of function performed at the location.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   The contact details of communication devices available at the location. This can include phone numbers, fax numbers, mobile numbers, email addresses and web sites.

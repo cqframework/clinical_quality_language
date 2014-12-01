@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class DiagnosticReportImageComponent
 @exports  DiagnosticReportImageComponent as DiagnosticReportImageComponent
 ###
-class DiagnosticReportImageComponent extends Element
+class DiagnosticReportImageComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -55,7 +76,7 @@ The findings and interpretation of diagnostic  tests performed on patients, grou
 @class DiagnosticReport
 @exports DiagnosticReport as DiagnosticReport
 ###
-class DiagnosticReport extends  Resource
+class DiagnosticReport extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -72,9 +93,9 @@ class DiagnosticReport extends  Resource
   
   ###*
   The date and/or time that this version of the report was released from the source diagnostic service.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  issued: -> if @json['issued'] then new Date(@json['issued'])
+  issued:-> if @json['issued'] then DT.DateTime.parse(@json['issued'])
   
   ###*
   The subject of the report. Usually, but not always, this is a patient. However diagnostic services also perform analyses on specimens collected from a variety of other sources.
@@ -111,9 +132,9 @@ class DiagnosticReport extends  Resource
   
   ###*
   The time or time-period the observed values are related to. This is usually either the time of the procedure or of specimen collection(s), but very often the source of the date/time is not known, only the date/time itself.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  diagnosticDateTime: -> if @json['diagnosticDateTime'] then new Date(@json['diagnosticDateTime'])
+  diagnosticDateTime:-> if @json['diagnosticDateTime'] then DT.DateTime.parse(@json['diagnosticDateTime'])
   ###*
   The time or time-period the observed values are related to. This is usually either the time of the procedure or of specimen collection(s), but very often the source of the date/time is not known, only the date/time itself.
   @returns {Period}

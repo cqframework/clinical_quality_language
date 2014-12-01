@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,26 +24,46 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
-@class NamespaceUniqueIdComponent
-@exports  NamespaceUniqueIdComponent as NamespaceUniqueIdComponent
+Embedded class
+@class NamingSystemUniqueIdComponent
+@exports  NamingSystemUniqueIdComponent as NamingSystemUniqueIdComponent
 ###
-class NamespaceUniqueIdComponent extends Element
+class NamingSystemUniqueIdComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Identifies the unique identifier scheme used for this particular identifier.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   The string that should be sent over the wire to identify the code system or identifier system.
@@ -57,18 +78,18 @@ class NamespaceUniqueIdComponent extends Element
   preferred:-> @json['preferred']
   
   ###*
-  Identifies the period of time over which this identifier is considered appropriate to refer to the namespace.  Outside of this window, the identifier might be non-deterministic.
+  Identifies the period of time over which this identifier is considered appropriate to refer to the namingsystem.  Outside of this window, the identifier might be non-deterministic.
   @returns {Period}
   ###
   period: -> if @json['period'] then new Period(@json['period'])
   
 
 ###* 
- Embedded class
-@class NamespaceContactComponent
-@exports  NamespaceContactComponent as NamespaceContactComponent
+Embedded class
+@class NamingSystemContactComponent
+@exports  NamingSystemContactComponent as NamingSystemContactComponent
 ###
-class NamespaceContactComponent extends Element
+class NamingSystemContactComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -88,17 +109,17 @@ class NamespaceContactComponent extends Element
   
 ###*
 A curated namespace that issues unique symbols within that namespace for the identification of concepts, people, devices, etc.  Represents a "System" used within the Identifier and Coding data types.
-@class Namespace
-@exports Namespace as Namespace
+@class NamingSystem
+@exports NamingSystem as NamingSystem
 ###
-class Namespace extends  Resource
+class NamingSystem extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
-  Indicates the purpose for the namespace - what kinds of things does it make unique?.
+  Indicates the purpose for the namingsystem - what kinds of things does it make unique?.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   The descriptive name of this particular identifier type or code system.
@@ -107,7 +128,7 @@ class Namespace extends  Resource
   name:-> @json['name']
   
   ###*
-  Indicates whether the namespace is "ready for use" or not.
+  Indicates whether the namingsystem is "ready for use" or not.
   @returns {Array} an array of {@link String} objects
   ###
   status:-> @json['status']
@@ -119,7 +140,7 @@ class Namespace extends  Resource
   country:-> @json['country']
   
   ###*
-  Categorizes a namespace for easier search by grouping related namespaces.
+  Categorizes a namingsystem for easier search by grouping related namingsystems.
   @returns {CodeableConcept}
   ###
   category: -> if @json['category'] then new CodeableConcept(@json['category'])
@@ -144,21 +165,21 @@ class Namespace extends  Resource
   
   ###*
   Indicates how the system may be identified when referenced in electronic exchange.
-  @returns {Array} an array of {@link NamespaceUniqueIdComponent} objects
+  @returns {Array} an array of {@link NamingSystemUniqueIdComponent} objects
   ###
   uniqueId: ->
     if @json['uniqueId']
       for item in @json['uniqueId']
-        new NamespaceUniqueIdComponent(item)
+        new NamingSystemUniqueIdComponent(item)
   
   ###*
   The person who can be contacted about this system registration entry.
-  @returns {NamespaceContactComponent}
+  @returns {NamingSystemContactComponent}
   ###
-  contact: -> if @json['contact'] then new NamespaceContactComponent(@json['contact'])
+  contact: -> if @json['contact'] then new NamingSystemContactComponent(@json['contact'])
   
   ###*
-  For namespaces that are retired, indicates the namespace that should be used in their place (if any).
+  For namingsystems that are retired, indicates the namingsystem that should be used in their place (if any).
   @returns {Reference}
   ###
   replacedBy: -> if @json['replacedBy'] then new Reference(@json['replacedBy'])
@@ -166,4 +187,4 @@ class Namespace extends  Resource
 
 
 
-module.exports.Namespace = Namespace
+module.exports.NamingSystem = NamingSystem

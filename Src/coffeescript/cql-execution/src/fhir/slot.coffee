@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,18 +24,38 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 ###*
 (informative) A slot of time on a schedule that may be available for booking appointments.
 @class Slot
 @exports Slot as Slot
 ###
-class Slot extends  Resource
+class Slot extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -50,7 +71,7 @@ class Slot extends  Resource
   The type of appointments that can be booked into this slot (ideally this would be an identifiable service - which is at a location, rather than the location itself). If provided then this overrides the value provided on the availability resource.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   The availability resource that this slot defines an interval of status information.
@@ -66,15 +87,15 @@ class Slot extends  Resource
   
   ###*
   Date/Time that the slot is to begin.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  start: -> if @json['start'] then new Date(@json['start'])
+  start:-> if @json['start'] then DT.DateTime.parse(@json['start'])
   
   ###*
   Date/Time that the slot is to conclude.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  end: -> if @json['end'] then new Date(@json['end'])
+  end:-> if @json['end'] then DT.DateTime.parse(@json['end'])
   
   ###*
   This slot has already been overbooked, appointments are unlikely to be accepted for this time.
@@ -90,9 +111,9 @@ class Slot extends  Resource
   
   ###*
   When this slot was created, or last revised.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  lastModified: -> if @json['lastModified'] then new Date(@json['lastModified'])
+  lastModified:-> if @json['lastModified'] then DT.DateTime.parse(@json['lastModified'])
   
 
 

@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ContraindicationMitigationComponent
 @exports  ContraindicationMitigationComponent as ContraindicationMitigationComponent
 ###
-class ContraindicationMitigationComponent extends Element
+class ContraindicationMitigationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -46,9 +67,9 @@ class ContraindicationMitigationComponent extends Element
   
   ###*
   Indicates when the mitigating action was documented.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Identifies the practitioner who determined the mitigation and takes responsibility for the mitigation step occurring.
@@ -61,7 +82,7 @@ Indicates an actual or potential clinical issue with or between one or more acti
 @class Contraindication
 @exports Contraindication as Contraindication
 ###
-class Contraindication extends  Resource
+class Contraindication extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -99,9 +120,9 @@ class Contraindication extends  Resource
   
   ###*
   The date or date-time when the contraindication was initially identified.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Identifies the provider or software that identified the.

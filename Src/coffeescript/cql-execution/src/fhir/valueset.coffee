@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ConceptDefinitionDesignationComponent
 @exports  ConceptDefinitionDesignationComponent as ConceptDefinitionDesignationComponent
 ###
-class ConceptDefinitionDesignationComponent extends Element
+class ConceptDefinitionDesignationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -58,11 +79,11 @@ class ConceptDefinitionDesignationComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConceptDefinitionComponent
 @exports  ConceptDefinitionComponent as ConceptDefinitionComponent
 ###
-class ConceptDefinitionComponent extends Element
+class ConceptDefinitionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -109,11 +130,11 @@ class ConceptDefinitionComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ValueSetDefineComponent
 @exports  ValueSetDefineComponent as ValueSetDefineComponent
 ###
-class ValueSetDefineComponent extends Element
+class ValueSetDefineComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -145,11 +166,11 @@ class ValueSetDefineComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConceptReferenceComponent
 @exports  ConceptReferenceComponent as ConceptReferenceComponent
 ###
-class ConceptReferenceComponent extends Element
+class ConceptReferenceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -175,11 +196,11 @@ class ConceptReferenceComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConceptSetFilterComponent
 @exports  ConceptSetFilterComponent as ConceptSetFilterComponent
 ###
-class ConceptSetFilterComponent extends Element
+class ConceptSetFilterComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -202,11 +223,11 @@ class ConceptSetFilterComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConceptSetComponent
 @exports  ConceptSetComponent as ConceptSetComponent
 ###
-class ConceptSetComponent extends Element
+class ConceptSetComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -241,11 +262,11 @@ class ConceptSetComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ValueSetComposeComponent
 @exports  ValueSetComposeComponent as ValueSetComposeComponent
 ###
-class ValueSetComposeComponent extends Element
+class ValueSetComposeComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -274,11 +295,11 @@ class ValueSetComposeComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ValueSetExpansionContainsComponent
 @exports  ValueSetExpansionContainsComponent as ValueSetExpansionContainsComponent
 ###
-class ValueSetExpansionContainsComponent extends Element
+class ValueSetExpansionContainsComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -322,11 +343,11 @@ class ValueSetExpansionContainsComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ValueSetExpansionComponent
 @exports  ValueSetExpansionComponent as ValueSetExpansionComponent
 ###
-class ValueSetExpansionComponent extends Element
+class ValueSetExpansionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -336,13 +357,13 @@ class ValueSetExpansionComponent extends Element
   identifier: -> if @json['identifier'] then new Identifier(@json['identifier'])
   
   ###*
-  Time valueset expansion happened.
-  @returns {Date}
+  The time at which the expansion was produced by the expanding system.
+  @returns {Array} an array of {@link Date} objects
   ###
-  timestamp: -> if @json['timestamp'] then new Date(@json['timestamp'])
+  timestamp:-> if @json['timestamp'] then DT.DateTime.parse(@json['timestamp'])
   
   ###*
-  Codes in the value set.
+  The codes that are contained in the value set expansion.
   @returns {Array} an array of {@link ValueSetExpansionContainsComponent} objects
   ###
   contains: ->
@@ -355,7 +376,7 @@ A value set specifies a set of codes drawn from one or more code systems.
 @class ValueSet
 @exports ValueSet as ValueSet
 ###
-class ValueSet extends  Resource
+class ValueSet extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -435,15 +456,15 @@ class ValueSet extends  Resource
   
   ###*
   The date that the value set status was last changed.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   If a Stability Date is expanded by evaluating the Content Logical Definition using the current version of all referenced code system(s) and value sets as of the Stability Date.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  stableDate: -> if @json['stableDate'] then new Date(@json['stableDate'])
+  stableDate:-> if @json['stableDate'] then DT.DateTime.parse(@json['stableDate'])
   
   ###*
   When value set defines its own codes.

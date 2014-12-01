@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationPrescriptionDosageInstructionComponent
 @exports  MedicationPrescriptionDosageInstructionComponent as MedicationPrescriptionDosageInstructionComponent
 ###
-class MedicationPrescriptionDosageInstructionComponent extends Element
+class MedicationPrescriptionDosageInstructionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -52,9 +73,9 @@ class MedicationPrescriptionDosageInstructionComponent extends Element
   
   ###*
   The timing schedule for giving the medication to the patient.  The Schedule data type allows many different expressions, for example.  "Every  8 hours"; "Three times a day"; "1/2 an hour before breakfast for 10 days from 23-Dec 2011:";  "15 Oct 2013, 17 Oct 2013 and 1 Nov 2013".
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  scheduledDateTime: -> if @json['scheduledDateTime'] then new Date(@json['scheduledDateTime'])
+  scheduledDateTime:-> if @json['scheduledDateTime'] then DT.DateTime.parse(@json['scheduledDateTime'])
   ###*
   The timing schedule for giving the medication to the patient.  The Schedule data type allows many different expressions, for example.  "Every  8 hours"; "Three times a day"; "1/2 an hour before breakfast for 10 days from 23-Dec 2011:";  "15 Oct 2013, 17 Oct 2013 and 1 Nov 2013".
   @returns {Period}
@@ -117,11 +138,11 @@ Terminologies used often pre-coordinate this term with the route and or form of 
   
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationPrescriptionDispenseComponent
 @exports  MedicationPrescriptionDispenseComponent as MedicationPrescriptionDispenseComponent
 ###
-class MedicationPrescriptionDispenseComponent extends Element
+class MedicationPrescriptionDispenseComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -160,18 +181,18 @@ In some situations, this attribute may be used instead of quantity to identify t
   
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationPrescriptionSubstitutionComponent
 @exports  MedicationPrescriptionSubstitutionComponent as MedicationPrescriptionSubstitutionComponent
 ###
-class MedicationPrescriptionSubstitutionComponent extends Element
+class MedicationPrescriptionSubstitutionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   A code signifying whether a different drug should be dispensed from what was prescribed.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Indicates the reason for the substitution, or why substitution must or must not be performed.
@@ -184,7 +205,7 @@ An order for both supply of the medication and the instructions for administrati
 @class MedicationPrescription
 @exports MedicationPrescription as MedicationPrescription
 ###
-class MedicationPrescription extends  Resource
+class MedicationPrescription extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -198,9 +219,9 @@ class MedicationPrescription extends  Resource
   
   ###*
   The date (and perhaps time) when the prescription was written.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateWritten: -> if @json['dateWritten'] then new Date(@json['dateWritten'])
+  dateWritten:-> if @json['dateWritten'] then DT.DateTime.parse(@json['dateWritten'])
   
   ###*
   A code specifying the state of the order.  Generally this will be active or completed state.

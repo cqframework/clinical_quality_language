@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,26 +24,46 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationAdministrationDosageComponent
 @exports  MedicationAdministrationDosageComponent as MedicationAdministrationDosageComponent
 ###
-class MedicationAdministrationDosageComponent extends Element
+class MedicationAdministrationDosageComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   The timing schedule for giving the medication to the patient.  This may be a single time point (using dateTime) or it may be a start and end dateTime (Period).
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  timingDateTime: -> if @json['timingDateTime'] then new Date(@json['timingDateTime'])
+  timingDateTime:-> if @json['timingDateTime'] then DT.DateTime.parse(@json['timingDateTime'])
   ###*
   The timing schedule for giving the medication to the patient.  This may be a single time point (using dateTime) or it may be a start and end dateTime (Period).
   @returns {Period}
@@ -105,7 +126,7 @@ Related resources tie this event to the authorizing prescription, and the specif
 @class MedicationAdministration
 @exports MedicationAdministration as MedicationAdministration
 ###
-class MedicationAdministration extends  Resource
+class MedicationAdministration extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -164,9 +185,9 @@ class MedicationAdministration extends  Resource
   
   ###*
   An interval of time during which the administration took place.  For many administrations, such as swallowing a tablet the lower and upper values of the interval will be the same.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  effectiveTimeDateTime: -> if @json['effectiveTimeDateTime'] then new Date(@json['effectiveTimeDateTime'])
+  effectiveTimeDateTime:-> if @json['effectiveTimeDateTime'] then DT.DateTime.parse(@json['effectiveTimeDateTime'])
   ###*
   An interval of time during which the administration took place.  For many administrations, such as swallowing a tablet the lower and upper values of the interval will be the same.
   @returns {Period}

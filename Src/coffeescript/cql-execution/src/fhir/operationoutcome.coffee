@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class OperationOutcomeIssueComponent
 @exports  OperationOutcomeIssueComponent as OperationOutcomeIssueComponent
 ###
-class OperationOutcomeIssueComponent extends Element
+class OperationOutcomeIssueComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -48,7 +69,7 @@ class OperationOutcomeIssueComponent extends Element
   A code indicating the type of error, warning or information message.
   @returns {Coding}
   ###
-  fhirType: -> if @json['fhirType'] then new Coding(@json['fhirType'])
+  type: -> if @json['type'] then new Coding(@json['type'])
   
   ###*
   Additional description of the issue.
@@ -67,7 +88,7 @@ A collection of error, warning or information messages that result from a system
 @class OperationOutcome
 @exports OperationOutcome as OperationOutcome
 ###
-class OperationOutcome extends  Resource
+class OperationOutcome extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*

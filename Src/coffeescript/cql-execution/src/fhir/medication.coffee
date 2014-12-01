@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationProductIngredientComponent
 @exports  MedicationProductIngredientComponent as MedicationProductIngredientComponent
 ###
-class MedicationProductIngredientComponent extends Element
+class MedicationProductIngredientComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -52,11 +73,11 @@ class MedicationProductIngredientComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationProductComponent
 @exports  MedicationProductComponent as MedicationProductComponent
 ###
-class MedicationProductComponent extends Element
+class MedicationProductComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -76,11 +97,11 @@ class MedicationProductComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationPackageContentComponent
 @exports  MedicationPackageContentComponent as MedicationPackageContentComponent
 ###
-class MedicationPackageContentComponent extends Element
+class MedicationPackageContentComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -97,11 +118,11 @@ class MedicationPackageContentComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationPackageComponent
 @exports  MedicationPackageComponent as MedicationPackageComponent
 ###
-class MedicationPackageComponent extends Element
+class MedicationPackageComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -124,7 +145,7 @@ Primarily used for identification and definition of Medication, but also covers 
 @class Medication
 @exports Medication as Medication
 ###
-class Medication extends  Resource
+class Medication extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*

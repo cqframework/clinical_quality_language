@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,18 +24,38 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 ###*
 (informative) A container for slot(s) of time that may be available for booking appointments.
 @class Availability
 @exports Availability as Availability
 ###
-class Availability extends  Resource
+class Availability extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -50,9 +71,9 @@ class Availability extends  Resource
   The schedule type can be used for the categorization of healthcare services or other appointment types.
   @returns {Array} an array of {@link CodeableConcept} objects
   ###
-  fhirType: ->
-    if @json['fhirType']
-      for item in @json['fhirType']
+  type: ->
+    if @json['type']
+      for item in @json['type']
         new CodeableConcept(item)
   
   ###*
@@ -75,9 +96,9 @@ class Availability extends  Resource
   
   ###*
   When this availability was created, or last revised.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  lastModified: -> if @json['lastModified'] then new Date(@json['lastModified'])
+  lastModified:-> if @json['lastModified'] then DT.DateTime.parse(@json['lastModified'])
   
 
 

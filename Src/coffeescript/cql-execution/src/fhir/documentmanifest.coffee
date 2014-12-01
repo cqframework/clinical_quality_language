@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,18 +24,38 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 ###*
 A manifest that defines a set of documents.
 @class DocumentManifest
 @exports DocumentManifest as DocumentManifest
 ###
-class DocumentManifest extends  Resource
+class DocumentManifest extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -74,7 +95,7 @@ class DocumentManifest extends  Resource
   Specifies the kind of this set of documents (e.g. Patient Summary, Discharge Summary, Prescription, etc.). The type of a set of documents may be the same as one of the documents in it - especially if there is only one - but it may be wider.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Identifies who is responsible for adding the information to the document.
@@ -87,9 +108,9 @@ class DocumentManifest extends  Resource
   
   ###*
   When the document manifest was created for submission to the server (not necessarily the same thing as the actual resource last modified time, since it may be modified, replicated etc).
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  created: -> if @json['created'] then new Date(@json['created'])
+  created:-> if @json['created'] then DT.DateTime.parse(@json['created'])
   
   ###*
   Identifies the source system, application, or software that produced the document manifest.

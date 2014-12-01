@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class QuestionComponent
 @exports  QuestionComponent as QuestionComponent
 ###
-class QuestionComponent extends Element
+class QuestionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -45,7 +66,7 @@ class QuestionComponent extends Element
   linkId:-> @json['linkId']
   
   ###*
-  Identifies a how this group of questions is known in a particular terminology such as LOINC.
+  Identifies a how this question is known in a particular terminology such as LOINC.
   @returns {Array} an array of {@link Coding} objects
   ###
   concept: ->
@@ -63,7 +84,7 @@ class QuestionComponent extends Element
   The expected format of the answer, e.g. the type of input (string, integer) or whether a (multiple) choice is expected.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   If true, indicates that the group must be present and have required questions within it answered.  If false, the group may be skipped when answering the questionnaire.
@@ -94,11 +115,11 @@ class QuestionComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class GroupComponent
 @exports  GroupComponent as GroupComponent
 ###
-class GroupComponent extends Element
+class GroupComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -163,7 +184,7 @@ A structured set of questions intended to guide the collection of answers. The q
 @class Questionnaire
 @exports Questionnaire as Questionnaire
 ###
-class Questionnaire extends  Resource
+class Questionnaire extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -188,10 +209,10 @@ class Questionnaire extends  Resource
   status:-> @json['status']
   
   ###*
-  The date that this version of the questionnaire was authored.
-  @returns {Date}
+  The date that this questionnaire was last changed.
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Organization responsible for developing and maintaining the questionnaire.

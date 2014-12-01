@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class DiagnosticOrderEventComponent
 @exports  DiagnosticOrderEventComponent as DiagnosticOrderEventComponent
 ###
-class DiagnosticOrderEventComponent extends Element
+class DiagnosticOrderEventComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -52,9 +73,9 @@ class DiagnosticOrderEventComponent extends Element
   
   ###*
   The date/time at which the event occurred.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateTime: -> if @json['dateTime'] then new Date(@json['dateTime'])
+  dateTime:-> if @json['dateTime'] then DT.DateTime.parse(@json['dateTime'])
   
   ###*
   The person who was responsible for performing or recording the action.
@@ -64,11 +85,11 @@ class DiagnosticOrderEventComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class DiagnosticOrderItemComponent
 @exports  DiagnosticOrderItemComponent as DiagnosticOrderItemComponent
 ###
-class DiagnosticOrderItemComponent extends Element
+class DiagnosticOrderItemComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -112,7 +133,7 @@ A request for a diagnostic investigation service to be performed.
 @class DiagnosticOrder
 @exports DiagnosticOrder as DiagnosticOrder
 ###
-class DiagnosticOrder extends  Resource
+class DiagnosticOrder extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*

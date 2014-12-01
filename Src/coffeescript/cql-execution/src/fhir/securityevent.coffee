@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,26 +24,46 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class SecurityEventEventComponent
 @exports  SecurityEventEventComponent as SecurityEventEventComponent
 ###
-class SecurityEventEventComponent extends Element
+class SecurityEventEventComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Identifier for a family of the event.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Identifier for the category of event.
@@ -61,9 +82,9 @@ class SecurityEventEventComponent extends Element
   
   ###*
   The time when the event occurred on the source.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateTime: -> if @json['dateTime'] then new Date(@json['dateTime'])
+  dateTime:-> if @json['dateTime'] then DT.DateTime.parse(@json['dateTime'])
   
   ###*
   Indicates whether the event succeeded or failed.
@@ -79,11 +100,11 @@ class SecurityEventEventComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SecurityEventParticipantNetworkComponent
 @exports  SecurityEventParticipantNetworkComponent as SecurityEventParticipantNetworkComponent
 ###
-class SecurityEventParticipantNetworkComponent extends Element
+class SecurityEventParticipantNetworkComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -96,15 +117,15 @@ class SecurityEventParticipantNetworkComponent extends Element
   An identifier for the type of network access point that originated the audit event.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
 
 ###* 
- Embedded class
+Embedded class
 @class SecurityEventParticipantComponent
 @exports  SecurityEventParticipantComponent as SecurityEventParticipantComponent
 ###
-class SecurityEventParticipantComponent extends Element
+class SecurityEventParticipantComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -160,11 +181,11 @@ class SecurityEventParticipantComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SecurityEventSourceComponent
 @exports  SecurityEventSourceComponent as SecurityEventSourceComponent
 ###
-class SecurityEventSourceComponent extends Element
+class SecurityEventSourceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -183,25 +204,25 @@ class SecurityEventSourceComponent extends Element
   Code specifying the type of source where event originated.
   @returns {Array} an array of {@link Coding} objects
   ###
-  fhirType: ->
-    if @json['fhirType']
-      for item in @json['fhirType']
+  type: ->
+    if @json['type']
+      for item in @json['type']
         new Coding(item)
   
 
 ###* 
- Embedded class
+Embedded class
 @class SecurityEventObjectDetailComponent
 @exports  SecurityEventObjectDetailComponent as SecurityEventObjectDetailComponent
 ###
-class SecurityEventObjectDetailComponent extends Element
+class SecurityEventObjectDetailComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Name of the property.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   Property value.
@@ -211,11 +232,11 @@ class SecurityEventObjectDetailComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SecurityEventObjectComponent
 @exports  SecurityEventObjectComponent as SecurityEventObjectComponent
 ###
-class SecurityEventObjectComponent extends Element
+class SecurityEventObjectComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -234,7 +255,7 @@ class SecurityEventObjectComponent extends Element
   Object type being audited.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   Code representing the functional application role of Participant Object being audited.
@@ -286,7 +307,7 @@ A record of an event made for purposes of maintaining a security log. Typical us
 @class SecurityEvent
 @exports SecurityEvent as SecurityEvent
 ###
-class SecurityEvent extends  Resource
+class SecurityEvent extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*

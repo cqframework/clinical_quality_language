@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class PractitionerQualificationComponent
 @exports  PractitionerQualificationComponent as PractitionerQualificationComponent
 ###
-class PractitionerQualificationComponent extends Element
+class PractitionerQualificationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -70,7 +91,7 @@ A person who is directly or indirectly involved in the provisioning of healthcar
 @class Practitioner
 @exports Practitioner as Practitioner
 ###
-class Practitioner extends  Resource
+class Practitioner extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -114,9 +135,9 @@ class Practitioner extends  Resource
   
   ###*
   The date and time of birth for the practitioner.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  birthDate: -> if @json['birthDate'] then new Date(@json['birthDate'])
+  birthDate:-> if @json['birthDate'] then DT.DateTime.parse(@json['birthDate'])
   
   ###*
   Image of the person.

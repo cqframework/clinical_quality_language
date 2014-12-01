@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,18 +24,38 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 ###*
 Used to record and send details about a request for referral service or transfer of a patient to the care of another provider or provider organisation.
 @class ReferralRequest
 @exports ReferralRequest as ReferralRequest
 ###
-class ReferralRequest extends  Resource
+class ReferralRequest extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -56,7 +77,7 @@ class ReferralRequest extends  Resource
   An indication of the type of referral (or where applicable the type of transfer of care) request.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Indication of the clinical domain or discipline to which the referral or transfer of care request is sent.
@@ -74,7 +95,7 @@ class ReferralRequest extends  Resource
   The patient who is the subject of a referral or transfer of care request.
   @returns {Reference}
   ###
-  subject: -> if @json['subject'] then new Reference(@json['subject'])
+  patient: -> if @json['patient'] then new Reference(@json['patient'])
   
   ###*
   The healthcare provider or provider organization who/which initaited the referral/transfer of care request. Can also be  Patient (a self referral).
@@ -99,9 +120,9 @@ class ReferralRequest extends  Resource
   
   ###*
   Date/DateTime the request for referral or transfer of care is sent by the author.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateSent: -> if @json['dateSent'] then new Date(@json['dateSent'])
+  dateSent:-> if @json['dateSent'] then DT.DateTime.parse(@json['dateSent'])
   
   ###*
   Description of clinical condition indicating why referral/transfer of care is requested.

@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ImmunizationRecommendationRecommendationDateCriterionComponent
 @exports  ImmunizationRecommendationRecommendationDateCriterionComponent as ImmunizationRecommendationRecommendationDateCriterionComponent
 ###
-class ImmunizationRecommendationRecommendationDateCriterionComponent extends Element
+class ImmunizationRecommendationRecommendationDateCriterionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -46,17 +67,17 @@ class ImmunizationRecommendationRecommendationDateCriterionComponent extends Ele
   
   ###*
   Date recommendation.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  value: -> if @json['value'] then new Date(@json['value'])
+  value:-> if @json['value'] then DT.DateTime.parse(@json['value'])
   
 
 ###* 
- Embedded class
+Embedded class
 @class ImmunizationRecommendationRecommendationProtocolComponent
 @exports  ImmunizationRecommendationRecommendationProtocolComponent as ImmunizationRecommendationRecommendationProtocolComponent
 ###
-class ImmunizationRecommendationRecommendationProtocolComponent extends Element
+class ImmunizationRecommendationRecommendationProtocolComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -85,18 +106,18 @@ class ImmunizationRecommendationRecommendationProtocolComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ImmunizationRecommendationRecommendationComponent
 @exports  ImmunizationRecommendationRecommendationComponent as ImmunizationRecommendationRecommendationComponent
 ###
-class ImmunizationRecommendationRecommendationComponent extends Element
+class ImmunizationRecommendationRecommendationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   The date the immunization recommendation was created.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Vaccine that pertains to the recommendation.
@@ -154,7 +175,7 @@ A patient's point-of-time immunization status and recommendation with optional s
 @class ImmunizationRecommendation
 @exports ImmunizationRecommendation as ImmunizationRecommendation
 ###
-class ImmunizationRecommendation extends  Resource
+class ImmunizationRecommendation extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*

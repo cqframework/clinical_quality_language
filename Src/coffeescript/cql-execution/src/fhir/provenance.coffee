@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ProvenanceAgentComponent
 @exports  ProvenanceAgentComponent as ProvenanceAgentComponent
 ###
-class ProvenanceAgentComponent extends Element
+class ProvenanceAgentComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -48,7 +69,7 @@ class ProvenanceAgentComponent extends Element
   The type of the participant.
   @returns {Coding}
   ###
-  fhirType: -> if @json['fhirType'] then new Coding(@json['fhirType'])
+  type: -> if @json['type'] then new Coding(@json['type'])
   
   ###*
   Identity of participant. May be a logical or physical uri and maybe absolute or relative.
@@ -64,11 +85,11 @@ class ProvenanceAgentComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ProvenanceEntityComponent
 @exports  ProvenanceEntityComponent as ProvenanceEntityComponent
 ###
-class ProvenanceEntityComponent extends Element
+class ProvenanceEntityComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -81,7 +102,7 @@ class ProvenanceEntityComponent extends Element
   The type of the entity. If the entity is a resource, then this is a resource type.
   @returns {Coding}
   ###
-  fhirType: -> if @json['fhirType'] then new Coding(@json['fhirType'])
+  type: -> if @json['type'] then new Coding(@json['type'])
   
   ###*
   Identity of participant. May be a logical or physical uri and maybe absolute or relative.
@@ -106,7 +127,7 @@ Provenance information that describes the activity that led to the creation of a
 @class Provenance
 @exports Provenance as Provenance
 ###
-class Provenance extends  Resource
+class Provenance extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -126,9 +147,9 @@ class Provenance extends  Resource
   
   ###*
   The instant of time at which the activity was recorded.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  recorded: -> if @json['recorded'] then new Date(@json['recorded'])
+  recorded:-> if @json['recorded'] then DT.DateTime.parse(@json['recorded'])
   
   ###*
   The reason that the activity was taking place.

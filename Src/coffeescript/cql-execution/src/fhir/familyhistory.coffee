@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,26 +24,46 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class FamilyHistoryRelationConditionComponent
 @exports  FamilyHistoryRelationConditionComponent as FamilyHistoryRelationConditionComponent
 ###
-class FamilyHistoryRelationConditionComponent extends Element
+class FamilyHistoryRelationConditionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   The actual condition specified. Could be a coded condition (like MI or Diabetes) or a less specific string like 'cancer' depending on how much is known about the condition and the capabilities of the creating system.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Indicates what happened as a result of this condition.  If the condition resulted in death, deceased date is captured on the relation.
@@ -70,11 +91,11 @@ class FamilyHistoryRelationConditionComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class FamilyHistoryRelationComponent
 @exports  FamilyHistoryRelationComponent as FamilyHistoryRelationComponent
 ###
-class FamilyHistoryRelationComponent extends Element
+class FamilyHistoryRelationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -96,9 +117,9 @@ class FamilyHistoryRelationComponent extends Element
   bornPeriod: -> if @json['bornPeriod'] then new Period(@json['bornPeriod'])
   ###*
   The actual or approximate date of birth of the relative.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  bornDate: -> if @json['bornDate'] then new Date(@json['bornDate'])
+  bornDate:-> if @json['bornDate'] then DT.DateTime.parse(@json['bornDate'])
   ###*
   The actual or approximate date of birth of the relative.
   @returns {Array} an array of {@link String} objects
@@ -130,9 +151,9 @@ class FamilyHistoryRelationComponent extends Element
   deceasedRange: -> if @json['deceasedRange'] then new Range(@json['deceasedRange'])
   ###*
   If this resource is indicating that the related person is deceased, then an indicator of whether the person is deceased (yes) or not (no) or the age or age range or description of age at death - can be indicated here. If the reason for death is known, then it can be indicated in the outcome code of the condition - in this case the deceased property should still be set.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  deceasedDate: -> if @json['deceasedDate'] then new Date(@json['deceasedDate'])
+  deceasedDate:-> if @json['deceasedDate'] then DT.DateTime.parse(@json['deceasedDate'])
   ###*
   If this resource is indicating that the related person is deceased, then an indicator of whether the person is deceased (yes) or not (no) or the age or age range or description of age at death - can be indicated here. If the reason for death is known, then it can be indicated in the outcome code of the condition - in this case the deceased property should still be set.
   @returns {Array} an array of {@link String} objects
@@ -159,7 +180,7 @@ Significant health events and conditions for people related to the subject relev
 @class FamilyHistory
 @exports FamilyHistory as FamilyHistory
 ###
-class FamilyHistory extends  Resource
+class FamilyHistory extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -175,13 +196,13 @@ class FamilyHistory extends  Resource
   The person who this history concerns.
   @returns {Reference}
   ###
-  subject: -> if @json['subject'] then new Reference(@json['subject'])
+  patient: -> if @json['patient'] then new Reference(@json['patient'])
   
   ###*
   The date (and possibly time) when the family history was taken.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Conveys information about family history not specific to individual relations.

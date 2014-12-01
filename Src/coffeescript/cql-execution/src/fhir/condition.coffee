@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ConditionStageComponent
 @exports  ConditionStageComponent as ConditionStageComponent
 ###
-class ConditionStageComponent extends Element
+class ConditionStageComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -55,11 +76,11 @@ class ConditionStageComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConditionEvidenceComponent
 @exports  ConditionEvidenceComponent as ConditionEvidenceComponent
 ###
-class ConditionEvidenceComponent extends Element
+class ConditionEvidenceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -79,11 +100,11 @@ class ConditionEvidenceComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConditionLocationComponent
 @exports  ConditionLocationComponent as ConditionLocationComponent
 ###
-class ConditionLocationComponent extends Element
+class ConditionLocationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -100,24 +121,39 @@ class ConditionLocationComponent extends Element
   
 
 ###* 
- Embedded class
-@class ConditionRelatedItemComponent
-@exports  ConditionRelatedItemComponent as ConditionRelatedItemComponent
+Embedded class
+@class ConditionDueToComponent
+@exports  ConditionDueToComponent as ConditionDueToComponent
 ###
-class ConditionRelatedItemComponent extends Element
+class ConditionDueToComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
-  ###*
-  The type of relationship that this condition has to the related item.
-  @returns {Array} an array of {@link String} objects
-  ###
-  fhirType:-> @json['fhirType']
-  
   ###*
   Code that identifies the target of this relationship. The code takes the place of a detailed instance target.
   @returns {CodeableConcept}
   ###
-  code: -> if @json['code'] then new CodeableConcept(@json['code'])
+  codeableConcept: -> if @json['codeableConcept'] then new CodeableConcept(@json['codeableConcept'])
+  
+  ###*
+  Target of the relationship.
+  @returns {Reference}
+  ###
+  target: -> if @json['target'] then new Reference(@json['target'])
+  
+
+###* 
+Embedded class
+@class ConditionOccurredFollowingComponent
+@exports  ConditionOccurredFollowingComponent as ConditionOccurredFollowingComponent
+###
+class ConditionOccurredFollowingComponent extends BackboneElement
+  constructor: (@json) ->
+    super(@json)
+  ###*
+  Code that identifies the target of this relationship. The code takes the place of a detailed instance target.
+  @returns {CodeableConcept}
+  ###
+  codeableConcept: -> if @json['codeableConcept'] then new CodeableConcept(@json['codeableConcept'])
   
   ###*
   Target of the relationship.
@@ -130,7 +166,7 @@ Use to record detailed information about conditions, problems or diagnoses recog
 @class Condition
 @exports Condition as Condition
 ###
-class Condition extends  Resource
+class Condition extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -162,9 +198,9 @@ class Condition extends  Resource
   
   ###*
   Estimated or actual date the condition/problem/diagnosis was first detected/suspected.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateAsserted: -> if @json['dateAsserted'] then new Date(@json['dateAsserted'])
+  dateAsserted:-> if @json['dateAsserted'] then DT.DateTime.parse(@json['dateAsserted'])
   
   ###*
   Identification of the condition, problem or diagnosis.
@@ -197,17 +233,17 @@ class Condition extends  Resource
   severity: -> if @json['severity'] then new CodeableConcept(@json['severity'])
   
   ###*
-  Estimated or actual date the condition began, in the opinion of the clinician.
-  @returns {Date}
+  Estimated or actual date or date-time  the condition began, in the opinion of the clinician.
+  @returns {Array} an array of {@link Date} objects
   ###
-  onsetDate: -> if @json['onsetDate'] then new Date(@json['onsetDate'])
+  onsetDateTime:-> if @json['onsetDateTime'] then DT.DateTime.parse(@json['onsetDateTime'])
   onsetAge:->  new Quantity(@json['onsetAge'])
   
   ###*
   The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - Conditions are never really resolved, but they can abate.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  abatementDate: -> if @json['abatementDate'] then new Date(@json['abatementDate'])
+  abatementDate:-> if @json['abatementDate'] then DT.DateTime.parse(@json['abatementDate'])
   abatementAge:->  new Quantity(@json['abatementAge'])
   ###*
   The date or estimated date that the condition resolved or went into remission. This is called "abatement" because of the many overloaded connotations associated with "remission" or "resolution" - Conditions are never really resolved, but they can abate.
@@ -240,13 +276,22 @@ class Condition extends  Resource
         new ConditionLocationComponent(item)
   
   ###*
-  Further conditions, problems, diagnoses, procedures or events that are related in some way to this condition, or the substance that caused/triggered this Condition.
-  @returns {Array} an array of {@link ConditionRelatedItemComponent} objects
+  Further conditions, problems, diagnoses, procedures or events or the substance that caused/triggered this Condition.
+  @returns {Array} an array of {@link ConditionDueToComponent} objects
   ###
-  relatedItem: ->
-    if @json['relatedItem']
-      for item in @json['relatedItem']
-        new ConditionRelatedItemComponent(item)
+  dueTo: ->
+    if @json['dueTo']
+      for item in @json['dueTo']
+        new ConditionDueToComponent(item)
+  
+  ###*
+  Further conditions, problems, diagnoses, procedures or events or the substance that preceded this Condition.
+  @returns {Array} an array of {@link ConditionOccurredFollowingComponent} objects
+  ###
+  occurredFollowing: ->
+    if @json['occurredFollowing']
+      for item in @json['occurredFollowing']
+        new ConditionOccurredFollowingComponent(item)
   
   ###*
   Additional information about the Condition. This is a general notes/comments entry  for description of the Condition, its diagnosis and prognosis.

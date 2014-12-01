@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class QuestionAnswerComponent
 @exports  QuestionAnswerComponent as QuestionAnswerComponent
 ###
-class QuestionAnswerComponent extends Element
+class QuestionAnswerComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -55,19 +76,19 @@ class QuestionAnswerComponent extends Element
   valueInteger:-> @json['valueInteger']
   ###*
   Single-valued answer to the question.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  valueDate: -> if @json['valueDate'] then new Date(@json['valueDate'])
+  valueDate:-> if @json['valueDate'] then DT.DateTime.parse(@json['valueDate'])
   ###*
   Single-valued answer to the question.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  valueDateTime: -> if @json['valueDateTime'] then new Date(@json['valueDateTime'])
+  valueDateTime:-> if @json['valueDateTime'] then DT.DateTime.parse(@json['valueDateTime'])
   ###*
   Single-valued answer to the question.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  valueInstant: -> if @json['valueInstant'] then new Date(@json['valueInstant'])
+  valueInstant:-> if @json['valueInstant'] then DT.DateTime.parse(@json['valueInstant'])
   ###*
   Single-valued answer to the question.
   @returns {time}
@@ -101,11 +122,11 @@ class QuestionAnswerComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class QuestionComponent
 @exports  QuestionComponent as QuestionComponent
 ###
-class QuestionComponent extends Element
+class QuestionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -140,11 +161,11 @@ class QuestionComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class GroupComponent
 @exports  GroupComponent as GroupComponent
 ###
-class GroupComponent extends Element
+class GroupComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -194,7 +215,7 @@ A structured set of questions and their answers. The questions are ordered and g
 @class QuestionnaireAnswers
 @exports QuestionnaireAnswers as QuestionnaireAnswers
 ###
-class QuestionnaireAnswers extends  Resource
+class QuestionnaireAnswers extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -229,9 +250,9 @@ class QuestionnaireAnswers extends  Resource
   
   ###*
   The date and/or time that this version of the questionnaire answers was authored.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  authored: -> if @json['authored'] then new Date(@json['authored'])
+  authored:-> if @json['authored'] then DT.DateTime.parse(@json['authored'])
   
   ###*
   The person who answered the questions about the subject. Only used when this is not the subject him/herself.

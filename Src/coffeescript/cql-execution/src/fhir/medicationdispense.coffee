@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationDispenseDispenseDosageComponent
 @exports  MedicationDispenseDispenseDosageComponent as MedicationDispenseDispenseDosageComponent
 ###
-class MedicationDispenseDispenseDosageComponent extends Element
+class MedicationDispenseDispenseDosageComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -46,9 +67,9 @@ class MedicationDispenseDispenseDosageComponent extends Element
   
   ###*
   The timing schedule for giving the medication to the patient.  The Schedule data type allows many different expressions, for example.  "Every  8 hours"; "Three times a day"; "1/2 an hour before breakfast for 10 days from 23-Dec 2011:";  "15 Oct 2013, 17 Oct 2013 and 1 Nov 2013".
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  scheduleDateTime: -> if @json['scheduleDateTime'] then new Date(@json['scheduleDateTime'])
+  scheduleDateTime:-> if @json['scheduleDateTime'] then DT.DateTime.parse(@json['scheduleDateTime'])
   ###*
   The timing schedule for giving the medication to the patient.  The Schedule data type allows many different expressions, for example.  "Every  8 hours"; "Three times a day"; "1/2 an hour before breakfast for 10 days from 23-Dec 2011:";  "15 Oct 2013, 17 Oct 2013 and 1 Nov 2013".
   @returns {Period}
@@ -111,11 +132,11 @@ Terminologies used often pre-coordinate this term with the route and or form of 
   
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationDispenseDispenseComponent
 @exports  MedicationDispenseDispenseComponent as MedicationDispenseDispenseComponent
 ###
-class MedicationDispenseDispenseComponent extends Element
+class MedicationDispenseDispenseComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -134,7 +155,7 @@ class MedicationDispenseDispenseComponent extends Element
   Indicates the type of dispensing event that is performed. Examples include: Trial Fill, Completion of Trial, Partial Fill, Emergency Fill, Samples, etc.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   The amount of medication that has been dispensed. Includes unit of measure.
@@ -150,15 +171,15 @@ class MedicationDispenseDispenseComponent extends Element
   
   ###*
   The time when the dispensed product was packaged and reviewed.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  whenPrepared: -> if @json['whenPrepared'] then new Date(@json['whenPrepared'])
+  whenPrepared:-> if @json['whenPrepared'] then DT.DateTime.parse(@json['whenPrepared'])
   
   ###*
   The time the dispensed product was provided to the patient or their representative.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  whenHandedOver: -> if @json['whenHandedOver'] then new Date(@json['whenHandedOver'])
+  whenHandedOver:-> if @json['whenHandedOver'] then DT.DateTime.parse(@json['whenHandedOver'])
   
   ###*
   Identification of the facility/location where the medication was shipped to, as part of the dispense event.
@@ -186,18 +207,18 @@ class MedicationDispenseDispenseComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class MedicationDispenseSubstitutionComponent
 @exports  MedicationDispenseSubstitutionComponent as MedicationDispenseSubstitutionComponent
 ###
-class MedicationDispenseSubstitutionComponent extends Element
+class MedicationDispenseSubstitutionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   A code signifying whether a different drug was dispensed from what was prescribed.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Indicates the reason for the substitution of (or lack of substitution) from what was prescribed.
@@ -222,7 +243,7 @@ Dispensing a medication to a named patient.  This includes a description of the 
 @class MedicationDispense
 @exports MedicationDispense as MedicationDispense
 ###
-class MedicationDispense extends  Resource
+class MedicationDispense extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*

@@ -1,0 +1,8 @@
+this.QUICK ||= {}
+
+FS = require("fs")
+FS.readdirSync("./quick").forEach (file) ->
+  require("./" + file);
+
+
+module.exports.QUICK = QUICK

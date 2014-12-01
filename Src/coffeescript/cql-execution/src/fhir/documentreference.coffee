@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class DocumentReferenceRelatesToComponent
 @exports  DocumentReferenceRelatesToComponent as DocumentReferenceRelatesToComponent
 ###
-class DocumentReferenceRelatesToComponent extends Element
+class DocumentReferenceRelatesToComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -52,11 +73,11 @@ class DocumentReferenceRelatesToComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class DocumentReferenceServiceParameterComponent
 @exports  DocumentReferenceServiceParameterComponent as DocumentReferenceServiceParameterComponent
 ###
-class DocumentReferenceServiceParameterComponent extends Element
+class DocumentReferenceServiceParameterComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -73,18 +94,18 @@ class DocumentReferenceServiceParameterComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class DocumentReferenceServiceComponent
 @exports  DocumentReferenceServiceComponent as DocumentReferenceServiceComponent
 ###
-class DocumentReferenceServiceComponent extends Element
+class DocumentReferenceServiceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   The type of the service that can be used to access the documents.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Where the service end-point is located.
@@ -103,11 +124,11 @@ class DocumentReferenceServiceComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class DocumentReferenceContextComponent
 @exports  DocumentReferenceContextComponent as DocumentReferenceContextComponent
 ###
-class DocumentReferenceContextComponent extends Element
+class DocumentReferenceContextComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -136,7 +157,7 @@ A reference to a document.
 @class DocumentReference
 @exports DocumentReference as DocumentReference
 ###
-class DocumentReference extends  Resource
+class DocumentReference extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -164,7 +185,7 @@ class DocumentReference extends  Resource
   Specifies the particular kind of document (e.g. Patient Summary, Discharge Summary, Prescription, etc.).
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   A categorization for the type of the document. This may be implied by or derived from the code specified in the Document Type.
@@ -201,15 +222,15 @@ class DocumentReference extends  Resource
   
   ###*
   When the document was created.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  created: -> if @json['created'] then new Date(@json['created'])
+  created:-> if @json['created'] then DT.DateTime.parse(@json['created'])
   
   ###*
   When the document reference was created.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  indexed: -> if @json['indexed'] then new Date(@json['indexed'])
+  indexed:-> if @json['indexed'] then DT.DateTime.parse(@json['indexed'])
   
   ###*
   The status of this document reference.
@@ -273,7 +294,7 @@ class DocumentReference extends  Resource
   
   ###*
   A hash of the source document to ensure that changes have not occurred.
-  @returns {Array} an array of {@link String} objects
+  @returns {Array} an array of {@link } objects
   ###
   hash:-> @json['hash']
   

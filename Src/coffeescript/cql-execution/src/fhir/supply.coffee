@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class SupplyDispenseComponent
 @exports  SupplyDispenseComponent as SupplyDispenseComponent
 ###
-class SupplyDispenseComponent extends Element
+class SupplyDispenseComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -54,7 +75,7 @@ class SupplyDispenseComponent extends Element
   Indicates the type of dispensing event that is performed. Examples include: Trial Fill, Completion of Trial, Partial Fill, Emergency Fill, Samples, etc.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   The amount of supply that has been dispensed. Includes unit of measure.
@@ -63,13 +84,13 @@ class SupplyDispenseComponent extends Element
   quantity: -> if @json['quantity'] then new Quantity(@json['quantity'])
   
   ###*
-  Identifies the medication or substance being dispensed. This is either a link to a resource representing the details of the medication or substance or a simple attribute carrying a code that identifies the medication from a known list of medications.
+  Identifies the medication or substance or device being dispensed. This is either a link to a resource representing the details of the item or a simple attribute carrying a code that identifies the item from a known list.
   @returns {Reference}
   ###
   suppliedItem: -> if @json['suppliedItem'] then new Reference(@json['suppliedItem'])
   
   ###*
-  The individual responsible for dispensing the medication.
+  The individual responsible for dispensing the medication, supplier or device.
   @returns {Reference}
   ###
   supplier: -> if @json['supplier'] then new Reference(@json['supplier'])
@@ -106,7 +127,7 @@ A supply - a  request for something, and provision of what is supplied.
 @class Supply
 @exports Supply as Supply
 ###
-class Supply extends  Resource
+class Supply extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*

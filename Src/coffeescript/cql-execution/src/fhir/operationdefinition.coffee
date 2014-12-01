@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class OperationDefinitionParameterComponent
 @exports  OperationDefinitionParameterComponent as OperationDefinitionParameterComponent
 ###
-class OperationDefinitionParameterComponent extends Element
+class OperationDefinitionParameterComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -72,7 +93,7 @@ class OperationDefinitionParameterComponent extends Element
   The type for this parameter.
   @returns {Coding}
   ###
-  fhirType: -> if @json['fhirType'] then new Coding(@json['fhirType'])
+  type: -> if @json['type'] then new Coding(@json['type'])
   
   ###*
   A profile the specifies the rules that this parameter must conform to.
@@ -85,7 +106,7 @@ A formal computable definition of an operation (on the RESTful interface) or a n
 @class OperationDefinition
 @exports OperationDefinition as OperationDefinition
 ###
-class OperationDefinition extends  Resource
+class OperationDefinition extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -150,9 +171,9 @@ class OperationDefinition extends  Resource
   
   ###*
   The date that this version of the profile was published.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Whether this is operation or named query.
@@ -188,7 +209,7 @@ class OperationDefinition extends  Resource
   Indicates whether this operation or named query can be invoked at the resource type level for any given resource type level (e.g. without needing to choose a resource type for the context).
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   Indicates whether this operation can be invoked on a particular instance of one of the given types.

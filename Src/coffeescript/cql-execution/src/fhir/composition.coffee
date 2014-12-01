@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class CompositionAttesterComponent
 @exports  CompositionAttesterComponent as CompositionAttesterComponent
 ###
-class CompositionAttesterComponent extends Element
+class CompositionAttesterComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -46,9 +67,9 @@ class CompositionAttesterComponent extends Element
   
   ###*
   When composition was attested by the party.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  time: -> if @json['time'] then new Date(@json['time'])
+  time:-> if @json['time'] then DT.DateTime.parse(@json['time'])
   
   ###*
   Who attested the composition in the specified way.
@@ -58,11 +79,11 @@ class CompositionAttesterComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class CompositionEventComponent
 @exports  CompositionEventComponent as CompositionEventComponent
 ###
-class CompositionEventComponent extends Element
+class CompositionEventComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -91,57 +112,24 @@ class CompositionEventComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SectionComponent
 @exports  SectionComponent as SectionComponent
 ###
-class SectionComponent extends Element
+class SectionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
-  The heading for this particular section.  This will be part of the rendered content for the document.
+  The label for this particular section.  This will be part of the rendered content for the document, and is often used to build a table of contents.
   @returns {Array} an array of {@link String} objects
   ###
   title:-> @json['title']
   
   ###*
-  Identifier for the section assigned for business purposes outside the context of FHIR.
-  @returns {Array} an array of {@link Identifier} objects
-  ###
-  identifier: ->
-    if @json['identifier']
-      for item in @json['identifier']
-        new Identifier(item)
-  
-  ###*
-  A code identifying the kind of content contained within the section.
+  A code identifying the kind of content contained within the section. This must be consistent with the section title.
   @returns {CodeableConcept}
   ###
   code: -> if @json['code'] then new CodeableConcept(@json['code'])
-  
-  ###*
-  Identifies the primary subject of the section.
-  @returns {Reference}
-  ###
-  subject: -> if @json['subject'] then new Reference(@json['subject'])
-  
-  ###*
-  A human-readable narrative that represents the 'attested content of the section to a human. The narrative need not encode all it's entries, but is required to contain sufficient detail to make it "clinically safe" for a human to just read the narrative.
-  @returns {Narrative}
-  ###
-  text: -> if @json['text'] then new Narrative(@json['text'])
-  
-  ###*
-  If the section is empty, why the section is empty.
-  @returns {CodeableConcept}
-  ###
-  emptyReason: -> if @json['emptyReason'] then new CodeableConcept(@json['emptyReason'])
-  
-  ###*
-  If the items in the list or the sub-sections have a meaningful order, what that meaning is. The order of the entries should always match the order in which they are presented in the narrative.
-  @returns {CodeableConcept}
-  ###
-  order: -> if @json['order'] then new CodeableConcept(@json['order'])
   
   ###*
   A nested sub-section within this section.
@@ -153,20 +141,17 @@ class SectionComponent extends Element
         new SectionComponent(item)
   
   ###*
-  Identifies the discrete data that underlies the content for the section.
-  @returns {Array} an array of {@link Reference} objects
+  The content (narrative and data) associated with the section.
+  @returns {Reference}
   ###
-  entry: ->
-    if @json['entry']
-      for item in @json['entry']
-        new Reference(item)
+  content: -> if @json['content'] then new Reference(@json['content'])
   
 ###*
 A set of healthcare-related information that is assembled together into a single logical document that provides a single coherent statement of meaning, establishes its own context and that has clinical attestation with regard to who is making the statement.
 @class Composition
 @exports Composition as Composition
 ###
-class Composition extends  Resource
+class Composition extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -177,15 +162,15 @@ class Composition extends  Resource
   
   ###*
   The composition editing time, when the composition was last logically changed by the author.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Specifies the particular kind of composition (e.g. History and Physical, Discharge Summary, Progress Note). This usually equates to the purpose of making the composition.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   A categorization for the type of the composition. This may be implied by or derived from the code specified in the Composition Type.
