@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,26 +24,46 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class SubscriptionChannelComponent
 @exports  SubscriptionChannelComponent as SubscriptionChannelComponent
 ###
-class SubscriptionChannelComponent extends Element
+class SubscriptionChannelComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Todo.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   Todo.
@@ -64,11 +85,11 @@ class SubscriptionChannelComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SubscriptionTagComponent
 @exports  SubscriptionTagComponent as SubscriptionTagComponent
 ###
-class SubscriptionTagComponent extends Element
+class SubscriptionTagComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -94,7 +115,7 @@ Todo.
 @class Subscription
 @exports Subscription as Subscription
 ###
-class Subscription extends  Resource
+class Subscription extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -138,9 +159,9 @@ class Subscription extends  Resource
   
   ###*
   Todo.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  end: -> if @json['end'] then new Date(@json['end'])
+  end:-> if @json['end'] then DT.DateTime.parse(@json['end'])
   
   ###*
   Todo.

@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ImmunizationExplanationComponent
 @exports  ImmunizationExplanationComponent as ImmunizationExplanationComponent
 ###
-class ImmunizationExplanationComponent extends Element
+class ImmunizationExplanationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -58,18 +79,18 @@ class ImmunizationExplanationComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ImmunizationReactionComponent
 @exports  ImmunizationReactionComponent as ImmunizationReactionComponent
 ###
-class ImmunizationReactionComponent extends Element
+class ImmunizationReactionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Date of reaction to the immunization.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Details of the reaction.
@@ -85,11 +106,11 @@ class ImmunizationReactionComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ImmunizationVaccinationProtocolComponent
 @exports  ImmunizationVaccinationProtocolComponent as ImmunizationVaccinationProtocolComponent
 ###
-class ImmunizationVaccinationProtocolComponent extends Element
+class ImmunizationVaccinationProtocolComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -145,7 +166,7 @@ Immunization event information.
 @class Immunization
 @exports Immunization as Immunization
 ###
-class Immunization extends  Resource
+class Immunization extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -159,9 +180,9 @@ class Immunization extends  Resource
   
   ###*
   Date vaccine administered or was to be administered.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Vaccine that was administered or was to be administered.
@@ -219,9 +240,9 @@ class Immunization extends  Resource
   
   ###*
   Date vaccine batch expires.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  expirationDate: -> if @json['expirationDate'] then new Date(@json['expirationDate'])
+  expirationDate:-> if @json['expirationDate'] then DT.DateTime.parse(@json['expirationDate'])
   
   ###*
   Body site where vaccine was administered.

@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class CarePlanParticipantComponent
 @exports  CarePlanParticipantComponent as CarePlanParticipantComponent
 ###
-class CarePlanParticipantComponent extends Element
+class CarePlanParticipantComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -52,11 +73,11 @@ class CarePlanParticipantComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class CarePlanGoalComponent
 @exports  CarePlanGoalComponent as CarePlanGoalComponent
 ###
-class CarePlanGoalComponent extends Element
+class CarePlanGoalComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -88,11 +109,11 @@ class CarePlanGoalComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class CarePlanActivitySimpleComponent
 @exports  CarePlanActivitySimpleComponent as CarePlanActivitySimpleComponent
 ###
-class CarePlanActivitySimpleComponent extends Element
+class CarePlanActivitySimpleComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -164,21 +185,18 @@ class CarePlanActivitySimpleComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class CarePlanActivityComponent
 @exports  CarePlanActivityComponent as CarePlanActivityComponent
 ###
-class CarePlanActivityComponent extends Element
+class CarePlanActivityComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Internal reference that identifies the goals that this activity is intended to contribute towards meeting.
-  @returns {Array} an array of {@link idref} objects
+  @returns {Array} an array of {@link String} objects
   ###
-  goal: ->
-    if @json['goal']
-      for item in @json['goal']
-        new idref(item)
+  goal:-> @json['goal']
   
   ###*
   Identifies what progress is being made for the specific activity.
@@ -224,7 +242,7 @@ Describes the intention of how one or more practitioners intend to deliver care 
 @class CarePlan
 @exports CarePlan as CarePlan
 ###
-class CarePlan extends  Resource
+class CarePlan extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -256,9 +274,9 @@ class CarePlan extends  Resource
   
   ###*
   Identifies the most recent date on which the plan has been revised.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  modified: -> if @json['modified'] then new Date(@json['modified'])
+  modified:-> if @json['modified'] then DT.DateTime.parse(@json['modified'])
   
   ###*
   Identifies the conditions/problems/concerns/diagnoses/etc. whose management and/or mitigation are handled by this plan.

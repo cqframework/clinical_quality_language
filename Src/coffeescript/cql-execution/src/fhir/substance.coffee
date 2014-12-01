@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class SubstanceInstanceComponent
 @exports  SubstanceInstanceComponent as SubstanceInstanceComponent
 ###
-class SubstanceInstanceComponent extends Element
+class SubstanceInstanceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -46,9 +67,9 @@ class SubstanceInstanceComponent extends Element
   
   ###*
   When the substance is no longer valid to use. For some substances, a single arbitrary date is used for expiry.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  expiry: -> if @json['expiry'] then new Date(@json['expiry'])
+  expiry:-> if @json['expiry'] then DT.DateTime.parse(@json['expiry'])
   
   ###*
   The amount of the substance.
@@ -58,11 +79,11 @@ class SubstanceInstanceComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SubstanceIngredientComponent
 @exports  SubstanceIngredientComponent as SubstanceIngredientComponent
 ###
-class SubstanceIngredientComponent extends Element
+class SubstanceIngredientComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -82,14 +103,14 @@ A homogeneous material with a definite composition.
 @class Substance
 @exports Substance as Substance
 ###
-class Substance extends  Resource
+class Substance extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
   A code (or set of codes) that identify this substance.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   A description of the substance - its appearance, handling requirements, and other usage notes.

@@ -1,7 +1,7 @@
 { Patient } = require './cql-patient'
 
 DT = require './cql-datatypes'
-QP = require './quick/models'
+QP = require './fhir/models'
 typeIsArray = Array.isArray || ( value ) -> return {}.toString.call( value ) is '[object Array]'
 
 functionExists = (name) -> eval("typeof #{name}") is "function"
@@ -60,9 +60,9 @@ class Library
   exec: (ctx) ->
     Results r = new Results()
     while p = ctx.currentPatient()
-      patient_ctx = ctx.childContext({"Patient" : p})
+      patient_ctx = ctx.childContext()
       for key,expr of @expressions when expr.context is "Patient"
-        r.recordPatientResult(patient_ctx.currentPatient().identifier.value, key, expr.exec(patient_ctx))
+        r.recordPatientResult(patient_ctx.currentPatient().id(), key, expr.exec(patient_ctx))
       ctx.nextPatient()
     r
 
@@ -111,7 +111,7 @@ class Context
     @parent?.getValueSet(name)
 
   get: (identifier) ->
-    @context_values[identifier] || @parent?.get(identifier)
+      @context_values[identifier] || @parent?.get(identifier)
 
   set: (identifier, value) ->
     @context_values[identifier] = value
@@ -509,6 +509,10 @@ class CalculateAgeAt extends FunctionRef
       else 1
     Math.floor(ageInMS / divisor)
 
+class CalculateAgeInYearsAtFunctionRef extends CalculateAgeAt
+  constructor: (@json) ->
+    @json.precision="Year"
+    super(@json)
 # Literals
 
 class Literal extends Expression
@@ -576,9 +580,9 @@ class Property extends Expression
       curr_val = null
       for part in parts
         _obj = curr_obj?[part] ? curr_obj?.get?(part)
-        curr_obj = if _obj instanceof Function then _obj() else _obj
+        curr_obj = if _obj instanceof Function then _obj.call(curr_obj) else _obj
       val = curr_obj
-    val
+    if val instanceof Function then val.call(obj) else val
 
 class Tuple extends Expression
   constructor: (json) ->

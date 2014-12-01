@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,25 +24,45 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 ###*
 A photo, video, or audio recording acquired or used in healthcare. The actual content may be inline or provided by direct reference.
 @class Media
 @exports Media as Media
 ###
-class Media extends  Resource
+class Media extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
   Whether the media is a photo (still image), an audio recording, or a video recording.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   Details of the type of the media - usually, how it was acquired (what type of device). If images sourced from a DICOM system, are wrapped in a Media resource, then this is the modality.
@@ -59,10 +80,10 @@ class Media extends  Resource
         new Identifier(item)
   
   ###*
-  When the media was originally recorded. For video and audio, if the length of the recording is not insignificant, this is the end of the recording.
-  @returns {Date}
+  The date/time when the media was originally recorded. For video and audio, if the length of the recording is not insignificant, this is the start of the recording.
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateTime: -> if @json['dateTime'] then new Date(@json['dateTime'])
+  created:-> if @json['created'] then DT.DateTime.parse(@json['created'])
   
   ###*
   Who/What this Media is a record of.
@@ -107,10 +128,10 @@ class Media extends  Resource
   frames:-> @json['frames']
   
   ###*
-  The length of the recording in seconds - for audio and video.
+  The duration of the recording in seconds - for audio and video.
   @returns {Array} an array of {@link Number} objects
   ###
-  length:-> @json['length']
+  duration:-> @json['duration']
   
   ###*
   The actual content of the media - inline or by direct reference to the media source file.

@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ListEntryComponent
 @exports  ListEntryComponent as ListEntryComponent
 ###
-class ListEntryComponent extends Element
+class ListEntryComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -51,13 +72,13 @@ class ListEntryComponent extends Element
   True if this item is marked as deleted in the list.
   @returns {Array} an array of {@link boolean} objects
   ###
-  fhirDeleted:-> @json['fhirDeleted']
+  deleted:-> @json['deleted']
   
   ###*
   When this item was added to the list.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   A reference to the actual resource from which data was derived.
@@ -70,7 +91,7 @@ A set of information summarized from a list of other resources.
 @class List
 @exports List as List
 ###
-class List extends  Resource
+class List extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -102,9 +123,9 @@ class List extends  Resource
   
   ###*
   The date that the list was prepared.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Whether items in the list have a meaningful order.

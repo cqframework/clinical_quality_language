@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class DataElementBindingComponent
 @exports  DataElementBindingComponent as DataElementBindingComponent
 ###
-class DataElementBindingComponent extends Element
+class DataElementBindingComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -64,11 +85,11 @@ class DataElementBindingComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class DataElementMappingComponent
 @exports  DataElementMappingComponent as DataElementMappingComponent
 ###
-class DataElementMappingComponent extends Element
+class DataElementMappingComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -76,6 +97,12 @@ class DataElementMappingComponent extends Element
   @returns {Array} an array of {@link String} objects
   ###
   uri:-> @json['uri']
+  
+  ###*
+  If true, indicates that the official meaning of the data element is exactly equivalent to the mapped element.
+  @returns {Array} an array of {@link boolean} objects
+  ###
+  definitional:-> @json['definitional']
   
   ###*
   A name for the specification that is being mapped to.
@@ -100,7 +127,7 @@ The formal description of a single piece of information that can be gathered and
 @class DataElement
 @exports DataElement as DataElement
 ###
-class DataElement extends  Resource
+class DataElement extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -138,9 +165,9 @@ class DataElement extends  Resource
   
   ###*
   The date that this version of the data element was published.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   The term used by humans to refer to the data element.  Should ideally be unique within the context in which the data element is expected to be used.
@@ -200,10 +227,10 @@ class DataElement extends  Resource
   The FHIR data type that is the type for this element.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
-  An example value for this element.
+  An sample value for this element demonstrating the type of information that would typically be captured.
   @returns {Array} an array of {@link } objects
   ###
   example:-> @json['example']

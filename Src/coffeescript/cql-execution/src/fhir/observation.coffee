@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ObservationReferenceRangeComponent
 @exports  ObservationReferenceRangeComponent as ObservationReferenceRangeComponent
 ###
-class ObservationReferenceRangeComponent extends Element
+class ObservationReferenceRangeComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -70,18 +91,18 @@ class ObservationReferenceRangeComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ObservationRelatedComponent
 @exports  ObservationRelatedComponent as ObservationRelatedComponent
 ###
-class ObservationRelatedComponent extends Element
+class ObservationRelatedComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   A code specifying the kind of relationship that exists with the target observation.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   A reference to the observation that is related to this observation.
@@ -94,7 +115,7 @@ Measurements and simple assertions made about a patient, device or other subject
 @class Observation
 @exports Observation as Observation
 ###
-class Observation extends  Resource
+class Observation extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -125,9 +146,9 @@ class Observation extends  Resource
   valueRatio: -> if @json['valueRatio'] then new Ratio(@json['valueRatio'])
   ###*
   The information determined as a result of making the observation, if the information has a simple value.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  valueDateTime: -> if @json['valueDateTime'] then new Date(@json['valueDateTime'])
+  valueDateTime:-> if @json['valueDateTime'] then DT.DateTime.parse(@json['valueDateTime'])
   ###*
   The information determined as a result of making the observation, if the information has a simple value.
   @returns {Period}
@@ -150,6 +171,12 @@ class Observation extends  Resource
   valueTime: -> if @json['valueTime'] then new time(@json['valueTime'])
   
   ###*
+  Provides a reason why the expected value in the element Observation.value[x] is missing.
+  @returns {Array} an array of {@link String} objects
+  ###
+  dataAbsentReason:-> @json['dataAbsentReason']
+  
+  ###*
   The assessment made based on the result of the observation.
   @returns {CodeableConcept}
   ###
@@ -163,9 +190,9 @@ class Observation extends  Resource
   
   ###*
   The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  appliesDateTime: -> if @json['appliesDateTime'] then new Date(@json['appliesDateTime'])
+  appliesDateTime:-> if @json['appliesDateTime'] then DT.DateTime.parse(@json['appliesDateTime'])
   ###*
   The time or time-period the observed value is asserted as being true. For biological subjects - e.g. human patients - this is usually called the "physiologically relevant time". This is usually either the time of the procedure or of specimen collection, but very often the source of the date/time is not known, only the date/time itself.
   @returns {Period}
@@ -173,10 +200,10 @@ class Observation extends  Resource
   appliesPeriod: -> if @json['appliesPeriod'] then new Period(@json['appliesPeriod'])
   
   ###*
-  Date/Time this was made available.
-  @returns {Date}
+  The date and time this observation was made available.
+  @returns {Array} an array of {@link Date} objects
   ###
-  issued: -> if @json['issued'] then new Date(@json['issued'])
+  issued:-> if @json['issued'] then DT.DateTime.parse(@json['issued'])
   
   ###*
   The status of the result value.
@@ -191,7 +218,7 @@ class Observation extends  Resource
   reliability:-> @json['reliability']
   
   ###*
-  Indicates where on the subject's body the observation was made.
+  Indicates the site on the subject's body where the observation was made ( i.e. the target site).
   @returns {CodeableConcept}
   ###
   bodySite: -> if @json['bodySite'] then new CodeableConcept(@json['bodySite'])

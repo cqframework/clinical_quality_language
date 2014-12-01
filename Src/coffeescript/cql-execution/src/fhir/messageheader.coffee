@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class MessageHeaderResponseComponent
 @exports  MessageHeaderResponseComponent as MessageHeaderResponseComponent
 ###
-class MessageHeaderResponseComponent extends Element
+class MessageHeaderResponseComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -58,15 +79,15 @@ class MessageHeaderResponseComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class MessageSourceComponent
 @exports  MessageSourceComponent as MessageSourceComponent
 ###
-class MessageSourceComponent extends Element
+class MessageSourceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
-  Human-readable name for the target system.
+  Human-readable name for the source system.
   @returns {Array} an array of {@link String} objects
   ###
   name:-> @json['name']
@@ -97,15 +118,15 @@ class MessageSourceComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class MessageDestinationComponent
 @exports  MessageDestinationComponent as MessageDestinationComponent
 ###
-class MessageDestinationComponent extends Element
+class MessageDestinationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
-  Human-readable name for the source system.
+  Human-readable name for the target system.
   @returns {Array} an array of {@link String} objects
   ###
   name:-> @json['name']
@@ -127,7 +148,7 @@ The header for a message exchange that is either requesting or responding to an 
 @class MessageHeader
 @exports MessageHeader as MessageHeader
 ###
-class MessageHeader extends  Resource
+class MessageHeader extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -138,12 +159,12 @@ class MessageHeader extends  Resource
   
   ###*
   The time that the message was sent.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  timestamp: -> if @json['timestamp'] then new Date(@json['timestamp'])
+  timestamp:-> if @json['timestamp'] then DT.DateTime.parse(@json['timestamp'])
   
   ###*
-  Code that identifies the event this message represents and connects it with it's definition. Events defined as part of the FHIR specification have the system value "http://hl7.org/fhir/message-type".
+  Code that identifies the event this message represents and connects it with its definition. Events defined as part of the FHIR specification have the system value "http://hl7.org/fhir/message-type".
   @returns {Coding}
   ###
   event: -> if @json['event'] then new Coding(@json['event'])

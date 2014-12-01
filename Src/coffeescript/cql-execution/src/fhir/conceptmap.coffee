@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class OtherElementComponent
 @exports  OtherElementComponent as OtherElementComponent
 ###
-class OtherElementComponent extends Element
+class OtherElementComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -45,46 +66,46 @@ class OtherElementComponent extends Element
   element:-> @json['element']
   
   ###*
-  Code System (if necessary).
+  The code system of the dependency code (if the source/dependency is a value set that cross code systems).
   @returns {Array} an array of {@link String} objects
   ###
   codeSystem:-> @json['codeSystem']
   
   ###*
-  Value of the referenced element.
+  Identity (code or path) or the element/item that the map depends on / refers to.
   @returns {Array} an array of {@link String} objects
   ###
   code:-> @json['code']
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConceptMapElementMapComponent
 @exports  ConceptMapElementMapComponent as ConceptMapElementMapComponent
 ###
-class ConceptMapElementMapComponent extends Element
+class ConceptMapElementMapComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
-  System of the target (if necessary).
+  The code system of the target code (if the target is a value set that cross code systems).
   @returns {Array} an array of {@link String} objects
   ###
   codeSystem:-> @json['codeSystem']
   
   ###*
-  Code that identifies the target element.
+  Identity (code or path) or the element/item that the map refers to.
   @returns {Array} an array of {@link String} objects
   ###
   code:-> @json['code']
   
   ###*
-  equal | equivalent | wider | subsumes | narrower | specialises | inexact | unmatched | disjoint.
+  The equivalence between the source and target concepts (counting for the dependencies and products). The equivalence is read from source to target (e.g. the source is 'wider' than the target.
   @returns {Array} an array of {@link String} objects
   ###
   equivalence:-> @json['equivalence']
   
   ###*
-  Description of status/issues in mapping.
+  A description of status/issues in mapping that conveys additional information not represented in  the structured data.
   @returns {Array} an array of {@link String} objects
   ###
   comments:-> @json['comments']
@@ -100,21 +121,21 @@ class ConceptMapElementMapComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConceptMapElementComponent
 @exports  ConceptMapElementComponent as ConceptMapElementComponent
 ###
-class ConceptMapElementComponent extends Element
+class ConceptMapElementComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
-  Code System (if value set crosses code systems).
+  Code System (if the source is a value value set that crosses more than one code system).
   @returns {Array} an array of {@link String} objects
   ###
   codeSystem:-> @json['codeSystem']
   
   ###*
-  Identifies element being mapped.
+  Identity (code or path) or the element/item being mapped.
   @returns {Array} an array of {@link String} objects
   ###
   code:-> @json['code']
@@ -142,7 +163,7 @@ A statement of relationships from one set of concepts to one or more other conce
 @class ConceptMap
 @exports ConceptMap as ConceptMap
 ###
-class ConceptMap extends  Resource
+class ConceptMap extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -204,9 +225,9 @@ class ConceptMap extends  Resource
   
   ###*
   The date that the concept map status was last changed.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   The source value set that specifies the concepts that are being mapped.
@@ -231,7 +252,7 @@ class ConceptMap extends  Resource
   targetReference: -> if @json['targetReference'] then new Reference(@json['targetReference'])
   
   ###*
-  Mappings for a concept from the source set.
+  Mappings for an individual concept in the source to one or more concepts in the target.
   @returns {Array} an array of {@link ConceptMapElementComponent} objects
   ###
   element: ->

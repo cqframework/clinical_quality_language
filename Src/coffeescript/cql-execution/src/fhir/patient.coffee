@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ContactComponent
 @exports  ContactComponent as ContactComponent
 ###
-class ContactComponent extends Element
+class ContactComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -80,13 +101,19 @@ class ContactComponent extends Element
   ###
   organization: -> if @json['organization'] then new Reference(@json['organization'])
   
+  ###*
+  The period during which this person or organisation is valid to be contacted relating to this patient.
+  @returns {Period}
+  ###
+  period: -> if @json['period'] then new Period(@json['period'])
+  
 
 ###* 
- Embedded class
+Embedded class
 @class AnimalComponent
 @exports  AnimalComponent as AnimalComponent
 ###
-class AnimalComponent extends Element
+class AnimalComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -109,11 +136,11 @@ class AnimalComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class PatientLinkComponent
 @exports  PatientLinkComponent as PatientLinkComponent
 ###
-class PatientLinkComponent extends Element
+class PatientLinkComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -126,14 +153,14 @@ class PatientLinkComponent extends Element
   The type of link between this patient resource and another patient resource.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
 ###*
 Demographics and other administrative information about a person or animal receiving care or other health-related services.
 @class Patient
 @exports Patient as Patient
 ###
-class Patient extends  Resource
+class Patient extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -171,9 +198,9 @@ class Patient extends  Resource
   
   ###*
   The date and time of birth for the individual.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  birthDate: -> if @json['birthDate'] then new Date(@json['birthDate'])
+  birthDate:-> if @json['birthDate'] then DT.DateTime.parse(@json['birthDate'])
   
   ###*
   Indicates if the individual is deceased or not.
@@ -182,9 +209,9 @@ class Patient extends  Resource
   deceasedBoolean:-> @json['deceasedBoolean']
   ###*
   Indicates if the individual is deceased or not.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  deceasedDateTime: -> if @json['deceasedDateTime'] then new Date(@json['deceasedDateTime'])
+  deceasedDateTime:-> if @json['deceasedDateTime'] then DT.DateTime.parse(@json['deceasedDateTime'])
   
   ###*
   Addresses for the individual.

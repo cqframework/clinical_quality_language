@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ImagingStudySeriesInstanceComponent
 @exports  ImagingStudySeriesInstanceComponent as ImagingStudySeriesInstanceComponent
 ###
-class ImagingStudySeriesInstanceComponent extends Element
+class ImagingStudySeriesInstanceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -57,13 +78,13 @@ class ImagingStudySeriesInstanceComponent extends Element
   sopclass: -> if @json['sopclass'] then new oid(@json['sopclass'])
   
   ###*
-  Type of instance (image etc) (0004,1430).
+  The type of the instance.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
-  Description (0070,0080 | 0040,A043 > 0008,0104 | 0042,0010 | 0008,0008).
+  The description of the instance.
   @returns {Array} an array of {@link String} objects
   ###
   title:-> @json['title']
@@ -82,15 +103,15 @@ class ImagingStudySeriesInstanceComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ImagingStudySeriesComponent
 @exports  ImagingStudySeriesComponent as ImagingStudySeriesComponent
 ###
-class ImagingStudySeriesComponent extends Element
+class ImagingStudySeriesComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
-  The number of this series in the overall sequence.
+  The Numeric identifier of this series in the study.
   @returns {Array} an array of {@link Number} objects
   ###
   number:-> @json['number']
@@ -138,10 +159,10 @@ class ImagingStudySeriesComponent extends Element
   bodySite: -> if @json['bodySite'] then new Coding(@json['bodySite'])
   
   ###*
-  When the series started.
-  @returns {Date}
+  The date when the series was started.
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateTime: -> if @json['dateTime'] then new Date(@json['dateTime'])
+  dateTime:-> if @json['dateTime'] then DT.DateTime.parse(@json['dateTime'])
   
   ###*
   A single image taken from a patient.
@@ -153,24 +174,24 @@ class ImagingStudySeriesComponent extends Element
         new ImagingStudySeriesInstanceComponent(item)
   
 ###*
-Manifest of a set of images produced in study. The set of images may include every image in the study, or it may be an incomplete sample, such as a list of key images.
+Representation of the content produced in a DICOM imaging study. A study comprises a set of Series, each of which includes a set of Service-Object Pair Instances (SOP Instances - images or other data) acquired or produced in a common context.  A Series is of only one modality (e.g., X-ray, CT, MR, ultrasound), but a Study may have multiple Series of different modalities.
 @class ImagingStudy
 @exports ImagingStudy as ImagingStudy
 ###
-class ImagingStudy extends  Resource
+class ImagingStudy extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
-  Date and Time the study took place.
-  @returns {Date}
+  Date and Time the study started.
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateTime: -> if @json['dateTime'] then new Date(@json['dateTime'])
+  started:-> if @json['started'] then DT.DateTime.parse(@json['started'])
   
   ###*
-  Who the images are of.
+  The patient for whom the images are of.
   @returns {Reference}
   ###
-  subject: -> if @json['subject'] then new Reference(@json['subject'])
+  patient: -> if @json['patient'] then new Reference(@json['patient'])
   
   ###*
   Formal identifier for the study.
@@ -182,7 +203,7 @@ class ImagingStudy extends  Resource
   Accession Number.
   @returns {Identifier}
   ###
-  accessionNo: -> if @json['accessionNo'] then new Identifier(@json['accessionNo'])
+  accession: -> if @json['accession'] then new Identifier(@json['accession'])
   
   ###*
   Other identifiers for the study.
@@ -206,7 +227,7 @@ class ImagingStudy extends  Resource
   A list of all the Series.ImageModality values that are actual acquisition modalities, i.e. those in the DICOM Context Group 29 (value set OID 1.2.840.10008.6.1.19).
   @returns {Array} an array of {@link String} objects
   ###
-  modality:-> @json['modality']
+  modalityList:-> @json['modalityList']
   
   ###*
   The requesting/referring physician.

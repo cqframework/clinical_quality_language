@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,28 +24,48 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class AppointmentParticipantComponent
 @exports  AppointmentParticipantComponent as AppointmentParticipantComponent
 ###
-class AppointmentParticipantComponent extends Element
+class AppointmentParticipantComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Role of participant in the appointment.
   @returns {Array} an array of {@link CodeableConcept} objects
   ###
-  fhirType: ->
-    if @json['fhirType']
-      for item in @json['fhirType']
+  type: ->
+    if @json['type']
+      for item in @json['type']
         new CodeableConcept(item)
   
   ###*
@@ -66,11 +87,11 @@ class AppointmentParticipantComponent extends Element
   status:-> @json['status']
   
 ###*
-(informative) A scheduled appointment for a patient and/or practitioner(s) where a service may take place.
+A scheduled healthcare event for a patient and/or practitioner(s) where a service may take place at a specific date/time.
 @class Appointment
 @exports Appointment as Appointment
 ###
-class Appointment extends  Resource
+class Appointment extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -98,7 +119,7 @@ class Appointment extends  Resource
   The type of appointments that is being booked (ideally this would be an identifiable service - which is at a location, rather than the location itself).
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   The reason that this appointment is being scheduled, this is more clinical than administrative.
@@ -114,15 +135,15 @@ class Appointment extends  Resource
   
   ###*
   Date/Time that the appointment is to take place.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  start: -> if @json['start'] then new Date(@json['start'])
+  start:-> if @json['start'] then DT.DateTime.parse(@json['start'])
   
   ###*
   Date/Time that the appointment is to conclude.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  end: -> if @json['end'] then new Date(@json['end'])
+  end:-> if @json['end'] then DT.DateTime.parse(@json['end'])
   
   ###*
   The slot that this appointment is filling. If provided then the schedule will not be provided as slots are not recursive, and the start/end values MUST be the same as from the slot.
@@ -168,9 +189,9 @@ class Appointment extends  Resource
   
   ###*
   Date when the appointment was recorded.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  lastModified: -> if @json['lastModified'] then new Date(@json['lastModified'])
+  lastModified:-> if @json['lastModified'] then DT.DateTime.parse(@json['lastModified'])
   
 
 

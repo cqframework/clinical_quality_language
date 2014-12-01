@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class SpecimenSourceComponent
 @exports  SpecimenSourceComponent as SpecimenSourceComponent
 ###
-class SpecimenSourceComponent extends Element
+class SpecimenSourceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -55,11 +76,11 @@ class SpecimenSourceComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SpecimenCollectionComponent
 @exports  SpecimenCollectionComponent as SpecimenCollectionComponent
 ###
-class SpecimenCollectionComponent extends Element
+class SpecimenCollectionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -76,9 +97,9 @@ class SpecimenCollectionComponent extends Element
   
   ###*
   Time when specimen was collected from subject - the physiologically relevant time.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  collectedDateTime: -> if @json['collectedDateTime'] then new Date(@json['collectedDateTime'])
+  collectedDateTime:-> if @json['collectedDateTime'] then DT.DateTime.parse(@json['collectedDateTime'])
   ###*
   Time when specimen was collected from subject - the physiologically relevant time.
   @returns {Period}
@@ -105,11 +126,11 @@ class SpecimenCollectionComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SpecimenTreatmentComponent
 @exports  SpecimenTreatmentComponent as SpecimenTreatmentComponent
 ###
-class SpecimenTreatmentComponent extends Element
+class SpecimenTreatmentComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -135,11 +156,11 @@ class SpecimenTreatmentComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SpecimenContainerComponent
 @exports  SpecimenContainerComponent as SpecimenContainerComponent
 ###
-class SpecimenContainerComponent extends Element
+class SpecimenContainerComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -161,7 +182,7 @@ class SpecimenContainerComponent extends Element
   The type of container associated with the specimen (e.g. slide, aliquot, etc).
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   The capacity (volume or other measure) the container may contain.
@@ -176,17 +197,22 @@ class SpecimenContainerComponent extends Element
   specimenQuantity: -> if @json['specimenQuantity'] then new Quantity(@json['specimenQuantity'])
   
   ###*
-  Additive associated with the container.
+  Introduced substance to preserve, maintain or enhance the specimen. examples: Formalin, Citrate, EDTA.
+  @returns {CodeableConcept}
+  ###
+  additiveCodeableConcept: -> if @json['additiveCodeableConcept'] then new CodeableConcept(@json['additiveCodeableConcept'])
+  ###*
+  Introduced substance to preserve, maintain or enhance the specimen. examples: Formalin, Citrate, EDTA.
   @returns {Reference}
   ###
-  additive: -> if @json['additive'] then new Reference(@json['additive'])
+  additiveReference: -> if @json['additiveReference'] then new Reference(@json['additiveReference'])
   
 ###*
 Sample for analysis.
 @class Specimen
 @exports Specimen as Specimen
 ###
-class Specimen extends  Resource
+class Specimen extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -202,7 +228,7 @@ class Specimen extends  Resource
   Kind of material that forms the specimen.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Parent specimen from which the focal specimen was a component.
@@ -227,15 +253,15 @@ class Specimen extends  Resource
   
   ###*
   Time when specimen was received for processing or testing.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  receivedTime: -> if @json['receivedTime'] then new Date(@json['receivedTime'])
+  receivedTime:-> if @json['receivedTime'] then DT.DateTime.parse(@json['receivedTime'])
   
   ###*
   Details concerning the specimen collection.
   @returns {SpecimenCollectionComponent}
   ###
-  fhirCollection: -> if @json['fhirCollection'] then new SpecimenCollectionComponent(@json['fhirCollection'])
+  collection: -> if @json['collection'] then new SpecimenCollectionComponent(@json['collection'])
   
   ###*
   Details concerning treatment and processing steps for the specimen.

@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceSoftwareComponent
 @exports  ConformanceSoftwareComponent as ConformanceSoftwareComponent
 ###
-class ConformanceSoftwareComponent extends Element
+class ConformanceSoftwareComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -52,17 +73,17 @@ class ConformanceSoftwareComponent extends Element
   
   ###*
   Date this version of the software released.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  releaseDate: -> if @json['releaseDate'] then new Date(@json['releaseDate'])
+  releaseDate:-> if @json['releaseDate'] then DT.DateTime.parse(@json['releaseDate'])
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceImplementationComponent
 @exports  ConformanceImplementationComponent as ConformanceImplementationComponent
 ###
-class ConformanceImplementationComponent extends Element
+class ConformanceImplementationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -79,18 +100,18 @@ class ConformanceImplementationComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceRestSecurityCertificateComponent
 @exports  ConformanceRestSecurityCertificateComponent as ConformanceRestSecurityCertificateComponent
 ###
-class ConformanceRestSecurityCertificateComponent extends Element
+class ConformanceRestSecurityCertificateComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Mime type for certificate.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   Actual certificate.
@@ -100,15 +121,15 @@ class ConformanceRestSecurityCertificateComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceRestSecurityComponent
 @exports  ConformanceRestSecurityComponent as ConformanceRestSecurityComponent
 ###
-class ConformanceRestSecurityComponent extends Element
+class ConformanceRestSecurityComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
-  Server adds CORS headers when responding to requests - this enables javascript applications to yuse the server.
+  Server adds CORS headers when responding to requests - this enables javascript applications to use the server.
   @returns {Array} an array of {@link boolean} objects
   ###
   cors:-> @json['cors']
@@ -139,11 +160,11 @@ class ConformanceRestSecurityComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ResourceInteractionComponent
 @exports  ResourceInteractionComponent as ResourceInteractionComponent
 ###
-class ResourceInteractionComponent extends Element
+class ResourceInteractionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -160,11 +181,11 @@ class ResourceInteractionComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceRestResourceSearchParamComponent
 @exports  ConformanceRestResourceSearchParamComponent as ConformanceRestResourceSearchParamComponent
 ###
-class ConformanceRestResourceSearchParamComponent extends Element
+class ConformanceRestResourceSearchParamComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -183,7 +204,7 @@ class ConformanceRestResourceSearchParamComponent extends Element
   The type of value a search parameter refers to, and how the content is interpreted.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   This allows documentation of any distinct behaviors about how the search parameter is used.  For example, text matching algorithms.
@@ -205,18 +226,18 @@ class ConformanceRestResourceSearchParamComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceRestResourceComponent
 @exports  ConformanceRestResourceComponent as ConformanceRestResourceComponent
 ###
-class ConformanceRestResourceComponent extends Element
+class ConformanceRestResourceComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   A type of resource exposed via the restful interface.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   A specification of the profile that describes the solution's support for the resource, including any constraints on cardinality, bindings, lengths or other limitations.
@@ -232,6 +253,12 @@ class ConformanceRestResourceComponent extends Element
     if @json['interaction']
       for item in @json['interaction']
         new ResourceInteractionComponent(item)
+  
+  ###*
+  Thi field is set to true to specify that the system does not support (server) or use (client) versioning for this resource type. If this is not set to true, the server must at least correctly track and populate the versionId meta-property on resources.
+  @returns {Array} an array of {@link String} objects
+  ###
+  versioning:-> @json['versioning']
   
   ###*
   A flag for whether the server is able to return past versions as part of the vRead operation.
@@ -262,11 +289,11 @@ class ConformanceRestResourceComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class SystemInteractionComponent
 @exports  SystemInteractionComponent as SystemInteractionComponent
 ###
-class SystemInteractionComponent extends Element
+class SystemInteractionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -283,11 +310,11 @@ class SystemInteractionComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceRestOperationComponent
 @exports  ConformanceRestOperationComponent as ConformanceRestOperationComponent
 ###
-class ConformanceRestOperationComponent extends Element
+class ConformanceRestOperationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -304,11 +331,11 @@ class ConformanceRestOperationComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceRestComponent
 @exports  ConformanceRestComponent as ConformanceRestComponent
 ###
-class ConformanceRestComponent extends Element
+class ConformanceRestComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -348,7 +375,7 @@ class ConformanceRestComponent extends Element
         new SystemInteractionComponent(item)
   
   ###*
-  Definition of an operation or a named query and with it's parameters and their meaning and type.
+  Definition of an operation or a named query and with its parameters and their meaning and type.
   @returns {Array} an array of {@link ConformanceRestOperationComponent} objects
   ###
   operation: ->
@@ -364,11 +391,11 @@ class ConformanceRestComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceMessagingEventComponent
 @exports  ConformanceMessagingEventComponent as ConformanceMessagingEventComponent
 ###
-class ConformanceMessagingEventComponent extends Element
+class ConformanceMessagingEventComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -424,11 +451,11 @@ class ConformanceMessagingEventComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceMessagingComponent
 @exports  ConformanceMessagingComponent as ConformanceMessagingComponent
 ###
-class ConformanceMessagingComponent extends Element
+class ConformanceMessagingComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -438,7 +465,7 @@ class ConformanceMessagingComponent extends Element
   endpoint:-> @json['endpoint']
   
   ###*
-  Length if the receiver's reliable messaging cache (if a receiver) or how long the cache length on the receiver should be (if a sender).
+  Length if the receiver's reliable messaging cache in minutes (if a receiver) or how long the cache length on the receiver should be (if a sender).
   @returns {Array} an array of {@link Number} objects
   ###
   reliableCache:-> @json['reliableCache']
@@ -460,11 +487,11 @@ class ConformanceMessagingComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ConformanceDocumentComponent
 @exports  ConformanceDocumentComponent as ConformanceDocumentComponent
 ###
-class ConformanceDocumentComponent extends Element
+class ConformanceDocumentComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -490,7 +517,7 @@ A conformance statement is a set of requirements for a desired implementation or
 @class Conformance
 @exports Conformance as Conformance
 ###
-class Conformance extends  Resource
+class Conformance extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -545,10 +572,10 @@ class Conformance extends  Resource
   experimental:-> @json['experimental']
   
   ###*
-  The date when the conformance statement was published.
-  @returns {Date}
+  The date  (and optionally time) when the conformance statement was published.
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   Software that is covered by this conformance statement.  It is used when the profile describes the capabilities of a particular software version, independent of an installation.
@@ -581,7 +608,7 @@ class Conformance extends  Resource
   format:-> @json['format']
   
   ###*
-  A list of profiles supported by the system. For a server, "supported by the system" means the system hosts/produces a set of recourses, conformant to a particular profile, and allows its clients to search using this profile and to find appropriate data. For a client, it means the system will search by this profile and process data according to the guidance implicit in the profile.
+  A list of profiles supported by the system. For a server, "supported by the system" means the system hosts/produces a set of resources, conformant to a particular profile, and allows its clients to search using this profile and to find appropriate data. For a client, it means the system will search by this profile and process data according to the guidance implicit in the profile.
   @returns {Array} an array of {@link Reference} objects
   ###
   profile: ->

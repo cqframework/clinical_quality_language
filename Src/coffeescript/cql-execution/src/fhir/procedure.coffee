@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class ProcedurePerformerComponent
 @exports  ProcedurePerformerComponent as ProcedurePerformerComponent
 ###
-class ProcedurePerformerComponent extends Element
+class ProcedurePerformerComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -52,18 +73,18 @@ class ProcedurePerformerComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class ProcedureRelatedItemComponent
 @exports  ProcedureRelatedItemComponent as ProcedureRelatedItemComponent
 ###
-class ProcedureRelatedItemComponent extends Element
+class ProcedureRelatedItemComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   The nature of the relationship.
   @returns {Array} an array of {@link String} objects
   ###
-  fhirType:-> @json['fhirType']
+  type:-> @json['type']
   
   ###*
   The related item - e.g. a procedure.
@@ -76,7 +97,7 @@ An action that is performed on a patient. This can be a physical 'thing' like an
 @class Procedure
 @exports Procedure as Procedure
 ###
-class Procedure extends  Resource
+class Procedure extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -92,13 +113,13 @@ class Procedure extends  Resource
   The person on whom the procedure was performed.
   @returns {Reference}
   ###
-  subject: -> if @json['subject'] then new Reference(@json['subject'])
+  patient: -> if @json['patient'] then new Reference(@json['patient'])
   
   ###*
   The specific procedure that is performed. Use text if the exact nature of the procedure can't be coded.
   @returns {CodeableConcept}
   ###
-  fhirType: -> if @json['fhirType'] then new CodeableConcept(@json['fhirType'])
+  type: -> if @json['type'] then new CodeableConcept(@json['type'])
   
   ###*
   Detailed and structured anatomical location information. Multiple locations are allowed - e.g. multiple punch biopsies of a lesion.

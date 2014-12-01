@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,86 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
+@class NutritionOrderItemOralDietNutrientsComponent
+@exports  NutritionOrderItemOralDietNutrientsComponent as NutritionOrderItemOralDietNutrientsComponent
+###
+class NutritionOrderItemOralDietNutrientsComponent extends BackboneElement
+  constructor: (@json) ->
+    super(@json)
+  ###*
+  Identifies the type of nutrient that is being modified such as cabohydrate or sodium.
+  @returns {CodeableConcept}
+  ###
+  modifier: -> if @json['modifier'] then new CodeableConcept(@json['modifier'])
+  
+  ###*
+  The quantity or range of the specified nutrient to supply.
+  @returns {Quantity}
+  ###
+  amountQuantity: -> if @json['amountQuantity'] then new Quantity(@json['amountQuantity'])
+  ###*
+  The quantity or range of the specified nutrient to supply.
+  @returns {Range}
+  ###
+  amountRange: -> if @json['amountRange'] then new Range(@json['amountRange'])
+  
+
+###* 
+Embedded class
+@class NutritionOrderItemOralDietTextureComponent
+@exports  NutritionOrderItemOralDietTextureComponent as NutritionOrderItemOralDietTextureComponent
+###
+class NutritionOrderItemOralDietTextureComponent extends BackboneElement
+  constructor: (@json) ->
+    super(@json)
+  ###*
+  Identifies any texture modifications (for solid foods) that should be made, e.g. easy to chew, chopped, ground, pureed.
+  @returns {CodeableConcept}
+  ###
+  modifier: -> if @json['modifier'] then new CodeableConcept(@json['modifier'])
+  
+  ###*
+  Indicates what specific type of food (e.g., meats) the texture modification applies to or may apply to all foods in the diet.
+  @returns {CodeableConcept}
+  ###
+  foodType: -> if @json['foodType'] then new CodeableConcept(@json['foodType'])
+  
+
+###* 
+Embedded class
 @class NutritionOrderItemOralDietComponent
 @exports  NutritionOrderItemOralDietComponent as NutritionOrderItemOralDietComponent
 ###
-class NutritionOrderItemOralDietComponent extends Element
+class NutritionOrderItemOralDietComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -48,42 +116,22 @@ class NutritionOrderItemOralDietComponent extends Element
         new CodeableConcept(item)
   
   ###*
-  Identifies the type of nutrient that is being modified such as cabohydrate or sodium.
-  @returns {Array} an array of {@link CodeableConcept} objects
+  Class that defines the details of any nutrient modifications required for the oral diet.
+  @returns {Array} an array of {@link NutritionOrderItemOralDietNutrientsComponent} objects
   ###
-  nutrientModifier: ->
-    if @json['nutrientModifier']
-      for item in @json['nutrientModifier']
-        new CodeableConcept(item)
+  nutrients: ->
+    if @json['nutrients']
+      for item in @json['nutrients']
+        new NutritionOrderItemOralDietNutrientsComponent(item)
   
   ###*
-  The quantity or range of the specified nutrient to supply.
-  @returns {Quantity}
+  Class that describes any texture modifications required for the patient to safely consume various types of solid foods.
+  @returns {Array} an array of {@link NutritionOrderItemOralDietTextureComponent} objects
   ###
-  nutrientAmountQuantity: -> if @json['nutrientAmountQuantity'] then new Quantity(@json['nutrientAmountQuantity'])
-  ###*
-  The quantity or range of the specified nutrient to supply.
-  @returns {Range}
-  ###
-  nutrientAmountRange: -> if @json['nutrientAmountRange'] then new Range(@json['nutrientAmountRange'])
-  
-  ###*
-  Identifies any texture modifications (for solid foods) that should be made, e.g. easy to chew, chopped, ground, pureed.
-  @returns {Array} an array of {@link CodeableConcept} objects
-  ###
-  textureModifier: ->
-    if @json['textureModifier']
-      for item in @json['textureModifier']
-        new CodeableConcept(item)
-  
-  ###*
-  Indicates what specific type of food (e.g., meats) the texture modification applies to or may apply to all foods in the diet.
-  @returns {Array} an array of {@link CodeableConcept} objects
-  ###
-  foodType: ->
-    if @json['foodType']
-      for item in @json['foodType']
-        new CodeableConcept(item)
+  texture: ->
+    if @json['texture']
+      for item in @json['texture']
+        new NutritionOrderItemOralDietTextureComponent(item)
   
   ###*
   Identifies the required consistency (e.g., honey-thick, nectar-thick, thin, thickened.) of liquids or fluids served to the patient.
@@ -102,20 +150,20 @@ class NutritionOrderItemOralDietComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class NutritionOrderItemSupplementComponent
 @exports  NutritionOrderItemSupplementComponent as NutritionOrderItemSupplementComponent
 ###
-class NutritionOrderItemSupplementComponent extends Element
+class NutritionOrderItemSupplementComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Indicates the type of nutritional supplement product required such as high protein or pediatric clear liquid supplement.
   @returns {Array} an array of {@link CodeableConcept} objects
   ###
-  fhirType: ->
-    if @json['fhirType']
-      for item in @json['fhirType']
+  type: ->
+    if @json['type']
+      for item in @json['type']
         new CodeableConcept(item)
   
   ###*
@@ -132,11 +180,11 @@ class NutritionOrderItemSupplementComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class NutritionOrderItemEnteralFormulaComponent
 @exports  NutritionOrderItemEnteralFormulaComponent as NutritionOrderItemEnteralFormulaComponent
 ###
-class NutritionOrderItemEnteralFormulaComponent extends Element
+class NutritionOrderItemEnteralFormulaComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -189,11 +237,11 @@ class NutritionOrderItemEnteralFormulaComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class NutritionOrderItemComponent
 @exports  NutritionOrderItemComponent as NutritionOrderItemComponent
 ###
-class NutritionOrderItemComponent extends Element
+class NutritionOrderItemComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -236,7 +284,7 @@ A request to supply a diet, formula feeding (enteral) or oral nutritional supple
 @class NutritionOrder
 @exports NutritionOrder as NutritionOrder
 ###
-class NutritionOrder extends  Resource
+class NutritionOrder extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -268,9 +316,9 @@ class NutritionOrder extends  Resource
   
   ###*
   The date and time that this nutrition order was requested.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  dateTime: -> if @json['dateTime'] then new Date(@json['dateTime'])
+  dateTime:-> if @json['dateTime'] then DT.DateTime.parse(@json['dateTime'])
   
   ###*
   The ability to list substances that may cause allergies or intolerances which should be included in the nutrition order.

@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,28 +24,48 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class EncounterParticipantComponent
 @exports  EncounterParticipantComponent as EncounterParticipantComponent
 ###
-class EncounterParticipantComponent extends Element
+class EncounterParticipantComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
   Role of participant in encounter.
   @returns {Array} an array of {@link CodeableConcept} objects
   ###
-  fhirType: ->
-    if @json['fhirType']
-      for item in @json['fhirType']
+  type: ->
+    if @json['type']
+      for item in @json['type']
         new CodeableConcept(item)
   
   ###*
@@ -55,11 +76,11 @@ class EncounterParticipantComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class EncounterHospitalizationAccomodationComponent
 @exports  EncounterHospitalizationAccomodationComponent as EncounterHospitalizationAccomodationComponent
 ###
-class EncounterHospitalizationAccomodationComponent extends Element
+class EncounterHospitalizationAccomodationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -76,11 +97,11 @@ class EncounterHospitalizationAccomodationComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class EncounterHospitalizationComponent
 @exports  EncounterHospitalizationComponent as EncounterHospitalizationComponent
 ###
-class EncounterHospitalizationComponent extends Element
+class EncounterHospitalizationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -166,11 +187,11 @@ class EncounterHospitalizationComponent extends Element
   
 
 ###* 
- Embedded class
+Embedded class
 @class EncounterLocationComponent
 @exports  EncounterLocationComponent as EncounterLocationComponent
 ###
-class EncounterLocationComponent extends Element
+class EncounterLocationComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -190,7 +211,7 @@ An interaction between a patient and healthcare provider(s) for the purpose of p
 @class Encounter
 @exports Encounter as Encounter
 ###
-class Encounter extends  Resource
+class Encounter extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -218,9 +239,9 @@ class Encounter extends  Resource
   Specific type of encounter (e.g. e-mail consultation, surgical day-care, skilled nursing, rehabilitation).
   @returns {Array} an array of {@link CodeableConcept} objects
   ###
-  fhirType: ->
-    if @json['fhirType']
-      for item in @json['fhirType']
+  type: ->
+    if @json['type']
+      for item in @json['type']
         new CodeableConcept(item)
   
   ###*

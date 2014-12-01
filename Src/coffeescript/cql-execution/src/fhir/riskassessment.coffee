@@ -1,3 +1,4 @@
+
 # Copyright (c) 2014 The MITRE Corporation
 # All rights reserved.
 # 
@@ -23,19 +24,39 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-###*
-@namespacing scoping into the FHIR namespace
-###
-require './core'
-require './element'
-require './resource'
+DT = require '../cql-datatypes'
+CORE = require('./core')
+Element = CORE.Element
+Resource = CORE.Resource
+Timing = CORE.Timing
+Period = CORE.Period
+Parameters = CORE.Parameters
+Coding = CORE.Coding
+Resource = CORE.Resource
+Range = CORE.Range
+Quantity = CORE.Quantity
+Attachment = CORE.Attachment
+BackboneElement = CORE.BackboneElement
+DomainResource = CORE.DomainResource
+ContactPoint = CORE.ContactPoint
+ElementDefinition = CORE.ElementDefinition
+Extension = CORE.Extension
+HumanName = CORE.HumanName
+Address = CORE.Address
+Ratio = CORE.Ratio
+SampledData = CORE.SampledData
+Reference = CORE.Reference
+CodeableConcept = CORE.CodeableConcept
+Identifier = CORE.Identifier
+Narrative = CORE.Narrative
+Element = CORE.Element
 
 ###* 
- Embedded class
+Embedded class
 @class RiskAssessmentPredictionComponent
 @exports  RiskAssessmentPredictionComponent as RiskAssessmentPredictionComponent
 ###
-class RiskAssessmentPredictionComponent extends Element
+class RiskAssessmentPredictionComponent extends BackboneElement
   constructor: (@json) ->
     super(@json)
   ###*
@@ -88,7 +109,7 @@ An assessment of the likely outcome(s) for a patient or other subject as well as
 @class RiskAssessment
 @exports RiskAssessment as RiskAssessment
 ###
-class RiskAssessment extends  Resource
+class RiskAssessment extends DomainResource
   constructor: (@json) ->
     super(@json)
   ###*
@@ -99,9 +120,9 @@ class RiskAssessment extends  Resource
   
   ###*
   The date (and possibly time) the risk assessment was performed.
-  @returns {Date}
+  @returns {Array} an array of {@link Date} objects
   ###
-  date: -> if @json['date'] then new Date(@json['date'])
+  date:-> if @json['date'] then DT.DateTime.parse(@json['date'])
   
   ###*
   For assessments or prognosis specific to a particular condition, indicates the condition being assessed.
