@@ -4,7 +4,7 @@ library CMS179 version '2'
 
 using QUICK
 
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), Date(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Flutter Diagnosis" = '2.16.840.1.113883.3.117.1.7.1.202'
 valueset "Warfarin Medication" = '2.16.840.1.113883.3.117.1.7.1.232'
@@ -16,7 +16,7 @@ valueset "INR Lab Result" = '2.16.840.1.113883.3.117.1.7.1.213'
 context Patient
 
 define FlutterDiagnoses = [Condition: "Flutter Diagnosis"]
-define WarfarinMedications = [MedicationTreatment: "Warfarin Medication"]
+define WarfarinMedications = [MedicationAdministration: "Warfarin Medication"]
 define FaceToFaceEncounters = [Encounter: "Face-to-face Encounter"]
 define OfficeVisitEncounters = [Encounter: "Office Visit"]
 define ValvularHeartDiseaseDiagnoses = [Condition: "Valvular Heart Disease"]
@@ -26,8 +26,8 @@ define InDemographic =
 	AgeInYearsAt(start of MeasurementPeriod) >= 18
 
 define InpatientEncounters = FaceToFaceEncounters union OfficeVisitEncounters
-define ActiveFlutterDiagnoses = FlutterDiagnoses F where F.effectiveTime overlaps before MeasurementPeriod
-define ActiveValvularHeartDiseaseDiagnoses = ValvularHeartDiseaseDiagnoses D where D.effectiveTime overlaps before MeasurementPeriod
+define ActiveFlutterDiagnoses = FlutterDiagnoses F where interval[F.onsetDate, F.abatementDate] overlaps before MeasurementPeriod
+define ActiveValvularHeartDiseaseDiagnoses = ValvularHeartDiseaseDiagnoses D where interval[D.onsetDate, D.abatementDate] overlaps before MeasurementPeriod
 
 define LookbackInterval = interval[start of MeasurementPeriod - 200 days, start of MeasurementPeriod]
 
@@ -43,7 +43,7 @@ define WarfarinUsage = Sum(WarfarinUsageIntervals I return duration in days of I
 
 define INROutpatientLabResult =
 	INRLabResults R 
-		where not exists (InpatientEncounters E where duration in hours of E.effectiveTime > 23 and R.observedAtTime starts during E.effectiveTime)
+		where not exists (InpatientEncounters E where duration in hours of E.period > 23 and R.diagnosticDateTime starts during E.period)
 
 define INRResultsByDay =
 	INROutpatientLabResult L 
@@ -51,7 +51,7 @@ define INRResultsByDay =
 		return 
 			tuple 
 			{ 
-				resultDate: date of L.observedAtTime,
+				resultDate: date of L.diagnosticDateTime,
 				result: if L.result > 10.0 then 10.0 else L.result, // TODO: Units?
 				distanceFromMidpoint: Abs(2.5 - L.result) // TODO: Units?
 			}

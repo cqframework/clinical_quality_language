@@ -84,15 +84,15 @@ define ValidEncounters =
 		union [Encounter: "Face-to-Face Interaction"]
 
 define EncountersDuringMeasurementPeriod =
-	ValidEncounters E where E.effectiveTime during MeasurementPeriod
+	ValidEncounters E where E.period during MeasurementPeriod
 
 define URIDiagnosis =
 	[Condition: "Upper Respiratory Infection"]
 
 define ValidDiagnosis =
 	URIDiagnosis U 
-		where exists (EncountersDuringMeasurementPeriod E where U.effectiveTime starts during E.effectiveTime)
-			or exists (ValidEncounters E where U.effectiveTime includes E.effectiveTime)
+		where exists (EncountersDuringMeasurementPeriod E where U.onsetDate during E.period)
+			or exists (ValidEncounters E where interval[U.onsetDate, U.abatementDate] includes E.period)
 
 define InitialPopulation =
 	ValidDiagnosis V
@@ -102,7 +102,7 @@ define Denominator =
 	true
 
 define Numerator =
-	ValidDiagnosis V where not exists ([Medication, Order: "Antibiotic Medications"] M where M.orderTime starts at most 3 days after start of V.effectiveTime)
+	ValidDiagnosis V where not exists ([MedicationPrescription: "Antibiotic Medications"] M where M.dateWritten starts 3 days or less after start of V.period)
 
 context Population
 

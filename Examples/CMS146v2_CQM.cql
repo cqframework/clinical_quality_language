@@ -40,7 +40,7 @@ library CMS146 version '2'
 
 using QUICK
 
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Acute Tonsillitis" = '2.16.840.1.113883.3.464.1003.102.12.1012'
@@ -61,15 +61,15 @@ define Antibiotics =
 
 define TargetEncounters =
     [Encounter: "Ambulatory/ED Visit"] E
-        with Pharyngitis P such that P.effectiveTime overlaps after E.performedAtTime
-        with Antibiotics A such that A.orderedAtTime starts 3 days or less after start E.performedAtTime
+        with Pharyngitis P such that interval[P.onsetDate, P.abatementDate] overlaps after E.period
+        with Antibiotics A such that A.dateWritten 3 days or less after start E.period
         where E.performedAtTime during MeasurementPeriod
 
 define TargetDiagnoses =
-    Pharyngitis P with TargetEncounters E such that P.effectiveTime overlaps after E.performedAtTime
+    Pharyngitis P with TargetEncounters E such that interval[P.onsetDate, P.abatementDate] overlaps after E.period
 
 define HasPriorAntibiotics =
-    exists (Antibiotics A with TargetDiagnoses D such that A.orderedAtTime starts 30 days or less before start D.effectiveTime)
+    exists (Antibiotics A with TargetDiagnoses D such that A.dateWritten starts 30 days or less before D.onsetDate)
 
 define HasTargetEncounter =
     exists (TargetEncounters)
@@ -84,4 +84,4 @@ define InDenominatorExclusions =
     HasPriorAntibiotics
 
 define InNumerator =
-    exists ([ObservationResult: "Group A Streptococcus Test"] R where R.observedAtTime during MeasurementPeriod and R.result is not null)
+    exists ([DiagnosticReport: "Group A Streptococcus Test"] R where R.diagnosticDateTime during MeasurementPeriod and R.result is not null)

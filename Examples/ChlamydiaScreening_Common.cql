@@ -30,15 +30,15 @@ define "Conditions Indicating Sexual Activity" =
     union [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
 
 define "Laboratory Tests Indicating Sexual Activity" =
-    [LaboratoryTestOrder: "Pregnancy Test"]
-    union [LaboratoryTestOrder: "Pap Test"]
-    union [LaboratoryTestOrder: "Lab Tests During Pregnancy"]
-	union [LaboratoryTestOrder: "Lab Tests for Sexually Transmitted Infections"]
+    [DiagnosticOrder: "Pregnancy Test"]
+    union [DiagnosticOrder: "Pap Test"]
+    union [DiagnosticOrder: "Lab Tests During Pregnancy"]
+	union [DiagnosticOrder: "Lab Tests for Sexually Transmitted Infections"]
 
 define "Tests Performed For Chlamydia" =
-	[Procedure: "Chlamydia Screening"]
+	[DiagnosticReport: "Chlamydia Screening"]
 
 define "Results Present For Chlamydia Screening" =
-    [Observation: "Chlamydia Screening"] R where R.result is not null
+    [DiagnosticReport: "Chlamydia Screening"] R where R.result is not null
 
 
