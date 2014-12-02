@@ -21,7 +21,7 @@ public class TestPatientSource implements PatientSource
 
 	private String currentPatient = generatePatient();
 	
-	private static JsonParser parser = null;
+	private JsonParser parser = null;
 
 	public void initialize(Context context, Scriptable scope) 
 	{
@@ -88,7 +88,7 @@ public class TestPatientSource implements PatientSource
 	{
 		char initial = (char) (random.nextInt(26) + 'A');
 		String surname = surnames[ random.nextInt( surnames.length ) ];
-		String gender = (random.nextBoolean()) ? "M" : "F";
+		String gender = random.nextBoolean() ? "M" : "F";
 		
 		int year = 1980 + random.nextInt(30);
 		int month = 1 + random.nextInt(12);
@@ -112,9 +112,9 @@ public class TestPatientSource implements PatientSource
 	 */
 	private String pad(int value) {
 		if(value < 10) {
-			return ("0" + value);
+			return "0" + value;
 		} else {
-			return ("" + value);
+			return "" + value;
 		}
 	}
 	

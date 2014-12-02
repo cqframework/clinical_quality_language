@@ -188,7 +188,7 @@ public class Engine {
 		}
 				    
 	    Path engineScript = Files.createFile(workingArea.resolve("engine-script.js"));
-	    Files.write(engineScript, script.getBytes(), StandardOpenOption.WRITE);
+	    Files.write(engineScript, script.getBytes("UTF-8"), StandardOpenOption.WRITE);
 	}
 	
 	private static void cleanWorkingArea()
@@ -200,6 +200,7 @@ public class Engine {
 				Files.delete( workingArea.resolve(file) );
 			} catch (IOException e) {
 				// Oh well.
+				e.toString();
 			}
 		}
 		
@@ -207,6 +208,7 @@ public class Engine {
 			Files.delete(workingArea);
 		} catch (IOException e) {
 			// So it goes.
+			e.toString();
 		}
 		workingArea = null;
 	}
