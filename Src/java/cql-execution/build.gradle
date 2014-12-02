@@ -2,15 +2,11 @@ apply plugin: 'java'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
 apply plugin: 'idea'
-apply plugin: 'application'
 apply plugin: 'eclipse'
 
 group = 'org.cqframework'
 version = '0.1'
 sourceCompatibility = '1.7'
-
-mainClassName = 'org.cqframework.cql.execution.Engine'
-run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql", "--stdout"]
 
 repositories {
   maven {
