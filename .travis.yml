@@ -6,7 +6,6 @@ script:
   - export TERM=dumb
   - npm install -g coffee-script
   - coffee -c -o ./Src/java/cql-execution/src/main/resources/org/cqframework/cql/execution ./Src/coffeescript/cql-execution/src
-  - ls ./Src/java/cql-execution/src/main/resources/org/cqframework/cql/execution
   - gradle -b ./Src/java/build.gradle check
 
 branches:

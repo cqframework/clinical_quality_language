@@ -24,9 +24,7 @@ public class EngineTest {
 			Assert.fail(e.getLocalizedMessage());
 		}
 		Assert.assertNotNull( results );
-		
-		System.out.println( results.results.get(0).toString() );
-		
+				
 		// Parse the results
 		ObjectMapper mapper = new ObjectMapper();		
 		try {

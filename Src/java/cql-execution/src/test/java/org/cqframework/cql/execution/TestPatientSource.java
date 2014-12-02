@@ -77,11 +77,11 @@ public class TestPatientSource implements PatientSource
 	
 	/*
 	 * Generate a JSON representation of a patient.
- 		{
-		      "id": 1,
-		      "name": "John Smith",
-		      "gender": "M",
-		      "birthdate": "1980-02-17T06:15"
+		{
+		    "identifier": { "value": "1" },
+		    "name": "John Smith",
+		    "gender": "M",
+		    "birthDate" : "1980-02-17T06:15",
 		}
 	 */
 	private String generatePatient()
@@ -97,10 +97,10 @@ public class TestPatientSource implements PatientSource
 		int minute = random.nextInt(60);
 		
 		StringBuffer sb = new StringBuffer("{ ");
-		sb.append("\"id\":").append(id).append(", ");
+		sb.append("\"identifier\": { \"value\": \"").append(id).append("\" }, ");
 		sb.append("\"name\":\"").append(initial).append(". ").append(surname).append("\", ");
 		sb.append("\"gender\":\"").append(gender).append("\", ");
-		sb.append("\"birthdate\":\"").append(year).append("-").append(pad(month)).append("-").append(pad(day)).append("T");
+		sb.append("\"birthDate\":\"").append(year).append("-").append(pad(month)).append("-").append(pad(day)).append("T");
 		sb.append(pad(hour)).append(":").append(pad(minute)).append("\" ");
 		sb.append("}");
 		
