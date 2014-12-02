@@ -38,7 +38,7 @@ public class EngineTest {
 		Assert.assertTrue(true);
 	}
 	
-	@Test
+	@Test(enabled=false)
 	public void testEngineWithFile_CMS146() {
 		// Configure the engine with test data
 		Engine.setPatientSource(new TestPatientSource());
