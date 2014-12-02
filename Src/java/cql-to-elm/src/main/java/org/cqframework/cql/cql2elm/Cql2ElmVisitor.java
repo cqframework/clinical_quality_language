@@ -1146,7 +1146,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitBeforeOrAfterIntervalOperatorPhrase(@NotNull cqlParser.BeforeOrAfterIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends')? quantityOffset? ('before' | 'after') ('start' | 'end')?
+        // ('starts' | 'ends')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' | 'end')?
 
         // duration before/after
         // A starts 3 days before start B
@@ -1193,11 +1193,27 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
+        String dateTimePrecision = ctx.dateTimePrecisionSpecifier() != null
+                ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
+                : null;
+
         if (ctx.quantityOffset() == null) {
             if (isBefore) {
+                if (dateTimePrecision != null) {
+                    return of.createBefore()
+                            .withPrecision(parseDateTimePrecision(dateTimePrecision))
+                            .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                }
+
                 return of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
             }
             else {
+                if (dateTimePrecision != null) {
+                    return of.createAfter()
+                            .withPrecision(parseDateTimePrecision(dateTimePrecision))
+                            .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                }
+
                 return of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
             }
         }

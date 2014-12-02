@@ -378,7 +378,7 @@ If any argument is null, the resulting list will have null for that element.</xs
 	</xs:complexType>
 	<xs:complexType name="Xor">
 		<xs:annotation>
-			<xs:documentation>The Xor operator returns the exclusive or of its arguments. The result of Or with two arguments is defined using 3-valued logic semantics. This means that the result is true if and only if one argument is true and the other is false, and that the result is false if and only if both arguments are true or both arguments are false. If either or both arguments are null, the result is null.</xs:documentation>
+			<xs:documentation>The Xor operator returns the exclusive or of its arguments. Note that this operator is defined using 3-valued logic semantics. This means that the result is true if and only if one argument is true and the other is false, and that the result is false if and only if both arguments are true or both arguments are false. If either or both arguments are null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -394,7 +394,7 @@ If any argument is null, the resulting list will have null for that element.</xs
 	</xs:complexType>
 	<xs:complexType name="If">
 		<xs:annotation>
-			<xs:documentation>The If operator evaluates a condition, and returns the then argument if condition evaluates to true; otherwise the result of the else argument is returned. The static type of the then argument determines the result type of the conditional, and the else argument must be of that same type.</xs:documentation>
+			<xs:documentation>The If operator evaluates a condition, and returns the then argument if the condition evaluates to true; otherwise the result of the else argument is returned. The static type of the then argument determines the result type of the conditional, and the else argument must be of that same type.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -467,7 +467,7 @@ The static type of the then argument within the first caseItem determines the ty
 	</xs:complexType>
 	<xs:complexType name="Coalesce">
 		<xs:annotation>
-			<xs:documentation>The Coalesce operator returns the first non-null result in a list of argument. If all arguments evaluate to null, the result is null. The static type of the first argument determines the type of the result, and all subsequent arguments must be of that same type.</xs:documentation>
+			<xs:documentation>The Coalesce operator returns the first non-null result in a list of arguments. If all arguments evaluate to null, the result is null. The static type of the first argument determines the type of the result, and all subsequent arguments must be of that same type.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="NaryExpression"/>
@@ -489,7 +489,7 @@ The static type of the then argument within the first caseItem determines the ty
 	</xs:complexType>
 	<xs:complexType name="As">
 		<xs:annotation>
-			<xs:documentation>The As operator allows the result of an expression to be cast as a given target type. This allows expressions to be written that are statically typed against the expected run-time type of the argument. If the argument is not of the specified type, strict determines whether the result is null (the default), or an exception is thrown.</xs:documentation>
+			<xs:documentation>The As operator allows the result of an expression to be cast as a given target type. This allows expressions to be written that are statically typed against the expected run-time type of the argument. If the argument is not of the specified type, and the strict attribute is false (the default), the result is null. If the argument is not of the specified type and the strict attribute is true, an exception is thrown.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -505,7 +505,7 @@ The static type of the then argument within the first caseItem determines the ty
 		<xs:annotation>
 			<xs:documentation>The Convert operator converts a value to a specific type. The result of the operator is the value of the argument converted to the target type, if possible. Note that use of this operator may result in a run-time exception being thrown if there is no valid conversion from the actual value to the target type.
 
-This operator supports conversion between String and each of Boolean, Integer, Real, and Timestamp, as well as conversion from Integer to Real.</xs:documentation>
+This operator supports conversion between String and each of Boolean, Integer, Real, and DateTime, as well as conversion from Integer to Real.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -521,7 +521,7 @@ This operator supports conversion between String and each of Boolean, Integer, R
 
 For scalars this means that equality returns true if and only if the result of each argument evaluates to the same value.
 
-For object types, this means that equality returns true if and only if the objects are of the same type, and the values for all properties are the same.
+For object types, this means that equality returns true if and only if the objects are of the same type, and the values for all properties are equal.
 
 For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using the same semantics.
 
@@ -549,7 +549,7 @@ The NotEqual operator is a shorthand for invocation of logical negation of the E
 			
 If either argument is null, the result is null.
 
-The Less operator is defined for the Integer, Real, String, Timestamp, and PhysicalQuantity types.</xs:documentation>
+The Less operator is defined for the Integer, Real, String, DateTime, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -561,7 +561,7 @@ The Less operator is defined for the Integer, Real, String, Timestamp, and Physi
 
 If either argument is null, the result is null.
 
-The Greater operator is defined for the Integer, Real, String, Timestamp, and PhysicalQuantity types.</xs:documentation>
+The Greater operator is defined for the Integer, Real, String, DateTime, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -573,7 +573,7 @@ The Greater operator is defined for the Integer, Real, String, Timestamp, and Ph
 
 If either argument is null, the result is null.
 
-The LessOrEqual operator is defined for the Integer, Real, String, Timestamp, and PhysicalQuantity types.</xs:documentation>
+The LessOrEqual operator is defined for the Integer, Real, String, DateTime, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -585,7 +585,7 @@ The LessOrEqual operator is defined for the Integer, Real, String, Timestamp, an
 
 If either argument is null, the result is null.
 
-The GreaterOrEqual operator is defined for the Integer, Real, String, Timestamp, and PhysicalQuantity types.</xs:documentation>
+The GreaterOrEqual operator is defined for the Integer, Real, String, DateTime, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -598,7 +598,7 @@ The GreaterOrEqual operator is defined for the Integer, Real, String, Timestamp,
 			
 If either argument is null, the result is null.
 
-The Add operator is defined for the Integer and Real types.</xs:documentation>
+The Add operator is defined for the Integer and Real types. In addition, a time-valued Quantity can be added to a DateTime using this operator.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -610,7 +610,7 @@ The Add operator is defined for the Integer and Real types.</xs:documentation>
 
 If either argument is null, the result is null.
 
-The Subtract operator is defined for the Integer and Real types.</xs:documentation>
+The Subtract operator is defined for the Integer and Real types. In addition, a time-valued Quantity can be subtracted from a DateTime using this operator.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -765,7 +765,15 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Successor">
 		<xs:annotation>
-			<xs:documentation>The Successor operator returns the successor of the argument. For example, the successor of 1 is 2.
+			<xs:documentation>The Successor operator returns the successor of the argument. For example, the successor of 1 is 2. If the argument is already the maximum value for the type, a run-time error is thrown.
+			
+The Successor operator is defined for the Integer, Real, and DateTime types.
+
+For Integer, Successor is equivalent to adding 1.
+
+For Real, Successor is equivalent to adding the minimum precision value for the Real type, or 10^-08.
+
+For DateTime values, Successor is equivalent to adding a time-unit quantity for the lowest specified precision of the DateTime value. For example, if the DateTime is fully specified, Successor is equivalent to adding 1 millisecond; if the DateTime is specified to the second, Successor is equivalent to adding one second, etc.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -775,7 +783,15 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Predecessor">
 		<xs:annotation>
-			<xs:documentation>The Predecessor operator returns the predecessor of the argument. For example, the predecessor of 2 is 1.
+			<xs:documentation>The Predecessor operator returns the predecessor of the argument. For example, the predecessor of 2 is 1. If the argument is already the minimum value for the type, a run-time error is thrown.
+			
+The Predecessor operator is defined for the Integer, Real, and DateTime types.
+
+For Integer, Predecessor is equivalent to subtracting 1.
+
+For Real, Predecessor is equivalent to subtracting the minimum precision value for the Real type, or 10^-08.
+
+For DateTime values, Predecessor is equivalent to subtracting a time-unit quantity for the lowest specified precision of the DateTime value. For example, if the DateTime is fully specified, Predecessor is equivalent to subtracting 1 millisecond; if the DateTime is specified to the second, Predecessor is equivalent to subtracting one second, etc.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -785,7 +801,15 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="MinValue">
 		<xs:annotation>
-			<xs:documentation>The MinValue operator returns the minimum representable value for the given type.</xs:documentation>
+			<xs:documentation>The MinValue operator returns the minimum representable value for the given type.
+
+The MinValue operator is defined for the Integer, Real, and DateTime types.
+
+For Integer, MinValue returns the minimum signed 32-bit integer, -(2^31).
+
+For Real, MinValue returns the minimum representable Real value, -10^37 - 1 / 10^8 (-9999999999999999999999999999.99999999).
+
+For DateTime, MinValue returns the minimum representable DateTime value, DateTime(1900, 1, 1, 0, 0, 0, 0).</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -795,7 +819,15 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="MaxValue">
 		<xs:annotation>
-			<xs:documentation>The MaxValue operator returns the maximum representable value for the given type.</xs:documentation>
+			<xs:documentation>The MaxValue operator returns the maximum representable value for the given type.
+			
+The MaxValue operator is defined for the Integer, Real, and DateTime types.
+
+For Integer, MaxValue returns the maximum signed 32-bit integer, 2^31 - 1.
+
+For Real, MaxValue returns the maximum representable Real value, 10^37 - 1 / 10^8 (9999999999999999999999999999.99999999).
+
+For DateTime, MaxValue returns the maximum representable DateTime value, DateTime(9999, 12, 31, 23, 59, 59, 999).</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -963,7 +995,7 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="DateFrom">
 		<xs:annotation>
-			<xs:documentation>The DateFrom operator returns the date (with no time component) of the argument. 
+			<xs:documentation>The DateFrom operator returns the date (with no time components specified) of the argument. 
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -973,7 +1005,7 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="TimeFrom">
 		<xs:annotation>
-			<xs:documentation>The TimeFrom operator returns the time (with no date component) of the argument.
+			<xs:documentation>The TimeFrom operator returns the time (with the date components set to the minimum date of January 1st, 1900) of the argument.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1022,11 +1054,13 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="Expression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="Date">
+	<xs:complexType name="DateTime">
 		<xs:annotation>
-			<xs:documentation>The Date operator constructs a date/time value from the given components.
+			<xs:documentation>The DateTime operator constructs a date/time value from the given components.
 			
-If any of year, month, or day is null, the result is null. The hour, minute, second, and millisecond may all be null, provided that no value appears in a granularity that is strictly smaller than a granularity that has already been provided. For example, hour may be non-null, and if minute, second, and millisceond are all null, they are assumed to be 0. However, if hour is null, minute, second, and millisecond must all be null as well.</xs:documentation>
+At least one component other than timezoneOffset must be specified, and no component may be specified at a precision below an unspecified precision. For example, hour may be null, but if it is, minute, second, and millisecond must all be null as well.
+
+If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -1038,7 +1072,7 @@ If any of year, month, or day is null, the result is null. The hour, minute, sec
 					<xs:element name="minute" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="second" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="millisecond" type="Expression" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="timezone" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="timezoneOffset" type="Expression" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1256,27 +1290,39 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Before">
 		<xs:annotation>
-			<xs:documentation>The Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval.
+			<xs:documentation>The Before operator is defined for Intervals, as well as DateTime values.
+			
+For the Interval overload, the Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval.
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+For the DateTime overload, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
+			<xs:extension base="BinaryExpression">
+				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
+			</xs:extension>
 		</xs:complexContent>
 		<!-- Before(i1, i2) = End(i1) < Start(i2) -->
 	</xs:complexType>
 	<xs:complexType name="After">
 		<xs:annotation>
-			<xs:documentation>The After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval.
+			<xs:documentation>The After operator is defined for Intervals, as well as DateTime values.
+			
+For the Interval overload, the After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval.
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+For the DateTime overload, the After operator returns true if the first datetime is after the second datetime at the specified level of precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
+			<xs:extension base="BinaryExpression">
+				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
+			</xs:extension>
 		</xs:complexContent>
 		<!-- After(i1, i2) = Start(i1) > End(i2) -->
 	</xs:complexType>
@@ -1481,6 +1527,16 @@ If the argument is null, the result is null.</xs:documentation>
 	<!-- Union (already defined) -->
 	<!-- Intersect (already defined) -->
 	<!-- Difference (already defined) -->
+	<xs:complexType name="Times">
+		<xs:annotation>
+			<xs:documentation>The Times operator performs the cartesian product of two lists of tuples. The return type of a Times operator is a tuple with all the components from the tuple types of both arguments. The result will contain a tuple for each possible combination of tuples from both arguments with the values for each component derived from the pairing of the source tuples.
+			
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Filter">
 		<xs:annotation>
 			<xs:documentation>The Filter operator returns a list with only those elements in the source list for which the condition element evaluates to true.
@@ -1563,7 +1619,7 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Sort">
 		<xs:annotation>
-			<xs:documentation>The Sort operator returns a list with all the elements in source, sorted by the given orderBy.
+			<xs:documentation>The Sort operator returns a list with all the elements in source, sorted as described by the by element.
 			
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1571,10 +1627,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="Expression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression"/>
+					<xs:element name="by" type="SortByItem" minOccurs="1" maxOccurs="unbounded"/>
 				</xs:sequence>
-				<xs:attribute name="orderBy" type="xs:string" use="optional"/>
 			</xs:extension>
-			<!-- TODO: Model ordering more explicitly? Multi-column sort? Ascending/Descending? -->
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ForEach">
@@ -1599,7 +1654,9 @@ If the element argument evaluates to null for some item in the source list, the 
 		<xs:annotation>
 			<xs:documentation>The Distinct operator takes a list of elements and returns a list containing only the unique elements within the input. For example, given the list of integers { 1, 1, 1, 2, 2, 3, 4, 4 }, the result of Distinct would be { 1, 2, 3, 4 }.
 			
-The operator uses equality comparison semantics as defined in the Equal operator.</xs:documentation>
+The operator uses equality comparison semantics as defined in the Equal operator.
+
+If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -1623,7 +1680,7 @@ It is an error to invoke the Current operator outside the context of a scoped op
 	</xs:complexType>
 	<xs:complexType name="SingletonFrom">
 		<xs:annotation>
-			<xs:documentation>The SingletonFrom expression extracts a single element from the source list. If the source list is empty, the result is null. If the source list contains one element, that element is returned. If the list contains more than one element, a run-time error is thrown.</xs:documentation>
+			<xs:documentation>The SingletonFrom expression extracts a single element from the source list. If the source list is empty, the result is null. If the source list contains one element, that element is returned. If the list contains more than one element, a run-time error is thrown. If the source list is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
