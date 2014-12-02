@@ -36,19 +36,22 @@ Next, create a coffeescript file to execute the measure.  This file will need to
 in the `coffeescript/cql-execution/src` directory:
 
     { Library, Context } = require './cql-exec'
-    measure = require './my-measure'
+    { PatientSource } = require './cql-patient'
+    measure = require './age'
     
     lib = new Library(measure)
-    ctx = new Context(lib)
-    ctx.patients = [ {
+    psource = new PatientSource [ {
         "id": 1,
         "name": "John Smith",
-        "birthdate" : new Date(1980, 2, 17, 6, 15)
+        "gender": "M",
+        "birthdate" : "1980-02-17T06:15",
       }, {
         "id": 2,
         "name": "Sally Smith",
-        "birthdate" : new Date(2007, 8, 2, 11, 47)
-    } ]
+        "gender": "F",
+        "birthdate" : "2007-08-02T11:47",
+      } ]
+    ctx = new Context(lib, psource)
     
     result = lib.exec(ctx)
     console.log JSON.stringify(result, undefined, 2)
@@ -61,12 +64,12 @@ also assumed a couple of very simple patients.  Let's call the file we just crea
 Now we must compile it to javascript in the `${branch}/Src/coffeescript/cql-execution/lib`
 directory.  There is a simple Cakefile build script for this (cake is installed with coffeescript):
 
-1. `cd ${build}/Src/coffeescript`
+1. `cd ${build}/Src/coffeescript/cql-execution`
 2. `cake build`
 
 Now we can execute the measure using Node.js:
 
-1. `cd ${build}/Src/coffeescript/lib`
+1. `cd ${build}/Src/coffeescript/cql-execution/lib`
 2. `node my-measure-exec`
 
 If all is well, it should print the result object to standard out.

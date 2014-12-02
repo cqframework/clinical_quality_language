@@ -4,3 +4,10 @@ cql-all.iml
 cql-all.ipr
 .DS_STORE
 out
+.project
+.classpath
+.settings
+build
+bin
+test-output
+
