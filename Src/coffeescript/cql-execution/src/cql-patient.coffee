@@ -48,7 +48,7 @@ class PatientSource
       @current = @patients.shift();
 
     currentPatient: ->
-      if @current != null
+      if @current?
         new Patient(@current)
       else null
 
