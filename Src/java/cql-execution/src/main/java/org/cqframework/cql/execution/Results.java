@@ -16,35 +16,35 @@ import java.util.List;
  */
 public class Results {
 
-	/** The results themselves. */
-	public List<Object> results = new ArrayList<Object>();
-	
-	/** Add non-null objects into the results set. */
-	public void add(Object object) {
-		if(object != null) {
-			results.add(object);
-		}
-	}
-	
-	/** Dump the contents of the results to standard out. */
-	public void dump() {
-		for(Object object : results) {
-			System.out.println( object );
-		}
-	}
-	
-	/** Clear the result set. */
-	public void clear() {
-		results.clear();
-	}
-	
-	/** Return a deep-copy of the results set. */
-	public Results copy()
-	{
-		Results copy = new Results();
-		for(Object object : results) {
-			copy.add( object );
-		}
-		return copy;
-	}
+    /** The results themselves. */
+    public List<Object> results = new ArrayList<Object>();
+
+    /** Add non-null objects into the results set. */
+    public void add(Object object) {
+        if(object != null) {
+            results.add(object);
+        }
+    }
+
+    /** Dump the contents of the results to standard out. */
+    public void dump() {
+        for(Object object : results) {
+            System.out.println( object );
+        }
+    }
+
+    /** Clear the result set. */
+    public void clear() {
+        results.clear();
+    }
+
+    /** Return a deep-copy of the results set. */
+    public Results copy()
+    {
+        Results copy = new Results();
+        for(Object object : results) {
+            copy.add( object );
+        }
+        return copy;
+    }
 }
