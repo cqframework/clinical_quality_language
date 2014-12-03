@@ -20,12 +20,12 @@ For a working example, see `src/example`.
 
 Once the project is complete, it will be packaged in a way that makes execution easier.  For now,
 there are some manual steps involved.  First, you must create a JSON representation of the ELM.
-For easiest integration, we will generate a coffee file using cql-to-js:
+For easiest integration, we will generate a coffee file using cql-to-elm:
 
 1. Install the [Java 7 SDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
 2. `cd ${branch}/Src/java` (replacing `${branch}` with the path to your git branch)
-3. `./gradlew :cql-to-js:installApp`
-4. `./cql-to-js/build/install/cql-to-js/bin/cql-to-js --coffee --input ${path_to_cql} --output ${branch}/Src/coffeescript/cql-execution/src/`
+3. `./gradlew :cql-to-elm:installApp`
+4. `./cql-to-elm/build/install/cql-to-elm/bin/cql-to-elm --format=coffee --input ${path_to_cql} --output ${branch}/Src/coffeescript/cql-execution/src/`
 
 The above example put the measure into the coffeescript src directory to make things easy, but it
 doesn't _have_ to go there.  If you put it elsewhere, you'll need to compile it to javascript and
@@ -94,7 +94,7 @@ that follows the `# And` represents the CQL Library that will be supplied as tes
 test suite.
 
 To convert the CQL to CoffeeScript containing the JSON ELM representation, execute
-`cake build-test-data`. This will use the java _cql-to-js_ project to generate the
+`cake build-test-data`. This will use the java _cql-to-elm_ project to generate the
 _test/data/cql-test-data.coffee_ file containing the following exported variable declaration:
 
     ### And

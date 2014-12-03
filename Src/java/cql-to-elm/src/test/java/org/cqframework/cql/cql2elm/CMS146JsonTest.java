@@ -1,6 +1,5 @@
-package org.cqframework.cql.cql2js;
+package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.testng.annotations.Test;
 
 import java.io.File;

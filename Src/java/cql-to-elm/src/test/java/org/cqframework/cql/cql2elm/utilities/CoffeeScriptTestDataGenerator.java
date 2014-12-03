@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2js.utilities;
+package org.cqframework.cql.cql2elm.utilities;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -71,7 +71,7 @@ public class CoffeeScriptTestDataGenerator {
         pw.println();
         pw.println("   To generate this file:");
         pw.println("       - Edit cql-test-data.txt to add a CQL Snippet");
-        pw.println("       - From java dir: ./gradlew :cql-to-js:generateTestData");
+        pw.println("       - From java dir: ./gradlew :cql-to-elm:generateTestData");
         pw.println("###");
         pw.println();
 

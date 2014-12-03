@@ -7,7 +7,6 @@ It contains the following sub-projects:
 * **quick:** generates and builds Java classes based on the QUICK XML schema
 * **elm:** generates and builds Java classes based on the ELM XML schema
 * **cql-to-elm:** generates Expression Logical Model (ELM) XML from CQL source
-* **cql-to-js:** a JavaScript framework for executing CQL or ELM libraries
 
 # Building the Project
 
@@ -57,19 +56,12 @@ You can also execute the cql-parsetree tool in a similar way:
 
     ./tools/cql-parsetree/build/install/cql-parsetree/bin/cql-parsetree ../../Examples/ChlamydiaScreening_CQM.cql
 
-Lastly, you can run the script for the cql-to-elm project (which can also accept a file as an argument):
+## Generate an ELM Representation of CQL Logic
 
-    ./cql-to-elm/build/install/cql-to-elm/bin/cql-to-elm
+To generate an ELM representation of CQL logic, build and execute the cql-to-elm app:
 
-If you do not provide a file argument to cql-to-elm, it will expect CQL to be entered via the console.
-Press `CTL-D` (Mac) or `CTL-Z` (Win) to stop typing CQL into the console.
-
-## Generate a JSON Representation of CQL Logic
-
-To generate a JSON representation of CQL logic, build and execute the cql-to-js app:
-
-    ./gradlew :cql-to-js:installApp
-    ./cql-to-js/build/install/cql-to-js/bin/cql-to-js --input ../../Examples/ChlamydiaScreening_CQM.cql
+    ./gradlew :cql-to-elm:installApp
+    ./cql-to-elm/build/install/cql-to-elm/bin/cql-to-elm --input ../../Examples/ChlamydiaScreening_CQM.cql
 
 The following options are supported:
 
@@ -77,8 +69,7 @@ The following options are supported:
 * `--output` or `-o`: Specify the output file.  If not specified, the output file will have the
   same base name and location as the input file.  If only a directory is specified, the output
   file will have the same base name as the input file and be written to the requested directory.
+* `--format` or `-f`: Output as `xml` (default), `json`, or `coffee`.
 * `--date-range-optimization` or `-d`: Refactor simple during clauses into the ClinicalRequest.
 * `--annotations` or `-a`: Include annotations in the output (work in progress).
 * `--stdout` or `-s`: Write output to the console instead of a file.
-* `--coffeescript` or `-c`: Output as a coffescript file with the measure exported (otherwise it
-  will be output as a JSON file).

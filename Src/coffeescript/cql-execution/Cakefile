@@ -14,7 +14,7 @@ build = (src, dest, watch = false) ->
     print data.toString()
 
 buildTestData = (watch = false) ->
-  args = if watch then [':cql-to-js:watchTestData'] else [':cql-to-js:generateTestData']
+  args = if watch then [':cql-to-elm:watchTestData'] else [':cql-to-elm:generateTestData']
 
   gradle = spawn './gradlew', args, cwd: "../../java/"
   gradle.stderr.on 'data', (data) ->
@@ -47,8 +47,8 @@ task "watch-all", "Watch src/, test/, and test/data/cql-test-data.txt for change
 
 task "test", "run tests", ->
   invoke 'build'
-  exec "NODE_ENV=test 
-    ./node_modules/.bin/mocha 
+  exec "NODE_ENV=test
+    ./node_modules/.bin/mocha
     --compilers coffee:coffee-script/register
     --require coffee-script
     --colors
