@@ -70,7 +70,7 @@ public class CMS146ElmTest {
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))
                         .withTemplateId("cqf-observation")
-                        .withCodeProperty("code")
+                        .withCodeProperty("name")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
 

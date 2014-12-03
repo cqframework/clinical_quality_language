@@ -437,7 +437,7 @@
                      "expression" : {
                         "dataType" : "{http://org.hl7.fhir}Observation",
                         "templateId" : "cqf-observation",
-                        "codeProperty" : "code",
+                        "codeProperty" : "name",
                         "type" : "Retrieve",
                         "codes" : {
                            "name" : "Group A Streptococcus Test",

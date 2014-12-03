@@ -16,7 +16,6 @@ import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
-import org.hl7.elm_modelinfo.r1.ClassInfo;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
@@ -1634,11 +1633,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression left = during.getOperand().get(0);
         Expression right = during.getOperand().get(1);
 
-        String propertyName = extractLHSPropertyNameEligibleForDateRangeOptimization(left, retrieve, alias);
-        if (propertyName != null && isRHSEligibleForDateRangeOptimization(right)) {
-            retrieve.setDateProperty(propertyName);
-            retrieve.setDateRange(right);
-            return true;
+        if (left instanceof Property) {
+            Property property = (Property) left;
+            if (alias.equals(property.getScope()) && isRHSEligibleForDateRangeOptimization(right)) {
+                retrieve.setDateProperty(property.getPath());
+                retrieve.setDateRange(right);
+                return true;
+            }
         }
 
         return false;
@@ -1696,39 +1697,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return result;
-    }
-
-    /**
-     * Extract the property name from the left-hand side of an <code>IncludedIn</code>.  If no property is explicitly
-     * stated, try to infer it from the model info.
-     * @param lhs the left-hand-side of an <code>IncludedIn</code> expression
-     * @param retrieve the <code>Retrieve</code> from the query containing the <code>IncludedIn</code>
-     * @param alias the alias associated with the <code>Retrieve</code> in the query
-     * @return the property name if available and eligible for potential refactoring to the Retrieve
-     */
-    private String extractLHSPropertyNameEligibleForDateRangeOptimization(Expression lhs, Retrieve retrieve, String alias) {
-        String propertyName = null;
-        if (lhs instanceof AliasRef) {
-            QName datatype = retrieve.getDataType();
-            String identifier = retrieve.getTemplateId();
-            if (getModelHelper().getModelInfo().getUrl().equals(datatype.getNamespaceURI())) {
-                for (ClassInfo info : getModelHelper().getModelInfo().getClassInfo()) {
-                    if (identifier.equals(info.getIdentifier())) {
-                        lhs = of.createProperty().withScope(((AliasRef) lhs).getName()).withPath(info.getPrimaryDateAttribute());
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (lhs instanceof Property) {
-            Property property = (Property) lhs;
-            if (property.getScope() != null && property.getScope().equals(alias)) {
-                propertyName = property.getPath();
-            }
-        }
-
-        return propertyName;
     }
 
     /**

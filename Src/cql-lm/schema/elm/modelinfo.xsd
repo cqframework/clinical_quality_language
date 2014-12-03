@@ -72,24 +72,5 @@
 				<xs:documentation>The primaryCodeAttribute attribute specifies the name of the attribute of the class that should be used to perform code filtering when a retrieve does not specify a code attribute.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="primaryDateAttribute" type="xs:string" use="optional">
-			<xs:annotation>
-				<xs:documentation>The primaryDateAttribute attribute specifies the name of the attribute of the class that should be used to perform date range filtering. The CQL translator will use this attribute to set the dateProperty of the Retrieve in the resulting ELM if no date property can be inferred from the context.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="primaryDateLowAttribute" type="xs:string" use="optional">
-			<xs:annotation>
-				<xs:documentation>The primaryDateLowAttribute attribute specifies the name of the attribute of the class that should be used to perform date range filtering, if the class has a primary date range specified by low and high attributes, rather than a single interval-valued attribute.
-
-Note that the primaryDateLowAttribute must be used in concert with the primaryDateHighAttribute and has no affect if the primaryDateAttribute is set.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="primaryDateHighAttribute" type="xs:string" use="optional">
-			<xs:annotation>
-				<xs:documentation>The primaryDateHighAttribute attribute specifies the name of the attribute of the class that should be used to perform date range filtering, if the class has a primary date range specified by low and high attributes, rather than a single interval-valued attribute.
-
-Note that the primaryDateHighAttribute must be used in concert with the primaryDateLowAttribute and has no affect if the primaryDateAttribute is set.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
