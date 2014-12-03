@@ -2,11 +2,14 @@ package org.cqframework.cql.execution;
 
 import java.io.File;
 
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.fail;
 
 public class EngineTest {
 	
@@ -16,56 +19,53 @@ public class EngineTest {
 		Engine.setPatientSource(new TestPatientSource());
 		
 		// Run the sample age script
-        File file = new File(EngineTest.class.getResource("age.cql").getFile());
+		File file = new File(EngineTest.class.getResource("age.cql").getFile());
 		Results results = null;
 		try {
 			results = Engine.executeCql(file);
 		} catch (Exception e) {
-			Assert.fail(e.getLocalizedMessage());
+			fail(e.getLocalizedMessage());
 		}
-		Assert.assertNotNull( results );
+		assertThat(results, is (notNullValue()));
 				
 		// Parse the results
 		ObjectMapper mapper = new ObjectMapper();		
 		try {
 			JsonNode node = mapper.readTree((String)results.results.get(0));
 			JsonNode patientResults = node.get("patientResults");
-			Assert.assertEquals( patientResults.size(), TestPatientSource.maxPatients);		
+			assertThat ( patientResults.size(), is (TestPatientSource.maxPatients));
 		} catch (Exception e) {
-			Assert.fail(e.getLocalizedMessage());
+			fail(e.getLocalizedMessage());
 		}
-		
-		Assert.assertTrue(true);
 	}
 	
-	@Test(enabled=false)
+	@Test(enabled = false)
 	public void testEngineWithFile_CMS146() {
 		// Configure the engine with test data
 		Engine.setPatientSource(new TestPatientSource());
 		
 		// Run the sample age script
-        File file = new File(EngineTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
+		File file = new File(EngineTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
 		Results results = null;
 		try {
 			results = Engine.executeCql(file);
 		} catch (Exception e) {
-			Assert.fail(e.getLocalizedMessage());
+			fail(e.getLocalizedMessage());
 		}
-		Assert.assertNotNull( results );
+		assertThat(results, is (notNullValue()));
 		
 		// Parse the results
 		ObjectMapper mapper = new ObjectMapper();		
 		try {
 			JsonNode node = mapper.readTree((String)results.results.get(0));
 			JsonNode patientResults = node.get("patientResults");
-			Assert.assertEquals( patientResults.size(), TestPatientSource.maxPatients);		
+			assertThat ( patientResults.size(), is (TestPatientSource.maxPatients));
 		} catch (Exception e) {
-			Assert.fail(e.getLocalizedMessage());
+			fail(e.getLocalizedMessage());
 		}
-		
-		Assert.assertTrue(true);
 	}
 	
+	@Test(enabled = false)
 	public void testEngineWithCql() {
 		// TODO this needs to be fixed
 		String cql = null;
@@ -73,11 +73,12 @@ public class EngineTest {
 		try {
 			results = Engine.executeCql(cql);
 		} catch (Exception e) {
-			Assert.fail(e.getLocalizedMessage());
+			fail(e.getLocalizedMessage());
 		}
-		Assert.assertNull(results);
+		assertThat(results, is (notNullValue()));
 	}
-	
+
+	@Test(enabled = false)
 	public void testEngineWithJson() {
 		// TODO this needs to be fixed
 		
@@ -95,8 +96,8 @@ public class EngineTest {
 		try {
 			results = Engine.executeJson(json);
 		} catch (Exception e) {
-			Assert.fail(e.getLocalizedMessage());
+			fail(e.getLocalizedMessage());
 		}
-		Assert.assertNull(results);
+		assertThat(results, is (notNullValue()));
 	}
 }

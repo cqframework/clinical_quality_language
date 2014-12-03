@@ -134,7 +134,5 @@ public class TestPatientSource implements PatientSource
 				return;
 			}
 		}
-		
-		Assert.assertTrue(true);
 	}
 }
