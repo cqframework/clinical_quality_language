@@ -3,8 +3,10 @@ package org.cqframework.cql.execution;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
-import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class JavascriptEngineTest {
 
@@ -17,7 +19,7 @@ public class JavascriptEngineTest {
 		Object result = context.evaluateString(scope, javascript, "org.cqframework.cql.execution.JavascriptEngineTest.testJavascriptEngine", 1, null);
 		Context.exit();
 		
-		Assert.assertTrue( Context.toBoolean(result) );
+		assertThat(Context.toBoolean(result), is (true));
 	}
 	
 	@Test
@@ -35,7 +37,7 @@ public class JavascriptEngineTest {
 		Object result = context.evaluateString(scope, javascript.toString(), "org.cqframework.cql.execution.JavascriptEngineTest.testJavascriptVersion", 1, null);
 		Context.exit();
 		
-		Assert.assertTrue( Context.toString(result).contains("Rhino") );		
+		assertThat(Context.toString(result), containsString("Rhino"));
 	}
 	
 	@Test
@@ -63,6 +65,6 @@ public class JavascriptEngineTest {
 		
 //		Engine.dump();
 		
-		Assert.assertEquals( Engine.getLastResults().results.size(), TestPatientSource.maxPatients);		
+		assertThat(Engine.getLastResults().results, hasSize (TestPatientSource.maxPatients));
 	}
 }
