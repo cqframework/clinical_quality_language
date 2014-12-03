@@ -1,33 +1,52 @@
+import org.gradle.plugins.javascript.coffeescript.CoffeeScriptCompile
+
 apply plugin: 'java'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'coffeescript-base'
 
 group = 'org.cqframework'
 version = '0.1'
 sourceCompatibility = '1.7'
 
 repositories {
-  maven {
-    url = 'http://repo1.maven.org/maven2'
-    artifactUrls = [ 'http://repo1.maven.org/maven2' ]
+  mavenCentral()
+  ivy {
+    url "https://raw.githubusercontent.com/jashkenas/coffeescript/"
+    layout "pattern", {
+        artifact "[revision]/extras/[module].[ext]"
+    }
   }
 }
 
+ext.coffee = [
+    srcDir:  "${projectDir}/../../coffeescript/cql-execution/src",
+    destDir: "${projectDir}/src/main/resources/org/cqframework/cql/execution"
+]
+
+configurations {
+    coffeescript
+}
+
 dependencies {
+    coffeescript group: 'coffee-script', name: 'coffee-script', version: '1.8.0', ext: 'js'
     compile project(':cql-to-elm')
-    compile group: 'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4.1'
-    compile group: 'com.fasterxml.jackson.core', name:'jackson-databind', version:'2.4.1'
-    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
     compile group: 'org.mozilla', name: 'rhino', version: '1.7R4'
-    runtime group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.0-M3'
-    runtime group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+    testCompile group: 'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4.1'
+    testCompile group: 'com.fasterxml.jackson.core', name:'jackson-databind', version:'2.4.1'
     testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
-    testCompile group: 'uk.co.datumedge', name: 'hamcrest-json', version: '0.2'
-    testCompile group: 'org.mozilla', name: 'rhino', version: '1.7R4'
 }
+
+task compileCoffee(type: CoffeeScriptCompile) {
+    setCoffeeScriptJs(configurations.coffeescript)
+    source fileTree(coffee.srcDir).include('*.coffee')
+    destinationDir file(coffee.destDir)
+}
+
+compileJava.dependsOn compileCoffee
 
 findbugs {
     toolVersion = "3.0.0"
@@ -42,8 +61,8 @@ tasks.withType(FindBugs) {
 
 test {
     useTestNG()
+}
 
-    testLogging {
-       events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
+clean {
+    delete fileTree(coffee.destDir).include('cql*.js')
 }
