@@ -1,11 +1,17 @@
 # Clinical Quality Language
 
-The Clinical Quality Language (CQL) specification defines a representation for the 
-expression of clinical knowledge that can be used within both the Clinical 
+The Clinical Quality Language (CQL) specification defines a representation for the
+expression of clinical knowledge that can be used within both the Clinical
 Decision Support (CDS) and Clinical Quality Measurement (CQM) domains.
 
-This repository contains the CQL grammar file, ELM UML / schemas, examples, and 
+This repository contains the CQL grammar file, ELM UML / schemas, examples, and
 proof-of-concept code for working with CQL.
+
+Additional Documentation:
+
+* [Java Tools for CQL](Src/java/README.md)
+* [CQL Execution Framework](Src/coffeescript/cql-execution/README.md)
+* [Java Quickstart](Src/java-quickstart/README.md)
 
 # License
 

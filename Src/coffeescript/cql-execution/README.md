@@ -4,6 +4,8 @@ The CQL Execution Framework is a set of [CoffeeScript](http://coffeescript.org/)
 can execute CQL artifacts expressed as JSON ELM. At this point, only a small subset of
 functionality has been implemented (and a very simple JSON-based patient format is used).
 
+For more information, see the [CQL Execution Framework Overview](OVERVIEW.md).
+
 # Project Configuration
 
 To use this project, you should perform the following steps:
@@ -31,30 +33,31 @@ The above example put the measure into the coffeescript src directory to make th
 doesn't _have_ to go there.  If you put it elsewhere, you'll need to compile it to javascript and
 modify the examples below with the new path (where applicable).
 
-Next, create a coffeescript file to execute the measure.  This file will need to contain (or 
+Next, create a coffeescript file to execute the measure.  This file will need to contain (or
 `require`) JSON patient representations for testing as well.  For ease of use, let's put the file
 in the `coffeescript/cql-execution/src` directory:
 
-    { Library, Context } = require './cql-exec'
-    { PatientSource } = require './cql-patient'
-    measure = require './age'
-    
-    lib = new Library(measure)
-    psource = new PatientSource [ {
-        "id": 1,
-        "name": "John Smith",
-        "gender": "M",
-        "birthdate" : "1980-02-17T06:15",
-      }, {
-        "id": 2,
-        "name": "Sally Smith",
-        "gender": "F",
-        "birthdate" : "2007-08-02T11:47",
-      } ]
-    ctx = new Context(lib, psource)
-    
-    result = lib.exec(ctx)
-    console.log JSON.stringify(result, undefined, 2)
+```coffee
+cql = require './cql/cql'
+measure = require './age'
+
+lib = new cql.Library(measure)
+psource = new cql.PatientSource [ {
+  "identifier": { "value": "1" },
+  "name": "John Smith",
+  "gender": "M",
+  "birthDate" : "1980-02-17T06:15",
+}, {
+  "identifier": { "value": "2" },
+  "name": "Sally Smith",
+  "gender": "F",
+  "birthDate" : "2007-08-02T11:47",
+} ]
+ctx = new cql.Context(lib, psource)
+
+result = lib.exec(ctx)
+console.log JSON.stringify(result, undefined, 2)
+```
 
 In the above file, we've assumed the JSON ELM coffeescript file for the measure is called
 `my-measure.coffeescript` and is in the same directory as the file (and `cql-exec` library).  We've
@@ -97,98 +100,102 @@ To convert the CQL to CoffeeScript containing the JSON ELM representation, execu
 `cake build-test-data`. This will use the java _cql-to-elm_ project to generate the
 _test/data/cql-test-data.coffee_ file containing the following exported variable declaration:
 
-    ### And
-    library TestSnippet version '1'
-    using QUICK
-    context Patient
-    define AllTrue = true and true
-    define AllFalse = false and false
-    define SomeTrue = true and false
-    ###
-    
-    module.exports.And = {
-       "library" : {
-          "identifier" : {
-             "id" : "TestSnippet",
-             "version" : "1"
-          },
-          "dataModels" : {
-             "modelReference" : [ {
-                "referencedModel" : {
-                   "value" : "http://org.hl7.fhir"
-                }
-             } ]
-          },
-          "statements" : {
-             "def" : [ {
-                "name" : "AllTrue",
-                "context" : "Patient",
-                "expression" : {
-                   "type" : "And",
-                   "operand" : [ {
-                      "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                      "value" : "true",
-                      "type" : "Literal"
-                   }, {
-                      "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                      "value" : "true",
-                      "type" : "Literal"
-                   } ]
-                }
-             }, {
-                "name" : "AllFalse",
-                "context" : "Patient",
-                "expression" : {
-                   "type" : "And",
-                   "operand" : [ {
-                      "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                      "value" : "false",
-                      "type" : "Literal"
-                   }, {
-                      "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                      "value" : "false",
-                      "type" : "Literal"
-                   } ]
-                }
-             }, {
-                "name" : "SomeTrue",
-                "context" : "Patient",
-                "expression" : {
-                   "type" : "And",
-                   "operand" : [ {
-                      "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                      "value" : "true",
-                      "type" : "Literal"
-                   }, {
-                      "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                      "value" : "false",
-                      "type" : "Literal"
-                   } ]
-                }
-             } ]
-          }
-       }
-    }
+```coffee
+### And
+library TestSnippet version '1'
+using QUICK
+context Patient
+define AllTrue = true and true
+define AllFalse = false and false
+define SomeTrue = true and false
+###
+
+module.exports.And = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "dataModels" : {
+         "modelReference" : [ {
+            "referencedModel" : {
+               "value" : "http://org.hl7.fhir"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "AllTrue",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "AllFalse",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "SomeTrue",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+```
 
 Notice that since the CQL didn't declare a library name/version, a data model, or a context,
 default values were inserted into the CQL at generation time.  Now this CQL can be used in a test
 defined in _test/cql-exec-test.coffee_.  For example:
 
-    describe 'And', ->
-      @beforeEach ->
-        setup @
-    
-      it 'should have type: And', ->
-        @allTrue.type.should.equal 'And'
-    
-      it 'should execute allTrue as true', ->
-        @allTrue.exec(@ctx).should.be.true
-    
-      it 'should execute allFalse as false', ->
-        @allFalse.exec(@ctx).should.be.false
-    
-      it 'should execute someTrue as false', ->
-        @someTrue.exec(@ctx).should.be.false
+```coffee
+describe 'And', ->
+  @beforeEach ->
+    setup @
+
+  it 'should have type: And', ->
+    @allTrue.type.should.equal 'And'
+
+  it 'should execute allTrue as true', ->
+    @allTrue.exec(@ctx).should.be.true
+
+  it 'should execute allFalse as false', ->
+    @allFalse.exec(@ctx).should.be.false
+
+  it 'should execute someTrue as false', ->
+    @someTrue.exec(@ctx).should.be.false
+```
 
 The test suite above uses [Mocha](http://visionmedia.github.io/mocha/) and
 [Should.js](https://github.com/shouldjs/should.js).  The `setup @` sets up the test case by
