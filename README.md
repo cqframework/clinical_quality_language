@@ -11,6 +11,7 @@ Additional Documentation:
 
 * [Java Tools for CQL](Src/java/README.md)
 * [CQL Execution Framework](Src/coffeescript/cql-execution/README.md)
+* [CQL-to-ELM Translator](Src/java/cql-to-elm/OVERVIEW.md)
 * [Java Quickstart](Src/java-quickstart/README.md)
 
 # License
