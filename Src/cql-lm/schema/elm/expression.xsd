@@ -459,7 +459,7 @@ The static type of the then argument within the first caseItem determines the ty
 	</xs:complexType>
 	<xs:complexType name="IfNull">
 		<xs:annotation>
-			<xs:documentation>The IfNull operator replaces a null with the result of a given expression. If the first argument evaluates to null, returns the result of the second argument. Otherwise, returns the result of the first argument.</xs:documentation>
+			<xs:documentation>The IfNull operator replaces a null with the result of a given expression. If the first argument evaluates to null, the operator returns the result of the second argument. Otherwise, the operator returns the result of the first argument. The static type of the first argument determines the type of the result, and the second argument must be of that same type.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -516,12 +516,11 @@ This operator supports conversion between String and each of Boolean, Integer, R
 	<!-- Comparison Operators -->
 	<xs:complexType name="Equal">
 		<xs:annotation>
-			<xs:documentation>The Equal operator returns true if the arguments are equal; and false 
-				otherwise. Equality semantics are defined to be value-based.
+			<xs:documentation>The Equal operator returns true if the arguments are equal; and false otherwise. Equality semantics are defined to be value-based.
 
-For scalars this means that equality returns true if and only if the result of each argument evaluates to the same value.
+For simple types, this means that equality returns true if and only if the result of each argument evaluates to the same value.
 
-For object types, this means that equality returns true if and only if the objects are of the same type, and the values for all properties are equal.
+For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements by name are equal.
 
 For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using the same semantics.
 
@@ -598,7 +597,7 @@ The GreaterOrEqual operator is defined for the Integer, Real, String, DateTime, 
 			
 If either argument is null, the result is null.
 
-The Add operator is defined for the Integer and Real types. In addition, a time-valued Quantity can be added to a DateTime using this operator.</xs:documentation>
+The Add operator is defined for the Integer, Real, and Quantity types. In addition, a time-valued Quantity can be added to a DateTime using this operator.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -610,7 +609,7 @@ The Add operator is defined for the Integer and Real types. In addition, a time-
 
 If either argument is null, the result is null.
 
-The Subtract operator is defined for the Integer and Real types. In addition, a time-valued Quantity can be subtracted from a DateTime using this operator.</xs:documentation>
+The Subtract operator is defined for the Integer, Real, and Quantity types. In addition, a time-valued Quantity can be subtracted from a DateTime using this operator.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -622,7 +621,7 @@ The Subtract operator is defined for the Integer and Real types. In addition, a 
 
 If either argument is null, the result is null.
 
-The Multiply operator is defined for the Integer and Real types.</xs:documentation>
+The Multiply operator is defined for the Integer, Real and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -630,11 +629,11 @@ The Multiply operator is defined for the Integer and Real types.</xs:documentati
 	</xs:complexType>
 	<xs:complexType name="Divide">
 		<xs:annotation>
-			<xs:documentation>The Divide operator performs numeric division of its arguments. Note that the result of Divide is a decimal, even if its arguments are integers.
+			<xs:documentation>The Divide operator performs numeric division of its arguments. Note that the result type of Divide is Real, even if its arguments are of type Integer.
 
 If either argument is null, the result is null.
 
-The Divide operator is defined for the Integer and Real types.</xs:documentation>
+The Divide operator is defined for the Integer, Real and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -644,7 +643,9 @@ The Divide operator is defined for the Integer and Real types.</xs:documentation
 		<xs:annotation>
 			<xs:documentation>The TruncatedDivide operator performs integer division of its arguments.
 
-If either argument is null, the result is null.</xs:documentation>
+If either argument is null, the result is null.
+
+The TruncatedDivide operator is defined for the Integer, Real and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -656,7 +657,7 @@ If either argument is null, the result is null.</xs:documentation>
 
 If either argument is null, the result is null.
 
-The Modulo operator is defined for the Integer and Real types.</xs:documentation>
+The Modulo operator is defined for the Integer, Real, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -710,7 +711,7 @@ The Abs operator is defined for the Integer and Real types.</xs:documentation>
 
 If the argument is null, the result is null.
 
-The Negate operator is defined for the Integer and Real types.</xs:documentation>
+The Negate operator is defined for the Integer, Real, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
@@ -807,7 +808,7 @@ The MinValue operator is defined for the Integer, Real, and DateTime types.
 
 For Integer, MinValue returns the minimum signed 32-bit integer, -(2^31).
 
-For Real, MinValue returns the minimum representable Real value, -10^37 - 1 / 10^8 (-9999999999999999999999999999.99999999).
+For Real, MinValue returns the minimum representable Real value, (-10^37 - 1) / 10^8 (-9999999999999999999999999999.99999999).
 
 For DateTime, MinValue returns the minimum representable DateTime value, DateTime(1900, 1, 1, 0, 0, 0, 0).</xs:documentation>
 		</xs:annotation>
@@ -825,7 +826,7 @@ The MaxValue operator is defined for the Integer, Real, and DateTime types.
 
 For Integer, MaxValue returns the maximum signed 32-bit integer, 2^31 - 1.
 
-For Real, MaxValue returns the maximum representable Real value, 10^37 - 1 / 10^8 (9999999999999999999999999999.99999999).
+For Real, MaxValue returns the maximum representable Real value, (10^37 - 1) / 10^8 (9999999999999999999999999999.99999999).
 
 For DateTime, MaxValue returns the maximum representable DateTime value, DateTime(9999, 12, 31, 23, 59, 59, 999).</xs:documentation>
 		</xs:annotation>
@@ -848,7 +849,9 @@ If any argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Combine">
 		<xs:annotation>
-			<xs:documentation>The Combine operator combines a list of strings, optionally separating each string with the given separator.</xs:documentation>
+			<xs:documentation>The Combine operator combines a list of strings, optionally separating each string with the given separator.
+
+If either argument is null, or any element in the source list of strings is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -882,9 +885,9 @@ If the stringToSplit argument does not contain any appearances of the separator,
 			
 For strings, the length is the number of characters in the string.
 
-For intervals, the length is defined as the successor of the ending point minus the starting point.
+For lists, the length is the number of elements in the list.
 
-If the argument is null, or either the starting or ending point of the interval is null, the result is null.</xs:documentation>
+If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
@@ -1045,7 +1048,7 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Now">
 		<xs:annotation>
-			<xs:documentation>Returns the date and time of the start timestamp associated with the evaluation request. Now is defined in this way for two reasons:
+			<xs:documentation>The Now operator returns the date and time of the start timestamp associated with the evaluation request. Now is defined in this way for two reasons:
 1) The operation will always return the same value within any given evaluation, ensuring that the result of an expression containing Now will always return the same result.
 
 2) The operation will return the timestamp associated with the evaluation request, allowing the evaluation to be performed with the same timezone information as the data delivered with the evaluation request.</xs:documentation>
@@ -1209,8 +1212,7 @@ For the Interval, Interval overload, this operator returns true if starting poin
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If either argument is null, the result is null.
-			</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1470,8 +1472,7 @@ For the list overload, this operator returns a list with all elements from both 
 
 For the interval overload, this operator returns the interval that starts at the earliest starting point in either argument, and ends at the latest starting point in either argument. If the arguments do not overlap, this operator returns null. 
 
-If either argument is null, the result is null.
-			</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1557,7 +1558,7 @@ If the source argument is null, the result is null.</xs:documentation>
 	<!-- NotEqual (already defined) -->
 	<xs:complexType name="First">
 		<xs:annotation>
-			<xs:documentation>Returns the first element in a list. If the order by attribute is specified, the list is sorted by that ordering prior to returning the first element.
+			<xs:documentation>The First operator returns the first element in a list. If the order by attribute is specified, the list is sorted by that ordering prior to returning the first element.
 			
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1588,7 +1589,11 @@ If the argument is null, the result is null.</xs:documentation>
 	<!-- Indexer (already defined) -->
 	<xs:complexType name="IndexOf">
 		<xs:annotation>
-			<xs:documentation>The IndexOf operator returns the 1-based index of the given element in the given source list. 
+			<xs:documentation>The IndexOf operator returns the 1-based index of the given element in the given source list.
+
+The operator uses equality semantics as defined in the Equal operator to determine the index. The search is linear, and returns the index of the first element for which the equality comparison returns true.
+
+If the list is empty, or no element is found, the result is 0.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1709,7 +1714,11 @@ An aggregate operation performed over an empty list is defined to return null, e
 		<xs:annotation>
 			<xs:documentation>The Count operator returns the number of non-null elements in the source.
 			
-If a path is specified, the count returns the number of elements that have a value for the property specified by the path.</xs:documentation>
+If a path is specified, the count returns the number of elements that have a value for the property specified by the path.
+
+If the list is empty, the result is 0.
+
+If the list is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1721,7 +1730,9 @@ If a path is specified, the count returns the number of elements that have a val
 			
 If a path is specified, elements with no value for the property specified by the path are ignored. 
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the list is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1733,7 +1744,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1745,7 +1758,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1757,7 +1772,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 			
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1769,7 +1786,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1781,7 +1800,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1793,7 +1814,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1805,7 +1828,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1817,7 +1842,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the list is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1829,7 +1856,9 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, null is returned.</xs:documentation>
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1837,11 +1866,13 @@ If source contains no non-null elements, null is returned.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="AllTrue">
 		<xs:annotation>
-			<xs:documentation>The AllTrue operator returns true if all the elements in source are true.
+			<xs:documentation>The AllTrue operator returns true if all the non-null elements in source are true.
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, true is returned.</xs:documentation>
+If the source contains no non-null elements, true is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -1849,11 +1880,13 @@ If source contains no non-null elements, true is returned.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="AnyTrue">
 		<xs:annotation>
-			<xs:documentation>The AnyTrue operator returns true if any element in source is true.
+			<xs:documentation>The AnyTrue operator returns true if any non-null element in source is true.
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
-If source contains no non-null elements, false is returned.</xs:documentation>
+If the source contains no non-null elements, false is returned.
+
+If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
