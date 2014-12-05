@@ -118,6 +118,6 @@ The first line imports the CQL execution framework library, while the next three
 
 The result of the execution is a CQL `Results` object containing a list of patients and their calculated values for each named expression in the `Patient` context.  If the library contained a `Population` context, the calculated value of named expressions for the `Population` will be included in the `Results` as well.
 
-## Current Status and Further Information
+## Current Status
 
 The CQL execution framework is still evolving and is not yet complete.  The patient API, code service API, and format of results are likely to change quite a bit as implementation matures.  In addition, there are still CQL/ELM operators not yet implemented in the execution framework.
