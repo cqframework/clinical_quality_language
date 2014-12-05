@@ -26,14 +26,14 @@ define InDemographicCriteria =
 		and Patient.gender in "Female Administrative Sex"
 
 define SexuallyActive =
-	exists ([Condition: "Other Female Reproductive Conditions"] C where interval[C.onsetDate, C.abatementDate] overlaps MeasurementPeriod)
-		or exists ([Condition: "Genital Herpes"] C where interval[C.onsetDate, C.abatementDate] overlaps MeasurementPeriod)
-		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where interval[C.onsetDate, C.abatementDate] overlaps MeasurementPeriod)
-		or exists ([Condition: "Inflammatory Diseases of Female Reproductive Organs"] C where interval[C.onsetDate, C.abatementDate] overlaps MeasurementPeriod)
-		or exists ([Condition: "Chlamydia"] C where interval[C.onsetDate, C.abatementDate] overlaps MeasurementPeriod)
-		or exists ([Condition: "HIV"] C where interval[C.onsetDate, C.abatementDate] overlaps MeasurementPeriod)
-		or exists ([Condition: "Syphilis"] C where interval[C.onsetDate, C.abatementDate] overlaps MeasurementPeriod)
-		or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] C where interval[C.onsetDate, C.abatementDate] overlaps MeasurementPeriod)
+	exists ([Condition: "Other Female Reproductive Conditions"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Genital Herpes"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Inflammatory Diseases of Female Reproductive Organs"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Chlamydia"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "HIV"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Syphilis"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
 		or exists ([DiagnosticOrder: "Pregnancy Test"] O where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
 		or exists ([DiagnosticOrder: "Pap Test"] O where where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
 		or exists ([DiagnosticOrder: "Lab Tests During Pregnancy"] O where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)

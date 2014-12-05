@@ -14,7 +14,7 @@ define "In Demographic" =
         and Patient.gender in Common."Female Administrative Sex"
 
 define "Sexually Active" =
-    exists(Common."Conditions Indicating Sexual Activity" C where interval[C.onsetDate, C.abatementDate] overlaps "Measurement Period")
+    exists(Common."Conditions Indicating Sexual Activity" C where interval[C.onsetDateTime, C.abatementDateTime] overlaps "Measurement Period")
         or exists(Common."Laboratory Tests Indicating Sexual Activity" O where Last(O.event E where E.status = "completed").date during "Measurement Period")
 
 define "In Initial Population" =
