@@ -17,7 +17,7 @@ define "Sexually Active" =
 
 define "No Screening" =
     not exists (Common."Results Present For Chlamydia Screening" S where S.diagnosticDateTime during interval[Today() - 1 years, Today()])
-    and not exists ([ProcedureRequest: Common."Chlamydia Screening"] P where P.requestDateTime same day or after Today()
+    and not exists ([ProcedureRequest: Common."Chlamydia Screening"] P where P.requestDateTime same day or after Today())
     and not exists ([Observation: "Reason for not performing Chlamydia Screening"])
 
 define "Need Screening" = "In Demographic" and "Sexually Active" and "No Screening"

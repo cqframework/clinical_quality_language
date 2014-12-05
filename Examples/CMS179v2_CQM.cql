@@ -51,7 +51,7 @@ define INRResultsByDay =
 		return 
 			tuple 
 			{ 
-				resultDate: date of L.diagnosticDateTime,
+				resultDate: date from L.diagnosticDateTime,
 				result: if L.result > 10.0 then 10.0 else L.result, // TODO: Units?
 				distanceFromMidpoint: Abs(2.5 - L.result) // TODO: Units?
 			}
