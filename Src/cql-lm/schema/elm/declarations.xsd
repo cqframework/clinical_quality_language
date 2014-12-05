@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
-	<xs:annotation>
-		<xs:documentation>
-			This file defines the base types used in defining knowledge artifacts.
-		</xs:documentation>
-	</xs:annotation>
-</xs:schema>
