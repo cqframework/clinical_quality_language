@@ -91,7 +91,7 @@ class DateTime
         date.getSeconds(),
         date.getMilliseconds())
 
-  constructor: (@year, @month, @day, @hour, @minute, @second, @millisecond, @timeZoneOffset) ->
+  constructor: (@year=null, @month=null, @day=null, @hour=null, @minute=null, @second=null, @millisecond=null, @timeZoneOffset=null) ->
 
   copy: () ->
     new DateTime(@year, @month, @day, @hour, @minute, @second, @millisecond, @timeZoneOffset)
