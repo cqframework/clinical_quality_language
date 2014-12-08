@@ -282,6 +282,10 @@ class DateFunctionRef extends FunctionRef
   exec: (ctx) ->
     new DT.DateTime(@execArgs(ctx)...)
 
+class DateTimeFunctionRef extends DateFunctionRef
+  constructor: (json) ->
+    super
+
 # Comparisons
 class Greater extends Expression
   constructor: (json) ->
