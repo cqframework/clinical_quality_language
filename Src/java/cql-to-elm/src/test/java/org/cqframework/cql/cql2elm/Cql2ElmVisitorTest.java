@@ -410,38 +410,6 @@ public class Cql2ElmVisitorTest {
     }
 
     @Test
-    public void testDateRangeOptimizationForDateIntervalLiteralAndImpliedDateRangeProperty() {
-        String cql =
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
-
-        Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
-        Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
-
-        // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
-        assertThat(request.getDateProperty(), is("period"));
-        Interval ivl = (Interval) request.getDateRange();
-        assertTrue(ivl.isLowClosed());
-        assertFalse(ivl.isHighClosed());
-        FunctionRef ivlBegin = (FunctionRef) ivl.getLow();
-        assertThat(ivlBegin.getName(), is("Date"));
-        assertThat(ivlBegin.getOperand(), hasSize(3));
-        assertThat(ivlBegin.getOperand().get(0), literalFor(2013));
-        assertThat(ivlBegin.getOperand().get(1), literalFor(1));
-        assertThat(ivlBegin.getOperand().get(2), literalFor(1));
-        FunctionRef ivlEnd = (FunctionRef) ivl.getHigh();
-        assertThat(ivlEnd.getName(), is("Date"));
-        assertThat(ivlEnd.getOperand(), hasSize(3));
-        assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
-        assertThat(ivlEnd.getOperand().get(1), literalFor(1));
-        assertThat(ivlEnd.getOperand().get(2), literalFor(1));
-
-        // "Where" should now be null!
-        assertThat(query.getWhere(), is(nullValue()));
-    }
-
-    @Test
     public void testDateRangeOptimizationForDefaultedDateIntervalParameter() {
         String cql =
                 "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +

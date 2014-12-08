@@ -2,7 +2,7 @@ library CMS153_CQM version '2'
 
 using QUICK
 
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2'
 valueset "Other Female Reproductive Conditions" = '2.16.840.1.113883.3.464.1003.111.12.1006'
@@ -23,21 +23,21 @@ context Patient
 
 define InDemographicCriteria =
 	AgeInYearsAt(start of MeasurementPeriod) >= 16 and AgeInYearsAt(start of MeasurementPeriod) < 24
-		and gender in "Female Administrative Sex"
+		and Patient.gender in "Female Administrative Sex"
 
 define SexuallyActive =
-	exists ([Condition: "Other Female Reproductive Conditions"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([Condition: "Genital Herpes"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([Condition: "Inflammatory Diseases of Female Reproductive Organs"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([Condition: "Chlamydia"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([Condition: "HIV"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([Condition: "Syphilis"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] C where C.effectiveTime overlaps MeasurementPeriod)
-		or exists ([LaboratoryTestOrder: "Pregnancy Test"] R where R.effectiveTime during MeasurementPeriod)
-		or exists ([LaboratoryTestOrder: "Pap Test"] R where R.effectiveTime during MeasurementPeriod)
-		or exists ([LaboratoryTestOrder: "Lab Tests During Pregnancy"] R where R.effectiveTime during MeasurementPeriod)
-		or exists ([LaboratoryTestOrder: "Lab Tests for Sexually Transmitted Infections"] R where R.observedAtTime during MeasurementPeriod)
+	exists ([Condition: "Other Female Reproductive Conditions"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Genital Herpes"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Inflammatory Diseases of Female Reproductive Organs"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Chlamydia"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "HIV"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Syphilis"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
+		or exists ([DiagnosticOrder: "Pregnancy Test"] O where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
+		or exists ([DiagnosticOrder: "Pap Test"] O where where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
+		or exists ([DiagnosticOrder: "Lab Tests During Pregnancy"] O where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
+		or exists ([DiagnosticOrder: "Lab Tests for Sexually Transmitted Infections"] O where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
 
 define InInitialPopulation =
 	InDemographic and SexuallyActive
@@ -49,10 +49,10 @@ define InDenominator =
 	InInitialPopulation
 
 define InNumerator =
-	exists ([Observation: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
+	exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during MeasurementPeriod and R.result is not null)
 
 define InNumerator =
-	InDenominator and exists ([Observation: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
+	InDenominator and exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during MeasurementPeriod and R.result is not null)
 
 context POPULATION
 

@@ -1,5 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -15,8 +18,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.cqframework.cql.cql2elm.CqlTranslator.fromFile;
 
 public class CqlTranslator {
     public static enum Options { EnableDateRangeOptimization, EnableAnnotations }
@@ -61,10 +67,6 @@ public class CqlTranslator {
             throw new IllegalArgumentException("Could not convert library to JSON.", e);
         }
     }
-
-    //public JsonNode toJsonNode() throws JAXBException, IOException {
-    //    return new ObjectMapper().readTree(convertToJSON(library));
-    //}
 
     public Library toELM() {
         return library;
@@ -125,18 +127,80 @@ public class CqlTranslator {
         return writer.getBuffer().toString();
     }
 
-    public static void main(String[] args) throws IOException, JAXBException {
-        String inputFile = null;
-        if (args.length > 0) {
-            inputFile = args[0];
+    private static enum Format { XML, JSON, COFFEE }
+
+    private static void writeELM(File inFile, PrintWriter pw, Format format, boolean dateRangeOptimizations, boolean annotations) throws IOException {
+        ArrayList<Options> options = new ArrayList<>();
+        if (dateRangeOptimizations) {
+            options.add(Options.EnableDateRangeOptimization);
+        }
+        if (annotations) {
+            options.add(Options.EnableAnnotations);
+        }
+        CqlTranslator translator = fromFile(inFile, options.toArray(new Options[options.size()]));
+        switch (format) {
+            case COFFEE:
+                pw.print("module.exports = ");
+                pw.println(translator.toJson());
+                break;
+            case JSON:
+                pw.println(translator.toJson());
+                break;
+            case XML:
+            default:
+                pw.println(translator.toXml());
+        }
+        pw.println();
+        pw.close();
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        OptionParser parser = new OptionParser();
+        OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required();
+        OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class);
+        OptionSpec<String> format = parser.accepts("format").withRequiredArg().ofType(String.class);
+        OptionSpec optimization = parser.accepts("date-range-optimization");
+        OptionSpec annotations = parser.accepts("annotations");
+        OptionSpec stdout = parser.accepts("stdout");
+
+        OptionSet options = parser.parse(args);
+        File infile = input.value(options);
+        Format outputFormat = options.has(format) ? Format.valueOf(format.value(options).toUpperCase()) : Format.XML;
+        PrintWriter pw;
+        if (options.has(stdout)) {
+            pw = new PrintWriter(new OutputStreamWriter(System.out, "UTF-8"));
+        } else {
+            File outfile;
+            if (! options.has(output) || output.value(options).isDirectory()) {
+                // Use input filename with ".xml", ".json", or ".coffee" extension
+                String name = infile.getName();
+                if (name.lastIndexOf('.') != -1) {
+                    name = name.substring(0, name.lastIndexOf('.'));
+                }
+                switch (outputFormat) {
+                    case JSON:
+                        name += ".json";
+                        break;
+                    case COFFEE:
+                        name += ".coffee";
+                        break;
+                    case XML:
+                    default:
+                        name += ".xml";
+                        break;
+
+                }
+                String basePath = options.has(output) ? output.value(options).getAbsolutePath() : infile.getParent();
+                outfile = new File(basePath + File.separator + name);
+            } else {
+                outfile = output.value(options);
+            }
+            if (outfile.equals(infile)) {
+                throw new IllegalArgumentException("input and output file must be different!");
+            }
+            pw = new PrintWriter(outfile, "UTF-8");
         }
 
-        InputStream is = System.in;
-        if (inputFile != null) {
-            is = new FileInputStream(inputFile);
-        }
-
-        CqlTranslator translator = CqlTranslator.fromStream(is, Options.EnableAnnotations);
-        System.out.println(translator.toXml());
+        writeELM(infile, pw, outputFormat, options.has(optimization), options.has(annotations));
     }
 }

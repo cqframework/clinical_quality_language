@@ -21,7 +21,7 @@ valueset "Reason for not performing Chlamydia Screening" = 'TBD' // Not used in 
 context Patient
 
 define InDemographic =
-	AgeInYears() >= 16 and AgeInYears() < 24 and gender in "Female Administrative Sex"
+	AgeInYears() >= 16 and AgeInYears() < 24 and Patient.gender in "Female Administrative Sex"
 
 define SexuallyActive =
 	exists ([Condition: "Other Female Reproductive Conditions"])
@@ -32,14 +32,14 @@ define SexuallyActive =
 	or exists ([Condition: "HIV"])
 	or exists ([Condition: "Syphilis"])
 	or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"])
-	or exists ([LaboratoryTestOrder: "Pregnancy Test"])
-	or exists ([LaboratoryTestOrder: "Pap Test"])
-	or exists ([LaboratoryTestOrder: "Lab Tests During Pregnancy"])
-	or exists ([LaboratoryTestOrder: "Lab Tests for Sexually Transmitted Infections"])
+	or exists ([DiagnosticOrder: "Pregnancy Test"])
+	or exists ([DiagnosticOrder: "Pap Test"])
+	or exists ([DiagnosticOrder: "Lab Tests During Pregnancy"])
+	or exists ([DiagnosticOrder: "Lab Tests for Sexually Transmitted Infections"])
 		
 define NoScreening =
-    not exists ([Observation: "Chlamydia Screening"] R where R.observedAtTime during interval[Today() - 1 years, Today()] and R.result is not null)
-    and not exists ([ProcedurePlan: "Chlamydia Screening"] P where P.plannedTime during interval[Today(), null])
+    not exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during interval[Today() - 1 years, Today()] and R.result is not null)
+    and not exists ([ProcedureRequest: "Chlamydia Screening"] P where P.requestDateTime same day or after Today())
 	and not exists ([Observation: "Reason for not performing Chlamydia Screening"])
 
 define NeedScreening = InDemographic and SexuallyActive and NoScreening

@@ -3,7 +3,7 @@ language: java
 jdk: oraclejdk7
 
 script:
-  - export TERM=dumb 
+  - export TERM=dumb
   - gradle -b ./Src/java/build.gradle check
 
 branches:

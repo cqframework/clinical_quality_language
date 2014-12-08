@@ -3,7 +3,7 @@
 
    To generate this file:
        - Edit cql-test-data.txt to add a CQL Snippet
-       - From java dir: ./gradlew :cql-to-js:generateTestData
+       - From java dir: ./gradlew :cql-to-elm:generateTestData
 ###
 
 ### InAgeDemographic
