@@ -53,15 +53,15 @@ context Patient
 
 define InpatientEncounters =
 	[Encounter: "Inpatient"] E
-		where E.length <= 120 days 
-			and E.hospitalization.period ends during MeasurementPeriod
+		where E.length <= 120 days
+			and E.period ends during MeasurementPeriod
 
 define EDEncounters =
 	[Encounter: "Emergency Department Visit"] ED
 		with InpatientEncounters E such that ED.period ends 1 hour or less before start of E.period
 
 define MeasureObservation =
-	EDEncounters E 
+	EDEncounters E
 		where E.facilityLocationArrivalDateTime is not null
 			and E.facilityLocationDepartureDateTime is not null
 		return minutes between E.facilityLocationArrivalDateTime and E.facilityLocationDepartureDateTime
@@ -69,4 +69,3 @@ define MeasureObservation =
 context Population
 
 define MeasureScore = Median(MeasureObservation)
-

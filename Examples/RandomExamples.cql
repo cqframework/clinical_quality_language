@@ -291,15 +291,15 @@ define FirstInpatientEncounter = First([Encounter] E where E.class = 'inpatient'
 define RedefinedEncounter = FirstInpatientEncounter E
   return tuple {
     type: E.type,
-    admissionDate: E.hospitalization.period.start
-    dischargeDate: E.hospitalization.period.end
+    admissionDate: E.period.start
+    dischargeDate: E.period.end
   }
 
 define FirstInpatientEncounter = First([Encounter] E where E.class = 'inpatient')
 define RedefinedEncounter = tuple {
     type: FirstInpatientEncounter.type,
-    admissionDate: FirstInpatientEncounter.hospitalization.period.start
-    dischargeDate: FirstInpatientEncounter.hospitalization.period.end
+    admissionDate: FirstInpatientEncounter.period.start
+    dischargeDate: FirstInpatientEncounter.period.end
   }
 
 # 2.5.1 Comparison Operators: between

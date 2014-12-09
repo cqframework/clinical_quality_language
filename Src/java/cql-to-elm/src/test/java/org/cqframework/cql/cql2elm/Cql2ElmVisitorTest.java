@@ -640,7 +640,7 @@ public class Cql2ElmVisitorTest {
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod\n" +
-                "    and E.hospitalization.period during MeasurementPeriod";
+                "    and E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
@@ -655,7 +655,7 @@ public class Cql2ElmVisitorTest {
         IncludedIn where = (IncludedIn) query.getWhere();
         Property lhs = (Property) where.getOperand().get(0);
         assertThat(lhs.getScope(), is("E"));
-        assertThat(lhs.getPath(), is("hospitalization.period"));
+        assertThat(lhs.getPath(), is("period"));
         assertThat(lhs.getSource(), is(nullValue()));
         ParameterRef rhs = (ParameterRef) where.getOperand().get(1);
         assertThat(rhs.getName(), is("MeasurementPeriod"));
