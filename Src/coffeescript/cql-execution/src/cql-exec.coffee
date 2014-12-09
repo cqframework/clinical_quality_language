@@ -46,7 +46,7 @@ class Library
       @valuesets[valueset.name] = new ValueSetDef(valueset)
     @expressions = {}
     for expr in json.library.statements?.def ? []
-      @expressions[expr.name] = new ExpressionDef(expr)
+      @expressions[expr.name] = if expr.type == "FunctionDef"  then new FunctionDef(expr) else new ExpressionDef(expr)
 
   get: (identifier) ->
     @expressions[identifier]
@@ -254,10 +254,32 @@ class Not extends Expression
 
 # Functions
 
+
+class FunctionDef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+    @expression = build json.expression
+    @parameters = json.parameter 
+
+  exec: (ctx) ->
+    @
+  
+
 class FunctionRef extends Expression
   constructor: (json) ->
     super
     @name = json.name
+
+  exec: (ctx) ->
+    functionDef = ctx.get(@name)
+    args = @execArgs(ctx)
+    child_ctx = ctx.childContext()
+    if args.length != functionDef.parameters.length
+      thow "incorrect number of arguments supplied" 
+    for p, i in functionDef.parameters 
+      child_ctx.set(p.name,args[i])
+    functionDef.expression.exec(child_ctx)
 
 class CodeFunctionRef extends FunctionRef
   constructor: (json) ->
@@ -515,8 +537,9 @@ class CalculateAgeAt extends FunctionRef
 
 class CalculateAgeInYearsAtFunctionRef extends CalculateAgeAt
   constructor: (@json) ->
-    @json.precision="Year"
+    @json.precision = "Year"
     super(@json)
+
 # Literals
 
 class Literal extends Expression
@@ -565,6 +588,15 @@ class Null extends Literal
 
   exec: (ctx) ->
     null
+
+class IdentifierRef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+
+  exec: (ctx) ->
+    ctx.get(@name)  
+
 
 class Property extends Expression
   constructor: (json) ->

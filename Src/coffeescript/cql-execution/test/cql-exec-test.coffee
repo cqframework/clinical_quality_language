@@ -963,6 +963,15 @@ describe 'Sorting', ->
     e[1].E.id().should.equal  "http://cqframework.org/3/3"
     e[0].E.id().should.equal  "http://cqframework.org/3/5"
 
+describe 'FunctionDefinitions', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+
+  it 'should be able to define and use a simple function' , ->
+    e = @testValue.exec(@ctx)
+    e.should.equal 3
+
 describe.skip 'IncludesQuery', ->
   @beforeEach ->
     setup @
