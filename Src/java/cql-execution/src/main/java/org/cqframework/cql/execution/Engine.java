@@ -43,6 +43,7 @@ public class Engine {
     private static final String JS_PATH = "org/cqframework/cql/execution/javascript";
     private static Results results = new Results();
     private static PatientSource patientSource;
+    private static CodeService codeService;
     private static Path workingArea;
 
     /**
@@ -59,6 +60,22 @@ public class Engine {
     public static PatientSource getPatientSource()
     {
         return patientSource;
+    }
+    
+    /**
+     * Set the CodeService to be used by all CQL scripts.
+     * If the CodeService is {@code null}, script execution
+     * may fail (if it relies on codes and valuesets) and throw an Exception.
+     */
+    public static void setCodeService(CodeService service)
+    {
+        codeService = service;
+    }
+
+    /** Get the current CodeService being used by all CQL scripts. */
+    public static CodeService getCodeService()
+    {
+        return codeService;
     }
 
     /**
