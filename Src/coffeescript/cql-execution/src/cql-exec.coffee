@@ -252,6 +252,13 @@ class Not extends Expression
   exec: (ctx) ->
     DT.ThreeValuedLogic.not @execArgs(ctx)
 
+class IsNull extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @execArgs(ctx) == null
+
 # Functions
 
 
@@ -588,6 +595,15 @@ class Null extends Literal
 
   exec: (ctx) ->
     null
+
+class Quantity extends Expression
+  constructor: (json) ->
+    super
+    @unit = json.unit
+    @value = json.value
+
+  exec: (ctx) ->
+    @
 
 class IdentifierRef extends Expression
   constructor: (json) ->

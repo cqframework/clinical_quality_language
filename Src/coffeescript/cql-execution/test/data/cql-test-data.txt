@@ -343,6 +343,7 @@ define function foo (a:integer ,b:integer)
 define testValue = foo(1,2)  
 
 
-
 #ScratchPad
 define Foo = "foo"
+define A = B  between X and Y
+define B = 1 <> 2
