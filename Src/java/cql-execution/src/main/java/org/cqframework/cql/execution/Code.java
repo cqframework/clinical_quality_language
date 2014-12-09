@@ -1,5 +1,7 @@
 package org.cqframework.cql.execution;
 
+import java.util.Objects;
+
 /**
  * {@code Code} represents a code inside a ValueSet, provided
  * by a CodeService.
@@ -17,6 +19,11 @@ public class Code {
     {
         if(! (object instanceof Code) ) return false;
         Code that = (Code) object;
-        return (this.code.equals(that.code) && this.system.equals(that.system) && this.version.equals(that.version));
+        return this.code.equals(that.code) && this.system.equals(that.system) && this.version.equals(that.version);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, system, version);
     }
 }
