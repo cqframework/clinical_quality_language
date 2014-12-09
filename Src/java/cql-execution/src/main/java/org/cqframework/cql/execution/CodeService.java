@@ -1,15 +1,24 @@
 package org.cqframework.cql.execution;
 
+/**
+ * CodeService is an interface for providers of ValueSets and Codes.
+ * 
+ * @author jwalonoski
+ */
 public interface CodeService {
-//    findValueSetsByOid: (oid) ->
-//(valueSet for version, valueSet of @valueSets[oid])
-//
+    /**
+     * Find ValueSets by OID.
+     * @param oid The OID of the ValueSet.
+     * @return An array, possibly null or empty, of ValueSets with the given OID
+     * (the array may contain multiple versions of the same ValueSet).
+     */
     public ValueSet[] findValueSetsByOid(String oid);
-//findValueSet: (oid, version) ->
-//if version?
-//  @valueSets[oid]?[version]
-//else
-//  results = @findValueSetsByOid(oid)
-//  if results.length is 0 then null else results.reduce (a, b) -> if a.version > b.version then a else b
+
+    /**
+     * Find a particular version of a ValueSet.
+     * @param oid The OID of the ValueSet.
+     * @param version The version of the ValueSet.
+     * @return The version of the ValueSet, if it exists and is available, otherwise null.
+     */
     public ValueSet findValueSet(String oid, String version);
 }
