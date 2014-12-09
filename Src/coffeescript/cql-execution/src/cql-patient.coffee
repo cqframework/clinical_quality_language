@@ -44,17 +44,17 @@ class Patient
     if profile is 'cqf-patient' then [@] else @records[profile] ? []
 
 class PatientSource
-    constructor: (@patients) ->
-      @current = @patients.shift();
+  constructor: (@patients) ->
+    @current = @patients.shift()
 
-    currentPatient: ->
-      if @current?
-        new Patient(@current)
-      else null
+  currentPatient: ->
+    if @current?
+      new Patient(@current)
+    else null
 
-    nextPatient: ->
-      @current = @patients.shift();
-      @currentPatient()
+  nextPatient: ->
+    @current = @patients.shift()
+    @currentPatient()
 
 
 module.exports.Patient = Patient

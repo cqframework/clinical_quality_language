@@ -412,7 +412,7 @@ class SingletonFrom extends Expression
 
   exec: (ctx) ->
     arg = @execArgs ctx
-    if arg.length > 1 then throw 'IllegalArgument: \'SingletonFrom\' requires a 0 or 1 arg array'
+    if arg.length > 1 then throw new Error 'IllegalArgument: \'SingletonFrom\' requires a 0 or 1 arg array'
     else if arg.length is 1 then return arg[0]
     else return null
 
@@ -659,19 +659,19 @@ class ByExpression extends Expression
     @low_order = if @direction == "asc" then -1 else 1
     @high_order = @low_order * -1
 
-   exec: (a,b) ->
-     ctx = new Context()
-     ctx.context_values = a
-     a_val = @expression.exec(ctx)
-     ctx.context_values = b
-     b_val = @expression.exec(ctx)
+  exec: (a,b) ->
+    ctx = new Context()
+    ctx.context_values = a
+    a_val = @expression.exec(ctx)
+    ctx.context_values = b
+    b_val = @expression.exec(ctx)
 
-     if a_val == b_val
-       0
-     else if a_val < b_val
-       @low_order
-     else
-       @high_order
+    if a_val == b_val
+      0
+    else if a_val < b_val
+      @low_order
+    else
+      @high_order
 
 class Sort
   constructor:(json) ->
@@ -724,8 +724,8 @@ class Query extends Expression
     super
     @sources = new MultiSource(json.source)
     @definitions = for d in json.define ? []
-                     identifier: d.identifier
-                     expression: build d.expression
+      identifier: d.identifier
+      expression: build d.expression
 
     @relationship = build json.relationship
     @where = build json.where
@@ -736,24 +736,24 @@ class Query extends Expression
     self = @
     returnedValues = []
     @sources.forEach(ctx, (rctx) ->
-     for def in self.definitions
-       rctx.set def.identifier, def.expression.exec(rctx)
+      for def in self.definitions
+        rctx.set def.identifier, def.expression.exec(rctx)
 
-     relations = for rel in self.relationship
+      relations = for rel in self.relationship
         child_ctx = rctx.childContext()
         rel.exec(child_ctx)
-     passed = allTrue(relations)
-     passed = passed && if self.where then self.where.exec(rctx) else passed
-     if passed
-       if self.return
-         val = self.return.exec(rctx)
-         if returnedValues.indexOf(val) == -1
-           returnedValues.push val
-       else
-         if self.aliases.length == 1
-           returnedValues.push rctx.get(self.aliases[0])
-         else
-           returnedValues.push rctx.context_values
+      passed = allTrue(relations)
+      passed = passed && if self.where then self.where.exec(rctx) else passed
+      if passed
+        if self.return
+          val = self.return.exec(rctx)
+          if returnedValues.indexOf(val) == -1
+            returnedValues.push val
+        else
+          if self.aliases.length == 1
+            returnedValues.push rctx.get(self.aliases[0])
+          else
+            returnedValues.push rctx.context_values
     )
 
     @sort?.sort(returnedValues)
