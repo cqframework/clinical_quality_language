@@ -6726,6 +6726,8 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define Foo = "foo"
+define A = B  between X and Y
+define B = 1 <> 2
 ###
 
 module.exports.ScratchPad = {
@@ -6762,6 +6764,46 @@ module.exports.ScratchPad = {
             "expression" : {
                "name" : "foo",
                "type" : "IdentifierRef"
+            }
+         }, {
+            "name" : "A",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "GreaterOrEqual",
+                  "operand" : [ {
+                     "name" : "B",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "X",
+                     "type" : "IdentifierRef"
+                  } ]
+               }, {
+                  "type" : "LessOrEqual",
+                  "operand" : [ {
+                     "name" : "B",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "Y",
+                     "type" : "IdentifierRef"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "B",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "NotEqual",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
             }
          } ]
       }
