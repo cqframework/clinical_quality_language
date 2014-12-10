@@ -339,11 +339,9 @@ define singleDesc =  [Encounter] E return {E : E} sort by E.id desc
 
 #FunctionDefinitions
 define function foo (a:integer ,b:integer)  
-  return a + b
+  { return a + b }
 define testValue = foo(1,2)  
 
 
 #ScratchPad
 define Foo = "foo"
-define A = B  between X and Y
-define B = 1 <> 2
