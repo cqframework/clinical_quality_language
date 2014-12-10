@@ -5476,7 +5476,7 @@ library TestSnippet version '1'
 using QUICK
 valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
-valueset "Annual Wellness Visit" = '2.16.840.1.113883.3.526.3.1240' 
+valueset "Annual Wellness Visit" = '2.16.840.1.113883.3.526.3.1240'
 context Patient
 define Conditions = [Condition]
 define Encounters = [Encounter]
@@ -5485,7 +5485,7 @@ define AmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"]
 define EncountersByServiceType = [Encounter: type in "Ambulatory/ED Visit"]
 define WrongDataType = [EncounterProposal: "Ambulatory/ED Visit"]
 define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
-define WrongCodeProperty = [Encounter: type in "Annual Wellness Visit"]
+define WrongCodeProperty = [Encounter: class in "Ambulatory/ED Visit"]
 ###
 
 module.exports.Retrieve = {
@@ -5614,10 +5614,10 @@ module.exports.Retrieve = {
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}Encounter",
                "templateId" : "cqf-encounter",
-               "codeProperty" : "type",
+               "codeProperty" : "class",
                "type" : "Retrieve",
                "codes" : {
-                  "name" : "Annual Wellness Visit",
+                  "name" : "Ambulatory/ED Visit",
                   "type" : "ValueSetRef"
                }
             }
@@ -6640,9 +6640,9 @@ module.exports.Sorting = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define function foo (a:integer ,b:integer)  
+define function foo (a:integer ,b:integer)
   { return a + b }
-define testValue = foo(1,2)  
+define testValue = foo(1,2)
 ###
 
 module.exports.FunctionDefinitions = {

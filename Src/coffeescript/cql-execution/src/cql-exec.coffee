@@ -111,7 +111,7 @@ class Context
     @parent?.getValueSet(name)
 
   get: (identifier) ->
-      @context_values[identifier] || @parent?.get(identifier)
+    @context_values[identifier] || @parent?.get(identifier)
 
   set: (identifier, value) ->
     @context_values[identifier] = value
@@ -267,11 +267,11 @@ class FunctionDef extends Expression
     super
     @name = json.name
     @expression = build json.expression
-    @parameters = json.parameter 
+    @parameters = json.parameter
 
   exec: (ctx) ->
     @
-  
+
 
 class FunctionRef extends Expression
   constructor: (json) ->
@@ -283,8 +283,8 @@ class FunctionRef extends Expression
     args = @execArgs(ctx)
     child_ctx = ctx.childContext()
     if args.length != functionDef.parameters.length
-      thow "incorrect number of arguments supplied" 
-    for p, i in functionDef.parameters 
+      throw new Error("incorrect number of arguments supplied")
+    for p, i in functionDef.parameters
       child_ctx.set(p.name,args[i])
     functionDef.expression.exec(child_ctx)
 
@@ -611,7 +611,7 @@ class IdentifierRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.get(@name)  
+    ctx.get(@name)
 
 
 class Property extends Expression

@@ -55,13 +55,13 @@ FHIR.Patient::records = ->
   @_records
 
 FHIR.Patient::findRecords = (profile) ->
-    if profile is 'cqf-patient' then [@] else @_bundle?.findRecords(profile) ? []
+  if profile is 'cqf-patient' then [@] else @_bundle?.findRecords(profile) ? []
 
 
 FHIR.Bundle::findRecords = (profile) ->
   filtered = @entry().filter (e)->
     e.resource()?.meta()?.profile()?.indexOf(profile) > -1
-  for e in filtered 
+  for e in filtered
     r = e.resource()
     r._bundle = this
     r
@@ -77,12 +77,12 @@ FHIR.Base::getDate = (field) ->
   if val instanceof DT.DateTime
     val
   else if typeof val is "string"
-    DT.DateTime.parse(val) 
+    DT.DateTime.parse(val)
 
 FHIR.Base::getInterval= (field) ->
   val = @get field
   if val instannceOf FHIR.Period
-     @periodToInterval val
+    @periodToInterval val
 
 FHIR.Base::getDateOrInterval = (field) ->
   val = @get field
@@ -105,7 +105,7 @@ FHIR.Base::toCode = (val) ->
     @codableConceptToCodes  val
   else if val instanceof FHIR.Coding
     @codingToCode val
-    
+
 
 FHIR.Base::codableConceptToCodes =(cc) ->
   for c in cc.coding()
@@ -123,16 +123,16 @@ FHIR.Base::periodToInterval =(val) ->
 
 class PatientSource
   constructor: (@patients) ->
-     @nextPatient()
+    @nextPatient()
 
   currentPatient: ->
     @current_patient
 
   nextPatient: ->
-    @current = @patients.shift();
+    @current = @patients.shift()
     @current_bundle = if @current then new FHIR.Bundle(@current)
     @current_patient = @current_bundle?.findRecord("cqf-patient")
-    
+
 
 module.exports.Patient = Patient
 module.exports.PatientSource = PatientSource
