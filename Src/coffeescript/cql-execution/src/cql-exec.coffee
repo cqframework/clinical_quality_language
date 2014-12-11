@@ -152,6 +152,13 @@ class Expression
       when @arg? then @arg.exec(ctx)
       else null
 
+class UnimplementedExpression extends Expression
+  constructor: (@json) ->
+    super
+
+  exec: (ctx) ->
+    throw new Error("Unimplemented Expression: #{@json.type}")
+
 class ExpressionDef extends Expression
   constructor: (json) ->
     super
@@ -174,6 +181,16 @@ class ExpressionRef extends Expression
     if value instanceof Expression
       value = value.exec(ctx)
     value
+
+# Using
+
+class UsingDef extends UnimplementedExpression
+
+# Includes
+
+class IncludeDef extends UnimplementedExpression
+
+class VersionedIdentifier extends UnimplementedExpression
 
 # ValueSets
 
@@ -259,6 +276,10 @@ class IsNull extends Expression
   exec: (ctx) ->
     @execArgs(ctx) == null
 
+class AllTrue extends UnimplementedExpression
+
+class AnyTrue extends UnimplementedExpression
+
 # Functions
 
 
@@ -341,6 +362,8 @@ class Equal extends Expression
     args = @execArgs(ctx).map (x) -> DT.Uncertainty.from x
     args[0].equals args[1]
 
+class NotEqual extends UnimplementedExpression
+
 class LessOrEqual extends Expression
   constructor: (json) ->
     super
@@ -385,6 +408,10 @@ class Interval extends Expression
   exec: (ctx) ->
     new DT.Interval(@low.exec(ctx), @high.exec(ctx), @lowClosed, @highClosed)
 
+class IncludedIn extends UnimplementedExpression
+
+class ProperIncludedIn extends UnimplementedExpression
+
 class Includes extends Expression
   constructor: (json) ->
     super
@@ -392,6 +419,10 @@ class Includes extends Expression
   exec: (ctx) ->
     args = @execArgs(ctx)
     args[0].includes args[1]
+
+class ProperIncludes extends UnimplementedExpression
+
+class Contains extends UnimplementedExpression
 
 class Identifier extends Expression
   constructor: (json) ->
@@ -410,6 +441,8 @@ class Start extends Expression
     # assumes this is interval
     @arg.exec(ctx).low
 
+class End extends UnimplementedExpression
+
 class Union extends Expression
   constructor: (json) ->
     super
@@ -426,6 +459,8 @@ class Intersect extends Expression
     # TODO: Support intervals
     @execArgs(ctx).reduce (x, y) -> (itm for itm in x when itm in y)
 
+class Except extends UnimplementedExpression
+
 class Distinct extends Expression
   constructor: (json) ->
     super
@@ -436,6 +471,32 @@ class Distinct extends Expression
     container[itm] = itm for itm in @source.exec(ctx)
     value for key, value of container
 
+class Coalesce extends UnimplementedExpression
+
+class Filter extends UnimplementedExpression
+
+class Collapse extends UnimplementedExpression
+
+class Expand extends UnimplementedExpression
+
+class Count extends UnimplementedExpression
+
+class Length extends UnimplementedExpression
+
+class First extends UnimplementedExpression
+
+class Last extends UnimplementedExpression
+
+class Max extends UnimplementedExpression
+
+class Min extends UnimplementedExpression
+
+class Indexer extends UnimplementedExpression
+
+class IndexOf extends UnimplementedExpression
+
+class Width extends UnimplementedExpression
+
 class SingletonFrom extends Expression
   constructor: (json) ->
     super
@@ -445,6 +506,26 @@ class SingletonFrom extends Expression
     if arg.length > 1 then throw new Error 'IllegalArgument: \'SingletonFrom\' requires a 0 or 1 arg array'
     else if arg.length is 1 then return arg[0]
     else return null
+
+class After extends UnimplementedExpression
+
+class Before extends UnimplementedExpression
+
+class Overlaps extends UnimplementedExpression
+
+class OverlapsAfter extends UnimplementedExpression
+
+class OverlapsBefore extends UnimplementedExpression
+
+class Meets extends UnimplementedExpression
+
+class MeetsAfter extends UnimplementedExpression
+
+class MeetsBefore extends UnimplementedExpression
+
+class Starts extends UnimplementedExpression
+
+class Ends extends UnimplementedExpression
 
 # Membership
 
@@ -502,6 +583,8 @@ class Divide extends Expression
   exec: (ctx) ->
     @execArgs(ctx).reduce (x,y) -> x / y
 
+class TruncatedDivide extends UnimplementedExpression
+
 class Negate extends Expression
   constructor: (json) ->
     super
@@ -509,7 +592,49 @@ class Negate extends Expression
   exec: (ctx) ->
     @execArgs(ctx) * -1
 
-# DateMath
+class Abs extends UnimplementedExpression
+
+class Avg extends UnimplementedExpression
+
+class Median extends UnimplementedExpression
+
+class Mode extends UnimplementedExpression
+
+class Sum extends UnimplementedExpression
+
+class StdDev extends UnimplementedExpression
+
+class Variance extends UnimplementedExpression
+
+class PopulationStdDev extends UnimplementedExpression
+
+class PopulationStdVariance extends UnimplementedExpression
+
+class Ceiling extends UnimplementedExpression
+
+class Floor extends UnimplementedExpression
+
+class Ln extends UnimplementedExpression
+
+class Log extends UnimplementedExpression
+
+class Modulo extends UnimplementedExpression
+
+class Power extends UnimplementedExpression
+
+class Round extends UnimplementedExpression
+
+class MaxValue extends UnimplementedExpression
+
+class MinValue extends UnimplementedExpression
+
+class Predecessor extends UnimplementedExpression
+
+class Successor extends UnimplementedExpression
+
+# Dates and DateMath
+
+class DateTime extends UnimplementedExpression
 
 class DurationBetween extends Expression
   constructor: (json) ->
@@ -520,6 +645,8 @@ class DurationBetween extends Expression
     args = @execArgs(ctx)
     result = args[0].durationBetween(args[1], @precision?.toLowerCase())
     if result.isPoint() then result.low else result
+
+class CalculateAge extends UnimplementedExpression
 
 class CalculateAgeAt extends FunctionRef
   constructor: (json) ->
@@ -546,6 +673,24 @@ class CalculateAgeInYearsAtFunctionRef extends CalculateAgeAt
   constructor: (@json) ->
     @json.precision = "Year"
     super(@json)
+
+class DateFrom extends UnimplementedExpression
+
+class TimeFrom extends UnimplementedExpression
+
+class TimezoneFrom extends UnimplementedExpression
+
+class DateTimeComponentFrom extends UnimplementedExpression
+
+class SameAs extends UnimplementedExpression
+
+class SameOrAfter extends UnimplementedExpression
+
+class SameOrBefore extends UnimplementedExpression
+
+class Now extends UnimplementedExpression
+
+class Today extends UnimplementedExpression
 
 # Literals
 
@@ -649,6 +794,16 @@ class Tuple extends Expression
       val[el.name] = el.value?.exec(ctx)
     val
 
+class TupleElement extends UnimplementedExpression
+
+class TupleElementDefinition extends UnimplementedExpression
+
+class Is extends UnimplementedExpression
+
+class As extends UnimplementedExpression
+
+class Convert extends UnimplementedExpression
+
 # Retreives and Queries
 
 class Retrieve extends Expression
@@ -672,6 +827,8 @@ class Retrieve extends Expression
 
     records
 
+class AliasedQuerySource extends UnimplementedExpression
+
 class AliasRef extends Expression
   constructor: (json) ->
     super
@@ -679,6 +836,14 @@ class AliasRef extends Expression
 
   exec: (ctx) ->
     ctx?.get(@name)
+
+class ForEach extends UnimplementedExpression
+
+class Times extends UnimplementedExpression
+
+class DefineClause extends UnimplementedExpression
+
+class ReturnClause extends UnimplementedExpression
 
 class QueryDefineRef extends AliasRef
   constructor: (json) ->
@@ -725,6 +890,12 @@ class ByExpression extends Expression
       @low_order
     else
       @high_order
+
+class ByColumn extends UnimplementedExpression
+
+class ByDirection extends UnimplementedExpression
+
+class SortClause extends UnimplementedExpression
 
 class Sort
   constructor:(json) ->
@@ -812,6 +983,45 @@ class Query extends Expression
     @sort?.sort(returnedValues)
     returnedValues
 
+class Current extends UnimplementedExpression
+
+# Conditionals
+
+class If extends UnimplementedExpression
+
+class Case extends UnimplementedExpression
+
+class CaseItem extends UnimplementedExpression
+
+class IfNull extends UnimplementedExpression
+
+# String Functions
+
+class Combine extends UnimplementedExpression
+
+class Concat extends UnimplementedExpression
+
+class Split extends UnimplementedExpression
+
+class Lower extends UnimplementedExpression
+
+class Upper extends UnimplementedExpression
+
+class Pos extends UnimplementedExpression
+
+class Substring extends UnimplementedExpression
+
+class Truncate extends UnimplementedExpression
+
+# Type Specifiers
+
+class IntervalTypeSpecifier extends UnimplementedExpression
+
+class ListTypeSpecifier extends UnimplementedExpression
+
+class NamedTypeSpecifier extends UnimplementedExpression
+
+class TupleTypeSpecifier extends UnimplementedExpression
 
 
 module.exports.Library = Library

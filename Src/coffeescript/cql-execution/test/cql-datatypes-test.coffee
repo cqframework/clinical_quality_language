@@ -1132,7 +1132,7 @@ describe 'DateTime.sameAs', ->
     DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2001-05-15T12:35:45.123'), DT.DateTime.Unit.MONTH).should.be.false
     DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2001-05-15T12:35:45.123'), DT.DateTime.Unit.YEAR).should.be.false
 
-it 'should handle different time zones', ->
+  it 'should handle different time zones', ->
     DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30')).should.be.true
     DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.MILLISECOND).should.be.true
     DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.SECOND).should.be.true
@@ -1142,7 +1142,7 @@ it 'should handle different time zones', ->
     DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.MONTH).should.be.true
     DT.DateTime.parse('2000-12-31T19:35:45.123+00:00').sameAs(DT.DateTime.parse('2001-01-01T00:05:45.123+04:30'), DT.DateTime.Unit.YEAR).should.be.true
 
-it 'should handle imprecision correctly with missing milliseconds', ->
+  it 'should handle imprecision correctly with missing milliseconds', ->
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'))
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.MILLISECOND)
     DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15T12:35:45'), DT.DateTime.Unit.SECOND).should.be.true
@@ -1244,7 +1244,7 @@ it 'should handle imprecision correctly with missing milliseconds', ->
     DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.MONTH).should.be.true
     DT.DateTime.parse('2000-05-15T12:35').sameAs(DT.DateTime.parse('2000-05-15T12:36'), DT.DateTime.Unit.YEAR).should.be.true
 
-it 'should handle imprecision correctly with missing minutes', ->
+  it 'should handle imprecision correctly with missing minutes', ->
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15T12'))
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.MILLISECOND)
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15T12'), DT.DateTime.Unit.SECOND)
@@ -1295,7 +1295,7 @@ it 'should handle imprecision correctly with missing minutes', ->
     DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.MONTH).should.be.true
     DT.DateTime.parse('2000-05-15T12').sameAs(DT.DateTime.parse('2000-05-15T13'), DT.DateTime.Unit.YEAR).should.be.true
 
-it 'should handle imprecision correctly with missing hours', ->
+  it 'should handle imprecision correctly with missing hours', ->
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15'))
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.MILLISECOND)
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05-15'), DT.DateTime.Unit.SECOND)
@@ -1346,7 +1346,7 @@ it 'should handle imprecision correctly with missing hours', ->
     DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.MONTH).should.be.true
     DT.DateTime.parse('2000-05-15').sameAs(DT.DateTime.parse('2000-05-16'), DT.DateTime.Unit.YEAR).should.be.true
 
-it 'should handle imprecision correctly with missing days', ->
+  it 'should handle imprecision correctly with missing days', ->
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05'))
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.MILLISECOND)
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000-05'), DT.DateTime.Unit.SECOND)
@@ -1397,7 +1397,7 @@ it 'should handle imprecision correctly with missing days', ->
     DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.MONTH).should.be.false
     DT.DateTime.parse('2000-05').sameAs(DT.DateTime.parse('2000-06'), DT.DateTime.Unit.YEAR).should.be.true
 
-it 'should handle imprecision correctly with missing months', ->
+  it 'should handle imprecision correctly with missing months', ->
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000'))
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.MILLISECOND)
     should.not.exist DT.DateTime.parse('2000-05-15T12:35:45.123').sameAs(DT.DateTime.parse('2000'), DT.DateTime.Unit.SECOND)
