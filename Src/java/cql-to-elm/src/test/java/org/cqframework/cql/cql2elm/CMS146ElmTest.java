@@ -65,7 +65,7 @@ public class CMS146ElmTest {
                 of.createRetrieve()
                         .withDataType(quickDataType("Encounter"))
                         .withTemplateId("cqf-encounter")
-                        .withCodeProperty("class")
+                        .withCodeProperty("type")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))

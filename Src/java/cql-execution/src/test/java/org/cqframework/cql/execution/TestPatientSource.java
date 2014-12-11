@@ -96,15 +96,26 @@ public class TestPatientSource implements PatientSource
         int hour = random.nextInt(24);
         int minute = random.nextInt(60);
 
-        StringBuffer sb = new StringBuffer("{ ");
-        sb.append("\"identifier\": { \"value\": \"").append(id).append("\" }, ");
-        sb.append("\"name\":\"").append(initial).append(". ").append(surname).append("\", ");
-        sb.append("\"gender\":\"").append(gender).append("\", ");
-        sb.append("\"birthDate\":\"").append(year).append("-").append(pad(month)).append("-").append(pad(day)).append("T");
-        sb.append(pad(hour)).append(":").append(pad(minute)).append("\" ");
-        sb.append("}");
-
-        return sb.toString();
+        return String.format(" {%n" +
+                "  \"resourceType\": \"Bundle\",%n" +
+                "  \"id\": \"example%s\",%n" +
+                "  \"meta\": {%n" +
+                "    \"versionId\": \"1\",%n" +
+                "    \"lastUpdated\": \"2014-08-18T01:43:30Z\"%n" +
+                "  },%n" +
+                "  \"base\": \"http://example.com/base\",%n" +
+                "  \"entry\" : [{%n" +
+                "        \"resource\": {%n" +
+                "        \"id\" : \"%s\",%n" +
+                "        \"meta\" :{ \"profile\" : [\"cqf-patient\"]},%n" +
+                "        \"resourceType\" : \"Patient\",%n" +
+                "        \"identifier\": [{ \"value\": \"1\" }],%n" +
+                "        \"name\": {\"given\":[\"%s\"], \"family\": [\"%s\"]},%n" +
+                "        \"gender\": \"%s\",%n" +
+                "        \"birthDate\" : \"%04d-%02d-%02dT%02d:%02d\"}%n" +
+                "        }%n" +
+                "  ]%n" +
+                "}", id, id, initial, surname, gender, year, month, day, hour, minute);
     }
 
     /**

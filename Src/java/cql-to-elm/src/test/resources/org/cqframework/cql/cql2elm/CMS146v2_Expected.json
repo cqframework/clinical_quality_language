@@ -191,7 +191,7 @@
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}Encounter",
                      "templateId" : "cqf-encounter",
-                     "codeProperty" : "class",
+                     "codeProperty" : "type",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
