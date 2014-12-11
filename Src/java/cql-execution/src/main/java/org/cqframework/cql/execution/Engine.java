@@ -2,12 +2,25 @@ package org.cqframework.cql.execution;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.mozilla.javascript.Context;
@@ -17,6 +30,9 @@ import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.Require;
 import org.mozilla.javascript.tools.shell.Global;
 
+import static java.nio.file.FileVisitResult.*;
+
+
 /**
  * {@code Engine} will take a CQL script, execute it, and return the results.
  * 
@@ -24,14 +40,7 @@ import org.mozilla.javascript.tools.shell.Global;
  */
 public class Engine {
 
-    private static String[] requiredScripts = {
-        "cql-code-service.js",
-        "cql-datatypes.js",
-        "cql-exec.js",
-        "cql-patient.js",
-        "template-exec.js"
-    };
-
+    private static final String JS_PATH = "org/cqframework/cql/execution/javascript";
     private static Results results = new Results();
     private static PatientSource patientSource;
     private static Path workingArea;
@@ -176,40 +185,82 @@ public class Engine {
         return results.copy();
     }
 
-    private static void prepWorkingArea(String script) throws IOException
-    {
+    private static void prepWorkingArea(String script) throws IOException, URISyntaxException {
         workingArea = Files.createTempDirectory("cqlExecutionEngine");
 
-        for( String filename : requiredScripts )
-        {
-            File file = new File(Engine.class.getResource(filename).getFile());
-            Path source = Paths.get(file.toURI());
-            Files.copy(source, workingArea.resolve(source.getFileName()) );
+        URL jsURL = Engine.class.getResource("javascript/");
+        if (jsURL.getProtocol().equals("file")) {
+            copyJavaScriptLibrariesFromFileSystem(Paths.get(jsURL.toURI()), workingArea);
+        } else if (jsURL.getProtocol().equals("jar")) {
+            copyJavaScriptLibrariesFromJar(jsURL, workingArea);
         }
 
         Path engineScript = Files.createFile(workingArea.resolve("engine-script.js"));
         Files.write(engineScript, script.getBytes("UTF-8"), StandardOpenOption.WRITE);
     }
 
-    private static void cleanWorkingArea()
-    {
-        String[] files = workingArea.toFile().list();
-        for(String file : files)
-        {
-            try {
-                Files.delete( workingArea.resolve(file) );
-            } catch (IOException e) {
-                // Oh well.
-                e.toString();
-            }
-        }
-
+    private static void cleanWorkingArea() {
         try {
-            Files.delete(workingArea);
+            Files.walkFileTree(workingArea, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
+                    return CONTINUE;
+                }
+            });
         } catch (IOException e) {
-            // So it goes.
-            e.toString();
+            System.err.println("Couldn't delete temp directory: " + workingArea.toString());
         }
         workingArea = null;
+    }
+
+    private static void copyJavaScriptLibrariesFromFileSystem(final Path source, final Path target) throws URISyntaxException, IOException {
+        Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                try {
+                    Files.copy(dir, target.resolve(source.relativize(dir)), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException x) {
+                    System.err.println("Problem copying directory: " + dir);
+                    x.printStackTrace();
+                    return SKIP_SUBTREE;
+                }
+                return CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.copy(file, target.resolve(source.relativize(file)));
+                return CONTINUE;
+            }
+        });
+    }
+
+    private static void copyJavaScriptLibrariesFromJar(final URL source, final Path target) throws URISyntaxException, IOException {
+        String fsPath = source.toURI().toString().substring(0, source.toURI().toString().indexOf("!"));
+        try(
+            FileSystem fs = FileSystems.newFileSystem(URI.create(fsPath), new HashMap<String, String>());
+            JarFile jar = new JarFile(fsPath.substring(9))
+        ){
+            Enumeration<JarEntry> entries = jar.entries();
+            while (entries.hasMoreElements()) {
+                String name = entries.nextElement().getName();
+                if (name.endsWith("/")) {
+                    // Path.relativize doesn't work correctly with the trailing slash
+                    name = name.substring(0, name.length() - 1);
+                }
+                Path root = fs.getPath(JS_PATH);
+                Path sourcePath = fs.getPath(name);
+                if (sourcePath.startsWith(root)) {
+                    Files.copy(sourcePath, target.resolve(root.relativize(sourcePath).toString()), StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
     }
 }

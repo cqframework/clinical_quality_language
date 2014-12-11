@@ -1,4 +1,6 @@
 DT = require './cql-datatypes'
+FHIR = require './fhir/models'
+typeIsArray = Array.isArray || ( value ) -> return {}.toString.call( value ) is '[object Array]'
 
 toDate = (str) ->
   if typeof str is 'string' then new Date(str)
@@ -43,18 +45,93 @@ class Patient
   findRecords: (profile) ->
     if profile is 'cqf-patient' then [@] else @records[profile] ? []
 
+
+
+FHIR.Patient::records = ->
+  @_records = {}
+  for r in @json.records ? []
+    @_records[r.profile] ?= []
+    @_records[r.profile].push new Record(r)
+  @_records
+
+FHIR.Patient::findRecords = (profile) ->
+  if profile is 'cqf-patient' then [@] else @_bundle?.findRecords(profile) ? []
+
+
+FHIR.Bundle::findRecords = (profile) ->
+  filtered = @entry().filter (e)->
+    e.resource()?.meta()?.profile()?.indexOf(profile) > -1
+  for e in filtered
+    r = e.resource()
+    r._bundle = this
+    r
+
+FHIR.Bundle::findRecord = (profile) ->
+  @findRecords(profile)[0]
+
+FHIR.Base::get = (field) ->
+  @[field]?.call(@)
+
+FHIR.Base::getDate = (field) ->
+  val = @get field
+  if val instanceof DT.DateTime
+    val
+  else if typeof val is "string"
+    DT.DateTime.parse(val)
+
+FHIR.Base::getInterval= (field) ->
+  val = @get field
+  if val instannceOf FHIR.Period
+    @periodToInterval val
+
+FHIR.Base::getDateOrInterval = (field) ->
+  val = @get field
+  if val instanceof FHIR.Period
+    @periodToInterval(val)
+  else if typeof val is "string"
+    DT.DateTime.parse(val)
+  else if val instanceof  DT.DateTime
+    val
+
+FHIR.Base::getCode = (field) ->
+  val = @get field
+  @toCode(val)
+
+FHIR.Base::toCode = (val) ->
+  if typeIsArray(val)
+    for c in val
+      @toCode(c)
+  else if val instanceof FHIR.CodeableConcept
+    @codableConceptToCodes  val
+  else if val instanceof FHIR.Coding
+    @codingToCode val
+
+
+FHIR.Base::codableConceptToCodes =(cc) ->
+  for c in cc.coding()
+    @codingToCode c
+
+FHIR.Base::codingToCode = (coding) ->
+  new DT.Code(coding.code(), coding.system(), coding.version())
+
+FHIR.Base::periodToInterval =(val) ->
+  if val instanceof FHIR.Period
+    start =  val.getDate("start")
+    end =  val.getDate("end")
+    new DT.Interval(start, end)
+
+
 class PatientSource
   constructor: (@patients) ->
-    @current = @patients.shift()
+    @nextPatient()
 
   currentPatient: ->
-    if @current?
-      new Patient(@current)
-    else null
+    @current_patient
 
   nextPatient: ->
     @current = @patients.shift()
-    @currentPatient()
+    @current_bundle = if @current then new FHIR.Bundle(@current)
+    @current_patient = @current_bundle?.findRecord("cqf-patient")
 
 
 module.exports.Patient = Patient

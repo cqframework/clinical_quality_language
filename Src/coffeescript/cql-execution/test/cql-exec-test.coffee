@@ -801,33 +801,34 @@ describe 'Retrieve', ->
   it 'should find observations', ->
     c = @conditions.exec(@ctx)
     c.should.have.length(2)
-    c[0].get('identifier').value.should.equal 'http://cqframework.org/3/2'
-    c[1].get('identifier').value.should.equal 'http://cqframework.org/3/4'
+    c[0].id().should.equal 'http://cqframework.org/3/2'
+    c[1].id().should.equal 'http://cqframework.org/3/4'
 
   it 'should find encounter performances', ->
     e = @encounters.exec(@ctx)
     e.should.have.length(3)
-    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/1'
-    e[1].get('identifier').value.should.equal 'http://cqframework.org/3/3'
-    e[2].get('identifier').value.should.equal 'http://cqframework.org/3/5'
+    e[0].id().should.equal 'http://cqframework.org/3/1'
+    e[1].id().should.equal 'http://cqframework.org/3/3'
+    e[2].id().should.equal 'http://cqframework.org/3/5'
 
   it 'should find observations with a value set', ->
     p = @pharyngitisConditions.exec(@ctx)
     p.should.have.length(1)
-    p[0].get('identifier').value.should.equal 'http://cqframework.org/3/2'
+    p[0].id().should.equal 'http://cqframework.org/3/2'
 
   it 'should find encounter performances with a value set', ->
     a = @ambulatoryEncounters.exec(@ctx)
     a.should.have.length(3)
-    a[0].get('identifier').value.should.equal 'http://cqframework.org/3/1'
-    a[1].get('identifier').value.should.equal 'http://cqframework.org/3/3'
-    a[2].get('identifier').value.should.equal 'http://cqframework.org/3/5'
+    a[0].id().should.equal 'http://cqframework.org/3/1'
+    a[1].id().should.equal 'http://cqframework.org/3/3'
+    a[2].id().should.equal 'http://cqframework.org/3/5'
 
   it 'should find encounter performances by service type', ->
     e = @encountersByServiceType.exec(@ctx)
-    e.should.have.length(2)
-    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/1'
-    e[1].get('identifier').value.should.equal 'http://cqframework.org/3/5'
+    e.should.have.length(3)
+    e[0].id().should.equal 'http://cqframework.org/3/1'
+    e[1].id().should.equal 'http://cqframework.org/3/3'
+    e[2].id().should.equal 'http://cqframework.org/3/5'
 
   it 'should not find encounter proposals when they don\'t exist', ->
     e = @wrongDataType.exec(@ctx)
@@ -858,17 +859,17 @@ describe 'DateRangeOptimizedQuery', ->
   it 'should find encounters performed during the MP', ->
     e = @encountersDuringMP.exec(@ctx)
     e.should.have.length(1)
-    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/5'
+    e[0].id().should.equal 'http://cqframework.org/3/5'
 
   it 'should find ambulatory encounters performed during the MP', ->
     e = @ambulatoryEncountersDuringMP.exec(@ctx)
     e.should.have.length(1)
-    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/5'
+    e[0].id().should.equal 'http://cqframework.org/3/5'
 
   it 'should find ambulatory encounter performances included in the MP', ->
     e = @ambulatoryEncountersIncludedInMP.exec(@ctx)
     e.should.have.length(1)
-    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/5'
+    e[0].id().should.equal 'http://cqframework.org/3/5'
 
 describe 'MultiSourceQuery', ->
   @beforeEach ->
@@ -951,16 +952,25 @@ describe 'Sorting', ->
   it 'should be able to sort by a single field asc' , ->
     e = @singleAsc.exec(@ctx)
     e.should.have.length(3)
-    e[0].E.get('identifier').value.should.equal "http://cqframework.org/3/1"
-    e[1].E.get('identifier').value.should.equal  "http://cqframework.org/3/3"
-    e[2].E.get('identifier').value.should.equal  "http://cqframework.org/3/5"
+    e[0].E.id().should.equal "http://cqframework.org/3/1"
+    e[1].E.id().should.equal  "http://cqframework.org/3/3"
+    e[2].E.id().should.equal  "http://cqframework.org/3/5"
 
   it 'should be able to sort by a single field desc', ->
     e = @singleDesc.exec(@ctx)
     e.should.have.length(3)
-    e[2].E.get('identifier').value.should.equal "http://cqframework.org/3/1"
-    e[1].E.get('identifier').value.should.equal  "http://cqframework.org/3/3"
-    e[0].E.get('identifier').value.should.equal  "http://cqframework.org/3/5"
+    e[2].E.id().should.equal "http://cqframework.org/3/1"
+    e[1].E.id().should.equal  "http://cqframework.org/3/3"
+    e[0].E.id().should.equal  "http://cqframework.org/3/5"
+
+describe 'FunctionDefinitions', ->
+  @beforeEach ->
+    setup @
+    @ctx.withPatients new PAT.PatientSource([P.P3])
+
+  it 'should be able to define and use a simple function' , ->
+    e = @testValue.exec(@ctx)
+    e.should.equal 3
 
 describe.skip 'IncludesQuery', ->
   @beforeEach ->
@@ -979,7 +989,7 @@ describe.skip 'IncludesQuery', ->
   it 'should find ambulatory encounter performances included in the MP', ->
     e = @mPIncludedAmbulatoryEncounters.exec(@ctx)
     e.should.have.length(1)
-    e[0].get('identifier').value.should.equal 'http://cqframework.org/3/5'
+    e[0].id().should.equal 'http://cqframework.org/3/5'
 
 ###
 describe.only 'ScratchPad', ->

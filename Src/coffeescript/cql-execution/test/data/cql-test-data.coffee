@@ -5482,10 +5482,10 @@ define Conditions = [Condition]
 define Encounters = [Encounter]
 define PharyngitisConditions = [Condition: "Acute Pharyngitis"]
 define AmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"]
-define EncountersByServiceType = [Encounter: type in "Annual Wellness Visit"]
+define EncountersByServiceType = [Encounter: type in "Ambulatory/ED Visit"]
 define WrongDataType = [EncounterProposal: "Ambulatory/ED Visit"]
 define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
-define WrongCodeProperty = [Encounter: class in "Annual Wellness Visit"]
+define WrongCodeProperty = [Encounter: class in "Ambulatory/ED Visit"]
 ###
 
 module.exports.Retrieve = {
@@ -5563,7 +5563,7 @@ module.exports.Retrieve = {
             "expression" : {
                "dataType" : "{http://org.hl7.fhir}Encounter",
                "templateId" : "cqf-encounter",
-               "codeProperty" : "class",
+               "codeProperty" : "type",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
@@ -5579,7 +5579,7 @@ module.exports.Retrieve = {
                "codeProperty" : "type",
                "type" : "Retrieve",
                "codes" : {
-                  "name" : "Annual Wellness Visit",
+                  "name" : "Ambulatory/ED Visit",
                   "type" : "ValueSetRef"
                }
             }
@@ -5617,7 +5617,7 @@ module.exports.Retrieve = {
                "codeProperty" : "class",
                "type" : "Retrieve",
                "codes" : {
-                  "name" : "Annual Wellness Visit",
+                  "name" : "Ambulatory/ED Visit",
                   "type" : "ValueSetRef"
                }
             }
@@ -5745,7 +5745,7 @@ module.exports.DateRangeOptimizedQuery = {
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}Encounter",
                      "templateId" : "cqf-encounter",
-                     "codeProperty" : "class",
+                     "codeProperty" : "type",
                      "dateProperty" : "period",
                      "type" : "Retrieve",
                      "codes" : {
@@ -5770,7 +5770,7 @@ module.exports.DateRangeOptimizedQuery = {
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}Encounter",
                      "templateId" : "cqf-encounter",
-                     "codeProperty" : "class",
+                     "codeProperty" : "type",
                      "dateProperty" : "period",
                      "type" : "Retrieve",
                      "codes" : {
@@ -5887,7 +5887,7 @@ module.exports.IncludesQuery = {
                   "expression" : {
                      "dataType" : "{http://org.hl7.fhir}Encounter",
                      "templateId" : "cqf-encounter",
-                     "codeProperty" : "class",
+                     "codeProperty" : "type",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
@@ -5923,7 +5923,7 @@ define msQueryWhere = foreach [Encounter] E,
                               where E.period included in MeasurementPeriod
 
 define msQueryWhere2 = foreach [Encounter] E, [Condition] C
-  where  E.period  included in MeasurementPeriod and  C.identifier.value = 'http://cqframework.org/3/2'
+  where  E.period  included in MeasurementPeriod and  C.id = 'http://cqframework.org/3/2'
 
 define msQuery = foreach [Encounter] E, [Condition] C return {E: E, C:C}
 ###
@@ -6075,7 +6075,7 @@ module.exports.MultiSourceQuery = {
                "where" : {
                   "type" : "Equal",
                   "operand" : [ {
-                     "path" : "identifier.value",
+                     "path" : "id",
                      "scope" : "C",
                      "type" : "Property"
                   }, {
@@ -6334,16 +6334,16 @@ using QUICK
 context Patient
 
 define withQuery =  [Encounter] E
-  with [Condition] C such that C.identifier.value = 'http://cqframework.org/3/2'
+  with [Condition] C such that C.id= 'http://cqframework.org/3/2'
 
 define withQuery2 =  [Encounter] E
-  with [Condition] C such that C.identifier.value = 'http://cqframework.org/3'
+  with [Condition] C such that C.id = 'http://cqframework.org/3'
 
 define withOutQuery =  [Encounter] E
-  without [Condition] C such that C.identifier.value = 'http://cqframework.org/3/'
+  without [Condition] C such that C.id = 'http://cqframework.org/3/'
 
 define withOutQuery2 =  [Encounter] E
-  without [Condition] C such that C.identifier.value = 'http://cqframework.org/3/2'
+  without [Condition] C such that C.id = 'http://cqframework.org/3/2'
 ###
 
 module.exports.QueryRelationship = {
@@ -6398,7 +6398,7 @@ module.exports.QueryRelationship = {
                   "suchThat" : {
                      "type" : "Equal",
                      "operand" : [ {
-                        "path" : "identifier.value",
+                        "path" : "id",
                         "scope" : "C",
                         "type" : "Property"
                      }, {
@@ -6433,7 +6433,7 @@ module.exports.QueryRelationship = {
                   "suchThat" : {
                      "type" : "Equal",
                      "operand" : [ {
-                        "path" : "identifier.value",
+                        "path" : "id",
                         "scope" : "C",
                         "type" : "Property"
                      }, {
@@ -6468,7 +6468,7 @@ module.exports.QueryRelationship = {
                   "suchThat" : {
                      "type" : "Equal",
                      "operand" : [ {
-                        "path" : "identifier.value",
+                        "path" : "id",
                         "scope" : "C",
                         "type" : "Property"
                      }, {
@@ -6503,7 +6503,7 @@ module.exports.QueryRelationship = {
                   "suchThat" : {
                      "type" : "Equal",
                      "operand" : [ {
-                        "path" : "identifier.value",
+                        "path" : "id",
                         "scope" : "C",
                         "type" : "Property"
                      }, {
@@ -6523,8 +6523,8 @@ module.exports.QueryRelationship = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define singleAsc =  [Encounter] E  return {E : E} sort by E.identifier.value
-define singleDesc =  [Encounter] E return {E : E} sort by E.identifier.value desc
+define singleAsc =  [Encounter] E  return {E : E} sort by E.id
+define singleDesc =  [Encounter] E return {E : E} sort by E.id desc
 ###
 
 module.exports.Sorting = {
@@ -6586,7 +6586,7 @@ module.exports.Sorting = {
                      "direction" : "asc",
                      "type" : "ByExpression",
                      "expression" : {
-                        "path" : "identifier.value",
+                        "path" : "id",
                         "scope" : "E",
                         "type" : "Property"
                      }
@@ -6624,12 +6624,97 @@ module.exports.Sorting = {
                      "direction" : "desc",
                      "type" : "ByExpression",
                      "expression" : {
-                        "path" : "identifier.value",
+                        "path" : "id",
                         "scope" : "E",
                         "type" : "Property"
                      }
                   } ]
                }
+            }
+         } ]
+      }
+   }
+}
+
+### FunctionDefinitions
+library TestSnippet version '1'
+using QUICK
+context Patient
+define function foo (a:integer ,b:integer)
+  { return a + b }
+define testValue = foo(1,2)
+###
+
+module.exports.FunctionDefinitions = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "foo",
+            "context" : "Patient",
+            "type" : "FunctionDef",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "a",
+                  "type" : "IdentifierRef"
+               }, {
+                  "name" : "b",
+                  "type" : "IdentifierRef"
+               } ]
+            },
+            "parameter" : [ {
+               "name" : "a",
+               "parameterTypeSpecifier" : {
+                  "name" : "{http://www.w3.org/2001/XMLSchema}integer",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }, {
+               "name" : "b",
+               "parameterTypeSpecifier" : {
+                  "name" : "{http://www.w3.org/2001/XMLSchema}integer",
+                  "type" : "NamedTypeSpecifier"
+               }
+            } ]
+         }, {
+            "name" : "testValue",
+            "context" : "Patient",
+            "expression" : {
+               "name" : "foo",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
             }
          } ]
       }

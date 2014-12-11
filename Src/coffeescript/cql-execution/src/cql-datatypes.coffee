@@ -1,3 +1,5 @@
+typeIsArray = Array.isArray || ( value ) -> return {}.toString.call( value ) is '[object Array]'
+
 class Code
   constructor: (@code, @system, @version) ->
 
@@ -5,7 +7,17 @@ class ValueSet
   constructor: (@oid, @version, @codes = []) ->
 
   hasCode: (code, system, version) ->
+    if typeIsArray code
+      matches = for c in code
+        @hasCode c
+      return true in matches
     if code instanceof Object then [ code, system, version ] = [ code.code, code.system, code.version ]
+    matches = (c for c in @codes when c.code is code)
+    if system? then matches = (c for c in matches when c.system is system)
+    if version? then matches = (c for c in matches when c.version is version)
+    return matches.length > 0
+
+  matchCode: (code,system,version) ->
     matches = (c for c in @codes when c.code is code)
     if system? then matches = (c for c in matches when c.system is system)
     if version? then matches = (c for c in matches when c.version is version)
@@ -54,7 +66,7 @@ class DateTime
 
   @parse: (string) ->
     match = regex = /(\d{4})(-(\d{2}))?(-(\d{2}))?(T((\d{2})(\:(\d{2})(\:(\d{2})(\.(\d+))?)?)?)?(([+-])(\d{2})(\:?(\d{2}))?)?)?/.exec string
-    
+
     if match[0] is string
       args = [match[1], match[3], match[5], match[8], match[10], match[12], match[14]]
       # fix up milliseconds by padding zeros and/or truncating (5 --> 500, 50 --> 500, 54321 --> 543, etc.)

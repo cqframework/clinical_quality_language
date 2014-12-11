@@ -23,7 +23,7 @@ repositories {
 
 ext.coffee = [
     srcDir:  "${projectDir}/../../coffeescript/cql-execution/src",
-    destDir: "${projectDir}/src/main/resources/org/cqframework/cql/execution"
+    destDir: "${projectDir}/src/main/resources/org/cqframework/cql/execution/javascript"
 ]
 
 configurations {
@@ -42,7 +42,7 @@ dependencies {
 
 task compileCoffee(type: CoffeeScriptCompile) {
     setCoffeeScriptJs(configurations.coffeescript)
-    source fileTree(coffee.srcDir).include('*.coffee')
+    source fileTree(coffee.srcDir).include('**/*.coffee')
     destinationDir file(coffee.destDir)
 }
 

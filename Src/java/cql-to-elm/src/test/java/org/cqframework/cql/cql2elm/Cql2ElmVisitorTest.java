@@ -728,7 +728,7 @@ public class Cql2ElmVisitorTest {
         assertThat(source.getAlias(), is("E"));
         Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("Encounter"));
-        assertThat(request.getCodeProperty(), is("class"));
+        assertThat(request.getCodeProperty(), is("type"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
@@ -759,7 +759,7 @@ public class Cql2ElmVisitorTest {
         assertThat(source.getAlias(), is("E"));
         Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("Encounter"));
-        assertThat(request.getCodeProperty(), is("class"));
+        assertThat(request.getCodeProperty(), is("type"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
@@ -876,7 +876,7 @@ public class Cql2ElmVisitorTest {
         assertThat(source.getAlias(), is("E"));
         Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("Encounter"));
-        assertThat(request.getCodeProperty(), is("class"));
+        assertThat(request.getCodeProperty(), is("type"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
@@ -1107,7 +1107,7 @@ public class Cql2ElmVisitorTest {
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
         assertThat(request.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
         assertThat(request.getDataType().getLocalPart(), is("Encounter"));
-        assertThat(request.getCodeProperty(), is("class"));
+        assertThat(request.getCodeProperty(), is("type"));
         ValueSetRef vs = (ValueSetRef) request.getCodes();
         assertThat(vs.getName(), is("Inpatient"));
         assertThat(vs.getLibraryName(), is(nullValue()));
