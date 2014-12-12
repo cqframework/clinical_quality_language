@@ -1921,7 +1921,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     case "CalculateAgeInSeconds":
                     case "CalculateAgeInMilliseconds": {
                         CalculateAge operator = of.createCalculateAge()
-                                .withPrecision(resolveAgeRelatedFunctionPrecision(fun.getName()));
+                                .withPrecision(resolveAgeRelatedFunctionPrecision(ageRelatedFunctionName));
 
                         if (fun.getOperand().size() > 0) {
                             operator.setOperand(fun.getOperand().get(0));
