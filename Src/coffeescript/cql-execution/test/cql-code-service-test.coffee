@@ -1,6 +1,6 @@
 should = require 'should'
 { CodeService } = require '../lib/cql-code-service'
-{ Code, ValueSet } = require '../lib/cql-datatypes'
+{ Code, ValueSet } = require '../lib/datatypes/datatypes'
 
 
 describe 'CodeService', ->
@@ -41,7 +41,7 @@ describe 'CodeService', ->
         new Code('PQR', '2.4.6.8.0', '2'),
         new Code('STU', '2.4.6.8.0', '1'),
       ])
-  
+
   it 'should find value sets by OID', ->
     valueSets = @svc.findValueSetsByOid('1.2.3.4.5')
     valueSets.length.should.equal 2

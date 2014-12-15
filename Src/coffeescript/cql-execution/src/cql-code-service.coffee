@@ -1,4 +1,4 @@
-{ Code, ValueSet } = require './cql-datatypes'
+{ Code, ValueSet } = require './datatypes/datatypes'
 
 class CodeService
   constructor: (valueSetsJson = {}) ->

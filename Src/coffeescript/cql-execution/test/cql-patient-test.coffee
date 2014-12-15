@@ -1,6 +1,6 @@
 should = require 'should'
 { Patient } = require '../lib/cql-patient'
-DT = require '../lib/cql-datatypes'
+DT = require '../lib/datatypes/datatypes'
 
 describe 'Record', ->
   @beforeEach ->

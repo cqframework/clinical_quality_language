@@ -1,4 +1,4 @@
-DT = require '../lib/cql-datatypes'
+DT = require '../lib/datatypes/datatypes'
 
 class DateTime
   @parse: (string) ->

@@ -60,7 +60,7 @@ console.log JSON.stringify(result, undefined, 2)
 ```
 
 In the above file, we've assumed the JSON ELM coffeescript file for the measure is called
-`my-measure.coffeescript` and is in the same directory as the file (and `cql-exec` library).  We've
+`my-measure.coffeescript` and is in the same directory as the file (and `cql` library).  We've
 also assumed a couple of very simple patients.  Let's call the file we just created
 `my-measure-exec.coffeescript`.
 

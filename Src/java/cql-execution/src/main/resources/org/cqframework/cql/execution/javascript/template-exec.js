@@ -2,17 +2,14 @@
 (function() {
   var Context, Library, PatientSource, ctx, lib, measure, psource, result, _ref, CodeService, cservice;
 
-  _ref = require('./cql-exec'), Library = _ref.Library, Context = _ref.Context;
 
-  CodeService = require('./cql-code-service').CodeService;
-  PatientSource = require('./cql-patient').PatientSource;
+  _ref = require('./cql'), Library = _ref.Library, Context = _ref.Context, PatientSource = _ref.PatientSource;
 
   measure = require('./engine-script');
   lib = new Library(measure);
 
   importPackage(org.cqframework.cql.execution);
   psource = new PatientSource(Engine.getPatientSource());
-  
   cservice = Engine.getCodeService();
   
   ctx = new Context(lib, psource, cservice);
@@ -20,5 +17,5 @@
 
   //print(JSON.stringify(result, void 0, 2));
   Engine.add( JSON.stringify(result, void 0, 2) );
-  
+
 }).call(this);
