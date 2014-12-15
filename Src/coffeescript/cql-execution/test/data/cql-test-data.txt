@@ -83,9 +83,6 @@ define Second = Date(2012, 4, 15, 12, 10, 59)
 define Millisecond = Date(2012, 4, 15, 12, 10, 59, 456)
 define TimeZoneOffset = Date(2012, 4, 15, 12, 10, 59, 456, -5)
 
-# Interval
-define Foo = interval[1, 4]
-
 # Greater
 define AGtB_Int = 5 > 4
 define AEqB_Int = 5 > 5
@@ -148,20 +145,6 @@ define WrongStringInVersionedValueSet = 'M' in "Versioned Female"
 define WrongShortCode = Code('M') in "Female"
 define WrongMediumCode = Code('F', '3.16.840.1.113883.18.2') in "Female"
 define WrongLongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6') in "Female"
-
-# InValueSetFunction
-valueset "Female" = '2.16.840.1.113883.3.560.100.2'
-valueset "Versioned Female" = '2.16.840.1.113883.3.560.100.2' version '20121025'
-define String = InValueSet('F', '2.16.840.1.113883.3.560.100.2')
-define StringInVersionedValueSet = InValueSet('F', '2.16.840.1.113883.3.560.100.2', '20121025')
-define ShortCode = InValueSet(Code('F'), '2.16.840.1.113883.3.560.100.2')
-define MediumCode = InValueSet(Code('F', '2.16.840.1.113883.18.2'), '2.16.840.1.113883.3.560.100.2')
-define LongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.5'), '2.16.840.1.113883.3.560.100.2')
-define WrongString = InValueSet('M', '2.16.840.1.113883.3.560.100.2')
-define WrongStringInVersionedValueSet = InValueSet('M', '2.16.840.1.113883.3.560.100.2', '20121025')
-define WrongShortCode = InValueSet(Code('M'), '2.16.840.1.113883.3.560.100.2')
-define WrongMediumCode = InValueSet(Code('F', '3.16.840.1.113883.18.2'), '2.16.840.1.113883.3.560.100.2')
-define WrongLongCode = InValueSet(Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6'), '2.16.840.1.113883.3.560.100.2')
 
 # PatientPropertyInValueSet
 valueset "Female" = '2.16.840.1.113883.3.560.100.2'

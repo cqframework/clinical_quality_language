@@ -1,8 +1,8 @@
 should = require 'should'
-{ Library, Context, Results } =  require '../lib/cql-exec'
+{ Library, Context, Results } =  require '../lib/cql'
 { CodeService } = require '../lib/cql-code-service'
 PAT = require '../lib/cql-patient'
-DT = require '../lib/cql-datatypes'
+DT = require '../lib/datatypes/datatypes'
 D = require './data/cql-test-data'
 P = require './data/cql-test-patients'
 
@@ -482,48 +482,6 @@ describe 'InValueSet', ->
 
   it 'should find short code in value set', ->
     @shortCode.exec(@ctx).should.be.true
-
-  it 'should find medium code in value set', ->
-    @mediumCode.exec(@ctx).should.be.true
-
-  it 'should find long code in value set', ->
-    @longCode.exec(@ctx).should.be.true
-
-  it 'should not find string code in value set', ->
-    @wrongString.exec(@ctx).should.be.false
-
-  it 'should not find string code in versioned value set', ->
-    @wrongStringInVersionedValueSet.exec(@ctx).should.be.false
-
-  it 'should not find short code in value set', ->
-    @wrongShortCode.exec(@ctx).should.be.false
-
-  it 'should not find medium code in value set', ->
-    @wrongMediumCode.exec(@ctx).should.be.false
-
-  it 'should not find long code in value set', ->
-    @wrongLongCode.exec(@ctx).should.be.false
-
-# TODO: Is this still how InValueSet works?
-describe 'InValueSetFunction', ->
-  @beforeEach ->
-    setup @
-    @ctx.withCodeService new CodeService {
-      "2.16.840.1.113883.3.560.100.2" : {
-        "20121025" : [
-          { "code": "F", "system": "2.16.840.1.113883.18.2", "version": "HL7V2.5" }
-        ]
-      }
-    }
-
-  it 'should find string code in value set', ->
-    @string.exec(@ctx).should.be.true
-
-  it 'should find string code in versioned value set', ->
-    @stringInVersionedValueSet.exec(@ctx).should.be.true
-
-  it 'should find short code in value set', ->
-    @shortCode.exec(@ctx)#.should.be.true
 
   it 'should find medium code in value set', ->
     @mediumCode.exec(@ctx).should.be.true

@@ -1,6 +1,6 @@
 should = require 'should'
 TH = require './cql-test-helper'
-DT = require '../lib/cql-datatypes'
+DT = require '../lib/datatypes/datatypes'
 
 setupIntervalsAndDateTimes = (test) ->
   test['all2012'] = new TH.Interval(DT.DateTime.parse('2012-01-01T00:00:00.0'), DT.DateTime.parse('2012-12-31T23:59:59.999'))

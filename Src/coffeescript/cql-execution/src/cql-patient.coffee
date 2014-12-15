@@ -1,6 +1,6 @@
-DT = require './cql-datatypes'
+DT = require './datatypes/datatypes'
 FHIR = require './fhir/models'
-typeIsArray = Array.isArray || ( value ) -> return {}.toString.call( value ) is '[object Array]'
+{ typeIsArray } = require './util/util'
 
 toDate = (str) ->
   if typeof str is 'string' then new Date(str)
