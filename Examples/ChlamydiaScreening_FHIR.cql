@@ -17,12 +17,12 @@ define retrieve [QUICK.Condition: code in Concept, effectiveTime during Range]
 						interval
 						[
 							if C.onsetAge is not null 
-								then Date((year of Today()) - (Age() - C.onsetAge)) 
+								then DateTime((year of Today()) - (Age() - C.onsetAge))
 								else C.onsetDate,
 							case
 								when C.abatement is not null then null
 								when C.abatementAge is not null
-									then Date((year of Today()) - (Age() - C.abatementAge))
+									then DateTime((year of Today()) - (Age() - C.abatementAge))
 								else C.abatementDate
 							end
 						],
@@ -43,12 +43,12 @@ define retrieve [NonOccurrence of Condition: code in Concept, effectiveTime duri
 						interval
 						[
 							if C.onsetAge is not null 
-								then Date((year of Today()) - (Age() - C.onsetAge)) 
+								then DateTime((year of Today()) - (Age() - C.onsetAge))
 								else C.onsetDate,
 							case
 								when C.abatement is not null then null
 								when C.abatementAge is not null
-									then Date((year of Today()) - (Age() - C.abatementAge))
+									then DateTime((year of Today()) - (Age() - C.abatementAge))
 								else C.abatementDate
 							end
 						],
@@ -99,12 +99,12 @@ define retrieve [QUICK.MyCondition: code in Concept, effectiveTime during Range]
 						interval
 						[
 							if C.onsetAge is not null 
-								then Date((year of Today()) - (Age() - C.onsetAge)) 
+								then DateTime((year of Today()) - (Age() - C.onsetAge))
 								else C.onsetDate,
 							case
 								when C.abatement is not null then null
 								when C.abatementAge is not null
-									then Date((year of Today()) - (Age() - C.abatementAge))
+									then DateTime((year of Today()) - (Age() - C.abatementAge))
 								else C.abatementDate
 							end
 						],

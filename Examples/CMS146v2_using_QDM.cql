@@ -2,7 +2,7 @@ library CMS146_QDMß version '2'
 
 using QDM
 
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Acute Tonsillitis" = '2.16.840.1.113883.3.464.1003.102.12.1012'

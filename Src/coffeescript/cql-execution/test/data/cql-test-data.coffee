@@ -9,7 +9,7 @@
 ### InAgeDemographic
 library TestSnippet version '1'
 using QUICK
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 
 context Patient
 
@@ -41,7 +41,7 @@ module.exports.InAgeDemographic = {
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -58,7 +58,7 @@ module.exports.InAgeDemographic = {
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1030,9 +1030,9 @@ module.exports.Not = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AgeAt2012 = AgeInYearsAt(Date(2012))
-define AgeAt19810216 = AgeInYearsAt(Date(1981, 2, 16))
-define AgeAt1975 = AgeInYearsAt(Date(1975))
+define AgeAt2012 = AgeInYearsAt(DateTime(2012))
+define AgeAt19810216 = AgeInYearsAt(DateTime(1981, 2, 16))
+define AgeAt1975 = AgeInYearsAt(DateTime(1975))
 ###
 
 module.exports.CalculateAgeAt = {
@@ -1077,7 +1077,7 @@ module.exports.CalculateAgeAt = {
                      "type" : "ExpressionRef"
                   }
                }, {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1100,7 +1100,7 @@ module.exports.CalculateAgeAt = {
                      "type" : "ExpressionRef"
                   }
                }, {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1131,7 +1131,7 @@ module.exports.CalculateAgeAt = {
                      "type" : "ExpressionRef"
                   }
                }, {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1149,14 +1149,14 @@ module.exports.CalculateAgeAt = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Year = Date(2012)
-define Month = Date(2012, 4)
-define Day = Date(2012, 4, 15)
-define Hour = Date(2012, 4, 15, 12)
-define Minute = Date(2012, 4, 15, 12, 10)
-define Second = Date(2012, 4, 15, 12, 10, 59)
-define Millisecond = Date(2012, 4, 15, 12, 10, 59, 456)
-define TimeZoneOffset = Date(2012, 4, 15, 12, 10, 59, 456, -5)
+define Year = DateTime(2012)
+define Month = DateTime(2012, 4)
+define Day = DateTime(2012, 4, 15)
+define Hour = DateTime(2012, 4, 15, 12)
+define Minute = DateTime(2012, 4, 15, 12, 10)
+define Second = DateTime(2012, 4, 15, 12, 10, 59)
+define Millisecond = DateTime(2012, 4, 15, 12, 10, 59, 456)
+define TimeZoneOffset = DateTime(2012, 4, 15, 12, 10, 59, 456, -5)
 ###
 
 module.exports.DateFunctionRef = {
@@ -1191,7 +1191,7 @@ module.exports.DateFunctionRef = {
             "name" : "Year",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1203,7 +1203,7 @@ module.exports.DateFunctionRef = {
             "name" : "Month",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1219,7 +1219,7 @@ module.exports.DateFunctionRef = {
             "name" : "Day",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1239,7 +1239,7 @@ module.exports.DateFunctionRef = {
             "name" : "Hour",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1263,7 +1263,7 @@ module.exports.DateFunctionRef = {
             "name" : "Minute",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1291,7 +1291,7 @@ module.exports.DateFunctionRef = {
             "name" : "Second",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1323,7 +1323,7 @@ module.exports.DateFunctionRef = {
             "name" : "Millisecond",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -1359,7 +1359,7 @@ module.exports.DateFunctionRef = {
             "name" : "TimeZoneOffset",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2035,10 +2035,10 @@ module.exports.Exists = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Open = interval(Date(2012, 1, 1), Date(2013, 1, 1))
-define LeftOpen = interval(Date(2012, 1, 1), Date(2013, 1, 1)]
-define RightOpen = interval[Date(2012, 1, 1), Date(2013, 1, 1))
-define Closed = interval[Date(2012, 1, 1), Date(2013, 1, 1)]
+define Open = interval(DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define LeftOpen = interval(DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
+define RightOpen = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define Closed = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
 ###
 
 module.exports.Interval = {
@@ -2077,7 +2077,7 @@ module.exports.Interval = {
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2094,7 +2094,7 @@ module.exports.Interval = {
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2119,7 +2119,7 @@ module.exports.Interval = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2136,7 +2136,7 @@ module.exports.Interval = {
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2161,7 +2161,7 @@ module.exports.Interval = {
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2178,7 +2178,7 @@ module.exports.Interval = {
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2203,7 +2203,7 @@ module.exports.Interval = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2220,7 +2220,7 @@ module.exports.Interval = {
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2246,7 +2246,7 @@ module.exports.Interval = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Foo = start of interval[Date(2012, 1, 1), Date(2013, 1, 1)]
+define Foo = start of interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
 ###
 
 module.exports.Start = {
@@ -2287,7 +2287,7 @@ module.exports.Start = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "name" : "Date",
+                     "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
                         "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -2304,7 +2304,7 @@ module.exports.Start = {
                      } ]
                   },
                   "high" : {
-                     "name" : "Date",
+                     "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
                         "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -4209,9 +4209,9 @@ module.exports.MathPrecedence = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NewYear2013 = Date(2013, 1, 1, 0, 0, 0, 0)
-define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
-define January2014 = Date(2014, 1)
+define NewYear2013 = DateTime(2013, 1, 1, 0, 0, 0, 0)
+define NewYear2014 = DateTime(2014, 1, 1, 0, 0, 0, 0)
+define January2014 = DateTime(2014, 1)
 define YearsBetween = years between NewYear2013 and NewYear2014
 define MonthsBetween = months between NewYear2013 and NewYear2014
 define DaysBetween = days between NewYear2013 and NewYear2014
@@ -4262,7 +4262,7 @@ module.exports.DurationBetween = {
             "name" : "NewYear2013",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -4298,7 +4298,7 @@ module.exports.DurationBetween = {
             "name" : "NewYear2014",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -4334,7 +4334,7 @@ module.exports.DurationBetween = {
             "name" : "January2014",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -4579,8 +4579,8 @@ module.exports.DurationBetween = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
-define February2014 = Date(2014, 2)
+define NewYear2014 = DateTime(2014, 1, 1, 0, 0, 0, 0)
+define February2014 = DateTime(2014, 2)
 define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
 define GreaterThan40DaysAfter = days between NewYear2014 and February2014 > 40
 define GreaterThan80DaysAfter = days between NewYear2014 and February2014 > 80
@@ -4633,7 +4633,7 @@ module.exports.DurationBetweenComparisons = {
             "name" : "NewYear2014",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -4669,7 +4669,7 @@ module.exports.DurationBetweenComparisons = {
             "name" : "February2014",
             "context" : "Patient",
             "expression" : {
-               "name" : "Date",
+               "name" : "DateTime",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -5352,7 +5352,7 @@ module.exports.Retrieve = {
 ### DateRangeOptimizedQuery
 library TestSnippet version '1'
 using QUICK
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
 context Patient
 define EncountersDuringMP = [Encounter] E where E.period during MeasurementPeriod
@@ -5384,7 +5384,7 @@ module.exports.DateRangeOptimizedQuery = {
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -5401,7 +5401,7 @@ module.exports.DateRangeOptimizedQuery = {
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -5516,7 +5516,7 @@ module.exports.DateRangeOptimizedQuery = {
 ### IncludesQuery
 library TestSnippet version '1'
 using QUICK
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
 context Patient
 define MPIncludedAmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.period
@@ -5546,7 +5546,7 @@ module.exports.IncludesQuery = {
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -5563,7 +5563,7 @@ module.exports.IncludesQuery = {
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -5639,7 +5639,7 @@ module.exports.IncludesQuery = {
 ### MultiSourceQuery
 library TestSnippet version '1'
 using QUICK
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 context Patient
 define msQueryWhere = foreach [Encounter] E,
                               [Condition] C
@@ -5675,7 +5675,7 @@ module.exports.MultiSourceQuery = {
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -5692,7 +5692,7 @@ module.exports.MultiSourceQuery = {
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",

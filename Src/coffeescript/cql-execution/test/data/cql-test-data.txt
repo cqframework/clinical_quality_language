@@ -1,5 +1,5 @@
 # InAgeDemographic
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 
 context Patient
 
@@ -69,19 +69,19 @@ define NotFalse = not false
 define NotNull = not null
 
 # CalculateAgeAt
-define AgeAt2012 = AgeInYearsAt(Date(2012))
-define AgeAt19810216 = AgeInYearsAt(Date(1981, 2, 16))
-define AgeAt1975 = AgeInYearsAt(Date(1975))
+define AgeAt2012 = AgeInYearsAt(DateTime(2012))
+define AgeAt19810216 = AgeInYearsAt(DateTime(1981, 2, 16))
+define AgeAt1975 = AgeInYearsAt(DateTime(1975))
 
 # DateFunctionRef
-define Year = Date(2012)
-define Month = Date(2012, 4)
-define Day = Date(2012, 4, 15)
-define Hour = Date(2012, 4, 15, 12)
-define Minute = Date(2012, 4, 15, 12, 10)
-define Second = Date(2012, 4, 15, 12, 10, 59)
-define Millisecond = Date(2012, 4, 15, 12, 10, 59, 456)
-define TimeZoneOffset = Date(2012, 4, 15, 12, 10, 59, 456, -5)
+define Year = DateTime(2012)
+define Month = DateTime(2012, 4)
+define Day = DateTime(2012, 4, 15)
+define Hour = DateTime(2012, 4, 15, 12)
+define Minute = DateTime(2012, 4, 15, 12, 10)
+define Second = DateTime(2012, 4, 15, 12, 10, 59)
+define Millisecond = DateTime(2012, 4, 15, 12, 10, 59, 456)
+define TimeZoneOffset = DateTime(2012, 4, 15, 12, 10, 59, 456, -5)
 
 # Greater
 define AGtB_Int = 5 > 4
@@ -120,13 +120,13 @@ define EmptyList = exists ({})
 define FullList = exists ({ 1, 2, 3 })
 
 # Interval
-define Open = interval(Date(2012, 1, 1), Date(2013, 1, 1))
-define LeftOpen = interval(Date(2012, 1, 1), Date(2013, 1, 1)]
-define RightOpen = interval[Date(2012, 1, 1), Date(2013, 1, 1))
-define Closed = interval[Date(2012, 1, 1), Date(2013, 1, 1)]
+define Open = interval(DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define LeftOpen = interval(DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
+define RightOpen = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define Closed = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
 
 # Start
-define Foo = start of interval[Date(2012, 1, 1), Date(2013, 1, 1)]
+define Foo = start of interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
 
 # InList
 define IsIn = 4 in { 3, 4, 5 }
@@ -204,9 +204,9 @@ define Mixed = 1 + 5 * 10 - 15 / 3
 define Parenthetical = (1 + 5) * (10 - 15) / 3
 
 # DurationBetween
-define NewYear2013 = Date(2013, 1, 1, 0, 0, 0, 0)
-define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
-define January2014 = Date(2014, 1)
+define NewYear2013 = DateTime(2013, 1, 1, 0, 0, 0, 0)
+define NewYear2014 = DateTime(2014, 1, 1, 0, 0, 0, 0)
+define January2014 = DateTime(2014, 1)
 define YearsBetween = years between NewYear2013 and NewYear2014
 define MonthsBetween = months between NewYear2013 and NewYear2014
 define DaysBetween = days between NewYear2013 and NewYear2014
@@ -225,8 +225,8 @@ define MillisecondsBetweenUncertainty = milliseconds between NewYear2014 and Jan
 define MillisecondsBetweenReversedUncertainty = milliseconds between January2014 and NewYear2014
 
 # DurationBetweenComparisons
-define NewYear2014 = Date(2014, 1, 1, 0, 0, 0, 0)
-define February2014 = Date(2014, 2)
+define NewYear2014 = DateTime(2014, 1, 1, 0, 0, 0, 0)
+define February2014 = DateTime(2014, 2)
 define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
 define GreaterThan40DaysAfter = days between NewYear2014 and February2014 > 40
 define GreaterThan80DaysAfter = days between NewYear2014 and February2014 > 80
@@ -270,19 +270,19 @@ define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
 define WrongCodeProperty = [Encounter: class in "Ambulatory/ED Visit"]
 
 # DateRangeOptimizedQuery
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
 define EncountersDuringMP = [Encounter] E where E.period during MeasurementPeriod
 define AmbulatoryEncountersDuringMP = [Encounter: "Ambulatory/ED Visit"] E where E.period during MeasurementPeriod
 define AmbulatoryEncountersIncludedInMP = [Encounter: "Ambulatory/ED Visit"] E where E.period included in MeasurementPeriod
 
 # IncludesQuery
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
 define MPIncludedAmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.period
 
 #MultiSourceQuery
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 define msQueryWhere = foreach [Encounter] E,
                               [Condition] C
                               where E.period included in MeasurementPeriod

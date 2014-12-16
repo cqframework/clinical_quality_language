@@ -34,11 +34,6 @@ module.exports.DateTimeFunctionRef = class DateTimeFunctionRef extends FunctionR
   exec: (ctx) ->
     new DT.DateTime(@execArgs(ctx)...)
 
-# TODO: Deprecate
-module.exports.DateFunctionRef = class DateFunctionRef extends DateTimeFunctionRef
-  constructor: (json) ->
-    super
-
 module.exports.DurationBetween = class DurationBetween extends Expression
   constructor: (json) ->
     super

@@ -13,8 +13,8 @@
   where 
     interval
 	[
-	  Coalesce(C.onsetDate, Date((year of Today()) - (Age() - C.onsetAge))), 
-	  Coalesce(C.abatementDate, Date(year of Today()) - (Age() - C.abatementAge)))
+	  Coalesce(C.onsetDate, DateTime((year of Today()) - (Age() - C.onsetAge))),
+	  Coalesce(C.abatementDate, DateTime(year of Today()) - (Age() - C.abatementAge)))
 	] overlaps MeasurementPeriod
 
 // If abatement as a boolean is allowed, it must be considered as well
@@ -23,8 +23,8 @@
   where
 	interval
 	[
-		Coalesce(C.onsetDate, Date((year of Today()) - (Age() - C.onsetAge))),
-		Coalesce(C.abatementDate, Date(Year of Today()) - (Age() - C.abatementAge)), if C.abatement is not null then null)
+		Coalesce(C.onsetDate, DateTime((year of Today()) - (Age() - C.onsetAge))),
+		Coalesce(C.abatementDate, DateTime(Year of Today()) - (Age() - C.abatementAge)), if C.abatement is not null then null)
 	]
 
 // Condition w/ onsetDate vs Encounter w/ EffectiveTime
@@ -37,16 +37,16 @@
 // Condition, Asthma started before 14 August 2013
 // QUICK vs Raw FHIR
 // QUICK:
-[Condition: "Asthma"] C where C.effectiveTime includes interval[Date(2013, 8, 14), Today()]
+[Condition: "Asthma"] C where C.effectiveTime includes interval[DateTime(2013, 8, 14), Today()]
 // FHIR:
 [Condition: "Asthma"] C 
   where C.status = 'confirmed' 
-    and C.onsetAge <= Date(2013, 8, 14) 
+    and C.onsetAge <= DateTime(2013, 8, 14)
 	and not(C.abatement is not null and C.abatement) 
 	and not(C.abatementDate is not null and C.abatementDate < Now()) 
 	and not(C.abatementAge is not null and C.abatementAge < Age())
 // FHIR w/ Profiling to require status = 'confirmed' and only onset/abatementDate values:
-[Condition: "Asthma"] C where C.onsetAge <= Date(2013, 8, 14) and C.abatementDate is null
+[Condition: "Asthma"] C where C.onsetAge <= DateTime(2013, 8, 14) and C.abatementDate is null
 
 // Proposals/Orders
 

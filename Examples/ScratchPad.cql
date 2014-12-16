@@ -25,8 +25,8 @@ year of A same as year of B
 	and second of A same as second of B
 	and millisecond of A same as millisecond of B
 
-Date(2014, 15, 2) same as Date(2014, 15, 2)
-Date(2014, 15) same as Date(2014, 15, 2)
+DateTime(2014, 15, 2) same as DateTime(2014, 15, 2)
+DateTime(2014, 15) same as DateTime(2014, 15, 2)
 
 
 // and for precision-based equality
@@ -47,9 +47,9 @@ year of A > year of B
 	or (year of A = year of B and month of A = month of B and day of A = day of B and hour of A = hour of B and minute of A = minute of B and second of A > second of B)
 	or (year of A = year of B and month of A = month of B and day of A = day of B and hour of A = hour of B and minute of A = minute of B and second of A = second of B and millisecond of A > millisecond of B)
 
-Date(2012) > Date(2014, 2, 15) // Returns false
-Date(2014) > Date(2014, 2, 15) // Returns null
-Date(2016) > Date(2014, 2, 15) // Returns true
+DateTime(2012) > DateTime(2014, 2, 15) // Returns false
+DateTime(2014) > DateTime(2014, 2, 15) // Returns null
+DateTime(2016) > DateTime(2014, 2, 15) // Returns true
 
 // Date/Time Equality Comparison
 A >= B
@@ -70,10 +70,10 @@ days between A and B
 // returns number of boundaries crossed
 
 // extended to return an interval
-days between Date(2014, 1, 15) and Date(2014, 2)
+days between DateTime(2014, 1, 15) and DateTime(2014, 2)
 
-days between Date(2014, 1, 15) and Date(2014, 2, 1) // 17 days
-days between Date(2014, 1, 15) and Date(2014, 2, 28) // 44 days
+days between DateTime(2014, 1, 15) and DateTime(2014, 2, 1) // 17 days
+days between DateTime(2014, 1, 15) and DateTime(2014, 2, 28) // 44 days
 // returns interval[17, 44]
 
 // define implicit conversion from a point to an interval
@@ -83,10 +83,10 @@ days between Date(2014, 1, 15) and Date(2014, 2, 28) // 44 days
 // >= (after or same as)
 // < (before)
 // <= (before or same as)
-days between Date(2014, 1, 15) and Date(2014, 2) > 2
+days between DateTime(2014, 1, 15) and DateTime(2014, 2) > 2
 // results in
 interval[17, 44] > [2, 2]
-days between Date(2014, 1, 15) and Date(2014, 2) > 20
+days between DateTime(2014, 1, 15) and DateTime(2014, 2) > 20
 // results in 
 interval[17, 44] > [20, 20] // potentially should return unknown
 
@@ -147,10 +147,10 @@ define Medications =
 		with [Condition: "B"] B where A.effectiveTime overlaps after B.effectiveTime
 		with Medications C where A.effectiveTime overlaps after C.effectiveTime
 
-Date(2014) < Date(2014, 1, 1)
-Date(null)
-Date(null, 5)
-Date(2014, 5, null, 16, 30)
+DateTime(2014) < DateTime(2014, 1, 1, 0, 0, 0, 0)
+DateTime(null)
+DateTime(null, 5)
+DateTime(2014, 5, null, 16, 30)
 
 
 // Introduce the notion of an uncertainty range:
@@ -281,27 +281,27 @@ uncertainty[5, 10] = uncertainty[1, 6] // unknown
 uncertainty[5, 10] <= uncertainty[1, 6] // unknown
 uncertainty[5, 10] < uncertainty[1, 6] // unknown
 
-parameter "Measure Period" default interval[Date(2012, 1, 1, 0, 0, 0), Date(2013, 1, 1, 0, 0, 0))
+parameter "Measure Period" default interval[DateTime(2012, 1, 1, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0))
 
-define MyEncounter.low = Date(2012, 1, 1)
+define MyEncounter.low = DateTime(2012, 1, 1)
 
 MyEncounter starts same day or after start of "Measure Period"
 
 MyEncounter during "Measure Period"
 
-define MyEncounter.effectiveTime = interval[Date(2012), Date(2012)]
+define MyEncounter.effectiveTime = interval[DateTime(2012), DateTime(2012)]
 
 MyEncounter during "Measure Period"
 
-interval[Date(2012), Date(2012)] during interval[Date(2012, 1, 1, 0, 0, 0), Date(2013, 1, 1, 0, 0, 0))
+interval[DateTime(2012), DateTime(2012)] during interval[DateTime(2012, 1, 1, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0))
 
-Date(2012) >= Date(2012, 1, 1, 0, 0, 0) and Date(2012) <= Date(2012, 12, 31, 23, 59, 59)
+DateTime(2012) >= DateTime(2012, 1, 1, 0, 0, 0) and DateTime(2012) <= DateTime(2012, 12, 31, 23, 59, 59)
 
-Date(2012) >= Date(2012, 1, 1, 0, 0, 0)
+DateTime(2012) >= DateTime(2012, 1, 1, 0, 0, 0)
 
-Date(2012) = Date(2012, 1, 1, 0, 0, 0) or Date(2012) > Date(2012, 1, 1, 0, 0, 0)
+DateTime(2012) = DateTime(2012, 1, 1, 0, 0, 0) or DateTime(2012) > DateTime(2012, 1, 1, 0, 0, 0)
 
-Date(2012) >= Date(2012, 1, 1)
+DateTime(2012) >= DateTime(2012, 1, 1)
 
 A_year, A_month, A_day, B_year, B_month, B_day
 
@@ -360,11 +360,11 @@ uncertainty[1, 1] <= uncertainty[1, 1]
 
 
 
-Date(2014) < Date(2014, 2, 15)
+DateTime(2014) < DateTime(2014, 2, 15)
 
-Date(2014) < Date(2014, 1, 1)
+DateTime(2014) < DateTime(2014, 1, 1, 0, 0, 0, 0)
 
-uncertainty[Date(2014, 1, 1, 0, 0, 0), Date(2014, 12, 31, 23, 59, 59)] < uncertainty[Date(2014, 1, 1, 0, 0, 0), Date(2014, 1, 1, 23, 59, 59)]
+uncertainty[DateTime(2014, 1, 1, 0, 0, 0), DateTime(2014, 12, 31, 23, 59, 59)] < uncertainty[DateTime(2014, 1, 1, 0, 0, 0), DateTime(2014, 1, 1, 23, 59, 59)]
 
 A after B
 A same day or after B
@@ -435,7 +435,7 @@ year of A > year of B
 [Encounter] E where E.effectiveTime starts during MeasurementPeriod
 
 
-Date(2012) >= Date(2012, 1, 1)
+DateTime(2012) >= DateTime(2012, 1, 1)
 
 
 // Example of static version binding to reference multiple versions of a valueset witin the same artifact:
@@ -455,7 +455,7 @@ library CMS153_CQM version '2'
 
 using QUICK
 
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2'
 valueset "Chlamydia Screening" = '2.16.840.1.113883.3.464.1003.110.12.1052'

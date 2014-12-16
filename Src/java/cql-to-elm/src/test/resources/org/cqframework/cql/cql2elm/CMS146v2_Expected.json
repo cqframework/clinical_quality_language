@@ -22,7 +22,7 @@
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -36,10 +36,26 @@
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                      "value" : "1",
                      "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
                   } ]
                },
                "high" : {
-                  "name" : "Date",
+                  "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
@@ -52,6 +68,22 @@
                   }, {
                      "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
                      "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
                      "type" : "Literal"
                   } ]
                }

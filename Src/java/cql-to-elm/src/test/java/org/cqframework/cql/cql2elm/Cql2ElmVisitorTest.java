@@ -382,24 +382,24 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.period during interval[Date(2013, 1, 1), Date(2014, 1, 1))";
+                "    where E.period during interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
-        // First check the source and ensure the "during interval[Date(2013, 1, 1), Date(2014, 1, 1))" migrated up!
+        // First check the source and ensure the "during interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))" migrated up!
         assertThat(request.getDateProperty(), is("period"));
         Interval ivl = (Interval) request.getDateRange();
         assertTrue(ivl.isLowClosed());
         assertFalse(ivl.isHighClosed());
         FunctionRef ivlBegin = (FunctionRef) ivl.getLow();
-        assertThat(ivlBegin.getName(), is("Date"));
+        assertThat(ivlBegin.getName(), is("DateTime"));
         assertThat(ivlBegin.getOperand(), hasSize(3));
         assertThat(ivlBegin.getOperand().get(0), literalFor(2013));
         assertThat(ivlBegin.getOperand().get(1), literalFor(1));
         assertThat(ivlBegin.getOperand().get(2), literalFor(1));
         FunctionRef ivlEnd = (FunctionRef) ivl.getHigh();
-        assertThat(ivlEnd.getName(), is("Date"));
+        assertThat(ivlEnd.getName(), is("DateTime"));
         assertThat(ivlEnd.getOperand(), hasSize(3));
         assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
         assertThat(ivlEnd.getOperand().get(1), literalFor(1));
@@ -412,7 +412,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForDefaultedDateIntervalParameter() {
         String cql =
-                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod";
@@ -455,7 +455,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDateIntervalExpressionReference() {
         String cql =
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "define twentyThirteen = interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "define twentyThirteen = interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during twentyThirteen";
 
@@ -477,15 +477,15 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
-                "    where E.period during Date(2013, 6)";
+                "    where E.period during DateTime(2013, 6)";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
-        // First check the source and ensure the "during Date(2013, 6)" migrated up!
+        // First check the source and ensure the "during DateTime(2013, 6)" migrated up!
         assertThat(request.getDateProperty(), is("period"));
         FunctionRef dtFun = (FunctionRef) request.getDateRange();
-        assertThat(dtFun.getName(), is("Date"));
+        assertThat(dtFun.getName(), is("DateTime"));
         assertThat(dtFun.getOperand(), hasSize(2));
         assertThat(dtFun.getOperand().get(0), literalFor(2013));
         assertThat(dtFun.getOperand().get(1), literalFor(6));
@@ -497,7 +497,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForDefaultedDateTimeParameter() {
         String cql =
-                "parameter MyDate default Date(2013, 6)\n" +
+                "parameter MyDate default DateTime(2013, 6)\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MyDate";
@@ -540,7 +540,7 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDateTimeExpressionReference() {
         String cql =
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "define myDate = Date(2013, 6)\n" +
+                "define myDate = DateTime(2013, 6)\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during myDate";
 
@@ -560,7 +560,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForAndedWhere() {
         String cql =
-                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
@@ -589,7 +589,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForDeeplyAndedWhere() {
         String cql =
-                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
@@ -636,7 +636,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationForMultipleQualifyingClauses() {
         String cql =
-                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod\n" +
@@ -665,7 +665,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testDateRangeOptimizationNotDoneWhenDisabled() {
         String cql =
-                "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st = [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod";
@@ -742,7 +742,7 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testComplexQuery() {
         String cql =
-            "parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))\n" +
+            "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
             "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
             "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
             "define st = [Encounter: \"Inpatient\"] E\n" +

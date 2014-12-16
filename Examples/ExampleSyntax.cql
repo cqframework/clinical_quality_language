@@ -23,10 +23,10 @@ start of A < start of B and (duration in days between start of A and start of B)
                 A.datetime = 2014/01/15
                 B.datetime = 2014/02
 
-IntervalA: interval[Date(2014,1,15,0,0,0), Date(2014,1,15,23,59,59)]
-IntervalB: interval[Date(2014,2,1,0,0,0), Date(2014,2,28,23,59,59)]
+IntervalA: interval[DateTime(2014,1,15,0,0,0), DateTime(2014,1,15,23,59,59)]
+IntervalB: interval[DateTime(2014,2,1,0,0,0), DateTime(2014,2,28,23,59,59)]
 
-IntervalB: interval[Date(2014,1,30,0,0,0), Date(2014,2,26,23,59,59)]
+IntervalB: interval[DateTime(2014,1,30,0,0,0), DateTime(2014,2,26,23,59,59)]
 
 end of IntervalA < start of IntervalB
 
@@ -87,27 +87,27 @@ A same minute as B // year, month, day, hour and minute are all the same
 year of A = year of B
 minute of A = minute of B // minute component A = minute component of B
 
-Date(2014)
-Date(2014, 7)
-Date(2014, 7, 11)
-Date(null, null, 11)
+DateTime(2014)
+DateTime(2014, 7)
+DateTime(2014, 7, 11)
+DateTime(null, null, 11)
 
 // does precision matter for < or >, yes but not the ability to specify what precision is used
 
-Date(2014) = Date(2014) // true
-Date(2014) = Date(2014, 6, 5) // unknown
-Date(2014, 6, 5) = Date(2014, 6, 5) // true
-Date(2014, 6, 6) = Date(2014, 6, 5) // false
+DateTime(2014) = DateTime(2014) // true
+DateTime(2014) = DateTime(2014, 6, 5) // unknown
+DateTime(2014, 6, 5) = DateTime(2014, 6, 5) // true
+DateTime(2014, 6, 6) = DateTime(2014, 6, 5) // false
 
 A = B // Exact equality requires the same precision and the same values for all components
 
 A < B
 A > B // Comparison must always be performed based on the lowest common granularity
 
-Date(2012) < Date(2014, 7, 11)
-Date(2012, 1, 1, 0, 0, 0)..Date(2012, 12, 31, 23, 59, 59) < Date(2014, 7, 11, 0, 0, 0)..Date(2014, 7, 11, 23, 59, 59)
+DateTime(2012) < DateTime(2014, 7, 11)
+DateTime(2012, 1, 1, 0, 0, 0)..DateTime(2012, 12, 31, 23, 59, 59) < DateTime(2014, 7, 11, 0, 0, 0)..DateTime(2014, 7, 11, 23, 59, 59)
 
-Date(2014) < Date(2014, 7, 11)
+DateTime(2014) < DateTime(2014, 7, 11)
 
 A <= B
 A >= B // Combines exact equality with comparison semantics (i.e. A <= B <=> A = B or A < B)
@@ -123,7 +123,7 @@ if (A is [Encounter, Performance])
 // Precision-based comparison
 A same year as B
 
-Date(2014) same day as Date(2014, 7, 11)
+DateTime(2014) same day as DateTime(2014, 7, 11)
 
 A at least B <=> A >= B
 A at most 5 <=> A <= B
@@ -138,12 +138,12 @@ A >= B using years
 
 A starts before start B
 
-A.start = Date(2012)
-B.start = Date(2014, 2, 12)
+A.start = DateTime(2012)
+B.start = DateTime(2014, 2, 12)
 
 // Method 1 - Intervals to minute precision
-intervalA = interval[Date(2012, 1, 1, 0, 0, 0), Date(2013, 1, 1, 0, 0, 0))
-intervalB = interval[Date(2014, 2, 12, 0, 0, 0), Date(2014, 2, 13, 0, 0, 0))
+intervalA = interval[DateTime(2012, 1, 1, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0))
+intervalB = interval[DateTime(2014, 2, 12, 0, 0, 0), DateTime(2014, 2, 13, 0, 0, 0))
 
 // Method 2 - Precision-based
 year of A.start < year of B.start
@@ -194,8 +194,8 @@ A during B, works fine assuming date/time comparison semantics because it involv
 
 // meets doesn't work because there's equality involved, but I think that's the correct semantics for meets
 // for example:
-A = interval[Date(2012), Date(2013)]
-B = interval[Date(2014, 1, 1), Date(2015, 1, 1))
+A = interval[DateTime(2012), DateTime(2013)]
+B = interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1))
 A meets B is false
 
 
@@ -292,7 +292,7 @@ define TimespanLiteral = 3 months
 
 // Structured Types
 define Encounters = [Encounter, Performance]
-define Info = tuple { Name: 'Patrick', DOB: Date(2014, 7, 5) }
+define Info = tuple { Name: 'Patrick', DOB: DateTime(2014, 7, 5) }
 
 define PharyngitisEffectiveTime = FirstPharyngitis.effectiveTime
 
@@ -397,7 +397,7 @@ X starts within 3 days of start Y
 dateTimeX within 3 days of dateTimeY
 
 // Date/Time Manipulation
-define DateSelector = Date(2014, 1, 1, 12, 0, 0, -6)
+define DateSelector = DateTime(2014, 1, 1, 12, 0, 0, -6)
 define Now = Now()
 define Today = Today()
 define ConvertedDate = convert '20140101120000-0600' to Datetime
@@ -676,7 +676,7 @@ library CMS153
 
 using QUICK
 
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 
@@ -726,7 +726,7 @@ library CMS153_CQM
 
 using QUICK
 
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
 ... // Additional valueset definitions omitted for brevity
@@ -844,7 +844,7 @@ using QUICK
 
 include CMS153_Common version '2' as Common
 
-parameter MeasurementPeriod default interval[Date(2013, 1, 1), Date(2014, 1, 1))
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 parameter MeasurementPeriod : interval<Datetime>
 
@@ -916,17 +916,17 @@ define TargetEncounters =
 
 
 
-Changed “let” to “define”
-Removed “during” from the retrieve expression
-Changed “as” to “called” in library definitions
-Changed “where” to “such that” in with/out clauses
+Changed ï¿½letï¿½ to ï¿½defineï¿½
+Removed ï¿½duringï¿½ from the retrieve expression
+Changed ï¿½asï¿½ to ï¿½calledï¿½ in library definitions
+Changed ï¿½whereï¿½ to ï¿½such thatï¿½ in with/out clauses
 Quoted identifiers are now allowed for all identifiers
-Removed “define retrieve”
-Removed “u” prefix for quantity literals
-Changed “at least/most” to “or before/after” and “or less/more”
-Removed “started by” and “ended by”
-Added “foreach” and “define” clause to the query
-Now allow “ascending” and “descending” i/o just “asc”/”desc”
+Removed ï¿½define retrieveï¿½
+Removed ï¿½uï¿½ prefix for quantity literals
+Changed ï¿½at least/mostï¿½ to ï¿½or before/afterï¿½ and ï¿½or less/moreï¿½
+Removed ï¿½started byï¿½ and ï¿½ended byï¿½
+Added ï¿½foreachï¿½ and ï¿½defineï¿½ clause to the query
+Now allow ï¿½ascendingï¿½ and ï¿½descendingï¿½ i/o just ï¿½ascï¿½/ï¿½descï¿½
 Refined valueset definition syntax
 
 library CMS153_Common version '2'

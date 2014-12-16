@@ -1747,7 +1747,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private boolean isDateFunctionRef(Element e) {
-        return e != null && e instanceof FunctionRef && "Date".equals(((FunctionRef) e).getName());
+        return e != null && e instanceof FunctionRef && "DateTime".equals(((FunctionRef) e).getName());
     }
 
     private boolean isDateTimeTypeSpecifier(Element e) {
