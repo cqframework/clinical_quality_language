@@ -36,8 +36,6 @@ module.exports.Tuple = class Tuple extends Expression
       val[el.name] = el.value?.exec(ctx)
     val
 
-# TODO: Not listed in Spec
 module.exports.TupleElement = class TupleElement extends UnimplementedExpression
 
-# TODO: Not listed in Spec
 module.exports.TupleElementDefinition = class TupleElementDefinition extends UnimplementedExpression

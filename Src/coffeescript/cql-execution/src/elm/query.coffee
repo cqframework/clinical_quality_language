@@ -8,8 +8,6 @@ module.exports.AliasedQuerySource = class AliasedQuerySource extends Unimplement
 
 module.exports.DefineClause = class DefineClause extends UnimplementedExpression
 
-# TODO: Spec defines "RelationshipClause", but it's not really in ELM
-
 module.exports.With = class With extends Expression
   constructor: (json) ->
     super
@@ -101,7 +99,6 @@ module.exports.Query = class Query extends Expression
     @sort?.sort(returnedValues)
     returnedValues
 
-# TODO: Not in ELM Specification
 module.exports.AliasRef = class AliasRef extends Expression
   constructor: (json) ->
     super
@@ -110,7 +107,6 @@ module.exports.AliasRef = class AliasRef extends Expression
   exec: (ctx) ->
     ctx?.get(@name)
 
-# TODO: Not in ELM Specification
 module.exports.QueryDefineRef = class QueryDefineRef extends AliasRef
   constructor: (json) ->
     super

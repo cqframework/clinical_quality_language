@@ -49,7 +49,6 @@ module.exports.FunctionRef = class FunctionRef extends Expression
       child_ctx.set(p.name,args[i])
     functionDef.expression.exec(child_ctx)
 
-# TODO: This is not in ELM specification
 module.exports.IdentifierRef = class IdentifierRef extends Expression
   constructor: (json) ->
     super

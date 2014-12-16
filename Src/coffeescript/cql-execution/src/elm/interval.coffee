@@ -82,8 +82,6 @@ class Starts extends UnimplementedExpression
 
 module.exports.Ends = class Ends extends UnimplementedExpression
 
-# TODO: Not in the ELM Spec
 module.exports.Ends = class Collapse extends UnimplementedExpression
 
-# TODO: Not in the ELM Spec
 module.exports.Ends = class Width extends UnimplementedExpression

@@ -71,12 +71,6 @@ module.exports.CalculateAgeAt = class CalculateAgeAt extends FunctionRef
       else 1
     Math.floor(ageInMS / divisor)
 
-# TODO: Shouldn't be a functionref anymore
-module.exports.CalculateAgeInYearsAtFunctionRef = class CalculateAgeInYearsAtFunctionRef extends CalculateAgeAt
-  constructor: (@json) ->
-    @json.precision = "Year"
-    super(@json)
-
 # TODO: Not really defined well anywhere
 module.exports.CodeFunctionRef = class CodeFunctionRef extends FunctionRef
   constructor: (json) ->

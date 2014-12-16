@@ -39,7 +39,6 @@ module.exports.DateFunctionRef = class DateFunctionRef extends DateTimeFunctionR
   constructor: (json) ->
     super
 
-# TODO: Not in ELM Spec
 module.exports.DurationBetween = class DurationBetween extends Expression
   constructor: (json) ->
     super

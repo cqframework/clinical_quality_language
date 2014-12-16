@@ -3,8 +3,6 @@
 { build } = require './builder'
 { typeIsArray } = require '../util/util'
 
-# Lists and Intervals
-
 module.exports.List = class List extends Expression
   constructor: (json) ->
     super
@@ -131,8 +129,6 @@ module.exports.Distinct = class Distinct extends Expression
 
 module.exports.Current = class Current extends UnimplementedExpression
 
-# TODO: Not in the ELM Spec
 module.exports.First = class First extends UnimplementedExpression
 
-# TODO: Not in the ELM Spec
 module.exports.Last = class Last extends UnimplementedExpression
