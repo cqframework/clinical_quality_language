@@ -1,50 +1,5 @@
-# Born in 1980
-p1 = {
-  "resourceType": "Bundle",
-  "id": "example1",
-  "meta": {
-    "versionId": "1",
-    "lastUpdated": "2014-08-18T01:43:30Z"
-  },
-  "base": "http://example.com/base",
-  "entry" : [{
-        "resource": {
-        "id" : "1",
-        "meta" :{ "profile" : ["cqf-patient"]},
-        "resourceType" : "Patient",
-        "identifier": [{ "value": "1" }],
-        "name": {"given":["John"], "family": ["Smith"]},
-        "gender": "M",
-        "birthDate" : "1980-02-17T06:15"}
-        }
-  ]
-}
-module.exports.P1 = p1
-
-# Born in 2007
-p2 = {
-  "resourceType": "Bundle",
-  "id": "example1",
-  "meta": {
-    "versionId": "1",
-    "lastUpdated": "2014-08-18T01:43:30Z"
-  },
-  "base": "http://example.com/base",
-  "entry" : [
-      "resource": {
-      "resourceType" : "Patient",
-      "meta" :{ "profile" : ["cqf-patient"]},
-      "id" : "2",
-      "identifier": [{ "value": "2" }],
-      "name": {"given":["Sally"], "family": ["Smith"]},
-      "gender": "F",
-      "birthDate" : "2007-08-02T11:47"
-      }]
-}
-module.exports.P2 = p2
-
 # Acute Pharyngitis and ED/Ambulatory Visits
-p3 = {
+module.exports.p1 = {
   "resourceType": "Bundle",
   "id": "example2",
   "meta": {
@@ -72,7 +27,7 @@ p3 = {
           "type": [{"coding":[{ "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Encounter for \"check-up\" (procedure)" }]}],
           "period": { "start": "1978-07-15T10:00", "end": "1978-07-15T10:45" }
           }
-    }, 
+    },
     {"resource": {
           "resourceType" : "Condition",
           "id" : "http://cqframework.org/3/2",
@@ -83,7 +38,7 @@ p3 = {
           "abatementDateTime": "1982-03-26",
           "issued": "1982-03-15T15:15:00"
           }
-    }, 
+    },
     {"resource":{
           "resourceType" : "Encounter",
           "id" : "http://cqframework.org/3/3",
@@ -116,42 +71,3 @@ p3 = {
     }
   ]
 }
-module.exports.P3 = p3
-
-# ED/Ambulatory Visit
-p4 = {
-  "resourceType": "Bundle",
-  "id": "example3",
-  "meta": {
-    "versionId": "1",
-    "lastUpdated": "2014-08-18T01:43:30Z"
-  },
-  "base": "http://example.com/base",
-  "entry": [
-    {
-    "resource": {
-        "resourceType" : "Patient",
-        "meta" :{ "profile" : ["cqf-patient"]},
-        "id" : "4",
-        "identifier": [{ "value": "4" }],
-        "name": {"given":["Jane"], "family": ["Jones"]},
-        "gender": "F",
-        "birthDate" : "1976-11-09T14:12"
-      }
-    },
-    {
-      "resource": {
-        "resourceType" : "Encounter",
-        "id" : "http://cqframework.org/4/1",
-        "meta" :{ "profile" : ["cqf-encounter"]},
-        "identifier": [{ "value": "http://cqframework.org/4/1", "system": "http://cqframework.org" }],
-        "class": "outpatient",
-        "type" : [{"coding" : [{ "code": "439708006", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Home visit (procedure)" }]}],
-        "period": { "start": "1985-05-01T13:00", "end": "1985-05-01T14:00" }
-      }
-    }
-  ]
-}
-module.exports.P4 = p4
-
-module.exports.P1AndP2 = [p1, p2]

@@ -51,6 +51,7 @@ task "test", "run tests", ->
     ./node_modules/.bin/mocha
     --compilers coffee:coffee-script/register
     --require coffee-script
+    --recursive
     --colors
   ", (err, output) ->
     throw err if err
@@ -67,6 +68,7 @@ task "debug-test", "run tests", ->
 
   exec "NODE_ENV=test
     ./node_modules/.bin/mocha
+    --recursive
     --colors
     --debug-brk
     ./lib-test/
