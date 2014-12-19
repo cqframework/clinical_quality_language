@@ -11,40 +11,45 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CoffeeScriptTestDataGenerator {
-    private static final Pattern LIBRARY_CHECK = Pattern.compile("^\\s*library .+$", Pattern.MULTILINE);
-    private static final Pattern USING_CHECK = Pattern.compile("^\\s*using .+$", Pattern.MULTILINE);
-    private static final Pattern CONTEXT_CHECK = Pattern.compile("^\\s*context .+$", Pattern.MULTILINE);
-    private static final Pattern DEFINE_CHECK = Pattern.compile("^\\s*define .+$", Pattern.MULTILINE);
+import static java.nio.file.FileVisitResult.CONTINUE;
 
-    private static Map<String, StringBuilder> getCqlSnippets(File file) throws IOException {
+public class CoffeeScriptTestDataGenerator {
+    private static final Pattern SNIPPET_START = Pattern.compile("^\\s*\\/\\/\\s+\\@Test\\:\\s+(.*\\S)\\s*$");
+    private static final Pattern LIBRARY_CHECK = Pattern.compile("^\\s*library\\s*\\S.*$", Pattern.MULTILINE);
+    private static final Pattern USING_CHECK = Pattern.compile("^\\s*using\\s*\\S.*$", Pattern.MULTILINE);
+    private static final Pattern CONTEXT_CHECK = Pattern.compile("^\\s*context\\s*\\S.*$", Pattern.MULTILINE);
+    private static final Pattern DEFINE_CHECK = Pattern.compile("^\\s*define\\s*\\S.*$", Pattern.MULTILINE);
+
+    private static Map<String, StringBuilder> getCqlSnippets(Path file) throws IOException {
         LinkedHashMap<String, StringBuilder> snippets = new LinkedHashMap<>();
         String currentSnippetName = null;
         StringBuilder currentSnippet = null;
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file.toFile()), "UTF-8"))) {
             for (String line; (line = br.readLine()) != null; ) {
-                if (line.trim().startsWith("#")) {
+                Matcher snippetMatcher = SNIPPET_START.matcher(line);
+                if (snippetMatcher.matches()) {
                     if (currentSnippetName != null) {
                         snippets.put(currentSnippetName, currentSnippet);
                     }
-                    currentSnippetName = line.trim().substring(1).trim();
-                    if (currentSnippetName.contains(" ")) {
-                        throw new IllegalArgumentException("Snippet identifiers must be valid javascript identifiers: <" + currentSnippetName + ">");
-                    }
+                    currentSnippetName = snippetMatcher.group(1);
                     currentSnippet = new StringBuilder();
                 } else {
                     if (currentSnippet != null) {
@@ -61,16 +66,16 @@ public class CoffeeScriptTestDataGenerator {
         return snippets;
     }
 
-    private static void writeSnippetsToCoffeeFile(Map<String,StringBuilder> snippets, File file) throws IOException {
+    private static void writeSnippetsToCoffeeFile(Map<String,StringBuilder> snippets, Path file) throws IOException {
         // Write to a temp file and then move, else the coffee compiler can get confused if it's watching the file
-        File tempFile = new File(file.getAbsolutePath() + ".tmp");
+        File tempFile = new File(file.toFile().getAbsolutePath() + ".tmp");
 
         PrintWriter pw = new PrintWriter(tempFile, "UTF-8");
         pw.println("###");
         pw.println("   WARNING: This is a GENERATED file.  Do not manually edit!");
         pw.println();
         pw.println("   To generate this file:");
-        pw.println("       - Edit cql-test-data.txt to add a CQL Snippet");
+        pw.println("       - Edit " + file.toFile().getName() + " to add a CQL Snippet");
         pw.println("       - From java dir: ./gradlew :cql-to-elm:generateTestData");
         pw.println("###");
         pw.println();
@@ -84,12 +89,13 @@ public class CoffeeScriptTestDataGenerator {
             pw.println(snippet);
             pw.println("###");
             pw.println();
-            pw.println("module.exports." + name + " = " + json);
+            pw.println("module.exports['" + name + "'] = " + json);
             pw.println();
         }
         pw.close();
 
-        Files.move(tempFile.toPath(), file.toPath(), StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        Files.move(tempFile.toPath(), file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        System.out.println("Generated " + file.toAbsolutePath().normalize());
     }
 
     private static void updateSnippet(StringBuilder snippet) {
@@ -110,50 +116,93 @@ public class CoffeeScriptTestDataGenerator {
         }
     }
 
+    private static void fileToCoffee(Path input) throws IOException, InterruptedException {
+        // Use input filename with ".coffee" extension
+        String name = input.toFile().getName();
+        if (name.lastIndexOf('.') != -1) {
+            name = name.substring(0, name.lastIndexOf('.'));
+        }
+        name = name + ".coffee";
+
+        writeSnippetsToCoffeeFile(getCqlSnippets(input), input.resolveSibling(name));
+    }
+
+    private static boolean isCQL(Path file) {
+        return file.toFile().getName().endsWith(".cql") || file.toFile().getName().endsWith(".CQL");
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
         OptionParser parser = new OptionParser();
         OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required();
-        OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class);
-        OptionSpec watch = parser.accepts("watch");
+        OptionSpec recursive = parser.accepts("recursive");
+        final OptionSpec watch = parser.accepts("watch");
 
-        OptionSet options = parser.parse(args);
-        File infile = input.value(options);
-        File outfile;
-        if (! options.has(output) || output.value(options).isDirectory()) {
-            // Use input filename with ".coffee" extension
-            String name = infile.getName();
-            if (name.lastIndexOf('.') != -1) {
-                name = name.substring(0, name.lastIndexOf('.'));
+        final OptionSet options = parser.parse(args);
+        final File inputFile = input.value(options);
+        final WatchService watcher = options.has(watch) ? input.value(options).toPath().getFileSystem().newWatchService() : null;
+        final HashMap<WatchKey, Path> watchKeys = new HashMap<>();
+        if (options.has(recursive)) {
+            if (inputFile.isFile()) {
+                throw new IllegalArgumentException("Recursive mode requires the input to be a directory");
             }
-            name = name + ".coffee";
-            String basePath = options.has(output) ? output.value(options).getAbsolutePath() : infile.getParent();
-            outfile = new File(basePath + File.separator + name);
-        } else {
-            outfile = output.value(options);
-        }
-
-        writeSnippetsToCoffeeFile(getCqlSnippets(infile), outfile);
-
-        if (options.has(watch)) {
-            System.out.println("Watching...");
-            Path root = infile.getParentFile().toPath();
-            WatchService watcher = root.getFileSystem().newWatchService();
-            root.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
-            while (true) {
-                WatchKey watchKey = watcher.take();
-
-                List<WatchEvent<?>> events = watchKey.pollEvents();
-                for (WatchEvent event : events) {
-                    if (infile.getName().equals(event.context().toString())) {
-                        System.out.println("Detected change in " + infile.getAbsolutePath());
-                        writeSnippetsToCoffeeFile(getCqlSnippets(infile), outfile);
+            final Path source = inputFile.toPath();
+            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (isCQL(file)) {
+                        try {
+                            fileToCoffee(file);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    return CONTINUE;
                 }
 
-                if (! watchKey.reset()) {
-                    break;
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    if (watcher != null) {
+                        WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE);
+                        watchKeys.put(key, dir);
+                    }
+                    return CONTINUE;
+                }
+            });
+        } else {
+            if (inputFile.isDirectory()) {
+                throw new IllegalArgumentException("Non-recursive mode requires the input to be a file");
+            }
+            Path inputPath = inputFile.toPath();
+            fileToCoffee(inputPath);
+            if (watcher != null) {
+                Path dir = inputPath.getParent();
+                WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
+                watchKeys.put(key, dir);
+            }
+        }
+
+        if (watcher != null) {
+            System.out.println("Watching " + inputFile.toPath().toAbsolutePath().normalize());
+            for (;;) {
+                WatchKey watchKey = watcher.take();
+                if (watchKeys.containsKey(watchKey)) {
+                    List<WatchEvent<?>> events = watchKey.pollEvents();
+                    for (WatchEvent event : events) {
+                        Path file = watchKeys.get(watchKey).resolve(event.context().toString());
+                        if (isCQL(file)) {
+                            if (inputFile.isDirectory() || (inputFile.isFile() && file.equals(inputFile.toPath()))) {
+                                fileToCoffee(file);
+                            }
+                        } else if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE && file.toFile().isDirectory()) {
+                            WatchKey key = file.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_CREATE);
+                            watchKeys.put(key, file);
+                        }
+                    }
+
+                    watchKey.reset();
                 }
             }
         }
+
     }
 }
