@@ -2,7 +2,7 @@
 { Sort } = require './list'
 { Context } = require '../runtime/context'
 { build } = require './builder'
-{ typeIsArray } = require '../util/util'
+{ typeIsArray , allTrue} = require '../util/util'
 
 module.exports.AliasedQuerySource = class AliasedQuerySource extends UnimplementedExpression
 
