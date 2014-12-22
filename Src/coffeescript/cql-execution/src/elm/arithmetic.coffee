@@ -5,28 +5,32 @@ module.exports.Add = class Add extends Expression
     super
 
   exec: (ctx) ->
-    @execArgs(ctx).reduce (x,y) -> x + y
+    args = @execArgs(ctx)
+    if (args.some (x) -> not x?) then null else args.reduce (x,y) -> x + y
 
 module.exports.Subtract = class Subtract extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    @execArgs(ctx).reduce (x,y) -> x - y
+    args = @execArgs(ctx)
+    if (args.some (x) -> not x?) then null else args.reduce (x,y) -> x - y
 
 module.exports.Multiply = class Multiply extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    @execArgs(ctx).reduce (x,y) -> x * y
+    args = @execArgs(ctx)
+    if (args.some (x) -> not x?) then null else args.reduce (x,y) -> x * y
 
 module.exports.Divide = class Divide extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    @execArgs(ctx).reduce (x,y) -> x / y
+    args = @execArgs(ctx)
+    if (args.some (x) -> not x?) then null else args.reduce (x,y) -> x / y
 
 module.exports.TruncatedDivide = class TruncatedDivide extends UnimplementedExpression
 
