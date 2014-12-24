@@ -43,7 +43,10 @@ module.exports.DateTime = class DateTime
         date.getSeconds(),
         date.getMilliseconds())
 
-  constructor: (@year=null, @month=null, @day=null, @hour=null, @minute=null, @second=null, @millisecond=null, @timeZoneOffset=null) ->
+  constructor: (@year=null, @month=null, @day=null, @hour=null, @minute=null, @second=null, @millisecond=null, @timeZoneOffset) ->
+    if not @timeZoneOffset?
+      @timeZoneOffset = (new Date()).getTimezoneOffset() / 60 * -1
+
 
   copy: () ->
     new DateTime(@year, @month, @day, @hour, @minute, @second, @millisecond, @timeZoneOffset)
@@ -88,36 +91,47 @@ module.exports.DateTime = class DateTime
   sameAs: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then null
 
-    if @timeZoneOffset isnt other.timeZoneOffset
-      if @timeZoneOffset? then return @sameAs(other.convertToTimeZoneOffset(@timeZoneOffset), precision)
-      else return @convertToTimeZoneOffset(other.timeZoneOffset).sameAs(other, precision)
+    diff = @durationBetween(other, precision)
+    switch
+      when (diff.low == 0 and diff.high == 0) then true
+      when (diff.low <= 0 and diff.high >= 0) then null
+      else false
 
-    for field in DateTime.FIELDS
-      [a, b] = [@[field], other[field]]
-      same = if (a? and b?) then a is b else null
-      if not same or field is precision then return same
-
-    true
-
-  before: (other) ->
+  sameOrBefore: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    @toUncertainty().lessThan(other.toUncertainty())
+    diff = @durationBetween(other, precision)
+    switch
+      when (diff.low >= 0 and diff.high >= 0) then true
+      when (diff.low < 0 and diff.high < 0) then false
+      else null
 
-  beforeOrSameAs: (other) ->
+  sameOrAfter: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    @toUncertainty().lessThanOrEquals(other.toUncertainty())
+    diff = @durationBetween(other, precision)
+    switch
+      when (diff.low <= 0 and diff.high <= 0) then true
+      when (diff.low > 0 and diff.high > 0) then false
+      else null
 
-  after: (other) ->
+  before: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    @toUncertainty().greaterThan(other.toUncertainty())
+    diff = @durationBetween(other, precision)
+    switch
+      when (diff.low > 0 and diff.high > 0) then true
+      when (diff.low <= 0 and diff.high <= 0) then false
+      else null
 
-  afterOrSameAs: (other) ->
+  after: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    @toUncertainty().greaterThanOrEquals(other.toUncertainty())
+    diff = @durationBetween(other, precision)
+    switch
+      when (diff.low < 0 and diff.high < 0) then true
+      when (diff.low >= 0 and diff.high >= 0) then false
+      else null
 
   add: (offset, field) ->
     result = @copy()
@@ -133,8 +147,11 @@ module.exports.DateTime = class DateTime
   durationBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
 
-    a = @toUncertainty()
-    b = other.toUncertainty()
+    if @timeZoneOffset isnt other.timeZoneOffset
+      other = other.convertToTimeZoneOffset(@timeZoneOffset)
+
+    a = @toUncertainty(true)
+    b = other.toUncertainty(true)
     new Uncertainty(@_durationBetweenDates(a.high, b.low, unitField), @_durationBetweenDates(a.low, b.high, unitField))
 
   _durationBetweenDates: (a, b, unitField) ->
@@ -165,8 +182,8 @@ module.exports.DateTime = class DateTime
   isImprecise: () ->
     not @isPrecise()
 
-  toUncertainty: () ->
-    low = @toJSDate()
+  toUncertainty: (ignoreTimezone = false) ->
+    low = @toJSDate(ignoreTimezone)
     high = (new DateTime(
       @year,
       @month ? 12,
@@ -176,12 +193,28 @@ module.exports.DateTime = class DateTime
       @minute ? 59,
       @second ? 59,
       @millisecond ? 999,
-      @timeZoneOffset)).toJSDate()
+      @timeZoneOffset)).toJSDate(ignoreTimezone)
     new Uncertainty(low, high)
 
-  toJSDate: () ->
+  toJSDate: (ignoreTimezone = false) ->
     [y, mo, d, h, mi, s, ms] = [ @year, (if @month? then @month-1 else 0), @day ? 1, @hour ? 0, @minute ? 0, @second ? 0, @millisecond ? 0 ]
-    if @timeZoneOffset?
+    if @timeZoneOffset? and not ignoreTimezone
       new Date(Date.UTC(y, mo, d, h, mi, s, ms) - (@timeZoneOffset * 60 * 60 * 1000))
     else
       new Date(y, mo, d, h, mi, s, ms)
+
+  # TODO: Write tests
+  getDate: () ->
+    @reducedPrecision DateTime.Unit.DAY
+
+  # TODO: Write tests
+  getTime: () ->
+    new DateTime(1900, 1, 1, @hour, @minute, @second, @millisecond, @timeZoneOffset)
+
+  reducedPrecision: (unitField = DateTime.Unit.MILLISECOND) ->
+    reduced = @copy()
+    if unitField isnt DateTime.Unit.MILLISECOND
+      fieldIndex = DateTime.FIELDS.indexOf unitField
+      fieldsToRemove = DateTime.FIELDS.slice(fieldIndex + 1)
+      reduced[field] = null for field in fieldsToRemove
+    reduced

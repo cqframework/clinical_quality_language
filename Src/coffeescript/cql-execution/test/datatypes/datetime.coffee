@@ -18,13 +18,13 @@ describe 'DateTime', ->
   it 'should leave unset properties as undefined', ->
     d = new DateTime(2000)
     d.year.should.equal 2000
+    d.timeZoneOffset.should.equal (new Date()).getTimezoneOffset() / 60 * -1
     should.not.exist d.month
     should.not.exist d.day
     should.not.exist d.hour
     should.not.exist d.minute
     should.not.exist d.second
     should.not.exist d.millisecond
-    should.not.exist d.timeZoneOffset
 
   it 'should parse yyyy', ->
     d = DateTime.parse '2012'
@@ -162,7 +162,7 @@ describe 'DateTime', ->
     toYear.high.should.eql new Date(2000, 11, 31, 23, 59, 59, 999)
 
   it 'should convert to javascript Date', ->
-    DateTime.parse('2012-10-25T12:55:14.456').toJSDate().should.eql new Date(2012, 9, 25, 12, 55, 14, 456)
+    DateTime.parse('2012-02-25T12:55:14.456').toJSDate().should.eql new Date(2012, 1, 25, 12, 55, 14, 456)
 
   it 'should convert to javascript Date w/ time zone offsets', ->
     DateTime.parse('2012-10-25T12:55:14.456+04:30').toJSDate().should.eql new Date('2012-10-25T12:55:14.456+04:30')
@@ -429,7 +429,7 @@ describe 'DateTime.durationBetween', ->
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(74917, 83676)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(4494983, 5020582)
     a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(269698935, 301234934)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(269698934750,301234934749)
+    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(269698934750, 301234934749)
 
     a = DateTime.parse '2009-06-15T12:37:45'
     b = DateTime.parse '2009-06-15T12:37:45'
@@ -860,6 +860,7 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000').sameAs(DateTime.parse('2001'), DateTime.Unit.MONTH).should.be.false
     DateTime.parse('2000').sameAs(DateTime.parse('2001'), DateTime.Unit.YEAR).should.be.false
 
+# TODO: Test with precision
 describe 'DateTime.before', ->
 
   it 'should accept cases where a is before b', ->
@@ -944,106 +945,108 @@ describe 'DateTime.before', ->
     DateTime.parse('2000-02-01T00:00:00.0').before(DateTime.parse('2000-01')).should.be.false
     DateTime.parse('2001-01-01T00:00:00.0').before(DateTime.parse('2000')).should.be.false
 
-describe 'DateTime.beforeOrSameAs', ->
+# TODO: Test with precision
+describe 'DateTime.sameOrBefore', ->
 
   it 'should accept cases where a is before b', ->
-    DateTime.parse('2000-12-31T23:59:59.998').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
-    DateTime.parse('2000-12-31T23:59:58.999').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
-    DateTime.parse('2000-12-31T23:58:59.999').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
-    DateTime.parse('2000-12-31T22:59:59.999').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
-    DateTime.parse('2000-12-30T23:59:59.999').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
-    DateTime.parse('2000-11-31T23:59:59.999').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
-    DateTime.parse('1999-12-31T23:59:59.999').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000-12-31T23:59:59.998').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000-12-31T23:59:58.999').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000-12-31T23:58:59.999').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000-12-31T22:59:59.999').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000-12-30T23:59:59.999').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000-11-31T23:59:59.999').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('1999-12-31T23:59:59.999').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
 
   it 'should reject cases where a is after b', ->
-    DateTime.parse('2000-01-01T00:00:00.001').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
-    DateTime.parse('2000-01-01T00:00:01.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
-    DateTime.parse('2000-01-01T00:01:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
-    DateTime.parse('2000-01-01T01:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
-    DateTime.parse('2000-01-02T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
-    DateTime.parse('2000-02-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
-    DateTime.parse('2001-01-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
+    DateTime.parse('2000-01-01T00:00:00.001').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
+    DateTime.parse('2000-01-01T00:00:01.0').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
+    DateTime.parse('2000-01-01T00:01:00.0').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
+    DateTime.parse('2000-01-01T01:00:00.0').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
+    DateTime.parse('2000-01-02T00:00:00.0').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
+    DateTime.parse('2000-02-01T00:00:00.0').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
+    DateTime.parse('2001-01-01T00:00:00.0').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0')).should.be.false
 
   it 'should accept cases where a is b', ->
-    DateTime.parse('2000-01-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
 
   it 'should work with different timezone offsets', ->
-    DateTime.parse('2000-01-01T12:00:00.0+01:00').beforeOrSameAs(DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.true
-    DateTime.parse('2000-01-01T12:00:00.0+01:00').beforeOrSameAs(DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.true
-    DateTime.parse('2000-01-01T07:00:00.0-05:00').beforeOrSameAs(DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.false
+    DateTime.parse('2000-01-01T12:00:00.0+01:00').sameOrBefore(DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.true
+    DateTime.parse('2000-01-01T12:00:00.0+01:00').sameOrBefore(DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.true
+    DateTime.parse('2000-01-01T07:00:00.0-05:00').sameOrBefore(DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.false
 
   it 'should return null in cases where a is b but there are unknown values in a and b', ->
-    should.not.exist DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00'))
-    should.not.exist DateTime.parse('2000-01-01T00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:00'))
-    should.not.exist DateTime.parse('2000-01-01T00').beforeOrSameAs(DateTime.parse('2000-01-01T00'))
-    should.not.exist DateTime.parse('2000-01-01').beforeOrSameAs(DateTime.parse('2000-01-01'))
-    should.not.exist DateTime.parse('2000-01').beforeOrSameAs(DateTime.parse('2000-01'))
-    should.not.exist DateTime.parse('2000').beforeOrSameAs(DateTime.parse('2000'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00').sameOrBefore(DateTime.parse('2000-01-01T00:00:00'))
+    should.not.exist DateTime.parse('2000-01-01T00:00').sameOrBefore(DateTime.parse('2000-01-01T00:00'))
+    should.not.exist DateTime.parse('2000-01-01T00').sameOrBefore(DateTime.parse('2000-01-01T00'))
+    should.not.exist DateTime.parse('2000-01-01').sameOrBefore(DateTime.parse('2000-01-01'))
+    should.not.exist DateTime.parse('2000-01').sameOrBefore(DateTime.parse('2000-01'))
+    should.not.exist DateTime.parse('2000').sameOrBefore(DateTime.parse('2000'))
 
   it 'should return null in cases where a has unknown values that prevent deterministic result', ->
-    should.not.exist DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.998'))
-    should.not.exist DateTime.parse('2000-01-01T00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:59.998'))
-    should.not.exist DateTime.parse('2000-01-01T00').beforeOrSameAs(DateTime.parse('2000-01-01T00:59:59.998'))
-    should.not.exist DateTime.parse('2000-01-01').beforeOrSameAs(DateTime.parse('2000-01-01T23:59:59.998'))
-    should.not.exist DateTime.parse('2000-01').beforeOrSameAs(DateTime.parse('2000-01-31T23:59:59.998'))
-    should.not.exist DateTime.parse('2000').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.998'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.998'))
+    should.not.exist DateTime.parse('2000-01-01T00:00').sameOrBefore(DateTime.parse('2000-01-01T00:00:59.998'))
+    should.not.exist DateTime.parse('2000-01-01T00').sameOrBefore(DateTime.parse('2000-01-01T00:59:59.998'))
+    should.not.exist DateTime.parse('2000-01-01').sameOrBefore(DateTime.parse('2000-01-01T23:59:59.998'))
+    should.not.exist DateTime.parse('2000-01').sameOrBefore(DateTime.parse('2000-01-31T23:59:59.998'))
+    should.not.exist DateTime.parse('2000').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.998'))
 
   it 'should return null in cases where b has unknown values that prevent deterministic result', ->
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').beforeOrSameAs(DateTime.parse('2000-01-01T00:00'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').beforeOrSameAs(DateTime.parse('2000-01-01T00'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').beforeOrSameAs(DateTime.parse('2000-01-01'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').beforeOrSameAs(DateTime.parse('2000-01'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').beforeOrSameAs(DateTime.parse('2000'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrBefore(DateTime.parse('2000-01-01T00:00:00'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrBefore(DateTime.parse('2000-01-01T00:00'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrBefore(DateTime.parse('2000-01-01T00'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrBefore(DateTime.parse('2000-01-01'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrBefore(DateTime.parse('2000-01'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrBefore(DateTime.parse('2000'))
 
   it 'should accept cases where a has unknown values but is still deterministicly before b', ->
-    DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:01.0')).should.be.true
-    DateTime.parse('2000-01-01T00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:01:00.0')).should.be.true
-    DateTime.parse('2000-01-01T00').beforeOrSameAs(DateTime.parse('2000-01-01T01:00:00.0')).should.be.true
-    DateTime.parse('2000-01-01').beforeOrSameAs(DateTime.parse('2000-01-02T00:00:00.0')).should.be.true
-    DateTime.parse('2000-01').beforeOrSameAs(DateTime.parse('2000-02-01T00:00:00.0')).should.be.true
-    DateTime.parse('2000').beforeOrSameAs(DateTime.parse('2001-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00').sameOrBefore(DateTime.parse('2000-01-01T00:00:01.0')).should.be.true
+    DateTime.parse('2000-01-01T00:00').sameOrBefore(DateTime.parse('2000-01-01T00:01:00.0')).should.be.true
+    DateTime.parse('2000-01-01T00').sameOrBefore(DateTime.parse('2000-01-01T01:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01').sameOrBefore(DateTime.parse('2000-01-02T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01').sameOrBefore(DateTime.parse('2000-02-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000').sameOrBefore(DateTime.parse('2001-01-01T00:00:00.0')).should.be.true
 
   it 'should accept cases where a has unknown values but is still deterministicly before or same as b', ->
-    DateTime.parse('2000-01-01T00:00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.999')).should.be.true
-    DateTime.parse('2000-01-01T00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:59.999')).should.be.true
-    DateTime.parse('2000-01-01T00').beforeOrSameAs(DateTime.parse('2000-01-01T00:59:59.999')).should.be.true
-    DateTime.parse('2000-01-01').beforeOrSameAs(DateTime.parse('2000-01-01T23:59:59.999')).should.be.true
-    DateTime.parse('2000-01').beforeOrSameAs(DateTime.parse('2000-01-31T23:59:59.999')).should.be.true
-    DateTime.parse('2000').beforeOrSameAs(DateTime.parse('2001-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.999')).should.be.true
+    DateTime.parse('2000-01-01T00:00').sameOrBefore(DateTime.parse('2000-01-01T00:00:59.999')).should.be.true
+    DateTime.parse('2000-01-01T00').sameOrBefore(DateTime.parse('2000-01-01T00:59:59.999')).should.be.true
+    DateTime.parse('2000-01-01').sameOrBefore(DateTime.parse('2000-01-01T23:59:59.999')).should.be.true
+    DateTime.parse('2000-01').sameOrBefore(DateTime.parse('2000-01-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000').sameOrBefore(DateTime.parse('2001-12-31T23:59:59.999')).should.be.true
 
   it 'should accept cases where b has unknown values but a is still deterministicly before b', ->
-    DateTime.parse('2000-01-01T00:00:00.999').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:01')).should.be.true
-    DateTime.parse('2000-01-01T00:00:59.999').beforeOrSameAs(DateTime.parse('2000-01-01T00:01')).should.be.true
-    DateTime.parse('2000-01-01T00:59:59.999').beforeOrSameAs(DateTime.parse('2000-01-01T01')).should.be.true
-    DateTime.parse('2000-01-01T23:59:59.999').beforeOrSameAs(DateTime.parse('2000-01-02')).should.be.true
-    DateTime.parse('2000-01-31T23:59:59.999').beforeOrSameAs(DateTime.parse('2000-02')).should.be.true
-    DateTime.parse('2000-12-31T23:59:59.999').beforeOrSameAs(DateTime.parse('2001')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.999').sameOrBefore(DateTime.parse('2000-01-01T00:00:01')).should.be.true
+    DateTime.parse('2000-01-01T00:00:59.999').sameOrBefore(DateTime.parse('2000-01-01T00:01')).should.be.true
+    DateTime.parse('2000-01-01T00:59:59.999').sameOrBefore(DateTime.parse('2000-01-01T01')).should.be.true
+    DateTime.parse('2000-01-01T23:59:59.999').sameOrBefore(DateTime.parse('2000-01-02')).should.be.true
+    DateTime.parse('2000-01-31T23:59:59.999').sameOrBefore(DateTime.parse('2000-02')).should.be.true
+    DateTime.parse('2000-12-31T23:59:59.999').sameOrBefore(DateTime.parse('2001')).should.be.true
 
   it 'should accept cases where b has unknown values but a is still deterministicly before or same as b', ->
-    DateTime.parse('2000-01-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00')).should.be.true
-    DateTime.parse('2000-01-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00:00')).should.be.true
-    DateTime.parse('2000-01-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01T00')).should.be.true
-    DateTime.parse('2000-01-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01-01')).should.be.true
-    DateTime.parse('2000-01-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000-01')).should.be.true
-    DateTime.parse('2000-01-01T00:00:00.0').beforeOrSameAs(DateTime.parse('2000')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0').sameOrBefore(DateTime.parse('2000-01-01T00:00:00')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0').sameOrBefore(DateTime.parse('2000-01-01T00:00')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0').sameOrBefore(DateTime.parse('2000-01-01T00')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0').sameOrBefore(DateTime.parse('2000-01-01')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0').sameOrBefore(DateTime.parse('2000-01')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0').sameOrBefore(DateTime.parse('2000')).should.be.true
 
   it 'should reject cases where a has unknown values but is still deterministicly after b', ->
-    DateTime.parse('2000-01-01T00:00:01').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00.999')).should.be.false
-    DateTime.parse('2000-01-01T00:01').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:59.999')).should.be.false
-    DateTime.parse('2000-01-01T01').beforeOrSameAs(DateTime.parse('2000-01-01T00:59:59.999')).should.be.false
-    DateTime.parse('2000-01-02').beforeOrSameAs(DateTime.parse('2000-01-01T23:59:59.999')).should.be.false
-    DateTime.parse('2000-02').beforeOrSameAs(DateTime.parse('2000-01-31T23:59:59.999')).should.be.false
-    DateTime.parse('2001').beforeOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
+    DateTime.parse('2000-01-01T00:00:01').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.999')).should.be.false
+    DateTime.parse('2000-01-01T00:01').sameOrBefore(DateTime.parse('2000-01-01T00:00:59.999')).should.be.false
+    DateTime.parse('2000-01-01T01').sameOrBefore(DateTime.parse('2000-01-01T00:59:59.999')).should.be.false
+    DateTime.parse('2000-01-02').sameOrBefore(DateTime.parse('2000-01-01T23:59:59.999')).should.be.false
+    DateTime.parse('2000-02').sameOrBefore(DateTime.parse('2000-01-31T23:59:59.999')).should.be.false
+    DateTime.parse('2001').sameOrBefore(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
 
   it 'should reject cases where b has unknown values but a is still deterministicly after b', ->
-    DateTime.parse('2000-01-01T00:00:01').beforeOrSameAs(DateTime.parse('2000-01-01T00:00:00')).should.be.false
-    DateTime.parse('2000-01-01T00:01:00').beforeOrSameAs(DateTime.parse('2000-01-01T00:00')).should.be.false
-    DateTime.parse('2000-01-01T01:00:00').beforeOrSameAs(DateTime.parse('2000-01-01T00')).should.be.false
-    DateTime.parse('2000-01-02T00:00:00').beforeOrSameAs(DateTime.parse('2000-01-01')).should.be.false
-    DateTime.parse('2000-02-01T00:00:00').beforeOrSameAs(DateTime.parse('2000-01')).should.be.false
-    DateTime.parse('2001-01-01T00:00:00').beforeOrSameAs(DateTime.parse('2000')).should.be.false
+    DateTime.parse('2000-01-01T00:00:01').sameOrBefore(DateTime.parse('2000-01-01T00:00:00')).should.be.false
+    DateTime.parse('2000-01-01T00:01:00').sameOrBefore(DateTime.parse('2000-01-01T00:00')).should.be.false
+    DateTime.parse('2000-01-01T01:00:00').sameOrBefore(DateTime.parse('2000-01-01T00')).should.be.false
+    DateTime.parse('2000-01-02T00:00:00').sameOrBefore(DateTime.parse('2000-01-01')).should.be.false
+    DateTime.parse('2000-02-01T00:00:00').sameOrBefore(DateTime.parse('2000-01')).should.be.false
+    DateTime.parse('2001-01-01T00:00:00').sameOrBefore(DateTime.parse('2000')).should.be.false
 
+# TODO: Test with precision
 describe 'DateTime.after', ->
 
   it 'should accept cases where a is after b', ->
@@ -1128,102 +1131,175 @@ describe 'DateTime.after', ->
     DateTime.parse('2000-01-01T00:00:00.0').after(DateTime.parse('2000-02')).should.be.false
     DateTime.parse('2000-01-01T00:00:00.0').after(DateTime.parse('2001')).should.be.false
 
-describe 'DateTime.afterOrSameAs', ->
+# TODO: Test with precision
+describe 'DateTime.sameOrAfter', ->
 
   it 'should accept cases where a is after b', ->
-    DateTime.parse('2000-01-01T00:00:00.001').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
-    DateTime.parse('2000-01-01T00:00:01.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
-    DateTime.parse('2000-01-01T00:01:00.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
-    DateTime.parse('2000-01-01T01:00:00.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
-    DateTime.parse('2000-01-02T00:00:00.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
-    DateTime.parse('2000-02-01T00:00:00.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
-    DateTime.parse('2001-01-01T00:00:00.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.001').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01T00:00:01.0').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01T00:01:00.0').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01T01:00:00.0').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-02T00:00:00.0').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-02-01T00:00:00.0').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2001-01-01T00:00:00.0').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
 
   it 'should reject cases where a is before b', ->
-    DateTime.parse('2000-12-31T23:59:59.998').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
-    DateTime.parse('2000-12-31T23:59:58.999').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
-    DateTime.parse('2000-12-31T23:58:59.999').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
-    DateTime.parse('2000-12-31T22:59:59.999').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
-    DateTime.parse('2000-12-30T23:59:59.999').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
-    DateTime.parse('2000-11-31T23:59:59.999').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
-    DateTime.parse('1999-12-31T23:59:59.999').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
+    DateTime.parse('2000-12-31T23:59:59.998').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
+    DateTime.parse('2000-12-31T23:59:58.999').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
+    DateTime.parse('2000-12-31T23:58:59.999').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
+    DateTime.parse('2000-12-31T22:59:59.999').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
+    DateTime.parse('2000-12-30T23:59:59.999').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
+    DateTime.parse('2000-11-31T23:59:59.999').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
+    DateTime.parse('1999-12-31T23:59:59.999').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999')).should.be.false
 
   it 'should accept cases where a is b', ->
-    DateTime.parse('2000-01-01T00:00:00.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
 
   it 'should work with different timezone offsets', ->
-    DateTime.parse('2000-01-01T07:00:00.0-05:00').afterOrSameAs(DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.true
-    DateTime.parse('2000-01-01T12:00:00.0+01:00').afterOrSameAs(DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.true
-    DateTime.parse('2000-01-01T12:00:00.0+01:00').afterOrSameAs(DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.false
+    DateTime.parse('2000-01-01T07:00:00.0-05:00').sameOrAfter(DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.true
+    DateTime.parse('2000-01-01T12:00:00.0+01:00').sameOrAfter(DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.true
+    DateTime.parse('2000-01-01T12:00:00.0+01:00').sameOrAfter(DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.false
 
   it 'should return null in cases where a is b but there and b have unknown values', ->
-    should.not.exist DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00'))
-    should.not.exist DateTime.parse('2000-01-01T00:00').afterOrSameAs(DateTime.parse('2000-01-01T00:00'))
-    should.not.exist DateTime.parse('2000-01-01T00').afterOrSameAs(DateTime.parse('2000-01-01T00'))
-    should.not.exist DateTime.parse('2000-01-01').afterOrSameAs(DateTime.parse('2000-01-01'))
-    should.not.exist DateTime.parse('2000-01').afterOrSameAs(DateTime.parse('2000-01'))
-    should.not.exist DateTime.parse('2000').afterOrSameAs(DateTime.parse('2000'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00').sameOrAfter(DateTime.parse('2000-01-01T00:00:00'))
+    should.not.exist DateTime.parse('2000-01-01T00:00').sameOrAfter(DateTime.parse('2000-01-01T00:00'))
+    should.not.exist DateTime.parse('2000-01-01T00').sameOrAfter(DateTime.parse('2000-01-01T00'))
+    should.not.exist DateTime.parse('2000-01-01').sameOrAfter(DateTime.parse('2000-01-01'))
+    should.not.exist DateTime.parse('2000-01').sameOrAfter(DateTime.parse('2000-01'))
+    should.not.exist DateTime.parse('2000').sameOrAfter(DateTime.parse('2000'))
 
   it 'should return null in cases where a has unknown values that prevent deterministic result', ->
-    should.not.exist DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.999'))
-    should.not.exist DateTime.parse('2000-01-01T00:00').afterOrSameAs(DateTime.parse('2000-01-01T00:00:59.999'))
-    should.not.exist DateTime.parse('2000-01-01T00').afterOrSameAs(DateTime.parse('2000-01-01T00:59:59.999'))
-    should.not.exist DateTime.parse('2000-01-01').afterOrSameAs(DateTime.parse('2000-01-01T23:59:59.999'))
-    should.not.exist DateTime.parse('2000-01').afterOrSameAs(DateTime.parse('2000-01-31T23:59:59.999'))
-    should.not.exist DateTime.parse('2000').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.999'))
+    should.not.exist DateTime.parse('2000-01-01T00:00').sameOrAfter(DateTime.parse('2000-01-01T00:00:59.999'))
+    should.not.exist DateTime.parse('2000-01-01T00').sameOrAfter(DateTime.parse('2000-01-01T00:59:59.999'))
+    should.not.exist DateTime.parse('2000-01-01').sameOrAfter(DateTime.parse('2000-01-01T23:59:59.999'))
+    should.not.exist DateTime.parse('2000-01').sameOrAfter(DateTime.parse('2000-01-31T23:59:59.999'))
+    should.not.exist DateTime.parse('2000').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999'))
 
   it 'should return null in cases where b has unknown values that prevent deterministic result', ->
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').afterOrSameAs(DateTime.parse('2000-01-01T00:00'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').afterOrSameAs(DateTime.parse('2000-01-01T00'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').afterOrSameAs(DateTime.parse('2000-01-01'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').afterOrSameAs(DateTime.parse('2000-01'))
-    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').afterOrSameAs(DateTime.parse('2000'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrAfter(DateTime.parse('2000-01-01T00:00:00'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrAfter(DateTime.parse('2000-01-01T00:00'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrAfter(DateTime.parse('2000-01-01T00'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrAfter(DateTime.parse('2000-01-01'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrAfter(DateTime.parse('2000-01'))
+    should.not.exist DateTime.parse('2000-01-01T00:00:00.001').sameOrAfter(DateTime.parse('2000'))
 
   it 'should accept cases where a has unknown values but is still deterministicly after b', ->
-    DateTime.parse('2000-01-01T00:00:01').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.999')).should.be.true
-    DateTime.parse('2000-01-01T00:01').afterOrSameAs(DateTime.parse('2000-01-01T00:00:59.999')).should.be.true
-    DateTime.parse('2000-01-01T01').afterOrSameAs(DateTime.parse('2000-01-01T00:59:59.999')).should.be.true
-    DateTime.parse('2000-01-02').afterOrSameAs(DateTime.parse('2000-01-01T23:59:59.999')).should.be.true
-    DateTime.parse('2000-02').afterOrSameAs(DateTime.parse('2000-01-31T23:59:59.999')).should.be.true
-    DateTime.parse('2001').afterOrSameAs(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
+    DateTime.parse('2000-01-01T00:00:01').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.999')).should.be.true
+    DateTime.parse('2000-01-01T00:01').sameOrAfter(DateTime.parse('2000-01-01T00:00:59.999')).should.be.true
+    DateTime.parse('2000-01-01T01').sameOrAfter(DateTime.parse('2000-01-01T00:59:59.999')).should.be.true
+    DateTime.parse('2000-01-02').sameOrAfter(DateTime.parse('2000-01-01T23:59:59.999')).should.be.true
+    DateTime.parse('2000-02').sameOrAfter(DateTime.parse('2000-01-31T23:59:59.999')).should.be.true
+    DateTime.parse('2001').sameOrAfter(DateTime.parse('2000-12-31T23:59:59.999')).should.be.true
 
   it 'should accept cases where a has unknown values but is still deterministicly after or same as b', ->
-    DateTime.parse('2000-01-01T00:00:01').afterOrSameAs(DateTime.parse('2000-01-01T00:00:01.0')).should.be.true
-    DateTime.parse('2000-01-01T00:01').afterOrSameAs(DateTime.parse('2000-01-01T00:01:00.0')).should.be.true
-    DateTime.parse('2000-01-01T01').afterOrSameAs(DateTime.parse('2000-01-01T01:00:00.0')).should.be.true
-    DateTime.parse('2000-01-01').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
-    DateTime.parse('2000-01').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
-    DateTime.parse('2000').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01T00:00:01').sameOrAfter(DateTime.parse('2000-01-01T00:00:01.0')).should.be.true
+    DateTime.parse('2000-01-01T00:01').sameOrAfter(DateTime.parse('2000-01-01T00:01:00.0')).should.be.true
+    DateTime.parse('2000-01-01T01').sameOrAfter(DateTime.parse('2000-01-01T01:00:00.0')).should.be.true
+    DateTime.parse('2000-01-01').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000-01').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
+    DateTime.parse('2000').sameOrAfter(DateTime.parse('2000-01-01T00:00:00.0')).should.be.true
 
   it 'should accept cases where b has unknown values but a is still deterministicly after or same as b', ->
-    DateTime.parse('2000-01-01T00:00:01.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00')).should.be.true
-    DateTime.parse('2000-01-01T00:01:00.0').afterOrSameAs(DateTime.parse('2000-01-01T00:00')).should.be.true
-    DateTime.parse('2000-01-01T01:00:00.0').afterOrSameAs(DateTime.parse('2000-01-01T00')).should.be.true
-    DateTime.parse('2000-01-02T00:00:00.0').afterOrSameAs(DateTime.parse('2000-01-01')).should.be.true
-    DateTime.parse('2000-02-01T00:00:00.0').afterOrSameAs(DateTime.parse('2000-01')).should.be.true
-    DateTime.parse('2001-01-01T00:00:00.0').afterOrSameAs(DateTime.parse('2000')).should.be.true
+    DateTime.parse('2000-01-01T00:00:01.0').sameOrAfter(DateTime.parse('2000-01-01T00:00:00')).should.be.true
+    DateTime.parse('2000-01-01T00:01:00.0').sameOrAfter(DateTime.parse('2000-01-01T00:00')).should.be.true
+    DateTime.parse('2000-01-01T01:00:00.0').sameOrAfter(DateTime.parse('2000-01-01T00')).should.be.true
+    DateTime.parse('2000-01-02T00:00:00.0').sameOrAfter(DateTime.parse('2000-01-01')).should.be.true
+    DateTime.parse('2000-02-01T00:00:00.0').sameOrAfter(DateTime.parse('2000-01')).should.be.true
+    DateTime.parse('2001-01-01T00:00:00.0').sameOrAfter(DateTime.parse('2000')).should.be.true
 
   it 'should accept cases where b has unknown values but a is still deterministicly same as or after b', ->
-    DateTime.parse('2000-01-01T00:00:00.999').afterOrSameAs(DateTime.parse('2000-01-01T00:00:00')).should.be.true
-    DateTime.parse('2000-01-01T00:00:59.999').afterOrSameAs(DateTime.parse('2000-01-01T00:00')).should.be.true
-    DateTime.parse('2000-01-01T00:59:59.999').afterOrSameAs(DateTime.parse('2000-01-01T00')).should.be.true
-    DateTime.parse('2000-01-01T23:59:59.999').afterOrSameAs(DateTime.parse('2000-01-01')).should.be.true
-    DateTime.parse('2000-01-31T23:59:59.999').afterOrSameAs(DateTime.parse('2000-01')).should.be.true
-    DateTime.parse('2000-12-31T23:59:59.999').afterOrSameAs(DateTime.parse('2000')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.999').sameOrAfter(DateTime.parse('2000-01-01T00:00:00')).should.be.true
+    DateTime.parse('2000-01-01T00:00:59.999').sameOrAfter(DateTime.parse('2000-01-01T00:00')).should.be.true
+    DateTime.parse('2000-01-01T00:59:59.999').sameOrAfter(DateTime.parse('2000-01-01T00')).should.be.true
+    DateTime.parse('2000-01-01T23:59:59.999').sameOrAfter(DateTime.parse('2000-01-01')).should.be.true
+    DateTime.parse('2000-01-31T23:59:59.999').sameOrAfter(DateTime.parse('2000-01')).should.be.true
+    DateTime.parse('2000-12-31T23:59:59.999').sameOrAfter(DateTime.parse('2000')).should.be.true
 
   it 'should reject cases where a has unknown values but is still deterministicly before b', ->
-    DateTime.parse('2000-01-01T00:00:00').afterOrSameAs(DateTime.parse('2000-01-01T00:00:01.0')).should.be.false
-    DateTime.parse('2000-01-01T00:00').afterOrSameAs(DateTime.parse('2000-01-01T00:01:00.0')).should.be.false
-    DateTime.parse('2000-01-01T00').afterOrSameAs(DateTime.parse('2000-01-01T01:00:00.0')).should.be.false
-    DateTime.parse('2000-01-01').afterOrSameAs(DateTime.parse('2000-01-02T00:00:00.0')).should.be.false
-    DateTime.parse('2000-01').afterOrSameAs(DateTime.parse('2000-02-01T00:00:00.0')).should.be.false
-    DateTime.parse('2000').afterOrSameAs(DateTime.parse('2001-01-01T00:00:00.0')).should.be.false
+    DateTime.parse('2000-01-01T00:00:00').sameOrAfter(DateTime.parse('2000-01-01T00:00:01.0')).should.be.false
+    DateTime.parse('2000-01-01T00:00').sameOrAfter(DateTime.parse('2000-01-01T00:01:00.0')).should.be.false
+    DateTime.parse('2000-01-01T00').sameOrAfter(DateTime.parse('2000-01-01T01:00:00.0')).should.be.false
+    DateTime.parse('2000-01-01').sameOrAfter(DateTime.parse('2000-01-02T00:00:00.0')).should.be.false
+    DateTime.parse('2000-01').sameOrAfter(DateTime.parse('2000-02-01T00:00:00.0')).should.be.false
+    DateTime.parse('2000').sameOrAfter(DateTime.parse('2001-01-01T00:00:00.0')).should.be.false
 
   it 'should reject cases where b has unknown values but a is still deterministicly before b', ->
-    DateTime.parse('2000-01-01T00:00:00.999').afterOrSameAs(DateTime.parse('2000-01-01T00:00:01')).should.be.false
-    DateTime.parse('2000-01-01T00:00:59.999').afterOrSameAs(DateTime.parse('2000-01-01T00:01')).should.be.false
-    DateTime.parse('2000-01-01T00:59:59.999').afterOrSameAs(DateTime.parse('2000-01-01T01')).should.be.false
-    DateTime.parse('2000-01-01T23:59:59.999').afterOrSameAs(DateTime.parse('2000-01-02')).should.be.false
-    DateTime.parse('2000-01-31T23:59:59.999').afterOrSameAs(DateTime.parse('2000-02')).should.be.false
-    DateTime.parse('2000-12-31T23:59:59.999').afterOrSameAs(DateTime.parse('2001')).should.be.false
+    DateTime.parse('2000-01-01T00:00:00.999').sameOrAfter(DateTime.parse('2000-01-01T00:00:01')).should.be.false
+    DateTime.parse('2000-01-01T00:00:59.999').sameOrAfter(DateTime.parse('2000-01-01T00:01')).should.be.false
+    DateTime.parse('2000-01-01T00:59:59.999').sameOrAfter(DateTime.parse('2000-01-01T01')).should.be.false
+    DateTime.parse('2000-01-01T23:59:59.999').sameOrAfter(DateTime.parse('2000-01-02')).should.be.false
+    DateTime.parse('2000-01-31T23:59:59.999').sameOrAfter(DateTime.parse('2000-02')).should.be.false
+    DateTime.parse('2000-12-31T23:59:59.999').sameOrAfter(DateTime.parse('2001')).should.be.false
+
+describe 'DateTime.reducedPrecision', ->
+
+  it 'should properly reduce to year precision', ->
+    reduced = DateTime.parse('2012-10-25T12:55:14.456').reducedPrecision(DateTime.Unit.YEAR)
+    reduced.year.should.equal 2012
+    should.not.exist reduced.month
+    should.not.exist reduced.day
+    should.not.exist reduced.hour
+    should.not.exist reduced.minute
+    should.not.exist reduced.second
+    should.not.exist reduced.millisecond
+
+  it 'should properly reduce to month precision', ->
+    reduced = DateTime.parse('2012-10-25T12:55:14.456').reducedPrecision(DateTime.Unit.MONTH)
+    reduced.year.should.equal 2012
+    reduced.month.should.equal 10
+    should.not.exist reduced.day
+    should.not.exist reduced.hour
+    should.not.exist reduced.minute
+    should.not.exist reduced.second
+    should.not.exist reduced.millisecond
+
+  it 'should properly reduce to day precision', ->
+    reduced = DateTime.parse('2012-10-25T12:55:14.456').reducedPrecision(DateTime.Unit.DAY)
+    reduced.year.should.equal 2012
+    reduced.month.should.equal 10
+    reduced.day.should.equal 25
+    should.not.exist reduced.hour
+    should.not.exist reduced.minute
+    should.not.exist reduced.second
+    should.not.exist reduced.millisecond
+
+  it 'should properly reduce to hour precision', ->
+    reduced = DateTime.parse('2012-10-25T12:55:14.456').reducedPrecision(DateTime.Unit.HOUR)
+    reduced.year.should.equal 2012
+    reduced.month.should.equal 10
+    reduced.day.should.equal 25
+    reduced.hour.should.equal 12
+    should.not.exist reduced.minute
+    should.not.exist reduced.second
+    should.not.exist reduced.millisecond
+
+  it 'should properly reduce to minute precision', ->
+    reduced = DateTime.parse('2012-10-25T12:55:14.456').reducedPrecision(DateTime.Unit.MINUTE)
+    reduced.year.should.equal 2012
+    reduced.month.should.equal 10
+    reduced.day.should.equal 25
+    reduced.hour.should.equal 12
+    reduced.minute.should.equal 55
+    should.not.exist reduced.second
+    should.not.exist reduced.millisecond
+
+  it 'should properly reduce to second precision', ->
+    reduced = DateTime.parse('2012-10-25T12:55:14.456').reducedPrecision(DateTime.Unit.SECOND)
+    reduced.year.should.equal 2012
+    reduced.month.should.equal 10
+    reduced.day.should.equal 25
+    reduced.hour.should.equal 12
+    reduced.minute.should.equal 55
+    reduced.second.should.equal 14
+    should.not.exist reduced.millisecond
+
+  it 'should properly reduce to millisecond precision', ->
+    reduced = DateTime.parse('2012-10-25T12:55:14.456').reducedPrecision(DateTime.Unit.MILLISECOND)
+    reduced.year.should.equal 2012
+    reduced.month.should.equal 10
+    reduced.day.should.equal 25
+    reduced.hour.should.equal 12
+    reduced.minute.should.equal 55
+    reduced.second.should.equal 14
+    reduced.millisecond.should.equal 456
