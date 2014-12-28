@@ -13,12 +13,12 @@ describe 'DateTime', ->
     d.minute.should.equal 25
     d.second.should.equal 59
     d.millisecond.should.equal 246
-    d.timeZoneOffset.should.equal 5.5
+    d.timezoneOffset.should.equal 5.5
 
   it 'should leave unset properties as undefined', ->
     d = new DateTime(2000)
     d.year.should.equal 2000
-    d.timeZoneOffset.should.equal (new Date()).getTimezoneOffset() / 60 * -1
+    d.timezoneOffset.should.equal (new Date()).getTimezoneOffset() / 60 * -1
     should.not.exist d.month
     should.not.exist d.day
     should.not.exist d.hour
@@ -96,7 +96,7 @@ describe 'DateTime', ->
 
   it 'should convert to other timezone offsets', ->
     original = DateTime.parse('1999-02-16T13:56:24.123+04:30')
-    converted = original.convertToTimeZoneOffset(-5)
+    converted = original.convertToTimezoneOffset(-5)
     converted.should.not.eql original
     converted.should.eql DateTime.parse('1999-02-16T04:26:24.123-05:00')
 

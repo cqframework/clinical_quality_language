@@ -17,7 +17,7 @@ define Hour = DateTime(2012, 2, 15, 12)
 define Minute = DateTime(2012, 2, 15, 12, 10)
 define Second = DateTime(2012, 2, 15, 12, 10, 59)
 define Millisecond = DateTime(2012, 2, 15, 12, 10, 59, 456)
-define TimeZoneOffset = DateTime(2012, 2, 15, 12, 10, 59, 456, -8)
+define TimezoneOffset = DateTime(2012, 2, 15, 12, 10, 59, 456, -8)
 ###
 
 module.exports['DateTime'] = {
@@ -217,7 +217,7 @@ module.exports['DateTime'] = {
                } ]
             }
          }, {
-            "name" : "TimeZoneOffset",
+            "name" : "TimezoneOffset",
             "context" : "Patient",
             "expression" : {
                "name" : "DateTime",
@@ -866,17 +866,17 @@ module.exports['TimeFrom'] = {
    }
 }
 
-### TimeZoneFrom
+### TimezoneFrom
 library TestSnippet version '1'
 using QUICK
 context Patient
 define CentralEuropean = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, +1)
 define EasternStandard = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, -5)
-define DefaultTimeZone = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
+define DefaultTimezone = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
 define NullDate = timezone from null
 ###
 
-module.exports['TimeZoneFrom'] = {
+module.exports['TimezoneFrom'] = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -994,7 +994,7 @@ module.exports['TimeZoneFrom'] = {
                }
             }
          }, {
-            "name" : "DefaultTimeZone",
+            "name" : "DefaultTimezone",
             "context" : "Patient",
             "expression" : {
                "type" : "TimezoneFrom",

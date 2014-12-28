@@ -21,9 +21,9 @@ module.exports.DateTime = class DateTime
     else
       null
 
-  @fromDate: (date, timeZoneOffset) ->
-    if timeZoneOffset?
-      date = new Date(date.getTime() + (timeZoneOffset * 60 * 60 * 1000))
+  @fromDate: (date, timezoneOffset) ->
+    if timezoneOffset?
+      date = new Date(date.getTime() + (timezoneOffset * 60 * 60 * 1000))
       new DateTime(
         date.getUTCFullYear(),
         date.getUTCMonth() + 1,
@@ -32,7 +32,7 @@ module.exports.DateTime = class DateTime
         date.getUTCMinutes(),
         date.getUTCSeconds(),
         date.getUTCMilliseconds(),
-        timeZoneOffset)
+        timezoneOffset)
     else
       new DateTime(
         date.getFullYear(),
@@ -43,13 +43,13 @@ module.exports.DateTime = class DateTime
         date.getSeconds(),
         date.getMilliseconds())
 
-  constructor: (@year=null, @month=null, @day=null, @hour=null, @minute=null, @second=null, @millisecond=null, @timeZoneOffset) ->
-    if not @timeZoneOffset?
-      @timeZoneOffset = (new Date()).getTimezoneOffset() / 60 * -1
+  constructor: (@year=null, @month=null, @day=null, @hour=null, @minute=null, @second=null, @millisecond=null, @timezoneOffset) ->
+    if not @timezoneOffset?
+      @timezoneOffset = (new Date()).getTimezoneOffset() / 60 * -1
 
 
   copy: () ->
-    new DateTime(@year, @month, @day, @hour, @minute, @second, @millisecond, @timeZoneOffset)
+    new DateTime(@year, @month, @day, @hour, @minute, @second, @millisecond, @timezoneOffset)
 
   successor: () ->
     if @millisecond?
@@ -84,9 +84,8 @@ module.exports.DateTime = class DateTime
     else if @year?
       @add(-1,DateTime.Unit.YEAR)
 
-
-  convertToTimeZoneOffset: (timeZoneOffset = 0) ->
-    DateTime.fromDate(@toJSDate(), timeZoneOffset)
+  convertToTimezoneOffset: (timezoneOffset = 0) ->
+    DateTime.fromDate(@toJSDate(), timezoneOffset)
 
   sameAs: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then null
@@ -138,7 +137,7 @@ module.exports.DateTime = class DateTime
     if result[field]?
       # Increment the field, then round-trip to JS date and back for calendar math
       result[field] = result[field] + offset
-      normalized = DateTime.fromDate(result.toJSDate(), @timeZoneOffset)
+      normalized = DateTime.fromDate(result.toJSDate(), @timezoneOffset)
       for field in DateTime.FIELDS when result[field]?
         result[field] = normalized[field]
 
@@ -147,8 +146,8 @@ module.exports.DateTime = class DateTime
   durationBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
 
-    if @timeZoneOffset isnt other.timeZoneOffset
-      other = other.convertToTimeZoneOffset(@timeZoneOffset)
+    if @timezoneOffset isnt other.timezoneOffset
+      other = other.convertToTimezoneOffset(@timezoneOffset)
 
     a = @toUncertainty(true)
     b = other.toUncertainty(true)
@@ -193,13 +192,13 @@ module.exports.DateTime = class DateTime
       @minute ? 59,
       @second ? 59,
       @millisecond ? 999,
-      @timeZoneOffset)).toJSDate(ignoreTimezone)
+      @timezoneOffset)).toJSDate(ignoreTimezone)
     new Uncertainty(low, high)
 
   toJSDate: (ignoreTimezone = false) ->
     [y, mo, d, h, mi, s, ms] = [ @year, (if @month? then @month-1 else 0), @day ? 1, @hour ? 0, @minute ? 0, @second ? 0, @millisecond ? 0 ]
-    if @timeZoneOffset? and not ignoreTimezone
-      new Date(Date.UTC(y, mo, d, h, mi, s, ms) - (@timeZoneOffset * 60 * 60 * 1000))
+    if @timezoneOffset? and not ignoreTimezone
+      new Date(Date.UTC(y, mo, d, h, mi, s, ms) - (@timezoneOffset * 60 * 60 * 1000))
     else
       new Date(y, mo, d, h, mi, s, ms)
 
@@ -209,7 +208,7 @@ module.exports.DateTime = class DateTime
 
   # TODO: Write tests
   getTime: () ->
-    new DateTime(1900, 1, 1, @hour, @minute, @second, @millisecond, @timeZoneOffset)
+    new DateTime(1900, 1, 1, @hour, @minute, @second, @millisecond, @timezoneOffset)
 
   reducedPrecision: (unitField = DateTime.Unit.MILLISECOND) ->
     reduced = @copy()

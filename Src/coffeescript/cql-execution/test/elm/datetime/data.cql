@@ -6,7 +6,7 @@ define Hour = DateTime(2012, 2, 15, 12)
 define Minute = DateTime(2012, 2, 15, 12, 10)
 define Second = DateTime(2012, 2, 15, 12, 10, 59)
 define Millisecond = DateTime(2012, 2, 15, 12, 10, 59, 456)
-define TimeZoneOffset = DateTime(2012, 2, 15, 12, 10, 59, 456, -8)
+define TimezoneOffset = DateTime(2012, 2, 15, 12, 10, 59, 456, -8)
 
 // @Test: Today
 define TodayVar = Today()
@@ -45,10 +45,10 @@ define Time = time from DateTime(2000, 3, 15, 13, 30, 25, 200, +1)
 define NoTime = time from DateTime(2000, 3, 15)
 define NullDate = time from null
 
-// @Test: TimeZoneFrom
+// @Test: TimezoneFrom
 define CentralEuropean = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, +1)
 define EasternStandard = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, -5)
-define DefaultTimeZone = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
+define DefaultTimezone = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
 define NullDate = timezone from null
 
 // @Test: SameAs

@@ -96,7 +96,7 @@ module.exports.TimezoneFrom = class TimezoneFrom extends Expression
 
   exec: (ctx) ->
     date = @execArgs(ctx)
-    if date? then date.timeZoneOffset else null
+    if date? then date.timezoneOffset else null
 
 module.exports.SameAs = class SameAs extends Expression
   constructor: (json) ->
