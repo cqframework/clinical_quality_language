@@ -860,7 +860,6 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000').sameAs(DateTime.parse('2001'), DateTime.Unit.MONTH).should.be.false
     DateTime.parse('2000').sameAs(DateTime.parse('2001'), DateTime.Unit.YEAR).should.be.false
 
-# TODO: Test with precision
 describe 'DateTime.before', ->
 
   it 'should accept cases where a is before b', ->
@@ -888,6 +887,40 @@ describe 'DateTime.before', ->
     DateTime.parse('2000-01-01T12:00:00.0+01:00').before(DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.true
     DateTime.parse('2000-01-01T12:00:00.0+01:00').before(DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.false
     DateTime.parse('2000-01-01T07:00:00.0-05:00').before(DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.false
+
+  it 'should use year precision when requested', ->
+    DateTime.parse('2000-01-01T00:00:00.0+00').before(DateTime.parse('2000-06-01T00:00:00.0+00')).should.be.true
+    DateTime.parse('2000-01-01T00:00:00.0+00').before(DateTime.parse('2000-06-01T00:00:00.0+00'), DateTime.Unit.YEAR).should.be.false
+    DateTime.parse('1999-12-31T23:59:59.999+00').before(DateTime.parse('2000-06-01T00:00:00.0+00'), DateTime.Unit.YEAR).should.be.true
+
+  it 'should use month precision when requested', ->
+    DateTime.parse('2000-02-01T00:00:00.0+00').before(DateTime.parse('2000-02-15T00:00:00.0+00')).should.be.true
+    DateTime.parse('2000-02-01T00:00:00.0+00').before(DateTime.parse('2000-02-15T00:00:00.0+00'), DateTime.Unit.MONTH).should.be.false
+    DateTime.parse('2000-01-31T23:59:59.999+00').before(DateTime.parse('2000-02-15T00:00:00.0+00'), DateTime.Unit.MONTH).should.be.true
+
+  it 'should use day precision when requested', ->
+    DateTime.parse('2000-02-15T00:00:00.0+00').before(DateTime.parse('2000-02-15T12:00:00.0+00')).should.be.true
+    DateTime.parse('2000-02-15T00:00:00.0+00').before(DateTime.parse('2000-02-15T12:00:00.0+00'), DateTime.Unit.DAY).should.be.false
+    DateTime.parse('2000-02-14T23:59:59.999+00').before(DateTime.parse('2000-02-15T12:00:00.0+00'), DateTime.Unit.DAY).should.be.true
+
+  it 'should use hour precision when requested', ->
+    DateTime.parse('2000-02-15T12:00:00.0+00').before(DateTime.parse('2000-02-15T12:30:00.0+00')).should.be.true
+    DateTime.parse('2000-02-15T12:00:00.0+00').before(DateTime.parse('2000-02-15T12:30:00.0+00'), DateTime.Unit.HOUR).should.be.false
+    DateTime.parse('2000-02-15T11:59:59.999+00').before(DateTime.parse('2000-02-15T12:30:00.0+00'), DateTime.Unit.HOUR).should.be.true
+
+  it 'should use minute precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:00.0+00').before(DateTime.parse('2000-02-15T12:30:30.0+00')).should.be.true
+    DateTime.parse('2000-02-15T12:30:00.0+00').before(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MINUTE).should.be.false
+    DateTime.parse('2000-02-15T12:29:59.999+00').before(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MINUTE).should.be.true
+
+  it 'should use second precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.0+00').before(DateTime.parse('2000-02-15T12:30:30.500+00')).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.0+00').before(DateTime.parse('2000-02-15T12:30:30.500+00'), DateTime.Unit.SECOND).should.be.false
+    DateTime.parse('2000-02-15T12:30:29.999+00').before(DateTime.parse('2000-02-15T12:30:30.500+00'), DateTime.Unit.SECOND).should.be.true
+
+  it 'should use millisecond precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.0+00').before(DateTime.parse('2000-02-15T12:30:30.500+00')).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.0+00').before(DateTime.parse('2000-02-15T12:30:30.500+00'), DateTime.Unit.MILLISECOND).should.be.true
 
   it 'should return null in cases where a is b but there are unknown values', ->
     should.not.exist DateTime.parse('2000-01-01T00:00:00').before(DateTime.parse('2000-01-01T00:00:00'))
@@ -945,7 +978,6 @@ describe 'DateTime.before', ->
     DateTime.parse('2000-02-01T00:00:00.0').before(DateTime.parse('2000-01')).should.be.false
     DateTime.parse('2001-01-01T00:00:00.0').before(DateTime.parse('2000')).should.be.false
 
-# TODO: Test with precision
 describe 'DateTime.sameOrBefore', ->
 
   it 'should accept cases where a is before b', ->
@@ -973,6 +1005,42 @@ describe 'DateTime.sameOrBefore', ->
     DateTime.parse('2000-01-01T12:00:00.0+01:00').sameOrBefore(DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.true
     DateTime.parse('2000-01-01T12:00:00.0+01:00').sameOrBefore(DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.true
     DateTime.parse('2000-01-01T07:00:00.0-05:00').sameOrBefore(DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.false
+
+  it 'should use year precision when requested', ->
+    DateTime.parse('2000-06-01T00:00:00.0+00').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0+00')).should.be.false
+    DateTime.parse('2000-06-01T00:00:00.0+00').sameOrBefore(DateTime.parse('2000-01-01T00:00:00.0+00'), DateTime.Unit.YEAR).should.be.true
+    DateTime.parse('2000-06-01T00:00:00.0+00').sameOrBefore(DateTime.parse('1999-12-31T23:59:59.999+00'), DateTime.Unit.YEAR).should.be.false
+
+  it 'should use month precision when requested', ->
+    DateTime.parse('2000-02-15T00:00:00.0+00').sameOrBefore(DateTime.parse('2000-02-01T00:00:00.0+00')).should.be.false
+    DateTime.parse('2000-02-15T00:00:00.0+00').sameOrBefore(DateTime.parse('2000-02-01T00:00:00.0+00'), DateTime.Unit.MONTH).should.be.true
+    DateTime.parse('2000-02-15T00:00:00.0+00').sameOrBefore(DateTime.parse('2000-01-31T23:59:59.999+00'), DateTime.Unit.MONTH).should.be.false
+
+  it 'should use day precision when requested', ->
+    DateTime.parse('2000-02-15T12:00:00.0+00').sameOrBefore(DateTime.parse('2000-02-15T00:00:00.0+00')).should.be.false
+    DateTime.parse('2000-02-15T12:00:00.0+00').sameOrBefore(DateTime.parse('2000-02-15T00:00:00.0+00'), DateTime.Unit.DAY).should.be.true
+    DateTime.parse('2000-02-15T12:00:00.0+00').sameOrBefore(DateTime.parse('2000-02-14T23:59:59.999+00'), DateTime.Unit.DAY).should.be.false
+
+  it 'should use hour precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:00.0+00').sameOrBefore(DateTime.parse('2000-02-15T12:00:00.0+00')).should.be.false
+    DateTime.parse('2000-02-15T12:30:00.0+00').sameOrBefore(DateTime.parse('2000-02-15T12:00:00.0+00'), DateTime.Unit.HOUR).should.be.true
+    DateTime.parse('2000-02-15T12:30:00.0+00').sameOrBefore(DateTime.parse('2000-02-15T11:59:59.999+00'), DateTime.Unit.HOUR).should.be.false
+
+  it 'should use minute precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:00.0+00')).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:00.0+00'), DateTime.Unit.MINUTE).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrBefore(DateTime.parse('2000-02-15T12:29:59.999+00'), DateTime.Unit.MINUTE).should.be.false
+
+  it 'should use second precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.500+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:30.0+00')).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.500+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.SECOND).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.500+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:29.999+00'), DateTime.Unit.SECOND).should.be.false
+
+  it 'should use millisecond precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.500+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:30.0+00')).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.500+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MILLISECOND).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:30.500+00'), DateTime.Unit.MILLISECOND).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrBefore(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MILLISECOND).should.be.true
 
   it 'should return null in cases where a is b but there are unknown values in a and b', ->
     should.not.exist DateTime.parse('2000-01-01T00:00:00').sameOrBefore(DateTime.parse('2000-01-01T00:00:00'))
@@ -1046,7 +1114,6 @@ describe 'DateTime.sameOrBefore', ->
     DateTime.parse('2000-02-01T00:00:00').sameOrBefore(DateTime.parse('2000-01')).should.be.false
     DateTime.parse('2001-01-01T00:00:00').sameOrBefore(DateTime.parse('2000')).should.be.false
 
-# TODO: Test with precision
 describe 'DateTime.after', ->
 
   it 'should accept cases where a is after b', ->
@@ -1074,6 +1141,40 @@ describe 'DateTime.after', ->
     DateTime.parse('2000-01-01T07:00:00.0-05:00').after(DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.true
     DateTime.parse('2000-01-01T12:00:00.0+01:00').after(DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.false
     DateTime.parse('2000-01-01T12:00:00.0+01:00').after(DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.false
+
+  it 'should use year precision when requested', ->
+    DateTime.parse('2000-06-01T00:00:00.0+00').after(DateTime.parse('2000-01-01T00:00:00.0+00')).should.be.true
+    DateTime.parse('2000-06-01T00:00:00.0+00').after(DateTime.parse('2000-01-01T00:00:00.0+00'), DateTime.Unit.YEAR).should.be.false
+    DateTime.parse('2000-06-01T00:00:00.0+00').after(DateTime.parse('1999-12-31T23:59:59.999+00'), DateTime.Unit.YEAR).should.be.true
+
+  it 'should use month precision when requested', ->
+    DateTime.parse('2000-02-15T00:00:00.0+00').after(DateTime.parse('2000-02-01T00:00:00.0+00')).should.be.true
+    DateTime.parse('2000-02-15T00:00:00.0+00').after(DateTime.parse('2000-02-01T00:00:00.0+00'), DateTime.Unit.MONTH).should.be.false
+    DateTime.parse('2000-02-15T00:00:00.0+00').after(DateTime.parse('2000-01-31T23:59:59.999+00'), DateTime.Unit.MONTH).should.be.true
+
+  it 'should use day precision when requested', ->
+    DateTime.parse('2000-02-15T12:00:00.0+00').after(DateTime.parse('2000-02-15T00:00:00.0+00')).should.be.true
+    DateTime.parse('2000-02-15T12:00:00.0+00').after(DateTime.parse('2000-02-15T00:00:00.0+00'), DateTime.Unit.DAY).should.be.false
+    DateTime.parse('2000-02-15T12:00:00.0+00').after(DateTime.parse('2000-02-14T23:59:59.999+00'), DateTime.Unit.DAY).should.be.true
+
+  it 'should use hour precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:00.0+00').after(DateTime.parse('2000-02-15T12:00:00.0+00')).should.be.true
+    DateTime.parse('2000-02-15T12:30:00.0+00').after(DateTime.parse('2000-02-15T12:00:00.0+00'), DateTime.Unit.HOUR).should.be.false
+    DateTime.parse('2000-02-15T12:30:00.0+00').after(DateTime.parse('2000-02-15T11:59:59.999+00'), DateTime.Unit.HOUR).should.be.true
+
+  it 'should use minute precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.0+00').after(DateTime.parse('2000-02-15T12:30:00.0+00')).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.0+00').after(DateTime.parse('2000-02-15T12:30:00.0+00'), DateTime.Unit.MINUTE).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.0+00').after(DateTime.parse('2000-02-15T12:29:59.999+00'), DateTime.Unit.MINUTE).should.be.true
+
+  it 'should use second precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.500+00').after(DateTime.parse('2000-02-15T12:30:30.0+00')).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.500+00').after(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.SECOND).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.500+00').after(DateTime.parse('2000-02-15T12:30:29.999+00'), DateTime.Unit.SECOND).should.be.true
+
+  it 'should use millisecond precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.500+00').after(DateTime.parse('2000-02-15T12:30:30.0+00')).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.500+00').after(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MILLISECOND).should.be.true
 
   it 'should return null in cases where a is b but there are unknown values', ->
     should.not.exist DateTime.parse('2000-01-01T00:00:00').after(DateTime.parse('2000-01-01T00:00:00'))
@@ -1131,7 +1232,6 @@ describe 'DateTime.after', ->
     DateTime.parse('2000-01-01T00:00:00.0').after(DateTime.parse('2000-02')).should.be.false
     DateTime.parse('2000-01-01T00:00:00.0').after(DateTime.parse('2001')).should.be.false
 
-# TODO: Test with precision
 describe 'DateTime.sameOrAfter', ->
 
   it 'should accept cases where a is after b', ->
@@ -1159,6 +1259,42 @@ describe 'DateTime.sameOrAfter', ->
     DateTime.parse('2000-01-01T07:00:00.0-05:00').sameOrAfter(DateTime.parse('2000-01-01T12:00:00.0+01:00')).should.be.true
     DateTime.parse('2000-01-01T12:00:00.0+01:00').sameOrAfter(DateTime.parse('2000-01-01T06:00:00.0-05:00')).should.be.true
     DateTime.parse('2000-01-01T12:00:00.0+01:00').sameOrAfter(DateTime.parse('2000-01-01T07:00:00.0-05:00')).should.be.false
+
+  it 'should use year precision when requested', ->
+    DateTime.parse('2000-01-01T00:00:00.0+00').sameOrAfter(DateTime.parse('2000-06-01T00:00:00.0+00')).should.be.false
+    DateTime.parse('2000-01-01T00:00:00.0+00').sameOrAfter(DateTime.parse('2000-06-01T00:00:00.0+00'), DateTime.Unit.YEAR).should.be.true
+    DateTime.parse('1999-12-31T23:59:59.999+00').sameOrAfter(DateTime.parse('2000-06-01T00:00:00.0+00'), DateTime.Unit.YEAR).should.be.false
+
+  it 'should use month precision when requested', ->
+    DateTime.parse('2000-02-01T00:00:00.0+00').sameOrAfter(DateTime.parse('2000-02-15T00:00:00.0+00')).should.be.false
+    DateTime.parse('2000-02-01T00:00:00.0+00').sameOrAfter(DateTime.parse('2000-02-15T00:00:00.0+00'), DateTime.Unit.MONTH).should.be.true
+    DateTime.parse('2000-01-31T23:59:59.999+00').sameOrAfter(DateTime.parse('2000-02-15T00:00:00.0+00'), DateTime.Unit.MONTH).should.be.false
+
+  it 'should use day precision when requested', ->
+    DateTime.parse('2000-02-15T00:00:00.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:00:00.0+00')).should.be.false
+    DateTime.parse('2000-02-15T00:00:00.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:00:00.0+00'), DateTime.Unit.DAY).should.be.true
+    DateTime.parse('2000-02-14T23:59:59.999+00').sameOrAfter(DateTime.parse('2000-02-15T12:00:00.0+00'), DateTime.Unit.DAY).should.be.false
+
+  it 'should use hour precision when requested', ->
+    DateTime.parse('2000-02-15T12:00:00.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:00.0+00')).should.be.false
+    DateTime.parse('2000-02-15T12:00:00.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:00.0+00'), DateTime.Unit.HOUR).should.be.true
+    DateTime.parse('2000-02-15T11:59:59.999+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:00.0+00'), DateTime.Unit.HOUR).should.be.false
+
+  it 'should use minute precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:00.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.0+00')).should.be.false
+    DateTime.parse('2000-02-15T12:30:00.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MINUTE).should.be.true
+    DateTime.parse('2000-02-15T12:29:59.999+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MINUTE).should.be.false
+
+  it 'should use second precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.500+00')).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.500+00'), DateTime.Unit.SECOND).should.be.true
+    DateTime.parse('2000-02-15T12:30:29.999+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.500+00'), DateTime.Unit.SECOND).should.be.false
+
+  it 'should use millisecond precision when requested', ->
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.500+00')).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.500+00'), DateTime.Unit.MILLISECOND).should.be.false
+    DateTime.parse('2000-02-15T12:30:30.500+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MILLISECOND).should.be.true
+    DateTime.parse('2000-02-15T12:30:30.0+00').sameOrAfter(DateTime.parse('2000-02-15T12:30:30.0+00'), DateTime.Unit.MILLISECOND).should.be.true
 
   it 'should return null in cases where a is b but there and b have unknown values', ->
     should.not.exist DateTime.parse('2000-01-01T00:00:00').sameOrAfter(DateTime.parse('2000-01-01T00:00:00'))
@@ -1231,6 +1367,106 @@ describe 'DateTime.sameOrAfter', ->
     DateTime.parse('2000-01-01T23:59:59.999').sameOrAfter(DateTime.parse('2000-01-02')).should.be.false
     DateTime.parse('2000-01-31T23:59:59.999').sameOrAfter(DateTime.parse('2000-02')).should.be.false
     DateTime.parse('2000-12-31T23:59:59.999').sameOrAfter(DateTime.parse('2001')).should.be.false
+
+describe 'DateTime.getDate', ->
+
+  it 'should properly extract the date from fully specified datetimes', ->
+    d = DateTime.parse('2012-10-25T12:55:14.456+00').getDate()
+    d.year.should.equal 2012
+    d.month.should.equal 10
+    d.day.should.equal 25
+    should.not.exist d.hour
+    should.not.exist d.minute
+    should.not.exist d.second
+    should.not.exist d.millisecond
+    d.timezoneOffset.should.equal 0
+
+  it 'should properly extract the date from datetime without time', ->
+    d = DateTime.parse('2012-10-25').getDate()
+    d.year.should.equal 2012
+    d.month.should.equal 10
+    d.day.should.equal 25
+    should.not.exist d.hour
+    should.not.exist d.minute
+    should.not.exist d.second
+    should.not.exist d.millisecond
+
+  it 'should properly extract the date from datetime without days', ->
+    d = DateTime.parse('2012-10').getDate()
+    d.year.should.equal 2012
+    d.month.should.equal 10
+    should.not.exist d.day
+    should.not.exist d.hour
+    should.not.exist d.minute
+    should.not.exist d.second
+    should.not.exist d.millisecond
+
+  it 'should properly extract the date from datetime without months', ->
+    d = DateTime.parse('2012').getDate()
+    d.year.should.equal 2012
+    should.not.exist d.month
+    should.not.exist d.day
+    should.not.exist d.hour
+    should.not.exist d.minute
+    should.not.exist d.second
+    should.not.exist d.millisecond
+
+describe 'DateTime.getTime', ->
+
+  it 'should properly extract the time from fully specified datetimes', ->
+    t = DateTime.parse('2012-10-25T12:55:14.456+00').getTime()
+    t.year.should.equal 1900
+    t.month.should.equal 1
+    t.day.should.equal 1
+    t.hour.should.equal 12
+    t.minute.should.equal 55
+    t.second.should.equal 14
+    t.millisecond.should.equal 456
+    t.timezoneOffset.should.equal 0
+
+  it 'should properly extract the time from datetimes without milliseconds', ->
+    t = DateTime.parse('2012-10-25T12:55:14+00').getTime()
+    t.year.should.equal 1900
+    t.month.should.equal 1
+    t.day.should.equal 1
+    t.hour.should.equal 12
+    t.minute.should.equal 55
+    t.second.should.equal 14
+    should.not.exist t.millisecond
+    t.timezoneOffset.should.equal 0
+
+  it 'should properly extract the time from datetimes without seconds', ->
+    t = DateTime.parse('2012-10-25T12:55+00').getTime()
+    t.year.should.equal 1900
+    t.month.should.equal 1
+    t.day.should.equal 1
+    t.hour.should.equal 12
+    t.minute.should.equal 55
+    should.not.exist t.second
+    should.not.exist t.millisecond
+    t.timezoneOffset.should.equal 0
+
+  it 'should properly extract the time from datetimes without minutes', ->
+    t = DateTime.parse('2012-10-25T12+00').getTime()
+    t.year.should.equal 1900
+    t.month.should.equal 1
+    t.day.should.equal 1
+    t.hour.should.equal 12
+    should.not.exist t.minute
+    should.not.exist t.second
+    should.not.exist t.millisecond
+    t.timezoneOffset.should.equal 0
+
+  it 'should properly extract the time from datetimes without hours', ->
+    t = DateTime.parse('2012-10-25T+00').getTime()
+    t.year.should.equal 1900
+    t.month.should.equal 1
+    t.day.should.equal 1
+    should.not.exist t.hour
+    should.not.exist t.minute
+    should.not.exist t.second
+    should.not.exist t.millisecond
+    t.timezoneOffset.should.equal 0
 
 describe 'DateTime.reducedPrecision', ->
 

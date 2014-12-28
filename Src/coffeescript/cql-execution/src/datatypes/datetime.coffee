@@ -202,11 +202,9 @@ module.exports.DateTime = class DateTime
     else
       new Date(y, mo, d, h, mi, s, ms)
 
-  # TODO: Write tests
   getDate: () ->
     @reducedPrecision DateTime.Unit.DAY
 
-  # TODO: Write tests
   getTime: () ->
     new DateTime(1900, 1, 1, @hour, @minute, @second, @millisecond, @timezoneOffset)
 
