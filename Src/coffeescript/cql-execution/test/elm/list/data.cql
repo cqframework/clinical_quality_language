@@ -26,6 +26,30 @@ define NestedIntersects = {1, 2, 3, 4, 5} intersect {2, 3, 4, 5, 6} intersect {3
 define IsIn = 4 in { 3, 4, 5 }
 define IsNotIn = 4 in { 3, 5, 6 }
 
+// @Test: Expand
+define ListOfLists = expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
+define ListOfInts = expand { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+define MixedList = expand { 1, 2, 3, {4, 5, 6}, 7, 8, 9 }
+define NullValue = expand null
+
 // @Test: Distinct
 define LotsOfDups = distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
 define NoDups = distinct {2, 4, 6, 8, 10}
+
+// @Test: First
+define Numbers = First({1, 2, 3, 4})
+define Letters = First({'a', 'b', 'c'})
+define Lists = First({{'a','b','c'},{1,2,3}})
+define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Unordered = First({3, 1, 4, 2})
+define Empty = First({})
+define NullValue = First(null)
+
+// @Test: Last
+define Numbers = Last({1, 2, 3, 4})
+define Letters = Last({'a', 'b', 'c'})
+define Lists = Last({{'a','b','c'},{1,2,3}})
+define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Unordered = Last({3, 1, 4, 2})
+define Empty = Last({})
+define NullValue = Last(null)

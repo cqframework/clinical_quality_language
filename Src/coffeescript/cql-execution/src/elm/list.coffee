@@ -1,4 +1,5 @@
 { Expression, UnimplementedExpression } = require './expression'
+{ FunctionRef } = require './reusable'
 { ValueSet } = require '../datatypes/datatypes'
 { build } = require './builder'
 { typeIsArray } = require '../util/util'
@@ -45,8 +46,10 @@ module.exports.Intersect = class Intersect extends Expression
     # TODO: Support intervals
     @execArgs(ctx).reduce (x, y) -> (itm for itm in x when itm in y)
 
+# ELM-only, not a product of CQL
 module.exports.Times = class Times extends UnimplementedExpression
 
+# ELM-only, not a product of CQL
 module.exports.Filter = class Filter extends UnimplementedExpression
 
 module.exports.SingletonFrom = class SingletonFrom extends Expression
@@ -113,9 +116,19 @@ module.exports.Sort = class Sort
           if order != 0 then break
         order
 
+# ELM-only, not a product of CQL
 module.exports.ForEach = class ForEach extends UnimplementedExpression
 
-module.exports.Expand = class Expand extends UnimplementedExpression
+module.exports.Expand = class Expand extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs(ctx)
+    if typeIsArray(arg) and (arg.every (x) -> typeIsArray x)
+      arg.reduce ((x, y) -> x.concat(y)), []
+    else
+      arg
 
 module.exports.Distinct = class Distinct extends Expression
   constructor: (json) ->
@@ -127,8 +140,49 @@ module.exports.Distinct = class Distinct extends Expression
     container[itm] = itm for itm in @source.exec(ctx)
     value for key, value of container
 
+# ELM-only, not a product of CQL
 module.exports.Current = class Current extends UnimplementedExpression
 
-module.exports.First = class First extends UnimplementedExpression
+# TODO: ELM supports 'orderBy' but there's no way to get there from CQL
+module.exports.First = class First extends Expression
+  constructor: (json) ->
+    super
+    @source = build json.source
 
-module.exports.Last = class Last extends UnimplementedExpression
+  exec: (ctx) ->
+    src = @source.exec ctx
+    if src? and typeIsArray(src) and src.length > 0 then src[0] else null
+
+# TODO: Remove functionref when ELM does First natively
+module.exports.FirstFunctionRef = class FirstFunctionRef extends FunctionRef
+  constructor: (json) ->
+    super
+    @first = new First {
+      "type" : "First",
+      "source": json.operand[0]
+    }
+
+  exec: (ctx) ->
+    @first.exec ctx
+
+# TODO: ELM supports 'orderBy' but there's no way to get there from CQL
+module.exports.Last = class Last extends Expression
+  constructor: (json) ->
+    super
+    @source = build json.source
+
+  exec: (ctx) ->
+    src = @source.exec ctx
+    if src? and typeIsArray(src) and src.length > 0 then src[src.length-1] else null
+
+# TODO: Remove functionref when ELM does Last natively
+module.exports.LastFunctionRef = class LastFunctionRef extends FunctionRef
+  constructor: (json) ->
+    super
+    @last = new Last {
+      "type" : "Last",
+      "source": json.operand[0]
+    }
+
+  exec: (ctx) ->
+    @last.exec ctx
