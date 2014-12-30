@@ -258,7 +258,7 @@ module.exports.MinValue = class MinValue extends Expression
     MIN_VALUES[val]
 
 module.exports.MaxValue = class MaxValue extends Expression
-   MAX_VALUES: "Integer" : MAX_INT_VALUE, "Real" : MAX_FLOAT_VALUE, "DateTime" : MAX_DATE
+  MAX_VALUES: "Integer" : MAX_INT_VALUE, "Real" : MAX_FLOAT_VALUE, "DateTime" : MAX_DATE
   constructor: (json) ->
     super
 
