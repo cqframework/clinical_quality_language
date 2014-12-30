@@ -171,18 +171,6 @@ module.exports.Negate = class Negate extends Expression
     @execArgs(ctx) * -1
 
 
-  # TODO: Remove functionref when ELM does Floor natively
-module.exports.NegateFunctionRef = class NegateFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @func = new Negate {
-      "type" : "Negate",
-      "operand" : json.operand[0]
-    }
-
-  exec: (ctx) ->
-    @func.exec(ctx)   
-        
 
 
 module.exports.Round = class Round extends  Expression
@@ -259,18 +247,6 @@ module.exports.Power = class Power extends Expression
   exec: (ctx) ->
     @execArgs(ctx).reduce (x,y) -> Math.pow(x , y)
 
-  # TODO: Remove functionref when ELM does Power natively
-module.exports.PowerFunctionRef = class PowerFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @func = new Power {
-      "type" : "Power",
-      "operand" : json.operand
-    }
-
-  exec: (ctx) ->
-    @func.exec(ctx)   
-    
 
 module.exports.MinValue = class MinValue extends Expression
   MIN_VALUES:  "Integer" : MIN_INT_VALUE,"Real" : MIN_FLOAT_VALUE,"DateTime" : MIN_DATE

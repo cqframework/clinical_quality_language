@@ -138,8 +138,4 @@ class MultiSource
       else
         func(rctx)
 
-allTrue = (things) ->
-  if typeIsArray things
-    things.every (x) -> x
-  else
-    things
+

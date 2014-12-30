@@ -41,7 +41,4 @@ module.exports.Case = class Case extends Expression
        return ci.then.exec(ctx)
     @els.exec(ctx)
 
-module.exports.CaseItem = class CaseItem 
-  constructor:(json) ->
-    @when = build json.when
-    @then = build json.then
+module.exports.CaseItem = CaseItem
