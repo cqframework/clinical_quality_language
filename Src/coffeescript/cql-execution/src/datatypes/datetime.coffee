@@ -96,6 +96,9 @@ module.exports.DateTime = class DateTime
       when (diff.low <= 0 and diff.high >= 0) then null
       else false
 
+  equals: (other) ->
+    @sameAs(other, DateTime.Unit.MILLISECOND)
+
   sameOrBefore: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 

@@ -13,8 +13,7 @@ module.exports.Interval = class Interval extends Expression
   exec: (ctx) ->
     new DT.Interval(@low.exec(ctx), @high.exec(ctx), @lowClosed, @highClosed)
 
-# TODO: Deconflict w/ definition in comparison.coffee
-# module.exports.Equal = class Equal extends UnimplementedExpression
+# Equal is completely handled by overloaded#Equal
 
 # TODO: Deconflict w/ definition in comparison.coffee
 # module.exports.NotEqual = class NotEqual extends UnimplementedExpression

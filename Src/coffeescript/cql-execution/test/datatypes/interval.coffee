@@ -511,6 +511,143 @@ describe 'DateTimeInterval.overlaps(DateTime)', ->
 
     @all2012.closed.overlaps(@mid2012.toYear).should.be.true
 
+describe 'DateTimeInterval.equals(DateTimeInterval)', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.equals(y.closed).should.be.true
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.true
+    y.closed.equals(x.closed).should.be.true
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.true
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @dIvl.before
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @dIvl.meets
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @dIvl.overlaps
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @dIvl.begins
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @dIvl.during
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @dIvl.ends
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate open vs. closed intervals', ->
+    lowEdge2012 = DateTime.parse('2012-01-01T00:00:00.0+00')
+    lowEdge2012Succ = DateTime.parse('2012-01-01T00:00:00.001+00')
+    highEdge2012 = DateTime.parse('2012-12-31T23:59:59.999+00')
+    highEdge2012Pred = DateTime.parse('2012-12-31T23:59:59.998+00')
+    cc = new Interval(lowEdge2012, highEdge2012, true, true)
+    oc = new Interval(lowEdge2012, highEdge2012, false, true)
+    co = new Interval(lowEdge2012, highEdge2012, true, false)
+    oo = new Interval(lowEdge2012, highEdge2012, false, false)
+    cci = new Interval(lowEdge2012Succ, highEdge2012Pred, true, true)
+    oci = new Interval(lowEdge2012Succ, highEdge2012Pred, false, true)
+    coi = new Interval(lowEdge2012Succ, highEdge2012Pred, true, false)
+    ooi = new Interval(lowEdge2012Succ, highEdge2012Pred, false, false)
+
+    oo.equals(oo).should.be.true
+    oo.equals(cc).should.be.false
+    oo.equals(cci).should.be.true
+    oo.equals(oci).should.be.false
+    oo.equals(coi).should.be.false
+    oo.equals(ooi).should.be.false
+    cci.equals(cci).should.be.true
+    cci.equals(oo).should.be.true
+    cci.equals(co).should.be.false
+    cci.equals(oc).should.be.false
+    cci.equals(cc).should.be.false
+
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @dIvl.sameAs
+    should(x.closed.equals(y.toMinute)).be.null
+    should(x.toHour.equals(y.toMinute)).be.null
+
+    [x, y] = xy @dIvl.before
+    x.toMonth.equals(y.toMonth).should.be.false
+    should(x.toYear.equals(y.closed)).be.null
+
+    [x, y] = xy @dIvl.meets
+    x.toMonth.equals(y.toMonth).should.be.false
+    should(x.toYear.equals(y.closed)).be.null
+
+    [x, y] = xy @dIvl.overlaps
+    x.toMonth.equals(y.toMonth).should.be.false
+    should(x.toYear.equals(y.closed)).be.null
+
+    [x, y] = xy @dIvl.begins
+    x.toMinute.equals(y.toMinute).should.be.false
+    should(x.toYear.equals(y.closed)).be.null
+
+    [x, y] = xy @dIvl.during
+    x.toMonth.equals(y.toMonth).should.be.false
+    y.toMonth.equals(x.toMonth).should.be.false
+    should(x.toYear.equals(y.closed)).be.null
+
+    [x, y] = xy @dIvl.ends
+    x.toMinute.equals(y.toMinute).should.be.false
+    should(x.toYear.equals(y.closed)).be.null
+
 describe 'IntegerInterval.includes(IntegerInterval)', ->
   @beforeEach ->
     setup @
@@ -970,3 +1107,128 @@ describe 'IntegerInterval.overlaps(Integer)', ->
     should.not.exist uIvl.overlaps(new Uncertainty(15,20))
     should.not.exist uIvl.overlaps(new Uncertainty(20,25))
     uIvl.overlaps(new Uncertainty(25,30)).should.be.false
+
+describe 'IntegerInterval.equals(IntegerInterval)', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.equals(y.closed).should.be.true
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.true
+    y.closed.equals(x.closed).should.be.true
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.true
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.equals(y.closed).should.be.false
+    x.closed.equals(y.open).should.be.false
+    x.open.equals(y.closed).should.be.false
+    x.open.equals(y.open).should.be.false
+    y.closed.equals(x.closed).should.be.false
+    y.closed.equals(x.open).should.be.false
+    y.open.equals(x.closed).should.be.false
+    y.open.equals(x.open).should.be.false
+
+  it 'should properly calculate open vs. closed intervals', ->
+    c2c5 = new Interval(2, 5, true, true)
+    o2c5 = new Interval(2, 5, false, true)
+    c2o5 = new Interval(2, 5, true, false)
+    o2o5 = new Interval(2, 5, false, false)
+    c1c6 = new Interval(1, 6, true, true)
+    o1c6 = new Interval(1, 6, false, true)
+    c1o6 = new Interval(1, 6, true, false)
+    o1o6 = new Interval(1, 6, false, false)
+
+    c2c5.equals(o2o5).should.be.false
+    c2c5.equals(c1c6).should.be.false
+    c2c5.equals(o1c6).should.be.false
+    c2c5.equals(c1o6).should.be.false
+    c2c5.equals(o1o6).should.be.true
+    o1o6.equals(c1c6).should.be.false
+    o1o6.equals(c2c5).should.be.true
+    o1o6.equals(o2c5).should.be.false
+    o1o6.equals(c2o5).should.be.false
+    o1o6.equals(o2o5).should.be.false
+
+  it 'should properly handle imprecision', ->
+    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
+
+    ivl = new Interval(0, 100)
+    ivl.equals(uIvl).should.be.false
+    uIvl.equals(ivl).should.be.false
+
+    ivl = new Interval(-100, 0)
+    ivl.equals(uIvl).should.be.false
+    uIvl.equals(ivl).should.be.false
+
+    ivl = new Interval(10, 15)
+    should(ivl.equals(uIvl)).be.null
+    should(uIvl.equals(ivl)).be.null
+
+    ivl = new Interval(5, 20)
+    should(ivl.equals(uIvl)).be.null
+    should(uIvl.equals(ivl)).be.null
+
+    should(uIvl.equals(uIvl)).be.null
+
+# TODO: Tests for real numbers (i.e., floats)

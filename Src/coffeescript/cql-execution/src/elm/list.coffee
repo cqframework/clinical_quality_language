@@ -19,8 +19,7 @@ module.exports.Exists = class Exists extends Expression
   exec: (ctx) ->
     @execArgs(ctx)?.length > 0
 
-# TODO: Deconflict w/ definition in comparison.coffee
-# module.exports.Equal = class Equal extends UnimplementedExpression
+# Equal is completely handled by overloaded#Equal
 
 # TODO: Deconflict w/ definition in comparison.coffee
 # module.exports.NotEqual = class NotEqual extends UnimplementedExpression

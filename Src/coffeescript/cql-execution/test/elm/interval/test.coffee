@@ -39,6 +39,28 @@ describe 'Interval', ->
     ivl.low.toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
     ivl.high.toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
 
+describe 'Equal', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should determine equal integer intervals', ->
+    @equalClosed.exec(@ctx).should.be.true
+    @equalOpen.exec(@ctx).should.be.true
+    @equalOpenClosed.exec(@ctx).should.be.true
+
+  it 'should determine unequal integer intervals', ->
+    @unequalClosed.exec(@ctx).should.be.false
+    @unequalOpen.exec(@ctx).should.be.false
+    @unequalClosedOpen.exec(@ctx).should.be.false
+
+  it 'should determine equal datetime intervals', ->
+    @equalDates.exec(@ctx).should.be.true
+    @equalDatesOpenClosed.exec(@ctx).should.be.true
+
+  it 'should operate correctly with imprecision', ->
+    should(@sameDays.exec(@ctx)).be.null
+    @differentDays.exec(@ctx).should.be.false
+
 describe 'Start', ->
   @beforeEach ->
     setup @, data

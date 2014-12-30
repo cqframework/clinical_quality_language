@@ -199,6 +199,406 @@ module.exports['Exists'] = {
    }
 }
 
+### Equal
+library TestSnippet version '1'
+using QUICK
+context Patient
+define EqualIntList = {1, 2, 3} = {1, 2, 3}
+define UnequalIntList = {1, 2, 3} = {1, 2}
+define ReverseIntList = {1, 2, 3} = {3, 2, 1}
+define EqualStringList = {'hello', 'world'} = {'hello', 'world'}
+define UnequalStringList = {'hello', 'world'} = {'foo', 'bar'}
+define EqualTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
+define UnequalTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = { tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+###
+
+module.exports['Equal'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "EqualIntList",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "UnequalIntList",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "ReverseIntList",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "EqualStringList",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "hello",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "world",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "hello",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "world",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "UnequalStringList",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "hello",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "world",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "foo",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "value" : "bar",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "EqualTupleList",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "b",
+                        "value" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "c",
+                              "value" : {
+                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "value" : "1",
+                                 "type" : "Literal"
+                              }
+                           } ]
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "x",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "value" : "y",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "z",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "b",
+                        "value" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "c",
+                              "value" : {
+                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "value" : "1",
+                                 "type" : "Literal"
+                              }
+                           } ]
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "x",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "value" : "y",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "z",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "UnequalTupleList",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "b",
+                        "value" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "c",
+                              "value" : {
+                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "value" : "1",
+                                 "type" : "Literal"
+                              }
+                           } ]
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "x",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "value" : "y",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "z",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  } ]
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "b",
+                        "value" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "c",
+                              "value" : {
+                                 "type" : "Negate",
+                                 "operand" : {
+                                    "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                    "value" : "1",
+                                    "type" : "Literal"
+                                 }
+                              }
+                           } ]
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "x",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "value" : "y",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "z",
+                        "value" : {
+                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  } ]
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
 ### Union
 library TestSnippet version '1'
 using QUICK

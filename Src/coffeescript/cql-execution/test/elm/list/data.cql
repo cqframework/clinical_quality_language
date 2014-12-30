@@ -5,9 +5,18 @@ define StringList = { 'a', 'bee', 'see' }
 define MixedList = { 1, 'two', Three }
 define EmptyList = {}
 
-  // @Test: Exists
+// @Test: Exists
 define EmptyList = exists ({})
 define FullList = exists ({ 1, 2, 3 })
+
+// @Test: Equal
+define EqualIntList = {1, 2, 3} = {1, 2, 3}
+define UnequalIntList = {1, 2, 3} = {1, 2}
+define ReverseIntList = {1, 2, 3} = {3, 2, 1}
+define EqualStringList = {'hello', 'world'} = {'hello', 'world'}
+define UnequalStringList = {'hello', 'world'} = {'foo', 'bar'}
+define EqualTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
+define UnequalTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = { tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
 
 // @Test: Union
 define OneToTen = {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}

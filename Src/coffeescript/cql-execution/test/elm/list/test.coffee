@@ -28,6 +28,31 @@ describe 'Exists', ->
   it 'should return true for full list', ->
     @fullList.exec(@ctx).should.be.true
 
+describe 'Equal', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should identify equal lists of integers', ->
+    @equalIntList.exec(@ctx).should.be.true
+
+  it 'should identify unequal lists of integers', ->
+    @unequalIntList.exec(@ctx).should.be.false
+
+  it 'should identify re-ordered lists of integers as unequal', ->
+    @reverseIntList.exec(@ctx).should.be.false
+
+  it 'should identify equal lists of strings', ->
+    @equalStringList.exec(@ctx).should.be.true
+
+  it 'should identify unequal lists of strings', ->
+    @unequalStringList.exec(@ctx).should.be.false
+
+  it 'should identify equal lists of tuples', ->
+    @equalTupleList.exec(@ctx).should.be.true
+
+  it 'should identify unequal lists of integers', ->
+    @unequalTupleList.exec(@ctx).should.be.false
+
 describe 'Union', ->
   @beforeEach ->
     setup @, data
