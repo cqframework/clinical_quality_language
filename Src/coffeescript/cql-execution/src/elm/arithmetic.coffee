@@ -11,6 +11,9 @@ MIN_FLOAT_VALUE = (Math.pow(-10,37)+1) / Math.pow(10,8)
 MIN_FLOAT_PRECISION_VALUE =  Math.pow(10,-8)
 MIN_DATE = DateTime.parse("1900-01-01T00:00:00.000")
 MAX_DATE = DateTime.parse("9999-12-31T23:59:59.999")
+
+
+
 module.exports.OverFlowException = class OverFlowException extends Exception
 
 
@@ -270,30 +273,22 @@ module.exports.PowerFunctionRef = class PowerFunctionRef extends FunctionRef
     
 
 module.exports.MinValue = class MinValue extends Expression
+  MIN_VALUES:  "Integer" : MIN_INT_VALUE,"Real" : MIN_FLOAT_VALUE,"DateTime" : MIN_DATE
   constructor: (json) ->
     super
 
   exec: (ctx) ->
     val = @execArgs(ctx)
-    if val == "Integer"
-      MIN_INT_VALUE
-    else if val = "Real"
-      MIN_FLOAT_VALUE
-    else if val == "DateTime"
-      MIN_DATE
+    MIN_VALUES[val]
 
 module.exports.MaxValue = class MaxValue extends Expression
+   MAX_VALUES: "Integer" : MAX_INT_VALUE, "Real" : MAX_FLOAT_VALUE, "DateTime" : MAX_DATE
   constructor: (json) ->
     super
 
   exec: (ctx) ->
     val = @execArgs(ctx)
-    if val == "Integer"
-      MAX_INT_VALUE
-    else if val = "Real"
-      MAX_FLOAT_VALUE
-    else if val == "DateTime"
-      MAX_DATE
+    MAX_VALUES[val]
 
 module.exports.Successor = class Successor extends Expression
   constructor: (json) ->
