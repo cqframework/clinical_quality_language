@@ -128,13 +128,13 @@ module.exports.Median = class Median extends Expression
     arg = @execArgs(ctx)[0]
     if typeIsArray(arg)
       filtered =  numerical_sort(compact(arg),"asc")
-    if filtered.length == 0
-      null
-    else if (filtered.length % 2 == 1)
-      filtered[(filtered.length - 1) / 2]
-    else
-      (filtered[(filtered.length / 2) - 1] +
-       filtered[(filtered.length / 2)]) / 2
+      if filtered.length == 0
+        null
+      else if (filtered.length % 2 == 1)
+        filtered[(filtered.length - 1) / 2]
+      else
+        (filtered[(filtered.length / 2) - 1] +
+         filtered[(filtered.length / 2)]) / 2
 
   # TODO: Remove functionref when ELM does Median natively
 module.exports.MedianFunctionRef = class MedianFunctionRef extends FunctionRef
