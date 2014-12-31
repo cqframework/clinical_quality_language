@@ -1,13 +1,19 @@
 { Expression, UnimplementedExpression } = require './expression'
 { FunctionRef } = require './reusable'
 { typeIsArray , allTrue, anyTrue, compact, numerical_sort} = require '../util/util'
+{ build } = require './builder'
 
-module.exports.Count = class Count extends Expression
+class AggregateExpression extends Expression
+  constructor:(json) ->
+    super
+    @source = build json.source
+
+module.exports.Count = class Count extends AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    arg = @execArgs(ctx)[0]
+    arg = @source.exec(ctx)
     if typeIsArray(arg)
       compact(arg).length
 
@@ -17,18 +23,18 @@ module.exports.CountFunctionRef = class CountFunctionRef extends FunctionRef
     super
     @func = new Count {
       "type" : "Count",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
-module.exports.Sum = class Sum extends Expression
+module.exports.Sum = class Sum extends AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    arg = @execArgs(ctx)[0]
+    arg = @source.exec(ctx)
     if typeIsArray(arg)
       filtered =  compact(arg)
       if filtered.length == 0 then null else filtered.reduce (x,y) -> x+y
@@ -40,18 +46,18 @@ module.exports.SumFunctionRef = class SumFunctionRef extends FunctionRef
     super
     @func = new Sum {
       "type" : "Sum",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
-module.exports.Min = class Min extends Expression
+module.exports.Min = class Min extends AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    arg = @execArgs(ctx)[0]
+    arg = @source.exec(ctx)
     if typeIsArray(arg)
       filtered =  numerical_sort(compact(arg),"asc")
       filtered[0]
@@ -64,19 +70,19 @@ module.exports.MinFunctionRef = class MinFunctionRef extends FunctionRef
     super
     @func = new Min {
       "type" : "Min",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
 
-module.exports.Max = class Max extends Expression
+module.exports.Max = class Max extends AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    arg = @execArgs(ctx)[0]
+    arg = @source.exec(ctx)
     if typeIsArray(arg)
       filtered =  numerical_sort(compact(arg),"desc")
       filtered[0]
@@ -88,19 +94,19 @@ module.exports.MaxFunctionRef = class MaxFunctionRef extends FunctionRef
     super
     @func = new Max {
       "type" : "Max",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
 
-module.exports.Avg = class Avg extends  Expression
+module.exports.Avg = class Avg extends  AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    arg = @execArgs(ctx)[0]
+    arg = @source.exec(ctx)
     if typeIsArray(arg)
       filtered = compact(arg)
       return null if filtered.length == 0
@@ -114,18 +120,18 @@ module.exports.AvgFunctionRef = class AvgFunctionRef extends FunctionRef
     super
     @func = new Avg {
       "type" : "Avg",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
-module.exports.Median = class Median extends Expression
+module.exports.Median = class Median extends AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    arg = @execArgs(ctx)[0]
+    arg = @source.exec(ctx)
     if typeIsArray(arg)
       filtered =  numerical_sort(compact(arg),"asc")
       if filtered.length == 0
@@ -142,18 +148,18 @@ module.exports.MedianFunctionRef = class MedianFunctionRef extends FunctionRef
     super
     @func = new Median {
       "type" : "Median",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
-module.exports.Mode = class Mode extends Expression
+module.exports.Mode = class Mode extends AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    arg = @execArgs(ctx)[0]
+    arg = @source.exec(ctx)
     if typeIsArray(arg)
       filtered = compact(arg)
       mode = @mode(filtered)
@@ -178,20 +184,20 @@ module.exports.ModeFunctionRef = class ModeFunctionRef extends FunctionRef
     super
     @func = new Mode {
       "type" : "Mode",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
-module.exports.StdDev = class StdDev extends Expression
+module.exports.StdDev = class StdDev extends AggregateExpression
 
   constructor:(json) ->
     super
     @type = "standard_deviation"
 
   exec: (ctx) ->
-    args = @execArgs(ctx)[0]
+    args = @source.exec(ctx)
     if typeIsArray(args) 
       val = compact(args)
       if val.length > 0 then @calculate(val)  else null
@@ -222,7 +228,7 @@ module.exports.StdDevFunctionRef = class StdDevFunctionRef extends FunctionRef
     super
     @func = new StdDev {
       "type" : "StdDev",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
@@ -239,7 +245,7 @@ module.exports.PopulationStdDevFunctionRef = class PopulationStdDevFunctionRef e
     super
     @func = new PopulationStdDev {
       "type" : "PopulationStdDev",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
@@ -256,7 +262,7 @@ module.exports.VarianceFunctionRef = class VarianceFunctionRef extends FunctionR
     super
     @func = new Variance {
       "type" : "Variance",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
@@ -273,18 +279,18 @@ module.exports.PopulationVarianceFunctionRef = class PopulationVarianceFunctionR
     super
     @func = new PopulationVariance {
       "type" : "PopulationVariance",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
-module.exports.AllTrue = class AllTrue extends Expression
+module.exports.AllTrue = class AllTrue extends AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    args = @execArgs(ctx)[0]
+    args =@source.exec(ctx)
     allTrue(args)
 
   # TODO: Remove functionref when ELM does AllTrue natively
@@ -293,18 +299,18 @@ module.exports.AllTrueFunctionRef = class AllTrueFunctionRef extends FunctionRef
     super
     @func = new AllTrue {
       "type" : "AllTrue",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->
     @func.exec(ctx)       
 
-module.exports.AnyTrue = class AnyTrue extends Expression
+module.exports.AnyTrue = class AnyTrue extends AggregateExpression
   constructor:(json) ->
     super
 
   exec: (ctx) ->
-    args = @execArgs(ctx)[0]
+    args = @source.exec(ctx)
     anyTrue(args)
 
   # TODO: Remove functionref when ELM does AnyTrue natively
@@ -313,7 +319,7 @@ module.exports.AnyTrueFunctionRef = class AnyTrueFunctionRef extends FunctionRef
     super
     @func = new AnyTrue {
       "type" : "AnyTrue",
-      "operand" : json.operand
+      "source" : json.operand[0]
     }
 
   exec: (ctx) ->

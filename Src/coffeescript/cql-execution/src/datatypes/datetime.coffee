@@ -67,19 +67,19 @@ module.exports.DateTime = class DateTime
 
   predecessor: () ->
     if @millisecond?
-      @add(-1,"millisecond")
+      @add(-1,DateTime.Unit.MILLISECOND)
     else if @second?
-      @add(-1,"second")
+      @add(-1,DateTime.Unit.SECOND)
     else if @minute?
-      @add(-1,"minute")
+      @add(-1,DateTime.Unit.MINUTE)
     else if @hour?
-      @add(-1,"hour")
+      @add(-1,DateTime.Unit.HOUR)
     else if @day?
-      @add(-1,"day")
+      @add(-1,DateTime.Unit.DAY)
     else if @month?
-      @add(-1,"month")
+      @add(-1,DateTime.Unit.MONTH)
     else if @year?
-      @add(-1,"year")
+      @add(-1,DateTime.Unit.YEAR)
 
 
   convertToTimeZoneOffset: (timeZoneOffset = 0) ->
