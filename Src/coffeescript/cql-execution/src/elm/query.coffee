@@ -2,7 +2,7 @@
 { Sort } = require './list'
 { Context } = require '../runtime/context'
 { build } = require './builder'
-{ typeIsArray } = require '../util/util'
+{ typeIsArray , allTrue} = require '../util/util'
 
 module.exports.AliasedQuerySource = class AliasedQuerySource extends UnimplementedExpression
 
@@ -138,8 +138,4 @@ class MultiSource
       else
         func(rctx)
 
-allTrue = (things) ->
-  if typeIsArray things
-    things.every (x) -> x
-  else
-    things
+

@@ -73,3 +73,279 @@ describe 'MathPrecedence', ->
 
   it 'should allow parentheses to override order of operations', ->
     @parenthetical.exec(@ctx).should.equal -10
+
+describe  'Power', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should be able to calculate the power of a number" , ->
+    @pow.exec(@ctx).should.equal 81
+
+describe 'TruncatedDivide', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should be able to return just the integer portion of a division", ->
+    @trunc.exec(@ctx).should.equal 3
+    @even.exec(@ctx).should.equal 3
+
+describe  'Truncate', ->
+  @beforeEach ->
+    setup @, data   
+
+  it "should be able to return the integer portipon of a number", ->
+    @trunc.exec(@ctx).should.equal 10
+    @even.exec(@ctx).should.equal 10
+
+describe  'Floor', ->
+  @beforeEach ->
+    setup @, data         
+
+  it "should be able to round down to the closest integer", ->
+    @flr.exec(@ctx).should.equal 10
+    @even.exec(@ctx).should.equal 10
+
+describe 'Ceiling', ->
+  @beforeEach ->
+    setup @, data 
+
+    it "should be able to round up to the closest integer", ->
+      @ceil.exec(@ctx).should.equal 11
+      @even.exec(@ctx).should.equal 10
+
+describe 'Ln', ->
+  @beforeEach ->
+    setup @, data      
+
+  it "should be able to return the natrual log of a number", ->
+    @ln.exec(@ctx).should.equal Math.log(4)
+
+describe 'Log', ->
+  @beforeEach ->
+    setup @, data      
+
+    it "should be able to return the log of a number based on an arbitary base value", ->
+      @log.exec(@ctx).should.equal 0.25
+
+describe 'Modulo', ->
+  @beforeEach ->
+    setup @, data      
+
+    it "should be able to return the remainder of a division", ->
+      @mod.exec(@ctx).should.equal 1
+    
+describe 'Abs', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should be able to return the absolute value of a positive number", ->
+    @pos.exec(@ctx).should.equal 10
+  it "should be able to return the absolute value of a negative number", ->    
+    @neg.exec(@ctx).should.equal 10
+  it "should be able to return the absolute value of 0", ->    
+    @zero.exec(@ctx).should.equal 0
+
+describe 'Round', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should be able to round a number up or down to the closest integer value", ->
+    @up.exec(@ctx).should.equal 5
+    @down.exec(@ctx).should.equal 4
+  it "should be able to round a number up or down to the closest decimal place ", ->
+    @up_percent.exec(@ctx).should.equal 4.6
+    @down_percent.exec(@ctx).should.equal 4.4
+
+describe 'Successor', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should be able to get Integer Successor", ->
+    @is.exec(@ctx).should.equal 3
+  it "should be able to get Real Successor", ->
+    @rs.exec(@ctx).should.equal ( 2.2  + Math.pow(10,-8) )
+  
+  it "should cause runtime error for Successor greater than Integer Max value" , ->
+    a = false
+    try 
+      @ofr.exec(@ctx)
+    catch e
+      e.constructor.name.should.equal "OverFlowException"
+      a = true
+    
+    a.should.equal true
+ 
+  it "should be able to get Date Successor for year", ->
+    dp = @y_date.exec(@ctx)
+    dp.year.should.equal 2016
+    should.not.exist dp.month
+    should.not.exist dp.day
+    should.not.exist dp.hour
+    should.not.exist dp.minute
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+
+  it "should be able to get Date Successor for year,month", ->
+    dp = @ym_date.exec(@ctx)
+    dp.year.should.equal 2015
+    dp.month.should.equal 2
+    should.not.exist dp.day
+    should.not.exist dp.hour
+    should.not.exist dp.minute
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+
+  it "should be able to get Date Successor for year,month,day", ->
+    dp = @ymd_date.exec(@ctx)
+    dp.year.should.equal 2015
+    dp.month.should.equal 1
+    dp.day.should.equal 2
+    should.not.exist dp.hour
+    should.not.exist dp.minute
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+  
+  it "should be able to get Date Successor for year,month,day,hour", ->
+    dp = @ymdh_date.exec(@ctx)
+    dp.year.should.equal 2015
+    dp.month.should.equal 1
+    dp.day.should.equal 1
+    dp.hour.should.equal 1
+    should.not.exist dp.minute
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+  
+  it "should be able to get Date Successor for year,month,day,hour,minute", ->
+    dp = @ymdhm_date.exec(@ctx)
+    dp.year.should.equal 2015
+    dp.month.should.equal 1
+    dp.day.should.equal 1
+    dp.hour.should.equal 0
+    dp.minute.should.equal 1
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+  
+  it "should be able to get Date Successor for year,month,day,hour,minute,seconds", ->
+    dp = @ymdhms_date.exec(@ctx)
+    dp.year.should.equal 2015
+    dp.month.should.equal 1
+    dp.day.should.equal 1
+    dp.hour.should.equal 0
+    dp.minute.should.equal 0
+    dp.second.should.equal 1
+    should.not.exist  dp.millisecond
+
+  it "should be able to get Date Successor for year,month,day,hour,minute,seconds,milliseconds", ->
+    dp = @ymdhmsm_date.exec(@ctx)
+    dp.year.should.equal 2015
+    dp.month.should.equal 1
+    dp.day.should.equal 1
+    dp.hour.should.equal 0
+    dp.minute.should.equal 0
+    dp.second.should.equal 0
+    dp.millisecond.should.equal 1
+
+  it "should throw an exception when attempting to get the Successor of the maximum allowed date", ->
+    a = false
+    try 
+      @max_date.exec(@ctx)
+    catch e
+      e.constructor.name.should.equal "OverFlowException"
+      a = true
+     a.should.equal true
+
+
+describe 'Predecessor', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should be able to get Integer Predecessor", ->
+    @is.exec(@ctx).should.equal 1
+  it "should be able to get Real Predecessor", ->
+    @rs.exec(@ctx).should.equal ( 2.2  - Math.pow(10,-8))   
+  it "should cause runtime error for Predecessor greater than Integer Max value" , ->  
+    a = false
+    try 
+      @ufr.exec(@ctx)
+    catch e
+      e.constructor.name.should.equal "OverFlowException"
+      a = true
+    
+    a.should.equal true
+
+  it "should be able to get Date Predecessor for year", ->
+    dp = @y_date.exec(@ctx)
+    dp.year.should.equal 2014
+    should.not.exist dp.month
+    should.not.exist dp.day
+    should.not.exist dp.hour
+    should.not.exist dp.minute
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+
+  it "should be able to get Date Predecessor for year,month", ->
+    dp = @ym_date.exec(@ctx)
+    dp.year.should.equal 2014
+    dp.month.should.equal 12
+    should.not.exist dp.day
+    should.not.exist dp.hour
+    should.not.exist dp.minute
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+
+  it "should be able to get Date Predecessor for year,month,day", ->
+    dp = @ymd_date.exec(@ctx)
+    dp.year.should.equal 2014
+    dp.month.should.equal 12
+    dp.day.should.equal 31
+    should.not.exist dp.hour
+    should.not.exist dp.minute
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+  it "should be able to get Date Predecessor for year,month,day,hour", ->
+    dp = @ymdh_date.exec(@ctx)
+    dp.year.should.equal 2014
+    dp.month.should.equal 12
+    dp.day.should.equal 31
+    dp.hour.should.equal 23
+    should.not.exist dp.minute
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+
+  it "should be able to get Date Predecessor for year,month,day,hour,minute", ->
+    dp = @ymdhm_date.exec(@ctx)
+    dp.year.should.equal 2014
+    dp.month.should.equal 12
+    dp.day.should.equal 31
+    dp.hour.should.equal 23
+    dp.minute.should.equal 59
+    should.not.exist dp.second
+    should.not.exist  dp.millisecond
+  
+  it "should be able to get Date Predecessor for year,month,day,hour,minute,seconds", ->
+    dp = @ymdhms_date.exec(@ctx)
+    dp.year.should.equal 2014
+    dp.month.should.equal 12
+    dp.day.should.equal 31
+    dp.hour.should.equal 23
+    dp.minute.should.equal 59
+    dp.second.should.equal 59
+    should.not.exist  dp.millisecond
+  
+  it "should be able to get Date Predecessor for year,month,day,hour,minute,seconds,milliseconds", ->
+    dp = @ymdhmsm_date.exec(@ctx)
+    dp.year.should.equal 2014
+    dp.month.should.equal 12
+    dp.day.should.equal 31
+    dp.hour.should.equal 23
+    dp.minute.should.equal 59
+    dp.millisecond.should.equal 999
+
+  it "should throw an exception when attempting to get the Predecessor of the minimum allowed date", ->
+    a = false
+    try 
+      @min_date.exec(@ctx)
+    catch e
+      e.constructor.name.should.equal "OverFlowException"
+      a = true
+     a.should.equal true
