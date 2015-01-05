@@ -4,10 +4,10 @@ module.exports.compact = (things)-> things.filter (x)-> x?
 
 module.exports.numerical_sort = (things, direction="asc") ->
   things.sort (a,b)->
-    if direction=="asc"
+    if direction is "asc"
       a - b
     else
-      b-a
+      b - a
 
 module.exports.typeIsArray  = typeIsArray  = Array.isArray || ( value ) ->
   return {}.toString.call( value ) is '[object Array]'

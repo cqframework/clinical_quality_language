@@ -1,6 +1,7 @@
 { DateTime } = require './datetime'
 { Uncertainty } = require './uncertainty'
 { ThreeValuedLogic } = require './logic'
+{ successor, predecessor } = require '../util/math'
 { equals } = require '../util/util'
 
 module.exports.Interval = class Interval
@@ -37,35 +38,18 @@ module.exports.Interval = class Interval
       ThreeValuedLogic.and equals(a.low, b.low), equals(a.high, b.high)
 
   toClosed: () ->
-    # TODO: Use successor and predecessor to properly convert
     low = @low
     high = @high
-    if typeof(@low) is 'number'
-      if (@low is parseInt @low)
-        low = low + 1 unless @lowClosed
-        high = high - 1 unless @highClosed
-      else
-        low = low + Math.pow(10,-8) unless @lowClosed
-        high = high - Math.pow(10,-8) unless @highClosed
-    else if @low instanceof DateTime
-      # TODO: this is currently wrong...
-      low = low.add(1, DateTime.Unit.MILLISECOND) unless @lowClosed
-      high = high.add(-1, DateTime.Unit.MILLISECOND) unless @highClosed
+    if typeof(@low) is 'number' or @low instanceof DateTime
+      low = successor(low) unless @lowClosed
+      high = predecessor(high) unless @highClosed
     new Interval(low, high, true, true)
 
   _getEndpointsAsUncertainties: () ->
     # Since uncertainties are always closed, adjust open endpoints
-    low = switch
-      when @lowClosed then @low
-      when @low instanceof DateTime then @low.add(1, DateTime.Unit.MILLISECOND)
-      else @low + 1
-
-    high = switch
-      when @highClosed then @high
-      when @high instanceof DateTime then @high.add(-1, DateTime.Unit.MILLISECOND)
-      else @high - 1
+    ivl = @toClosed()
 
     [
-      if low.toUncertainty? then low.toUncertainty() else new Uncertainty(low),
-      if high.toUncertainty? then high.toUncertainty() else new Uncertainty(high)
+      if ivl.low.toUncertainty? then ivl.low.toUncertainty() else new Uncertainty(ivl.low),
+      if ivl.high.toUncertainty? then ivl.high.toUncertainty() else new Uncertainty(ivl.high)
     ]
