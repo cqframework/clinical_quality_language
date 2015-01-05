@@ -1,14 +1,7 @@
 { Expression, UnimplementedExpression } = require './expression'
 { Uncertainty } = require '../datatypes/datatypes'
 
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.Equal = class Equal extends Expression
-  constructor: (json) ->
-    super
-
-  exec: (ctx) ->
-    args = @execArgs(ctx).map (x) -> Uncertainty.from x
-    args[0].equals args[1]
+# Equal is completely handled by overloaded#Equal
 
 # TODO: Deconflict w/ definition in interval.coffee
 module.exports.NotEqual = class NotEqual extends UnimplementedExpression

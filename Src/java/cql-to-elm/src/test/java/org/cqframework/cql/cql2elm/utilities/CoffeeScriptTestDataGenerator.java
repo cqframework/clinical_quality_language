@@ -84,12 +84,19 @@ public class CoffeeScriptTestDataGenerator {
             updateSnippet(entry.getValue());
             String name = entry.getKey();
             String snippet = entry.getValue().toString();
-            String json = CqlTranslator.fromText(snippet, CqlTranslator.Options.EnableDateRangeOptimization).toJson();
             pw.println("### " + name);
             pw.println(snippet);
             pw.println("###");
             pw.println();
-            pw.println("module.exports['" + name + "'] = " + json);
+            try {
+                String json = CqlTranslator.fromText(snippet, CqlTranslator.Options.EnableDateRangeOptimization).toJson();
+                pw.println("module.exports['" + name + "'] = " + json);
+            } catch (Exception e) {
+                pw.println("module.exports['" + name + "'] = {}");
+                pw.println("###");
+                pw.println("Error translating " + name + ": " + e.getMessage());
+                pw.println("###");
+            }
             pw.println();
         }
         pw.close();

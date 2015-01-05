@@ -18,10 +18,12 @@ expressionModules = [
   'reusable',
   'string',
   'structured',
-  'type'
+  'type',
+  'overloaded'
 ]
 
 for name in expressionModules
   imported = require "./#{name}"
+  # TODO: Limit to just Expressions?
   for element in Object.keys(imported)
     module.exports[element] = imported[element]

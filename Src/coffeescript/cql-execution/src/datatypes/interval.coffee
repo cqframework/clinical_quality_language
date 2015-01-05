@@ -1,6 +1,8 @@
 { DateTime } = require './datetime'
 { Uncertainty } = require './uncertainty'
 { ThreeValuedLogic } = require './logic'
+{ successor, predecessor } = require '../util/math'
+{ equals } = require '../util/util'
 
 module.exports.Interval = class Interval
   constructor: (@low, @high, @lowClosed = true, @highClosed = true) ->
@@ -30,19 +32,24 @@ module.exports.Interval = class Interval
     else
       @includes item
 
+  equals: (item) ->
+    if item instanceof Interval
+      [a, b] = [@toClosed(), item.toClosed()]
+      ThreeValuedLogic.and equals(a.low, b.low), equals(a.high, b.high)
+
+  toClosed: () ->
+    low = @low
+    high = @high
+    if typeof(@low) is 'number' or @low instanceof DateTime
+      low = successor(low) unless @lowClosed
+      high = predecessor(high) unless @highClosed
+    new Interval(low, high, true, true)
+
   _getEndpointsAsUncertainties: () ->
     # Since uncertainties are always closed, adjust open endpoints
-    low = switch
-      when @lowClosed then @low
-      when @low instanceof DateTime then @low.add(1, DateTime.Unit.MILLISECOND)
-      else @low + 1
-
-    high = switch
-      when @highClosed then @high
-      when @high instanceof DateTime then @high.add(-1, DateTime.Unit.MILLISECOND)
-      else @high - 1
+    ivl = @toClosed()
 
     [
-      if low.toUncertainty? then low.toUncertainty() else new Uncertainty(low),
-      if high.toUncertainty? then high.toUncertainty() else new Uncertainty(high)
+      if ivl.low.toUncertainty? then ivl.low.toUncertainty() else new Uncertainty(ivl.low),
+      if ivl.high.toUncertainty? then ivl.high.toUncertainty() else new Uncertainty(ivl.high)
     ]

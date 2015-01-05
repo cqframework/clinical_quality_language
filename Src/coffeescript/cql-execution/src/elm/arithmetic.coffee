@@ -1,22 +1,7 @@
 { Expression, UnimplementedExpression } = require './expression'
-{ Exception } = require '../datatypes/exception'
-{ DateTime } = require '../datatypes/datetime'
 { FunctionRef } = require './reusable'
 { typeIsArray , allTrue, anyTrue} = require '../util/util'
-
-MAX_INT_VALUE = Math.pow(2,31)-1
-MIN_INT_VALUE = Math.pow(-2,31)
-MAX_FLOAT_VALUE =  ( Math.pow(10,37)-1 ) / Math.pow(10,8)
-MIN_FLOAT_VALUE = (Math.pow(-10,37)+1) / Math.pow(10,8)
-MIN_FLOAT_PRECISION_VALUE =  Math.pow(10,-8)
-MIN_DATE = DateTime.parse("1900-01-01T00:00:00.000")
-MAX_DATE = DateTime.parse("9999-12-31T23:59:59.999")
-
-
-
-module.exports.OverFlowException = class OverFlowException extends Exception
-
-
+MathUtil = require '../util/math'
 
 module.exports.Add = class Add extends Expression
   constructor: (json) ->
@@ -67,7 +52,7 @@ module.exports.TruncatedDivideFunctionRef = class TruncatedDivideFunctionRef ext
     }
 
   exec: (ctx) ->
-    @trunc.exec(ctx)    
+    @trunc.exec(ctx)
 
 module.exports.Modulo = class Modulo extends  Expression
   constructor: (json) ->
@@ -87,10 +72,10 @@ module.exports.ModuloFunctionRef = class ModuloFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)    
+    @func.exec(ctx)
 
 
-module.exports.Ceiling = class Ceiling extends  Expression 
+module.exports.Ceiling = class Ceiling extends  Expression
   constructor: (json) ->
     super
 
@@ -107,7 +92,7 @@ module.exports.CeilingFunctionRef = class CeilingFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)   
+    @func.exec(ctx)
 
 module.exports.Floor = class Floor extends  Expression
   constructor: (json) ->
@@ -126,7 +111,7 @@ module.exports.FloorFunctionRef = class FloorFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)   
+    @func.exec(ctx)
 
 module.exports.Truncate = class Truncate extends Floor
 
@@ -140,13 +125,13 @@ module.exports.TruncateFunctionRef = class TruncateFunctionRef extends FunctionR
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)   
+    @func.exec(ctx)
 
 
 module.exports.Abs = class Abs extends  Expression
   constructor: (json) ->
     super
-  
+
   exec: (ctx) ->
     Math.abs @execArgs(ctx)
 
@@ -160,7 +145,7 @@ module.exports.AbsFunctionRef = class AbsFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)   
+    @func.exec(ctx)
 
 
 module.exports.Negate = class Negate extends Expression
@@ -199,7 +184,7 @@ module.exports.RoundFunctionRef = class RoundFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)   
+    @func.exec(ctx)
 
 module.exports.Ln = class Ln extends  Expression
   constructor: (json) ->
@@ -218,7 +203,7 @@ module.exports.LnFunctionRef = class LnFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)   
+    @func.exec(ctx)
 
 module.exports.Log = class Log extends  Expression
   constructor: (json) ->
@@ -237,8 +222,8 @@ module.exports.LogFunctionRef = class LogFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)   
-    
+    @func.exec(ctx)
+
 
 module.exports.Power = class Power extends Expression
   constructor: (json) ->
@@ -249,7 +234,7 @@ module.exports.Power = class Power extends Expression
 
 
 module.exports.MinValue = class MinValue extends Expression
-  MIN_VALUES:  "Integer" : MIN_INT_VALUE,"Real" : MIN_FLOAT_VALUE,"DateTime" : MIN_DATE
+  MIN_VALUES: "Integer" : MathUtil.MIN_INT_VALUE, "Real" : MathUtil.MIN_FLOAT_VALUE, "DateTime" : MathUtil.MIN_DATE_VALUE
   constructor: (json) ->
     super
 
@@ -258,7 +243,7 @@ module.exports.MinValue = class MinValue extends Expression
     MIN_VALUES[val]
 
 module.exports.MaxValue = class MaxValue extends Expression
-  MAX_VALUES: "Integer" : MAX_INT_VALUE, "Real" : MAX_FLOAT_VALUE, "DateTime" : MAX_DATE
+  MAX_VALUES: "Integer" : MathUtil.MAX_INT_VALUE, "Real" :MathUtil. MAX_FLOAT_VALUE, "DateTime" : MathUtil.MAX_DATE_VALUE
   constructor: (json) ->
     super
 
@@ -271,38 +256,11 @@ module.exports.Successor = class Successor extends Expression
     super
 
   exec: (ctx) ->
-    val = @execArgs(ctx)
-    if typeof val == "number"
-      if parseInt(val) == val
-        if val == MAX_INT_VALUE 
-          throw  new OverFlowException("")
-        else  
-          val + 1
-      else
-        #not bothering with the max float test because javascript does not handle floats at the level 
-        #very well  
-        val + MIN_FLOAT_PRECISION_VALUE
-    else if val instanceof DateTime 
-      if val.sameAs(MAX_DATE) then throw new OverFlowException() else val.successor()
- 
+    MathUtil.successor @execArgs(ctx)
 
 module.exports.Predecessor = class Predecessor extends  Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    val = @execArgs(ctx)
-    if typeof val == "number"
-      if parseInt(val) == val
-        if val == MIN_INT_VALUE 
-          throw  new OverFlowException("")
-        else  
-          val - 1
-      else
-      #not bothering with the min float test because javascript does not handle floats at the level 
-      #very well
-        val - MIN_FLOAT_PRECISION_VALUE
-    else if val instanceof DateTime
-      if val.sameAs(MIN_DATE) then throw new OverFlowException() else val.predecessor()
-
- 
+    MathUtil.predecessor @execArgs(ctx)

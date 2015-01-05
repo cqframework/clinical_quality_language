@@ -28,6 +28,31 @@ describe 'Exists', ->
   it 'should return true for full list', ->
     @fullList.exec(@ctx).should.be.true
 
+describe 'Equal', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should identify equal lists of integers', ->
+    @equalIntList.exec(@ctx).should.be.true
+
+  it 'should identify unequal lists of integers', ->
+    @unequalIntList.exec(@ctx).should.be.false
+
+  it 'should identify re-ordered lists of integers as unequal', ->
+    @reverseIntList.exec(@ctx).should.be.false
+
+  it 'should identify equal lists of strings', ->
+    @equalStringList.exec(@ctx).should.be.true
+
+  it 'should identify unequal lists of strings', ->
+    @unequalStringList.exec(@ctx).should.be.false
+
+  it 'should identify equal lists of tuples', ->
+    @equalTupleList.exec(@ctx).should.be.true
+
+  it 'should identify unequal lists of integers', ->
+    @unequalTupleList.exec(@ctx).should.be.false
+
 describe 'Union', ->
   @beforeEach ->
     setup @, data
@@ -73,6 +98,22 @@ describe 'InList', ->
   it 'should execute to false when item is not in list', ->
     @isNotIn.exec(@ctx).should.be.false
 
+describe 'Expand', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should expand a list of lists', ->
+    @listOfLists.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+
+  it 'should do nothing with a list of integers', ->
+    @listOfInts.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  it 'should do nothing with a mixed list', ->
+    @mixedList.exec(@ctx).should.eql [1, 2, 3, [4, 5, 6], 7, 8, 9]
+
+  it 'should return null for a null list', ->
+    should(@nullValue.exec(@ctx)).be.null
+
 describe 'Distinct', ->
   @beforeEach ->
     setup @, data
@@ -82,3 +123,53 @@ describe 'Distinct', ->
 
   it 'should do nothing to an already distinct array', ->
     @noDups.exec(@ctx).should.eql [2, 4, 6, 8, 10]
+
+describe 'First', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should get first of a list of numbers', ->
+    @numbers.exec(@ctx).should.equal 1
+
+  it 'should get first of a list of letters', ->
+    @letters.exec(@ctx).should.equal 'a'
+
+  it 'should get first of a list of lists', ->
+    @lists.exec(@ctx).should.eql ['a','b','c']
+
+  it 'should get first of a list of tuples', ->
+    @tuples.exec(@ctx).should.eql { a: 1, b: 2, c: 3 }
+
+  it 'should get first of a list of unordered numbers', ->
+    @unordered.exec(@ctx).should.equal 3
+
+  it 'should return null for an empty list', ->
+    should(@empty.exec(@ctx)).be.null
+
+  it 'should return null for an empty list', ->
+    should(@nullValue.exec(@ctx)).be.null
+
+describe 'Last', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should get last of a list of numbers', ->
+    @numbers.exec(@ctx).should.equal 4
+
+  it 'should get last of a list of letters', ->
+    @letters.exec(@ctx).should.equal 'c'
+
+  it 'should get last of a list of lists', ->
+    @lists.exec(@ctx).should.eql [1,2,3]
+
+  it 'should get last of a list of tuples', ->
+    @tuples.exec(@ctx).should.eql { x: 24, y: 25, z: 26 }
+
+  it 'should get last of a list of unordered numbers', ->
+    @unordered.exec(@ctx).should.equal 2
+
+  it 'should return null for an empty list', ->
+    should(@empty.exec(@ctx)).be.null
+
+  it 'should return null for an empty list', ->
+    should(@nullValue.exec(@ctx)).be.null
