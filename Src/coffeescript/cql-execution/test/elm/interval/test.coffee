@@ -61,6 +61,28 @@ describe 'Equal', ->
     should(@sameDays.exec(@ctx)).be.null
     @differentDays.exec(@ctx).should.be.false
 
+describe 'NotEqual', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should determine equal integer intervals', ->
+    @equalClosed.exec(@ctx).should.be.false
+    @equalOpen.exec(@ctx).should.be.false
+    @equalOpenClosed.exec(@ctx).should.be.false
+
+  it 'should determine unequal integer intervals', ->
+    @unequalClosed.exec(@ctx).should.be.true
+    @unequalOpen.exec(@ctx).should.be.true
+    @unequalClosedOpen.exec(@ctx).should.be.true
+
+  it 'should determine equal datetime intervals', ->
+    @equalDates.exec(@ctx).should.be.false
+    @equalDatesOpenClosed.exec(@ctx).should.be.false
+
+  it 'should operate correctly with imprecision', ->
+    should(@sameDays.exec(@ctx)).be.null
+    @differentDays.exec(@ctx).should.be.true
+
 describe 'Start', ->
   @beforeEach ->
     setup @, data

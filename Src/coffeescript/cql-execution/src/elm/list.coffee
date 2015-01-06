@@ -21,8 +21,7 @@ module.exports.Exists = class Exists extends Expression
 
 # Equal is completely handled by overloaded#Equal
 
-# TODO: Deconflict w/ definition in comparison.coffee
-# module.exports.NotEqual = class NotEqual extends UnimplementedExpression
+# NotEqual is completely handled by overloaded#Equal
 
 # TODO: Deconflict w/ definition in interval.coffee
 module.exports.Union = class Union extends Expression

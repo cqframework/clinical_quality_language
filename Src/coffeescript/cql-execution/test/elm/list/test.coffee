@@ -53,6 +53,31 @@ describe 'Equal', ->
   it 'should identify unequal lists of integers', ->
     @unequalTupleList.exec(@ctx).should.be.false
 
+describe 'NotEqual', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should identify equal lists of integers', ->
+    @equalIntList.exec(@ctx).should.be.false
+
+  it 'should identify unequal lists of integers', ->
+    @unequalIntList.exec(@ctx).should.be.true
+
+  it 'should identify re-ordered lists of integers as unequal', ->
+    @reverseIntList.exec(@ctx).should.be.true
+
+  it 'should identify equal lists of strings', ->
+    @equalStringList.exec(@ctx).should.be.false
+
+  it 'should identify unequal lists of strings', ->
+    @unequalStringList.exec(@ctx).should.be.true
+
+  it 'should identify equal lists of tuples', ->
+    @equalTupleList.exec(@ctx).should.be.false
+
+  it 'should identify unequal lists of integers', ->
+    @unequalTupleList.exec(@ctx).should.be.true
+
 describe 'Union', ->
   @beforeEach ->
     setup @, data

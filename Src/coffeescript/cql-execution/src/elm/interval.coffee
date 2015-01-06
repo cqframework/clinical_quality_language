@@ -15,8 +15,7 @@ module.exports.Interval = class Interval extends Expression
 
 # Equal is completely handled by overloaded#Equal
 
-# TODO: Deconflict w/ definition in comparison.coffee
-# module.exports.NotEqual = class NotEqual extends UnimplementedExpression
+# NotEqual is completely handled by overloaded#Equal
 
 # TODO: Deconflict w/ definition in list.coffee
 # module.exports.Contains = class Contains extends UnimplementedExpression

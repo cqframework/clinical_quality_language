@@ -3,8 +3,7 @@
 
 # Equal is completely handled by overloaded#Equal
 
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.NotEqual = class NotEqual extends UnimplementedExpression
+# NotEqual is completely handled by overloaded#Equal
 
 module.exports.Less = class Less extends Expression
   constructor: (json) ->
