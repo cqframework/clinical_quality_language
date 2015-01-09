@@ -29,6 +29,7 @@ module.exports.DateTimeFunctionRef = class DateTimeFunctionRef extends FunctionR
   exec: (ctx) ->
     @datetime.exec(ctx)
 
+# TODO: Update to use timestamp of request, per the spec
 module.exports.Today = class Today extends Expression
   constructor: (json) ->
     super
@@ -47,6 +48,7 @@ module.exports.TodayFunctionRef = class TodayFunctionRef extends FunctionRef
   exec: (ctx) ->
     @today.exec(ctx)
 
+# TODO: Update to use timestamp of request, per the spec
 module.exports.Now = class Now extends Expression
   constructor: (json) ->
     super
@@ -116,7 +118,7 @@ module.exports.SameOrAfter = class SameOrAfter extends Expression
     [d1, d2] = @execArgs(ctx)
     if d1? and d2? then d1.sameOrAfter(d2, @precision?.toLowerCase()) else null
 
-module.exports.SameOrBefore = class SameOrAfter extends Expression
+module.exports.SameOrBefore = class SameOrBefore extends Expression
   constructor: (json) ->
     super
     @precision = json.precision

@@ -2,7 +2,7 @@
 { FunctionRef } = require './reusable'
 { ValueSet } = require '../datatypes/datatypes'
 { build } = require './builder'
-{ typeIsArray } = require '../util/util'
+{ equals, typeIsArray } = require '../util/util'
 
 module.exports.List = class List extends Expression
   constructor: (json) ->
@@ -23,26 +23,17 @@ module.exports.Exists = class Exists extends Expression
 
 # NotEqual is completely handled by overloaded#Equal
 
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.Union = class Union extends Expression
-  constructor: (json) ->
-    super
+# Delegated to by overloaded#Union
+module.exports.doUnion = (a, b) ->
+  a.concat b
 
-  exec: (ctx) ->
-    # TODO: Support intervals
-    @execArgs(ctx).reduce (x, y) -> x.concat y
+# Delegated to by overloaded#Except
+module.exports.doExcept = (a, b) ->
+  (itm for itm in a when not doIn(itm, b))
 
-# TODO: Spec has "Difference" defined, but should this be "Except"? (also deconflict w/ interval.coffee)
-module.exports.Except = class Except extends UnimplementedExpression
-
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.Intersect = class Intersect extends Expression
-  constructor: (json) ->
-    super
-
-  exec: (ctx) ->
-    # TODO: Support intervals
-    @execArgs(ctx).reduce (x, y) -> (itm for itm in x when itm in y)
+# Delegated to by overloaded#Intersect
+module.exports.doIntersect = (a, b) ->
+  (itm for itm in a when doIn(itm, b))
 
 # ELM-only, not a product of CQL
 module.exports.Times = class Times extends UnimplementedExpression
@@ -60,59 +51,46 @@ module.exports.SingletonFrom = class SingletonFrom extends Expression
     else if arg.length is 1 then return arg[0]
     else return null
 
-module.exports.IndexOf = class IndexOf extends UnimplementedExpression
-
-# TODO: Deconflict w/ definition in string.coffee
-# module.exports.Indexer = class Indexer extends UnimplementedExpression
-
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.In = class In extends Expression
+module.exports.IndexOf = class IndexOf extends Expression
   constructor: (json) ->
     super
+    @source = build json.source
+    @element = build json.element
 
   exec: (ctx) ->
-    [item, container] = @execArgs(ctx)
+    src = @source.exec ctx
+    el = @element.exec ctx
+    if not src? or not el? then return null
+    (index = i; break) for itm, i in src when equals itm, el
+    if index? then return index + 1 else return 0
 
-    switch
-      when typeIsArray container
-        return item in container
-      when container instanceof ValueSet
-        return container.hasCode item
-
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.Contains = class Contains extends UnimplementedExpression
-
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.Includes = class Includes extends Expression
+# TODO: Remove functionref when ELM does IndexOf natively
+module.exports.IndexOfFunctionRef = class IndexOfFunctionRef extends FunctionRef
   constructor: (json) ->
     super
+    @indexOf = new IndexOf {
+      "type" : "IndexOf",
+      "source": json.operand[0]
+      "element": json.operand[1]
+    }
 
   exec: (ctx) ->
-    args = @execArgs(ctx)
-    args[0].includes args[1]
+    @indexOf.exec ctx
 
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.IncludedIn = class IncludedIn extends UnimplementedExpression
+# Indexer is completely handled by overloaded#Indexer
 
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.ProperIncludes = class ProperIncludes extends UnimplementedExpression
+# Delegated to by overloaded#In and overloaded#Contains
+module.exports.doIn = doIn = (item, container) ->
+  return true for element in container when equals element, item
+  return false
 
-# TODO: Deconflict w/ definition in interval.coffee
-module.exports.ProperIncludedIn = class ProperIncludedIn extends UnimplementedExpression
+# Delegated to by overloaded#Includes and overloaded@IncludedIn
+module.exports.doIncludes = doIncludes = (list, sublist) ->
+  sublist.every (x) -> doIn(x, list)
 
-module.exports.Sort = class Sort
-  constructor:(json) ->
-    @by = build json?.by
-
-  sort: (values) ->
-    self = @
-    if @by
-      values.sort (a,b) ->
-        order = 0
-        for item in self.by
-          order = item.exec(a,b)
-          if order != 0 then break
-        order
+# Delegated to by overloaded#ProperIncludes and overloaded@ProperIncludedIn
+module.exports.doProperIncludes = (list, sublist) ->
+  list.length > sublist.length and doIncludes(list, sublist)
 
 # ELM-only, not a product of CQL
 module.exports.ForEach = class ForEach extends UnimplementedExpression
@@ -141,7 +119,6 @@ module.exports.Distinct = class Distinct extends Expression
 # ELM-only, not a product of CQL
 module.exports.Current = class Current extends UnimplementedExpression
 
-# TODO: ELM supports 'orderBy' but there's no way to get there from CQL
 module.exports.First = class First extends Expression
   constructor: (json) ->
     super
@@ -163,7 +140,6 @@ module.exports.FirstFunctionRef = class FirstFunctionRef extends FunctionRef
   exec: (ctx) ->
     @first.exec ctx
 
-# TODO: ELM supports 'orderBy' but there's no way to get there from CQL
 module.exports.Last = class Last extends Expression
   constructor: (json) ->
     super
