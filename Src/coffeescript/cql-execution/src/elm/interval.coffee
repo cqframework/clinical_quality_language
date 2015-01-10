@@ -47,11 +47,29 @@ module.exports.MeetsAfter = class MeetsAfter extends UnimplementedExpression
 
 module.exports.MeetsBefore = class MeetsBefore extends UnimplementedExpression
 
-module.exports.Overlaps = class Overlaps extends UnimplementedExpression
+module.exports.Overlaps = class Overlaps extends Expression
+  constructor: (json) ->
+    super
 
-module.exports.OverlapsAfter = class OverlapsAfter extends UnimplementedExpression
+  exec: (ctx) ->
+    [a, b] = @execArgs ctx
+    if a? and b? then a.overlaps b else null
 
-module.exports.OverlapsBefore = class OverlapsBefore extends UnimplementedExpression
+module.exports.OverlapsAfter = class OverlapsAfter extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    [a, b] = @execArgs ctx
+    if a? and b? then a.overlapsAfter b else null
+
+module.exports.OverlapsBefore = class OverlapsBefore extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    [a, b] = @execArgs ctx
+    if a? and b? then a.overlapsBefore b else null
 
 # TODO: Deconflict w/ definition in list.coffee
 # module.exports.Union = class Union extends UnimplementedExpression

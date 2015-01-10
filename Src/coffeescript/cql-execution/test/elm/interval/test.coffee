@@ -83,6 +83,100 @@ describe 'NotEqual', ->
     should(@sameDays.exec(@ctx)).be.null
     @differentDays.exec(@ctx).should.be.true
 
+describe 'Overlaps', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept overlaps', ->
+    @overlapsBefore.exec(@ctx).should.be.true
+    @overlapsAfter.exec(@ctx).should.be.true
+    @overlapsContained.exec(@ctx).should.be.true
+    @overlapsContains.exec(@ctx).should.be.true
+    @overlapsDate.exec(@ctx).should.be.true
+    @startOverlapsDate.exec(@ctx).should.be.true
+    @endOverlapsDate.exec(@ctx).should.be.true
+
+  it 'should accept imprecise overlaps', ->
+    @impreciseOverlap.exec(@ctx).should.be.true
+
+  it 'should reject non-overlaps', ->
+    @noOverlap.exec(@ctx).should.be.false
+    @noOverlapsDate.exec(@ctx).should.be.false
+
+  it 'should reject imprecise non-overlaps', ->
+    @noImpreciseOverlap.exec(@ctx).should.be.false
+
+  it 'should return null for imprecise overlaps that are unknown', ->
+    should(@unknownOverlap.exec(@ctx)).be.null
+    should(@unknownOverlapsDate.exec(@ctx)).be.null
+    should(@overlapsUnknownDate.exec(@ctx)).be.null
+
+describe 'OverlapsAfter', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept overlaps that are after', ->
+    @overlapsAfter.exec(@ctx).should.be.true
+    @overlapsContains.exec(@ctx).should.be.true
+    @overlapsDate.exec(@ctx).should.be.true
+    @startOverlapsDate.exec(@ctx).should.be.true
+
+  it 'should accept imprecise overlaps that are after', ->
+    @impreciseOverlapAfter.exec(@ctx).should.be.true
+
+  it 'should reject overlaps that are not before', ->
+    @overlapsBefore.exec(@ctx).should.be.false
+    @overlapsContained.exec(@ctx).should.be.false
+    @endOverlapsDate.exec(@ctx).should.be.false
+
+  it 'should reject imprecise overlaps that are not before', ->
+    @impreciseOverlapBefore.exec(@ctx).should.be.false
+
+  it 'should reject non-overlaps', ->
+    @noOverlap.exec(@ctx).should.be.false
+    @noOverlapsDate.exec(@ctx).should.be.false
+
+  it 'should reject imprecise non-overlaps', ->
+    @noImpreciseOverlap.exec(@ctx).should.be.false
+
+  it 'should return null for imprecise overlaps that are unknown', ->
+    should(@unknownOverlap.exec(@ctx)).be.null
+    should(@unknownOverlapsDate.exec(@ctx)).be.null
+    should(@overlapsUnknownDate.exec(@ctx)).be.null
+
+describe 'OverlapsBefore', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept overlaps that are before', ->
+    @overlapsBefore.exec(@ctx).should.be.true
+    @overlapsContains.exec(@ctx).should.be.true
+    @overlapsDate.exec(@ctx).should.be.true
+    @endOverlapsDate.exec(@ctx).should.be.true
+
+  it 'should accept imprecise overlaps that are before', ->
+    @impreciseOverlapBefore.exec(@ctx).should.be.true
+
+  it 'should reject overlaps that are not before', ->
+    @overlapsAfter.exec(@ctx).should.be.false
+    @overlapsContained.exec(@ctx).should.be.false
+    @startOverlapsDate.exec(@ctx).should.be.false
+
+  it 'should reject imprecise overlaps that are not before', ->
+    @impreciseOverlapAfter.exec(@ctx).should.be.false
+
+  it 'should reject non-overlaps', ->
+    @noOverlap.exec(@ctx).should.be.false
+    @noOverlapsDate.exec(@ctx).should.be.false
+
+  it 'should reject imprecise non-overlaps', ->
+    @noImpreciseOverlap.exec(@ctx).should.be.false
+
+  it 'should return null for imprecise overlaps that are unknown', ->
+    should(@unknownOverlap.exec(@ctx)).be.null
+    should(@unknownOverlapsDate.exec(@ctx)).be.null
+    should(@overlapsUnknownDate.exec(@ctx)).be.null
+
 describe 'Start', ->
   @beforeEach ->
     setup @, data

@@ -120,28 +120,7 @@ module.exports.LowerFunctionRef = class LowerFunctionRef extends FunctionRef
   exec: (ctx) ->
     @upper.exec(ctx)
 
-module.exports.Indexer = class Indexer extends Expression
-  constructor: (json) ->
-    super
-    @index = build json.index
-
-  exec: (ctx) ->
-    str = @execArgs(ctx)
-    index = @index.exec(ctx)
-    if not (str? and index?) then null else str[index-1]
-
-# TODO: Remove functionref when ELM does Indexer natively
-module.exports.IndexerFunctionRef = class IndexerFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @indexer = new Indexer {
-      "type" : "Indexer",
-      "operand" : json.operand[0],
-      "index" : json.operand[1]
-    }
-
-  exec: (ctx) ->
-    @indexer.exec(ctx)
+# Indexer is completely handled by overloaded#Indexer
 
 module.exports.Pos = class Pos extends Expression
   constructor: (json) ->

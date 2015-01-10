@@ -32,6 +32,18 @@ module.exports.Interval = class Interval
     else
       @includes item
 
+  overlapsAfter: (item) ->
+    ThreeValuedLogic.and(
+      @overlaps(item),
+      @toClosed().high.after(if item instanceof Interval then item.toClosed().high else item)
+    )
+
+  overlapsBefore: (item) ->
+    ThreeValuedLogic.and(
+      @overlaps(item),
+      @toClosed().low.before(if item instanceof Interval then item.toClosed().low else item)
+    )
+
   equals: (item) ->
     if item instanceof Interval
       [a, b] = [@toClosed(), item.toClosed()]

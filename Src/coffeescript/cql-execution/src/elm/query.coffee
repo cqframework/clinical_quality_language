@@ -1,5 +1,4 @@
 { Expression, UnimplementedExpression } = require './expression'
-{ Sort } = require './list'
 { Context } = require '../runtime/context'
 { build } = require './builder'
 { typeIsArray , allTrue} = require '../util/util'
@@ -27,6 +26,8 @@ module.exports.Without = class Without extends With
     super
   exec: (ctx) ->
     !super(ctx)
+
+module.exports.Sort = class Sort extends UnimplementedExpression
 
 module.exports.SortClause = class SortClause extends UnimplementedExpression
 
@@ -57,6 +58,20 @@ module.exports.ByExpression = class ByExpression extends Expression
       @high_order
 
 module.exports.ReturnClause = class ReturnClause extends UnimplementedExpression
+
+class Sort
+  constructor:(json) ->
+    @by = build json?.by
+
+  sort: (values) ->
+    self = @
+    if @by
+      values.sort (a,b) ->
+        order = 0
+        for item in self.by
+          order = item.exec(a,b)
+          if order != 0 then break
+        order
 
 module.exports.Query = class Query extends Expression
   constructor: (json) ->
@@ -137,5 +152,3 @@ class MultiSource
         @rest.forEach(rctx,func)
       else
         func(rctx)
-
-
