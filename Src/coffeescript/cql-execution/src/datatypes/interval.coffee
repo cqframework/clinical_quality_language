@@ -1,67 +1,82 @@
 { DateTime } = require './datetime'
 { Uncertainty } = require './uncertainty'
 { ThreeValuedLogic } = require './logic'
-{ successor, predecessor } = require '../util/math'
-{ equals } = require '../util/util'
+{ successor, predecessor, maxValueForInstance, minValueForInstance } = require '../util/math'
+cmp = require '../util/comparison'
 
 module.exports.Interval = class Interval
+  # WARNING: If point is an uncertainty or imprecise date, the interval can be
+  # interpreted as having width when it shouldn't.  Use with caution!
+  @_fromPoint: (point) -> new Interval(point, point, true, true)
+
   constructor: (@low, @high, @lowClosed = true, @highClosed = true) ->
 
   includes: (item) ->
-    [uLow, uHigh] = @_getEndpointsAsUncertainties()
-    if item instanceof Interval
-      [uItmLow, uItmHigh] = item._getEndpointsAsUncertainties()
-      ThreeValuedLogic.and uLow.lessThanOrEquals(uItmLow), uHigh.greaterThanOrEquals(uItmHigh)
-    else
-      uItem = if item.toUncertainty? then item.toUncertainty() else new Uncertainty(item)
-      ThreeValuedLogic.and uLow.lessThanOrEquals(uItem), uHigh.greaterThanOrEquals(uItem)
+    a = @toClosed()
+    b = if item instanceof Interval then item.toClosed() else Interval._fromPoint(item)
+    ThreeValuedLogic.and(
+      cmp.lessThanOrEquals(a.low, b.low),
+      cmp.greaterThanOrEquals(a.high, b.high)
+    )
 
   includedIn: (item) ->
     if item instanceof Interval
       item.includes @
     else
-      [uLow, uHigh] = @_getEndpointsAsUncertainties()
-      uItem = if item.toUncertainty? then item.toUncertainty() else new Uncertainty(item)
-      ThreeValuedLogic.and @lowClosed, @highClosed, uLow.equals(uHigh), uLow.equals(uItem), uHigh.equals(uItem)
+      closed = @toClosed()
+      ThreeValuedLogic.and(
+        cmp.equals(closed.low, closed.high),
+        cmp.equals(closed.low, item)
+      )
 
   overlaps: (item) ->
-    if item instanceof Interval
-      [uLow, uHigh] = @_getEndpointsAsUncertainties()
-      [uItmLow, uItmHigh] = item._getEndpointsAsUncertainties()
-      uLow.lessThanOrEquals(uItmHigh) and uHigh.greaterThanOrEquals(uItmLow)
+    closed = @toClosed()
+    [low, high] = if item instanceof Interval
+      itemClosed = item.toClosed()
+      [itemClosed.low, itemClosed.high]
     else
-      @includes item
+      [item, item]
+    ThreeValuedLogic.and(
+      cmp.lessThanOrEquals(closed.low, high),
+      cmp.greaterThanOrEquals(closed.high, low)
+    )
 
   overlapsAfter: (item) ->
+    closed = @toClosed()
+    high = if item instanceof Interval then item.toClosed().high else item
     ThreeValuedLogic.and(
-      @overlaps(item),
-      @toClosed().high.after(if item instanceof Interval then item.toClosed().high else item)
+      cmp.lessThanOrEquals(closed.low, high),
+      cmp.greaterThan(closed.high, high)
     )
 
   overlapsBefore: (item) ->
+    closed = @toClosed()
+    low = if item instanceof Interval then item.toClosed().low else item
     ThreeValuedLogic.and(
-      @overlaps(item),
-      @toClosed().low.before(if item instanceof Interval then item.toClosed().low else item)
+      cmp.lessThan(closed.low, low),
+      cmp.greaterThanOrEquals(closed.high, low)
     )
 
   equals: (item) ->
     if item instanceof Interval
       [a, b] = [@toClosed(), item.toClosed()]
-      ThreeValuedLogic.and equals(a.low, b.low), equals(a.high, b.high)
+      ThreeValuedLogic.and(
+        cmp.equals(a.low, b.low),
+        cmp.equals(a.high, b.high)
+      )
+    else
+      false
 
   toClosed: () ->
-    low = @low
-    high = @high
     if typeof(@low) is 'number' or @low instanceof DateTime
-      low = successor(low) unless @lowClosed
-      high = predecessor(high) unless @highClosed
-    new Interval(low, high, true, true)
-
-  _getEndpointsAsUncertainties: () ->
-    # Since uncertainties are always closed, adjust open endpoints
-    ivl = @toClosed()
-
-    [
-      if ivl.low.toUncertainty? then ivl.low.toUncertainty() else new Uncertainty(ivl.low),
-      if ivl.high.toUncertainty? then ivl.high.toUncertainty() else new Uncertainty(ivl.high)
-    ]
+      low = switch
+        when @lowClosed and @low is null then minValueForInstance @high
+        when not @lowClosed then successor @low
+        else @low
+      high = switch
+        when @highClosed and @high is null then maxValueForInstance @low
+        when not @highClosed then predecessor @high
+        else @high
+      new Interval(low, high, true, true)
+    else
+      new Interval(@low, @high, true, true)

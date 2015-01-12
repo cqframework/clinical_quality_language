@@ -83,11 +83,38 @@ describe 'NotEqual', ->
     should(@sameDays.exec(@ctx)).be.null
     @differentDays.exec(@ctx).should.be.true
 
-describe 'Overlaps', ->
+describe.skip 'Overlaps', ->
   @beforeEach ->
     setup @, data
 
-  it.skip 'should accept overlaps', ->
+  it 'should accept overlaps (integer)', ->
+    @overlapsBeforeIntIvl.exec(@ctx).should.be.true
+    @overlapsAfterIntIvl.exec(@ctx).should.be.true
+    @overlapsBoundaryIntIvl.exec(@ctx).should.be.true
+    @startOverlapsInt.exec(@ctx).should.be.true
+    @endOverlapsInt.exec(@ctx).should.be.true
+
+  it 'should accept overlaps (real)', ->
+    @overlapsBeforeRealIvl.exec(@ctx).should.be.true
+    @overlapsAfterRealIvl.exec(@ctx).should.be.true
+    @overlapsBoundaryRealIvl.exec(@ctx).should.be.true
+    @startOverlapsReal.exec(@ctx).should.be.true
+    @endOverlapsReal.exec(@ctx).should.be.true
+
+  it 'should reject non-overlaps (integer)', ->
+    @noOverlapsIntIvl.exec(@ctx).should.be.false
+    @noOverlapsInt.exec(@ctx).should.be.false
+
+  it 'should reject non-overlaps (real)', ->
+    @noOverlapsRealIvl.exec(@ctx).should.be.false
+    @noOverlapsReal.exec(@ctx).should.be.false
+
+
+describe.skip 'OverlapsDateTime', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept overlaps', ->
     @overlapsBefore.exec(@ctx).should.be.true
     @overlapsAfter.exec(@ctx).should.be.true
     @overlapsContained.exec(@ctx).should.be.true
@@ -111,11 +138,41 @@ describe 'Overlaps', ->
     should(@unknownOverlapsDate.exec(@ctx)).be.null
     should(@overlapsUnknownDate.exec(@ctx)).be.null
 
-describe 'OverlapsAfter', ->
+describe.skip 'OverlapsAfter', ->
   @beforeEach ->
     setup @, data
 
-  it.skip 'should accept overlaps that are after', ->
+  it 'should accept overlaps that are after (integer)', ->
+    @overlapsAfterIntIvl.exec(@ctx).should.be.true
+    @overlapsBoundaryIntIvl.exec(@ctx).should.be.true
+    @startOverlapsInt.exec(@ctx).should.be.true
+
+  it 'should accept overlaps that are after (real)', ->
+    @overlapsAfterRealIvl.exec(@ctx).should.be.true
+    @overlapsBoundaryRealIvl.exec(@ctx).should.be.true
+    @startOverlapsReal.exec(@ctx).should.be.true
+
+  it 'should reject overlaps that are before (integer)', ->
+    @overlapsBeforeIntIvl.exec(@ctx).should.be.false
+    @endOverlapsInt.exec(@ctx).should.be.false
+
+  it 'should reject overlaps that are before (real)', ->
+    @overlapsBeforeRealIvl.exec(@ctx).should.be.false
+    @endOverlapsReal.exec(@ctx).should.be.false
+
+  it 'should reject non-overlaps (integer)', ->
+    @noOverlapsIntIvl.exec(@ctx).should.be.false
+    @noOverlapsInt.exec(@ctx).should.be.false
+
+  it 'should reject non-overlaps (real)', ->
+    @noOverlapsRealIvl.exec(@ctx).should.be.false
+    @noOverlapsReal.exec(@ctx).should.be.false
+
+describe.skip 'OverlapsAfterDateTime', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept overlaps that are after', ->
     @overlapsAfter.exec(@ctx).should.be.true
     @overlapsContains.exec(@ctx).should.be.true
     @overlapsDate.exec(@ctx).should.be.true
@@ -144,11 +201,41 @@ describe 'OverlapsAfter', ->
     should(@unknownOverlapsDate.exec(@ctx)).be.null
     should(@overlapsUnknownDate.exec(@ctx)).be.null
 
-describe 'OverlapsBefore', ->
+describe.skip 'OverlapsBefore', ->
   @beforeEach ->
     setup @, data
 
-  it.skip 'should accept overlaps that are before', ->
+  it 'should accept overlaps that are before (integer)', ->
+    @overlapsBeforeIntIvl.exec(@ctx).should.be.true
+    @overlapsBoundaryIntIvl.exec(@ctx).should.be.true
+    @endOverlapsInt.exec(@ctx).should.be.true
+
+  it 'should accept overlaps that are before (real)', ->
+    @overlapsBeforeRealIvl.exec(@ctx).should.be.true
+    @overlapsBoundaryRealIvl.exec(@ctx).should.be.true
+    @endOverlapsReal.exec(@ctx).should.be.true
+
+  it 'should reject overlaps that are after (integer)', ->
+    @overlapsAfterIntIvl.exec(@ctx).should.be.false
+    @startOverlapsInt.exec(@ctx).should.be.false
+
+  it 'should reject overlaps that are after (real)', ->
+    @overlapsAfterRealIvl.exec(@ctx).should.be.false
+    @startOverlapsReal.exec(@ctx).should.be.false
+
+  it 'should reject non-overlaps (integer)', ->
+    @noOverlapsIntIvl.exec(@ctx).should.be.false
+    @noOverlapsInt.exec(@ctx).should.be.false
+
+  it 'should reject non-overlaps (real)', ->
+    @noOverlapsRealIvl.exec(@ctx).should.be.false
+    @noOverlapsReal.exec(@ctx).should.be.false
+
+describe.skip 'OverlapsBeforeDateTime', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept overlaps that are before', ->
     @overlapsBefore.exec(@ctx).should.be.true
     @overlapsContains.exec(@ctx).should.be.true
     @overlapsDate.exec(@ctx).should.be.true

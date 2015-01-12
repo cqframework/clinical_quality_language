@@ -2,7 +2,9 @@
 { FunctionRef } = require './reusable'
 { ValueSet } = require '../datatypes/datatypes'
 { build } = require './builder'
-{ equals, typeIsArray } = require '../util/util'
+{ typeIsArray } = require '../util/util'
+{ equals } = require '../util/comparison'
+
 
 module.exports.List = class List extends Expression
   constructor: (json) ->

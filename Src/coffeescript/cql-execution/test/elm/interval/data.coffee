@@ -1698,6 +1698,387 @@ module.exports['NotEqual'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
+define OverlapsBeforeIntIvl = interval[1, 5] overlaps interval[2, 7]
+define OverlapsAfterIntIvl = interval[3, 8] overlaps interval[1, 6]
+define OverlapsBoundaryIntIvl = interval[1, 5] overlaps interval[5, 10]
+define NoOverlapsIntIvl = interval[1,5) overlaps interval[5, 10]
+define StartOverlapsInt = interval[1, 5] overlaps 1
+define EndOverlapsInt = interval[1, 5] overlaps 5
+define NoOverlapsInt = interval[1, 5) overlaps 5
+define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps interval[1.345, 1.678]
+define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps interval[1.234, 1.567]
+define OverlapsBoundaryRealIvl = interval[1.0, 1.234] overlaps interval[1.234, 2.0]
+define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps interval[1.23456789, 2.0]
+define StartOverlapsReal = interval[1.234, 5.678] overlaps 1.234
+define EndOverlapsReal = interval[1.234, 5.678] overlaps 5.678
+define NoOverlapsReal = interval[1.234, 5.678) overlaps 5.678
+###
+
+###
+Translation Error(s):
+[8:42, 8:49] Could not resolve call to operator Overlaps with signature (interval<System.Integer>,System.Integer).
+[9:40, 9:47] Could not resolve call to operator Overlaps with signature (interval<System.Integer>,System.Integer).
+[10:39, 10:46] Could not resolve call to operator Overlaps with signature (interval<System.Integer>,System.Integer).
+[15:51, 15:58] Could not resolve call to operator Overlaps with signature (interval<System.Decimal>,System.Decimal).
+[16:49, 16:56] Could not resolve call to operator Overlaps with signature (interval<System.Decimal>,System.Decimal).
+[17:48, 17:55] Could not resolve call to operator Overlaps with signature (interval<System.Decimal>,System.Decimal).
+###
+module.exports['Overlaps'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "OverlapsBeforeIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "8",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsBoundaryIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NoOverlapsIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "StartOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "EndOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "NoOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "OverlapsBeforeRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.567",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.345",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.678",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.345",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.678",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.567",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsBoundaryRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "2.0",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NoOverlapsRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.23456789",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.23456789",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "2.0",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "StartOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "EndOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "NoOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         } ]
+      }
+   }
+}
+
+### OverlapsDateTime
+library TestSnippet version '1'
+using QUICK
+context Patient
 define ivlA = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
 define ivlB = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
 define ivlC = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
@@ -1730,7 +2111,7 @@ Translation Error(s):
 [23:35, 23:42] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
 [24:35, 24:42] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
 ###
-module.exports['Overlaps'] = {
+module.exports['OverlapsDateTime'] = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -2284,6 +2665,387 @@ module.exports['Overlaps'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
+define OverlapsBeforeIntIvl = interval[1, 5] overlaps after interval[2, 7]
+define OverlapsAfterIntIvl = interval[3, 8] overlaps after interval[1, 6]
+define OverlapsBoundaryIntIvl = interval[5, 10] overlaps after interval[1, 5]
+define NoOverlapsIntIvl = interval[1,5) overlaps after interval[5, 10]
+define StartOverlapsInt = interval[1, 5] overlaps after 1
+define EndOverlapsInt = interval[1, 5] overlaps after 5
+define NoOverlapsInt = interval[1, 5) overlaps after 5
+define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps after interval[1.345, 1.678]
+define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps after interval[1.234, 1.567]
+define OverlapsBoundaryRealIvl = interval[1.234, 2.0] overlaps after interval[1.0, 1.234]
+define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps after interval[1.23456789, 2.0]
+define StartOverlapsReal = interval[1.234, 5.678] overlaps after 1.234
+define EndOverlapsReal = interval[1.234, 5.678] overlaps after 5.678
+define NoOverlapsReal = interval[1.234, 5.678) overlaps after 5.678
+###
+
+###
+Translation Error(s):
+[8:42, 8:55] Could not resolve call to operator OverlapsAfter with signature (interval<System.Integer>,System.Integer).
+[9:40, 9:53] Could not resolve call to operator OverlapsAfter with signature (interval<System.Integer>,System.Integer).
+[10:39, 10:52] Could not resolve call to operator OverlapsAfter with signature (interval<System.Integer>,System.Integer).
+[15:51, 15:64] Could not resolve call to operator OverlapsAfter with signature (interval<System.Decimal>,System.Decimal).
+[16:49, 16:62] Could not resolve call to operator OverlapsAfter with signature (interval<System.Decimal>,System.Decimal).
+[17:48, 17:61] Could not resolve call to operator OverlapsAfter with signature (interval<System.Decimal>,System.Decimal).
+###
+module.exports['OverlapsAfter'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "OverlapsBeforeIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "8",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsBoundaryIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NoOverlapsIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "StartOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "EndOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "NoOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "OverlapsBeforeRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.567",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.345",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.678",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.345",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.678",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.567",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsBoundaryRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "2.0",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NoOverlapsRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.23456789",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.23456789",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "2.0",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "StartOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "EndOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "NoOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         } ]
+      }
+   }
+}
+
+### OverlapsAfterDateTime
+library TestSnippet version '1'
+using QUICK
+context Patient
 define ivlA = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
 define ivlB = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
 define ivlC = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
@@ -2317,7 +3079,7 @@ Translation Error(s):
 [24:35, 24:48] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
 [25:35, 25:48] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
 ###
-module.exports['OverlapsAfter'] = {
+module.exports['OverlapsAfterDateTime'] = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -2884,6 +3646,387 @@ module.exports['OverlapsAfter'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
+define OverlapsBeforeIntIvl = interval[1, 5] overlaps before interval[2, 7]
+define OverlapsAfterIntIvl = interval[3, 8] overlaps before interval[1, 6]
+define OverlapsBoundaryIntIvl = interval[1, 5] overlaps before interval[5, 10]
+define NoOverlapsIntIvl = interval[1,5) overlaps before interval[5, 10]
+define StartOverlapsInt = interval[1, 5] overlaps before 1
+define EndOverlapsInt = interval[1, 5] overlaps before 5
+define NoOverlapsInt = interval[1, 5) overlaps before 5
+define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps before interval[1.345, 1.678]
+define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps before interval[1.234, 1.567]
+define OverlapsBoundaryRealIvl = interval[1.0, 1.234] overlaps before interval[1.234, 2.0]
+define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps before interval[1.23456789, 2.0]
+define StartOverlapsReal = interval[1.234, 5.678] overlaps before 1.234
+define EndOverlapsReal = interval[1.234, 5.678] overlaps before 5.678
+define NoOverlapsReal = interval[1.234, 5.678) overlaps before 5.678
+###
+
+###
+Translation Error(s):
+[8:42, 8:56] Could not resolve call to operator OverlapsBefore with signature (interval<System.Integer>,System.Integer).
+[9:40, 9:54] Could not resolve call to operator OverlapsBefore with signature (interval<System.Integer>,System.Integer).
+[10:39, 10:53] Could not resolve call to operator OverlapsBefore with signature (interval<System.Integer>,System.Integer).
+[15:51, 15:65] Could not resolve call to operator OverlapsBefore with signature (interval<System.Decimal>,System.Decimal).
+[16:49, 16:63] Could not resolve call to operator OverlapsBefore with signature (interval<System.Decimal>,System.Decimal).
+[17:48, 17:62] Could not resolve call to operator OverlapsBefore with signature (interval<System.Decimal>,System.Decimal).
+###
+module.exports['OverlapsBefore'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "OverlapsBeforeIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "8",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsBoundaryIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NoOverlapsIntIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "StartOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "EndOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "NoOverlapsInt",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "OverlapsBeforeRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.567",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.345",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.678",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.345",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.678",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.567",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsBoundaryRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "2.0",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NoOverlapsRealIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.23456789",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.23456789",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "2.0",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "StartOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "EndOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "NoOverlapsReal",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Null"
+            }
+         } ]
+      }
+   }
+}
+
+### OverlapsBeforeDateTime
+library TestSnippet version '1'
+using QUICK
+context Patient
 define ivlA = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
 define ivlB = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
 define ivlC = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
@@ -2917,7 +4060,7 @@ Translation Error(s):
 [24:35, 24:49] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
 [25:35, 25:49] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
 ###
-module.exports['OverlapsBefore'] = {
+module.exports['OverlapsBeforeDateTime'] = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",

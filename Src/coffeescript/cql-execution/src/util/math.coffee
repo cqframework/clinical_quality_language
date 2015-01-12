@@ -32,3 +32,19 @@ module.exports.predecessor = predecessor = (val) ->
       val - MIN_FLOAT_PRECISION_VALUE
   else if val instanceof DateTime
     if val.sameAs(MIN_DATE_VALUE) then throw new OverFlowException() else val.predecessor()
+
+module.exports.maxValueForInstance = (val) ->
+  if typeof val is "number"
+    if parseInt(val) is val then MAX_INT_VALUE else MAX_FLOAT_VALUE
+  else if val instanceof DateTime
+    MAX_DATE_VALUE
+  else
+    null
+
+module.exports.minValueForInstance = (val) ->
+  if typeof val is "number"
+    if parseInt(val) is val then MIN_INT_VALUE else MIN_FLOAT_VALUE
+  else if val instanceof DateTime
+    MIN_DATE_VALUE
+  else
+    null
