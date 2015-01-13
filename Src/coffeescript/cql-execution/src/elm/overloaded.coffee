@@ -1,10 +1,12 @@
 { Expression } = require './expression'
 { FunctionRef } = require './reusable'
 { ThreeValuedLogic } = require '../datatypes/logic'
+{ DateTime } = require '../datatypes/datetime'
 { Exception } = require '../datatypes/exception'
 { typeIsArray } = require '../util/util'
 { equals } = require '../util/comparison'
 { build } = require './builder'
+DT = require './datetime'
 LIST = require './list'
 IVL = require './interval'
 STRING = require './string'
@@ -83,7 +85,7 @@ module.exports.In = class In extends Expression
     lib = switch
       when typeIsArray(container) then LIST
       else IVL
-    lib.doIn(item, container)
+    lib.doContains(container, item)
 
 module.exports.Contains = class Contains extends Expression
   constructor: (json) ->
@@ -95,7 +97,7 @@ module.exports.Contains = class Contains extends Expression
     lib = switch
       when typeIsArray(container) then LIST
       else IVL
-    lib.doIn(item, container)
+    lib.doContains(container, item)
 
 module.exports.Includes = class Includes extends Expression
   constructor: (json) ->
@@ -164,3 +166,29 @@ module.exports.LengthFunctionRef = class LengthFunctionRef extends FunctionRef
 
   exec: (ctx) ->
     @length.exec(ctx)
+
+module.exports.After = class After extends Expression
+  constructor: (json) ->
+    super
+    @precision = json.precision?.toLowerCase()
+
+  exec: (ctx) ->
+    [a, b] = @execArgs(ctx)
+    if not a? or not b? then return null
+    lib = switch
+      when a instanceof DateTime then DT
+      else IVL
+    lib.doAfter(a, b, @precision)
+
+module.exports.Before = class After extends Expression
+  constructor: (json) ->
+    super
+    @precision = json.precision?.toLowerCase()
+
+  exec: (ctx) ->
+    [a, b] = @execArgs(ctx)
+    if not a? or not b? then return null
+    lib = switch
+      when a instanceof DateTime then DT
+      else IVL
+    lib.doBefore(a, b, @precision)

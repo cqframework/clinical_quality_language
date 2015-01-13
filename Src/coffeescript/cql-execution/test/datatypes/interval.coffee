@@ -29,7 +29,71 @@ describe 'Interval', ->
     i.lowClosed.should.be.true
     i.highClosed.should.be.true
 
-describe 'DateTimeInterval.includes(DateTimeInterval)', ->
+describe 'DateTimeInterval.contains', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate dates before it', ->
+    @all2012.closed.contains(@bef2012.full).should.be.false
+
+  it 'should properly calculate the left boundary date', ->
+    @all2012.closed.contains(@beg2012.full).should.be.true
+    @all2012.open.contains(@beg2012.full).should.be.false
+
+  it 'should properly calculate dates in the middle of it', ->
+    @all2012.closed.contains(@mid2012.full).should.be.true
+
+  it 'should properly calculate the right boundary date', ->
+    @all2012.closed.contains(@end2012.full).should.be.true
+    @all2012.open.contains(@end2012.full).should.be.false
+
+  it 'should properly calculate dates after it', ->
+    @all2012.closed.contains(@aft2012.full).should.be.false
+
+  it 'should properly handle null endpoints', ->
+    date = DateTime.parse('2012-01-01T00:00:00.0')
+    early = DateTime.parse('1900-01-01T00:00:00.0')
+    late = DateTime.parse('2999-01-01T00:00:00.0')
+    new Interval(null, date).contains(early).should.be.true
+    new Interval(null, date).contains(late).should.be.false
+    new Interval(null,date,false,true).contains(date).should.be.true
+    should(new Interval(null,date,false,true).contains(early)).be.null
+    new Interval(null,date,false,true).contains(late).should.be.false
+    new Interval(date,null).contains(late).should.be.true
+    new Interval(date,null).contains(early).should.be.false
+    new Interval(date,null,true,false).contains(date).should.be.true
+    should(new Interval(date,null,true,false).contains(late)).be.null
+    new Interval(date,null,true,false).contains(early).should.be.false
+
+  it 'should properly handle imprecision', ->
+    @all2012.closed.contains(@bef2012.toMonth).should.be.false
+    @all2012.closed.contains(@beg2012.toMonth).should.be.true
+    @all2012.closed.contains(@mid2012.toMonth).should.be.true
+    @all2012.closed.contains(@end2012.toMonth).should.be.true
+    @all2012.closed.contains(@aft2012.toMonth).should.be.false
+
+    @all2012.toMonth.contains(@bef2012.toMonth).should.be.false
+    should.not.exist @all2012.toMonth.contains(@beg2012.toMonth)
+    @all2012.toMonth.contains(@mid2012.toMonth).should.be.true
+    should.not.exist @all2012.toMonth.contains(@end2012.toMonth)
+    @all2012.toMonth.contains(@aft2012.toMonth).should.be.false
+
+    @all2012.toMonth.contains(@bef2012.full).should.be.false
+    should.not.exist @all2012.toMonth.contains(@beg2012.full)
+    @all2012.toMonth.contains(@mid2012.full).should.be.true
+    should.not.exist @all2012.toMonth.contains(@end2012.full)
+    @all2012.toMonth.contains(@aft2012.full).should.be.false
+
+    @all2012.closed.contains(@mid2012.toYear).should.be.true
+
+  it 'should throw when the argument is an interval', ->
+    try
+      @all2012.closed.contains @all2012
+      should.fail
+    catch e
+      (e?).should.be.true
+
+describe 'DateTimeInterval.includes', ->
   @beforeEach ->
     setup @
 
@@ -141,49 +205,14 @@ describe 'DateTimeInterval.includes(DateTimeInterval)', ->
     x.toMinute.includes(y.toMinute).should.be.false
     should.not.exist x.toYear.includes(y.closed)
 
-describe 'DateTimeInterval.includes(DateTime)', ->
-  @beforeEach ->
-    setup @
+  it 'should throw when the argument is a point', ->
+    try
+      @all2012.closed.includes @mid2012
+      should.fail
+    catch e
+      (e?).should.be.true
 
-  it 'should properly calculate dates before it', ->
-    @all2012.closed.includes(@bef2012.full).should.be.false
-
-  it 'should properly calculate the left boundary date', ->
-    @all2012.closed.includes(@beg2012.full).should.be.true
-    @all2012.open.includes(@beg2012.full).should.be.false
-
-  it 'should properly calculate dates in the middle of it', ->
-    @all2012.closed.includes(@mid2012.full).should.be.true
-
-  it 'should properly calculate the right boundary date', ->
-    @all2012.closed.includes(@end2012.full).should.be.true
-    @all2012.open.includes(@end2012.full).should.be.false
-
-  it 'should properly calculate dates after it', ->
-    @all2012.closed.includes(@aft2012.full).should.be.false
-
-  it 'should properly handle imprecision', ->
-    @all2012.closed.includes(@bef2012.toMonth).should.be.false
-    @all2012.closed.includes(@beg2012.toMonth).should.be.true
-    @all2012.closed.includes(@mid2012.toMonth).should.be.true
-    @all2012.closed.includes(@end2012.toMonth).should.be.true
-    @all2012.closed.includes(@aft2012.toMonth).should.be.false
-
-    @all2012.toMonth.includes(@bef2012.toMonth).should.be.false
-    should.not.exist @all2012.toMonth.includes(@beg2012.toMonth)
-    @all2012.toMonth.includes(@mid2012.toMonth).should.be.true
-    should.not.exist @all2012.toMonth.includes(@end2012.toMonth)
-    @all2012.toMonth.includes(@aft2012.toMonth).should.be.false
-
-    @all2012.toMonth.includes(@bef2012.full).should.be.false
-    should.not.exist @all2012.toMonth.includes(@beg2012.full)
-    @all2012.toMonth.includes(@mid2012.full).should.be.true
-    should.not.exist @all2012.toMonth.includes(@end2012.full)
-    @all2012.toMonth.includes(@aft2012.full).should.be.false
-
-    @all2012.closed.includes(@mid2012.toYear).should.be.true
-
-describe 'DateTimeInterval.includedIn(DateTimeInterval)', ->
+describe 'DateTimeInterval.includedIn', ->
   @beforeEach ->
     setup @
 
@@ -295,68 +324,12 @@ describe 'DateTimeInterval.includedIn(DateTimeInterval)', ->
     should.not.exist x.toMinute.includedIn(y.toMinute)
     x.toYear.includedIn(y.closed).should.be.true
 
-describe 'DateTimeInterval.includedIn(DateTime)', ->
-  @beforeEach ->
-    setup @
-
-  # Admittedly, most of this doesn't really make sense, but let's be sure the code reflects that!
-
-  it 'should properly calculate dates before it', ->
-    @all2012.closed.includedIn(@bef2012.full).should.be.false
-
-  it 'should properly calculate the left boundary date', ->
-    @all2012.closed.includedIn(@beg2012.full).should.be.false
-    @all2012.open.includedIn(@beg2012.full).should.be.false
-
-  it 'should properly calculate dates in the middle of it', ->
-    @all2012.closed.includedIn(@mid2012.full).should.be.false
-
-  it 'should properly calculate the right boundary date', ->
-    @all2012.closed.includedIn(@end2012.full).should.be.false
-    @all2012.open.includedIn(@end2012.full).should.be.false
-
-  it 'should properly calculate dates after it', ->
-    @all2012.closed.includedIn(@aft2012.full).should.be.false
-
-  it 'should properly calculate zero-width intervals', ->
-    ivl = new Interval(@mid2012.full, @mid2012.full)
-    ivl.includedIn(@beg2012.full).should.be.false
-    ivl.includedIn(@mid2012.full).should.be.true
-    ivl.includedIn(@end2012.full).should.be.false
-
-  it 'should properly handle imprecision', ->
-    @all2012.closed.includedIn(@bef2012.toMonth).should.be.false
-    @all2012.closed.includedIn(@beg2012.toMonth).should.be.false
-    @all2012.closed.includedIn(@mid2012.toMonth).should.be.false
-    @all2012.closed.includedIn(@end2012.toMonth).should.be.false
-    @all2012.closed.includedIn(@aft2012.toMonth).should.be.false
-    @all2012.closed.includedIn(@bef2012.toYear).should.be.false
-    @all2012.closed.includedIn(@beg2012.toYear).should.be.false
-    @all2012.closed.includedIn(@mid2012.toYear).should.be.false
-    @all2012.closed.includedIn(@end2012.toYear).should.be.false
-    @all2012.closed.includedIn(@aft2012.toYear).should.be.false
-
-    @all2012.toMonth.includedIn(@bef2012.toMonth).should.be.false
-    @all2012.toMonth.includedIn(@beg2012.toMonth).should.be.false
-    @all2012.toMonth.includedIn(@mid2012.toMonth).should.be.false
-    @all2012.toMonth.includedIn(@end2012.toMonth).should.be.false
-    @all2012.toMonth.includedIn(@aft2012.toMonth).should.be.false
-    @all2012.toYear.includedIn(@bef2012.toYear).should.be.false
-    should.not.exist @all2012.toYear.includedIn(@beg2012.toYear)
-    should.not.exist @all2012.toYear.includedIn(@mid2012.toYear)
-    should.not.exist @all2012.toYear.includedIn(@end2012.toYear)
-    @all2012.toYear.includedIn(@aft2012.toYear).should.be.false
-
-    @all2012.toMonth.includedIn(@bef2012.full).should.be.false
-    @all2012.toMonth.includedIn(@beg2012.full).should.be.false
-    @all2012.toMonth.includedIn(@mid2012.full).should.be.false
-    @all2012.toMonth.includedIn(@end2012.full).should.be.false
-    @all2012.toMonth.includedIn(@aft2012.full).should.be.false
-    @all2012.toYear.includedIn(@bef2012.full).should.be.false
-    should.not.exist @all2012.toYear.includedIn(@beg2012.full)
-    should.not.exist @all2012.toYear.includedIn(@mid2012.full)
-    should.not.exist @all2012.toYear.includedIn(@end2012.full)
-    @all2012.toYear.includedIn(@aft2012.full).should.be.false
+  it 'should throw when the argument is a point', ->
+    try
+      @all2012.closed.includedIn @mid2012
+      should.fail
+    catch e
+      (e?).should.be.true
 
 describe 'DateTimeInterval.overlaps(DateTimeInterval)', ->
   @beforeEach ->
@@ -511,7 +484,7 @@ describe 'DateTimeInterval.overlaps(DateTime)', ->
 
     @all2012.closed.overlaps(@mid2012.toYear).should.be.true
 
-describe 'DateTimeInterval.equals(DateTimeInterval)', ->
+describe 'DateTimeInterval.equals', ->
   @beforeEach ->
     setup @
 
@@ -648,7 +621,315 @@ describe 'DateTimeInterval.equals(DateTimeInterval)', ->
     x.toMinute.equals(y.toMinute).should.be.false
     should(x.toYear.equals(y.closed)).be.null
 
-describe 'IntegerInterval.includes(IntegerInterval)', ->
+  it 'should be false for equality with points', ->
+    point = DateTime.parse('2012-01-01T00:00:00.0+00')
+    ivl = new Interval(point, point, true, true)
+
+    ivl.equals(point).should.be.false
+
+describe 'DateTimeInterval.after', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @dIvl.before
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.true
+    y.closed.after(x.open).should.be.true
+    y.open.after(x.closed).should.be.true
+    y.open.after(x.open).should.be.true
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @dIvl.meets
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.true
+    y.closed.after(x.open).should.be.true
+    y.open.after(x.closed).should.be.true
+    y.open.after(x.open).should.be.true
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @dIvl.overlaps
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @dIvl.begins
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @dIvl.during
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @dIvl.ends
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.after(y.toMinute).should.be.false
+    x.toHour.after(y.toMinute).should.be.false
+
+    [x, y] = xy @dIvl.before
+    x.toMonth.after(y.toMonth).should.be.false
+    x.toYear.after(y.closed).should.be.false
+    should.not.exist y.toYear.after(x.closed)
+
+    [x, y] = xy @dIvl.meets
+    x.toMonth.after(y.toMonth).should.be.false
+    x.toYear.after(y.closed).should.be.false
+    should.not.exist y.toYear.after(x.closed)
+
+    [x, y] = xy @dIvl.overlaps
+    x.toMonth.after(y.toMonth).should.be.false
+    x.toYear.after(y.closed).should.be.false
+    should.not.exist y.toYear.after(x.closed)
+
+    [x, y] = xy @dIvl.begins
+    x.toMinute.after(y.toMinute).should.be.false
+    x.toYear.after(y.closed).should.be.false
+    should.not.exist y.toYear.after(x.closed)
+
+    [x, y] = xy @dIvl.during
+    x.toMonth.after(y.toMonth).should.be.false
+    y.toMonth.after(x.toMonth).should.be.false
+    x.toYear.after(y.closed).should.be.false
+    should.not.exist y.toYear.after(x.closed)
+
+    [x, y] = xy @dIvl.ends
+    x.toMinute.after(y.toMinute).should.be.false
+    x.toYear.after(y.closed).should.be.false
+    x.toYear.after(x.closed).should.be.false
+
+describe 'DateTimeInterval.before', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @dIvl.before
+    x.closed.before(y.closed).should.be.true
+    x.closed.before(y.open).should.be.true
+    x.open.before(y.closed).should.be.true
+    x.open.before(y.open).should.be.true
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @dIvl.meets
+    x.closed.before(y.closed).should.be.true
+    x.closed.before(y.open).should.be.true
+    x.open.before(y.closed).should.be.true
+    x.open.before(y.open).should.be.true
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @dIvl.overlaps
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @dIvl.begins
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @dIvl.during
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @dIvl.ends
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.before(y.toMinute).should.be.false
+    x.toHour.before(y.toMinute).should.be.false
+
+    [x, y] = xy @dIvl.before
+    x.toMonth.before(y.toMonth).should.be.true
+    y.toYear.before(x.closed).should.be.false
+    should.not.exist x.toYear.before(y.closed)
+
+    [x, y] = xy @dIvl.meets
+    x.toMonth.before(y.toMonth).should.be.true
+    y.toYear.before(x.closed).should.be.false
+    should.not.exist x.toYear.before(y.closed)
+
+    [x, y] = xy @dIvl.overlaps
+    x.toMonth.before(y.toMonth).should.be.false
+    y.toYear.before(x.closed).should.be.false
+    should.not.exist x.toYear.before(y.closed)
+
+    [x, y] = xy @dIvl.begins
+    x.toMinute.before(y.toMinute).should.be.false
+    y.toYear.before(x.closed).should.be.false
+    x.toYear.before(y.closed).should.be.false
+
+    [x, y] = xy @dIvl.during
+    x.toMonth.before(y.toMonth).should.be.false
+    y.toMonth.before(x.toMonth).should.be.false
+    should.not.exist y.toYear.before(x.closed)
+    x.toYear.before(y.closed).should.be.false
+
+    [x, y] = xy @dIvl.ends
+    x.toMinute.before(y.toMinute).should.be.false
+    should.not.exist y.toYear.before(x.closed)
+    x.toYear.before(y.closed).should.be.false
+
+describe 'IntegerInterval.contains', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate integers less than it', ->
+    @zeroToHundred.closed.contains(-5).should.be.false
+
+  it 'should properly calculate the left boundary integer', ->
+    @zeroToHundred.closed.contains(0).should.be.true
+    @zeroToHundred.open.contains(0).should.be.false
+
+  it 'should properly calculate integers in the middle of it', ->
+    @zeroToHundred.closed.contains(50).should.be.true
+
+  it 'should properly calculate the right boundary integer', ->
+    @zeroToHundred.closed.contains(100).should.be.true
+    @zeroToHundred.open.contains(100).should.be.false
+
+  it 'should properly calculate integers greater than it', ->
+    @zeroToHundred.closed.contains(105).should.be.false
+
+  it 'should properly handle null endpoints', ->
+    new Interval(null, 0).contains(-123456789).should.be.true
+    new Interval(null, 0).contains(1).should.be.false
+    new Interval(null,0,false,true).contains(0).should.be.true
+    should(new Interval(null,0,false,true).contains(-123456789)).be.null
+    new Interval(null,0,false,true).contains(1).should.be.false
+    new Interval(0,null).contains(123456789).should.be.true
+    new Interval(0,null).contains(-1).should.be.false
+    new Interval(0,null,true,false).contains(0).should.be.true
+    should(new Interval(0,null,true,false).contains(123456789)).be.null
+    new Interval(0,null,true,false).contains(-1).should.be.false
+
+  it 'should properly handle imprecision', ->
+    @zeroToHundred.closed.contains(new Uncertainty(-20,-10)).should.be.false
+    should.not.exist @zeroToHundred.closed.contains(new Uncertainty(-20,20))
+    @zeroToHundred.closed.contains(new Uncertainty(0,100)).should.be.true
+    should.not.exist @zeroToHundred.closed.contains(new Uncertainty(80,120))
+    @zeroToHundred.closed.contains(new Uncertainty(120,140)).should.be.false
+    should.not.exist @zeroToHundred.closed.contains(new Uncertainty(-20,120))
+
+    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
+
+    uIvl.contains(0).should.be.false
+    should.not.exist uIvl.contains(5)
+    should.not.exist uIvl.contains(6)
+    uIvl.contains(10).should.be.true
+    uIvl.contains(12).should.be.true
+    uIvl.contains(15).should.be.true
+    should.not.exist uIvl.contains(16)
+    should.not.exist uIvl.contains(20)
+    uIvl.contains(25).should.be.false
+
+    uIvl.contains(new Uncertainty(0,4)).should.be.false
+    should.not.exist uIvl.contains(new Uncertainty(0,5))
+    should.not.exist uIvl.contains(new Uncertainty(5,10))
+    uIvl.contains(new Uncertainty(10,15)).should.be.true
+    should.not.exist uIvl.contains(new Uncertainty(15,20))
+    should.not.exist uIvl.contains(new Uncertainty(20,25))
+    uIvl.contains(new Uncertainty(25,30)).should.be.false
+
+  it 'should throw when the argument is an interval', ->
+    try
+      @zeroToHundred.closed.contains new Interval(5, 10)
+      should.fail
+    catch e
+      (e?).should.be.true
+
+describe 'IntegerInterval.includes', ->
   @beforeEach ->
     setup @
 
@@ -750,56 +1031,14 @@ describe 'IntegerInterval.includes(IntegerInterval)', ->
 
     should.not.exist uIvl.includes(uIvl)
 
-describe 'IntegerInterval.includes(Integer)', ->
-  @beforeEach ->
-    setup @
+  it 'should throw when the argument is a point', ->
+    try
+      @zeroToHundred.closed.includes 50
+      should.fail
+    catch e
+      (e?).should.be.true
 
-  it 'should properly calculate integers less than it', ->
-    @zeroToHundred.closed.includes(-5).should.be.false
-
-  it 'should properly calculate the left boundary integer', ->
-    @zeroToHundred.closed.includes(0).should.be.true
-    @zeroToHundred.open.includes(0).should.be.false
-
-  it 'should properly calculate integers in the middle of it', ->
-    @zeroToHundred.closed.includes(50).should.be.true
-
-  it 'should properly calculate the right boundary integer', ->
-    @zeroToHundred.closed.includes(100).should.be.true
-    @zeroToHundred.open.includes(100).should.be.false
-
-  it 'should properly calculate integers greater than it', ->
-    @zeroToHundred.closed.includes(105).should.be.false
-
-  it 'should properly handle imprecision', ->
-    @zeroToHundred.closed.includes(new Uncertainty(-20,-10)).should.be.false
-    should.not.exist @zeroToHundred.closed.includes(new Uncertainty(-20,20))
-    @zeroToHundred.closed.includes(new Uncertainty(0,100)).should.be.true
-    should.not.exist @zeroToHundred.closed.includes(new Uncertainty(80,120))
-    @zeroToHundred.closed.includes(new Uncertainty(120,140)).should.be.false
-    should.not.exist @zeroToHundred.closed.includes(new Uncertainty(-20,120))
-
-    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
-
-    uIvl.includes(0).should.be.false
-    should.not.exist uIvl.includes(5)
-    should.not.exist uIvl.includes(6)
-    uIvl.includes(10).should.be.true
-    uIvl.includes(12).should.be.true
-    uIvl.includes(15).should.be.true
-    should.not.exist uIvl.includes(16)
-    should.not.exist uIvl.includes(20)
-    uIvl.includes(25).should.be.false
-
-    uIvl.includes(new Uncertainty(0,4)).should.be.false
-    should.not.exist uIvl.includes(new Uncertainty(0,5))
-    should.not.exist uIvl.includes(new Uncertainty(5,10))
-    uIvl.includes(new Uncertainty(10,15)).should.be.true
-    should.not.exist uIvl.includes(new Uncertainty(15,20))
-    should.not.exist uIvl.includes(new Uncertainty(20,25))
-    uIvl.includes(new Uncertainty(25,30)).should.be.false
-
-describe 'IntegerInterval.includedIn(IntegerInterval)', ->
+describe 'IntegerInterval.includedIn', ->
   @beforeEach ->
     setup @
 
@@ -902,60 +1141,12 @@ describe 'IntegerInterval.includedIn(IntegerInterval)', ->
 
     should.not.exist uIvl.includedIn(uIvl)
 
-describe 'IntegerInterval.includedIn(Integer)', ->
-  @beforeEach ->
-    setup @
-
-  # Admittedly, most of this doesn't really make sense, but let's be sure the code reflects that!
-
-  it 'should properly calculate integers less than it', ->
-    @zeroToHundred.closed.includedIn(-5).should.be.false
-
-  it 'should properly calculate the left boundary integer', ->
-    @zeroToHundred.closed.includedIn(0).should.be.false
-    @zeroToHundred.open.includedIn(0).should.be.false
-
-  it 'should properly calculate integers in the middle of it', ->
-    @zeroToHundred.closed.includedIn(50).should.be.false
-
-  it 'should properly calculate the right boundary integer', ->
-    @zeroToHundred.closed.includedIn(100).should.be.false
-    @zeroToHundred.open.includedIn(100).should.be.false
-
-  it 'should properly calculate integers greater than it', ->
-    @zeroToHundred.closed.includedIn(105).should.be.false
-
-  it 'should properly calculate for zero-width intervals', ->
-    ivl = new Interval(50, 50)
-    ivl.includedIn(25).should.be.false
-    ivl.includedIn(50).should.be.true
-    ivl.includedIn(75).should.be.false
-
-  it 'should properly handle imprecision', ->
-    @zeroToHundred.closed.includedIn(new Uncertainty(-20,-10)).should.be.false
-    @zeroToHundred.closed.includedIn(new Uncertainty(-20,20)).should.be.false
-    @zeroToHundred.closed.includedIn(new Uncertainty(0,100)).should.be.false
-    @zeroToHundred.closed.includedIn(new Uncertainty(80,120)).should.be.false
-    @zeroToHundred.closed.includedIn(new Uncertainty(120,140)).should.be.false
-    @zeroToHundred.closed.includedIn(new Uncertainty(-20,120)).should.be.false
-
-    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
-
-    uIvl.includedIn(0).should.be.false
-    uIvl.includedIn(12).should.be.false
-    uIvl.includedIn(25).should.be.false
-
-    uIvl.includedIn(new Uncertainty(0,4)).should.be.false
-    uIvl.includedIn(new Uncertainty(0,5)).should.be.false
-    uIvl.includedIn(new Uncertainty(10,15)).should.be.false
-    uIvl.includedIn(new Uncertainty(20,25)).should.be.false
-    uIvl.includedIn(new Uncertainty(25,30)).should.be.false
-
-    ivl = new Interval(5, 5)
-    ivl.includedIn(new Uncertainty(0,4)).should.be.false
-    ivl.includedIn(new Uncertainty(5,5)).should.be.true
-    should.not.exist ivl.includedIn(new Uncertainty(0,10))
-    ivl.includedIn(new Uncertainty(6,10)).should.be.false
+  it 'should throw when the argument is a point', ->
+    try
+      @zeroToHundred.closed.includedIn 50
+      should.fail
+    catch e
+      (e?).should.be.true
 
 describe 'IntegerInterval.overlaps(IntegerInterval)', ->
   @beforeEach ->
@@ -1108,7 +1299,7 @@ describe 'IntegerInterval.overlaps(Integer)', ->
     should.not.exist uIvl.overlaps(new Uncertainty(20,25))
     uIvl.overlaps(new Uncertainty(25,30)).should.be.false
 
-describe 'IntegerInterval.equals(IntegerInterval)', ->
+describe 'IntegerInterval.equals', ->
   @beforeEach ->
     setup @
 
@@ -1230,5 +1421,231 @@ describe 'IntegerInterval.equals(IntegerInterval)', ->
     should(uIvl.equals(ivl)).be.null
 
     should(uIvl.equals(uIvl)).be.null
+
+  it 'should be false for equality with points', ->
+    point = 3
+    ivl = new Interval(point, point, true, true)
+
+    ivl.equals(point).should.be.false
+
+describe 'IntegerInterval.after', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.true
+    y.closed.after(x.open).should.be.true
+    y.open.after(x.closed).should.be.true
+    y.open.after(x.open).should.be.true
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.true
+    y.closed.after(x.open).should.be.true
+    y.open.after(x.closed).should.be.true
+    y.open.after(x.open).should.be.true
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.after(y.closed).should.be.false
+    x.closed.after(y.open).should.be.false
+    x.open.after(y.closed).should.be.false
+    x.open.after(y.open).should.be.false
+    y.closed.after(x.closed).should.be.false
+    y.closed.after(x.open).should.be.false
+    y.open.after(x.closed).should.be.false
+    y.open.after(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
+
+    ivl = new Interval(0, 100)
+    ivl.after(uIvl).should.be.false
+    uIvl.after(ivl).should.be.false
+
+    ivl = new Interval(-100, 0)
+    ivl.after(uIvl).should.be.false
+    uIvl.after(ivl).should.be.true
+
+    ivl = new Interval(10, 15)
+    ivl.after(uIvl).should.be.false
+    uIvl.after(ivl).should.be.false
+
+    ivl = new Interval(15, 20)
+    ivl.after(uIvl).should.be.false
+    uIvl.after(ivl).should.be.false
+
+    ivl = new Interval(20, 30)
+    should.not.exist ivl.after(uIvl)
+    uIvl.after(ivl).should.be.false
+
+    ivl = new Interval(5, 20)
+    ivl.after(uIvl).should.be.false
+    uIvl.after(ivl).should.be.false
+
+    uIvl.after(uIvl).should.be.false
+
+describe 'IntegerInterval.before', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.before(y.closed).should.be.true
+    x.closed.before(y.open).should.be.true
+    x.open.before(y.closed).should.be.true
+    x.open.before(y.open).should.be.true
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.before(y.closed).should.be.true
+    x.closed.before(y.open).should.be.true
+    x.open.before(y.closed).should.be.true
+    x.open.before(y.open).should.be.true
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.before(y.closed).should.be.false
+    x.closed.before(y.open).should.be.false
+    x.open.before(y.closed).should.be.false
+    x.open.before(y.open).should.be.false
+    y.closed.before(x.closed).should.be.false
+    y.closed.before(x.open).should.be.false
+    y.open.before(x.closed).should.be.false
+    y.open.before(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
+
+    ivl = new Interval(0, 100)
+    ivl.before(uIvl).should.be.false
+    uIvl.before(ivl).should.be.false
+
+    ivl = new Interval(-100, 0)
+    ivl.before(uIvl).should.be.true
+    uIvl.before(ivl).should.be.false
+
+    ivl = new Interval(10, 15)
+    ivl.before(uIvl).should.be.false
+    uIvl.before(ivl).should.be.false
+
+    ivl = new Interval(15, 20)
+    ivl.before(uIvl).should.be.false
+    uIvl.before(ivl).should.be.false
+
+    ivl = new Interval(20, 30)
+    should.not.exist uIvl.before(ivl)
+    ivl.before(uIvl).should.be.false
+
+    ivl = new Interval(5, 20)
+    ivl.before(uIvl).should.be.false
+    uIvl.before(ivl).should.be.false
+
+    uIvl.before(uIvl).should.be.false
 
 # TODO: Tests for real numbers (i.e., floats)

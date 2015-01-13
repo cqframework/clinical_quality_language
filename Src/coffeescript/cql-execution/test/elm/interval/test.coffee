@@ -83,7 +83,309 @@ describe 'NotEqual', ->
     should(@sameDays.exec(@ctx)).be.null
     @differentDays.exec(@ctx).should.be.true
 
-describe.skip 'Overlaps', ->
+describe 'Contains', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept contained items', ->
+    @containsInt.exec(@ctx).should.be.true
+    @containsReal.exec(@ctx).should.be.true
+    @containsDate.exec(@ctx).should.be.true
+
+  it 'should reject uncontained items', ->
+    @notContainsInt.exec(@ctx).should.be.false
+    @notContainsReal.exec(@ctx).should.be.false
+    @notContainsDate.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegContainsInt.exec(@ctx).should.be.true
+    @negInfBegNotContainsInt.exec(@ctx).should.be.false
+    @unknownBegContainsInt.exec(@ctx).should.be.true
+    should(@unknownBegMayContainInt.exec(@ctx)).be.null
+    @unknownBegNotContainsInt.exec(@ctx).should.be.false
+    @posInfEndContainsInt.exec(@ctx).should.be.true
+    @posInfEndNotContainsInt.exec(@ctx).should.be.false
+    @unknownEndContainsInt.exec(@ctx).should.be.true
+    should(@unknownEndMayContainInt.exec(@ctx)).be.null
+    @unknownEndNotContainsInt.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegContainsDate.exec(@ctx).should.be.true
+    @negInfBegNotContainsDate.exec(@ctx).should.be.false
+    @unknownBegContainsDate.exec(@ctx).should.be.true
+    should(@unknownBegMayContainDate.exec(@ctx)).be.null
+    @unknownBegNotContainsDate.exec(@ctx).should.be.false
+    @posInfEndContainsDate.exec(@ctx).should.be.true
+    @posInfEndNotContainsDate.exec(@ctx).should.be.false
+    @unknownEndContainsDate.exec(@ctx).should.be.true
+    should(@unknownEndMayContainDate.exec(@ctx)).be.null
+    @unknownEndNotContainsDate.exec(@ctx).should.be.false
+
+  it 'should correctly handle imprecision', ->
+    @containsImpreciseDate.exec(@ctx).should.be.true
+    @notContainsImpreciseDate.exec(@ctx).should.be.false
+    should(@mayContainImpreciseDate.exec(@ctx)).be.null
+    @impreciseContainsDate.exec(@ctx).should.be.true
+    @impreciseNotContainsDate.exec(@ctx).should.be.false
+    should(@impreciseMayContainDate.exec(@ctx)).be.null
+
+describe 'In', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept contained items', ->
+    @containsInt.exec(@ctx).should.be.true
+    @containsReal.exec(@ctx).should.be.true
+    @containsDate.exec(@ctx).should.be.true
+
+  it 'should reject uncontained items', ->
+    @notContainsInt.exec(@ctx).should.be.false
+    @notContainsReal.exec(@ctx).should.be.false
+    @notContainsDate.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegContainsInt.exec(@ctx).should.be.true
+    @negInfBegNotContainsInt.exec(@ctx).should.be.false
+    @unknownBegContainsInt.exec(@ctx).should.be.true
+    should(@unknownBegMayContainInt.exec(@ctx)).be.null
+    @unknownBegNotContainsInt.exec(@ctx).should.be.false
+    @posInfEndContainsInt.exec(@ctx).should.be.true
+    @posInfEndNotContainsInt.exec(@ctx).should.be.false
+    @unknownEndContainsInt.exec(@ctx).should.be.true
+    should(@unknownEndMayContainInt.exec(@ctx)).be.null
+    @unknownEndNotContainsInt.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegContainsDate.exec(@ctx).should.be.true
+    @negInfBegNotContainsDate.exec(@ctx).should.be.false
+    @unknownBegContainsDate.exec(@ctx).should.be.true
+    should(@unknownBegMayContainDate.exec(@ctx)).be.null
+    @unknownBegNotContainsDate.exec(@ctx).should.be.false
+    @posInfEndContainsDate.exec(@ctx).should.be.true
+    @posInfEndNotContainsDate.exec(@ctx).should.be.false
+    @unknownEndContainsDate.exec(@ctx).should.be.true
+    should(@unknownEndMayContainDate.exec(@ctx)).be.null
+    @unknownEndNotContainsDate.exec(@ctx).should.be.false
+
+  it 'should correctly handle imprecision', ->
+    @containsImpreciseDate.exec(@ctx).should.be.true
+    @notContainsImpreciseDate.exec(@ctx).should.be.false
+    should(@mayContainImpreciseDate.exec(@ctx)).be.null
+    @impreciseContainsDate.exec(@ctx).should.be.true
+    @impreciseNotContainsDate.exec(@ctx).should.be.false
+    should(@impreciseMayContainDate.exec(@ctx)).be.null
+
+describe 'Includes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept included items', ->
+    @includesIntIvl.exec(@ctx).should.be.true
+    @includesRealIvl.exec(@ctx).should.be.true
+    @includesDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject unincluded items', ->
+    @notIncludesIntIvl.exec(@ctx).should.be.false
+    @notIncludesRealIvl.exec(@ctx).should.be.false
+    @notIncludesDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegIncludesIntIvl.exec(@ctx).should.be.true
+    @negInfBegNotIncludesIntIvl.exec(@ctx).should.be.false
+    @unknownBegIncludesIntIvl.exec(@ctx).should.be.true
+    should(@unknownBegMayIncludeIntIvl.exec(@ctx)).be.null
+    @unknownBegNotIncludesIntIvl.exec(@ctx).should.be.false
+    @posInfEndIncludesIntIvl.exec(@ctx).should.be.true
+    @posInfEndNotIncludesIntIvl.exec(@ctx).should.be.false
+    @unknownEndIncludesIntIvl.exec(@ctx).should.be.true
+    should(@unknownEndMayIncludeIntIvl.exec(@ctx)).be.null
+    @unknownEndNotIncludesIntIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegIncludesDateIvl.exec(@ctx).should.be.true
+    @negInfBegNotIncludesDateIvl.exec(@ctx).should.be.false
+    @unknownBegIncludesDateIvl.exec(@ctx).should.be.true
+    should(@unknownBegMayIncludeDateIvl.exec(@ctx)).be.null
+    @unknownBegNotIncludesDateIvl.exec(@ctx).should.be.false
+    @posInfEndIncludesDateIvl.exec(@ctx).should.be.true
+    @posInfEndNotIncludesDateIvl.exec(@ctx).should.be.false
+    @unknownEndIncludesDateIvl.exec(@ctx).should.be.true
+    should(@unknownEndMayIncludeDateIvl.exec(@ctx)).be.null
+    @unknownEndNotIncludesDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle imprecision', ->
+    @includesImpreciseDateIvl.exec(@ctx).should.be.true
+    @notIncludesImpreciseDateIvl.exec(@ctx).should.be.false
+    should(@mayIncludeImpreciseDateIvl.exec(@ctx)).be.null
+    @impreciseIncludesDateIvl.exec(@ctx).should.be.true
+    @impreciseNotIncludesDateIvl.exec(@ctx).should.be.false
+    should(@impreciseMayIncludeDateIvl.exec(@ctx)).be.null
+
+describe 'ProperlyIncludes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept properly included intervals', ->
+    @properlyIncludesIntIvl.exec(@ctx).should.be.true
+    @properlyIncludesRealIvl.exec(@ctx).should.be.true
+    @properlyIncludesDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject intervals not properly included', ->
+    @notProperlyIncludesIntIvl.exec(@ctx).should.be.false
+    @notProperlyIncludesRealIvl.exec(@ctx).should.be.false
+    @notProperlyIncludesDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @posInfEndProperlyIncludesIntIvl.exec(@ctx).should.be.true
+    @posInfEndNotProperlyIncludesIntIvl.exec(@ctx).should.be.false
+    should(@unknownEndMayProperlyIncludeIntIvl.exec(@ctx)).be.null
+
+describe 'IncludedIn', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept included items', ->
+    @includesIntIvl.exec(@ctx).should.be.true
+    @includesRealIvl.exec(@ctx).should.be.true
+    @includesDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject unincluded items', ->
+    @notIncludesIntIvl.exec(@ctx).should.be.false
+    @notIncludesRealIvl.exec(@ctx).should.be.false
+    @notIncludesDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegIncludedInIntIvl.exec(@ctx).should.be.true
+    @negInfBegNotIncludedInIntIvl.exec(@ctx).should.be.false
+    @unknownBegIncludedInIntIvl.exec(@ctx).should.be.true
+    should(@unknownBegMayBeIncludedInIntIvl.exec(@ctx)).be.null
+    @unknownBegNotIncludedInIntIvl.exec(@ctx).should.be.false
+    @posInfEndIncludedInIntIvl.exec(@ctx).should.be.true
+    @posInfEndNotIncludedInIntIvl.exec(@ctx).should.be.false
+    @unknownEndIncludedInIntIvl.exec(@ctx).should.be.true
+    should(@unknownEndMayBeIncludedInIntIvl.exec(@ctx)).be.null
+    @unknownEndNotIncludedInIntIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegIncludedInDateIvl.exec(@ctx).should.be.true
+    @negInfBegNotIncludedInDateIvl.exec(@ctx).should.be.false
+    @unknownBegIncludedInDateIvl.exec(@ctx).should.be.true
+    should(@unknownBegMayBeIncludedInDateIvl.exec(@ctx)).be.null
+    @unknownBegNotIncludedInDateIvl.exec(@ctx).should.be.false
+    @posInfEndIncludedInDateIvl.exec(@ctx).should.be.true
+    @posInfEndNotIncludedInDateIvl.exec(@ctx).should.be.false
+    @unknownEndIncludedInDateIvl.exec(@ctx).should.be.true
+    should(@unknownEndMayBeIncludedInDateIvl.exec(@ctx)).be.null
+    @unknownEndNotIncludedInDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle imprecision', ->
+    @includesImpreciseDateIvl.exec(@ctx).should.be.true
+    @notIncludesImpreciseDateIvl.exec(@ctx).should.be.false
+    should(@mayIncludeImpreciseDateIvl.exec(@ctx)).be.null
+    @impreciseIncludesDateIvl.exec(@ctx).should.be.true
+    @impreciseNotIncludesDateIvl.exec(@ctx).should.be.false
+    should(@impreciseMayIncludeDateIvl.exec(@ctx)).be.null
+
+describe 'ProperlyIncludedIn', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept properly included intervals', ->
+    @properlyIncludesIntIvl.exec(@ctx).should.be.true
+    @properlyIncludesRealIvl.exec(@ctx).should.be.true
+    @properlyIncludesDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject intervals not properly included', ->
+    @notProperlyIncludesIntIvl.exec(@ctx).should.be.false
+    @notProperlyIncludesRealIvl.exec(@ctx).should.be.false
+    @notProperlyIncludesDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @posInfEndProperlyIncludedInDateIvl.exec(@ctx).should.be.true
+    @posInfEndNotProperlyIncludedInDateIvl.exec(@ctx).should.be.false
+    should(@unknownEndMayBeProperlyIncludedInDateIvl.exec(@ctx)).be.null
+
+describe 'After', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept intervals before it', ->
+    @afterIntIvl.exec(@ctx).should.be.true
+    @afterRealIvl.exec(@ctx).should.be.true
+    @afterDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject intervals on or after it', ->
+    @notAfterIntIvl.exec(@ctx).should.be.false
+    @notAfterRealIvl.exec(@ctx).should.be.false
+    @notAfterDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegNotAfterIntIvl.exec(@ctx).should.be.false
+    should(@unknownBegMayBeAfterIntIvl.exec(@ctx)).be.null
+    @unknownBegNotAfterIntIvl.exec(@ctx).should.be.false
+    @posInfEndAfterIntIvl.exec(@ctx).should.be.true
+    @posInfEndNotAfterIntIvl.exec(@ctx).should.be.false
+    @unknownEndAfterIntIvl.exec(@ctx).should.be.true
+    @unknownEndNotAfterIntIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegNotAfterDateIvl.exec(@ctx).should.be.false
+    should(@unknownBegMayBeAfterDateIvl.exec(@ctx)).be.null
+    @unknownBegNotAfterDateIvl.exec(@ctx).should.be.false
+    @posInfEndAfterDateIvl.exec(@ctx).should.be.true
+    @posInfEndNotAfterDateIvl.exec(@ctx).should.be.false
+    @unknownEndAfterDateIvl.exec(@ctx).should.be.true
+    @unknownEndNotAfterDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle imprecision', ->
+    @afterImpreciseDateIvl.exec(@ctx).should.be.true
+    @notAfterImpreciseDateIvl.exec(@ctx).should.be.false
+    should(@mayBeAfterImpreciseDateIvl.exec(@ctx)).be.null
+    @impreciseAfterDateIvl.exec(@ctx).should.be.true
+    @impreciseNotAfterDateIvl.exec(@ctx).should.be.false
+    should(@impreciseMayBeAfterDateIvl.exec(@ctx)).be.null
+
+describe 'Before', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept intervals before it', ->
+    @beforeIntIvl.exec(@ctx).should.be.true
+    @beforeRealIvl.exec(@ctx).should.be.true
+    @beforeDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject intervals on or after it', ->
+    @notBeforeIntIvl.exec(@ctx).should.be.false
+    @notBeforeRealIvl.exec(@ctx).should.be.false
+    @notBeforeDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegBeforeIntIvl.exec(@ctx).should.be.true
+    @negInfBegNotBeforeIntIvl.exec(@ctx).should.be.false
+    @unknownBegBeforeIntIvl.exec(@ctx).should.be.true
+    @unknownBegNotBeforeIntIvl.exec(@ctx).should.be.false
+    @posInfEndNotBeforeIntIvl.exec(@ctx).should.be.false
+    should(@unknownEndMayBeBeforeIntIvl.exec(@ctx)).be.null
+    @unknownEndNotBeforeIntIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegBeforeDateIvl.exec(@ctx).should.be.true
+    @negInfBegNotBeforeDateIvl.exec(@ctx).should.be.false
+    @unknownBegBeforeDateIvl.exec(@ctx).should.be.true
+    @unknownBegNotBeforeDateIvl.exec(@ctx).should.be.false
+    @posInfEndNotBeforeDateIvl.exec(@ctx).should.be.false
+    should(@unknownEndMayBeBeforeDateIvl.exec(@ctx)).be.null
+    @unknownEndNotBeforeDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle imprecision', ->
+    @beforeImpreciseDateIvl.exec(@ctx).should.be.true
+    @notBeforeImpreciseDateIvl.exec(@ctx).should.be.false
+    should(@mayBeBeforeImpreciseDateIvl.exec(@ctx)).be.null
+    @impreciseBeforeDateIvl.exec(@ctx).should.be.true
+    @impreciseNotBeforeDateIvl.exec(@ctx).should.be.false
+    should(@impreciseMayBeBeforeDateIvl.exec(@ctx)).be.null
+
+describe 'Overlaps', ->
   @beforeEach ->
     setup @, data
 
@@ -263,6 +565,31 @@ describe.skip 'OverlapsBeforeDateTime', ->
     should(@unknownOverlap.exec(@ctx)).be.null
     should(@unknownOverlapsDate.exec(@ctx)).be.null
     should(@overlapsUnknownDate.exec(@ctx)).be.null
+
+describe 'Width', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should calculate the width of integer intervals', ->
+    @intWidth.exec(@ctx).should.equal 7
+    @intOpenWidth.exec(@ctx).should.equal 5
+
+  it 'should calculate the width of real intervals', ->
+    @realWidth.exec(@ctx).should.equal 3.33
+    @realOpenWidth.exec(@ctx).should.equal 3.32999998
+
+  it 'should calculate the width of date intervals', ->
+    # TODO: Confirm this, support uncertainties if necessary
+    @dateTimeWidth.exec(@ctx).should.equal 691200000
+    @dateTimeOpenWidth.exec(@ctx).should.equal 691199998
+
+  it 'should calculate the width of infinite intervals', ->
+    @intWidthThreeToMax.exec(@ctx).should.equal Math.pow(2,31)-4
+    @intWidthMinToThree.exec(@ctx).should.equal Math.pow(2,31)+3
+
+  it 'should calculate the width of infinite intervals', ->
+    should(@intWidthThreeToUnknown.exec(@ctx)).be.null
+    should(@intWidthUnknownToThree.exec(@ctx)).be.null
 
 describe 'Start', ->
   @beforeEach ->

@@ -1,6 +1,9 @@
 { Expression, UnimplementedExpression } = require './expression'
+{ ThreeValuedLogic } = require '../datatypes/logic'
 { build } = require './builder'
 DT = require '../datatypes/datatypes'
+cmp = require '../util/comparison'
+
 
 module.exports.Interval = class Interval extends Expression
   constructor: (json) ->
@@ -17,29 +20,28 @@ module.exports.Interval = class Interval extends Expression
 
 # NotEqual is completely handled by overloaded#Equal
 
-# TODO: Deconflict w/ definition in list.coffee
-# module.exports.Contains = class Contains extends UnimplementedExpression
+# Delegated to by overloaded#Contains and overloaded#In
+module.exports.doContains = (interval, item) ->
+  interval.contains item
 
-# TODO: Deconflict w/ definition in list.coffee
-# module.exports.In = class In extends UnimplementedExpression
+# Delegated to by overloaded#Includes and overloaded#IncludedIn
+module.exports.doIncludes = doIncludes = (interval, subinterval) ->
+  interval.includes subinterval
 
-# TODO: Deconflict w/ definition in list.coffee
-# module.exports.Includes = class Includes extends UnimplementedExpression
+# Delegated to by overloaded#ProperIncludes and overloaded@ProperIncludedIn
+module.exports.doProperIncludes = (interval, subinterval) ->
+  ThreeValuedLogic.and(
+    cmp.greaterThan(interval.width(), subinterval.width()),
+    doIncludes(interval, subinterval)
+  )
 
-# TODO: Deconflict w/ definition in list.coffee
-# module.exports.IncludedIn = class IncludedIn extends UnimplementedExpression
+# Delegated to by overloaded#After
+module.exports.doAfter = (a, b, precision) ->
+  a.after b, precision
 
-# TODO: Deconflict w/ definition in list.coffee
-# module.exports.ProperIncludes = class ProperIncludes extends UnimplementedExpression
-
-# TODO: Deconflict w/ definition in list.coffee
-# module.exports.ProperIncludedIn = class ProperIncludedIn extends UnimplementedExpression
-
-# TODO: Deconflict w/ definition in datetime.coffee
-# module.exports.Before = class Before extends UnimplementedExpression
-
-# TODO: Deconflict w/ definition in datetime.coffee
-# module.exports.After = class After extends UnimplementedExpression
+# Delegated to by overloaded#Before
+module.exports.doBefore = (a, b, precision) ->
+  a.before b, precision
 
 module.exports.Meets = class Meets extends UnimplementedExpression
 
@@ -80,8 +82,12 @@ module.exports.OverlapsBefore = class OverlapsBefore extends Expression
 # TODO: Spec has "Difference" defined, but should this be "Except"? (also deconflict w/ list.coffee)
 # module.exports.Except = class Except extends UnimplementedExpression
 
-# TODO: Deconflict w/ definition in string.coffee
-# module.exports.Length = class Length extends UnimplementedExpression
+module.exports.Width = class Width extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @arg.exec(ctx).width()
 
 # TODO: Spec has "Begin" defined, but shouldn't it be "Start"?
 module.exports.Start = class Start extends Expression

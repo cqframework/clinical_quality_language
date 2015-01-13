@@ -31,11 +31,11 @@ module.exports.doUnion = (a, b) ->
 
 # Delegated to by overloaded#Except
 module.exports.doExcept = (a, b) ->
-  (itm for itm in a when not doIn(itm, b))
+  (itm for itm in a when not doContains(b, itm))
 
 # Delegated to by overloaded#Intersect
 module.exports.doIntersect = (a, b) ->
-  (itm for itm in a when doIn(itm, b))
+  (itm for itm in a when doContains(b, itm))
 
 # ELM-only, not a product of CQL
 module.exports.Times = class Times extends UnimplementedExpression
@@ -81,14 +81,14 @@ module.exports.IndexOfFunctionRef = class IndexOfFunctionRef extends FunctionRef
 
 # Indexer is completely handled by overloaded#Indexer
 
-# Delegated to by overloaded#In and overloaded#Contains
-module.exports.doIn = doIn = (item, container) ->
+# Delegated to by overloaded#Contains and overloaded#In
+module.exports.doContains = doContains = (container, item) ->
   return true for element in container when equals element, item
   return false
 
 # Delegated to by overloaded#Includes and overloaded@IncludedIn
 module.exports.doIncludes = doIncludes = (list, sublist) ->
-  sublist.every (x) -> doIn(x, list)
+  sublist.every (x) -> doContains(list, x)
 
 # Delegated to by overloaded#ProperIncludes and overloaded@ProperIncludedIn
 module.exports.doProperIncludes = (list, sublist) ->

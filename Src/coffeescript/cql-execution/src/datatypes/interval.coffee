@@ -5,29 +5,28 @@
 cmp = require '../util/comparison'
 
 module.exports.Interval = class Interval
-  # WARNING: If point is an uncertainty or imprecise date, the interval can be
-  # interpreted as having width when it shouldn't.  Use with caution!
-  @_fromPoint: (point) -> new Interval(point, point, true, true)
-
   constructor: (@low, @high, @lowClosed = true, @highClosed = true) ->
 
-  includes: (item) ->
+  contains: (item) ->
+    if item instanceof Interval then throw new Error("Argument to contains must be a point")
+    closed = @toClosed()
+    ThreeValuedLogic.and(
+      cmp.lessThanOrEquals(closed.low, item),
+      cmp.greaterThanOrEquals(closed.high, item)
+    )
+
+  includes: (other) ->
+    if not (other instanceof Interval) then throw new Error("Argument to includedIn must be an interval")
     a = @toClosed()
-    b = if item instanceof Interval then item.toClosed() else Interval._fromPoint(item)
+    b = other.toClosed()
     ThreeValuedLogic.and(
       cmp.lessThanOrEquals(a.low, b.low),
       cmp.greaterThanOrEquals(a.high, b.high)
     )
 
-  includedIn: (item) ->
-    if item instanceof Interval
-      item.includes @
-    else
-      closed = @toClosed()
-      ThreeValuedLogic.and(
-        cmp.equals(closed.low, closed.high),
-        cmp.equals(closed.low, item)
-      )
+  includedIn: (other) ->
+    if not (other instanceof Interval) then throw new Error("Argument to includedIn must be an interval")
+    other.includes @
 
   overlaps: (item) ->
     closed = @toClosed()
@@ -57,9 +56,9 @@ module.exports.Interval = class Interval
       cmp.greaterThanOrEquals(closed.high, low)
     )
 
-  equals: (item) ->
-    if item instanceof Interval
-      [a, b] = [@toClosed(), item.toClosed()]
+  equals: (other) ->
+    if other instanceof Interval
+      [a, b] = [@toClosed(), other.toClosed()]
       ThreeValuedLogic.and(
         cmp.equals(a.low, b.low),
         cmp.equals(a.high, b.high)
@@ -67,16 +66,46 @@ module.exports.Interval = class Interval
     else
       false
 
+  after: (other) ->
+    closed = @toClosed()
+    otherClosed = other.toClosed()
+    # Meets spec, but not 100% correct (e.g., (null, 5] after [6, 10] --> null)
+    # Simple way to fix it: and w/ not overlaps
+    cmp.greaterThan closed.low, otherClosed.high
+
+  before: (other) ->
+    closed = @toClosed()
+    otherClosed = other.toClosed()
+    # Meets spec, but not 100% correct (e.g., (null, 5] after [6, 10] --> null)
+    # Simple way to fix it: and w/ not overlaps
+    cmp.lessThan closed.high, otherClosed.low
+
+  width: () ->
+    closed = @toClosed()
+    if closed.low instanceof Uncertainty or closed.high instanceof Uncertainty
+      null
+    else if closed.low instanceof DateTime
+      # TODO: Handle uncertainties
+      Math.abs(closed.low.durationBetween(closed.high, DateTime.Unit.MILLISECOND).low)
+    else
+      # TODO: Fix precision to 8 decimals in other places that return numbers
+      diff = Math.abs(closed.high - closed.low)
+      Math.round(diff * Math.pow(10, 8)) / Math.pow(10, 8)
+
+
   toClosed: () ->
-    if typeof(@low) is 'number' or @low instanceof DateTime
+    point = @low ? @high
+    if typeof(point) is 'number' or point instanceof DateTime
       low = switch
-        when @lowClosed and @low is null then minValueForInstance @high
-        when not @lowClosed then successor @low
+        when @lowClosed and not @low? then minValueForInstance point
+        when not @lowClosed and @low? then successor @low
         else @low
       high = switch
-        when @highClosed and @high is null then maxValueForInstance @low
-        when not @highClosed then predecessor @high
+        when @highClosed and not @high? then maxValueForInstance point
+        when not @highClosed and @high? then predecessor @high
         else @high
+      if not low? then low = new Uncertainty(minValueForInstance(point), high)
+      if not high? then high = new Uncertainty(low, maxValueForInstance(point))
       new Interval(low, high, true, true)
     else
       new Interval(@low, @high, true, true)
