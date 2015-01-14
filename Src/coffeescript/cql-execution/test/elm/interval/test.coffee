@@ -385,6 +385,183 @@ describe 'Before', ->
     @impreciseNotBeforeDateIvl.exec(@ctx).should.be.false
     should(@impreciseMayBeBeforeDateIvl.exec(@ctx)).be.null
 
+describe 'Meets', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept intervals meeting after it', ->
+    @meetsBeforeIntIvl.exec(@ctx).should.be.true
+    @meetsBeforeRealIvl.exec(@ctx).should.be.true
+    @meetsBeforeDateIvl.exec(@ctx).should.be.true
+
+  it 'should accept intervals meeting before it', ->
+    @meetsAfterIntIvl.exec(@ctx).should.be.true
+    @meetsAfterRealIvl.exec(@ctx).should.be.true
+    @meetsAfterDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject intervals not meeting it', ->
+    @notMeetsIntIvl.exec(@ctx).should.be.false
+    @notMeetsRealIvl.exec(@ctx).should.be.false
+    @notMeetsDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegMeetsBeforeIntIvl.exec(@ctx).should.be.true
+    @negInfBegNotMeetsIntIvl.exec(@ctx).should.be.false
+    @intIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
+    @unknownBegMeetsBeforeIntIvl.exec(@ctx).should.be.true
+    should(@unknownBegMayMeetAfterIntIvl.exec(@ctx)).be.null
+    @unknownBegNotMeetsIntIvl.exec(@ctx).should.be.false
+    should(@intIvlMayMeetBeforeUnknownBeg.exec(@ctx)).be.null
+    @posInfEndMeetsAfterIntIvl.exec(@ctx).should.be.true
+    @posInfEndNotMeetsIntIvl.exec(@ctx).should.be.false
+    @intIvlNotMeetsPosInfEnd.exec(@ctx).should.be.false
+    @unknownEndMeetsAfterIntIvl.exec(@ctx).should.be.true
+    should(@unknownEndMayMeetBeforeIntIvl.exec(@ctx)).be.null
+    @unknownEndNotMeetsIntIvl.exec(@ctx).should.be.false
+    should(@intIvlMayMeetAfterUnknownEnd.exec(@ctx)).be.null
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegMeetsBeforeDateIvl.exec(@ctx).should.be.true
+    @negInfBegNotMeetsDateIvl.exec(@ctx).should.be.false
+    @dateIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
+    @unknownBegMeetsBeforeDateIvl.exec(@ctx).should.be.true
+    should(@unknownBegMayMeetAfterDateIvl.exec(@ctx)).be.null
+    @unknownBegNotMeetsDateIvl.exec(@ctx).should.be.false
+    should(@dateIvlMayMeetBeforeUnknownBeg.exec(@ctx)).be.null
+    @posInfEndMeetsAfterDateIvl.exec(@ctx).should.be.true
+    @posInfEndNotMeetsDateIvl.exec(@ctx).should.be.false
+    @dateIvlNotMeetsPosInfEnd.exec(@ctx).should.be.false
+    @unknownEndMeetsAfterDateIvl.exec(@ctx).should.be.true
+    should(@unknownEndMayMeetBeforeDateIvl.exec(@ctx)).be.null
+    @unknownEndNotMeetsDateIvl.exec(@ctx).should.be.false
+    should(@dateIvlMayMeetAfterUnknownEnd.exec(@ctx)).be.null
+
+  it 'should correctly handle imprecision', ->
+    should(@mayMeetAfterImpreciseDateIvl.exec(@ctx)).be.null
+    should(@mayMeetBeforeImpreciseDateIvl.exec(@ctx)).be.null
+    @notMeetsImpreciseDateIvl.exec(@ctx).should.be.false
+    should(@impreciseMayMeetAfterDateIvl.exec(@ctx)).be.null
+    should(@impreciseMayMeetBeforeDateIvl.exec(@ctx)).be.null
+    @impreciseNotMeetsDateIvl.exec(@ctx).should.be.false
+
+describe 'MeetsAfter', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept intervals meeting before it', ->
+    @meetsAfterIntIvl.exec(@ctx).should.be.true
+    @meetsAfterRealIvl.exec(@ctx).should.be.true
+    @meetsAfterDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject intervals meeting after it', ->
+    @meetsBeforeIntIvl.exec(@ctx).should.be.false
+    @meetsBeforeRealIvl.exec(@ctx).should.be.false
+    @meetsBeforeDateIvl.exec(@ctx).should.be.false
+
+  it 'should reject intervals not meeting it', ->
+    @notMeetsIntIvl.exec(@ctx).should.be.false
+    @notMeetsRealIvl.exec(@ctx).should.be.false
+    @notMeetsDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegMeetsBeforeIntIvl.exec(@ctx).should.be.false
+    @negInfBegNotMeetsIntIvl.exec(@ctx).should.be.false
+    @intIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
+    @unknownBegMeetsBeforeIntIvl.exec(@ctx).should.be.false
+    should(@unknownBegMayMeetAfterIntIvl.exec(@ctx)).be.null
+    @unknownBegNotMeetsIntIvl.exec(@ctx).should.be.false
+    @intIvlMayMeetBeforeUnknownBeg.exec(@ctx).should.be.false
+    @posInfEndMeetsAfterIntIvl.exec(@ctx).should.be.true
+    @posInfEndNotMeetsIntIvl.exec(@ctx).should.be.false
+    @intIvlNotMeetsPosInfEnd.exec(@ctx).should.be.false
+    @unknownEndMeetsAfterIntIvl.exec(@ctx).should.be.true
+    @unknownEndMayMeetBeforeIntIvl.exec(@ctx).should.be.false
+    @unknownEndNotMeetsIntIvl.exec(@ctx).should.be.false
+    should(@intIvlMayMeetAfterUnknownEnd.exec(@ctx)).be.null
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegMeetsBeforeDateIvl.exec(@ctx).should.be.false
+    @negInfBegNotMeetsDateIvl.exec(@ctx).should.be.false
+    @dateIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
+    @unknownBegMeetsBeforeDateIvl.exec(@ctx).should.be.false
+    should(@unknownBegMayMeetAfterDateIvl.exec(@ctx)).be.null
+    @unknownBegNotMeetsDateIvl.exec(@ctx).should.be.false
+    @dateIvlMayMeetBeforeUnknownBeg.exec(@ctx).should.be.false
+    @posInfEndMeetsAfterDateIvl.exec(@ctx).should.be.true
+    @posInfEndNotMeetsDateIvl.exec(@ctx).should.be.false
+    @dateIvlNotMeetsPosInfEnd.exec(@ctx).should.be.false
+    @unknownEndMeetsAfterDateIvl.exec(@ctx).should.be.true
+    @unknownEndMayMeetBeforeDateIvl.exec(@ctx).should.be.false
+    @unknownEndNotMeetsDateIvl.exec(@ctx).should.be.false
+    should(@dateIvlMayMeetAfterUnknownEnd.exec(@ctx)).be.null
+
+  it 'should correctly handle imprecision', ->
+    should(@mayMeetAfterImpreciseDateIvl.exec(@ctx)).be.null
+    @mayMeetBeforeImpreciseDateIvl.exec(@ctx).should.be.false
+    @notMeetsImpreciseDateIvl.exec(@ctx).should.be.false
+    should(@impreciseMayMeetAfterDateIvl.exec(@ctx)).be.null
+    @impreciseMayMeetBeforeDateIvl.exec(@ctx).should.be.false
+    @impreciseNotMeetsDateIvl.exec(@ctx).should.be.false
+
+describe 'MeetsBefore', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should accept intervals meeting after it', ->
+    @meetsBeforeIntIvl.exec(@ctx).should.be.true
+    @meetsBeforeRealIvl.exec(@ctx).should.be.true
+    @meetsBeforeDateIvl.exec(@ctx).should.be.true
+
+  it 'should reject intervals meeting before it', ->
+    @meetsAfterIntIvl.exec(@ctx).should.be.false
+    @meetsAfterRealIvl.exec(@ctx).should.be.false
+    @meetsAfterDateIvl.exec(@ctx).should.be.false
+
+  it 'should reject intervals not meeting it', ->
+    @notMeetsIntIvl.exec(@ctx).should.be.false
+    @notMeetsRealIvl.exec(@ctx).should.be.false
+    @notMeetsDateIvl.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (int)', ->
+    @negInfBegMeetsBeforeIntIvl.exec(@ctx).should.be.true
+    @negInfBegNotMeetsIntIvl.exec(@ctx).should.be.false
+    @intIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
+    @unknownBegMeetsBeforeIntIvl.exec(@ctx).should.be.true
+    @unknownBegMayMeetAfterIntIvl.exec(@ctx).should.be.false
+    @unknownBegNotMeetsIntIvl.exec(@ctx).should.be.false
+    should(@intIvlMayMeetBeforeUnknownBeg.exec(@ctx)).be.null
+    @posInfEndMeetsAfterIntIvl.exec(@ctx).should.be.false
+    @posInfEndNotMeetsIntIvl.exec(@ctx).should.be.false
+    @intIvlNotMeetsPosInfEnd.exec(@ctx).should.be.false
+    @unknownEndMeetsAfterIntIvl.exec(@ctx).should.be.false
+    should(@unknownEndMayMeetBeforeIntIvl.exec(@ctx)).be.null
+    @unknownEndNotMeetsIntIvl.exec(@ctx).should.be.false
+    @intIvlMayMeetAfterUnknownEnd.exec(@ctx).should.be.false
+
+  it 'should correctly handle null endpoints (date)', ->
+    @negInfBegMeetsBeforeDateIvl.exec(@ctx).should.be.true
+    @negInfBegNotMeetsDateIvl.exec(@ctx).should.be.false
+    @dateIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
+    @unknownBegMeetsBeforeDateIvl.exec(@ctx).should.be.true
+    @unknownBegMayMeetAfterDateIvl.exec(@ctx).should.be.false
+    @unknownBegNotMeetsDateIvl.exec(@ctx).should.be.false
+    should(@dateIvlMayMeetBeforeUnknownBeg.exec(@ctx)).be.null
+    @posInfEndMeetsAfterDateIvl.exec(@ctx).should.be.false
+    @posInfEndNotMeetsDateIvl.exec(@ctx).should.be.false
+    @dateIvlNotMeetsPosInfEnd.exec(@ctx).should.be.false
+    @unknownEndMeetsAfterDateIvl.exec(@ctx).should.be.false
+    should(@unknownEndMayMeetBeforeDateIvl.exec(@ctx)).be.null
+    @unknownEndNotMeetsDateIvl.exec(@ctx).should.be.false
+    @dateIvlMayMeetAfterUnknownEnd.exec(@ctx).should.be.false
+
+  it 'should correctly handle imprecision', ->
+    @mayMeetAfterImpreciseDateIvl.exec(@ctx).should.be.false
+    should(@mayMeetBeforeImpreciseDateIvl.exec(@ctx)).be.null
+    @notMeetsImpreciseDateIvl.exec(@ctx).should.be.false
+    @impreciseMayMeetAfterDateIvl.exec(@ctx).should.be.false
+    should(@impreciseMayMeetBeforeDateIvl.exec(@ctx)).be.null
+    @impreciseNotMeetsDateIvl.exec(@ctx).should.be.false
+
 describe 'Overlaps', ->
   @beforeEach ->
     setup @, data

@@ -80,6 +80,24 @@ module.exports.Interval = class Interval
     # Simple way to fix it: and w/ not overlaps
     cmp.lessThan closed.high, otherClosed.low
 
+  meets: (other) ->
+    ThreeValuedLogic.or(
+      @meetsBefore(other),
+      @meetsAfter(other)
+    )
+
+  meetsAfter: (other) ->
+    try
+      cmp.equals @toClosed().low, successor(other.toClosed().high)
+    catch
+      false
+
+  meetsBefore: (other) ->
+    try
+      cmp.equals @toClosed().high, predecessor(other.toClosed().low)
+    catch
+      false
+
   width: () ->
     closed = @toClosed()
     if closed.low instanceof Uncertainty or closed.high instanceof Uncertainty

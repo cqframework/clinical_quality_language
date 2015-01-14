@@ -43,11 +43,29 @@ module.exports.doAfter = (a, b, precision) ->
 module.exports.doBefore = (a, b, precision) ->
   a.before b, precision
 
-module.exports.Meets = class Meets extends UnimplementedExpression
+module.exports.Meets = class Meets extends Expression
+  constructor: (json) ->
+    super
 
-module.exports.MeetsAfter = class MeetsAfter extends UnimplementedExpression
+  exec: (ctx) ->
+    [a, b] = @execArgs ctx
+    if a? and b? then a.meets b else null
 
-module.exports.MeetsBefore = class MeetsBefore extends UnimplementedExpression
+module.exports.MeetsAfter = class MeetsAfter extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    [a, b] = @execArgs ctx
+    if a? and b? then a.meetsAfter b else null
+
+module.exports.MeetsBefore = class MeetsBefore extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    [a, b] = @execArgs ctx
+    if a? and b? then a.meetsBefore b else null
 
 module.exports.Overlaps = class Overlaps extends Expression
   constructor: (json) ->

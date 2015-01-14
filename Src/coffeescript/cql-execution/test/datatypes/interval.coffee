@@ -861,6 +861,343 @@ describe 'DateTimeInterval.before', ->
     should.not.exist y.toYear.before(x.closed)
     x.toYear.before(y.closed).should.be.false
 
+describe 'DateTimeInterval.meets', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @dIvl.before
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @dIvl.meets
+    x.closed.meets(y.closed).should.be.true
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.true
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @dIvl.overlaps
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @dIvl.begins
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @dIvl.during
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @dIvl.ends
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.meets(y.toMinute).should.be.false
+    x.toHour.meets(y.toMinute).should.be.false
+
+    [x, y] = xy @dIvl.before
+    x.toMonth.meets(y.toMonth).should.be.false
+    should.not.exist x.toYear.meets(y.closed)
+
+    [x, y] = xy @dIvl.meets
+    should.not.exist x.toMonth.meets(y.toMonth)
+    should.not.exist x.toYear.meets(y.closed)
+
+    [x, y] = xy @dIvl.overlaps
+    x.toMonth.meets(y.toMonth).should.be.false
+    should.not.exist x.toYear.meets(y.closed)
+
+    [x, y] = xy @dIvl.begins
+    x.toMinute.meets(y.toMinute).should.be.false
+    x.toYear.meets(y.closed).should.be.false
+
+    [x, y] = xy @dIvl.during
+    x.toMonth.meets(y.toMonth).should.be.false
+    y.toMonth.meets(x.toMonth).should.be.false
+    x.toYear.meets(y.closed).should.be.false
+
+    [x, y] = xy @dIvl.ends
+    x.toMinute.meets(y.toMinute).should.be.false
+    x.toYear.meets(y.closed).should.be.false
+
+describe 'DateTimeInterval.meetsAfter', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @dIvl.before
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @dIvl.meets
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.true
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @dIvl.overlaps
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @dIvl.begins
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @dIvl.during
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @dIvl.ends
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.meetsAfter(y.toMinute).should.be.false
+    x.toHour.meetsAfter(y.toMinute).should.be.false
+
+    [x, y] = xy @dIvl.before
+    x.toMonth.meetsAfter(y.toMonth).should.be.false
+    x.toYear.meetsAfter(y.closed).should.be.false
+    should.not.exist y.toYear.meetsAfter(x.closed)
+
+    [x, y] = xy @dIvl.meets
+    x.toMonth.meetsAfter(y.toMonth).should.be.false
+    should.not.exist y.toMonth.meetsAfter(x.toMonth)
+    x.toYear.meetsAfter(y.closed).should.be.false
+    should.not.exist y.toYear.meetsAfter(x.closed)
+
+    [x, y] = xy @dIvl.overlaps
+    x.toMonth.meetsAfter(y.toMonth).should.be.false
+    x.toYear.meetsAfter(y.closed).should.be.false
+    should.not.exist y.toYear.meetsAfter(x.closed)
+
+    [x, y] = xy @dIvl.begins
+    x.toMinute.meetsAfter(y.toMinute).should.be.false
+    x.toYear.meetsAfter(y.closed).should.be.false
+
+    [x, y] = xy @dIvl.during
+    x.toMonth.meetsAfter(y.toMonth).should.be.false
+    y.toMonth.meetsAfter(x.toMonth).should.be.false
+    x.toYear.meetsAfter(y.closed).should.be.false
+
+    [x, y] = xy @dIvl.ends
+    x.toMinute.meetsAfter(y.toMinute).should.be.false
+    x.toYear.meetsAfter(y.closed).should.be.false
+
+describe 'DateTimeInterval.meetsBefore', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @dIvl.before
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @dIvl.meets
+    x.closed.meetsBefore(y.closed).should.be.true
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @dIvl.overlaps
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @dIvl.begins
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @dIvl.during
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @dIvl.ends
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.meetsBefore(y.toMinute).should.be.false
+    x.toHour.meetsBefore(y.toMinute).should.be.false
+
+    [x, y] = xy @dIvl.before
+    x.toMonth.meetsBefore(y.toMonth).should.be.false
+    should.not.exist x.toYear.meetsBefore(y.closed)
+
+    [x, y] = xy @dIvl.meets
+    should.not.exist x.toMonth.meetsBefore(y.toMonth)
+    should.not.exist x.toYear.meetsBefore(y.closed)
+
+    [x, y] = xy @dIvl.overlaps
+    x.toMonth.meetsBefore(y.toMonth).should.be.false
+    should.not.exist x.toYear.meetsBefore(y.closed)
+
+    [x, y] = xy @dIvl.begins
+    x.toMinute.meetsBefore(y.toMinute).should.be.false
+    x.toYear.meetsBefore(y.closed).should.be.false
+
+    [x, y] = xy @dIvl.during
+    x.toMonth.meetsBefore(y.toMonth).should.be.false
+    y.toMonth.meetsBefore(x.toMonth).should.be.false
+    x.toYear.meetsBefore(y.closed).should.be.false
+
+    [x, y] = xy @dIvl.ends
+    x.toMinute.meetsBefore(y.toMinute).should.be.false
+    x.toYear.meetsBefore(y.closed).should.be.false
+
 describe 'IntegerInterval.contains', ->
   @beforeEach ->
     setup @
@@ -1647,5 +1984,336 @@ describe 'IntegerInterval.before', ->
     uIvl.before(ivl).should.be.false
 
     uIvl.before(uIvl).should.be.false
+
+describe 'IntegerInterval.meets', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.meets(y.closed).should.be.true
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.true
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.meets(y.closed).should.be.false
+    x.closed.meets(y.open).should.be.false
+    x.open.meets(y.closed).should.be.false
+    x.open.meets(y.open).should.be.false
+    y.closed.meets(x.closed).should.be.false
+    y.closed.meets(x.open).should.be.false
+    y.open.meets(x.closed).should.be.false
+    y.open.meets(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
+
+    ivl = new Interval(0, 3)
+    ivl.meets(uIvl).should.be.false
+    uIvl.meets(ivl).should.be.false
+
+    ivl = new Interval(0, 10)
+    ivl.meets(uIvl).should.be.false
+    uIvl.meets(ivl).should.be.false
+
+    ivl = new Interval(15, 40)
+    ivl.meets(uIvl).should.be.false
+    uIvl.meets(ivl).should.be.false
+
+    ivl = new Interval(22, 40)
+    ivl.meets(uIvl).should.be.false
+    uIvl.meets(ivl).should.be.false
+
+    ivl = new Interval(0, 4)
+    should.not.exist ivl.meets(uIvl)
+    should.not.exist uIvl.meets(ivl)
+
+    ivl = new Interval(21, 40)
+    should.not.exist ivl.meets(uIvl)
+    should.not.exist uIvl.meets(ivl)
+
+    uIvl.meets(uIvl).should.be.false
+
+
+describe 'IntegerInterval.meetsAfter', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.true
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.meetsAfter(y.closed).should.be.false
+    x.closed.meetsAfter(y.open).should.be.false
+    x.open.meetsAfter(y.closed).should.be.false
+    x.open.meetsAfter(y.open).should.be.false
+    y.closed.meetsAfter(x.closed).should.be.false
+    y.closed.meetsAfter(x.open).should.be.false
+    y.open.meetsAfter(x.closed).should.be.false
+    y.open.meetsAfter(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
+
+    ivl = new Interval(0, 3)
+    ivl.meetsAfter(uIvl).should.be.false
+    uIvl.meetsAfter(ivl).should.be.false
+
+    ivl = new Interval(0, 10)
+    ivl.meetsAfter(uIvl).should.be.false
+    uIvl.meetsAfter(ivl).should.be.false
+
+    ivl = new Interval(15, 40)
+    ivl.meetsAfter(uIvl).should.be.false
+    uIvl.meetsAfter(ivl).should.be.false
+
+    ivl = new Interval(22, 40)
+    ivl.meetsAfter(uIvl).should.be.false
+    uIvl.meetsAfter(ivl).should.be.false
+
+    ivl = new Interval(0, 4)
+    ivl.meetsAfter(uIvl).should.be.false
+    should.not.exist uIvl.meetsAfter(ivl)
+
+    ivl = new Interval(21, 40)
+    should.not.exist ivl.meetsAfter(uIvl)
+    uIvl.meetsAfter(ivl).should.be.false
+
+    uIvl.meetsAfter(uIvl).should.be.false
+
+describe 'IntegerInterval.meetsBefore', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs intervals', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate before/after intervals', ->
+    [x, y] = xy @iIvl.before
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate meets intervals', ->
+    [x, y] = xy @iIvl.meets
+    x.closed.meetsBefore(y.closed).should.be.true
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate left/right overlapping intervals', ->
+    [x, y] = xy @iIvl.overlaps
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate begins/begun by intervals', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate includes/included by intervals', ->
+    [x, y] = xy @iIvl.during
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly calculate ends/ended by intervals', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.meetsBefore(y.closed).should.be.false
+    x.closed.meetsBefore(y.open).should.be.false
+    x.open.meetsBefore(y.closed).should.be.false
+    x.open.meetsBefore(y.open).should.be.false
+    y.closed.meetsBefore(x.closed).should.be.false
+    y.closed.meetsBefore(x.open).should.be.false
+    y.open.meetsBefore(x.closed).should.be.false
+    y.open.meetsBefore(x.open).should.be.false
+
+  it 'should properly handle imprecision', ->
+    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
+
+    ivl = new Interval(0, 3)
+    ivl.meetsBefore(uIvl).should.be.false
+    uIvl.meetsBefore(ivl).should.be.false
+
+    ivl = new Interval(0, 10)
+    ivl.meetsBefore(uIvl).should.be.false
+    uIvl.meetsBefore(ivl).should.be.false
+
+    ivl = new Interval(15, 40)
+    ivl.meetsBefore(uIvl).should.be.false
+    uIvl.meetsBefore(ivl).should.be.false
+
+    ivl = new Interval(22, 40)
+    ivl.meetsBefore(uIvl).should.be.false
+    uIvl.meetsBefore(ivl).should.be.false
+
+    ivl = new Interval(0, 4)
+    should.not.exist ivl.meetsBefore(uIvl)
+    uIvl.meetsBefore(ivl).should.be.false
+
+    ivl = new Interval(21, 40)
+    ivl.meetsBefore(uIvl).should.be.false
+    should.not.exist uIvl.meetsBefore(ivl)
+
+    uIvl.meetsBefore(uIvl).should.be.false
 
 # TODO: Tests for real numbers (i.e., floats)
