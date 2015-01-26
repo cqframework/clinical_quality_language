@@ -1,0 +1,33 @@
+    {
+        "resource": {
+          "resourceType": "Encounter",
+          "id": "$ID$",
+          "meta": {
+            "profile": ["cqf-encounter"]
+          },
+          "identifier": [
+            {
+              "value": "$ID$",
+              "system": "http://cqframework.org"
+            }
+          ],
+          "status": "finished",
+          "class": "outpatient",
+          "type": [
+            {
+              "coding": [
+                {
+                  "code": "$CODE$",
+                  "system": "$SYSTEM$",
+                  "version": "2013-09",
+                  "display": "Foobar (procedure)"
+                }
+              ]
+            }
+          ],
+          "period": {
+            "start": "$START$",
+            "end": "$END$"
+          }
+        }
+      }

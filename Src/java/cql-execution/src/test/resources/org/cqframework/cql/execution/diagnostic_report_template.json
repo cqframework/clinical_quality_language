@@ -1,0 +1,53 @@
+    {
+        "resource": {
+          "resourceType": "DiagnosticReport",
+          "id": "$ID$",
+          "meta": {
+            "lastUpdated": "$DATETIME$"
+            "profile": ["cqf-diagnosticreport"]
+          },
+          "text": {
+            "status": "generated",
+            "div": "<div>!-- Snipped for Brevity --></div>"
+          },
+          "contained": [
+            {
+              "resourceType": "DiagnosticOrder",
+              "id": "req",
+              "subject": {
+                "reference": "Patient/$PATIENT$"
+              },
+              "clinicalNotes": "Foo. Bar."
+            }
+          ],
+          "name": {
+            "text": "Routine Foobar Test"
+          },
+          "status": "final",
+          "issued": "$DATETIME$",
+          "subject": {
+            "reference": "Patient/$PATIENT$"
+          },
+          "performer": {
+            "reference": "Organization/foobar",
+            "display": "Foobar Laboratory, Inc"
+          },
+          "identifier": {
+            "system": "http://acme.com/lab/reports",
+            "value": "$ID$"
+          },
+          "serviceCategory": {
+            "coding": [
+              {
+                "system": "$SYSTEM$",
+                "code": "$CODE$",
+                "display": "Foobar test"
+              }
+            ]
+          },
+          "result": [{
+            "reference": "Observation/result"
+          }],
+          "diagnosticDateTime": "$DATETIME$"
+        }
+      }

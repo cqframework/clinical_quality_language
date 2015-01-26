@@ -39,7 +39,7 @@ public class EngineTest {
         }
     }
 
-    @Test
+    @Test(enabled=false)
     public void testEngineWithFile_CMS146() {
         // Configure the engine with test data
         Engine.setPatientSource(new TestPatientSource());
@@ -79,10 +79,8 @@ public class EngineTest {
         assertThat(results, is (notNullValue()));
     }
 
-    @Test(enabled = false)
+    @Test
     public void testEngineWithJson() {
-        // TODO this needs to be fixed
-
         StringBuilder javascript = new StringBuilder();
         javascript.append("importPackage(org.cqframework.cql.execution);");
         javascript.append("\nvar source = Engine.getPatientSource();");
@@ -95,10 +93,12 @@ public class EngineTest {
         String json = javascript.toString();
         Results results = null;
         try {
+            Engine.setPatientSource(new TestPatientSource());
             results = Engine.executeJson(json);
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
         assertThat(results, is (notNullValue()));
+        assertThat(results.results.size(), is (TestPatientSource.maxPatients));
     }
 }

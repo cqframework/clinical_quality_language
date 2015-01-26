@@ -1,0 +1,28 @@
+    {
+        "resource": {
+          "resourceType": "Condition",
+          "id": "$ID$",
+          "meta": {
+            "profile": ["cqf-condition"]
+          },
+          "identifier": [
+            {
+              "value": "$ID$",
+              "system": "http://cqframework.org"
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "code": "$CODE$",
+                "system": "$SYSTEM$",
+                "version": "2013-09",
+                "display": "Foobar (disorder)"
+              }
+            ]
+          },
+          "onsetDateTime": "$ONSET$",
+          "abatementDate": "$ABATEMENT$",
+          "issued": "1982-03-15T15:15:00"
+        }
+    }

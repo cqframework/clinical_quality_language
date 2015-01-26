@@ -1,5 +1,43 @@
 library CMS146 version '2'
 
+/* CMS 146v2
+ *
+ * ============================================================================
+ * QDM Logic
+ * ============================================================================
+ * Initial Patient Population =
+ *     AND: "Patient Characteristic Birthdate: birth date" >= 2 year(s) starts before start of "Measurement Period"
+ *     AND: "Patient Characteristic Birthdate: birth date" < 18 year(s) starts before start of "Measurement Period"
+ *     AND:
+ *         AND: "Occurrence A of Encounter, Performed: Ambulatory/ED Visit" during "Measurement Period"
+ *         AND: "Medication, Order: Antibiotic Medications" <= 3 day(s) starts after start of "Occurrence A of Encounter, Performed: Ambulatory/ED Visit"
+ *         AND:
+ *             OR: "Occurrence A of Encounter, Performed: Ambulatory/ED Visit" during
+ *                 OR: "Occurrence A of Diagnosis, Active: Acute Pharyngitis"
+ *                 OR: "Occurrence A of Diagnosis, Active: Acute Tonsillitis"
+ *             OR:
+ *                 OR: "Occurrence A of Diagnosis, Active: Acute Pharyngitis"
+ *                 OR: "Occurrence A of Diagnosis, Active: Acute Tonsillitis"
+ *                 starts during "Occurrence A of Encounter, Performed: Ambulatory/ED Visit"
+ *
+ * Denominator =
+ *     AND: "Initial Patient Population"
+ *
+ * Denominator Exclusions =
+ *     AND: "Medication, Active: Antibiotic Medications" <= 30 day(s) starts before start of
+ *         OR: "Occurrence A of Diagnosis, Active: Acute Pharyngitis"
+ *         OR: "Occurrence A of Diagnosis, Active: Acute Tonsillitis"
+ *
+ * Numerator =
+ *     AND:
+ *         OR: "Laboratory Test, Result: Group A Streptococcus Test (result)" <= 3 day(s) starts before or during "Occurrence A of Encounter, Performed: Ambulatory/ED Visit"
+ *         OR: "Laboratory Test, Result: Group A Streptococcus Test (result)" <= 3 day(s) starts after end of "Occurrence A of Encounter, Performed: Ambulatory/ED Visit"
+ *
+ * Denominator Exceptions =
+ *     None
+ * ============================================================================
+ */
+
 using QUICK
 
 parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
@@ -23,15 +61,15 @@ define Antibiotics =
 
 define TargetEncounters =
     [Encounter: "Ambulatory/ED Visit"] E
-        with Pharyngitis P such that interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period
-        with Antibiotics A such that A.orderedOn starts 3 days or less after start of E.period
+        with Pharyngitis P such that interval[P.onsetDateTime, P.abatementDate] overlaps after E.period
+        with Antibiotics A such that A.dateWritten 3 days or less after start E.period
         where E.period during MeasurementPeriod
 
 define TargetDiagnoses =
-    Pharyngitis P with TargetEncounters E such that interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period
+    Pharyngitis P with TargetEncounters E such that interval[P.onsetDateTime, P.abatementDate] overlaps after E.period
 
 define HasPriorAntibiotics =
-    exists (Antibiotics A with TargetDiagnoses D such that A.orderedOn starts 30 days or less before D.onsetDateTime)
+    exists (Antibiotics A with TargetDiagnoses D such that A.dateWritten starts 30 days or less before D.onsetDateTime)
 
 define HasTargetEncounter =
     exists (TargetEncounters)
@@ -46,4 +84,4 @@ define InDenominatorExclusions =
     HasPriorAntibiotics
 
 define InNumerator =
-    exists ([Observation: "Group A Streptococcus Test"] R where R.issued during MeasurementPeriod and R.value is not null)
+    exists ([DiagnosticReport: "Group A Streptococcus Test"] R where R.diagnosticDateTime during MeasurementPeriod and R.result is not null)

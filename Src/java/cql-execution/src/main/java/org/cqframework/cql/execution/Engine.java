@@ -24,10 +24,12 @@ import java.util.jar.JarFile;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.commonjs.module.Require;
+import org.mozilla.javascript.tools.debugger.Main;
 import org.mozilla.javascript.tools.shell.Global;
 
 import static java.nio.file.FileVisitResult.*;
@@ -45,6 +47,7 @@ public class Engine {
     private static PatientSource patientSource;
     private static CodeService codeService;
     private static Path workingArea;
+    private static boolean debugJavascript = false;
 
     /**
      * Set the PatientSource to be used by all CQL scripts.
@@ -77,7 +80,13 @@ public class Engine {
     {
         return codeService;
     }
-
+    
+    /** Set whether or not to debug the Javascript version of the CQL scripts. */
+    public static void setDebugJavascript(boolean debug)
+    {
+        debugJavascript = debug;
+    }
+    
     /**
      * Adds an object to the currently executing CQL scripts result set.
      * Should be called from the CQL (Javascript) only.
@@ -117,7 +126,7 @@ public class Engine {
     {
         CqlTranslator rosetta = CqlTranslator.fromFile(file);
         String json = "(function() { module.exports = " + rosetta.toJson() + "; }).call(this);";
-        return execute( json );
+        return execute(json, true);
     }
 
     /**
@@ -130,7 +139,7 @@ public class Engine {
     {
         CqlTranslator rosetta = CqlTranslator.fromText(cql);
         String json = rosetta.toJson();
-        return execute(json);
+        return execute(json,true);
     }
 
     /**
@@ -142,16 +151,20 @@ public class Engine {
      */
     public static Results executeJson(String json) throws Exception
     {
-        return execute(json);
+        return execute(json,false);
     }
 
     /**
      * Execute JavaScript representing a CQL measure in the Rhino engine.
      * @param javascript The script to execute.
+     * @param isMeasure Whether or not the script should be wrapped in the
+     * template-exec function that imports CQL javascripts and execute the
+     * javascript as a Clinical Quality Measure. If {@code false} the javascript
+     * will be executed as a plain-old javascript.
      * @return The result set of the execution.
      * @throws Exception if the patient source is {@code null}.
      */
-    private static Results execute(String javascript) throws Exception
+    private static Results execute(String javascript, boolean isMeasure) throws Exception
     {
         if(patientSource == null) {
             throw new Exception("Engine must have a PatientSource to execute against!");
@@ -160,8 +173,36 @@ public class Engine {
         reset();
         prepWorkingArea(javascript);
 
-        Context context = Context.enter();
+        Main dbg = null;
+        Context context = null;
+        if(debugJavascript) {
+            ContextFactory factory = new ContextFactory();
+            if(isMeasure) {
+                dbg = new Main("template-exec.js");
+            } else {
+                dbg = new Main("engine-script.js");
+            }
+            dbg.attachTo(factory);
+            dbg.setBreakOnEnter(true);
+            dbg.setBreakOnExceptions(true);
+            dbg.setBreakOnReturn(false);
+            context = factory.enterContext();
+            
+            // redirect std I/O
+            System.setIn(dbg.getIn());
+            System.setOut(dbg.getOut());
+            System.setErr(dbg.getErr());
+        } else {
+            context = Context.enter();
+        }
         ScriptableObject scope = new ImporterTopLevel(context);
+
+        if(debugJavascript) {
+            dbg.setScope(scope);
+            dbg.setSize(640, 400);
+            dbg.setVisible(true);
+            //dbg.setExitAction(new ExitOnClose());
+        }
 
         patientSource.initialize(context, scope);
 
@@ -178,12 +219,22 @@ public class Engine {
 
         try {
             File lib = new File(mainModule);
-            File script = new File( lib, "template-exec.js" );
+            File script = null;
 
+            if(isMeasure) {
+                script = new File( lib, "template-exec.js" );
+            } else {
+                script = new File( lib, "engine-script.js" );
+            }
+            
             String uri = script.toURI().toURL().toExternalForm();
             ScriptableObject.putProperty(scope, "moduleUri", uri);
 
-            require.requireMain(context, "template-exec");
+            if(isMeasure) {
+                require.requireMain(context, "template-exec");                
+            } else {
+                require.requireMain(context, "engine-script");
+            }
 
 //			System.out.println( "Results: " + results.results.size() );
 //			System.out.flush();
