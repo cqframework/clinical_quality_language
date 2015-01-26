@@ -91,14 +91,17 @@ module.exports.OverlapsBefore = class OverlapsBefore extends Expression
     [a, b] = @execArgs ctx
     if a? and b? then a.overlapsBefore b else null
 
-# TODO: Deconflict w/ definition in list.coffee
-# module.exports.Union = class Union extends UnimplementedExpression
+# Delegated to by overloaded#Union
+module.exports.doUnion = (a, b) ->
+  throw new Error("Not Implemented")
 
-# TODO: Deconflict w/ definition in list.coffee
-# module.exports.Intersect = class Intersect extends UnimplementedExpression
+# Delegated to by overloaded#Except
+module.exports.doExcept = (a, b) ->
+  throw new Error("Not Implemented")
 
-# TODO: Spec has "Difference" defined, but should this be "Except"? (also deconflict w/ list.coffee)
-# module.exports.Except = class Except extends UnimplementedExpression
+# Delegated to by overloaded#Intersect
+module.exports.doIntersect = (a, b) ->
+  throw new Error("Not Implemented")
 
 module.exports.Width = class Width extends Expression
   constructor: (json) ->

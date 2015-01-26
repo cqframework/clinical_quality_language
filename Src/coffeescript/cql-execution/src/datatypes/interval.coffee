@@ -56,6 +56,17 @@ module.exports.Interval = class Interval
       cmp.greaterThanOrEquals(closed.high, low)
     )
 
+  union: (other) ->
+    # TODO: Needs to be tested...
+    if not (other instanceof Interval) then throw new Error("Argument to union must be an interval")
+    if @overlaps(other) or @meets(other)
+      [a, b] = [@toClosed(), other.toClosed()]
+      [l, lc] = if cmp.greaterThan a.low, b.low then [other.low, other.lowClosed] else [@low, @lowClosed]
+      [h, hc] = if cmp.lessThan a.high, b.high then [other.high, other.highClosed] else [@high, @highClosed]
+      new Interval(l, h, lc, hc)
+    else
+      null
+
   equals: (other) ->
     if other instanceof Interval
       [a, b] = [@toClosed(), other.toClosed()]
