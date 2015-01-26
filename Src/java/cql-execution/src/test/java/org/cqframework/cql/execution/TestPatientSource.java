@@ -7,7 +7,9 @@ import static org.testng.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Random;
 
@@ -91,7 +93,8 @@ public class TestPatientSource implements PatientSource
         try {
             URL address = TestPatientSource.class.getResource( resource );
             File file = new File( address.toURI() );
-            FileReader reader = new FileReader( file );
+            FileInputStream fis = new FileInputStream( file );
+            InputStreamReader reader = new InputStreamReader( fis, "UTF-8" );
             BufferedReader buffer = new BufferedReader( reader );
             
             String line = null;
