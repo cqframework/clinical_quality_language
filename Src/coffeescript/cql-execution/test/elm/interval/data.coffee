@@ -23930,3 +23930,2199 @@ module.exports['Start'] = {
    }
 }
 
+### IntegerIntervalUnion
+library TestSnippet version '1'
+using QUICK
+context Patient
+define IntFullInterval = interval[0,10]
+define IntClosedUnionClosed = interval[0,5] union interval[5,10]
+define IntClosedUnionOpen = interval[0,5] union interval[5,10)
+define IntOpenUnionOpen = interval(0,5] union interval[5,10)
+define IntOpenUnionClosed = interval(0,5] union interval[5,10]
+define IntSameAsUnion = interval[0,10] union interval[0,10]
+define IntBeforeUnion = interval[0,4] union interval[6,10]
+define IntMeetsUnion = interval[0,5] union interval[5,10]
+define IntOverlapsUnion = interval[0,7] union interval[3,10]
+define IntBeginsUnion = interval[0,5] union interval[0,10]
+define IntDuringUnion = interval[3,5] union interval[0,10]
+define IntEndsUnion = interval[5,10] union interval[0,10]
+###
+
+module.exports['IntegerIntervalUnion'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "IntFullInterval",
+            "context" : "Patient",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : true,
+               "type" : "Interval",
+               "low" : {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "0",
+                  "type" : "Literal"
+               },
+               "high" : {
+                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "value" : "10",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "IntClosedUnionClosed",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntClosedUnionOpen",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntOpenUnionOpen",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntOpenUnionClosed",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntSameAsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntBeforeUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "6",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntMeetsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntOverlapsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntBeginsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntDuringUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IntEndsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "5",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
+### DateTimeIntervalUnion
+library TestSnippet version '1'
+using QUICK
+context Patient
+define DateTimeFullInterval = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeClosedUnionClosed = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeClosedUnionOpen = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define DateTimeOpenUnionOpen = interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define DateTimeOpenUnionClosed = interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeSameAsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeforeUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 7, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeMeetsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeOverlapsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeginsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeDuringUnion = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeEndsUnion = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+###
+
+module.exports['DateTimeIntervalUnion'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "DateTimeFullInterval",
+            "context" : "Patient",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : true,
+               "type" : "Interval",
+               "low" : {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               },
+               "high" : {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "DateTimeClosedUnionClosed",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeClosedUnionOpen",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeOpenUnionOpen",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeOpenUnionClosed",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeSameAsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeBeforeUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "7",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeMeetsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeOverlapsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "7",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeBeginsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeDuringUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "DateTimeEndsUnion",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

@@ -55,14 +55,38 @@ module.exports.Interval = class Interval
       cmp.lessThan(closed.low, low),
       cmp.greaterThanOrEquals(closed.high, low)
     )
+    
+  areDateTimes = (a, b) ->
+    a instanceof DateTime and b instanceof DateTime
 
+  isNumber = (x) ->
+    typeof x is 'number'
+
+  isUncertainty = (x) ->
+    x instanceof Uncertainty
+
+  isNumberAndUncertainty = (a, b) ->
+    ( (isUncertainty(a) and isNumber(b)) || (isUncertainty(b) and isNumber(a)) )
+    
   union: (other) ->
-    # TODO: Needs to be tested...
     if not (other instanceof Interval) then throw new Error("Argument to union must be an interval")
+    # Note that interval union is only defined if the arguments overlap or meet.
+    # TODO - what is the resulting union of DateTime intervals, where the lower/higher bounds are the
+    # same DateTime with different levels of precision? Which level of precision is used?
     if @overlaps(other) or @meets(other)
       [a, b] = [@toClosed(), other.toClosed()]
-      [l, lc] = if cmp.greaterThan a.low, b.low then [other.low, other.lowClosed] else [@low, @lowClosed]
-      [h, hc] = if cmp.lessThan a.high, b.high then [other.high, other.highClosed] else [@high, @highClosed]
+      [l, lc] = switch
+        when cmp.equals(a.low, b.low) then [other.low, (other.lowClosed || @lowClosed)]
+        when cmp.greaterThan(a.low, b.low) then [other.low, other.lowClosed]
+        when (isNumberAndUncertainty(a.low, b.low) and cmp.lessThan(a.low, b.low)==false) then [other.low, other.lowClosed]
+        when areDateTimes(a.low, b.low) and a.low.isMorePrecise(b.low) then [other.low, (@lowClosed || other.lowClosed)]
+        else [@low, @lowClosed]
+      [h, hc] = switch
+        when cmp.equals(a.high, b.high) then [other.high, (other.highClosed || @highClosed)]
+        when cmp.lessThan(a.high, b.high) then [other.high, other.highClosed]
+        when (isNumberAndUncertainty(a.high, b.high) and cmp.greaterThan(a.high, b.high)==false) then [other.high, other.highClosed]
+        when areDateTimes(a.high, b.high) and a.high.isMorePrecise(b.high) then [other.high, (@highClosed || other.highClosed)]
+        else [@high, @highClosed]
       new Interval(l, h, lc, hc)
     else
       null

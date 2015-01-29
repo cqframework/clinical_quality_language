@@ -531,3 +531,31 @@ define DateTimeOpenWidth = width of interval(DateTime(2012, 1, 1, 0, 0, 0, 0), D
 
 // @Test: Start
 define Foo = start of interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
+
+// @Test: IntegerIntervalUnion
+define IntFullInterval = interval[0,10]
+define IntClosedUnionClosed = interval[0,5] union interval[5,10]
+define IntClosedUnionOpen = interval[0,5] union interval[5,10)
+define IntOpenUnionOpen = interval(0,5] union interval[5,10)
+define IntOpenUnionClosed = interval(0,5] union interval[5,10]
+define IntSameAsUnion = interval[0,10] union interval[0,10]
+define IntBeforeUnion = interval[0,4] union interval[6,10]
+define IntMeetsUnion = interval[0,5] union interval[5,10]
+define IntOverlapsUnion = interval[0,7] union interval[3,10]
+define IntBeginsUnion = interval[0,5] union interval[0,10]
+define IntDuringUnion = interval[3,5] union interval[0,10]
+define IntEndsUnion = interval[5,10] union interval[0,10]
+
+// @Test: DateTimeIntervalUnion
+define DateTimeFullInterval = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeClosedUnionClosed = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeClosedUnionOpen = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define DateTimeOpenUnionOpen = interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define DateTimeOpenUnionClosed = interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeSameAsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeforeUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 7, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeMeetsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeOverlapsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeginsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeDuringUnion = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeEndsUnion = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]

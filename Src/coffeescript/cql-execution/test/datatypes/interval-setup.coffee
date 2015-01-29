@@ -24,6 +24,8 @@ class TestInterval
     [thLow, thHigh] = [TestDateTime.fromDateTime(low), TestDateTime.fromDateTime(high)]
     @closed = new Interval(low, high, true, true)
     @open = new Interval(low, high, false, false)
+    @closedOpen = new Interval(low, high, true, false)
+    @openClosed = new Interval(low, high, false, true)    
     @toYear = new Interval(thLow.toYear, thHigh.toYear)
     @toMonth = new Interval(thLow.toMonth, thHigh.toMonth)
     @toDay = new Interval(thLow.toDay, thHigh.toDay)

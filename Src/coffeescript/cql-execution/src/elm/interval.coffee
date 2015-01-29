@@ -93,8 +93,8 @@ module.exports.OverlapsBefore = class OverlapsBefore extends Expression
 
 # Delegated to by overloaded#Union
 module.exports.doUnion = (a, b) ->
-  throw new Error("Not Implemented")
-
+  a.union(b)
+  
 # Delegated to by overloaded#Except
 module.exports.doExcept = (a, b) ->
   throw new Error("Not Implemented")

@@ -3,6 +3,7 @@ setup = require './interval-setup'
 { Interval } = require '../../lib/datatypes/interval'
 { DateTime } = require '../../lib/datatypes/datetime'
 { Uncertainty } = require '../../lib/datatypes/uncertainty'
+cmp = require '../../lib/util/comparison'
 
 xy = (obj) -> [obj.x, obj.y]
 
@@ -626,6 +627,174 @@ describe 'DateTimeInterval.equals', ->
     ivl = new Interval(point, point, true, true)
 
     ivl.equals(point).should.be.false
+
+describe 'DateTimeInterval.union', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs unions', ->
+    [x, y] = xy @dIvl.sameAs
+    x.closed.union(y.closed).equals(x.closed).should.be.true
+    x.closed.union(y.open).equals(x.closed).should.be.true
+    x.open.union(y.closed).equals(x.closed).should.be.true
+    x.open.union(y.open).equals(x.open).should.be.true
+    y.closed.union(x.closed).equals(y.closed).should.be.true
+    y.closed.union(x.open).equals(y.closed).should.be.true
+    y.open.union(x.closed).equals(y.closed).should.be.true
+    y.open.union(x.open).equals(y.open).should.be.true
+
+  it 'should properly calculate before/after unions', ->
+    [x, y] = xy @dIvl.before
+    (x.closed.union(y.closed) == null).should.be.true
+    (x.closed.union(y.open) == null).should.be.true
+    (x.open.union(y.closed) == null).should.be.true
+    (x.open.union(y.open) == null).should.be.true
+    (y.closed.union(x.closed) == null).should.be.true
+    (y.closed.union(x.open) == null).should.be.true
+    (y.open.union(x.closed) == null).should.be.true
+    (y.open.union(x.open) == null).should.be.true
+  
+  it 'should properly calculate meets unions', ->
+    [x, y] = xy @dIvl.meets
+    z = @all2012
+    x.closed.union(y.closed).equals(z.closed).should.be.true
+    (x.closed.union(y.open) == null).should.be.true
+    (x.open.union(y.closed) == null).should.be.true
+    (x.open.union(y.open) == null).should.be.true
+    y.closed.union(x.closed).equals(z.closed).should.be.true
+    (y.closed.union(x.open) == null).should.be.true
+    (y.open.union(x.closed) == null).should.be.true
+    (y.open.union(x.open) == null).should.be.true
+  
+  it 'should properly calculate left/right overlapping unions', ->
+    [x, y] = xy @dIvl.overlaps
+    z = @all2012
+    x.closed.union(y.closed).equals(z.closed).should.be.true
+    x.closed.union(y.open).equals(z.closedOpen).should.be.true
+    x.open.union(y.closed).equals(z.openClosed).should.be.true
+    x.open.union(y.open).equals(z.open).should.be.true
+    y.closed.union(x.closed).equals(z.closed).should.be.true
+    y.closed.union(x.open).equals(z.openClosed).should.be.true
+    y.open.union(x.closed).equals(z.closedOpen).should.be.true
+    y.open.union(x.open).equals(z.open).should.be.true
+
+  it 'should properly calculate begins/begun by unions', ->
+    [x, y] = xy @dIvl.begins
+    x.closed.union(y.closed).equals(y.closed).should.be.true
+    x.closed.union(y.open).equals(y.closedOpen).should.be.true
+    x.open.union(y.closed).equals(y.closed).should.be.true
+    x.open.union(y.open).equals(y.open).should.be.true
+    y.closed.union(x.closed).equals(y.closed).should.be.true
+    y.closed.union(x.open).equals(y.closed).should.be.true
+    y.open.union(x.closed).equals(y.closedOpen).should.be.true
+    y.open.union(x.open).equals(y.open).should.be.true
+    
+  it 'should properly calculate includes/included by unions', ->
+    [x, y] = xy @dIvl.during
+    x.closed.union(y.closed).equals(y.closed).should.be.true
+    x.closed.union(y.open).equals(y.open).should.be.true
+    x.open.union(y.closed).equals(y.closed).should.be.true
+    x.open.union(y.open).equals(y.open).should.be.true
+    y.closed.union(x.closed).equals(y.closed).should.be.true
+    y.closed.union(x.open).equals(y.closed).should.be.true
+    y.open.union(x.closed).equals(y.open).should.be.true
+    y.open.union(x.open).equals(y.open).should.be.true
+  
+  it 'should properly calculate ends/ended by unions', ->
+    [x, y] = xy @dIvl.ends
+    x.closed.union(y.closed).equals(y.closed).should.be.true
+    x.closed.union(y.open).equals(y.openClosed).should.be.true
+    x.open.union(y.closed).equals(y.closed).should.be.true
+    x.open.union(y.open).equals(y.open).should.be.true
+    y.closed.union(x.closed).equals(y.closed).should.be.true
+    y.closed.union(x.open).equals(y.closed).should.be.true
+    y.open.union(x.closed).equals(y.openClosed).should.be.true
+    y.open.union(x.open).equals(y.open).should.be.true
+      
+  it 'should properly handle imprecision', ->
+  
+    [x, y] = xy @dIvl.sameAs
+ 
+    # first, check that the DateTime precision methods are correct.
+    # TODO: move these into DateTime tests
+    x.closed.low.isMorePrecise(x.toMinute.low).should.be.true    
+    x.closed.low.isLessPrecise(x.toMinute.low).should.be.false
+    x.closed.low.isSamePrecision(x.toMinute.low).should.be.false
+    x.toMinute.low.isMorePrecise(x.closed.low).should.be.false
+    x.toMinute.low.isLessPrecise(x.closed.low).should.be.true
+    x.toMinute.low.isSamePrecision(x.closed.low).should.be.false
+    
+    # The union of (A U B) should be the same as (B U A)
+    # check sameAs
+    i = x.toMinute.union(y.closed)
+    x.toMinute.low.sameAs(i.low, DateTime.Unit.MINUTE).should.be.true
+    x.toMinute.high.sameAs(i.high, DateTime.Unit.MINUTE).should.be.true
+
+    j = y.closed.union(x.toMinute)
+    y.closed.low.sameAs(j.low, DateTime.Unit.MINUTE).should.be.true
+    y.closed.high.sameAs(j.high, DateTime.Unit.MINUTE).should.be.true
+
+    i.low.sameAs(j.low, DateTime.Unit.MINUTE).should.be.true
+    i.high.sameAs(j.high, DateTime.Unit.MINUTE).should.be.true
+
+    # check resulting precision
+    i.low.isMorePrecise(j.low).should.be.false
+    i.low.isLessPrecise(j.low).should.be.false
+    i.low.isSamePrecision(j.low).should.be.true
+    i.high.isMorePrecise(j.high).should.be.false
+    i.high.isLessPrecise(j.high).should.be.false
+    i.high.isSamePrecision(j.high).should.be.true
+
+    [x, y] = xy @dIvl.before
+    # TODO: I don't know about these tests... doesn't make sense to me.
+    should.not.exist x.toYear.union(y.toYear)
+    should.not.exist y.toYear.union(x.toYear)  
+
+    [x, y] = xy @dIvl.meets
+    should.not.exist x.toMonth.union(y.toMonth)
+
+    [x, y] = xy @dIvl.overlaps
+    i = x.toMonth.union(y.toMonth)
+    j = y.toMonth.union(x.toMonth)
+    
+    x.toMonth.low.sameAs(i.low, DateTime.Unit.MONTH).should.be.true
+    y.toMonth.high.sameAs(i.high, DateTime.Unit.MONTH).should.be.true
+    x.toMonth.low.sameAs(j.low, DateTime.Unit.MONTH).should.be.true
+    y.toMonth.high.sameAs(j.high, DateTime.Unit.MONTH).should.be.true
+    
+    [x, y] = xy @dIvl.begins
+    i = x.toMonth.union(y.toMonth)
+    j = y.toMonth.union(x.toMonth)
+    
+    x.toMonth.low.sameAs(i.low, DateTime.Unit.MONTH).should.be.true
+    y.toMonth.high.sameAs(i.high, DateTime.Unit.MONTH).should.be.true
+    x.toMonth.low.sameAs(j.low, DateTime.Unit.MONTH).should.be.true
+    y.toMonth.high.sameAs(j.high, DateTime.Unit.MONTH).should.be.true
+      
+    [x, y] = xy @dIvl.during
+    i = x.toMonth.union(y.toMonth)
+    j = y.toMonth.union(x.toMonth)
+    
+    y.toMonth.low.sameAs(i.low, DateTime.Unit.MONTH).should.be.true
+    y.toMonth.high.sameAs(i.high, DateTime.Unit.MONTH).should.be.true
+    y.toMonth.low.sameAs(j.low, DateTime.Unit.MONTH).should.be.true
+    y.toMonth.high.sameAs(j.high, DateTime.Unit.MONTH).should.be.true
+     
+    [x, y] = xy @dIvl.ends
+    i = x.toMonth.union(y.toMonth)
+    j = y.toMonth.union(x.toMonth)
+    
+    y.toMonth.low.sameAs(i.low, DateTime.Unit.MONTH).should.be.true
+    x.toMonth.high.sameAs(i.high, DateTime.Unit.MONTH).should.be.true
+    y.toMonth.low.sameAs(j.low, DateTime.Unit.MONTH).should.be.true
+    x.toMonth.high.sameAs(j.high, DateTime.Unit.MONTH).should.be.true
+  
+  it 'should throw when the argument is a point', ->
+    try
+      @all2012.union @mid2012
+      should.fail
+    catch e
+      (e?).should.be.true
 
 describe 'DateTimeInterval.after', ->
   @beforeEach ->
@@ -1764,6 +1933,133 @@ describe 'IntegerInterval.equals', ->
     ivl = new Interval(point, point, true, true)
 
     ivl.equals(point).should.be.false
+
+describe 'IntegerInterval.union', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs unions', ->
+    [x, y] = xy @iIvl.sameAs
+    x.closed.union(y.closed).equals(x.closed).should.be.true
+    x.closed.union(y.open).equals(x.closed).should.be.true
+    x.open.union(y.closed).equals(x.closed).should.be.true
+    x.open.union(y.open).equals(x.open).should.be.true
+    y.closed.union(x.closed).equals(y.closed).should.be.true
+    y.closed.union(x.open).equals(y.closed).should.be.true
+    y.open.union(x.closed).equals(y.closed).should.be.true
+    y.open.union(x.open).equals(y.open).should.be.true
+
+  it 'should properly calculate before/after unions', ->
+    [x, y] = xy @iIvl.before
+    (x.closed.union(y.closed) == null).should.be.true
+    (x.closed.union(y.open) == null).should.be.true
+    (x.open.union(y.closed) == null).should.be.true
+    (x.open.union(y.open) == null).should.be.true
+    (y.closed.union(x.closed) == null).should.be.true
+    (y.closed.union(x.open) == null).should.be.true
+    (y.open.union(x.closed) == null).should.be.true
+    (y.open.union(x.open) == null).should.be.true
+  
+  it 'should properly calculate meets unions', ->
+    [x, y] = xy @iIvl.meets
+    z = @zeroToHundred
+    x.closed.union(y.closed).equals(z.closed).should.be.true
+    (x.closed.union(y.open) == null).should.be.true
+    (x.open.union(y.closed) == null).should.be.true
+    (x.open.union(y.open) == null).should.be.true
+    y.closed.union(x.closed).equals(z.closed).should.be.true
+    (y.closed.union(x.open) == null).should.be.true
+    (y.open.union(x.closed) == null).should.be.true
+    (y.open.union(x.open) == null).should.be.true
+  
+  it 'should properly calculate left/right overlapping unions', ->
+    [x, y] = xy @iIvl.overlaps
+    z = @zeroToHundred
+    x.closed.union(y.closed).equals(z.closed).should.be.true
+    x.closed.union(y.open).equals(z.closedOpen).should.be.true
+    x.open.union(y.closed).equals(z.openClosed).should.be.true
+    x.open.union(y.open).equals(z.open).should.be.true
+    y.closed.union(x.closed).equals(z.closed).should.be.true
+    y.closed.union(x.open).equals(z.openClosed).should.be.true
+    y.open.union(x.closed).equals(z.closedOpen).should.be.true
+    y.open.union(x.open).equals(z.open).should.be.true
+
+  it 'should properly calculate begins/begun by unions', ->
+    [x, y] = xy @iIvl.begins
+    x.closed.union(y.closed).equals(y.closed).should.be.true
+    x.closed.union(y.open).equals(y.closedOpen).should.be.true
+    x.open.union(y.closed).equals(y.closed).should.be.true
+    x.open.union(y.open).equals(y.open).should.be.true
+    y.closed.union(x.closed).equals(y.closed).should.be.true
+    y.closed.union(x.open).equals(y.closed).should.be.true
+    y.open.union(x.closed).equals(y.closedOpen).should.be.true
+    y.open.union(x.open).equals(y.open).should.be.true
+    
+  it 'should properly calculate includes/included by unions', ->
+    [x, y] = xy @iIvl.during
+    x.closed.union(y.closed).equals(y.closed).should.be.true
+    x.closed.union(y.open).equals(y.open).should.be.true
+    x.open.union(y.closed).equals(y.closed).should.be.true
+    x.open.union(y.open).equals(y.open).should.be.true
+    y.closed.union(x.closed).equals(y.closed).should.be.true
+    y.closed.union(x.open).equals(y.closed).should.be.true
+    y.open.union(x.closed).equals(y.open).should.be.true
+    y.open.union(x.open).equals(y.open).should.be.true
+  
+  it 'should properly calculate ends/ended by unions', ->
+    [x, y] = xy @iIvl.ends
+    x.closed.union(y.closed).equals(y.closed).should.be.true
+    x.closed.union(y.open).equals(y.openClosed).should.be.true
+    x.open.union(y.closed).equals(y.closed).should.be.true
+    x.open.union(y.open).equals(y.open).should.be.true
+    y.closed.union(x.closed).equals(y.closed).should.be.true
+    y.closed.union(x.open).equals(y.closed).should.be.true
+    y.open.union(x.closed).equals(y.openClosed).should.be.true
+    y.open.union(x.open).equals(y.open).should.be.true
+      
+  it 'should properly handle imprecision', -> 
+    uIvl = new Interval(new Uncertainty(5,10), new Uncertainty(15, 20))
+
+    ivl = new Interval(0, 100)
+    ivl.union(uIvl).equals(ivl).should.be.true
+    uIvl.union(ivl).equals(ivl).should.be.true
+
+    ivl = new Interval(-100, 0)
+    (ivl.union(uIvl) == null).should.be.true
+    (uIvl.union(ivl) == null).should.be.true
+
+    ivl = new Interval(10, 15)
+    i = ivl.union(uIvl)
+    (i.low.low == uIvl.low.low).should.be.true
+    (i.low.high == uIvl.low.high).should.be.true
+    (i.high.low == uIvl.high.low).should.be.true
+    (i.high.high == uIvl.high.high).should.be.true
+
+    i = uIvl.union(ivl)
+    (i.low.low == uIvl.low.low).should.be.true
+    (i.low.high == uIvl.low.high).should.be.true
+    (i.high.low == uIvl.high.low).should.be.true
+    (i.high.high == uIvl.high.high).should.be.true
+    
+    ivl = new Interval(15, 20)
+    (ivl.union(uIvl).low == uIvl.low).should.be.true
+    (uIvl.union(ivl).low == uIvl.low).should.be.true
+    (ivl.union(uIvl).high == ivl.high).should.be.true
+    (uIvl.union(ivl).high == ivl.high).should.be.true
+
+    ivl = new Interval(20, 30)
+    should.not.exist ivl.union(uIvl)
+
+    ivl = new Interval(5, 20)
+    ivl.union(uIvl).equals(ivl).should.be.true
+    uIvl.union(ivl).equals(ivl).should.be.true
+
+  it 'should throw when the argument is a point', ->
+    try
+      @zeroToHundred.union 300
+      should.fail
+    catch e
+      (e?).should.be.true
 
 describe 'IntegerInterval.after', ->
   @beforeEach ->
