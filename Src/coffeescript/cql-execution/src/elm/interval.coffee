@@ -97,7 +97,7 @@ module.exports.doUnion = (a, b) ->
   
 # Delegated to by overloaded#Except
 module.exports.doExcept = (a, b) ->
-  throw new Error("Not Implemented")
+  if a? and b? then a.except(b) else null
 
 # Delegated to by overloaded#Intersect
 module.exports.doIntersect = (a, b) ->

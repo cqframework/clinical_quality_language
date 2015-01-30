@@ -796,6 +796,133 @@ describe 'DateTimeInterval.union', ->
     catch e
       (e?).should.be.true
 
+describe 'DateTimeInterval.except', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs except', ->
+    [x, y] = xy @dIvl.sameAs
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    should.not.exist y.closed.except(x.closed)
+    should.not.exist y.closed.except(x.open)
+    should.not.exist y.open.except(x.closed)
+    should.not.exist y.open.except(x.open)
+    
+  it 'should properly calculate before/after except', ->
+    [x, y] = xy @dIvl.before
+    # according to the spec these should be null, but they probably
+    # should just be themselves:
+    # [1,3] except [5,6] *should* result in [1,3] but the spec says it is *null*.
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    should.not.exist y.closed.except(x.closed)
+    should.not.exist y.closed.except(x.open)
+    should.not.exist y.open.except(x.closed)
+    should.not.exist y.open.except(x.open)
+  
+  it 'should properly calculate meets except', ->
+    [x, y] = xy @dIvl.meets
+    # according to the spec these should be null, but they probably
+    # should just be themselves:
+    # [1,3] except [4,6] *should* result in [1,3] but the spec says it is *null*.
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    should.not.exist y.closed.except(x.closed)
+    should.not.exist y.closed.except(x.open)
+    should.not.exist y.open.except(x.closed)
+    should.not.exist y.open.except(x.open)
+    
+  it 'should properly calculate left/right overlapping except', ->
+    [x, y] = xy @dIvl.overlaps
+    a = @janjune
+    b = @septdec
+    x.closed.except(y.closed).equals(a.closedOpen).should.be.true
+    x.closed.except(y.open).equals(a.closed).should.be.true
+    x.open.except(y.closed).equals(a.open).should.be.true
+    x.open.except(y.open).equals(a.openClosed).should.be.true
+    y.closed.except(x.closed).equals(b.openClosed).should.be.true
+    y.closed.except(x.open).equals(b.closed).should.be.true
+    y.open.except(x.closed).equals(b.open).should.be.true
+    y.open.except(x.open).equals(b.closedOpen).should.be.true
+  
+  it 'should properly calculate begins/begun by except', ->
+    [x, y] = xy @dIvl.begins
+    b = @julydec
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    y.closed.except(x.closed).equals(b.openClosed).should.be.true
+    y.closed.except(x.open).equals(b.closed).should.be.true
+    y.open.except(x.closed).equals(b.open).should.be.true
+    y.open.except(x.open).equals(b.closedOpen).should.be.true
+    
+  it 'should properly calculate includes/included by except', ->
+    [x, y] = xy @dIvl.during
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    should.not.exist y.closed.except(x.closed)
+    should.not.exist y.closed.except(x.open)
+    should.not.exist y.open.except(x.closed)
+    should.not.exist y.open.except(x.open)
+  
+  it 'should properly calculate ends/ended by except', ->
+    [x, y] = xy @dIvl.ends
+    b = @janjuly
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    y.closed.except(x.closed).equals(b.closedOpen).should.be.true
+    y.closed.except(x.open).equals(b.closed).should.be.true
+    y.open.except(x.closed).equals(b.open).should.be.true
+    y.open.except(x.open).equals(b.openClosed).should.be.true
+        
+  it 'should properly handle imprecision', ->
+    [x, y] = xy @dIvl.overlaps
+    (x.toDay.except(y.toDay).low  == x.toDay.low).should.be.true
+    (x.toDay.except(y.toDay).high == y.toDay.low).should.be.true
+    (y.toDay.except(x.toDay).low  == x.toDay.high).should.be.true
+    (y.toDay.except(x.toDay).high == y.toDay.high).should.be.true
+    
+    [x, y] = xy @dIvl.meets
+    # [a,b].except([b,c]) (where b is uncertain) should result in [a,b) but spec says we don't know if they overlap
+    should.not.exist x.toDay.except(y.toDay)
+    # [b,c].except([a,b]) (where b is uncertain) should result in (b,c] but spec says we don't know if they overlap
+    should.not.exist y.toDay.except(x.toDay)
+  
+    [x, y] = xy @dIvl.during
+    should.not.exist x.toDay.except(y.toDay)
+    should.not.exist y.toDay.except(x.toDay)
+ 
+    [x, y] = xy @dIvl.ends
+    should.not.exist x.toDay.except(y.toDay) 
+    should.not.exist x.toDay.except(y.toDay)  
+    (y.toDay.except(x.toDay).low  == y.toDay.low).should.be.true
+    (y.toDay.except(x.toDay).high == x.toDay.low).should.be.true
+ 
+    [x, y] = xy @dIvl.begins
+    should.not.exist x.toDay.except(y.toDay) 
+    should.not.exist x.toDay.except(y.toDay)  
+    (y.toDay.except(x.toDay).low  == x.toDay.high).should.be.true
+    (y.toDay.except(x.toDay).high == y.toDay.high).should.be.true
+      
+  it 'should throw when the argument is a point', ->
+    try
+      @all2012.except DateTime.parse('2012-07-01T00:00:00.0')
+      should.fail
+    catch e
+      (e?).should.be.true
+
 describe 'DateTimeInterval.after', ->
   @beforeEach ->
     setup @
@@ -2060,6 +2187,143 @@ describe 'IntegerInterval.union', ->
       should.fail
     catch e
       (e?).should.be.true
+
+describe 'IntegerInterval.except', ->
+  @beforeEach ->
+    setup @
+
+  it 'should properly calculate sameAs except', ->
+    [x, y] = xy @iIvl.sameAs
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    should.not.exist y.closed.except(x.closed)
+    should.not.exist y.closed.except(x.open)
+    should.not.exist y.open.except(x.closed)
+    should.not.exist y.open.except(x.open)
+    
+  it 'should properly calculate before/after except', ->
+    [x, y] = xy @iIvl.before
+    # according to the spec these should be null, but they probably
+    # should just be themselves:
+    # [1,3] except [5,6] *should* result in [1,3] but the spec says it is *null*.
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    should.not.exist y.closed.except(x.closed)
+    should.not.exist y.closed.except(x.open)
+    should.not.exist y.open.except(x.closed)
+    should.not.exist y.open.except(x.open)
+  
+  it 'should properly calculate meets except', ->
+    [x, y] = xy @iIvl.meets
+    # according to the spec these should be null, but they probably
+    # should just be themselves:
+    # [1,3] except [4,6] *should* result in [1,3] but the spec says it is *null*.
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    should.not.exist y.closed.except(x.closed)
+    should.not.exist y.closed.except(x.open)
+    should.not.exist y.open.except(x.closed)
+    should.not.exist y.open.except(x.open)
+    
+  it 'should properly calculate left/right overlapping except', ->
+    [x, y] = xy @iIvl.overlaps
+    a = @zeroToForty
+    b = @sixtyToHundred
+    x.closed.except(y.closed).equals(a.closedOpen).should.be.true
+    x.closed.except(y.open).equals(a.closed).should.be.true
+    x.open.except(y.closed).equals(a.open).should.be.true
+    x.open.except(y.open).equals(a.openClosed).should.be.true
+    y.closed.except(x.closed).equals(b.openClosed).should.be.true
+    y.closed.except(x.open).equals(b.closed).should.be.true
+    y.open.except(x.closed).equals(b.open).should.be.true
+    y.open.except(x.open).equals(b.closedOpen).should.be.true
+  
+  it 'should properly calculate begins/begun by except', ->
+    [x, y] = xy @iIvl.begins
+    b = @sixtyToHundred
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    y.closed.except(x.closed).equals(b.openClosed).should.be.true
+    y.closed.except(x.open).equals(b.closed).should.be.true
+    y.open.except(x.closed).equals(b.open).should.be.true
+    y.open.except(x.open).equals(b.closedOpen).should.be.true
+    
+  it 'should properly calculate includes/included by except', ->
+    [x, y] = xy @iIvl.during
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    should.not.exist y.closed.except(x.closed)
+    should.not.exist y.closed.except(x.open)
+    should.not.exist y.open.except(x.closed)
+    should.not.exist y.open.except(x.open)
+ 
+  it 'should properly calculate ends/ended by except', ->
+    [x, y] = xy @iIvl.ends
+    b = @zeroToForty
+    should.not.exist x.closed.except(y.closed)
+    should.not.exist x.closed.except(y.open)
+    should.not.exist x.open.except(y.closed)
+    should.not.exist x.open.except(y.open)
+    y.closed.except(x.closed).equals(b.closedOpen).should.be.true
+    y.closed.except(x.open).equals(b.closed).should.be.true
+    y.open.except(x.closed).equals(b.open).should.be.true
+    y.open.except(x.open).equals(b.openClosed).should.be.true
+        
+  it 'should properly handle imprecision', ->
+    a = 0
+    b = new Uncertainty(10,20)
+    c = 50
+    d = new Uncertainty(80,90)
+    e = 100
+    
+    x = new Interval(  b,  e) 
+    y = new Interval(a  ,c  )
+    (x.except(y).low  == c).should.be.true
+    (x.except(y).high == e).should.be.true
+    (y.except(x).low  == a).should.be.true
+    (y.except(x).high == b).should.be.true
+    
+    x = new Interval(a,b   ) 
+    y = new Interval(  b,d )
+    # x.except(y) should result in [a,b) but spec says we don't know if they overlap
+    should.not.exist x.except(y)
+    # y.except(x) should result in (b,d] but spec says we don't know if they overlap
+    should.not.exist y.except(x)
+         
+    x = new Interval(a  ,  e) 
+    y = new Interval(  b,d  )
+    should.not.exist x.except(y)
+    should.not.exist y.except(x)
+ 
+    x = new Interval(a,  d ) 
+    y = new Interval(  b, e)
+    (x.except(y).low  == a).should.be.true
+    (x.except(y).high == b).should.be.true
+    (y.except(x).low  == d).should.be.true
+    (y.except(x).high == e).should.be.true
+
+    x = new Interval(a,b,   ) 
+    y = new Interval(    d,e)
+    should.not.exist x.except(y)
+    should.not.exist y.except(x)
+ 
+  it 'should throw when the argument is a point', ->
+    try
+      @zeroToHundred.except 100
+      should.fail
+    catch e
+      (e?).should.be.true
+
 
 describe 'IntegerInterval.after', ->
   @beforeEach ->

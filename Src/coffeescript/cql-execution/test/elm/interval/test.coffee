@@ -892,3 +892,67 @@ describe 'DateTimeIntervalUnion', ->
        
 # TODO
 # it 'should properly handle imprecision', -> 
+
+describe 'IntegerIntervalExcept', ->
+  @beforeEach ->
+    setup @, data
+
+   it 'should properly calculate sameAs except', ->
+    (@intSameAsExcept.exec(@ctx) == null).should.be.true
+    
+  it 'should properly calculate before/after except', ->
+    (@intBeforeExcept.exec(@ctx) == null).should.be.true
+  
+  it 'should properly calculate meets except', ->
+    x = @intHalfInterval.exec(@ctx)
+    y = @intMeetsExcept.exec(@ctx)
+    y.equals(x).should.be.true
+    
+  it 'should properly calculate left/right overlapping except', ->
+    x = @intHalfInterval.exec(@ctx)
+    y = @intOverlapsExcept.exec(@ctx)
+    y.equals(x).should.be.true
+   
+  it 'should properly calculate begins/begun by except', ->
+    (@intBeginsExcept.exec(@ctx) == null).should.be.true
+
+  it 'should properly calculate includes/included by except', ->
+    (@intDuringExcept.exec(@ctx) == null).should.be.true
+   
+  it 'should properly calculate ends/ended by except', ->
+    (@intEndsExcept.exec(@ctx) == null).should.be.true
+
+# TODO
+# it 'should properly handle imprecision', ->
+
+describe 'DateTimeIntervalExcept', ->
+  @beforeEach ->
+    setup @, data
+
+   it 'should properly calculate sameAs except', ->
+    (@dateTimeSameAsExcept.exec(@ctx) == null).should.be.true
+    
+  it 'should properly calculate before/after except', ->
+    (@dateTimeBeforeExcept.exec(@ctx) == null).should.be.true
+  
+  it 'should properly calculate meets except', ->
+    x = @dateTimeHalfInterval.exec(@ctx)
+    y = @dateTimeMeetsExcept.exec(@ctx)
+    y.equals(x).should.be.true
+    
+  it 'should properly calculate left/right overlapping except', ->
+    x = @dateTimeHalfInterval.exec(@ctx)
+    y = @dateTimeOverlapsExcept.exec(@ctx)
+    y.equals(x).should.be.true
+   
+  it 'should properly calculate begins/begun by except', ->
+    (@dateTimeBeginsExcept.exec(@ctx) == null).should.be.true
+
+  it 'should properly calculate includes/included by except', ->
+    (@dateTimeDuringExcept.exec(@ctx) == null).should.be.true
+   
+  it 'should properly calculate ends/ended by except', ->
+    (@dateTimeEndsExcept.exec(@ctx) == null).should.be.true
+
+# TODO
+# it 'should properly handle imprecision', -> 
