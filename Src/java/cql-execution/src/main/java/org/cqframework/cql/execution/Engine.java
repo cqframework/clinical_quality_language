@@ -209,7 +209,7 @@ public class Engine {
         Global global = new Global(context);
         boolean sandboxed = false;
         List<String> modulePath = new ArrayList<String>();
-        String mainModule = workingArea.toString();
+        String mainModule = workingArea.toUri().toString(); //toString();
         modulePath.add(mainModule);
         Require require = global.installRequire(context, modulePath, sandboxed);
         require.install(scope);
