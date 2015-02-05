@@ -10,8 +10,11 @@
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "parameters" : {
@@ -25,15 +28,15 @@
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
@@ -58,15 +61,15 @@
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
@@ -115,7 +118,7 @@
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -145,7 +148,7 @@
                         }
                      } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -169,7 +172,7 @@
                         }
                      } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "18",
                      "type" : "Literal"
                   } ]
@@ -181,18 +184,16 @@
             "expression" : {
                "type" : "Union",
                "operand" : [ {
-                  "dataType" : "{http://org.hl7.fhir}Condition",
-                  "templateId" : "cqf-condition",
-                  "codeProperty" : "code",
+                  "dataType" : "{http://hl7.org/fhir}Condition",
+                  "templateId" : "Condition",
                   "type" : "Retrieve",
                   "codes" : {
                      "name" : "Acute Pharyngitis",
                      "type" : "ValueSetRef"
                   }
                }, {
-                  "dataType" : "{http://org.hl7.fhir}Condition",
-                  "templateId" : "cqf-condition",
-                  "codeProperty" : "code",
+                  "dataType" : "{http://hl7.org/fhir}Condition",
+                  "templateId" : "Condition",
                   "type" : "Retrieve",
                   "codes" : {
                      "name" : "Acute Tonsillitis",
@@ -204,9 +205,8 @@
             "name" : "Antibiotics",
             "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}MedicationPrescription",
-               "templateId" : "cqf-medicationprescription",
-               "codeProperty" : "medication.code",
+               "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
+               "templateId" : "MedicationPrescription",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Antibiotic Medications",
@@ -221,9 +221,8 @@
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}Encounter",
-                     "templateId" : "cqf-encounter",
-                     "codeProperty" : "type",
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "Encounter",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
@@ -273,12 +272,9 @@
                         "precision" : "Day",
                         "type" : "DurationBetween",
                         "operand" : [ {
-                           "type" : "Start",
-                           "operand" : {
-                              "path" : "orderedOn",
-                              "scope" : "A",
-                              "type" : "Property"
-                           }
+                           "path" : "dateWritten",
+                           "scope" : "A",
+                           "type" : "Property"
                         }, {
                            "type" : "Start",
                            "operand" : {
@@ -294,13 +290,13 @@
                         "low" : {
                            "type" : "Negate",
                            "operand" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "3",
                               "type" : "Literal"
                            }
                         },
                         "high" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "0",
                            "type" : "Literal"
                         }
@@ -389,12 +385,9 @@
                            "precision" : "Day",
                            "type" : "DurationBetween",
                            "operand" : [ {
-                              "type" : "Start",
-                              "operand" : {
-                                 "path" : "orderedOn",
-                                 "scope" : "A",
-                                 "type" : "Property"
-                              }
+                              "path" : "dateWritten",
+                              "scope" : "A",
+                              "type" : "Property"
                            }, {
                               "path" : "onsetDateTime",
                               "scope" : "D",
@@ -405,12 +398,12 @@
                            "highClosed" : true,
                            "type" : "Interval",
                            "low" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "0",
                               "type" : "Literal"
                            },
                            "high" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "30",
                               "type" : "Literal"
                            }
@@ -446,7 +439,7 @@
             "name" : "InDenominator",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+               "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                "value" : "true",
                "type" : "Literal"
             }
@@ -467,9 +460,8 @@
                   "source" : [ {
                      "alias" : "R",
                      "expression" : {
-                        "dataType" : "{http://org.hl7.fhir}Observation",
-                        "templateId" : "cqf-observation",
-                        "codeProperty" : "name",
+                        "dataType" : "{http://hl7.org/fhir}Observation",
+                        "templateId" : "Observation",
                         "type" : "Retrieve",
                         "codes" : {
                            "name" : "Group A Streptococcus Test",
@@ -481,7 +473,7 @@
                   "where" : {
                      "type" : "And",
                      "operand" : [ {
-                        "type" : "IncludedIn",
+                        "type" : "In",
                         "operand" : [ {
                            "path" : "issued",
                            "scope" : "R",
@@ -495,7 +487,7 @@
                         "operand" : {
                            "type" : "IsNull",
                            "operand" : {
-                              "path" : "value",
+                              "path" : "valueQuantity",
                               "scope" : "R",
                               "type" : "Property"
                            }

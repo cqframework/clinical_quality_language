@@ -1,49 +1,59 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.antlr.v4.runtime.misc.NotNull;
+import org.cqframework.cql.elm.tracking.ClassType;
+import org.cqframework.cql.elm.tracking.DataType;
+import org.cqframework.cql.elm.tracking.SimpleType;
+import org.cqframework.cql.elm.tracking.TupleType;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.TypeInfo;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ModelHelper {
-    public ModelHelper(@NotNull ModelInfo modelInfo) throws ClassNotFoundException {
+    public ModelHelper(@NotNull ModelInfo modelInfo, ModelHelper systemModel) throws ClassNotFoundException {
         info = modelInfo;
-        index = new HashMap<String, ClassDetail>();
+        index = new HashMap<>();
+        nameIndex = new HashMap<>();
+        classIndex = new HashMap<>();
 
-        for (int i = 0; i < info.getClassInfo().size(); i++) {
-            ClassInfo classInfo = info.getClassInfo().get(i);
-            ClassDetail classDetail = new ClassDetail();
-            classDetail.setClassInfo(classInfo);
-            classDetail.setModelClass(resolveClass(classInfo.getName()));
-            index.put(classInfo.getTopic(), classDetail);
+        ModelImporter importer = new ModelImporter(info, systemModel != null ? systemModel.nameIndex.values() : null);
+        index = importer.getTypes();
+
+        for (DataType t : index.values()) {
+            if (t instanceof ClassType) {
+                classIndex.put(((ClassType)t).getTopic(), (ClassType)t);
+            }
+
+            if (t instanceof SimpleType) {
+                nameIndex.put(((SimpleType)t).getSimpleName(), t);
+            }
+
+            if (t instanceof TupleType) {
+                nameIndex.put(((TupleType)t).getSimpleName(), t);
+            }
         }
     }
 
     private ModelInfo info;
     public ModelInfo getModelInfo() { return info; }
 
-    private HashMap<String, ClassDetail> index;
+    private Map<String, DataType> index;
+    private Map<String, ClassType> classIndex;
+    private Map<String, DataType> nameIndex;
 
-    public ClassDetail getClassDetail(@NotNull String topic) {
-        return index.get(topic);
+    public DataType resolveTypeName(@NotNull String typeName) {
+        DataType result = index.get(typeName);
+        if (result == null) {
+            result = nameIndex.get(typeName);
+        }
+
+        return result;
     }
 
-    public Class resolveClass(String unqualifiedClassName) {
-        try {
-            return Class.forName("org.hl7.fhir." + unqualifiedClassName);
-        }
-        catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    public String resolveClassName(String unqualifiedClassName) {
-        Class resolvedClass = resolveClass(unqualifiedClassName);
-        if (resolvedClass != null) {
-            return resolvedClass.getSimpleName();
-        }
-
-        return null;
+    public ClassType resolveTopic(@NotNull String topic) {
+        return classIndex.get(topic);
     }
 }

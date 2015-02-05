@@ -1,3 +1,24 @@
+
+(encounter.indication as Condition).code = '123'
+ or (encounter.indication as Diagnosis).code = '123'
+
+encounter.indication.condition.code = '123'
+encounter.indication.diagnosis.code = '123'
+
+encounter.indication.code
+
+encounter.indication.condition.code = '123'
+
+Reference
+    condition: Condition
+    refutedCondition: RefutedCondition
+    medicationStatement: MedicationStatement
+    patient: Patient
+
+medicationStatement.medication
+
+medicationStatement.contained[medicationStatement.medication.reference] as Medication
+
 // We could define same as generally:
 
 A same as B

@@ -27,11 +27,15 @@ public class TestUtils {
     }
 
     public static Object visitData(String cqlData) {
-        return CqlTranslator.fromText(cqlData).toObject();
+        CqlTranslator translator = CqlTranslator.fromText(cqlData);
+        EnsureValid(translator);
+        return translator.toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
-        return CqlTranslator.fromText(cqlLibrary).toELM();
+        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary);
+        EnsureValid(translator);
+        return translator.toELM();
     }
 
     public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
@@ -42,7 +46,19 @@ public class TestUtils {
         if (enableDateRangeOptimization) {
             options.add(CqlTranslator.Options.EnableDateRangeOptimization);
         }
-        return CqlTranslator.fromText(cqlData, options.toArray(new CqlTranslator.Options[options.size()])).toObject();
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, options.toArray(new CqlTranslator.Options[options.size()]));
+        EnsureValid(translator);
+        return translator.toObject();
+    }
+
+    private static void EnsureValid(CqlTranslator translator) {
+        StringBuilder builder = new StringBuilder();
+        for (CqlTranslatorException error : translator.getErrors()) {
+            builder.append(String.format("%s%n", error.getMessage()));
+        }
+        if (builder.length() > 0) {
+            throw new IllegalStateException(builder.toString());
+        }
     }
 
     private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {

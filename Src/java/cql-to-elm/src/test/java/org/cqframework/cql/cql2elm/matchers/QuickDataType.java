@@ -13,7 +13,7 @@ public class QuickDataType extends TypeSafeDiagnosingMatcher<QName> {
     public QuickDataType(String fullName) {
         super();
 
-        expectedValue = new QName("http://org.hl7.fhir", fullName, "");
+        expectedValue = new QName("http://hl7.org/fhir", fullName, "");
     }
 
     @Override

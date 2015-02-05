@@ -29,6 +29,7 @@ public class CqlTranslator {
     private Library library = null;
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
+    private List<CqlTranslatorException> errors = null;
 
     public static CqlTranslator fromText(String cqlText, Options... options) {
         return new CqlTranslator(new ANTLRInputStream(cqlText), options);
@@ -80,6 +81,8 @@ public class CqlTranslator {
         return retrieves;
     }
 
+    public List<CqlTranslatorException> getErrors() { return errors; }
+
     private void translateToELM(ANTLRInputStream is, Options... options) {
         cqlLexer lexer = new cqlLexer(is);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -104,6 +107,7 @@ public class CqlTranslator {
         visitResult = visitor.visit(tree);
         library = visitor.getLibrary();
         retrieves = visitor.getRetrieves();
+        errors = visitor.getErrors();
     }
 
     private String convertToXML(Library library) throws JAXBException {
@@ -138,18 +142,32 @@ public class CqlTranslator {
             options.add(Options.EnableAnnotations);
         }
         CqlTranslator translator = fromFile(inFile, options.toArray(new Options[options.size()]));
-        switch (format) {
-            case COFFEE:
-                pw.print("module.exports = ");
-                pw.println(translator.toJson());
-                break;
-            case JSON:
-                pw.println(translator.toJson());
-                break;
-            case XML:
-            default:
-                pw.println(translator.toXml());
+
+        if (translator.getErrors().size() > 0) {
+            for (CqlTranslatorException error : translator.getErrors()) {
+                if (error.getLocator() != null) {
+                    pw.println(String.format("%s (%d,%d)", error.getMessage(), error.getLocator().getStartLine(), error.getLocator().getStartChar()));
+                }
+                else {
+                    pw.println(error.getMessage());
+                }
+            }
         }
+        else {
+            switch (format) {
+                case COFFEE:
+                    pw.print("module.exports = ");
+                    pw.println(translator.toJson());
+                    break;
+                case JSON:
+                    pw.println(translator.toJson());
+                    break;
+                case XML:
+                default:
+                    pw.println(translator.toXml());
+            }
+        }
+
         pw.println();
         pw.close();
     }

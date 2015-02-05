@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin:'application'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+
+group = 'org.cqframework'
+version = '0.1'
+sourceCompatibility = '1.7'
+
+mainClassName = 'org.cqframework.cql.tools.xsd2modelinfo'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':elm')
+    compile group: 'org.apache.ws.xmlschema', name: 'xmlschema-core', version: '2.2.0'
+    compile group: 'org.apache.ws.xmlschema', name: 'xmlschema-walker', version: '2.2.0'
+    testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+}

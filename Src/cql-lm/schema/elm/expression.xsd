@@ -1175,7 +1175,7 @@ If either argument is null, the result is null.</xs:documentation>
 				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
-		<!-- Contains(i, p) = (if lowClosed then p >= IsNull(i.low, p) else p > i.low) and (if highClosed then p <= IsNull(i.high, p) else p < i.high) -->
+		<!-- Contains(i, p) = (if lowClosed then p >= IfNull(i.low, p) else p > i.low) and (if highClosed then p <= IfNull(i.high, p) else p < i.high) -->
 	</xs:complexType>
 	<xs:complexType name="In">
 		<xs:annotation>
@@ -1196,7 +1196,7 @@ If either argument is null, the result is null.</xs:documentation>
 				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
-		<!-- In(p, i) = (if lowClosed then p >= IsNull(i.low, p) else p > i.low) and (if highClosed then p <= IsNull(i.high, p) else p < i.high) -->
+		<!-- In(p, i) = (if lowClosed then p >= IfNull(i.low, p) else p > i.low) and (if highClosed then p <= IfNull(i.high, p) else p < i.high) -->
 	</xs:complexType>
 	<xs:complexType name="Includes">
 		<xs:annotation>

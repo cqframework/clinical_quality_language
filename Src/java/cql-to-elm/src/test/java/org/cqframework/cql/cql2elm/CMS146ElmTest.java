@@ -38,8 +38,8 @@ public class CMS146ElmTest {
     @Test
     public void testUsingDataModel() {
         List<UsingDef> models = library.getUsings().getDef();
-        assertThat(models, hasSize(1));
-        assertThat(models.get(0).getUri(), is("http://org.hl7.fhir"));
+        assertThat(models, hasSize(2));
+        assertThat(models.get(1).getUri(), is("http://hl7.org/fhir"));
     }
 
     @Test
@@ -49,28 +49,28 @@ public class CMS146ElmTest {
         Collection<Retrieve> expectedCR = Arrays.asList(
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
-                        .withTemplateId("cqf-condition")
-                        .withCodeProperty("code")
+                        .withTemplateId("Condition") //.withTemplateId("cqf-condition")
+                        //.withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
-                        .withTemplateId("cqf-condition")
-                        .withCodeProperty("code")
+                        .withTemplateId("Condition") //.withTemplateId("cqf-condition")
+                        //.withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("MedicationPrescription"))
-                        .withTemplateId("cqf-medicationprescription")
-                        .withCodeProperty("medication.code")
+                        .withTemplateId("MedicationPrescription") //.withTemplateId("cqf-medicationprescription")
+                        //.withCodeProperty("medication.code")
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Encounter"))
-                        .withTemplateId("cqf-encounter")
-                        .withCodeProperty("type")
+                        .withTemplateId("Encounter") //.withTemplateId("cqf-encounter")
+                        //.withCodeProperty("type")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))
-                        .withTemplateId("cqf-observation")
-                        .withCodeProperty("name")
+                        .withTemplateId("Observation") //.withTemplateId("cqf-observation")
+                        //.withCodeProperty("name")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
 
@@ -238,6 +238,6 @@ public class CMS146ElmTest {
     }
 
     private QName quickDataType(String dataTypeName) {
-        return new QName("http://org.hl7.fhir", dataTypeName, "quick");
+        return new QName("http://hl7.org/fhir", dataTypeName, "quick");
     }
 }
