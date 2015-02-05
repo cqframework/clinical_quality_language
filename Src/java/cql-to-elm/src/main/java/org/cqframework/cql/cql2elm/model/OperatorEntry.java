@@ -1,8 +1,5 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.TypeParameter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

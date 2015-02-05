@@ -4,7 +4,6 @@ import org.cqframework.cql.elm.tracking.DataType;
 import org.cqframework.cql.elm.tracking.TypeParameter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 

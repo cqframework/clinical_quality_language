@@ -8,11 +8,6 @@ import java.util.HashMap;
 
 public class TranslatedLibrary {
     private VersionedIdentifier identifier;
-    private final HashMap<String, UsingDef> usings = new HashMap<>();
-    private final HashMap<String, IncludeDef> includes = new HashMap<>();
-    private final HashMap<String, ValueSetDef> valuesets = new HashMap<>();
-    private final HashMap<String, ParameterDef> parameters = new HashMap<>();
-    private final HashMap<String, ExpressionDef> expressions = new HashMap<>();
     private final HashMap<String, Element> namespace = new HashMap<>();
     private final OperatorMap operators = new OperatorMap();
 

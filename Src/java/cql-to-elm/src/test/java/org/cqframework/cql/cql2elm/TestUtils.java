@@ -28,13 +28,13 @@ public class TestUtils {
 
     public static Object visitData(String cqlData) {
         CqlTranslator translator = CqlTranslator.fromText(cqlData);
-        EnsureValid(translator);
+        ensureValid(translator);
         return translator.toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
         CqlTranslator translator = CqlTranslator.fromText(cqlLibrary);
-        EnsureValid(translator);
+        ensureValid(translator);
         return translator.toELM();
     }
 
@@ -47,11 +47,11 @@ public class TestUtils {
             options.add(CqlTranslator.Options.EnableDateRangeOptimization);
         }
         CqlTranslator translator = CqlTranslator.fromText(cqlData, options.toArray(new CqlTranslator.Options[options.size()]));
-        EnsureValid(translator);
+        ensureValid(translator);
         return translator.toObject();
     }
 
-    private static void EnsureValid(CqlTranslator translator) {
+    private static void ensureValid(CqlTranslator translator) {
         StringBuilder builder = new StringBuilder();
         for (CqlTranslatorException error : translator.getErrors()) {
             builder.append(String.format("%s%n", error.getMessage()));

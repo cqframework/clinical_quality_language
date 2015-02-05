@@ -1,10 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.apache.ws.commons.schema.*;
 import org.cqframework.cql.elm.tracking.*;
 import org.hl7.elm_modelinfo.r1.*;
 
-import javax.xml.namespace.QName;
 import java.util.*;
 
 public class ModelImporter {

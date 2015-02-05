@@ -452,10 +452,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         DataType lowType = result.getLow().getResultType();
         DataType highType = result.getHigh().getResultType();
-        if (lowType != null) {
-            if (highType != null) {
-                DataTypes.verifyType(highType, lowType);
-            }
+        if ((lowType != null) && (highType != null)) {
+            DataTypes.verifyType(highType, lowType);
         }
 
         DataType pointType = lowType != null ? lowType : highType;
@@ -979,7 +977,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 exp = of.createGreaterOrEqual();
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Unknown operator: ", ctx.getChild(1).getText()));
+                throw new IllegalArgumentException(String.format("Unknown operator: %s", ctx.getChild(1).getText()));
         }
         exp.withOperand(
                 parseExpression(ctx.expression(0)),
@@ -1822,17 +1820,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIfThenElseExpressionTerm(@NotNull cqlParser.IfThenElseExpressionTermContext ctx) {
-        If _if = of.createIf()
+        If ifObject = of.createIf()
                 .withCondition(parseExpression(ctx.expression(0)))
                 .withThen(parseExpression(ctx.expression(1)))
                 .withElse(parseExpression(ctx.expression(2)));
 
-        DataTypes.verifyType(_if.getCondition().getResultType(), resolveTypeName("Boolean"));
-        DataType thenType = _if.getThen().getResultType();
-        DataTypes.verifyType(_if.getElse().getResultType(), thenType);
+        DataTypes.verifyType(ifObject.getCondition().getResultType(), resolveTypeName("Boolean"));
+        DataType thenType = ifObject.getThen().getResultType();
+        DataTypes.verifyType(ifObject.getElse().getResultType(), thenType);
 
-        _if.setResultType(thenType);
-        return _if;
+        ifObject.setResultType(thenType);
+        return ifObject;
     }
 
     @Override
@@ -2600,10 +2598,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         throw new IllegalArgumentException("A named type is required in this context.");
     }
 
-    private ClassType resolveTopic(String topic) {
-        return resolveTopic(null, topic);
-    }
-
     private ClassType resolveTopic(String model, String topic) {
         ClassType result = null;
         if (model == null || model.equals("")) {
@@ -2806,26 +2800,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         translatedLibrary.add(vs);
     }
 
-    private String resolveValuesetName(String identifier) {
-        if (libraryInfo != null) {
-            return libraryInfo.resolveValuesetName(identifier);
-        }
-
-        return null;
-    }
-
-    private String resolveValuesetName(Library library, String identifier) {
-        if (library.getValueSets() != null) {
-            for (ValueSetDef current : library.getValueSets().getDef()) {
-                if (current.getName().equals(identifier)) {
-                    return identifier;
-                }
-            }
-        }
-
-        return null;
-    }
-
     private void addToLibrary(ParameterDef paramDef) {
         if (library.getParameters() == null) {
             library.setParameters(of.createLibraryParameters());
@@ -2835,26 +2809,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         translatedLibrary.add(paramDef);
     }
 
-    private String resolveParameterName(String identifier) {
-        if (libraryInfo != null) {
-            return libraryInfo.resolveParameterName(identifier);
-        }
-
-        return null;
-    }
-
-    private String resolveParameterName(Library library, String identifier) {
-        if (library.getParameters() != null) {
-            for (ParameterDef current : library.getParameters().getDef()) {
-                if (current.getName().equals(identifier)) {
-                    return identifier;
-                }
-            }
-        }
-
-        return null;
-    }
-
     private void addToLibrary(ExpressionDef expDef) {
         if (library.getStatements() == null) {
             library.setStatements(of.createLibraryStatements());
@@ -2862,26 +2816,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         library.getStatements().getDef().add(expDef);
 
         translatedLibrary.add(expDef);
-    }
-
-    private String resolveExpressionName(String identifier) {
-        if (libraryInfo != null) {
-            return libraryInfo.resolveExpressionName(identifier);
-        }
-
-        return null;
-    }
-
-    private String resolveExpressionName(Library library, String identifier) {
-        if (library.getStatements() != null) {
-            for (ExpressionDef current : library.getStatements().getDef()) {
-                if (!(current instanceof FunctionDef) && current.getName().equals(identifier)) {
-                    return identifier;
-                }
-            }
-        }
-
-        return null;
     }
 
     private void addToLibrary(IncludeDef includeDef) {
@@ -2907,18 +2841,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private void loadSystemLibrary() {
         TranslatedLibrary systemLibrary = SystemLibraryHelper.load(getSystemModel());
         libraries.put(systemLibrary.getIdentifier().getId(), systemLibrary);
-    }
-
-    private String resolveLibraryName(String identifier) {
-        if (library.getIncludes() != null) {
-            for (IncludeDef current : library.getIncludes().getDef()) {
-                if (current.getLocalIdentifier().equals(identifier)) {
-                    return identifier;
-                }
-            }
-        }
-
-        return null;
     }
 
     private TranslatedLibrary resolveLibrary(String identifier) {

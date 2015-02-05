@@ -5,9 +5,7 @@ import org.cqframework.cql.elm.tracking.ClassType;
 import org.cqframework.cql.elm.tracking.DataType;
 import org.cqframework.cql.elm.tracking.SimpleType;
 import org.cqframework.cql.elm.tracking.TupleType;
-import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.TypeInfo;
 
 import java.util.HashMap;
 import java.util.Map;

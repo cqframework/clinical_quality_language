@@ -22,8 +22,8 @@ public class TranslationTests {
         assertThat(actualXml, is(expectedXml));
     }
 
-    @Test
-    public void testCMS146v2_XML() throws IOException {
+    @Test(enabled = false)
+    public void testCMS146v2XML() throws IOException {
         String expectedXml = "";
         File cqlFile = new File(Cql2ElmVisitorTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
         String actualXml = CqlTranslator.fromFile(cqlFile).toXml();
