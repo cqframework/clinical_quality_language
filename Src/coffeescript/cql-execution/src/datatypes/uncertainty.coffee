@@ -6,7 +6,7 @@ module.exports.Uncertainty = class Uncertainty
 
   constructor: (@low = null, @high) ->
     gt = (a, b) -> if a.constructor.name is 'DateTime' then a.after b else a > b
-    if typeof high is 'undefined' then @high = @low
+    if typeof @high is 'undefined' then @high = @low
     if @low? and @high? and gt(@low, @high) then [@low, @high] = [@high, @low]
 
   isPoint: () ->
