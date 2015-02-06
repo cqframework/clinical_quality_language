@@ -2592,7 +2592,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private QName dataTypeToQName(DataType type) {
         if (type instanceof NamedType) {
             NamedType namedType = (NamedType)type;
-            return new QName(getModelHelper(namedType.getNamespace()).getModelInfo().getUrl(), namedType.getSimpleName());
+            org.hl7.elm_modelinfo.r1.ModelInfo modelInfo = getModelHelper(namedType.getNamespace()).getModelInfo();
+            return new QName(modelInfo.getUrl(), namedType.getSimpleName());
         }
 
         throw new IllegalArgumentException("A named type is required in this context.");
