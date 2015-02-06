@@ -788,50 +788,50 @@ describe 'IntegerIntervalUnion', ->
     y = @intClosedUnionOpen.exec(@ctx)
     y.contains(0).should.be.true
     y.contains(10).should.be.false
-    
+
     y = @intOpenUnionOpen.exec(@ctx)
     y.contains(0).should.be.false
     y.contains(10).should.be.false
-   
+
     y = @intOpenUnionClosed.exec(@ctx)
     y.contains(0).should.be.false
     y.contains(10).should.be.true
-    
+
   it 'should properly calculate sameAs unions', ->
     x = @intFullInterval.exec(@ctx)
     y = @intSameAsUnion.exec(@ctx)
     y.equals(x).should.be.true
-    
+
   it 'should properly calculate before/after unions', ->
     (@intBeforeUnion.exec(@ctx) == null).should.be.true
-  
+
   it 'should properly calculate meets unions', ->
     x = @intFullInterval.exec(@ctx)
     y = @intMeetsUnion.exec(@ctx)
     y.equals(x).should.be.true
-    
+
   it 'should properly calculate left/right overlapping unions', ->
     x = @intFullInterval.exec(@ctx)
     y = @intOverlapsUnion.exec(@ctx)
     y.equals(x).should.be.true
-   
+
   it 'should properly calculate begins/begun by unions', ->
     x = @intFullInterval.exec(@ctx)
     y = @intBeginsUnion.exec(@ctx)
     y.equals(x).should.be.true
-     
+
   it 'should properly calculate includes/included by unions', ->
     x = @intFullInterval.exec(@ctx)
     y = @intDuringUnion.exec(@ctx)
     y.equals(x).should.be.true
-   
+
   it 'should properly calculate ends/ended by unions', ->
     x = @intFullInterval.exec(@ctx)
     y = @intEndsUnion.exec(@ctx)
     y.equals(x).should.be.true
-       
+
 # TODO
-# it 'should properly handle imprecision', -> 
+# it 'should properly handle imprecision', ->
 
 describe 'DateTimeIntervalUnion', ->
   @beforeEach ->
@@ -844,54 +844,54 @@ describe 'DateTimeIntervalUnion', ->
 
     a = new DateTime(2012, 1, 1, 0, 0, 0, 0)
     b = new DateTime(2013, 1, 1, 0, 0, 0, 0)
-    
+
     y = @dateTimeClosedUnionOpen.exec(@ctx)
     y.contains(a).should.be.true
     y.contains(b).should.be.false
-    
+
     y = @dateTimeOpenUnionOpen.exec(@ctx)
     y.contains(a).should.be.false
     y.contains(b).should.be.false
-   
+
     y = @dateTimeOpenUnionClosed.exec(@ctx)
     y.contains(a).should.be.false
     y.contains(b).should.be.true
-    
+
   it 'should properly calculate sameAs unions', ->
     x = @dateTimeFullInterval.exec(@ctx)
     y = @dateTimeSameAsUnion.exec(@ctx)
     y.equals(x).should.be.true
-    
+
   it 'should properly calculate before/after unions', ->
     (@dateTimeBeforeUnion.exec(@ctx) == null).should.be.true
-  
+
   it 'should properly calculate meets unions', ->
     x = @dateTimeFullInterval.exec(@ctx)
     y = @dateTimeMeetsUnion.exec(@ctx)
     y.equals(x).should.be.true
-    
+
   it 'should properly calculate left/right overlapping unions', ->
     x = @dateTimeFullInterval.exec(@ctx)
     y = @dateTimeOverlapsUnion.exec(@ctx)
     y.equals(x).should.be.true
-   
+
   it 'should properly calculate begins/begun by unions', ->
     x = @dateTimeFullInterval.exec(@ctx)
     y = @dateTimeBeginsUnion.exec(@ctx)
     y.equals(x).should.be.true
-     
+
   it 'should properly calculate includes/included by unions', ->
     x = @dateTimeFullInterval.exec(@ctx)
     y = @dateTimeDuringUnion.exec(@ctx)
     y.equals(x).should.be.true
-   
+
   it 'should properly calculate ends/ended by unions', ->
     x = @dateTimeFullInterval.exec(@ctx)
     y = @dateTimeEndsUnion.exec(@ctx)
     y.equals(x).should.be.true
-       
+
 # TODO
-# it 'should properly handle imprecision', -> 
+# it 'should properly handle imprecision', ->
 
 describe 'IntegerIntervalExcept', ->
   @beforeEach ->
@@ -899,26 +899,26 @@ describe 'IntegerIntervalExcept', ->
 
    it 'should properly calculate sameAs except', ->
     (@intSameAsExcept.exec(@ctx) == null).should.be.true
-    
+
   it 'should properly calculate before/after except', ->
     (@intBeforeExcept.exec(@ctx) == null).should.be.true
-  
+
   it 'should properly calculate meets except', ->
     x = @intHalfInterval.exec(@ctx)
     y = @intMeetsExcept.exec(@ctx)
     y.equals(x).should.be.true
-    
+
   it 'should properly calculate left/right overlapping except', ->
     x = @intHalfInterval.exec(@ctx)
     y = @intOverlapsExcept.exec(@ctx)
     y.equals(x).should.be.true
-   
+
   it 'should properly calculate begins/begun by except', ->
     (@intBeginsExcept.exec(@ctx) == null).should.be.true
 
   it 'should properly calculate includes/included by except', ->
     (@intDuringExcept.exec(@ctx) == null).should.be.true
-   
+
   it 'should properly calculate ends/ended by except', ->
     (@intEndsExcept.exec(@ctx) == null).should.be.true
 
@@ -931,28 +931,102 @@ describe 'DateTimeIntervalExcept', ->
 
    it 'should properly calculate sameAs except', ->
     (@dateTimeSameAsExcept.exec(@ctx) == null).should.be.true
-    
+
   it 'should properly calculate before/after except', ->
     (@dateTimeBeforeExcept.exec(@ctx) == null).should.be.true
-  
+
   it 'should properly calculate meets except', ->
     x = @dateTimeHalfInterval.exec(@ctx)
     y = @dateTimeMeetsExcept.exec(@ctx)
     y.equals(x).should.be.true
-    
+
   it 'should properly calculate left/right overlapping except', ->
     x = @dateTimeHalfInterval.exec(@ctx)
     y = @dateTimeOverlapsExcept.exec(@ctx)
     y.equals(x).should.be.true
-   
+
   it 'should properly calculate begins/begun by except', ->
     (@dateTimeBeginsExcept.exec(@ctx) == null).should.be.true
 
   it 'should properly calculate includes/included by except', ->
     (@dateTimeDuringExcept.exec(@ctx) == null).should.be.true
-   
+
   it 'should properly calculate ends/ended by except', ->
     (@dateTimeEndsExcept.exec(@ctx) == null).should.be.true
 
 # TODO
-# it 'should properly handle imprecision', -> 
+# it 'should properly handle imprecision', ->
+
+describe 'IntegerIntervalIntersect', ->
+  @beforeEach ->
+    setup @, data
+
+   it 'should properly calculate sameAs intersect', ->
+    x = @intSameAsIntersect.exec(@ctx)
+    y = @intFullInterval.exec(@ctx)
+    x.equals(y).should.be.true
+
+  it 'should properly calculate before/after intersect', ->
+    (@intBeforeIntersect.exec(@ctx) == null).should.be.true
+
+  it 'should properly calculate meets intersect', ->
+    x = @intMeetsInterval.exec(@ctx)
+    y = @intMeetsIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+  it 'should properly calculate left/right overlapping intersect', ->
+    x = @intOverlapsInterval.exec(@ctx)
+    y = @intOverlapsIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+  it 'should properly calculate begins/begun by intersect', ->
+    x = @intBeginsInterval.exec(@ctx)
+    y = @intBeginsIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+  it 'should properly calculate includes/included by intersect', ->
+    x = @intDuringInterval.exec(@ctx)
+    y = @intDuringIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+  it 'should properly calculate ends/ended by intersect', ->
+    x = @intEndsInterval.exec(@ctx)
+    y = @intEndsIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+describe 'DateTimeIntervalIntersect', ->
+  @beforeEach ->
+    setup @, data
+
+   it 'should properly calculate sameAs intersect', ->
+    x = @dateTimeSameAsIntersect.exec(@ctx)
+    y = @dateTimeFullInterval.exec(@ctx)
+    x.equals(y).should.be.true
+
+  it 'should properly calculate before/after intersect', ->
+    (@dateTimeBeforeIntersect.exec(@ctx) == null).should.be.true
+
+  it 'should properly calculate meets intersect', ->
+    x = @dateTimeMeetsInterval.exec(@ctx)
+    y = @dateTimeMeetsIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+  it 'should properly calculate left/right overlapping intersect', ->
+    x = @dateTimeOverlapsInterval.exec(@ctx)
+    y = @dateTimeOverlapsIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+  it 'should properly calculate begins/begun by intersect', ->
+    x = @dateTimeBeginsInterval.exec(@ctx)
+    y = @dateTimeBeginsIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+  it 'should properly calculate includes/included by intersect', ->
+    x = @dateTimeDuringInterval.exec(@ctx)
+    y = @dateTimeDuringIntersect.exec(@ctx)
+    y.equals(x).should.be.true
+
+  it 'should properly calculate ends/ended by intersect', ->
+    x = @dateTimeEndsInterval.exec(@ctx)
+    y = @dateTimeEndsIntersect.exec(@ctx)
+    y.equals(x).should.be.true

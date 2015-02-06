@@ -16,7 +16,7 @@ module.exports.Interval = class Interval
     )
 
   includes: (other) ->
-    if not (other instanceof Interval) then throw new Error("Argument to includedIn must be an interval")
+    if not (other instanceof Interval) then throw new Error("Argument to includes must be an interval")
     a = @toClosed()
     b = other.toClosed()
     ThreeValuedLogic.and(
@@ -55,7 +55,7 @@ module.exports.Interval = class Interval
       cmp.lessThan(closed.low, low),
       cmp.greaterThanOrEquals(closed.high, low)
     )
-    
+
   areDateTimes = (a, b) ->
     a instanceof DateTime and b instanceof DateTime
 
@@ -67,7 +67,7 @@ module.exports.Interval = class Interval
 
   isNumberAndUncertainty = (a, b) ->
     ( (isUncertainty(a) and isNumber(b)) || (isUncertainty(b) and isNumber(a)) )
-    
+
   union: (other) ->
     if not (other instanceof Interval) then throw new Error("Argument to union must be an interval")
     # Note that interval union is only defined if the arguments overlap or meet.
@@ -91,10 +91,71 @@ module.exports.Interval = class Interval
     else
       null
 
+  intersect: (other) ->
+    # The intersect operator for intervals returns the intersection of two intervals.
+    # More precisely, the operator returns the interval that defines the overlapping
+    # portion of both arguments. If the arguments do not overlap, this operator returns null.
+    # If either argument is null, the result is null.
+    if (other == null) then return null
+    if not (other instanceof Interval) then throw new Error("Argument to intersect must be an interval")
+    if @overlaps(other)
+      [a, b] = [@, other]
+
+      plow = DateTime.Unit.MILLISECOND
+      phigh = DateTime.Unit.MILLISECOND
+      if areDateTimes(a.low,b.low)
+        if a.low.isLessPrecise(b.low)
+          plow = a.low.getPrecision()
+        else
+          plow = b.low.getPrecision()
+
+      if areDateTimes(a.high,b.high)
+        if a.high.isLessPrecise(b.high)
+          phigh = a.high.getPrecision()
+        else
+          phigh = b.high.getPrecision()
+
+      if cmp.greaterThanOrEquals(a.low,b.low,plow) and cmp.lessThanOrEquals(a.high,b.high,phigh)
+        [l, lc] = [@low, @lowClosed]
+        [h, hc] = [@high, @highClosed]
+        if cmp.equals(a.low,b.low)
+          lc = (@lowClosed and other.lowClosed)
+        if cmp.equals(a.high,b.high)
+          hc = (@highClosed and other.highClosed)
+        new Interval(l, h, lc, hc)
+      else if cmp.greaterThanOrEquals(b.low,a.low,plow) and cmp.lessThanOrEquals(b.high,a.high,phigh)
+        [l, lc] = [other.low, other.lowClosed]
+        [h, hc] = [other.high, other.highClosed]
+        if cmp.equals(a.low,b.low)
+          lc = (@lowClosed and other.lowClosed)
+        if cmp.equals(a.high,b.high)
+          hc = (@highClosed and other.highClosed)
+        new Interval(l, h, lc, hc)
+      else if cmp.lessThanOrEquals(a.low,b.low,plow) and cmp.lessThanOrEquals(a.high,b.high,phigh)
+        [l, lc] = [other.low, other.lowClosed]
+        [h, hc] = [@high, @highClosed]
+        if cmp.equals(a.low,b.low)
+          lc = (@lowClosed and other.lowClosed)
+        if cmp.equals(a.high,b.high)
+          hc = (@highClosed and other.highClosed)
+        new Interval(l, h, lc, hc)
+      else if cmp.lessThanOrEquals(b.low,a.low,plow) and cmp.lessThanOrEquals(b.high,a.high,phigh)
+        [l, lc] = [@low, @lowClosed]
+        [h, hc] = [other.high, other.highClosed]
+        if cmp.equals(a.low,b.low)
+          lc = (@lowClosed and other.lowClosed)
+        if cmp.equals(a.high,b.high)
+          hc = (@highClosed and other.highClosed)
+        new Interval(l, h, lc, hc)
+      else
+        null
+    else
+      null
+
   except: (other) ->
     if (other == null) then return null
     if not (other instanceof Interval) then throw new Error("Argument to except must be an interval")
-    
+
     #except computes the difference between two intervals.
     #Note that except is only defined for cases that result in a well-formed interval.
     #For example, if either argument properly includes the other, the result of subtracting one
@@ -106,11 +167,11 @@ module.exports.Interval = class Interval
     #overlap with the second. If the arguments do not overlap, or if the second argument is
     #properly contained within the first, this operator returns null.
     #If either argument is null, the result is null.
-    
+
     if @overlaps(other) or @meets(other)
       #[a, b] = [@toClosed(), other.toClosed()]
       [a, b] = [@, other]
-        
+
       if cmp.greaterThanOrEquals(a.low,b.low) and cmp.lessThanOrEquals(a.high,b.high)
         null # subtracting [A,B] from [A,B] leaves nothing, right?
       else if cmp.lessThanOrEquals(a.low,b.low) and cmp.greaterThanOrEquals(a.high,b.low) and not cmp.lessThan(b.high,a.high)
@@ -126,7 +187,7 @@ module.exports.Interval = class Interval
         if cmp.equals(l,h)
           null
         else
-          new Interval(l, h, lc, hc)        
+          new Interval(l, h, lc, hc)
       else
         null
     else

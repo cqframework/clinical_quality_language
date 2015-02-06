@@ -10,34 +10,34 @@ areDateTimes = (a, b) ->
 isUncertainty = (x) ->
   x instanceof Uncertainty
 
-module.exports.lessThan = (a, b) ->
+module.exports.lessThan = (a, b, precision = DateTime.Unit.MILLISECOND) ->
   switch
     when areNumbers a, b then a < b
-    when areDateTimes a, b then a.before b
+    when areDateTimes a, b then a.before(b, precision)
     when isUncertainty a then a.lessThan b
     when isUncertainty b then Uncertainty.from(a).lessThan b
     else null
 
-module.exports.lessThanOrEquals = (a, b) ->
+module.exports.lessThanOrEquals = (a, b, precision = DateTime.Unit.MILLISECOND) ->
   switch
     when areNumbers a, b then a <= b
-    when areDateTimes a, b then a.sameOrBefore b
+    when areDateTimes a, b then a.sameOrBefore(b, precision)
     when isUncertainty a then a.lessThanOrEquals b
     when isUncertainty b then Uncertainty.from(a).lessThanOrEquals b
     else null
 
-module.exports.greaterThan = (a, b) ->
+module.exports.greaterThan = (a, b, precision = DateTime.Unit.MILLISECOND) ->
   switch
     when areNumbers a, b then a > b
-    when areDateTimes a, b then a.after b
+    when areDateTimes a, b then a.after(b, precision)
     when isUncertainty a then a.greaterThan b
     when isUncertainty b then Uncertainty.from(a).greaterThan b
     else null
 
-module.exports.greaterThanOrEquals = (a, b) ->
+module.exports.greaterThanOrEquals = (a, b, precision = DateTime.Unit.MILLISECOND) ->
   switch
     when areNumbers a, b then a >= b
-    when areDateTimes a, b then a.sameOrAfter b
+    when areDateTimes a, b then a.sameOrAfter(b, precision)
     when isUncertainty a then a.greaterThanOrEquals b
     when isUncertainty b then Uncertainty.from(a).greaterThanOrEquals b
     else null

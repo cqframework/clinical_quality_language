@@ -94,14 +94,14 @@ module.exports.OverlapsBefore = class OverlapsBefore extends Expression
 # Delegated to by overloaded#Union
 module.exports.doUnion = (a, b) ->
   a.union(b)
-  
+
 # Delegated to by overloaded#Except
 module.exports.doExcept = (a, b) ->
   if a? and b? then a.except(b) else null
 
 # Delegated to by overloaded#Intersect
 module.exports.doIntersect = (a, b) ->
-  throw new Error("Not Implemented")
+  if a? and b? then a.intersect(b) else null
 
 module.exports.Width = class Width extends Expression
   constructor: (json) ->

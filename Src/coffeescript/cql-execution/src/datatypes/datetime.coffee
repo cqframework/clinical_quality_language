@@ -185,25 +185,21 @@ module.exports.DateTime = class DateTime
 
   isImprecise: () ->
     not @isPrecise()
-    
+
   isMorePrecise: (other) ->
     for field in DateTime.FIELDS
       if (other[field]? and not @[field]?) then return false
     not @isSamePrecision(other)
-    
+
   isLessPrecise: (other) ->
     not @isSamePrecision(other) and not @isMorePrecise(other)
-    #for field in DateTime.FIELDS
-    #  if (not @[field]? and other[field]?) then return true
-    #if @isSamePrecision(other) then return false
-    #true
-    
+
   isSamePrecision: (other) ->
     for field in DateTime.FIELDS
       if (@[field]? and not other[field]?) then return false
-      if (not @[field]? and other[field]?) then return false        
+      if (not @[field]? and other[field]?) then return false
     true
-  
+
   getPrecision: () ->
     result = null
     if @year? then result = DateTime.Unit.YEAR else return result
