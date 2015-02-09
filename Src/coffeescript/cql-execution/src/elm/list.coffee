@@ -160,3 +160,5 @@ module.exports.LastFunctionRef = class LastFunctionRef extends FunctionRef
 
   exec: (ctx) ->
     @last.exec ctx
+
+# Length is completely handled by overloaded#Length

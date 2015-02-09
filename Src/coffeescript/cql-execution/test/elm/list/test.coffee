@@ -421,3 +421,22 @@ describe 'Last', ->
 
   it 'should return null for an empty list', ->
     should(@nullValue.exec(@ctx)).be.null
+
+describe 'Length', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should get length of a list of numbers', ->
+    @numbers.exec(@ctx).should.equal 5
+
+  it 'should get length of a list of lists', ->
+    @lists.exec(@ctx).should.equal 4
+
+  it 'should get length of a list of tuples', ->
+    @tuples.exec(@ctx).should.equal 2
+
+  it 'should get length of an empty list', ->
+    @empty.exec(@ctx).should.equal 0
+
+  it 'should return null for an empty list', ->
+    should(@nullValue.exec(@ctx)).be.null

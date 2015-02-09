@@ -1,5 +1,6 @@
-{ Expression, UnimplementedExpression } = require './expression'
-{ ThreeValuedLogic } = require '../datatypes/datatypes'
+{ Expression } = require './expression'
+{ FunctionRef } = require './reusable'
+{ ThreeValuedLogic } = require '../datatypes/logic'
 { Exception } = require '../datatypes/exception'
 { equals, typeIsArray } = require '../util/util'
 { build } = require './builder'
@@ -142,3 +143,23 @@ module.exports.ProperIncludedIn = class ProperIncludedIn extends Expression
       when typeIsArray(container) then LIST
       else IVL
     lib.doProperIncludes(container, contained)
+
+module.exports.Length = class Length extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs ctx
+    if arg? then arg.length else null
+
+# TODO: Remove functionref when ELM does Length natively
+module.exports.LengthFunctionRef = class LengthFunctionRef extends FunctionRef
+  constructor: (json) ->
+    super
+    @length = new Length {
+      "type" : "Length",
+      "operand" : json.operand[0]
+    }
+
+  exec: (ctx) ->
+    @length.exec(ctx)

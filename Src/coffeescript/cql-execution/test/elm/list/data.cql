@@ -155,3 +155,10 @@ define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
 define Unordered = Last({3, 1, 4, 2})
 define Empty = Last({})
 define NullValue = Last(null)
+
+// @Test: Length
+define Numbers = Length({2, 4, 6, 8, 10})
+define Lists = Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
+define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Empty = Length({})
+define NullValue = Length(null)

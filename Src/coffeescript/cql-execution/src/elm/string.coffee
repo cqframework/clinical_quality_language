@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { FunctionRef } = require './reusable'
 { build } = require './builder'
 
@@ -59,26 +59,7 @@ module.exports.SplitFunctionRef = class SplitFunctionRef extends FunctionRef
   exec: (ctx) ->
     @split.exec(ctx)
 
-# TODO: Also support on arrays?
-module.exports.Length = class Length extends Expression
-  constructor: (json) ->
-    super
-
-  exec: (ctx) ->
-    arg = @execArgs ctx
-    if arg? then arg.length else null
-
-# TODO: Remove functionref when ELM does Length natively
-module.exports.LengthFunctionRef = class LengthFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @length = new Length {
-      "type" : "Length",
-      "operand" : json.operand[0]
-    }
-
-  exec: (ctx) ->
-    @length.exec(ctx)
+# Length is completely handled by overloaded#Length
 
 module.exports.Upper = class Upper extends Expression
   constructor: (json) ->
