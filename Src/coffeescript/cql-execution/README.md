@@ -87,14 +87,14 @@ Many of the tests require JSON ELM data.  It is much easier to write CQL rather 
 test authors should create test data by adding new CQL to _test/data/cql-test-data.txt_.  Some
 conventions are followed to make testing easier.  The following is an example of some test data:
 
-    # And
+    // @Test: And
     define AllTrue = true and true
     define AllFalse = false and false
     define SomeTrue = true and false
 
-The `# And` indicates the name of the test suite it applies to ("And").  The group of statements
-that follows the `# And` represents the CQL Library that will be supplied as test data to the "And"
-test suite.
+The `// @Test: And` indicates the name of the test suite it applies to ("And").  The group of
+statements that follows the `# And` represents the CQL Library that will be supplied as test data
+to the "And" test suite.
 
 To convert the CQL to CoffeeScript containing the JSON ELM representation, execute
 `cake build-test-data`. This will use the java _cql-to-elm_ project to generate the
@@ -209,3 +209,7 @@ Rather than continually having to run `cake build-test-data` after every modific
 data text file, you can setup a process to _watch_ for changes and regenerate the
 `cql-test-data.coffee` file every time it detects changes in the source text file.  Simply
 execute `cake watch-test-data`.
+
+To watch for _all_ changes (Coffeescript _and_ CQL), use:
+
+    cake watch-all
