@@ -82,6 +82,31 @@ describe 'Patient Property In ValueSet', ->
     @ctx = @ctx.withPatients new PatientSource([ p2 ])
     @isFemale.exec(@ctx).should.be.true
 
+describe 'CalculateAge', ->
+  @beforeEach ->
+    setup @, data, [ p1 ]
+    # Note, tests are inexact (otherwise test needs to repeat exact logic we're testing)
+    @highYears = new Date().getFullYear() - 1980
+    @lowYears = @highYears - 1
+
+  it 'should execute age in years', ->
+    @years.exec(@ctx).should.be.within @lowYears, @highYears
+
+  it 'should execute age in months', ->
+    @months.exec(@ctx).should.be.within @lowYears * 12, @highYears * 12
+
+  it 'should execute age in days', ->
+    @days.exec(@ctx).should.be.within @lowYears * 372, @highYears * 372
+
+  it 'should execute age in hours', ->
+    @hours.exec(@ctx).should.be.within @lowYears * 8928, @highYears * 8928
+
+  it 'should execute age in minutes', ->
+    @minutes.exec(@ctx).should.be.within @lowYears * 535680, @highYears * 535680
+
+  it 'should execute age in seconds', ->
+    @seconds.exec(@ctx).should.be.within @lowYears * 32140800, @highYears * 32140800
+
 describe 'CalculateAgeAt', ->
   @beforeEach ->
     setup @, data, [ p1 ]

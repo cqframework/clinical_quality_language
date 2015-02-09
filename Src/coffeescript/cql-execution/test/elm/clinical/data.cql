@@ -25,6 +25,14 @@ define WrongLongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6') in "Female
 valueset "Female" = '2.16.840.1.113883.3.560.100.2'
 define IsFemale = Patient.gender in "Female"
 
+// @Test: CalculateAge
+define Years = AgeInYears()
+define Months = AgeInMonths()
+define Days = AgeInDays()
+define Hours = AgeInHours()
+define Minutes = AgeInMinutes()
+define Seconds = AgeInSeconds()
+
 // @Test: CalculateAgeAt
 define AgeAt2012 = AgeInYearsAt(DateTime(2012))
 define AgeAt19810216 = AgeInYearsAt(DateTime(1981, 2, 16))

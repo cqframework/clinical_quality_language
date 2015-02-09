@@ -413,6 +413,141 @@ module.exports['Patient Property In ValueSet'] = {
    }
 }
 
+### CalculateAge
+library TestSnippet version '1'
+using QUICK
+context Patient
+define Years = AgeInYears()
+define Months = AgeInMonths()
+define Days = AgeInDays()
+define Hours = AgeInHours()
+define Minutes = AgeInMinutes()
+define Seconds = AgeInSeconds()
+###
+
+module.exports['CalculateAge'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Years",
+            "context" : "Patient",
+            "expression" : {
+               "precision" : "Year",
+               "type" : "CalculateAge",
+               "operand" : {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "Months",
+            "context" : "Patient",
+            "expression" : {
+               "precision" : "Month",
+               "type" : "CalculateAge",
+               "operand" : {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "Days",
+            "context" : "Patient",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "CalculateAge",
+               "operand" : {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "Hours",
+            "context" : "Patient",
+            "expression" : {
+               "precision" : "Hour",
+               "type" : "CalculateAge",
+               "operand" : {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "Minutes",
+            "context" : "Patient",
+            "expression" : {
+               "precision" : "Minute",
+               "type" : "CalculateAge",
+               "operand" : {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "Seconds",
+            "context" : "Patient",
+            "expression" : {
+               "precision" : "Second",
+               "type" : "CalculateAge",
+               "operand" : {
+                  "path" : "birthDate",
+                  "type" : "Property",
+                  "source" : {
+                     "name" : "Patient",
+                     "type" : "ExpressionRef"
+                  }
+               }
+            }
+         } ]
+      }
+   }
+}
+
 ### CalculateAgeAt
 library TestSnippet version '1'
 using QUICK

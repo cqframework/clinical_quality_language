@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { FunctionRef } = require './reusable'
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
@@ -48,28 +48,39 @@ module.exports.Quantity = class Quantity extends Expression
   exec: (ctx) ->
     @
 
-module.exports.CalculateAge = class CalculateAge extends UnimplementedExpression
+calculateAge = (date1, date2, precision) ->
+  ageInMS = date2.getTime() - date1.getTime()
+  # Not quite precise (leap years, months, etc) but close enough for now
+  divisor = switch (precision)
+    when 'Year' then 1000 * 60 * 60 * 24 * 365
+    when 'Month' then (1000 * 60 * 60 * 24 * 365) / 12
+    when 'Day' then 1000 * 60 * 60 * 24
+    when 'Hour' then 1000 * 60 * 60
+    when 'Minute' then 1000 * 60
+    when 'Second' then 1000
+    else 1
+  Math.floor(ageInMS / divisor)
 
-module.exports.CalculateAgeAt = class CalculateAgeAt extends FunctionRef
+module.exports.CalculateAge = class CalculateAge extends Expression
+  constructor: (json) ->
+    super
+    @precision = json.precision
+
+  exec: (ctx) ->
+    date1 = @execArgs(ctx).toJSDate()
+    date2 = new Date()
+    calculateAge date1, date2, @precision
+
+module.exports.CalculateAgeAt = class CalculateAgeAt extends Expression
   constructor: (json) ->
     super
     @precision = json.precision
 
   exec: (ctx) ->
     args = @execArgs(ctx)
-    date0 = args[0].toJSDate().getTime()
-    date1 = args[1].toJSDate().getTime()
-    ageInMS = date1 - date0
-    # Not quite precise (leap years, months, etc) but close enough for now
-    divisor = switch (@precision)
-      when 'Year' then 1000 * 60 * 60 * 24 * 365
-      when 'Month' then (1000 * 60 * 60 * 24 * 365) / 12
-      when 'Day' then 1000 * 60 * 60 * 24
-      when 'Hour' then 1000 * 60 * 60
-      when 'Minute' then 1000 * 60
-      when 'Second' then 1000
-      else 1
-    Math.floor(ageInMS / divisor)
+    date1 = args[0].toJSDate()
+    date2 = args[1].toJSDate()
+    calculateAge date1, date2, @precision
 
 # TODO: Not really defined well anywhere
 module.exports.CodeFunctionRef = class CodeFunctionRef extends FunctionRef
