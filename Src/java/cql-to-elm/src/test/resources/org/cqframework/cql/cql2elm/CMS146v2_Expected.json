@@ -40,19 +40,19 @@
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -73,19 +73,19 @@
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
