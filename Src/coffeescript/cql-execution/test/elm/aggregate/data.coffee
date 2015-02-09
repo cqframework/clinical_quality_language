@@ -227,7 +227,7 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define not_null= Min({1,2,3,4,5,0})
-define has_null = Min({1,null,-1,null,2,})
+define has_null = Min({1,null,-1,null,2})
 define empty = Min({})
 ###
 
@@ -343,7 +343,6 @@ module.exports['Min'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-
 define not_null= Max({10,1,2,3,4,5})
 define has_null = Max({1,null,null,2})
 define empty = Max({})
@@ -454,7 +453,6 @@ module.exports['Max'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-
 define not_null= Avg({1,2,3,4,5})
 define has_null = Avg({1,null,null,2})
 define empty = Avg({})
@@ -796,7 +794,6 @@ module.exports['Median'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-
 define not_null= Mode({1,2,2,2,3,4,5})
 define has_null = Mode({1,null,null,2,2})
 define empty = Mode({})
@@ -1248,7 +1245,6 @@ module.exports['PopulationStdDev'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-
 define at = AllTrue({true,true,true,true})
 define atwn = AllTrue({true,true,null,null,true,true})
 
@@ -1409,7 +1405,6 @@ module.exports['AllTrue'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-
 define at = AnyTrue({true,false,false,true})
 define atwn = AnyTrue({true,false,null,null,false,true})
 
