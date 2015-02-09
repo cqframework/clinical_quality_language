@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { build } = require './builder'
 
 module.exports.ExpressionDef = class ExpressionDef extends Expression
@@ -55,4 +55,19 @@ module.exports.IdentifierRef = class IdentifierRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.get(@name)
+    # TODO: Technically, the ELM Translator should never output one of these
+    # but this code is needed since it does, as a work-around to get queries
+    # to work properly when sorting by a field in a tuple
+    val = ctx.get(@name)
+
+    if not val?
+      parts = @name.split(".")
+      val = ctx.get(part)
+      if val? and parts.length > 1
+        curr_obj = val
+        curr_val = null
+        for part in parts[1..]
+          _obj = curr_obj?[part] ? curr_obj?.get?(part)
+          curr_obj = if _obj instanceof Function then _obj.call(curr_obj) else _obj
+        val = curr_obj
+    if val instanceof Function then val.call(ctx.context_values) else val

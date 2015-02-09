@@ -47,7 +47,7 @@ module.exports.Context = class Context
     @parent?.getValueSet(name)
 
   get: (identifier) ->
-    @context_values[identifier] || @parent?.get(identifier)
+    @context_values[identifier] ? @parent?.get(identifier)
 
   set: (identifier, value) ->
     @context_values[identifier] = value

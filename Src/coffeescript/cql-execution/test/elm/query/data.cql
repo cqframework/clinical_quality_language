@@ -43,5 +43,28 @@ return {E: E, a:a}
 define query =  [Encounter] E return {id: E.id, thing: E.status}
 
 // @Test: Sorting
-define singleAsc =  [Encounter] E  return {E : E} sort by E.id
-define singleDesc =  [Encounter] E return {E : E} sort by E.id desc
+define tupleAsc = [Encounter] E sort by id
+define tupleReturnAsc = [Encounter] E return E sort by id
+define tupleReturnTupleAsc = [Encounter] E return {E : E} sort by E.id
+define tupleDesc = [Encounter] E sort by id desc
+define tupleReturnDesc = [Encounter] E return E sort by id desc
+define tupleReturnTupleDesc =  [Encounter] E return {E : E} sort by E.id desc
+define numberAsc = ({8, 6, 7, 5, 3, 0, 9}) N sort asc
+define numberReturnAsc = ({8, 6, 7, 5, 3, 0, 9}) N return N sort asc
+define numberDesc = ({8, 6, 7, 5, 3, 0, 9}) N sort desc
+define numberReturnDesc = ({8, 6, 7, 5, 3, 0, 9}) N return N sort desc
+define stringAsc = ({'jenny', 'dont', 'change', 'your', 'number'}) S sort asc
+define stringReturnAsc = ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort asc
+define stringDesc = ({'jenny', 'dont', 'change', 'your', 'number'}) S sort desc
+define stringReturnDesc = ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort desc
+
+// @Test: Distinct
+define defaultNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return N
+define defaultStrings = ({'foo', 'bar', 'baz', 'bar'}) S return S
+define defaultTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return T
+define distinctNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return distinct N
+define distinctStrings = ({'foo', 'bar', 'baz', 'bar'}) S return distinct S
+define distinctTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return distinct T
+define allNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return all N
+define allStrings = ({'foo', 'bar', 'baz', 'bar'}) S return all S
+define allTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return all T

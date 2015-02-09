@@ -880,8 +880,20 @@ module.exports['Tuple'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define singleAsc =  [Encounter] E  return {E : E} sort by E.id
-define singleDesc =  [Encounter] E return {E : E} sort by E.id desc
+define tupleAsc = [Encounter] E sort by id
+define tupleReturnAsc = [Encounter] E return E sort by id
+define tupleReturnTupleAsc = [Encounter] E return {E : E} sort by E.id
+define tupleDesc = [Encounter] E sort by id desc
+define tupleReturnDesc = [Encounter] E return E sort by id desc
+define tupleReturnTupleDesc =  [Encounter] E return {E : E} sort by E.id desc
+define numberAsc = ({8, 6, 7, 5, 3, 0, 9}) N sort asc
+define numberReturnAsc = ({8, 6, 7, 5, 3, 0, 9}) N return N sort asc
+define numberDesc = ({8, 6, 7, 5, 3, 0, 9}) N sort desc
+define numberReturnDesc = ({8, 6, 7, 5, 3, 0, 9}) N return N sort desc
+define stringAsc = ({'jenny', 'dont', 'change', 'your', 'number'}) S sort asc
+define stringReturnAsc = ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort asc
+define stringDesc = ({'jenny', 'dont', 'change', 'your', 'number'}) S sort desc
+define stringReturnDesc = ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort desc
 ###
 
 module.exports['Sorting'] = {
@@ -913,7 +925,63 @@ module.exports['Sorting'] = {
                }
             }
          }, {
-            "name" : "singleAsc",
+            "name" : "tupleAsc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByExpression",
+                     "expression" : {
+                        "name" : "id",
+                        "type" : "IdentifierRef"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "tupleReturnAsc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "E",
+                     "type" : "AliasRef"
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByExpression",
+                     "expression" : {
+                        "name" : "id",
+                        "type" : "IdentifierRef"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "tupleReturnTupleAsc",
             "context" : "Patient",
             "expression" : {
                "type" : "Query",
@@ -951,7 +1019,63 @@ module.exports['Sorting'] = {
                }
             }
          }, {
-            "name" : "singleDesc",
+            "name" : "tupleDesc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "desc",
+                     "type" : "ByExpression",
+                     "expression" : {
+                        "name" : "id",
+                        "type" : "IdentifierRef"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "tupleReturnDesc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "templateId" : "cqf-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "E",
+                     "type" : "AliasRef"
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "desc",
+                     "type" : "ByExpression",
+                     "expression" : {
+                        "name" : "id",
+                        "type" : "IdentifierRef"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "tupleReturnTupleDesc",
             "context" : "Patient",
             "expression" : {
                "type" : "Query",
@@ -986,6 +1110,1009 @@ module.exports['Sorting'] = {
                         "type" : "Property"
                      }
                   } ]
+               }
+            }
+         }, {
+            "name" : "numberAsc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "8",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "7",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "9",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByDirection"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "numberReturnAsc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "8",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "7",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "9",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "N",
+                     "type" : "AliasRef"
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByDirection"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "numberDesc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "8",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "7",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "9",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "desc",
+                     "type" : "ByDirection"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "numberReturnDesc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "8",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "7",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "9",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "N",
+                     "type" : "AliasRef"
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "desc",
+                     "type" : "ByDirection"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "stringAsc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "jenny",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "dont",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "change",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "your",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "number",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByDirection"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "stringReturnAsc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "jenny",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "dont",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "change",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "your",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "number",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "S",
+                     "type" : "AliasRef"
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByDirection"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "stringDesc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "jenny",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "dont",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "change",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "your",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "number",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "desc",
+                     "type" : "ByDirection"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "stringReturnDesc",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "jenny",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "dont",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "change",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "your",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "number",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "S",
+                     "type" : "AliasRef"
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "desc",
+                     "type" : "ByDirection"
+                  } ]
+               }
+            }
+         } ]
+      }
+   }
+}
+
+### Distinct
+library TestSnippet version '1'
+using QUICK
+context Patient
+define defaultNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return N
+define defaultStrings = ({'foo', 'bar', 'baz', 'bar'}) S return S
+define defaultTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return T
+define distinctNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return distinct N
+define distinctStrings = ({'foo', 'bar', 'baz', 'bar'}) S return distinct S
+define distinctTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return distinct T
+define allNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return all N
+define allStrings = ({'foo', 'bar', 'baz', 'bar'}) S return all S
+define allTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return all T
+###
+
+module.exports['Distinct'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://org.hl7.fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "templateId" : "cqf-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "defaultNumbers",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "N",
+                     "type" : "AliasRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "defaultStrings",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "foo",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "baz",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "S",
+                     "type" : "AliasRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "defaultTuples",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "T",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     }, {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "3",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     }, {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "name" : "T",
+                     "type" : "AliasRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "distinctNumbers",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "name" : "N",
+                     "type" : "AliasRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "distinctStrings",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "foo",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "baz",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "name" : "S",
+                     "type" : "AliasRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "distinctTuples",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "T",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     }, {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "3",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     }, {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "name" : "T",
+                     "type" : "AliasRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "allNumbers",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "value" : "1",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : false,
+                  "expression" : {
+                     "name" : "N",
+                     "type" : "AliasRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "allStrings",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "S",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "foo",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "baz",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : false,
+                  "expression" : {
+                     "name" : "S",
+                     "type" : "AliasRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "allTuples",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "T",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     }, {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "3",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     }, {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : false,
+                  "expression" : {
+                     "name" : "T",
+                     "type" : "AliasRef"
+                  }
                }
             }
          } ]
