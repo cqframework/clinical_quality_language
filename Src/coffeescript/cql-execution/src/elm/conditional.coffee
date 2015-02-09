@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { build } = require './builder'
 { equals } = require '../util/util'
 

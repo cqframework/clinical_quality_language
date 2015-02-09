@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { build } = require './builder'
 
 module.exports.Retrieve = class Retrieve extends Expression

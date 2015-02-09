@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { ThreeValuedLogic } = require '../datatypes/datatypes'
 
 module.exports.And = class And extends Expression

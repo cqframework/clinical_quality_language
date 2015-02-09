@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { FunctionRef } = require './reusable'
 
 module.exports.Null = class Null extends Expression

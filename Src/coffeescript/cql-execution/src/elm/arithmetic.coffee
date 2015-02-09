@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { FunctionRef } = require './reusable'
 { typeIsArray , allTrue, anyTrue} = require '../util/util'
 MathUtil = require '../util/math'

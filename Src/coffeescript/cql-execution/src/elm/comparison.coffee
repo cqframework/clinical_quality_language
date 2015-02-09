@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { Uncertainty } = require '../datatypes/datatypes'
 
 # Equal is completely handled by overloaded#Equal

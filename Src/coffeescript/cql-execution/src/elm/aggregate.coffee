@@ -1,4 +1,4 @@
-{ Expression, UnimplementedExpression } = require './expression'
+{ Expression } = require './expression'
 { FunctionRef } = require './reusable'
 { typeIsArray , allTrue, anyTrue, compact, numerical_sort} = require '../util/util'
 { build } = require './builder'
@@ -27,7 +27,7 @@ module.exports.CountFunctionRef = class CountFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.Sum = class Sum extends AggregateExpression
   constructor:(json) ->
@@ -39,7 +39,7 @@ module.exports.Sum = class Sum extends AggregateExpression
       filtered =  compact(arg)
       if filtered.length == 0 then null else filtered.reduce (x,y) -> x+y
 
-      
+
   # TODO: Remove functionref when ELM does Sum natively
 module.exports.SumFunctionRef = class SumFunctionRef extends FunctionRef
   constructor: (json) ->
@@ -50,7 +50,7 @@ module.exports.SumFunctionRef = class SumFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.Min = class Min extends AggregateExpression
   constructor:(json) ->
@@ -61,7 +61,7 @@ module.exports.Min = class Min extends AggregateExpression
     if typeIsArray(arg)
       filtered =  numerical_sort(compact(arg),"asc")
       filtered[0]
-    
+
 
 
   # TODO: Remove functionref when ELM does Min natively
@@ -74,7 +74,7 @@ module.exports.MinFunctionRef = class MinFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 
 module.exports.Max = class Max extends AggregateExpression
@@ -98,7 +98,7 @@ module.exports.MaxFunctionRef = class MaxFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 
 module.exports.Avg = class Avg extends  AggregateExpression
@@ -111,7 +111,7 @@ module.exports.Avg = class Avg extends  AggregateExpression
       filtered = compact(arg)
       return null if filtered.length == 0
       sum = filtered.reduce (x,y) -> x+y
-      sum / filtered.length 
+      sum / filtered.length
 
 
   # TODO: Remove functionref when ELM does Avg natively
@@ -124,7 +124,7 @@ module.exports.AvgFunctionRef = class AvgFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.Median = class Median extends AggregateExpression
   constructor:(json) ->
@@ -152,7 +152,7 @@ module.exports.MedianFunctionRef = class MedianFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.Mode = class Mode extends AggregateExpression
   constructor:(json) ->
@@ -188,7 +188,7 @@ module.exports.ModeFunctionRef = class ModeFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.StdDev = class StdDev extends AggregateExpression
 
@@ -198,10 +198,10 @@ module.exports.StdDev = class StdDev extends AggregateExpression
 
   exec: (ctx) ->
     args = @source.exec(ctx)
-    if typeIsArray(args) 
+    if typeIsArray(args)
       val = compact(args)
       if val.length > 0 then @calculate(val)  else null
-  
+
   calculate: (list) ->
     val = @stats(list)
     if val then val[@type]
@@ -210,7 +210,7 @@ module.exports.StdDev = class StdDev extends AggregateExpression
     sum = list.reduce (x,y) -> x+y
     mean = sum / list.length
     sumOfSquares = 0
-    
+
     for sq in list
       sumOfSquares += Math.pow((sq - mean),2)
 
@@ -232,7 +232,7 @@ module.exports.StdDevFunctionRef = class StdDevFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.PopulationStdDev = class PopulationStdDev extends StdDev
   constructor:(json) ->
@@ -249,7 +249,7 @@ module.exports.PopulationStdDevFunctionRef = class PopulationStdDevFunctionRef e
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.Variance = class Variance extends  StdDev
   constructor:(json) ->
@@ -266,7 +266,7 @@ module.exports.VarianceFunctionRef = class VarianceFunctionRef extends FunctionR
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.PopulationVariance = class PopulationVariance extends  StdDev
   constructor:(json) ->
@@ -283,7 +283,7 @@ module.exports.PopulationVarianceFunctionRef = class PopulationVarianceFunctionR
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.AllTrue = class AllTrue extends AggregateExpression
   constructor:(json) ->
@@ -303,7 +303,7 @@ module.exports.AllTrueFunctionRef = class AllTrueFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
 
 module.exports.AnyTrue = class AnyTrue extends AggregateExpression
   constructor:(json) ->
@@ -323,4 +323,4 @@ module.exports.AnyTrueFunctionRef = class AnyTrueFunctionRef extends FunctionRef
     }
 
   exec: (ctx) ->
-    @func.exec(ctx)       
+    @func.exec(ctx)
