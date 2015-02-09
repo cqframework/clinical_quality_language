@@ -76,7 +76,7 @@ public class TupleType extends DataType implements NamedType {
     private List<TupleTypeElement> getSortedElements() {
         if (sortedElements == null) {
             sortedElements = new ArrayList<>(elements);
-            sortedElements.sort(TupleTypeElementComparator);
+            Collections.sort(sortedElements, TupleTypeElementComparator);
         }
 
         return sortedElements;
