@@ -1397,6 +1397,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
                 : null;
 
+        if (!isRightPoint &&
+                !(timingOperator.getRight().getResultType() instanceof IntervalType
+                        || timingOperator.getRight().getResultType() instanceof ListType)) {
+            isRightPoint = true;
+        }
+
         if (isRightPoint) {
             // TODO: Handle is proper (no ELM representation for ProperContains)
             if (dateTimePrecision != null) {
