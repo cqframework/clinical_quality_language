@@ -10,6 +10,7 @@ define InDemographic =
     AgeInYears() >= 18
         and Patient.gender in "Female Administrative Sex"
 
+define IsIncluded = {2, 3, 4} included in {1, 2, 3, 4, 5}
 define EqInteger = 4 = 4
 define EqIntervals = interval[1, 3] = interval[1, 3]
 define EqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: 1}}

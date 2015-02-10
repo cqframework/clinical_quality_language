@@ -1470,7 +1470,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
                 : null;
 
-        if (!isLeftPoint && !(timingOperator.getLeft().getResultType() instanceof IntervalType)) {
+        if (!isLeftPoint &&
+                !(timingOperator.getLeft().getResultType() instanceof IntervalType
+                        || timingOperator.getLeft().getResultType() instanceof ListType)) {
             isLeftPoint = true;
         }
 
