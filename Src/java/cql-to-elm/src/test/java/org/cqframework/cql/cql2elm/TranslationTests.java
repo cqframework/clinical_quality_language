@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.is;
 
 public class TranslationTests {
     // TODO: sameXMLAs? Couldn't find such a thing in hamcrest, but I don't want this to run on the JSON, I want it to verify the actual XML.
-    @Test
+    @Test(enabled=false)
     public void testPatientPropertyAccess() throws IOException, JAXBException {
         File expectedXmlFile = new File(Cql2ElmVisitorTest.class.getResource("PropertyTest_ELM.xml").getFile());
         String expectedXml = new Scanner(expectedXmlFile, "UTF-8").useDelimiter("\\Z").next();

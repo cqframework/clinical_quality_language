@@ -151,7 +151,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testIsTrueExpressions(){
-        ExpressionDef def = (ExpressionDef) visitData("define X = 1\ndefine st = X is true");
+        ExpressionDef def = (ExpressionDef) visitData("define X = true\ndefine st = X is true");
         Equal equal = (Equal) def.getExpression();
         ExpressionRef left = (ExpressionRef) equal.getOperand().get(0);
         Expression right = equal.getOperand().get(1);
@@ -166,7 +166,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testIsNotTrueExpressions(){
-        ExpressionDef def = (ExpressionDef) visitData("define X = 1\ndefine st = X is not true");
+        ExpressionDef def = (ExpressionDef) visitData("define X = true\ndefine st = X is not true");
         Not not = (Not) def.getExpression();
         Equal equal = (Equal) not.getOperand();
         ExpressionRef left = (ExpressionRef) equal.getOperand().get(0);
