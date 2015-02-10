@@ -355,7 +355,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is ("Condition")); //is("cqf-condition"));
+        assertThat(request.getTemplateId(), is("cqf-condition"));
     }
 
     @Test
@@ -367,7 +367,7 @@ public class Cql2ElmVisitorTest {
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("Condition"));
-        assertThat(request.getCodeProperty(), is(nullValue())); // is("code"));
+        assertThat(request.getCodeProperty(), is("code"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Acute Pharyngitis"));
         assertThat(code.getLibraryName(), is(nullValue()));
@@ -375,7 +375,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("Condition")); // is("cqf-condition"));
+        assertThat(request.getTemplateId(), is("cqf-condition"));
     }
 
     @Test
@@ -395,7 +395,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("Condition")); // is("cqf-condition"));
+        assertThat(request.getTemplateId(), is("cqf-condition"));
     }
 
     @Test
@@ -778,13 +778,13 @@ public class Cql2ElmVisitorTest {
         assertThat(source.getAlias(), is("E"));
         Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("Encounter"));
-        assertThat(request.getCodeProperty(), is(nullValue())); // is("type"));
+        assertThat(request.getCodeProperty(), is("type"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("Encounter")); // is("cqf-encounter"));
+        assertThat(request.getTemplateId(), is("cqf-encounter"));
 
         return query;
     }
@@ -810,7 +810,7 @@ public class Cql2ElmVisitorTest {
         assertThat(source.getAlias(), is("E"));
         Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("Encounter"));
-        assertThat(request.getCodeProperty(), is(nullValue())); //is("type"));
+        assertThat(request.getCodeProperty(), is("type"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
@@ -818,7 +818,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("Encounter")); // is(nullValue())); //is("cqf-encounter"));
+        assertThat(request.getTemplateId(), is("cqf-encounter"));
 
         // Then check the with statement
         assertThat(query.getRelationship(), hasSize(1));
@@ -827,7 +827,7 @@ public class Cql2ElmVisitorTest {
         assertThat(relationship.getAlias(), is("P"));
         Retrieve withRequest = (Retrieve) relationship.getExpression();
         assertThat(withRequest.getDataType(), quickDataType("Condition"));
-        assertThat(withRequest.getCodeProperty(), is(nullValue())); //is("code"));
+        assertThat(withRequest.getCodeProperty(), is("code"));
         ValueSetRef withCode = (ValueSetRef) withRequest.getCodes();
         assertThat(withCode.getName(), is("Acute Pharyngitis"));
         assertThat(withCode.getLibraryName(), is(nullValue()));
@@ -835,7 +835,7 @@ public class Cql2ElmVisitorTest {
         assertThat(withRequest.getDateRange(), is(nullValue()));
         assertThat(withRequest.getScope(), is(nullValue()));
         assertThat(withRequest.getIdProperty(), is(nullValue()));
-        assertThat(withRequest.getTemplateId(), is("Condition")); // is("cqf-condition"));
+        assertThat(withRequest.getTemplateId(), is("cqf-condition"));
         OverlapsAfter withWhere = (OverlapsAfter) relationship.getSuchThat();
         assertThat(withWhere.getOperand(), hasSize(2));
         Interval overlapsLHS = (Interval) withWhere.getOperand().get(0);
@@ -928,7 +928,7 @@ public class Cql2ElmVisitorTest {
         assertThat(source.getAlias(), is("E"));
         Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("Encounter"));
-        assertThat(request.getCodeProperty(), is(nullValue())); // is("type"));
+        assertThat(request.getCodeProperty(), is("type"));
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
@@ -936,7 +936,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("Encounter")); // is("cqf-encounter"));
+        assertThat(request.getTemplateId(), is("cqf-encounter"));
 
         // Then check the define
         assertThat(query.getDefine(), hasSize(1));
@@ -1176,7 +1176,7 @@ public class Cql2ElmVisitorTest {
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
         assertThat(request.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
         assertThat(request.getDataType().getLocalPart(), is("Encounter"));
-        assertThat(request.getCodeProperty(), is(nullValue())); // is("type"));
+        assertThat(request.getCodeProperty(), is("type"));
         ValueSetRef vs = (ValueSetRef) request.getCodes();
         assertThat(vs.getName(), is("Inpatient"));
         assertThat(vs.getLibraryName(), is(nullValue()));
@@ -1186,7 +1186,7 @@ public class Cql2ElmVisitorTest {
         Retrieve withRequest = (Retrieve) with.getExpression();
         assertThat(withRequest.getDataType().getNamespaceURI(), is("http://org.hl7.fhir"));
         assertThat(withRequest.getDataType().getLocalPart(), is("Condition"));
-        assertThat(withRequest.getCodeProperty(), is(nullValue())); // is("code"));
+        assertThat(withRequest.getCodeProperty(), is("code"));
         ValueSetRef withVS = (ValueSetRef) withRequest.getCodes();
         assertThat(withVS.getName(), is("Acute Pharyngitis"));
         assertThat(withVS.getLibraryName(), is(nullValue()));

@@ -491,12 +491,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitListSelector(@NotNull cqlParser.ListSelectorContext ctx) {
-        org.hl7.elm.r1.List list = of.createList().withTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()));
-        ListType listType = list.getTypeSpecifier() != null ? (ListType)list.getTypeSpecifier().getResultType() : null;
+        TypeSpecifier elementTypeSpecifier = parseTypeSpecifier(ctx.typeSpecifier());
+        org.hl7.elm.r1.List list = of.createList();
+        ListType listType = null;
+        if (elementTypeSpecifier != null) {
+            ListTypeSpecifier listTypeSpecifier = of.createListTypeSpecifier().withElementType(elementTypeSpecifier);
+            listType = new ListType(elementTypeSpecifier.getResultType());
+            listTypeSpecifier.setResultType(listType);
+        }
+
         for (cqlParser.ExpressionContext elementContext : ctx.expression()) {
             Expression element = parseExpression(elementContext);
             if (listType == null) {
-                listType = new ListType(element.getResultType());
+                if (element.getResultType() != null) {
+                    listType = new ListType(element.getResultType());
+                }
             }
             else {
                 DataTypes.verifyType(element.getResultType(), listType.getElementType());
@@ -505,7 +514,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (listType == null) {
-            throw new IllegalArgumentException("Could not determine element type for list selector.");
+            // An empty untyped list is list<Any>
+            listType = new ListType(resolveTypeName("System", "Any"));
         }
 
         list.setResultType(listType);
@@ -515,7 +525,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Null visitNullLiteral(@NotNull cqlParser.NullLiteralContext ctx) {
-        return of.createNull();
+        Null result = of.createNull();
+        result.setResultType(resolveTypeName("System", "Any"));
+        return result;
     }
 
     @Override

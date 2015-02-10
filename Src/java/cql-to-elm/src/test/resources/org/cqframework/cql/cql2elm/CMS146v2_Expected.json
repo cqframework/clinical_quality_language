@@ -185,7 +185,8 @@
                "type" : "Union",
                "operand" : [ {
                   "dataType" : "{http://hl7.org/fhir}Condition",
-                  "templateId" : "Condition",
+                  "templateId" : "cqf-condition",
+                  "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
                      "name" : "Acute Pharyngitis",
@@ -193,7 +194,8 @@
                   }
                }, {
                   "dataType" : "{http://hl7.org/fhir}Condition",
-                  "templateId" : "Condition",
+                  "templateId" : "cqf-condition",
+                  "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
                      "name" : "Acute Tonsillitis",
@@ -206,7 +208,8 @@
             "context" : "Patient",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
-               "templateId" : "MedicationPrescription",
+               "templateId" : "cqf-medicationprescription",
+               "codeProperty" : "medication.code",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Antibiotic Medications",
@@ -222,7 +225,8 @@
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "Encounter",
+                     "templateId" : "cqf-encounter",
+                     "codeProperty" : "type",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
@@ -461,7 +465,8 @@
                      "alias" : "R",
                      "expression" : {
                         "dataType" : "{http://hl7.org/fhir}Observation",
-                        "templateId" : "Observation",
+                        "templateId" : "cqf-observation",
+                        "codeProperty" : "name",
                         "type" : "Retrieve",
                         "codes" : {
                            "name" : "Group A Streptococcus Test",

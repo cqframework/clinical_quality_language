@@ -30,7 +30,7 @@
     <classInfo name="Patient"  topic="Patient" identifier="cqf-patient"/>
     <classInfo name="Practitioner"  topic="Practitioner" identifier="cqf-practitioner" primaryCodeAttribute="specialty"/>
     <classInfo name="Procedure"  topic="Procedure" identifier="cqf-procedure" primaryCodeAttribute="type"/>
-    <classInfo name="ProcedureRequest"  topicAxis="ProcedureRequest" identifier="cqf-procedurerequest" primaryCodeAttribute="type"/>
-    <classInfo name="ProcedureRequest"  topicAxis="ProcedureRequestRejected" identifier="cqf-procedurerequest-rejected" primaryCodeAttribute="type"/>
+    <classInfo name="ProcedureRequest"  topic="ProcedureRequest" identifier="cqf-procedurerequest" primaryCodeAttribute="type"/>
+    <classInfo name="ProcedureRequest"  topic="ProcedureRequestRejected" identifier="cqf-procedurerequest-rejected" primaryCodeAttribute="type"/>
     <classInfo name="Substance"  topic="Substance" identifier="cqf-substance" primaryCodeAttribute="type"/>
 </modelInfo>

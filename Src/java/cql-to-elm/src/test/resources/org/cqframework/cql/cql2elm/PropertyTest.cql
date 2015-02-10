@@ -9,3 +9,10 @@ context Patient
 define InDemographic =
     AgeInYears() >= 18
         and Patient.gender in "Female Administrative Sex"
+
+//define HasNull = Count({ 1, null, null, null, 2 })
+define Empty = Count({ })
+
+//define TypedHasNull = Count(list<Integer> { 1, null, null, null, 2 })
+define TypedEmpty = Count(list<Integer> { })
+

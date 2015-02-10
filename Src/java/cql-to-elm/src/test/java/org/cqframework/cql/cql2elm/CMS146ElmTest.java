@@ -49,28 +49,28 @@ public class CMS146ElmTest {
         Collection<Retrieve> expectedCR = Arrays.asList(
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
-                        .withTemplateId("Condition") //.withTemplateId("cqf-condition")
-                        //.withCodeProperty("code")
+                        .withTemplateId("cqf-condition")
+                        .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
-                        .withTemplateId("Condition") //.withTemplateId("cqf-condition")
-                        //.withCodeProperty("code")
+                        .withTemplateId("cqf-condition")
+                        .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("MedicationPrescription"))
-                        .withTemplateId("MedicationPrescription") //.withTemplateId("cqf-medicationprescription")
-                        //.withCodeProperty("medication.code")
+                        .withTemplateId("cqf-medicationprescription")
+                        .withCodeProperty("medication.code")
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Encounter"))
-                        .withTemplateId("Encounter") //.withTemplateId("cqf-encounter")
-                        //.withCodeProperty("type")
+                        .withTemplateId("cqf-encounter")
+                        .withCodeProperty("type")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))
-                        .withTemplateId("Observation") //.withTemplateId("cqf-observation")
-                        //.withCodeProperty("name")
+                        .withTemplateId("cqf-observation")
+                        .withCodeProperty("name")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
 
