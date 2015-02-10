@@ -10,6 +10,7 @@ define InDemographic =
     AgeInYears() >= 18
         and Patient.gender in "Female Administrative Sex"
 
+define LotsOfDups = distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
 define IsIncluded = {2, 3, 4} included in {1, 2, 3, 4, 5}
 define IsProperlyIncludes = {1, 2, 3, 4, 5} properly includes {2, 3, 4, 5}
 define IsProperlyIncluded = {2, 3, 4} properly included in {1, 2, 3, 4, 5}
