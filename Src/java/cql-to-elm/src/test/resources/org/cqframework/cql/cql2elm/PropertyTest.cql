@@ -11,6 +11,8 @@ define InDemographic =
         and Patient.gender in "Female Administrative Sex"
 
 define IsIncluded = {2, 3, 4} included in {1, 2, 3, 4, 5}
+define IsProperlyIncludes = {1, 2, 3, 4, 5} properly includes {2, 3, 4, 5}
+define IsProperlyIncluded = {2, 3, 4} properly included in {1, 2, 3, 4, 5}
 define EqInteger = 4 = 4
 define EqIntervals = interval[1, 3] = interval[1, 3]
 define EqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: 1}}
