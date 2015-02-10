@@ -8,19 +8,15 @@ public abstract class DataType {
     private DataType baseType;
 
     public DataType() {
-
+        this(null);
     }
 
     public DataType(DataType baseType) {
-        setBaseType(baseType);
+        this.baseType = baseType == null ? DataType.any : baseType;
     }
 
     public DataType getBaseType() {
         return baseType;
-    }
-
-    public void setBaseType(DataType baseType) {
-        this.baseType = baseType;
     }
 
     public boolean isSubTypeOf(DataType other) {
@@ -51,4 +47,6 @@ public abstract class DataType {
     public abstract boolean isInstantiable(DataType callType, Map<TypeParameter, DataType> typeMap);
 
     public abstract DataType instantiate(Map<TypeParameter, DataType> typeMap);
+
+    public static final SimpleType any = new SimpleType("System.Any");
 }

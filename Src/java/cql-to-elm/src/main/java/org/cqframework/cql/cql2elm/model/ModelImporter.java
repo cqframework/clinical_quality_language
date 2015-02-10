@@ -139,7 +139,12 @@ public class ModelImporter {
     private SimpleType resolveSimpleType(SimpleTypeInfo t) {
         SimpleType result = (SimpleType)lookupType(t.getName());
         if (result == null) {
-            result = new SimpleType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
+            if (t.getName().equals(DataType.any.getName())) {
+                result = DataType.any;
+            }
+            else {
+                result = new SimpleType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
+            }
             resolvedTypes.put(result.getName(), result);
         }
 

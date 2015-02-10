@@ -10,6 +10,13 @@ define InDemographic =
     AgeInYears() >= 18
         and Patient.gender in "Female Administrative Sex"
 
+define EqInteger = 4 = 4
+define EqIntervals = interval[1, 3] = interval[1, 3]
+define EqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: 1}}
+define EqLists = { 1, 2, 3 } = { 1, 2, 3 }
+
+define IsNull = 5 is null
+
 //define HasNull = Count({ 1, null, null, null, 2 })
 define Empty = Count({ })
 
