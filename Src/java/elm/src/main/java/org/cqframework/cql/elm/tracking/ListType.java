@@ -35,6 +35,26 @@ public class ListType extends DataType {
     }
 
     @Override
+    public boolean isSubTypeOf(DataType other) {
+        if (other instanceof ListType) {
+            ListType that = (ListType)other;
+            return this.elementType.isSubTypeOf(that.elementType);
+        }
+
+        return super.isSubTypeOf(other);
+    }
+
+    @Override
+    public boolean isSuperTypeOf(DataType other) {
+        if (other instanceof ListType) {
+            ListType that = (ListType)other;
+            return this.elementType.isSuperTypeOf(that.elementType);
+        }
+
+        return super.isSuperTypeOf(other);
+    }
+
+    @Override
     public String toString() {
         return String.format("list<%s>", elementType.toString());
     }

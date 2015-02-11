@@ -35,6 +35,26 @@ public class IntervalType extends DataType {
     }
 
     @Override
+    public boolean isSubTypeOf(DataType other) {
+        if (other instanceof IntervalType) {
+            IntervalType that = (IntervalType)other;
+            return this.pointType.isSubTypeOf(that.pointType);
+        }
+
+        return super.isSubTypeOf(other);
+    }
+
+    @Override
+    public boolean isSuperTypeOf(DataType other) {
+        if (other instanceof IntervalType) {
+            IntervalType that = (IntervalType)other;
+            return this.pointType.isSuperTypeOf(that.pointType);
+        }
+
+        return super.isSuperTypeOf(other);
+    }
+
+    @Override
     public String toString() {
         return String.format("interval<%s>", pointType.toString());
     }

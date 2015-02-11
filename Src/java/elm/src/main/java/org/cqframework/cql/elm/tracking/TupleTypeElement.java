@@ -40,6 +40,14 @@ public class TupleTypeElement {
         return false;
     }
 
+    public boolean isSubTypeOf(TupleTypeElement that) {
+        return this.getName().equals(that.getName()) && this.getType().isSubTypeOf(that.getType());
+    }
+
+    public boolean isSuperTypeOf(TupleTypeElement that) {
+        return this.getName().equals(that.getName()) && this.getType().isSuperTypeOf(that.getType());
+    }
+
     @Override
     public String toString() {
         return String.format("%s:%s", this.name, this.type.toString());

@@ -10,6 +10,7 @@ define InDemographic =
     AgeInYears() >= 18
         and Patient.gender in "Female Administrative Sex"
 
+define ListsOfLists = list<list<Any>>{{'a','b','c'},{1,2,3}}
 define LotsOfDups = distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
 define IsIncluded = {2, 3, 4} included in {1, 2, 3, 4, 5}
 define IsProperlyIncludes = {1, 2, 3, 4, 5} properly includes {2, 3, 4, 5}
@@ -27,3 +28,10 @@ define Empty = Count({ })
 //define TypedHasNull = Count(list<Integer> { 1, null, null, null, 2 })
 define TypedEmpty = Count(list<Integer> { })
 
+// We actually want to be able to support this:
+/*
+define class A { id: Integer }
+define class B: A { name: String }
+define BInstance := new B { id := 1, name := "John" }
+define TupleEqual := BInstance = tuple { id := 1, name := "John" }
+*/

@@ -127,6 +127,50 @@ public class TupleType extends DataType implements NamedType {
     }
 
     @Override
+    public boolean isSubTypeOf(DataType other) {
+        if (other instanceof TupleType) {
+            TupleType that = (TupleType)other;
+
+            if ((this.name == null || that.name == null)
+                    && (this.elements.size() == that.elements.size())) {
+                List<TupleTypeElement> theseElements = this.getSortedElements();
+                List<TupleTypeElement> thoseElements = that.getSortedElements();
+                for (int i = 0; i < theseElements.size(); i++) {
+                    if (!theseElements.get(i).isSubTypeOf(thoseElements.get(i))) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return super.isSubTypeOf(other);
+    }
+
+    @Override
+    public boolean isSuperTypeOf(DataType other) {
+        if (other instanceof TupleType) {
+            TupleType that = (TupleType)other;
+
+            if ((this.name == null || that.name == null)
+                    && (this.elements.size() == that.elements.size())) {
+                List<TupleTypeElement> theseElements = this.getSortedElements();
+                List<TupleTypeElement> thoseElements = that.getSortedElements();
+                for (int i = 0; i < theseElements.size(); i++) {
+                    if (!theseElements.get(i).isSuperTypeOf(thoseElements.get(i))) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return super.isSuperTypeOf(other);
+    }
+
+    @Override
     public String toString() {
         if (this.name != null) {
             return this.name;
