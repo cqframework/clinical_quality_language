@@ -326,7 +326,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         TupleTypeSpecifier typeSpecifier = of.createTupleTypeSpecifier();
         for (cqlParser.TupleElementDefinitionContext definitionContext : ctx.tupleElementDefinition()) {
             TupleElementDefinition element = (TupleElementDefinition)visit(definitionContext);
-            resultType.addElement(new TupleTypeElement(element.getName(), element.getResultType()));
+            resultType.addElement(new TupleTypeElement(element.getName(), element.getType().getResultType()));
             typeSpecifier.getElement().add(element);
         }
 
