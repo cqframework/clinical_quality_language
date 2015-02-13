@@ -22,6 +22,8 @@ define EqLists = { 1, 2, 3 } = { 1, 2, 3 }
 
 define IsNull = 5 is null
 
+define IfNullExpression = IfNull(5, 5)
+
 //define HasNull = Count({ 1, null, null, null, 2 })
 define Empty = Count({ })
 
