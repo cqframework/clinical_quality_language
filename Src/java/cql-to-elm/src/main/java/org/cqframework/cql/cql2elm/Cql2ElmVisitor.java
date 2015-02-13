@@ -2385,7 +2385,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withOperand(parseExpression(ctx.expressionTerm()))
                 .withIndex(parseExpression(ctx.expression()));
 
-
+        resolveCall("System", "Indexer", indexer, indexer.getOperand().getResultType(), indexer.getIndex().getResultType());
         return indexer;
     }
 
