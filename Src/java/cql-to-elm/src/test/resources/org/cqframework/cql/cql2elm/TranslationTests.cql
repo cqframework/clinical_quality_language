@@ -21,7 +21,7 @@ define EqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: 1}}
 define EqLists = { 1, 2, 3 } = { 1, 2, 3 }
 
 define IsNull = 5 is null
-
+define StringConcat = 'a' + 'b'
 define IfNullExpression = IfNull(5, 5)
 
 //define HasNull = Count({ 1, null, null, null, 2 })
