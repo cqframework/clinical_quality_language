@@ -26,6 +26,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testSignatureResolution() throws IOException {
+        runSemanticTest("SignatureResolutionTest.cql");
+    }
+
+    @Test
     public void testCMS146v2() throws IOException {
         runSemanticTest("CMS146v2_Test_CQM.cql");
     }
