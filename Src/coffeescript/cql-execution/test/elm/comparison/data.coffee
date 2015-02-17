@@ -15,10 +15,10 @@ define AEqB_Int = 5 = 5
 define ALtB_Int = 5 = 6
 define EqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: 1}}
 define UneqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: -1}}
-define EqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1) = DateTime(2000, 3, 15, 13, 30, 25, 200, +1)
-define UneqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1) = DateTime(2000, 3, 15, 13, 30, 25, 201, +1)
-define EqDateTimesTZ = DateTime(2000, 3, 15, 23, 30, 25, 200, +1) = DateTime(2000, 3, 16, 2, 30, 25, 200, +4)
-define UneqDateTimesTZ = DateTime(2000, 3, 15, 13, 30, 25, 200, +1) = DateTime(2000, 3, 15, 13, 30, 25, 200, +2)
+define EqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define UneqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define EqDateTimesTZ = DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) = DateTime(2000, 3, 16, 2, 30, 25, 200, +4.0)
+define UneqDateTimesTZ = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
 define PossiblyEqualDateTimes = DateTime(2000, 3, 15) = DateTime(2000)
 define ImpossiblyEqualDateTimes = DateTime(2000, 3, 15) = DateTime(2000, 4)
 ###
@@ -35,8 +35,11 @@ module.exports['Equal'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -46,7 +49,7 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -57,11 +60,11 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -72,11 +75,11 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                } ]
@@ -87,11 +90,11 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
                } ]
@@ -106,7 +109,7 @@ module.exports['Equal'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
@@ -117,7 +120,7 @@ module.exports['Equal'] = {
                         "element" : [ {
                            "name" : "c",
                            "value" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }
@@ -129,7 +132,7 @@ module.exports['Equal'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
@@ -140,7 +143,7 @@ module.exports['Equal'] = {
                         "element" : [ {
                            "name" : "c",
                            "value" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }
@@ -159,7 +162,7 @@ module.exports['Equal'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
@@ -170,7 +173,7 @@ module.exports['Equal'] = {
                         "element" : [ {
                            "name" : "c",
                            "value" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }
@@ -182,7 +185,7 @@ module.exports['Equal'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
@@ -195,7 +198,7 @@ module.exports['Equal'] = {
                            "value" : {
                               "type" : "Negate",
                               "operand" : {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                  "value" : "1",
                                  "type" : "Literal"
                               }
@@ -214,72 +217,72 @@ module.exports['Equal'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
                      "type" : "Literal"
                   } ]
                }, {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
                      "type" : "Literal"
                   } ]
                } ]
@@ -293,72 +296,72 @@ module.exports['Equal'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
                      "type" : "Literal"
                   } ]
                }, {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "201",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
                      "type" : "Literal"
                   } ]
                } ]
@@ -372,72 +375,72 @@ module.exports['Equal'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "23",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
                      "type" : "Literal"
                   } ]
                }, {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "16",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "4.0",
                      "type" : "Literal"
                   } ]
                } ]
@@ -451,72 +454,72 @@ module.exports['Equal'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
                      "type" : "Literal"
                   } ]
                }, {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "2.0",
                      "type" : "Literal"
                   } ]
                } ]
@@ -530,15 +533,15 @@ module.exports['Equal'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   } ]
@@ -546,7 +549,7 @@ module.exports['Equal'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   } ]
@@ -561,15 +564,15 @@ module.exports['Equal'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   } ]
@@ -577,11 +580,11 @@ module.exports['Equal'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -601,10 +604,10 @@ define AEqB_Int = 5 <> 5
 define ALtB_Int = 5 <> 6
 define EqTuples = tuple{a: 1, b: tuple{c: 1}} <> tuple{a: 1, b: tuple{c: 1}}
 define UneqTuples = tuple{a: 1, b: tuple{c: 1}} <> tuple{a: 1, b: tuple{c: -1}}
-define EqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1) <> DateTime(2000, 3, 15, 13, 30, 25, 200, +1)
-define UneqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1) <> DateTime(2000, 3, 15, 13, 30, 25, 201, +1)
-define EqDateTimesTZ = DateTime(2000, 3, 15, 23, 30, 25, 200, +1) <> DateTime(2000, 3, 16, 2, 30, 25, 200, +4)
-define UneqDateTimesTZ = DateTime(2000, 3, 15, 13, 30, 25, 200, +1) <> DateTime(2000, 3, 15, 13, 30, 25, 200, +2)
+define EqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define UneqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define EqDateTimesTZ = DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) <> DateTime(2000, 3, 16, 2, 30, 25, 200, +4.0)
+define UneqDateTimesTZ = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
 define PossiblyEqualDateTimes = DateTime(2000, 3, 15) <> DateTime(2000)
 define ImpossiblyEqualDateTimes = DateTime(2000, 3, 15) <> DateTime(2000, 4)
 ###
@@ -621,8 +624,11 @@ module.exports['NotEqual'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -632,7 +638,7 @@ module.exports['NotEqual'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -641,537 +647,570 @@ module.exports['NotEqual'] = {
             "name" : "AGtB_Int",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "5",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "4",
-                  "type" : "Literal"
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  } ]
+               }
             }
          }, {
             "name" : "AEqB_Int",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "5",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "5",
-                  "type" : "Literal"
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               }
             }
          }, {
             "name" : "ALtB_Int",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "5",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "6",
-                  "type" : "Literal"
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "6",
+                     "type" : "Literal"
+                  } ]
+               }
             }
          }, {
             "name" : "EqTuples",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "Tuple",
-                  "element" : [ {
-                     "name" : "a",
-                     "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "b",
+                        "value" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "c",
+                              "value" : {
+                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                 "value" : "1",
+                                 "type" : "Literal"
+                              }
+                           } ]
+                        }
+                     } ]
                   }, {
-                     "name" : "b",
-                     "value" : {
-                        "type" : "Tuple",
-                        "element" : [ {
-                           "name" : "c",
-                           "value" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                              "value" : "1",
-                              "type" : "Literal"
-                           }
-                        } ]
-                     }
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "b",
+                        "value" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "c",
+                              "value" : {
+                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                 "value" : "1",
+                                 "type" : "Literal"
+                              }
+                           } ]
+                        }
+                     } ]
                   } ]
-               }, {
-                  "type" : "Tuple",
-                  "element" : [ {
-                     "name" : "a",
-                     "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }
-                  }, {
-                     "name" : "b",
-                     "value" : {
-                        "type" : "Tuple",
-                        "element" : [ {
-                           "name" : "c",
-                           "value" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                              "value" : "1",
-                              "type" : "Literal"
-                           }
-                        } ]
-                     }
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "UneqTuples",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "Tuple",
-                  "element" : [ {
-                     "name" : "a",
-                     "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }
-                  }, {
-                     "name" : "b",
-                     "value" : {
-                        "type" : "Tuple",
-                        "element" : [ {
-                           "name" : "c",
-                           "value" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                              "value" : "1",
-                              "type" : "Literal"
-                           }
-                        } ]
-                     }
-                  } ]
-               }, {
-                  "type" : "Tuple",
-                  "element" : [ {
-                     "name" : "a",
-                     "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }
-                  }, {
-                     "name" : "b",
-                     "value" : {
-                        "type" : "Tuple",
-                        "element" : [ {
-                           "name" : "c",
-                           "value" : {
-                              "type" : "Negate",
-                              "operand" : {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "b",
+                        "value" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "c",
+                              "value" : {
+                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                  "value" : "1",
                                  "type" : "Literal"
                               }
-                           }
-                        } ]
-                     }
+                           } ]
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     }, {
+                        "name" : "b",
+                        "value" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "c",
+                              "value" : {
+                                 "type" : "Negate",
+                                 "operand" : {
+                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                    "value" : "1",
+                                    "type" : "Literal"
+                                 }
+                              }
+                           } ]
+                        }
+                     } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "EqDateTimes",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "13",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "30",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "25",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "200",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                        "value" : "1.0",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "13",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "30",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "25",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "13",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "30",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "25",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "200",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                        "value" : "1.0",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "13",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "30",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "25",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "UneqDateTimes",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "13",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "30",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "25",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "200",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                        "value" : "1.0",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "13",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "30",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "25",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "13",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "30",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "25",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "201",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                        "value" : "1.0",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "13",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "30",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "25",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "201",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "EqDateTimesTZ",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "30",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "25",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "200",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                        "value" : "1.0",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "23",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "30",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "25",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "16",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "30",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "25",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "200",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                        "value" : "4.0",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "16",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "30",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "25",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "UneqDateTimesTZ",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "13",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "30",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "25",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "200",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                        "value" : "1.0",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "13",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "30",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "25",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "13",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "30",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "25",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "200",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                        "value" : "2.0",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "13",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "30",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "25",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "PossiblyEqualDateTimes",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "ImpossiblyEqualDateTimes",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          } ]
       }
@@ -1199,8 +1238,11 @@ module.exports['Less'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1210,7 +1252,7 @@ module.exports['Less'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1221,11 +1263,11 @@ module.exports['Less'] = {
             "expression" : {
                "type" : "Less",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -1236,11 +1278,11 @@ module.exports['Less'] = {
             "expression" : {
                "type" : "Less",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                } ]
@@ -1251,11 +1293,11 @@ module.exports['Less'] = {
             "expression" : {
                "type" : "Less",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
                } ]
@@ -1286,8 +1328,11 @@ module.exports['LessOrEqual'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1297,7 +1342,7 @@ module.exports['LessOrEqual'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1308,11 +1353,11 @@ module.exports['LessOrEqual'] = {
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -1323,11 +1368,11 @@ module.exports['LessOrEqual'] = {
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                } ]
@@ -1338,11 +1383,11 @@ module.exports['LessOrEqual'] = {
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
                } ]
@@ -1373,8 +1418,11 @@ module.exports['Greater'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1384,7 +1432,7 @@ module.exports['Greater'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1395,11 +1443,11 @@ module.exports['Greater'] = {
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -1410,11 +1458,11 @@ module.exports['Greater'] = {
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                } ]
@@ -1425,11 +1473,11 @@ module.exports['Greater'] = {
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
                } ]
@@ -1460,8 +1508,11 @@ module.exports['GreaterOrEqual'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1471,7 +1522,7 @@ module.exports['GreaterOrEqual'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1482,11 +1533,11 @@ module.exports['GreaterOrEqual'] = {
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -1497,11 +1548,11 @@ module.exports['GreaterOrEqual'] = {
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                } ]
@@ -1512,11 +1563,11 @@ module.exports['GreaterOrEqual'] = {
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
                } ]

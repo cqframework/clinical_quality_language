@@ -2,7 +2,7 @@ should = require 'should'
 setup = require '../../setup'
 data = require './data'
 
-describe 'And', ->
+describe.skip 'And', ->
   @beforeEach ->
     setup @, data
 
@@ -21,7 +21,7 @@ describe 'And', ->
     should(@nT.exec(@ctx)).be.null
     @nF.exec(@ctx).should.be.false
 
-describe 'Or', ->
+describe.skip 'Or', ->
   @beforeEach ->
     setup @, data
 
@@ -50,10 +50,10 @@ describe 'Not', ->
   it 'should execute not false as true', ->
     @notFalse.exec(@ctx).should.be.true
 
-  it 'should execute not null as null', ->
+  it.skip 'should execute not null as null', ->
     should(@notNull.exec(@ctx)).be.null
 
-describe 'XOr', ->
+describe.skip 'XOr', ->
   @beforeEach ->
     setup @, data
 

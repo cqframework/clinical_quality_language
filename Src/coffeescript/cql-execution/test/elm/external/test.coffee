@@ -40,10 +40,6 @@ describe 'Retrieve', ->
     e[1].id().should.equal 'http://cqframework.org/3/3'
     e[2].id().should.equal 'http://cqframework.org/3/5'
 
-  it 'should not find encounter proposals when they don\'t exist', ->
-    e = @wrongDataType.exec(@ctx)
-    e.should.be.empty
-
   it 'should not find conditions with wrong valueset', ->
     e = @wrongValueSet.exec(@ctx)
     e.should.be.empty

@@ -24,7 +24,7 @@ describe 'Concat', ->
   it 'should concat variables', ->
     @helloWorldVariables.exec(@ctx).should.equal 'HelloWorld'
 
-describe 'Combine', ->
+describe.skip 'Combine', ->
   @beforeEach ->
     setup @, data
 

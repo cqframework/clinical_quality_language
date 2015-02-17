@@ -26,7 +26,7 @@ describe 'ExpressionRef', ->
   it 'should execute to expression value', ->
     @foo.exec(@ctx).should.equal 42
 
-describe 'FunctionDefinitions', ->
+describe.skip 'FunctionDefinitions', ->
   @beforeEach ->
     setup @, data
 

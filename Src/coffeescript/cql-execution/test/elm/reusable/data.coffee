@@ -25,8 +25,11 @@ module.exports['ExpressionDef'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -36,7 +39,7 @@ module.exports['ExpressionDef'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -45,7 +48,7 @@ module.exports['ExpressionDef'] = {
             "name" : "Foo",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+               "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "Bar",
                "type" : "Literal"
             }
@@ -74,8 +77,11 @@ module.exports['ExpressionRef'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -85,7 +91,7 @@ module.exports['ExpressionRef'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -94,7 +100,7 @@ module.exports['ExpressionRef'] = {
             "name" : "Life",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "42",
                "type" : "Literal"
             }
@@ -114,11 +120,17 @@ module.exports['ExpressionRef'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define function foo (a:integer ,b:integer)
+define function foo (a:Integer ,b:Integer)
 { return a + b }
 define testValue = foo(1,2)
 ###
 
+###
+Translation Error(s):
+[5:10, 5:14] Could not determine signature for invocation of operator System.Add.
+[4:1, 5:16] resultType is null
+[6:20, 6:27] Could not resolve call to operator foo with signature (System.Integer,System.Integer).
+###
 module.exports['FunctionDefinitions'] = {
    "library" : {
       "identifier" : {
@@ -131,8 +143,11 @@ module.exports['FunctionDefinitions'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -142,7 +157,7 @@ module.exports['FunctionDefinitions'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -152,25 +167,18 @@ module.exports['FunctionDefinitions'] = {
             "context" : "Patient",
             "type" : "FunctionDef",
             "expression" : {
-               "type" : "Add",
-               "operand" : [ {
-                  "name" : "a",
-                  "type" : "IdentifierRef"
-               }, {
-                  "name" : "b",
-                  "type" : "IdentifierRef"
-               } ]
+               "type" : "Null"
             },
             "parameter" : [ {
                "name" : "a",
                "parameterTypeSpecifier" : {
-                  "name" : "{http://www.w3.org/2001/XMLSchema}integer",
+                  "name" : "{urn:hl7-org:elm:r1}Integer",
                   "type" : "NamedTypeSpecifier"
                }
             }, {
                "name" : "b",
                "parameterTypeSpecifier" : {
-                  "name" : "{http://www.w3.org/2001/XMLSchema}integer",
+                  "name" : "{urn:hl7-org:elm:r1}Integer",
                   "type" : "NamedTypeSpecifier"
                }
             } ]
@@ -178,17 +186,7 @@ module.exports['FunctionDefinitions'] = {
             "name" : "testValue",
             "context" : "Patient",
             "expression" : {
-               "name" : "foo",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "1",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "2",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }

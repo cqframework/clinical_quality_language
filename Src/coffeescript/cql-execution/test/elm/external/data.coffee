@@ -18,7 +18,6 @@ define Encounters = [Encounter]
 define PharyngitisConditions = [Condition: "Acute Pharyngitis"]
 define AmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"]
 define EncountersByServiceType = [Encounter: type in "Ambulatory/ED Visit"]
-define WrongDataType = [EncounterProposal: "Ambulatory/ED Visit"]
 define WrongValueSet = [Condition: "Ambulatory/ED Visit"]
 define WrongCodeProperty = [Encounter: class in "Ambulatory/ED Visit"]
 ###
@@ -35,8 +34,11 @@ module.exports['Retrieve'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "valueSets" : {
@@ -58,7 +60,7 @@ module.exports['Retrieve'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -67,7 +69,7 @@ module.exports['Retrieve'] = {
             "name" : "Conditions",
             "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}Condition",
+               "dataType" : "{http://hl7.org/fhir}Condition",
                "templateId" : "cqf-condition",
                "type" : "Retrieve"
             }
@@ -75,7 +77,7 @@ module.exports['Retrieve'] = {
             "name" : "Encounters",
             "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}Encounter",
+               "dataType" : "{http://hl7.org/fhir}Encounter",
                "templateId" : "cqf-encounter",
                "type" : "Retrieve"
             }
@@ -83,7 +85,7 @@ module.exports['Retrieve'] = {
             "name" : "PharyngitisConditions",
             "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}Condition",
+               "dataType" : "{http://hl7.org/fhir}Condition",
                "templateId" : "cqf-condition",
                "codeProperty" : "code",
                "type" : "Retrieve",
@@ -96,7 +98,7 @@ module.exports['Retrieve'] = {
             "name" : "AmbulatoryEncounters",
             "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}Encounter",
+               "dataType" : "{http://hl7.org/fhir}Encounter",
                "templateId" : "cqf-encounter",
                "codeProperty" : "type",
                "type" : "Retrieve",
@@ -109,21 +111,9 @@ module.exports['Retrieve'] = {
             "name" : "EncountersByServiceType",
             "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}Encounter",
+               "dataType" : "{http://hl7.org/fhir}Encounter",
                "templateId" : "cqf-encounter",
                "codeProperty" : "type",
-               "type" : "Retrieve",
-               "codes" : {
-                  "name" : "Ambulatory/ED Visit",
-                  "type" : "ValueSetRef"
-               }
-            }
-         }, {
-            "name" : "WrongDataType",
-            "context" : "Patient",
-            "expression" : {
-               "dataType" : "{http://www.w3.org/2001/XMLSchema}EncounterProposal",
-               "templateId" : "EncounterProposal",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
@@ -134,7 +124,7 @@ module.exports['Retrieve'] = {
             "name" : "WrongValueSet",
             "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}Condition",
+               "dataType" : "{http://hl7.org/fhir}Condition",
                "templateId" : "cqf-condition",
                "codeProperty" : "code",
                "type" : "Retrieve",
@@ -147,7 +137,7 @@ module.exports['Retrieve'] = {
             "name" : "WrongCodeProperty",
             "context" : "Patient",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}Encounter",
+               "dataType" : "{http://hl7.org/fhir}Encounter",
                "templateId" : "cqf-encounter",
                "codeProperty" : "class",
                "type" : "Retrieve",

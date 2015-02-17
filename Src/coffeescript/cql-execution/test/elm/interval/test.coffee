@@ -87,7 +87,7 @@ describe 'Overlaps', ->
   @beforeEach ->
     setup @, data
 
-  it 'should accept overlaps', ->
+  it.skip 'should accept overlaps', ->
     @overlapsBefore.exec(@ctx).should.be.true
     @overlapsAfter.exec(@ctx).should.be.true
     @overlapsContained.exec(@ctx).should.be.true
@@ -99,7 +99,7 @@ describe 'Overlaps', ->
   it 'should accept imprecise overlaps', ->
     @impreciseOverlap.exec(@ctx).should.be.true
 
-  it 'should reject non-overlaps', ->
+  it.skip 'should reject non-overlaps', ->
     @noOverlap.exec(@ctx).should.be.false
     @noOverlapsDate.exec(@ctx).should.be.false
 
@@ -115,7 +115,7 @@ describe 'OverlapsAfter', ->
   @beforeEach ->
     setup @, data
 
-  it 'should accept overlaps that are after', ->
+  it.skip 'should accept overlaps that are after', ->
     @overlapsAfter.exec(@ctx).should.be.true
     @overlapsContains.exec(@ctx).should.be.true
     @overlapsDate.exec(@ctx).should.be.true
@@ -124,7 +124,7 @@ describe 'OverlapsAfter', ->
   it 'should accept imprecise overlaps that are after', ->
     @impreciseOverlapAfter.exec(@ctx).should.be.true
 
-  it 'should reject overlaps that are not before', ->
+  it.skip 'should reject overlaps that are not before', ->
     @overlapsBefore.exec(@ctx).should.be.false
     @overlapsContained.exec(@ctx).should.be.false
     @endOverlapsDate.exec(@ctx).should.be.false
@@ -132,7 +132,7 @@ describe 'OverlapsAfter', ->
   it 'should reject imprecise overlaps that are not before', ->
     @impreciseOverlapBefore.exec(@ctx).should.be.false
 
-  it 'should reject non-overlaps', ->
+  it.skip 'should reject non-overlaps', ->
     @noOverlap.exec(@ctx).should.be.false
     @noOverlapsDate.exec(@ctx).should.be.false
 
@@ -148,7 +148,7 @@ describe 'OverlapsBefore', ->
   @beforeEach ->
     setup @, data
 
-  it 'should accept overlaps that are before', ->
+  it.skip 'should accept overlaps that are before', ->
     @overlapsBefore.exec(@ctx).should.be.true
     @overlapsContains.exec(@ctx).should.be.true
     @overlapsDate.exec(@ctx).should.be.true
@@ -157,7 +157,7 @@ describe 'OverlapsBefore', ->
   it 'should accept imprecise overlaps that are before', ->
     @impreciseOverlapBefore.exec(@ctx).should.be.true
 
-  it 'should reject overlaps that are not before', ->
+  it.skip 'should reject overlaps that are not before', ->
     @overlapsAfter.exec(@ctx).should.be.false
     @overlapsContained.exec(@ctx).should.be.false
     @startOverlapsDate.exec(@ctx).should.be.false
@@ -165,7 +165,7 @@ describe 'OverlapsBefore', ->
   it 'should reject imprecise overlaps that are not before', ->
     @impreciseOverlapAfter.exec(@ctx).should.be.false
 
-  it 'should reject non-overlaps', ->
+  it.skip 'should reject non-overlaps', ->
     @noOverlap.exec(@ctx).should.be.false
     @noOverlapsDate.exec(@ctx).should.be.false
 

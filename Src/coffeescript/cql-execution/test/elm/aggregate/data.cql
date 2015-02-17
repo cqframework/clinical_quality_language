@@ -43,7 +43,7 @@ define bi_modal= Mode({1,2,2,2,3,3,3,4,5})
 define v = Variance({1,2,3,4,5})
 
 // @Test: PopulationVariance
-define v = PopulationVariance({1,2,3,4,5})
+define v = PopulationVariance({1.0,2.0,3.0,4.0,5.0})
 
 // @Test: StdDev
 define std = StdDev({1,2,3,4,5})
