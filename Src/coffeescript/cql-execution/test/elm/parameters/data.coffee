@@ -10,6 +10,9 @@
 library TestSnippet version '1'
 using QUICK
 parameter MeasureYear default 2012
+parameter IntParameter : Integer
+parameter ListParameter : list<String>
+parameter TupleParameter : tuple{a : Integer, b : String, c : Boolean, d : list<Integer>, e : tuple{ f : String, g : Boolean}}
 ###
 
 module.exports['ParameterDef'] = {
@@ -24,17 +27,86 @@ module.exports['ParameterDef'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "parameters" : {
          "def" : [ {
             "name" : "MeasureYear",
             "default" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "2012",
                "type" : "Literal"
+            }
+         }, {
+            "name" : "IntParameter",
+            "parameterTypeSpecifier" : {
+               "name" : "{urn:hl7-org:elm:r1}Integer",
+               "type" : "NamedTypeSpecifier"
+            }
+         }, {
+            "name" : "ListParameter",
+            "parameterTypeSpecifier" : {
+               "type" : "ListTypeSpecifier",
+               "elementType" : {
+                  "name" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         }, {
+            "name" : "TupleParameter",
+            "parameterTypeSpecifier" : {
+               "type" : "TupleTypeSpecifier",
+               "element" : [ {
+                  "name" : "a",
+                  "type" : {
+                     "name" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "name" : "b",
+                  "type" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "name" : "c",
+                  "type" : {
+                     "name" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "name" : "d",
+                  "type" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "name" : "e",
+                  "type" : {
+                     "type" : "TupleTypeSpecifier",
+                     "element" : [ {
+                        "name" : "f",
+                        "type" : {
+                           "name" : "{urn:hl7-org:elm:r1}String",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }, {
+                        "name" : "g",
+                        "type" : {
+                           "name" : "{urn:hl7-org:elm:r1}Boolean",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     } ]
+                  }
+               } ]
             }
          } ]
       }
@@ -61,15 +133,18 @@ module.exports['ParameterRef'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "parameters" : {
          "def" : [ {
             "name" : "FooP",
             "default" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+               "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "Bar",
                "type" : "Literal"
             }
@@ -82,7 +157,7 @@ module.exports['ParameterRef'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }

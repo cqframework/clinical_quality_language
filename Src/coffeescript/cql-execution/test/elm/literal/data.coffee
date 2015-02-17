@@ -29,8 +29,11 @@ module.exports['Literal'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -40,7 +43,7 @@ module.exports['Literal'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -49,7 +52,7 @@ module.exports['Literal'] = {
             "name" : "BoolTrue",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+               "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                "value" : "true",
                "type" : "Literal"
             }
@@ -57,7 +60,7 @@ module.exports['Literal'] = {
             "name" : "BoolFalse",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+               "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                "value" : "false",
                "type" : "Literal"
             }
@@ -65,7 +68,7 @@ module.exports['Literal'] = {
             "name" : "IntOne",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "1",
                "type" : "Literal"
             }
@@ -73,7 +76,7 @@ module.exports['Literal'] = {
             "name" : "DecimalTenth",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+               "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                "value" : "0.1",
                "type" : "Literal"
             }
@@ -81,7 +84,7 @@ module.exports['Literal'] = {
             "name" : "StringTrue",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+               "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "true",
                "type" : "Literal"
             }

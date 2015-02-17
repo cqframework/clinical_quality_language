@@ -19,6 +19,10 @@ define World = 'World'
 define HelloWorldVariables = Hello + World
 ###
 
+###
+Translation Error(s):
+[7:21, 7:34] Could not resolve call to operator Add with signature (System.String,System.Any).
+###
 module.exports['Concat'] = {
    "library" : {
       "identifier" : {
@@ -31,8 +35,11 @@ module.exports['Concat'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -42,7 +49,7 @@ module.exports['Concat'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -53,11 +60,11 @@ module.exports['Concat'] = {
             "expression" : {
                "type" : "Add",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "Hello",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "World",
                   "type" : "Literal"
                } ]
@@ -98,86 +105,86 @@ module.exports['Concat'] = {
                                                          "operand" : [ {
                                                             "type" : "Add",
                                                             "operand" : [ {
-                                                               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                                               "valueType" : "{urn:hl7-org:elm:r1}String",
                                                                "value" : "The",
                                                                "type" : "Literal"
                                                             }, {
-                                                               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                                               "valueType" : "{urn:hl7-org:elm:r1}String",
                                                                "value" : " ",
                                                                "type" : "Literal"
                                                             } ]
                                                          }, {
-                                                            "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                                            "valueType" : "{urn:hl7-org:elm:r1}String",
                                                             "value" : "quick",
                                                             "type" : "Literal"
                                                          } ]
                                                       }, {
-                                                         "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                                         "valueType" : "{urn:hl7-org:elm:r1}String",
                                                          "value" : " ",
                                                          "type" : "Literal"
                                                       } ]
                                                    }, {
-                                                      "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                                      "valueType" : "{urn:hl7-org:elm:r1}String",
                                                       "value" : "brown",
                                                       "type" : "Literal"
                                                    } ]
                                                 }, {
-                                                   "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                                   "valueType" : "{urn:hl7-org:elm:r1}String",
                                                    "value" : " ",
                                                    "type" : "Literal"
                                                 } ]
                                              }, {
-                                                "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                                "valueType" : "{urn:hl7-org:elm:r1}String",
                                                 "value" : "fox",
                                                 "type" : "Literal"
                                              } ]
                                           }, {
-                                             "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                             "valueType" : "{urn:hl7-org:elm:r1}String",
                                              "value" : " ",
                                              "type" : "Literal"
                                           } ]
                                        }, {
-                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                          "valueType" : "{urn:hl7-org:elm:r1}String",
                                           "value" : "jumps",
                                           "type" : "Literal"
                                        } ]
                                     }, {
-                                       "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                       "valueType" : "{urn:hl7-org:elm:r1}String",
                                        "value" : " ",
                                        "type" : "Literal"
                                     } ]
                                  }, {
-                                    "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                    "valueType" : "{urn:hl7-org:elm:r1}String",
                                     "value" : "over",
                                     "type" : "Literal"
                                  } ]
                               }, {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                                 "valueType" : "{urn:hl7-org:elm:r1}String",
                                  "value" : " ",
                                  "type" : "Literal"
                               } ]
                            }, {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                              "valueType" : "{urn:hl7-org:elm:r1}String",
                               "value" : "the",
                               "type" : "Literal"
                            } ]
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : " ",
                            "type" : "Literal"
                         } ]
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "lazy",
                         "type" : "Literal"
                      } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : " ",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "dog.",
                   "type" : "Literal"
                } ]
@@ -186,20 +193,13 @@ module.exports['Concat'] = {
             "name" : "ConcatNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Add",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "Hello",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "Hello",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+               "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "Hello",
                "type" : "Literal"
             }
@@ -207,7 +207,7 @@ module.exports['Concat'] = {
             "name" : "World",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+               "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "World",
                "type" : "Literal"
             }
@@ -239,6 +239,13 @@ define CombineNull = Combine(null, ';')
 define CombineNullItem = Combine({ 'abc', 'def', null, 'jkl' }, ';')
 ###
 
+###
+Translation Error(s):
+[4:22, 4:60] Could not resolve call to operator Combine with signature (list<System.String>).
+[6:22, 6:39] Could not resolve call to operator Combine with signature (System.Any,System.String).
+[7:34, 7:62] Expected an expression of type 'System.String', but found an expression of type 'System.Any'.
+[7:26, 7:68] Could not determine signature for invocation of operator Combine.
+###
 module.exports['Combine'] = {
    "library" : {
       "identifier" : {
@@ -251,8 +258,11 @@ module.exports['Combine'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -262,7 +272,7 @@ module.exports['Combine'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -271,28 +281,7 @@ module.exports['Combine'] = {
             "name" : "NoSeparator",
             "context" : "Patient",
             "expression" : {
-               "name" : "Combine",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "abc",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "def",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "ghi",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "jkl",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "Separator",
@@ -303,24 +292,24 @@ module.exports['Combine'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "abc",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "def",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "ghi",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "jkl",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : ";",
                   "type" : "Literal"
                } ]
@@ -329,44 +318,13 @@ module.exports['Combine'] = {
             "name" : "CombineNull",
             "context" : "Patient",
             "expression" : {
-               "name" : "Combine",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : ";",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "CombineNullItem",
             "context" : "Patient",
             "expression" : {
-               "name" : "Combine",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "abc",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "def",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "jkl",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : ";",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -383,6 +341,11 @@ define SeparateNull = Split(null, ',')
 define SeparateUsingNull = Split('a,b,c', null)
 ###
 
+###
+Translation Error(s):
+[6:23, 6:38] Could not resolve call to operator Split with signature (System.Any,System.String).
+[7:28, 7:47] Could not resolve call to operator Split with signature (System.String,System.Any).
+###
 module.exports['Split'] = {
    "library" : {
       "identifier" : {
@@ -395,8 +358,11 @@ module.exports['Split'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -406,7 +372,7 @@ module.exports['Split'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -418,11 +384,11 @@ module.exports['Split'] = {
                "name" : "Split",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "a,b,c,,1,2,3",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : ",",
                   "type" : "Literal"
                } ]
@@ -434,11 +400,11 @@ module.exports['Split'] = {
                "name" : "Split",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "a,b,c,,1,2,3",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : ";",
                   "type" : "Literal"
                } ]
@@ -447,29 +413,13 @@ module.exports['Split'] = {
             "name" : "SeparateNull",
             "context" : "Patient",
             "expression" : {
-               "name" : "Split",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : ",",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "SeparateUsingNull",
             "context" : "Patient",
             "expression" : {
-               "name" : "Split",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "a,b,c",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -484,6 +434,10 @@ define ElevenLetters = Length('Hello World')
 define NullString = Length(null)
 ###
 
+###
+Translation Error(s):
+[5:21, 5:32] Could not resolve call to operator Length with signature (System.Any).
+###
 module.exports['Length'] = {
    "library" : {
       "identifier" : {
@@ -496,8 +450,11 @@ module.exports['Length'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -507,7 +464,7 @@ module.exports['Length'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -519,7 +476,7 @@ module.exports['Length'] = {
                "name" : "Length",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "Hello World",
                   "type" : "Literal"
                } ]
@@ -528,11 +485,7 @@ module.exports['Length'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -549,6 +502,10 @@ define CamelC = Upper('aBcDeFg123')
 define NullString = Upper(null)
 ###
 
+###
+Translation Error(s):
+[7:21, 7:31] Could not resolve call to operator Upper with signature (System.Any).
+###
 module.exports['Upper'] = {
    "library" : {
       "identifier" : {
@@ -561,8 +518,11 @@ module.exports['Upper'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -572,7 +532,7 @@ module.exports['Upper'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -584,7 +544,7 @@ module.exports['Upper'] = {
                "name" : "Upper",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "abcdefg123",
                   "type" : "Literal"
                } ]
@@ -596,7 +556,7 @@ module.exports['Upper'] = {
                "name" : "Upper",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "ABCDEFG123",
                   "type" : "Literal"
                } ]
@@ -608,7 +568,7 @@ module.exports['Upper'] = {
                "name" : "Upper",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "aBcDeFg123",
                   "type" : "Literal"
                } ]
@@ -617,11 +577,7 @@ module.exports['Upper'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "name" : "Upper",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -638,6 +594,10 @@ define CamelC = Lower('aBcDeFg123')
 define NullString = Lower(null)
 ###
 
+###
+Translation Error(s):
+[7:21, 7:31] Could not resolve call to operator Lower with signature (System.Any).
+###
 module.exports['Lower'] = {
    "library" : {
       "identifier" : {
@@ -650,8 +610,11 @@ module.exports['Lower'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -661,7 +624,7 @@ module.exports['Lower'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -673,7 +636,7 @@ module.exports['Lower'] = {
                "name" : "Lower",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "abcdefg123",
                   "type" : "Literal"
                } ]
@@ -685,7 +648,7 @@ module.exports['Lower'] = {
                "name" : "Lower",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "ABCDEFG123",
                   "type" : "Literal"
                } ]
@@ -697,7 +660,7 @@ module.exports['Lower'] = {
                "name" : "Lower",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "aBcDeFg123",
                   "type" : "Literal"
                } ]
@@ -706,11 +669,7 @@ module.exports['Lower'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "name" : "Lower",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -728,6 +687,11 @@ define NullString = null[4]
 define NullIndex = 'HelloWorld'[null]
 ###
 
+###
+Translation Error(s):
+[7:21, 7:27] Could not resolve call to operator Indexer with signature (System.Any,System.Integer).
+[8:20, 8:37] Could not resolve call to operator Indexer with signature (System.String,System.Any).
+###
 module.exports['Indexer'] = {
    "library" : {
       "identifier" : {
@@ -740,8 +704,11 @@ module.exports['Indexer'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -751,7 +718,7 @@ module.exports['Indexer'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -762,12 +729,12 @@ module.exports['Indexer'] = {
             "expression" : {
                "type" : "Indexer",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                },
                "index" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
                }
@@ -778,12 +745,12 @@ module.exports['Indexer'] = {
             "expression" : {
                "type" : "Indexer",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                },
                "index" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                }
@@ -794,12 +761,12 @@ module.exports['Indexer'] = {
             "expression" : {
                "type" : "Indexer",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                },
                "index" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "20",
                   "type" : "Literal"
                }
@@ -808,29 +775,13 @@ module.exports['Indexer'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "type" : "Indexer",
-               "operand" : {
-                  "type" : "Null"
-               },
-               "index" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "4",
-                  "type" : "Literal"
-               }
+               "type" : "Null"
             }
          }, {
             "name" : "NullIndex",
             "context" : "Patient",
             "expression" : {
-               "type" : "Indexer",
-               "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "HelloWorld",
-                  "type" : "Literal"
-               },
-               "index" : {
-                  "type" : "Null"
-               }
+               "type" : "Null"
             }
          } ]
       }
@@ -847,6 +798,11 @@ define nullPattern = Pos(null, 'abcdefg')
 define nullString = Pos('cde', null)
 ###
 
+###
+Translation Error(s):
+[6:22, 6:41] Could not resolve call to operator Pos with signature (System.Any,System.String).
+[7:21, 7:36] Could not resolve call to operator Pos with signature (System.String,System.Any).
+###
 module.exports['Pos'] = {
    "library" : {
       "identifier" : {
@@ -859,8 +815,11 @@ module.exports['Pos'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -870,7 +829,7 @@ module.exports['Pos'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -882,11 +841,11 @@ module.exports['Pos'] = {
                "name" : "Pos",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "cde",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "abcdefg",
                   "type" : "Literal"
                } ]
@@ -898,11 +857,11 @@ module.exports['Pos'] = {
                "name" : "Pos",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "fgh",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "abcdefg",
                   "type" : "Literal"
                } ]
@@ -911,29 +870,13 @@ module.exports['Pos'] = {
             "name" : "nullPattern",
             "context" : "Patient",
             "expression" : {
-               "name" : "Pos",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "abcdefg",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "nullString",
             "context" : "Patient",
             "expression" : {
-               "name" : "Pos",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "cde",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -954,6 +897,11 @@ define NullString = Substring(null, 5)
 define NullStart = Substring('HelloWorld', null)
 ###
 
+###
+Translation Error(s):
+[10:21, 10:38] Could not resolve call to operator Substring with signature (System.Any,System.Integer).
+[11:20, 11:48] Could not resolve call to operator Substring with signature (System.String,System.Any).
+###
 module.exports['Substring'] = {
    "library" : {
       "identifier" : {
@@ -966,8 +914,11 @@ module.exports['Substring'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -977,7 +928,7 @@ module.exports['Substring'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -989,11 +940,11 @@ module.exports['Substring'] = {
                "name" : "Substring",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
                } ]
@@ -1005,15 +956,15 @@ module.exports['Substring'] = {
                "name" : "Substring",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -1025,15 +976,15 @@ module.exports['Substring'] = {
                "name" : "Substring",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                } ]
@@ -1045,11 +996,11 @@ module.exports['Substring'] = {
                "name" : "Substring",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                } ]
@@ -1061,15 +1012,15 @@ module.exports['Substring'] = {
                "name" : "Substring",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "25",
                   "type" : "Literal"
                } ]
@@ -1081,17 +1032,17 @@ module.exports['Substring'] = {
                "name" : "Substring",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
                }, {
                   "type" : "Negate",
                   "operand" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }
@@ -1101,29 +1052,13 @@ module.exports['Substring'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "5",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NullStart",
             "context" : "Patient",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "HelloWorld",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }

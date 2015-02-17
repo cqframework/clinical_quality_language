@@ -11,7 +11,7 @@ define NonNullVarIsNull = IsNull(One)
 
 // @Test: IfNull
 define NullAndA = IfNull(null, 'a')
-define ZeroAndB = IfNull(0, 'b')
+define ZeroAndB = IfNull(0, 1)
 define BothNull = IfNull(null, null)
 
 // @Test: Coalesce

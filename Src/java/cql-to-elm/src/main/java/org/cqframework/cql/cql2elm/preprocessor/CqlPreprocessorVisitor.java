@@ -9,6 +9,7 @@ import org.cqframework.cql.gen.cqlParser;
 public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     private LibraryInfo libraryInfo = new LibraryInfo();
     private boolean implicitPatientCreated = false;
+    private String currentContext = "Patient";
 
     public LibraryInfo getLibraryInfo() {
         return libraryInfo;
@@ -66,19 +67,22 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
+        currentContext = (String)visit(ctx.identifier());
         if (!implicitPatientCreated) {
             ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
             expressionDefinition.setName("Patient");
+            expressionDefinition.setContext(currentContext);
             libraryInfo.addExpressionDefinition(expressionDefinition);
             implicitPatientCreated = true;
         }
-        return visit(ctx.identifier());
+        return currentContext;
     }
 
     @Override
     public Object visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
         expressionDefinition.setName((String)visit(ctx.identifier()));
+        expressionDefinition.setContext(currentContext);
         expressionDefinition.setDefinition(ctx);
         libraryInfo.addExpressionDefinition(expressionDefinition);
         return expressionDefinition;
@@ -88,6 +92,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
         functionDefinition.setName((String)visit(ctx.identifier()));
+        functionDefinition.setContext(currentContext);
         functionDefinition.setDefinition(ctx);
         libraryInfo.addFunctionDefinition(functionDefinition);
         return functionDefinition;

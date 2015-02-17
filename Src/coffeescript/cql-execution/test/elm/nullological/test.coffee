@@ -38,7 +38,7 @@ describe 'IfNull', ->
   it 'should return null when both args are null', ->
     should(@bothNull.exec(@ctx)).be.null
 
-describe 'Coalesce', ->
+describe.skip 'Coalesce', ->
   @beforeEach ->
     setup @, data
 

@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql_annotations.r1.Annotation;
@@ -29,6 +30,7 @@ public class CqlTranslator {
     private Library library = null;
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
+    private List<CqlTranslatorException> errors = null;
 
     public static CqlTranslator fromText(String cqlText, Options... options) {
         return new CqlTranslator(new ANTLRInputStream(cqlText), options);
@@ -80,6 +82,8 @@ public class CqlTranslator {
         return retrieves;
     }
 
+    public List<CqlTranslatorException> getErrors() { return errors; }
+
     private void translateToELM(ANTLRInputStream is, Options... options) {
         cqlLexer lexer = new cqlLexer(is);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -104,6 +108,7 @@ public class CqlTranslator {
         visitResult = visitor.visit(tree);
         library = visitor.getLibrary();
         retrieves = visitor.getRetrieves();
+        errors = visitor.getErrors();
     }
 
     private String convertToXML(Library library) throws JAXBException {
@@ -138,18 +143,30 @@ public class CqlTranslator {
             options.add(Options.EnableAnnotations);
         }
         CqlTranslator translator = fromFile(inFile, options.toArray(new Options[options.size()]));
-        switch (format) {
-            case COFFEE:
-                pw.print("module.exports = ");
-                pw.println(translator.toJson());
-                break;
-            case JSON:
-                pw.println(translator.toJson());
-                break;
-            case XML:
-            default:
-                pw.println(translator.toXml());
+
+        if (translator.getErrors().size() > 0) {
+            System.err.println("Translation failed due to errors:");
+            for (CqlTranslatorException error : translator.getErrors()) {
+                TrackBack tb = error.getLocator();
+                String lines = tb == null ? "[n/a]" : String.format("[%d:%d, %d:%d]",
+                        tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
+                System.err.printf("%s %s%n", lines, error.getMessage());
+            }
+        } else {
+            switch (format) {
+                case COFFEE:
+                    pw.print("module.exports = ");
+                    pw.println(translator.toJson());
+                    break;
+                case JSON:
+                    pw.println(translator.toJson());
+                    break;
+                case XML:
+                default:
+                    pw.println(translator.toXml());
+            }
         }
+
         pw.println();
         pw.close();
     }

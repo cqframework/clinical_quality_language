@@ -2,8 +2,9 @@
 define Three = 1 + 2
 define IntList = { 9, 7, 8 }
 define StringList = { 'a', 'bee', 'see' }
-define MixedList = { 1, 'two', Three }
+define MixedList = list<Any>{ 1, 'two', Three }
 define EmptyList = {}
+
 
 // @Test: Exists
 define EmptyList = exists ({})
@@ -15,8 +16,8 @@ define UnequalIntList = {1, 2, 3} = {1, 2}
 define ReverseIntList = {1, 2, 3} = {3, 2, 1}
 define EqualStringList = {'hello', 'world'} = {'hello', 'world'}
 define UnequalStringList = {'hello', 'world'} = {'foo', 'bar'}
-define EqualTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
-define UnequalTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = { tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+define EqualTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
+define UnequalTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
 
 // @Test: NotEqual
 define EqualIntList = {1, 2, 3} <> {1, 2, 3}
@@ -24,8 +25,8 @@ define UnequalIntList = {1, 2, 3} <> {1, 2}
 define ReverseIntList = {1, 2, 3} <> {3, 2, 1}
 define EqualStringList = {'hello', 'world'} <> {'hello', 'world'}
 define UnequalStringList = {'hello', 'world'} <> {'foo', 'bar'}
-define EqualTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
-define UnequalTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> { tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+define EqualTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
+define UnequalTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> list<Any>{ tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
 
 // @Test: Union
 define OneToTen = {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}
@@ -41,9 +42,9 @@ define ThreeFourExcept = {3, 4} except {1, 2, 3, 4, 5}
 define ExceptFiveThree = {1, 2, 3, 4, 5} except {5, 3}
 define ExceptNoOp = {1, 2, 3, 4, 5} except {6, 7, 8, 9, 10}
 define ExceptEverything = {1, 2, 3, 4, 5} except {1, 2, 3, 4, 5}
-define SomethingExceptNothing = {1, 2, 3, 4, 5} except {}
-define NothingExceptSomething = {} except {1, 2, 3, 4, 5}
-define ExceptTuples = {tuple{a: 1}, tuple{b: 2}, tuple{c: 3}} except {tuple{b: 2}}
+define SomethingExceptNothing = {1, 2, 3, 4, 5} except list<Integer>{}
+define NothingExceptSomething = list<Integer>{} except {1, 2, 3, 4, 5}
+define ExceptTuples = {tuple{a: 1}, tuple{a: 2}, tuple{a: 3}} except {tuple{a: 2}}
 define ExceptNull = {1, 2, 3, 4, 5} except null
 define NullExcept = null except {1, 2, 3, 4, 5}
 
@@ -59,7 +60,7 @@ define IntersectNull = {1, 2, 3} intersect null
 
 // @Test: IndexOf
 define IndexOfSecond = IndexOf({'a', 'b', 'c', 'd'}, 'b')
-define IndexOfThirdTuple = IndexOf({tuple{a: 1}, tuple{b: 2}, tuple{c: 3}}, tuple{c: 3})
+define IndexOfThirdTuple = IndexOf({tuple{a: 1}, tuple{a: 2}, tuple{a: 3}}, tuple{a: 3})
 define MultipleMatches = IndexOf({'a', 'b', 'c', 'd', 'd', 'e', 'd'}, 'd')
 define ItemNotFound = IndexOf({'a', 'b', 'c'}, 'd')
 define NullList = IndexOf(null, 'a')
@@ -130,8 +131,6 @@ define NullIncluded = null properly included in {1, 2, 3, 4, 5}
 
 // @Test: Expand
 define ListOfLists = expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
-define ListOfInts = expand { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-define MixedList = expand { 1, 2, 3, {4, 5, 6}, 7, 8, 9 }
 define NullValue = expand null
 
 // @Test: Distinct
@@ -141,8 +140,8 @@ define NoDups = distinct {2, 4, 6, 8, 10}
 // @Test: First
 define Numbers = First({1, 2, 3, 4})
 define Letters = First({'a', 'b', 'c'})
-define Lists = First({{'a','b','c'},{1,2,3}})
-define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Lists = First({{'a','b','c'},{'d','e','f'}})
+define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = First({3, 1, 4, 2})
 define Empty = First({})
 define NullValue = First(null)
@@ -150,8 +149,8 @@ define NullValue = First(null)
 // @Test: Last
 define Numbers = Last({1, 2, 3, 4})
 define Letters = Last({'a', 'b', 'c'})
-define Lists = Last({{'a','b','c'},{1,2,3}})
-define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Lists = Last({{'a','b','c'},{'d',;'e','f'}})
+define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = Last({3, 1, 4, 2})
 define Empty = Last({})
 define NullValue = Last(null)
@@ -159,6 +158,6 @@ define NullValue = Last(null)
 // @Test: Length
 define Numbers = Length({2, 4, 6, 8, 10})
 define Lists = Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
-define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Empty = Length({})
 define NullValue = Length(null)

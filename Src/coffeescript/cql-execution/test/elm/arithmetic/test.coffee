@@ -51,7 +51,7 @@ describe 'Divide', ->
   it 'should divide two numbers that don\'t evenly divide', ->
     @tenDividedByFour.exec(@ctx).should.equal 2.5
 
-  it 'should divide multiple numbers', ->
+  it.skip 'should divide multiple numbers', ->
     @divideMultiple.exec(@ctx).should.equal 5
 
   it 'should divide variables', ->
@@ -68,7 +68,7 @@ describe 'MathPrecedence', ->
   @beforeEach ->
     setup @, data
 
-  it 'should follow order of operations', ->
+  it.skip 'should follow order of operations', ->
     @mixed.exec(@ctx).should.equal 46
 
   it 'should allow parentheses to override order of operations', ->
@@ -91,15 +91,15 @@ describe 'TruncatedDivide', ->
 
 describe  'Truncate', ->
   @beforeEach ->
-    setup @, data   
+    setup @, data
 
-  it "should be able to return the integer portipon of a number", ->
+  it.skip "should be able to return the integer portion of a number", ->
     @trunc.exec(@ctx).should.equal 10
     @even.exec(@ctx).should.equal 10
 
-describe  'Floor', ->
+describe.skip  'Floor', ->
   @beforeEach ->
-    setup @, data         
+    setup @, data
 
   it "should be able to round down to the closest integer", ->
     @flr.exec(@ctx).should.equal 10
@@ -107,42 +107,42 @@ describe  'Floor', ->
 
 describe 'Ceiling', ->
   @beforeEach ->
-    setup @, data 
+    setup @, data
 
     it "should be able to round up to the closest integer", ->
       @ceil.exec(@ctx).should.equal 11
       @even.exec(@ctx).should.equal 10
 
-describe 'Ln', ->
+describe.skip 'Ln', ->
   @beforeEach ->
-    setup @, data      
+    setup @, data
 
-  it "should be able to return the natrual log of a number", ->
+  it "should be able to return the natural log of a number", ->
     @ln.exec(@ctx).should.equal Math.log(4)
 
 describe 'Log', ->
   @beforeEach ->
-    setup @, data      
+    setup @, data
 
     it "should be able to return the log of a number based on an arbitary base value", ->
       @log.exec(@ctx).should.equal 0.25
 
 describe 'Modulo', ->
   @beforeEach ->
-    setup @, data      
+    setup @, data
 
     it "should be able to return the remainder of a division", ->
       @mod.exec(@ctx).should.equal 1
-    
+
 describe 'Abs', ->
   @beforeEach ->
     setup @, data
 
   it "should be able to return the absolute value of a positive number", ->
     @pos.exec(@ctx).should.equal 10
-  it "should be able to return the absolute value of a negative number", ->    
+  it "should be able to return the absolute value of a negative number", ->
     @neg.exec(@ctx).should.equal 10
-  it "should be able to return the absolute value of 0", ->    
+  it "should be able to return the absolute value of 0", ->
     @zero.exec(@ctx).should.equal 0
 
 describe 'Round', ->
@@ -164,17 +164,17 @@ describe 'Successor', ->
     @is.exec(@ctx).should.equal 3
   it "should be able to get Real Successor", ->
     @rs.exec(@ctx).should.equal ( 2.2  + Math.pow(10,-8) )
-  
+
   it "should cause runtime error for Successor greater than Integer Max value" , ->
     a = false
-    try 
+    try
       @ofr.exec(@ctx)
     catch e
       e.constructor.name.should.equal "OverFlowException"
       a = true
-    
+
     a.should.equal true
- 
+
   it "should be able to get Date Successor for year", ->
     dp = @y_date.exec(@ctx)
     dp.year.should.equal 2016
@@ -204,7 +204,7 @@ describe 'Successor', ->
     should.not.exist dp.minute
     should.not.exist dp.second
     should.not.exist  dp.millisecond
-  
+
   it "should be able to get Date Successor for year,month,day,hour", ->
     dp = @ymdh_date.exec(@ctx)
     dp.year.should.equal 2015
@@ -214,7 +214,7 @@ describe 'Successor', ->
     should.not.exist dp.minute
     should.not.exist dp.second
     should.not.exist  dp.millisecond
-  
+
   it "should be able to get Date Successor for year,month,day,hour,minute", ->
     dp = @ymdhm_date.exec(@ctx)
     dp.year.should.equal 2015
@@ -224,7 +224,7 @@ describe 'Successor', ->
     dp.minute.should.equal 1
     should.not.exist dp.second
     should.not.exist  dp.millisecond
-  
+
   it "should be able to get Date Successor for year,month,day,hour,minute,seconds", ->
     dp = @ymdhms_date.exec(@ctx)
     dp.year.should.equal 2015
@@ -247,7 +247,7 @@ describe 'Successor', ->
 
   it "should throw an exception when attempting to get the Successor of the maximum allowed date", ->
     a = false
-    try 
+    try
       @max_date.exec(@ctx)
     catch e
       e.constructor.name.should.equal "OverFlowException"
@@ -262,15 +262,15 @@ describe 'Predecessor', ->
   it "should be able to get Integer Predecessor", ->
     @is.exec(@ctx).should.equal 1
   it "should be able to get Real Predecessor", ->
-    @rs.exec(@ctx).should.equal ( 2.2  - Math.pow(10,-8))   
-  it "should cause runtime error for Predecessor greater than Integer Max value" , ->  
+    @rs.exec(@ctx).should.equal ( 2.2  - Math.pow(10,-8))
+  it "should cause runtime error for Predecessor greater than Integer Max value" , ->
     a = false
-    try 
+    try
       @ufr.exec(@ctx)
     catch e
       e.constructor.name.should.equal "OverFlowException"
       a = true
-    
+
     a.should.equal true
 
   it "should be able to get Date Predecessor for year", ->
@@ -321,7 +321,7 @@ describe 'Predecessor', ->
     dp.minute.should.equal 59
     should.not.exist dp.second
     should.not.exist  dp.millisecond
-  
+
   it "should be able to get Date Predecessor for year,month,day,hour,minute,seconds", ->
     dp = @ymdhms_date.exec(@ctx)
     dp.year.should.equal 2014
@@ -331,7 +331,7 @@ describe 'Predecessor', ->
     dp.minute.should.equal 59
     dp.second.should.equal 59
     should.not.exist  dp.millisecond
-  
+
   it "should be able to get Date Predecessor for year,month,day,hour,minute,seconds,milliseconds", ->
     dp = @ymdhmsm_date.exec(@ctx)
     dp.year.should.equal 2014
@@ -343,7 +343,7 @@ describe 'Predecessor', ->
 
   it "should throw an exception when attempting to get the Predecessor of the minimum allowed date", ->
     a = false
-    try 
+    try
       @min_date.exec(@ctx)
     catch e
       e.constructor.name.should.equal "OverFlowException"

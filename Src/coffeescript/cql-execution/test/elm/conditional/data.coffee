@@ -9,8 +9,8 @@
 ### If
 library TestSnippet version '1'
 using QUICK
+parameter var : Boolean
 context Patient
-
 define exp = if var then 'true return' else 'false return'
 ###
 
@@ -26,8 +26,20 @@ module.exports['If'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "var",
+            "parameterTypeSpecifier" : {
+               "name" : "{urn:hl7-org:elm:r1}Boolean",
+               "type" : "NamedTypeSpecifier"
+            }
          } ]
       },
       "statements" : {
@@ -37,7 +49,7 @@ module.exports['If'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -49,15 +61,15 @@ module.exports['If'] = {
                "type" : "If",
                "condition" : {
                   "name" : "var",
-                  "type" : "IdentifierRef"
+                  "type" : "ParameterRef"
                },
                "then" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "true return",
                   "type" : "Literal"
                },
                "else" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "false return",
                   "type" : "Literal"
                }
@@ -70,17 +82,20 @@ module.exports['If'] = {
 ### Case
 library TestSnippet version '1'
 using QUICK
+parameter var : Integer
+parameter X : Integer
+parameter Y : Integer
 context Patient
 
-define selected = 
+define selected =
   case var
    when 1 then 'one'
    when 2 then 'two'
-   else 
-    var
+   else
+    '?'
   end
 
-define standard = 
+define standard =
   case
     when X > Y then 'X > Y'
     when X < Y then 'X < Y'
@@ -100,8 +115,32 @@ module.exports['Case'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "var",
+            "parameterTypeSpecifier" : {
+               "name" : "{urn:hl7-org:elm:r1}Integer",
+               "type" : "NamedTypeSpecifier"
+            }
+         }, {
+            "name" : "X",
+            "parameterTypeSpecifier" : {
+               "name" : "{urn:hl7-org:elm:r1}Integer",
+               "type" : "NamedTypeSpecifier"
+            }
+         }, {
+            "name" : "Y",
+            "parameterTypeSpecifier" : {
+               "name" : "{urn:hl7-org:elm:r1}Integer",
+               "type" : "NamedTypeSpecifier"
+            }
          } ]
       },
       "statements" : {
@@ -111,7 +150,7 @@ module.exports['Case'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -123,34 +162,35 @@ module.exports['Case'] = {
                "type" : "Case",
                "comparand" : {
                   "name" : "var",
-                  "type" : "IdentifierRef"
+                  "type" : "ParameterRef"
                },
                "caseItem" : [ {
                   "when" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "then" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "one",
                      "type" : "Literal"
                   }
                }, {
                   "when" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   },
                   "then" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "two",
                      "type" : "Literal"
                   }
                } ],
                "else" : {
-                  "name" : "var",
-                  "type" : "IdentifierRef"
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "?",
+                  "type" : "Literal"
                }
             }
          }, {
@@ -163,14 +203,14 @@ module.exports['Case'] = {
                      "type" : "Greater",
                      "operand" : [ {
                         "name" : "X",
-                        "type" : "IdentifierRef"
+                        "type" : "ParameterRef"
                      }, {
                         "name" : "Y",
-                        "type" : "IdentifierRef"
+                        "type" : "ParameterRef"
                      } ]
                   },
                   "then" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "X > Y",
                      "type" : "Literal"
                   }
@@ -179,20 +219,20 @@ module.exports['Case'] = {
                      "type" : "Less",
                      "operand" : [ {
                         "name" : "X",
-                        "type" : "IdentifierRef"
+                        "type" : "ParameterRef"
                      }, {
                         "name" : "Y",
-                        "type" : "IdentifierRef"
+                        "type" : "ParameterRef"
                      } ]
                   },
                   "then" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "X < Y",
                      "type" : "Literal"
                   }
                } ],
                "else" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "X == Y",
                   "type" : "Literal"
                }

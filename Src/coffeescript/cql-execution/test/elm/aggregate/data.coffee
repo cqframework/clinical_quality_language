@@ -15,6 +15,11 @@ define has_null = Count({1,null,null,null,2})
 define empty = Count({})
 ###
 
+###
+Translation Error(s):
+[5:25, 5:44] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[5:19, 5:45] Could not determine signature for invocation of operator Count.
+###
 module.exports['Count'] = {
    "library" : {
       "identifier" : {
@@ -27,8 +32,11 @@ module.exports['Count'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -38,7 +46,7 @@ module.exports['Count'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -52,23 +60,23 @@ module.exports['Count'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -78,26 +86,7 @@ module.exports['Count'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "name" : "Count",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "empty",
@@ -123,6 +112,12 @@ define has_null = Sum({1,null,null,null,2})
 define empty = Sum({})
 ###
 
+###
+Translation Error(s):
+[5:23, 5:42] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[5:19, 5:43] Could not determine signature for invocation of operator Sum.
+[6:16, 6:22] Could not resolve call to operator Sum with signature (list<System.Any>).
+###
 module.exports['Sum'] = {
    "library" : {
       "identifier" : {
@@ -135,8 +130,11 @@ module.exports['Sum'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -146,7 +144,7 @@ module.exports['Sum'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -160,23 +158,23 @@ module.exports['Sum'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -186,36 +184,13 @@ module.exports['Sum'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "name" : "Sum",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "expression" : {
-               "name" : "Sum",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -231,6 +206,11 @@ define has_null = Min({1,null,-1,null,2})
 define empty = Min({})
 ###
 
+###
+Translation Error(s):
+[5:23, 5:40] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[5:19, 5:41] Could not determine signature for invocation of operator Min.
+###
 module.exports['Min'] = {
    "library" : {
       "identifier" : {
@@ -243,8 +223,11 @@ module.exports['Min'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -254,7 +237,7 @@ module.exports['Min'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -268,27 +251,27 @@ module.exports['Min'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -298,31 +281,7 @@ module.exports['Min'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "name" : "Min",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Negate",
-                     "operand" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "empty",
@@ -348,6 +307,11 @@ define has_null = Max({1,null,null,2})
 define empty = Max({})
 ###
 
+###
+Translation Error(s):
+[5:23, 5:37] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[5:19, 5:38] Could not determine signature for invocation of operator Max.
+###
 module.exports['Max'] = {
    "library" : {
       "identifier" : {
@@ -360,8 +324,11 @@ module.exports['Max'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -371,7 +338,7 @@ module.exports['Max'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -385,27 +352,27 @@ module.exports['Max'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -415,24 +382,7 @@ module.exports['Max'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "name" : "Max",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "empty",
@@ -458,6 +408,12 @@ define has_null = Avg({1,null,null,2})
 define empty = Avg({})
 ###
 
+###
+Translation Error(s):
+[5:23, 5:37] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[5:19, 5:38] Could not determine signature for invocation of operator Avg.
+[6:16, 6:22] Could not resolve call to operator Avg with signature (list<System.Any>).
+###
 module.exports['Avg'] = {
    "library" : {
       "identifier" : {
@@ -470,8 +426,11 @@ module.exports['Avg'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -481,7 +440,7 @@ module.exports['Avg'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -495,23 +454,23 @@ module.exports['Avg'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -521,34 +480,13 @@ module.exports['Avg'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "name" : "Avg",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "expression" : {
-               "name" : "Avg",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -568,6 +506,11 @@ define dup_vals_even = Median({3,1,2,2,2,3,4,5})
 define dup_vals_odd =  Median({3,1,2,2,2,3,4,5,6})
 ###
 
+###
+Translation Error(s):
+[8:26, 8:40] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[8:19, 8:41] Could not determine signature for invocation of operator Median.
+###
 module.exports['Median'] = {
    "library" : {
       "identifier" : {
@@ -580,8 +523,11 @@ module.exports['Median'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -591,7 +537,7 @@ module.exports['Median'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -605,23 +551,23 @@ module.exports['Median'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -636,27 +582,27 @@ module.exports['Median'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -676,24 +622,7 @@ module.exports['Median'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "dup_vals_even",
@@ -704,35 +633,35 @@ module.exports['Median'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -747,39 +676,39 @@ module.exports['Median'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -801,6 +730,11 @@ define empty = Mode({})
 define bi_modal= Mode({1,2,2,2,3,3,3,4,5})
 ###
 
+###
+Translation Error(s):
+[5:24, 5:40] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[5:19, 5:41] Could not determine signature for invocation of operator Mode.
+###
 module.exports['Mode'] = {
    "library" : {
       "identifier" : {
@@ -813,8 +747,11 @@ module.exports['Mode'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -824,7 +761,7 @@ module.exports['Mode'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -838,31 +775,31 @@ module.exports['Mode'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -872,28 +809,7 @@ module.exports['Mode'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "name" : "Mode",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "empty",
@@ -914,39 +830,39 @@ module.exports['Mode'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -964,6 +880,10 @@ context Patient
 define v = Variance({1,2,3,4,5})
 ###
 
+###
+Translation Error(s):
+[4:12, 4:32] Could not resolve call to operator Variance with signature (list<System.Integer>).
+###
 module.exports['Variance'] = {
    "library" : {
       "identifier" : {
@@ -976,8 +896,11 @@ module.exports['Variance'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -987,7 +910,7 @@ module.exports['Variance'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -996,32 +919,7 @@ module.exports['Variance'] = {
             "name" : "v",
             "context" : "Patient",
             "expression" : {
-               "name" : "Variance",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1032,7 +930,7 @@ module.exports['Variance'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define v = PopulationVariance({1,2,3,4,5})
+define v = PopulationVariance({1.0,2.0,3.0,4.0,5.0})
 ###
 
 module.exports['PopulationVariance'] = {
@@ -1047,8 +945,11 @@ module.exports['PopulationVariance'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1058,7 +959,7 @@ module.exports['PopulationVariance'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1072,24 +973,24 @@ module.exports['PopulationVariance'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "2.0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "3.0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "4.0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "5.0",
                      "type" : "Literal"
                   } ]
                } ]
@@ -1106,6 +1007,10 @@ context Patient
 define std = StdDev({1,2,3,4,5})
 ###
 
+###
+Translation Error(s):
+[4:14, 4:32] Could not resolve call to operator StdDev with signature (list<System.Integer>).
+###
 module.exports['StdDev'] = {
    "library" : {
       "identifier" : {
@@ -1118,8 +1023,11 @@ module.exports['StdDev'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1129,7 +1037,7 @@ module.exports['StdDev'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1138,32 +1046,7 @@ module.exports['StdDev'] = {
             "name" : "std",
             "context" : "Patient",
             "expression" : {
-               "name" : "StdDev",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1177,6 +1060,10 @@ context Patient
 define dev = PopulationStdDev({1,2,3,4,5})
 ###
 
+###
+Translation Error(s):
+[4:14, 4:42] Could not resolve call to operator PopulationStdDev with signature (list<System.Integer>).
+###
 module.exports['PopulationStdDev'] = {
    "library" : {
       "identifier" : {
@@ -1189,8 +1076,11 @@ module.exports['PopulationStdDev'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1200,7 +1090,7 @@ module.exports['PopulationStdDev'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1209,32 +1099,7 @@ module.exports['PopulationStdDev'] = {
             "name" : "dev",
             "context" : "Patient",
             "expression" : {
-               "name" : "PopulationStdDev",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1252,6 +1117,13 @@ define atf = AllTrue({true,true,true,false})
 define atfwn = AllTrue({true,true,null,null,true,false})
 ###
 
+###
+Translation Error(s):
+[5:23, 5:53] Expected an expression of type 'System.Boolean', but found an expression of type 'System.Any'.
+[5:15, 5:54] Could not determine signature for invocation of operator AllTrue.
+[8:24, 8:55] Expected an expression of type 'System.Boolean', but found an expression of type 'System.Any'.
+[8:16, 8:56] Could not determine signature for invocation of operator AllTrue.
+###
 module.exports['AllTrue'] = {
    "library" : {
       "identifier" : {
@@ -1264,8 +1136,11 @@ module.exports['AllTrue'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1275,7 +1150,7 @@ module.exports['AllTrue'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1289,19 +1164,19 @@ module.exports['AllTrue'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   } ]
@@ -1311,32 +1186,7 @@ module.exports['AllTrue'] = {
             "name" : "atwn",
             "context" : "Patient",
             "expression" : {
-               "name" : "AllTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "atf",
@@ -1347,19 +1197,19 @@ module.exports['AllTrue'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "false",
                      "type" : "Literal"
                   } ]
@@ -1369,32 +1219,7 @@ module.exports['AllTrue'] = {
             "name" : "atfwn",
             "context" : "Patient",
             "expression" : {
-               "name" : "AllTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1412,6 +1237,13 @@ define atf = AnyTrue({false,false,false,false})
 define atfwn = AnyTrue({false,false,null,null,false,false})
 ###
 
+###
+Translation Error(s):
+[5:23, 5:55] Expected an expression of type 'System.Boolean', but found an expression of type 'System.Any'.
+[5:15, 5:56] Could not determine signature for invocation of operator AnyTrue.
+[8:24, 8:58] Expected an expression of type 'System.Boolean', but found an expression of type 'System.Any'.
+[8:16, 8:59] Could not determine signature for invocation of operator AnyTrue.
+###
 module.exports['AnyTrue'] = {
    "library" : {
       "identifier" : {
@@ -1424,8 +1256,11 @@ module.exports['AnyTrue'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1435,7 +1270,7 @@ module.exports['AnyTrue'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1449,19 +1284,19 @@ module.exports['AnyTrue'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "false",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "false",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "true",
                      "type" : "Literal"
                   } ]
@@ -1471,32 +1306,7 @@ module.exports['AnyTrue'] = {
             "name" : "atwn",
             "context" : "Patient",
             "expression" : {
-               "name" : "AnyTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "true",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "atf",
@@ -1507,19 +1317,19 @@ module.exports['AnyTrue'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "false",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "false",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "false",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                      "value" : "false",
                      "type" : "Literal"
                   } ]
@@ -1529,32 +1339,7 @@ module.exports['AnyTrue'] = {
             "name" : "atfwn",
             "context" : "Patient",
             "expression" : {
-               "name" : "AnyTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "type" : "Null"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                     "value" : "false",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }

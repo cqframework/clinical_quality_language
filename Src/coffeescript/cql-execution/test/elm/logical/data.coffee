@@ -21,6 +21,14 @@ define NT = null and true
 define NF = null and false
 ###
 
+###
+Translation Error(s):
+[6:13, 6:25] Could not resolve call to operator And with signature (System.Boolean,System.Any).
+[9:13, 9:26] Could not resolve call to operator And with signature (System.Boolean,System.Any).
+[10:13, 10:25] Could not resolve call to operator And with signature (System.Any,System.Any).
+[11:13, 11:25] Could not resolve call to operator And with signature (System.Any,System.Boolean).
+[12:13, 12:26] Could not resolve call to operator And with signature (System.Any,System.Boolean).
+###
 module.exports['And'] = {
    "library" : {
       "identifier" : {
@@ -33,8 +41,11 @@ module.exports['And'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -44,7 +55,7 @@ module.exports['And'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -55,11 +66,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -70,11 +81,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -83,14 +94,7 @@ module.exports['And'] = {
             "name" : "TN",
             "context" : "Patient",
             "expression" : {
-               "type" : "And",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "FF",
@@ -98,11 +102,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -113,11 +117,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -126,51 +130,25 @@ module.exports['And'] = {
             "name" : "FN",
             "context" : "Patient",
             "expression" : {
-               "type" : "And",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NN",
             "context" : "Patient",
             "expression" : {
-               "type" : "And",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NT",
             "context" : "Patient",
             "expression" : {
-               "type" : "And",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NF",
             "context" : "Patient",
             "expression" : {
-               "type" : "And",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -192,6 +170,14 @@ define NT = null or true
 define NF = null or false
 ###
 
+###
+Translation Error(s):
+[6:13, 6:24] Could not resolve call to operator Or with signature (System.Boolean,System.Any).
+[9:13, 9:25] Could not resolve call to operator Or with signature (System.Boolean,System.Any).
+[10:13, 10:24] Could not resolve call to operator Or with signature (System.Any,System.Any).
+[11:13, 11:24] Could not resolve call to operator Or with signature (System.Any,System.Boolean).
+[12:13, 12:25] Could not resolve call to operator Or with signature (System.Any,System.Boolean).
+###
 module.exports['Or'] = {
    "library" : {
       "identifier" : {
@@ -204,8 +190,11 @@ module.exports['Or'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -215,7 +204,7 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -226,11 +215,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -241,11 +230,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -254,14 +243,7 @@ module.exports['Or'] = {
             "name" : "TN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Or",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "FF",
@@ -269,11 +251,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -284,11 +266,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -297,51 +279,25 @@ module.exports['Or'] = {
             "name" : "FN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Or",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Or",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NT",
             "context" : "Patient",
             "expression" : {
-               "type" : "Or",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NF",
             "context" : "Patient",
             "expression" : {
-               "type" : "Or",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -363,6 +319,14 @@ define NT = null xor true
 define NF = null xor false
 ###
 
+###
+Translation Error(s):
+[6:13, 6:25] Could not resolve call to operator Xor with signature (System.Boolean,System.Any).
+[9:13, 9:26] Could not resolve call to operator Xor with signature (System.Boolean,System.Any).
+[10:13, 10:25] Could not resolve call to operator Xor with signature (System.Any,System.Any).
+[11:13, 11:25] Could not resolve call to operator Xor with signature (System.Any,System.Boolean).
+[12:13, 12:26] Could not resolve call to operator Xor with signature (System.Any,System.Boolean).
+###
 module.exports['XOr'] = {
    "library" : {
       "identifier" : {
@@ -375,8 +339,11 @@ module.exports['XOr'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -386,7 +353,7 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -397,11 +364,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -412,11 +379,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -425,14 +392,7 @@ module.exports['XOr'] = {
             "name" : "TN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "FF",
@@ -440,11 +400,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -455,11 +415,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -468,51 +428,25 @@ module.exports['XOr'] = {
             "name" : "FN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NT",
             "context" : "Patient",
             "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "true",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NF",
             "context" : "Patient",
             "expression" : {
-               "type" : "Xor",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
-                  "value" : "false",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -528,6 +462,10 @@ define NotFalse = not false
 define NotNull = not null
 ###
 
+###
+Translation Error(s):
+[6:18, 6:25] Could not resolve call to operator Not with signature (System.Any).
+###
 module.exports['Not'] = {
    "library" : {
       "identifier" : {
@@ -540,8 +478,11 @@ module.exports['Not'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -551,7 +492,7 @@ module.exports['Not'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -562,7 +503,7 @@ module.exports['Not'] = {
             "expression" : {
                "type" : "Not",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }
@@ -573,7 +514,7 @@ module.exports['Not'] = {
             "expression" : {
                "type" : "Not",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }
@@ -582,10 +523,7 @@ module.exports['Not'] = {
             "name" : "NotNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Not",
-               "operand" : {
-                  "type" : "Null"
-               }
+               "type" : "Null"
             }
          } ]
       }

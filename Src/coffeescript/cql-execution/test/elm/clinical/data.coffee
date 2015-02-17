@@ -26,8 +26,11 @@ module.exports['ValueSetDef'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "valueSets" : {
@@ -66,8 +69,11 @@ module.exports['ValueSetRef'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "valueSets" : {
@@ -83,7 +89,7 @@ module.exports['ValueSetRef'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -118,6 +124,21 @@ define WrongMediumCode = Code('F', '3.16.840.1.113883.18.2') in "Female"
 define WrongLongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6') in "Female"
 ###
 
+###
+Translation Error(s):
+[8:20, 8:28] Could not resolve call to operator Code with signature (System.String).
+[8:20, 8:40] Could not determine signature for invocation of operator System.InValueSet.
+[9:21, 9:55] Could not resolve call to operator Code with signature (System.String,System.String).
+[9:21, 9:67] Could not determine signature for invocation of operator System.InValueSet.
+[10:19, 10:64] Could not resolve call to operator Code with signature (System.String,System.String,System.String).
+[10:19, 10:76] Could not determine signature for invocation of operator System.InValueSet.
+[13:25, 13:33] Could not resolve call to operator Code with signature (System.String).
+[13:25, 13:45] Could not determine signature for invocation of operator System.InValueSet.
+[14:26, 14:60] Could not resolve call to operator Code with signature (System.String,System.String).
+[14:26, 14:72] Could not determine signature for invocation of operator System.InValueSet.
+[15:24, 15:69] Could not resolve call to operator Code with signature (System.String,System.String,System.String).
+[15:24, 15:81] Could not determine signature for invocation of operator System.InValueSet.
+###
 module.exports['InValueSet'] = {
    "library" : {
       "identifier" : {
@@ -130,8 +151,11 @@ module.exports['InValueSet'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "valueSets" : {
@@ -151,7 +175,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -162,7 +186,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "F",
                   "type" : "Literal"
                },
@@ -176,7 +200,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "F",
                   "type" : "Literal"
                },
@@ -188,67 +212,19 @@ module.exports['InValueSet'] = {
             "name" : "ShortCode",
             "context" : "Patient",
             "expression" : {
-               "type" : "InValueSet",
-               "code" : {
-                  "name" : "Code",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "F",
-                     "type" : "Literal"
-                  } ]
-               },
-               "valueset" : {
-                  "name" : "Female"
-               }
+               "type" : "Null"
             }
          }, {
             "name" : "MediumCode",
             "context" : "Patient",
             "expression" : {
-               "type" : "InValueSet",
-               "code" : {
-                  "name" : "Code",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "F",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "2.16.840.1.113883.18.2",
-                     "type" : "Literal"
-                  } ]
-               },
-               "valueset" : {
-                  "name" : "Female"
-               }
+               "type" : "Null"
             }
          }, {
             "name" : "LongCode",
             "context" : "Patient",
             "expression" : {
-               "type" : "InValueSet",
-               "code" : {
-                  "name" : "Code",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "F",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "2.16.840.1.113883.18.2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "HL7V2.5",
-                     "type" : "Literal"
-                  } ]
-               },
-               "valueset" : {
-                  "name" : "Female"
-               }
+               "type" : "Null"
             }
          }, {
             "name" : "WrongString",
@@ -256,7 +232,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "M",
                   "type" : "Literal"
                },
@@ -270,7 +246,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "M",
                   "type" : "Literal"
                },
@@ -282,67 +258,19 @@ module.exports['InValueSet'] = {
             "name" : "WrongShortCode",
             "context" : "Patient",
             "expression" : {
-               "type" : "InValueSet",
-               "code" : {
-                  "name" : "Code",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "M",
-                     "type" : "Literal"
-                  } ]
-               },
-               "valueset" : {
-                  "name" : "Female"
-               }
+               "type" : "Null"
             }
          }, {
             "name" : "WrongMediumCode",
             "context" : "Patient",
             "expression" : {
-               "type" : "InValueSet",
-               "code" : {
-                  "name" : "Code",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "F",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "3.16.840.1.113883.18.2",
-                     "type" : "Literal"
-                  } ]
-               },
-               "valueset" : {
-                  "name" : "Female"
-               }
+               "type" : "Null"
             }
          }, {
             "name" : "WrongLongCode",
             "context" : "Patient",
             "expression" : {
-               "type" : "InValueSet",
-               "code" : {
-                  "name" : "Code",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "F",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "2.16.840.1.113883.18.2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "HL7V2.6",
-                     "type" : "Literal"
-                  } ]
-               },
-               "valueset" : {
-                  "name" : "Female"
-               }
+               "type" : "Null"
             }
          } ]
       }
@@ -369,8 +297,11 @@ module.exports['Patient Property In ValueSet'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "valueSets" : {
@@ -386,7 +317,7 @@ module.exports['Patient Property In ValueSet'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -437,8 +368,11 @@ module.exports['CalculateAge'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -448,7 +382,7 @@ module.exports['CalculateAge'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -569,8 +503,11 @@ module.exports['CalculateAgeAt'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -580,7 +517,7 @@ module.exports['CalculateAgeAt'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -602,7 +539,7 @@ module.exports['CalculateAgeAt'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   } ]
@@ -625,15 +562,15 @@ module.exports['CalculateAgeAt'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1981",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "16",
                      "type" : "Literal"
                   } ]
@@ -656,7 +593,7 @@ module.exports['CalculateAgeAt'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1975",
                      "type" : "Literal"
                   } ]

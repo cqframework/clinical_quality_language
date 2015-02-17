@@ -4,6 +4,7 @@ import org.cqframework.cql.gen.cqlParser;
 
 public class ExpressionDefinitionInfo {
     private String name;
+    private String context;
     private cqlParser.ExpressionDefinitionContext definition;
 
     public String getName() {
@@ -13,6 +14,10 @@ public class ExpressionDefinitionInfo {
     public void setName(String value) {
         name = value;
     }
+
+    public String getContext() { return context; }
+
+    public void setContext(String value) { context = value; }
 
     public cqlParser.ExpressionDefinitionContext getDefinition() {
         return definition;

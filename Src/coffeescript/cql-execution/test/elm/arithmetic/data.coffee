@@ -29,8 +29,11 @@ module.exports['Add'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -40,7 +43,7 @@ module.exports['Add'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -49,7 +52,7 @@ module.exports['Add'] = {
             "name" : "Ten",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "10",
                "type" : "Literal"
             }
@@ -57,7 +60,7 @@ module.exports['Add'] = {
             "name" : "Eleven",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "11",
                "type" : "Literal"
             }
@@ -67,11 +70,11 @@ module.exports['Add'] = {
             "expression" : {
                "type" : "Add",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -98,51 +101,51 @@ module.exports['Add'] = {
                                     "operand" : [ {
                                        "type" : "Add",
                                        "operand" : [ {
-                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                          "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                           "value" : "1",
                                           "type" : "Literal"
                                        }, {
-                                          "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                          "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                           "value" : "2",
                                           "type" : "Literal"
                                        } ]
                                     }, {
-                                       "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                       "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                        "value" : "3",
                                        "type" : "Literal"
                                     } ]
                                  }, {
-                                    "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                     "value" : "4",
                                     "type" : "Literal"
                                  } ]
                               }, {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                  "value" : "5",
                                  "type" : "Literal"
                               } ]
                            }, {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "6",
                               "type" : "Literal"
                            } ]
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "7",
                            "type" : "Literal"
                         } ]
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "8",
                         "type" : "Literal"
                      } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                } ]
@@ -188,8 +191,11 @@ module.exports['Subtract'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -199,7 +205,7 @@ module.exports['Subtract'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -208,7 +214,7 @@ module.exports['Subtract'] = {
             "name" : "Ten",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "10",
                "type" : "Literal"
             }
@@ -216,7 +222,7 @@ module.exports['Subtract'] = {
             "name" : "Eleven",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "11",
                "type" : "Literal"
             }
@@ -226,11 +232,11 @@ module.exports['Subtract'] = {
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -245,21 +251,21 @@ module.exports['Subtract'] = {
                   "operand" : [ {
                      "type" : "Subtract",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "100",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "50",
                         "type" : "Literal"
                      } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                } ]
@@ -305,8 +311,11 @@ module.exports['Multiply'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -316,7 +325,7 @@ module.exports['Multiply'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -325,7 +334,7 @@ module.exports['Multiply'] = {
             "name" : "Ten",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "10",
                "type" : "Literal"
             }
@@ -333,7 +342,7 @@ module.exports['Multiply'] = {
             "name" : "Eleven",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "11",
                "type" : "Literal"
             }
@@ -343,11 +352,11 @@ module.exports['Multiply'] = {
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -364,26 +373,26 @@ module.exports['Multiply'] = {
                      "operand" : [ {
                         "type" : "Multiply",
                         "operand" : [ {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         } ]
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                } ]
@@ -418,6 +427,11 @@ define DivideMultiple = 1000 / 4 / 10 / 5
 define DivideVariables = Hundred / Four
 ###
 
+###
+Translation Error(s):
+[8:25, 8:37] Could not resolve call to operator Divide with signature (System.Decimal,System.Integer).
+[8:25, 8:41] Could not determine signature for invocation of operator System.Divide.
+###
 module.exports['Divide'] = {
    "library" : {
       "identifier" : {
@@ -430,8 +444,11 @@ module.exports['Divide'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -441,7 +458,7 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -450,7 +467,7 @@ module.exports['Divide'] = {
             "name" : "Hundred",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "100",
                "type" : "Literal"
             }
@@ -458,7 +475,7 @@ module.exports['Divide'] = {
             "name" : "Four",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "4",
                "type" : "Literal"
             }
@@ -468,11 +485,11 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -483,11 +500,11 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -496,30 +513,7 @@ module.exports['Divide'] = {
             "name" : "DivideMultiple",
             "context" : "Patient",
             "expression" : {
-               "type" : "Divide",
-               "operand" : [ {
-                  "type" : "Divide",
-                  "operand" : [ {
-                     "type" : "Divide",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "4",
-                        "type" : "Literal"
-                     } ]
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "10",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "5",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "DivideVariables",
@@ -558,8 +552,11 @@ module.exports['Negate'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -569,7 +566,7 @@ module.exports['Negate'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -580,7 +577,7 @@ module.exports['Negate'] = {
             "expression" : {
                "type" : "Negate",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }
@@ -598,6 +595,10 @@ define Mixed = 1 + 5 * 10 - 15 / 3
 define Parenthetical = (1 + 5) * (10 - 15) / 3
 ###
 
+###
+Translation Error(s):
+[4:16, 4:34] Could not resolve call to operator Subtract with signature (System.Integer,System.Decimal).
+###
 module.exports['MathPrecedence'] = {
    "library" : {
       "identifier" : {
@@ -610,8 +611,11 @@ module.exports['MathPrecedence'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -621,7 +625,7 @@ module.exports['MathPrecedence'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -630,37 +634,7 @@ module.exports['MathPrecedence'] = {
             "name" : "Mixed",
             "context" : "Patient",
             "expression" : {
-               "type" : "Subtract",
-               "operand" : [ {
-                  "type" : "Add",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "Multiply",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "5",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "10",
-                        "type" : "Literal"
-                     } ]
-                  } ]
-               }, {
-                  "type" : "Divide",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "15",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "Parenthetical",
@@ -672,28 +646,28 @@ module.exports['MathPrecedence'] = {
                   "operand" : [ {
                      "type" : "Add",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "Subtract",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "10",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
                      } ]
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                } ]
@@ -722,8 +696,11 @@ module.exports['Power'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -733,7 +710,7 @@ module.exports['Power'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -744,11 +721,11 @@ module.exports['Power'] = {
             "expression" : {
                "type" : "Power",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -778,8 +755,11 @@ module.exports['TruncatedDivide'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -789,7 +769,7 @@ module.exports['TruncatedDivide'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -801,11 +781,11 @@ module.exports['TruncatedDivide'] = {
                "name" : "TruncatedDivide",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                } ]
@@ -817,11 +797,11 @@ module.exports['TruncatedDivide'] = {
                "name" : "TruncatedDivide",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "9",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                } ]
@@ -850,8 +830,11 @@ module.exports['Modulo'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -861,7 +844,7 @@ module.exports['Modulo'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -873,11 +856,11 @@ module.exports['Modulo'] = {
                "name" : "Modulo",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -895,6 +878,10 @@ define Ceil = Ceiling(10.1)
 define Even = Ceiling(10)
 ###
 
+###
+Translation Error(s):
+[5:15, 5:25] Could not resolve call to operator Ceiling with signature (System.Integer).
+###
 module.exports['Ceiling'] = {
    "library" : {
       "identifier" : {
@@ -907,8 +894,11 @@ module.exports['Ceiling'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -918,7 +908,7 @@ module.exports['Ceiling'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -930,7 +920,7 @@ module.exports['Ceiling'] = {
                "name" : "Ceiling",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "10.1",
                   "type" : "Literal"
                } ]
@@ -939,13 +929,7 @@ module.exports['Ceiling'] = {
             "name" : "Even",
             "context" : "Patient",
             "expression" : {
-               "name" : "Ceiling",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "10",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -960,6 +944,10 @@ define flr = Floor(10.1)
 define Even = Floor(10)
 ###
 
+###
+Translation Error(s):
+[5:15, 5:23] Could not resolve call to operator Floor with signature (System.Integer).
+###
 module.exports['Floor'] = {
    "library" : {
       "identifier" : {
@@ -972,8 +960,11 @@ module.exports['Floor'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -983,7 +974,7 @@ module.exports['Floor'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -995,7 +986,7 @@ module.exports['Floor'] = {
                "name" : "Floor",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "10.1",
                   "type" : "Literal"
                } ]
@@ -1004,13 +995,7 @@ module.exports['Floor'] = {
             "name" : "Even",
             "context" : "Patient",
             "expression" : {
-               "name" : "Floor",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "10",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1025,6 +1010,10 @@ define Trunc = Truncate(10.1)
 define Even = Truncate(10)
 ###
 
+###
+Translation Error(s):
+[5:15, 5:26] Could not resolve call to operator Truncate with signature (System.Integer).
+###
 module.exports['Truncate'] = {
    "library" : {
       "identifier" : {
@@ -1037,8 +1026,11 @@ module.exports['Truncate'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1048,7 +1040,7 @@ module.exports['Truncate'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1060,7 +1052,7 @@ module.exports['Truncate'] = {
                "name" : "Truncate",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "10.1",
                   "type" : "Literal"
                } ]
@@ -1069,13 +1061,7 @@ module.exports['Truncate'] = {
             "name" : "Even",
             "context" : "Patient",
             "expression" : {
-               "name" : "Truncate",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "10",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1103,8 +1089,11 @@ module.exports['Abs'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1114,7 +1103,7 @@ module.exports['Abs'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1126,7 +1115,7 @@ module.exports['Abs'] = {
                "name" : "Abs",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                } ]
@@ -1140,7 +1129,7 @@ module.exports['Abs'] = {
                "operand" : [ {
                   "type" : "Negate",
                   "operand" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -1153,7 +1142,7 @@ module.exports['Abs'] = {
                "name" : "Abs",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                } ]
@@ -1185,8 +1174,11 @@ module.exports['Round'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1196,7 +1188,7 @@ module.exports['Round'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1208,7 +1200,7 @@ module.exports['Round'] = {
                "name" : "Round",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "4.56",
                   "type" : "Literal"
                } ]
@@ -1220,11 +1212,11 @@ module.exports['Round'] = {
                "name" : "Round",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "4.56",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                } ]
@@ -1236,7 +1228,7 @@ module.exports['Round'] = {
                "name" : "Round",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "4.49",
                   "type" : "Literal"
                } ]
@@ -1248,11 +1240,11 @@ module.exports['Round'] = {
                "name" : "Round",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "4.43",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                } ]
@@ -1269,6 +1261,10 @@ context Patient
 define ln = Ln(4)
 ###
 
+###
+Translation Error(s):
+[4:13, 4:17] Could not resolve call to operator Ln with signature (System.Integer).
+###
 module.exports['Ln'] = {
    "library" : {
       "identifier" : {
@@ -1281,8 +1277,11 @@ module.exports['Ln'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1292,7 +1291,7 @@ module.exports['Ln'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1301,13 +1300,7 @@ module.exports['Ln'] = {
             "name" : "ln",
             "context" : "Patient",
             "expression" : {
-               "name" : "Ln",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "4",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1321,6 +1314,10 @@ context Patient
 define log = Log(10,10000)
 ###
 
+###
+Translation Error(s):
+[4:14, 4:26] Could not resolve call to operator Log with signature (System.Integer,System.Integer).
+###
 module.exports['Log'] = {
    "library" : {
       "identifier" : {
@@ -1333,8 +1330,11 @@ module.exports['Log'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1344,7 +1344,7 @@ module.exports['Log'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1353,17 +1353,7 @@ module.exports['Log'] = {
             "name" : "log",
             "context" : "Patient",
             "expression" : {
-               "name" : "Log",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "10",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "10000",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1379,6 +1369,12 @@ define Mr = MinValue("Real")
 define Md = MinValue("DateTime")
 ###
 
+###
+Translation Error(s):
+[4:13, 4:31] Could not determine signature for invocation of operator MinValue.
+[5:13, 5:28] Could not determine signature for invocation of operator MinValue.
+[6:13, 6:32] Could not determine signature for invocation of operator MinValue.
+###
 module.exports['MinValue'] = {
    "library" : {
       "identifier" : {
@@ -1391,8 +1387,11 @@ module.exports['MinValue'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1402,7 +1401,7 @@ module.exports['MinValue'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1411,34 +1410,19 @@ module.exports['MinValue'] = {
             "name" : "Mi",
             "context" : "Patient",
             "expression" : {
-               "name" : "MinValue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "name" : "Integer",
-                  "type" : "IdentifierRef"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "Mr",
             "context" : "Patient",
             "expression" : {
-               "name" : "MinValue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "name" : "Real",
-                  "type" : "IdentifierRef"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "Md",
             "context" : "Patient",
             "expression" : {
-               "name" : "MinValue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "IdentifierRef"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1454,6 +1438,12 @@ define Mr = MaxValue("Real")
 define Md = MaxValue("DateTime")
 ###
 
+###
+Translation Error(s):
+[4:13, 4:31] Could not determine signature for invocation of operator MaxValue.
+[5:13, 5:28] Could not determine signature for invocation of operator MaxValue.
+[6:13, 6:32] Could not determine signature for invocation of operator MaxValue.
+###
 module.exports['MaxValue'] = {
    "library" : {
       "identifier" : {
@@ -1466,8 +1456,11 @@ module.exports['MaxValue'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1477,7 +1470,7 @@ module.exports['MaxValue'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1486,34 +1479,19 @@ module.exports['MaxValue'] = {
             "name" : "Mi",
             "context" : "Patient",
             "expression" : {
-               "name" : "MaxValue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "name" : "Integer",
-                  "type" : "IdentifierRef"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "Mr",
             "context" : "Patient",
             "expression" : {
-               "name" : "MaxValue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "name" : "Real",
-                  "type" : "IdentifierRef"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "Md",
             "context" : "Patient",
             "expression" : {
-               "name" : "MaxValue",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "IdentifierRef"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1550,8 +1528,11 @@ module.exports['Successor'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1561,7 +1542,7 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1572,7 +1553,7 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                }
@@ -1583,7 +1564,7 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "2.2",
                   "type" : "Literal"
                }
@@ -1594,7 +1575,7 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2147483647",
                   "type" : "Literal"
                }
@@ -1608,7 +1589,7 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   } ]
@@ -1623,11 +1604,11 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   } ]
@@ -1642,15 +1623,15 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   } ]
@@ -1665,19 +1646,19 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1692,23 +1673,23 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1723,27 +1704,27 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1758,31 +1739,31 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1797,31 +1778,31 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9999",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "12",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "31",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "23",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "59",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "59",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "999",
                      "type" : "Literal"
                   } ]
@@ -1864,8 +1845,11 @@ module.exports['Predecessor'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1875,7 +1859,7 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1886,7 +1870,7 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                }
@@ -1897,7 +1881,7 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                   "value" : "2.2",
                   "type" : "Literal"
                }
@@ -1910,7 +1894,7 @@ module.exports['Predecessor'] = {
                "operand" : {
                   "type" : "Negate",
                   "operand" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2147483648",
                      "type" : "Literal"
                   }
@@ -1925,7 +1909,7 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   } ]
@@ -1940,11 +1924,11 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   } ]
@@ -1959,15 +1943,15 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   } ]
@@ -1982,19 +1966,19 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2009,23 +1993,23 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2040,27 +2024,27 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2075,31 +2059,31 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2114,31 +2098,31 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1900",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]

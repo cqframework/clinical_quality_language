@@ -16,6 +16,19 @@ describe 'ParameterDef', ->
   it 'should execute to provided value', ->
     @param.exec(@ctx.withParameters { MeasureYear: 2013 }).should.equal 2013
 
+  it 'should work with typed int parameters', ->
+    intParam = @lib.parameters.IntParameter
+    intParam.exec(@ctx.withParameters { IntParameter: 17 }).should.equal 17
+
+  it 'should work with typed list parameters', ->
+    listParam = @lib.parameters.ListParameter
+    listParam.exec(@ctx.withParameters { ListParameter: {'a', 'b', 'c'} }).should.eql {'a', 'b', 'c'}
+
+  it 'should work with typed tuple parameters', ->
+    tupleParam = @lib.parameters.TupleParameter
+    v = { a : 1, b : 'bee', c : true, d : [10, 9, 8], e : { f : 'eff', g : false}}
+    tupleParam.exec(@ctx.withParameters { TupleParameter: v }).should.eql v
+
 describe 'ParameterRef', ->
   @beforeEach ->
     setup @, data

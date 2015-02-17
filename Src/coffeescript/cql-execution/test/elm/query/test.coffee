@@ -40,15 +40,15 @@ describe 'MultiSourceQuery', ->
     e = @msQuery.exec(@ctx)
     e.should.have.length(6)
 
-  it 'should find encounters performed during the MP and All conditions', ->
+  it.skip 'should find encounters performed during the MP and All conditions', ->
     e = @msQueryWhere.exec(@ctx)
     e.should.have.length(2)
 
-  it 'should be able to filter items in the where clause', ->
+  it.skip 'should be able to filter items in the where clause', ->
     e = @msQueryWhere2.exec(@ctx)
     e.should.have.length(1)
 
-describe 'QueryRelationship', ->
+describe.skip 'QueryRelationship', ->
   @beforeEach ->
     setup @, data, [ p1 ]
 

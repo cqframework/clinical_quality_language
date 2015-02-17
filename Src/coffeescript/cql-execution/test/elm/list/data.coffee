@@ -13,7 +13,7 @@ context Patient
 define Three = 1 + 2
 define IntList = { 9, 7, 8 }
 define StringList = { 'a', 'bee', 'see' }
-define MixedList = { 1, 'two', Three }
+define MixedList = list<Any>{ 1, 'two', Three }
 define EmptyList = {}
 ###
 
@@ -29,8 +29,11 @@ module.exports['List'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -40,7 +43,7 @@ module.exports['List'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -51,11 +54,11 @@ module.exports['List'] = {
             "expression" : {
                "type" : "Add",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -66,15 +69,15 @@ module.exports['List'] = {
             "expression" : {
                "type" : "List",
                "element" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "9",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "8",
                   "type" : "Literal"
                } ]
@@ -85,15 +88,15 @@ module.exports['List'] = {
             "expression" : {
                "type" : "List",
                "element" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "a",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "bee",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "see",
                   "type" : "Literal"
                } ]
@@ -104,11 +107,11 @@ module.exports['List'] = {
             "expression" : {
                "type" : "List",
                "element" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "two",
                   "type" : "Literal"
                }, {
@@ -147,8 +150,11 @@ module.exports['Exists'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -158,7 +164,7 @@ module.exports['Exists'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -180,15 +186,15 @@ module.exports['Exists'] = {
                "operand" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -208,8 +214,8 @@ define UnequalIntList = {1, 2, 3} = {1, 2}
 define ReverseIntList = {1, 2, 3} = {3, 2, 1}
 define EqualStringList = {'hello', 'world'} = {'hello', 'world'}
 define UnequalStringList = {'hello', 'world'} = {'foo', 'bar'}
-define EqualTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
-define UnequalTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = { tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+define EqualTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
+define UnequalTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
 ###
 
 module.exports['Equal'] = {
@@ -224,8 +230,11 @@ module.exports['Equal'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -235,7 +244,7 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -248,30 +257,30 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -285,26 +294,26 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -318,30 +327,30 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -355,22 +364,22 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "hello",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "world",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "hello",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "world",
                      "type" : "Literal"
                   } ]
@@ -384,22 +393,22 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "hello",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "world",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "foo",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "bar",
                      "type" : "Literal"
                   } ]
@@ -417,7 +426,7 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -428,7 +437,7 @@ module.exports['Equal'] = {
                            "element" : [ {
                               "name" : "c",
                               "value" : {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                  "value" : "1",
                                  "type" : "Literal"
                               }
@@ -440,14 +449,14 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "x",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "y",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "z",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -460,7 +469,7 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -471,7 +480,7 @@ module.exports['Equal'] = {
                            "element" : [ {
                               "name" : "c",
                               "value" : {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                  "value" : "1",
                                  "type" : "Literal"
                               }
@@ -483,14 +492,14 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "x",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "y",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "z",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -510,7 +519,7 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -521,7 +530,7 @@ module.exports['Equal'] = {
                            "element" : [ {
                               "name" : "c",
                               "value" : {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                  "value" : "1",
                                  "type" : "Literal"
                               }
@@ -533,14 +542,14 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "x",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "y",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "z",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -553,7 +562,7 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -566,7 +575,7 @@ module.exports['Equal'] = {
                               "value" : {
                                  "type" : "Negate",
                                  "operand" : {
-                                    "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                     "value" : "1",
                                     "type" : "Literal"
                                  }
@@ -579,14 +588,14 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "x",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "y",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "z",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -608,8 +617,8 @@ define UnequalIntList = {1, 2, 3} <> {1, 2}
 define ReverseIntList = {1, 2, 3} <> {3, 2, 1}
 define EqualStringList = {'hello', 'world'} <> {'hello', 'world'}
 define UnequalStringList = {'hello', 'world'} <> {'foo', 'bar'}
-define EqualTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
-define UnequalTupleList = { tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> { tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+define EqualTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
+define UnequalTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> list<Any>{ tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
 ###
 
 module.exports['NotEqual'] = {
@@ -624,8 +633,11 @@ module.exports['NotEqual'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -635,7 +647,7 @@ module.exports['NotEqual'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -644,355 +656,376 @@ module.exports['NotEqual'] = {
             "name" : "EqualIntList",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "UnequalIntList",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "ReverseIntList",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "EqualStringList",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "hello",
-                     "type" : "Literal"
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "hello",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "world",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "world",
-                     "type" : "Literal"
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "hello",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "world",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "hello",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "world",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "UnequalStringList",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "hello",
-                     "type" : "Literal"
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "hello",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "world",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "world",
-                     "type" : "Literal"
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "foo",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     } ]
                   } ]
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "foo",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "bar",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "EqualTupleList",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "type" : "Tuple",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "List",
                      "element" : [ {
-                        "name" : "a",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "1",
-                           "type" : "Literal"
-                        }
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "type" : "Tuple",
+                              "element" : [ {
+                                 "name" : "c",
+                                 "value" : {
+                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                    "value" : "1",
+                                    "type" : "Literal"
+                                 }
+                              } ]
+                           }
+                        } ]
                      }, {
-                        "name" : "b",
-                        "value" : {
-                           "type" : "Tuple",
-                           "element" : [ {
-                              "name" : "c",
-                              "value" : {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                                 "value" : "1",
-                                 "type" : "Literal"
-                              }
-                           } ]
-                        }
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "x",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}String",
+                              "value" : "y",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "z",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
                      } ]
                   }, {
-                     "type" : "Tuple",
+                     "type" : "List",
                      "element" : [ {
-                        "name" : "x",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                           "value" : "y",
-                           "type" : "Literal"
-                        }
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "type" : "Tuple",
+                              "element" : [ {
+                                 "name" : "c",
+                                 "value" : {
+                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                    "value" : "1",
+                                    "type" : "Literal"
+                                 }
+                              } ]
+                           }
+                        } ]
                      }, {
-                        "name" : "z",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "2",
-                           "type" : "Literal"
-                        }
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "x",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}String",
+                              "value" : "y",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "z",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
                      } ]
                   } ]
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "type" : "Tuple",
-                     "element" : [ {
-                        "name" : "a",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "1",
-                           "type" : "Literal"
-                        }
-                     }, {
-                        "name" : "b",
-                        "value" : {
-                           "type" : "Tuple",
-                           "element" : [ {
-                              "name" : "c",
-                              "value" : {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                                 "value" : "1",
-                                 "type" : "Literal"
-                              }
-                           } ]
-                        }
-                     } ]
-                  }, {
-                     "type" : "Tuple",
-                     "element" : [ {
-                        "name" : "x",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                           "value" : "y",
-                           "type" : "Literal"
-                        }
-                     }, {
-                        "name" : "z",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "2",
-                           "type" : "Literal"
-                        }
-                     } ]
-                  } ]
-               } ]
+               }
             }
          }, {
             "name" : "UnequalTupleList",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "type" : "Tuple",
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "type" : "List",
                      "element" : [ {
-                        "name" : "a",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "1",
-                           "type" : "Literal"
-                        }
-                     }, {
-                        "name" : "b",
-                        "value" : {
-                           "type" : "Tuple",
-                           "element" : [ {
-                              "name" : "c",
-                              "value" : {
-                                 "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                                 "value" : "1",
-                                 "type" : "Literal"
-                              }
-                           } ]
-                        }
-                     } ]
-                  }, {
-                     "type" : "Tuple",
-                     "element" : [ {
-                        "name" : "x",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                           "value" : "y",
-                           "type" : "Literal"
-                        }
-                     }, {
-                        "name" : "z",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "2",
-                           "type" : "Literal"
-                        }
-                     } ]
-                  } ]
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "type" : "Tuple",
-                     "element" : [ {
-                        "name" : "a",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "1",
-                           "type" : "Literal"
-                        }
-                     }, {
-                        "name" : "b",
-                        "value" : {
-                           "type" : "Tuple",
-                           "element" : [ {
-                              "name" : "c",
-                              "value" : {
-                                 "type" : "Negate",
-                                 "operand" : {
-                                    "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "type" : "Tuple",
+                              "element" : [ {
+                                 "name" : "c",
+                                 "value" : {
+                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
                                     "value" : "1",
                                     "type" : "Literal"
                                  }
-                              }
-                           } ]
-                        }
+                              } ]
+                           }
+                        } ]
+                     }, {
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "x",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}String",
+                              "value" : "y",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "z",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
                      } ]
                   }, {
-                     "type" : "Tuple",
+                     "type" : "List",
                      "element" : [ {
-                        "name" : "x",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                           "value" : "y",
-                           "type" : "Literal"
-                        }
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "a",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "value" : "1",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "b",
+                           "value" : {
+                              "type" : "Tuple",
+                              "element" : [ {
+                                 "name" : "c",
+                                 "value" : {
+                                    "type" : "Negate",
+                                    "operand" : {
+                                       "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                       "value" : "1",
+                                       "type" : "Literal"
+                                    }
+                                 }
+                              } ]
+                           }
+                        } ]
                      }, {
-                        "name" : "z",
-                        "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                           "value" : "2",
-                           "type" : "Literal"
-                        }
+                        "type" : "Tuple",
+                        "element" : [ {
+                           "name" : "x",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}String",
+                              "value" : "y",
+                              "type" : "Literal"
+                           }
+                        }, {
+                           "name" : "z",
+                           "value" : {
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "value" : "2",
+                              "type" : "Literal"
+                           }
+                        } ]
                      } ]
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -1011,6 +1044,11 @@ define NullUnion = null union {1, 2, 3}
 define UnionNull = {1, 2, 3} union null
 ###
 
+###
+Translation Error(s):
+[8:20, 8:39] Could not resolve call to operator Union with signature (System.Any,list<System.Integer>).
+[9:20, 9:39] Could not resolve call to operator Union with signature (list<System.Integer>,System.Any).
+###
 module.exports['Union'] = {
    "library" : {
       "identifier" : {
@@ -1023,8 +1061,11 @@ module.exports['Union'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1034,7 +1075,7 @@ module.exports['Union'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1047,46 +1088,46 @@ module.exports['Union'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -1100,34 +1141,34 @@ module.exports['Union'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1141,22 +1182,22 @@ module.exports['Union'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1176,30 +1217,30 @@ module.exports['Union'] = {
                         "operand" : [ {
                            "type" : "List",
                            "element" : [ {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }, {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "2",
                               "type" : "Literal"
                            }, {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "3",
                               "type" : "Literal"
                            } ]
                         }, {
                            "type" : "List",
                            "element" : [ {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "4",
                               "type" : "Literal"
                            }, {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "5",
                               "type" : "Literal"
                            }, {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "6",
                               "type" : "Literal"
                            } ]
@@ -1207,15 +1248,15 @@ module.exports['Union'] = {
                      }, {
                         "type" : "List",
                         "element" : [ {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "7",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "8",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "9",
                            "type" : "Literal"
                         } ]
@@ -1223,15 +1264,15 @@ module.exports['Union'] = {
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "10",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "11",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -1239,15 +1280,15 @@ module.exports['Union'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "14",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   } ]
@@ -1257,49 +1298,13 @@ module.exports['Union'] = {
             "name" : "NullUnion",
             "context" : "Patient",
             "expression" : {
-               "type" : "Union",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnionNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Union",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1315,13 +1320,18 @@ define ThreeFourExcept = {3, 4} except {1, 2, 3, 4, 5}
 define ExceptFiveThree = {1, 2, 3, 4, 5} except {5, 3}
 define ExceptNoOp = {1, 2, 3, 4, 5} except {6, 7, 8, 9, 10}
 define ExceptEverything = {1, 2, 3, 4, 5} except {1, 2, 3, 4, 5}
-define SomethingExceptNothing = {1, 2, 3, 4, 5} except {}
-define NothingExceptSomething = {} except {1, 2, 3, 4, 5}
-define ExceptTuples = {tuple{a: 1}, tuple{b: 2}, tuple{c: 3}} except {tuple{b: 2}}
+define SomethingExceptNothing = {1, 2, 3, 4, 5} except list<Integer>{}
+define NothingExceptSomething = list<Integer>{} except {1, 2, 3, 4, 5}
+define ExceptTuples = {tuple{a: 1}, tuple{a: 2}, tuple{a: 3}} except {tuple{a: 2}}
 define ExceptNull = {1, 2, 3, 4, 5} except null
 define NullExcept = null except {1, 2, 3, 4, 5}
 ###
 
+###
+Translation Error(s):
+[12:21, 12:47] Could not resolve call to operator Except with signature (list<System.Integer>,System.Any).
+[13:21, 13:47] Could not resolve call to operator Except with signature (System.Any,list<System.Integer>).
+###
 module.exports['Except'] = {
    "library" : {
       "identifier" : {
@@ -1334,8 +1344,11 @@ module.exports['Except'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1345,7 +1358,7 @@ module.exports['Except'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1358,34 +1371,34 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -1399,34 +1412,34 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1440,34 +1453,34 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -1481,46 +1494,46 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -1534,46 +1547,46 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1587,23 +1600,23 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1621,23 +1634,23 @@ module.exports['Except'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1655,7 +1668,7 @@ module.exports['Except'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -1663,9 +1676,9 @@ module.exports['Except'] = {
                   }, {
                      "type" : "Tuple",
                      "element" : [ {
-                        "name" : "b",
+                        "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -1673,9 +1686,9 @@ module.exports['Except'] = {
                   }, {
                      "type" : "Tuple",
                      "element" : [ {
-                        "name" : "c",
+                        "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -1686,9 +1699,9 @@ module.exports['Except'] = {
                   "element" : [ {
                      "type" : "Tuple",
                      "element" : [ {
-                        "name" : "b",
+                        "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -1700,65 +1713,13 @@ module.exports['Except'] = {
             "name" : "ExceptNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Except",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NullExcept",
             "context" : "Patient",
             "expression" : {
-               "type" : "Except",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -1779,6 +1740,11 @@ define NullIntersect = null intersect {1, 2, 3}
 define IntersectNull = {1, 2, 3} intersect null
 ###
 
+###
+Translation Error(s):
+[10:24, 10:47] Could not resolve call to operator Intersect with signature (System.Any,list<System.Integer>).
+[11:24, 11:47] Could not resolve call to operator Intersect with signature (list<System.Integer>,System.Any).
+###
 module.exports['Intersect'] = {
    "library" : {
       "identifier" : {
@@ -1791,8 +1757,11 @@ module.exports['Intersect'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1802,7 +1771,7 @@ module.exports['Intersect'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1815,30 +1784,30 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -1852,34 +1821,34 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   } ]
@@ -1893,74 +1862,74 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "12",
                      "type" : "Literal"
                   } ]
@@ -1974,46 +1943,46 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -2031,46 +2000,46 @@ module.exports['Intersect'] = {
                      "operand" : [ {
                         "type" : "List",
                         "element" : [ {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "4",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "5",
                            "type" : "Literal"
                         } ]
                      }, {
                         "type" : "List",
                         "element" : [ {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "4",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "5",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "6",
                            "type" : "Literal"
                         } ]
@@ -2078,23 +2047,23 @@ module.exports['Intersect'] = {
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      } ]
@@ -2102,23 +2071,23 @@ module.exports['Intersect'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   } ]
@@ -2136,14 +2105,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -2153,14 +2122,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2170,14 +2139,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2190,14 +2159,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -2207,14 +2176,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2224,14 +2193,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2241,14 +2210,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "5",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "e",
                            "type" : "Literal"
                         }
@@ -2260,49 +2229,13 @@ module.exports['Intersect'] = {
             "name" : "NullIntersect",
             "context" : "Patient",
             "expression" : {
-               "type" : "Intersect",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "IntersectNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Intersect",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -2314,13 +2247,18 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define IndexOfSecond = IndexOf({'a', 'b', 'c', 'd'}, 'b')
-define IndexOfThirdTuple = IndexOf({tuple{a: 1}, tuple{b: 2}, tuple{c: 3}}, tuple{c: 3})
+define IndexOfThirdTuple = IndexOf({tuple{a: 1}, tuple{a: 2}, tuple{a: 3}}, tuple{a: 3})
 define MultipleMatches = IndexOf({'a', 'b', 'c', 'd', 'd', 'e', 'd'}, 'd')
 define ItemNotFound = IndexOf({'a', 'b', 'c'}, 'd')
 define NullList = IndexOf(null, 'a')
 define NullItem = IndexOf({'a', 'b', 'c'}, null)
 ###
 
+###
+Translation Error(s):
+[8:19, 8:36] Could not resolve call to operator IndexOf with signature (System.Any,System.String).
+[9:19, 9:48] Could not resolve call to operator IndexOf with signature (list<System.String>,System.Any).
+###
 module.exports['IndexOf'] = {
    "library" : {
       "identifier" : {
@@ -2333,8 +2271,11 @@ module.exports['IndexOf'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -2344,7 +2285,7 @@ module.exports['IndexOf'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -2358,24 +2299,24 @@ module.exports['IndexOf'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "b",
                   "type" : "Literal"
                } ]
@@ -2393,7 +2334,7 @@ module.exports['IndexOf'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -2401,9 +2342,9 @@ module.exports['IndexOf'] = {
                   }, {
                      "type" : "Tuple",
                      "element" : [ {
-                        "name" : "b",
+                        "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -2411,9 +2352,9 @@ module.exports['IndexOf'] = {
                   }, {
                      "type" : "Tuple",
                      "element" : [ {
-                        "name" : "c",
+                        "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -2422,9 +2363,9 @@ module.exports['IndexOf'] = {
                }, {
                   "type" : "Tuple",
                   "element" : [ {
-                     "name" : "c",
+                     "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }
@@ -2440,36 +2381,36 @@ module.exports['IndexOf'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "e",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "d",
                   "type" : "Literal"
                } ]
@@ -2483,20 +2424,20 @@ module.exports['IndexOf'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "d",
                   "type" : "Literal"
                } ]
@@ -2505,40 +2446,13 @@ module.exports['IndexOf'] = {
             "name" : "NullList",
             "context" : "Patient",
             "expression" : {
-               "name" : "IndexOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "a",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NullItem",
             "context" : "Patient",
             "expression" : {
-               "name" : "IndexOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "a",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "b",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "c",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -2556,6 +2470,11 @@ define NullList = null[1]
 define NullIndexer = {'a', 'b', 'c', 'd'}[null]
 ###
 
+###
+Translation Error(s):
+[7:19, 7:25] Could not resolve call to operator Indexer with signature (System.Any,System.Integer).
+[8:22, 8:47] Could not resolve call to operator Indexer with signature (list<System.String>,System.Any).
+###
 module.exports['Indexer'] = {
    "library" : {
       "identifier" : {
@@ -2568,8 +2487,11 @@ module.exports['Indexer'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -2579,7 +2501,7 @@ module.exports['Indexer'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -2592,25 +2514,25 @@ module.exports['Indexer'] = {
                "operand" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                },
                "index" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                }
@@ -2623,25 +2545,25 @@ module.exports['Indexer'] = {
                "operand" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                },
                "index" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                }
@@ -2654,25 +2576,25 @@ module.exports['Indexer'] = {
                "operand" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                },
                "index" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "100",
                   "type" : "Literal"
                }
@@ -2681,44 +2603,13 @@ module.exports['Indexer'] = {
             "name" : "NullList",
             "context" : "Patient",
             "expression" : {
-               "type" : "Indexer",
-               "operand" : {
-                  "type" : "Null"
-               },
-               "index" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "1",
-                  "type" : "Literal"
-               }
+               "type" : "Null"
             }
          }, {
             "name" : "NullIndexer",
             "context" : "Patient",
             "expression" : {
-               "type" : "Indexer",
-               "operand" : {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "a",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "b",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "c",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                     "value" : "d",
-                     "type" : "Literal"
-                  } ]
-               },
-               "index" : {
-                  "type" : "Null"
-               }
+               "type" : "Null"
             }
          } ]
       }
@@ -2749,8 +2640,11 @@ module.exports['In'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -2760,7 +2654,7 @@ module.exports['In'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -2771,21 +2665,21 @@ module.exports['In'] = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -2797,21 +2691,21 @@ module.exports['In'] = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -2827,14 +2721,14 @@ module.exports['In'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "b",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      }
@@ -2846,14 +2740,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -2863,14 +2757,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2880,14 +2774,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2905,14 +2799,14 @@ module.exports['In'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "b",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      }
@@ -2924,14 +2818,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -2941,14 +2835,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -2958,14 +2852,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2983,15 +2877,15 @@ module.exports['In'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -3003,7 +2897,7 @@ module.exports['In'] = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
@@ -3027,6 +2921,11 @@ define InNull = null contains {1, 2, 3}
 define NullIn = 1 contains null
 ###
 
+###
+Translation Error(s):
+[8:17, 8:39] Could not resolve call to operator Contains with signature (System.Any,list<System.Integer>).
+[9:17, 9:31] Could not resolve call to operator Contains with signature (System.Integer,System.Any).
+###
 module.exports['Contains'] = {
    "library" : {
       "identifier" : {
@@ -3039,8 +2938,11 @@ module.exports['Contains'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -3050,7 +2952,7 @@ module.exports['Contains'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -3063,20 +2965,20 @@ module.exports['Contains'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -3089,20 +2991,20 @@ module.exports['Contains'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -3119,14 +3021,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3136,14 +3038,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3153,14 +3055,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3171,14 +3073,14 @@ module.exports['Contains'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "b",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      }
@@ -3197,14 +3099,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3214,14 +3116,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3231,14 +3133,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3249,14 +3151,14 @@ module.exports['Contains'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "b",
                      "value" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      }
@@ -3267,38 +3169,13 @@ module.exports['Contains'] = {
             "name" : "InNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Contains",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NullIn",
             "context" : "Patient",
             "expression" : {
-               "type" : "Contains",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                  "value" : "1",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -3319,6 +3196,11 @@ define NullIncluded = {1, 2, 3, 4, 5} includes null
 define NullIncludes = null includes {1, 2, 3, 4, 5}
 ###
 
+###
+Translation Error(s):
+[10:39, 10:46] Could not resolve call to operator Contains with signature (list<System.Integer>,System.Any).
+[11:28, 11:35] Could not resolve call to operator Includes with signature (System.Any,list<System.Integer>).
+###
 module.exports['Includes'] = {
    "library" : {
       "identifier" : {
@@ -3331,8 +3213,11 @@ module.exports['Includes'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -3342,7 +3227,7 @@ module.exports['Includes'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -3355,38 +3240,38 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -3400,38 +3285,38 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -3445,46 +3330,46 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -3498,38 +3383,38 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -3547,14 +3432,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3564,14 +3449,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3581,14 +3466,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3601,14 +3486,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3618,14 +3503,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3645,14 +3530,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3662,14 +3547,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3679,14 +3564,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3699,14 +3584,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3716,14 +3601,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3735,65 +3620,13 @@ module.exports['Includes'] = {
             "name" : "NullIncluded",
             "context" : "Patient",
             "expression" : {
-               "type" : "Includes",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NullIncludes",
             "context" : "Patient",
             "expression" : {
-               "type" : "Includes",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -3814,6 +3647,10 @@ define NullIncludes = {1, 2, 3, 4, 5} included in null
 define NullIncluded = null included in {1, 2, 3, 4, 5}
 ###
 
+###
+Translation Error(s):
+[10:39, 10:49] Could not resolve call to operator IncludedIn with signature (list<System.Integer>,System.Any).
+###
 module.exports['IncludedIn'] = {
    "library" : {
       "identifier" : {
@@ -3826,8 +3663,11 @@ module.exports['IncludedIn'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -3837,7 +3677,7 @@ module.exports['IncludedIn'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -3850,38 +3690,38 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -3895,38 +3735,38 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -3940,46 +3780,46 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -3993,38 +3833,38 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4042,14 +3882,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4059,14 +3899,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4079,14 +3919,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4096,14 +3936,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4113,14 +3953,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4140,14 +3980,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4157,14 +3997,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4177,14 +4017,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4194,14 +4034,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4211,14 +4051,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4230,61 +4070,35 @@ module.exports['IncludedIn'] = {
             "name" : "NullIncludes",
             "context" : "Patient",
             "expression" : {
-               "type" : "IncludedIn",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NullIncluded",
             "context" : "Patient",
             "expression" : {
-               "type" : "IncludedIn",
+               "type" : "In",
                "operand" : [ {
                   "type" : "Null"
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4309,6 +4123,11 @@ define NullIncluded = {1, 2, 3, 4, 5} properly includes null
 define NullIncludes = null properly includes {1, 2, 3, 4, 5}
 ###
 
+###
+Translation Error(s):
+[10:39, 10:55] Could not resolve call to operator Contains with signature (list<System.Integer>,System.Any).
+[11:28, 11:44] Could not resolve call to operator ProperIncludes with signature (System.Any,list<System.Integer>).
+###
 module.exports['ProperIncludes'] = {
    "library" : {
       "identifier" : {
@@ -4321,8 +4140,11 @@ module.exports['ProperIncludes'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -4332,7 +4154,7 @@ module.exports['ProperIncludes'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -4345,42 +4167,42 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4394,42 +4216,42 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -4443,46 +4265,46 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4496,42 +4318,42 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -4549,14 +4371,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4566,14 +4388,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4583,14 +4405,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4603,14 +4425,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4620,14 +4442,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4647,14 +4469,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4664,14 +4486,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4681,14 +4503,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4701,14 +4523,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4718,14 +4540,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4737,65 +4559,13 @@ module.exports['ProperIncludes'] = {
             "name" : "NullIncluded",
             "context" : "Patient",
             "expression" : {
-               "type" : "ProperIncludes",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NullIncludes",
             "context" : "Patient",
             "expression" : {
-               "type" : "ProperIncludes",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -4816,6 +4586,11 @@ define NullIncludes = {1, 2, 3, 4, 5} properly included in null
 define NullIncluded = null properly included in {1, 2, 3, 4, 5}
 ###
 
+###
+Translation Error(s):
+[10:39, 10:58] Could not resolve call to operator ProperIncludedIn with signature (list<System.Integer>,System.Any).
+[11:28, 11:47] Properly modifier can only be used with interval-to-interval comparisons.
+###
 module.exports['ProperIncludedIn'] = {
    "library" : {
       "identifier" : {
@@ -4828,8 +4603,11 @@ module.exports['ProperIncludedIn'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -4839,7 +4617,7 @@ module.exports['ProperIncludedIn'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -4852,38 +4630,38 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4897,38 +4675,38 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4942,46 +4720,46 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4995,38 +4773,38 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -5044,14 +4822,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5061,14 +4839,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5081,14 +4859,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5098,14 +4876,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5115,14 +4893,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5142,14 +4920,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5159,14 +4937,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5179,14 +4957,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5196,14 +4974,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5213,14 +4991,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                           "valueType" : "{urn:hl7-org:elm:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5232,65 +5010,13 @@ module.exports['ProperIncludedIn'] = {
             "name" : "NullIncludes",
             "context" : "Patient",
             "expression" : {
-               "type" : "ProperIncludedIn",
-               "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NullIncluded",
             "context" : "Patient",
             "expression" : {
-               "type" : "ProperIncludedIn",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -5302,11 +5028,13 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define ListOfLists = expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
-define ListOfInts = expand { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-define MixedList = expand { 1, 2, 3, {4, 5, 6}, 7, 8, 9 }
 define NullValue = expand null
 ###
 
+###
+Translation Error(s):
+[5:20, 5:30] Could not resolve call to operator Expand with signature (System.Any).
+###
 module.exports['Expand'] = {
    "library" : {
       "identifier" : {
@@ -5319,8 +5047,11 @@ module.exports['Expand'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -5330,7 +5061,7 @@ module.exports['Expand'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -5345,188 +5076,93 @@ module.exports['Expand'] = {
                   "element" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "8",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "8",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
-                  } ]
-               }
-            }
-         }, {
-            "name" : "ListOfInts",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Expand",
-               "operand" : {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "6",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "7",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "8",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "9",
-                     "type" : "Literal"
-                  } ]
-               }
-            }
-         }, {
-            "name" : "MixedList",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Expand",
-               "operand" : {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "type" : "List",
-                     "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "4",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "5",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "6",
-                        "type" : "Literal"
-                     } ]
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "7",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "8",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "9",
-                     "type" : "Literal"
                   } ]
                }
             }
@@ -5534,10 +5170,7 @@ module.exports['Expand'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "type" : "Expand",
-               "operand" : {
-                  "type" : "Null"
-               }
+               "type" : "Null"
             }
          } ]
       }
@@ -5564,8 +5197,11 @@ module.exports['Distinct'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -5575,7 +5211,7 @@ module.exports['Distinct'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -5588,79 +5224,79 @@ module.exports['Distinct'] = {
                "source" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -5674,23 +5310,23 @@ module.exports['Distinct'] = {
                "source" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -5707,13 +5343,17 @@ using QUICK
 context Patient
 define Numbers = First({1, 2, 3, 4})
 define Letters = First({'a', 'b', 'c'})
-define Lists = First({{'a','b','c'},{1,2,3}})
-define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Lists = First({{'a','b','c'},{'d','e','f'}})
+define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = First({3, 1, 4, 2})
 define Empty = First({})
 define NullValue = First(null)
 ###
 
+###
+Translation Error(s):
+[10:20, 10:30] Could not resolve call to operator First with signature (System.Any).
+###
 module.exports['First'] = {
    "library" : {
       "identifier" : {
@@ -5726,8 +5366,11 @@ module.exports['First'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -5737,7 +5380,7 @@ module.exports['First'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -5751,19 +5394,19 @@ module.exports['First'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -5778,15 +5421,15 @@ module.exports['First'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   } ]
@@ -5803,31 +5446,31 @@ module.exports['First'] = {
                   "element" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "a",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "b",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "d",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "e",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "3",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "f",
                         "type" : "Literal"
                      } ]
                   } ]
@@ -5846,21 +5489,21 @@ module.exports['First'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -5868,23 +5511,23 @@ module.exports['First'] = {
                   }, {
                      "type" : "Tuple",
                      "element" : [ {
-                        "name" : "x",
+                        "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "24",
                            "type" : "Literal"
                         }
                      }, {
-                        "name" : "y",
+                        "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "25",
                            "type" : "Literal"
                         }
                      }, {
-                        "name" : "z",
+                        "name" : "c",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "26",
                            "type" : "Literal"
                         }
@@ -5901,19 +5544,19 @@ module.exports['First'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -5933,11 +5576,7 @@ module.exports['First'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "name" : "First",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -5950,13 +5589,17 @@ using QUICK
 context Patient
 define Numbers = Last({1, 2, 3, 4})
 define Letters = Last({'a', 'b', 'c'})
-define Lists = Last({{'a','b','c'},{1,2,3}})
-define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Lists = Last({{'a','b','c'},{'d',;'e','f'}})
+define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = Last({3, 1, 4, 2})
 define Empty = Last({})
 define NullValue = Last(null)
 ###
 
+###
+Translation Error(s):
+[10:20, 10:29] Could not resolve call to operator Last with signature (System.Any).
+###
 module.exports['Last'] = {
    "library" : {
       "identifier" : {
@@ -5969,8 +5612,11 @@ module.exports['Last'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -5980,7 +5626,7 @@ module.exports['Last'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -5994,19 +5640,19 @@ module.exports['Last'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -6021,15 +5667,15 @@ module.exports['Last'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   } ]
@@ -6046,31 +5692,31 @@ module.exports['Last'] = {
                   "element" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "a",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "b",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "d",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "e",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "3",
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "f",
                         "type" : "Literal"
                      } ]
                   } ]
@@ -6089,21 +5735,21 @@ module.exports['Last'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -6111,23 +5757,23 @@ module.exports['Last'] = {
                   }, {
                      "type" : "Tuple",
                      "element" : [ {
-                        "name" : "x",
+                        "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "24",
                            "type" : "Literal"
                         }
                      }, {
-                        "name" : "y",
+                        "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "25",
                            "type" : "Literal"
                         }
                      }, {
-                        "name" : "z",
+                        "name" : "c",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "26",
                            "type" : "Literal"
                         }
@@ -6144,19 +5790,19 @@ module.exports['Last'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -6176,11 +5822,7 @@ module.exports['Last'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "name" : "Last",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -6193,11 +5835,15 @@ using QUICK
 context Patient
 define Numbers = Length({2, 4, 6, 8, 10})
 define Lists = Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
-define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{x: 24, y: 25, z: 26} })
+define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Empty = Length({})
 define NullValue = Length(null)
 ###
 
+###
+Translation Error(s):
+[8:20, 8:31] Could not resolve call to operator Length with signature (System.Any).
+###
 module.exports['Length'] = {
    "library" : {
       "identifier" : {
@@ -6210,8 +5856,11 @@ module.exports['Length'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -6221,7 +5870,7 @@ module.exports['Length'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -6235,23 +5884,23 @@ module.exports['Length'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -6268,60 +5917,60 @@ module.exports['Length'] = {
                   "element" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "8",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "10",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "11",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -6341,21 +5990,21 @@ module.exports['Length'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -6363,23 +6012,23 @@ module.exports['Length'] = {
                   }, {
                      "type" : "Tuple",
                      "element" : [ {
-                        "name" : "x",
+                        "name" : "a",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "24",
                            "type" : "Literal"
                         }
                      }, {
-                        "name" : "y",
+                        "name" : "b",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "25",
                            "type" : "Literal"
                         }
                      }, {
-                        "name" : "z",
+                        "name" : "c",
                         "value" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "26",
                            "type" : "Literal"
                         }
@@ -6401,11 +6050,7 @@ module.exports['Length'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }

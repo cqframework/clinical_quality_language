@@ -9,8 +9,8 @@ logic
     libraryDefinition?
     usingDefinition*
 	includeDefinition*
-	parameterDefinition*
 	valuesetDefinition*
+	parameterDefinition*
 	statement+
 	;
 

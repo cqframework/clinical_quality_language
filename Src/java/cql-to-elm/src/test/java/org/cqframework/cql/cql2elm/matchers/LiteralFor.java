@@ -18,7 +18,7 @@ public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
         super();
 
         expectedValue = new ObjectFactory().createLiteral()
-                .withValueType(new QName("http://www.w3.org/2001/XMLSchema", "bool"))
+                .withValueType(new QName("urn:hl7-org:elm:r1", "Boolean"))
                 .withValue(String.valueOf(b));
     }
 
@@ -26,7 +26,7 @@ public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
         super();
 
         expectedValue = new ObjectFactory().createLiteral()
-                .withValueType(new QName("http://www.w3.org/2001/XMLSchema", "string"))
+                .withValueType(new QName("urn:hl7-org:elm:r1", "String"))
                 .withValue(s);
     }
 
@@ -34,7 +34,7 @@ public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
         super();
 
         expectedValue = new ObjectFactory().createLiteral()
-                .withValueType(new QName("http://www.w3.org/2001/XMLSchema", "int"))
+                .withValueType(new QName("urn:hl7-org:elm:r1", "Integer"))
                 .withValue(String.valueOf(i));
     }
 
@@ -42,7 +42,7 @@ public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
         super();
 
         expectedValue = new ObjectFactory().createLiteral()
-                .withValueType(new QName("http://www.w3.org/2001/XMLSchema", "decimal"))
+                .withValueType(new QName("urn:hl7-org:elm:r1", "Decimal"))
                 .withValue(String.valueOf(d));
     }
 

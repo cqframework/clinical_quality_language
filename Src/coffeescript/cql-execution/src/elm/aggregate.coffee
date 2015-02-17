@@ -163,20 +163,20 @@ module.exports.Mode = class Mode extends AggregateExpression
     if typeIsArray(arg)
       filtered = compact(arg)
       mode = @mode(filtered)
-      if mode.length == 1 then  mode[0] else numerical_sort(mode)
+      if mode.length == 1 then mode[0] else mode
 
   mode: (arr) ->
-    # returns an array with the modes of arr, i.e. the
-    # elements that appear most often in arr
-    counts = {}
-    for elem in arr
-      counts[elem] ||= 0
-      counts[elem] += 1
     max = 0
-    for key, cnt of counts
-      max = cnt if cnt > max
-    (key for key, cnt of counts when cnt == max)
-
+    counts = {}
+    results = []
+    for elem in arr
+      cnt = counts[elem] = (counts[elem] ? 0) + 1
+      if cnt is max and elem not in results
+        results.push elem
+      else if cnt > max
+        results = [elem]
+        max = cnt
+    results
 
   # TODO: Remove functionref when ELM does Mode natively
 module.exports.ModeFunctionRef = class ModeFunctionRef extends FunctionRef

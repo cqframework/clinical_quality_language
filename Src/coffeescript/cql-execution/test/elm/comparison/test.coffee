@@ -17,7 +17,7 @@ describe 'Equal', ->
   it 'should be false for 5 = 6', ->
     @aLtB_Int.exec(@ctx).should.be.false
 
-  it 'should identify equal/unequal tuples', ->
+  it.skip 'should identify equal/unequal tuples', ->
     @eqTuples.exec(@ctx).should.be.true
     @uneqTuples.exec(@ctx).should.be.false
 
@@ -46,7 +46,7 @@ describe 'NotEqual', ->
   it 'should be true for 5 <> 6', ->
     @aLtB_Int.exec(@ctx).should.be.true
 
-  it 'should identify equal/unequal tuples', ->
+  it.skip 'should identify equal/unequal tuples', ->
     @eqTuples.exec(@ctx).should.be.false
     @uneqTuples.exec(@ctx).should.be.true
 

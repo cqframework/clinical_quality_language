@@ -25,8 +25,11 @@ module.exports['Nil'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -36,7 +39,7 @@ module.exports['Nil'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -76,8 +79,11 @@ module.exports['IsNull'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -87,7 +93,7 @@ module.exports['IsNull'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -102,7 +108,7 @@ module.exports['IsNull'] = {
             "name" : "One",
             "context" : "Patient",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+               "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "1",
                "type" : "Literal"
             }
@@ -134,7 +140,7 @@ module.exports['IsNull'] = {
                "name" : "IsNull",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "",
                   "type" : "Literal"
                } ]
@@ -160,7 +166,7 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define NullAndA = IfNull(null, 'a')
-define ZeroAndB = IfNull(0, 'b')
+define ZeroAndB = IfNull(0, 1)
 define BothNull = IfNull(null, null)
 ###
 
@@ -176,8 +182,11 @@ module.exports['IfNull'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -187,7 +196,7 @@ module.exports['IfNull'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -201,7 +210,7 @@ module.exports['IfNull'] = {
                "operand" : [ {
                   "type" : "Null"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "a",
                   "type" : "Literal"
                } ]
@@ -213,12 +222,12 @@ module.exports['IfNull'] = {
                "name" : "IfNull",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "b",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "1",
                   "type" : "Literal"
                } ]
             }
@@ -248,6 +257,12 @@ define FooNullNullBar = Coalesce('Foo', null, null, 'Bar')
 define AllNull = Coalesce(null, null, null)
 ###
 
+###
+Translation Error(s):
+[4:33, 4:76] Could not resolve call to operator Coalesce with signature (System.Any,System.Any,System.String,System.Any,System.String).
+[5:25, 5:58] Could not resolve call to operator Coalesce with signature (System.String,System.Any,System.Any,System.String).
+[6:18, 6:43] Could not resolve call to operator Coalesce with signature (System.Any,System.Any,System.Any).
+###
 module.exports['Coalesce'] = {
    "library" : {
       "identifier" : {
@@ -260,8 +275,11 @@ module.exports['Coalesce'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -271,7 +289,7 @@ module.exports['Coalesce'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -280,57 +298,19 @@ module.exports['Coalesce'] = {
             "name" : "NullNullHelloNullWorld",
             "context" : "Patient",
             "expression" : {
-               "name" : "Coalesce",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "Hello",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "World",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "FooNullNullBar",
             "context" : "Patient",
             "expression" : {
-               "name" : "Coalesce",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "Foo",
-                  "type" : "Literal"
-               }, {
-                  "type" : "Null"
-               }, {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}string",
-                  "value" : "Bar",
-                  "type" : "Literal"
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "AllNull",
             "context" : "Patient",
             "expression" : {
-               "name" : "Coalesce",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "Null"
-               }, {
-                  "type" : "Null"
-               } ]
+               "type" : "Null"
             }
          } ]
       }

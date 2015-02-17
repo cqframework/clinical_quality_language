@@ -28,8 +28,11 @@ module.exports['Interval'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -39,7 +42,7 @@ module.exports['Interval'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -55,15 +58,15 @@ module.exports['Interval'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -72,15 +75,15 @@ module.exports['Interval'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -97,15 +100,15 @@ module.exports['Interval'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -114,15 +117,15 @@ module.exports['Interval'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -139,15 +142,15 @@ module.exports['Interval'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -156,15 +159,15 @@ module.exports['Interval'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -181,15 +184,15 @@ module.exports['Interval'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -198,15 +201,15 @@ module.exports['Interval'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -245,8 +248,11 @@ module.exports['Equal'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -256,7 +262,7 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -271,12 +277,12 @@ module.exports['Equal'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -285,12 +291,12 @@ module.exports['Equal'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -306,12 +312,12 @@ module.exports['Equal'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -320,12 +326,12 @@ module.exports['Equal'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -341,12 +347,12 @@ module.exports['Equal'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -355,12 +361,12 @@ module.exports['Equal'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -376,12 +382,12 @@ module.exports['Equal'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -390,12 +396,12 @@ module.exports['Equal'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -411,12 +417,12 @@ module.exports['Equal'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -425,12 +431,12 @@ module.exports['Equal'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -446,12 +452,12 @@ module.exports['Equal'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -460,12 +466,12 @@ module.exports['Equal'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -484,31 +490,31 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -517,31 +523,31 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -554,31 +560,31 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -587,31 +593,31 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -631,31 +637,31 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -664,31 +670,31 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -701,31 +707,31 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -734,31 +740,31 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "31",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -778,15 +784,15 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -795,15 +801,15 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -816,15 +822,15 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -833,15 +839,15 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -861,15 +867,15 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -878,15 +884,15 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -899,15 +905,15 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -916,15 +922,15 @@ module.exports['Equal'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -964,8 +970,11 @@ module.exports['NotEqual'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -975,7 +984,7 @@ module.exports['NotEqual'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -984,671 +993,701 @@ module.exports['NotEqual'] = {
             "name" : "EqualClosed",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "EqualOpen",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "EqualOpenClosed",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "UnequalClosed",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "UnequalOpen",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "UnequalClosedOpen",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "high" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "EqualDates",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        } ]
+                     },
+                     "high" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2013",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        } ]
+                     },
+                     "high" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2013",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "EqualDatesOpenClosed",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "12",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "31",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "23",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "59",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "59",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "999",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        } ]
+                     },
+                     "high" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2013",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
+                        } ]
+                     },
+                     "high" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "12",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "31",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "23",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "59",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "59",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "999",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "SameDays",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     },
+                     "high" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2013",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     },
+                     "high" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2013",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ]
+               }
             }
          }, {
             "name" : "DifferentDays",
             "context" : "Patient",
             "expression" : {
-               "type" : "NotEqual",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "7",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     },
+                     "high" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2013",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     },
+                     "high" : {
+                        "name" : "DateTime",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2012",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "7",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ]
+               }
             }
          } ]
       }
@@ -1682,6 +1721,15 @@ define UnknownOverlapsDate = ivlE overlaps DateTime(2013, 4, 1, 0, 0, 0, 0)
 define OverlapsUnknownDate = ivlB overlaps DateTime(2012)
 ###
 
+###
+Translation Error(s):
+[19:28, 19:35] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
+[20:33, 20:40] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
+[21:31, 21:38] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
+[22:30, 22:37] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
+[23:35, 23:42] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
+[24:35, 24:42] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
+###
 module.exports['Overlaps'] = {
    "library" : {
       "identifier" : {
@@ -1694,8 +1742,11 @@ module.exports['Overlaps'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -1705,7 +1756,7 @@ module.exports['Overlaps'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -1721,31 +1772,31 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1754,31 +1805,31 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1795,31 +1846,31 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1828,31 +1879,31 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1869,31 +1920,31 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1902,31 +1953,31 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1943,31 +1994,31 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1976,31 +2027,31 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2017,7 +2068,7 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   } ]
@@ -2026,7 +2077,7 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   } ]
@@ -2043,7 +2094,7 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
                   } ]
@@ -2052,7 +2103,7 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2016",
                      "type" : "Literal"
                   } ]
@@ -2069,7 +2120,7 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2016",
                      "type" : "Literal"
                   } ]
@@ -2078,7 +2129,7 @@ module.exports['Overlaps'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2017",
                      "type" : "Literal"
                   } ]
@@ -2192,229 +2243,37 @@ module.exports['Overlaps'] = {
             "name" : "OverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Overlaps",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "StartOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Overlaps",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "EndOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Overlaps",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "12",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "31",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "23",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "59",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "59",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "999",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NoOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Overlaps",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Overlaps",
-               "operand" : [ {
-                  "name" : "ivlE",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "OverlapsUnknownDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Overlaps",
-               "operand" : [ {
-                  "name" : "ivlB",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -2449,6 +2308,15 @@ define UnknownOverlapsDate = ivlE overlaps after DateTime(2013, 4, 1, 0, 0, 0, 0
 define OverlapsUnknownDate = ivlB overlaps after DateTime(2012)
 ###
 
+###
+Translation Error(s):
+[20:28, 20:41] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
+[21:33, 21:46] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
+[22:31, 22:44] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
+[23:30, 23:43] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
+[24:35, 24:48] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
+[25:35, 25:48] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
+###
 module.exports['OverlapsAfter'] = {
    "library" : {
       "identifier" : {
@@ -2461,8 +2329,11 @@ module.exports['OverlapsAfter'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -2472,7 +2343,7 @@ module.exports['OverlapsAfter'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -2488,31 +2359,31 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2521,31 +2392,31 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2562,31 +2433,31 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2595,31 +2466,31 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2636,31 +2507,31 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2669,31 +2540,31 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2710,31 +2581,31 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2743,31 +2614,31 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2784,7 +2655,7 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   } ]
@@ -2793,7 +2664,7 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   } ]
@@ -2810,7 +2681,7 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
                   } ]
@@ -2819,7 +2690,7 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2016",
                      "type" : "Literal"
                   } ]
@@ -2836,7 +2707,7 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2016",
                      "type" : "Literal"
                   } ]
@@ -2845,7 +2716,7 @@ module.exports['OverlapsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2017",
                      "type" : "Literal"
                   } ]
@@ -2972,229 +2843,37 @@ module.exports['OverlapsAfter'] = {
             "name" : "OverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsAfter",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "StartOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsAfter",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "EndOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsAfter",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "12",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "31",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "23",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "59",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "59",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "999",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NoOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsAfter",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsAfter",
-               "operand" : [ {
-                  "name" : "ivlE",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "OverlapsUnknownDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsAfter",
-               "operand" : [ {
-                  "name" : "ivlB",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -3229,6 +2908,15 @@ define UnknownOverlapsDate = ivlE overlaps before DateTime(2013, 4, 1, 0, 0, 0, 
 define OverlapsUnknownDate = ivlB overlaps before DateTime(2012)
 ###
 
+###
+Translation Error(s):
+[20:28, 20:42] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
+[21:33, 21:47] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
+[22:31, 22:45] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
+[23:30, 23:44] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
+[24:35, 24:49] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
+[25:35, 25:49] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
+###
 module.exports['OverlapsBefore'] = {
    "library" : {
       "identifier" : {
@@ -3241,8 +2929,11 @@ module.exports['OverlapsBefore'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -3252,7 +2943,7 @@ module.exports['OverlapsBefore'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -3268,31 +2959,31 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -3301,31 +2992,31 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -3342,31 +3033,31 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -3375,31 +3066,31 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -3416,31 +3107,31 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -3449,31 +3140,31 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -3490,31 +3181,31 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -3523,31 +3214,31 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -3564,7 +3255,7 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   } ]
@@ -3573,7 +3264,7 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   } ]
@@ -3590,7 +3281,7 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
                   } ]
@@ -3599,7 +3290,7 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2016",
                      "type" : "Literal"
                   } ]
@@ -3616,7 +3307,7 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2016",
                      "type" : "Literal"
                   } ]
@@ -3625,7 +3316,7 @@ module.exports['OverlapsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2017",
                      "type" : "Literal"
                   } ]
@@ -3752,229 +3443,37 @@ module.exports['OverlapsBefore'] = {
             "name" : "OverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsBefore",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "StartOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsBefore",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "EndOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsBefore",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "12",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "31",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "23",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "59",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "59",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "999",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NoOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsBefore",
-               "operand" : [ {
-                  "name" : "ivlC",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownOverlapsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsBefore",
-               "operand" : [ {
-                  "name" : "ivlE",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "OverlapsUnknownDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "OverlapsBefore",
-               "operand" : [ {
-                  "name" : "ivlB",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  } ]
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -4000,8 +3499,11 @@ module.exports['Start'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -4011,7 +3513,7 @@ module.exports['Start'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -4029,15 +3531,15 @@ module.exports['Start'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -4046,15 +3548,15 @@ module.exports['Start'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]

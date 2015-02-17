@@ -4,6 +4,8 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.cqframework.cql.elm.tracking.TrackBack;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -89,13 +91,26 @@ public class CoffeeScriptTestDataGenerator {
             pw.println("###");
             pw.println();
             try {
-                String json = CqlTranslator.fromText(snippet, CqlTranslator.Options.EnableDateRangeOptimization).toJson();
-                pw.println("module.exports['" + name + "'] = " + json);
+                CqlTranslator cqlt = CqlTranslator.fromText(snippet, CqlTranslator.Options.EnableDateRangeOptimization);
+                if (! cqlt.getErrors().isEmpty()) {
+                    pw.println("###");
+                    pw.println("Translation Error(s):");
+                    for (CqlTranslatorException e : cqlt.getErrors()) {
+                        TrackBack tb = e.getLocator();
+                        String lines = tb == null ? "[n/a]" : String.format("[%d:%d, %d:%d]",
+                                tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
+                        pw.printf("%s %s%n", lines, e.getMessage());
+                        System.err.printf("<%s#%s%s> %s%n", file.toFile().getName(), name, lines, e.getMessage());
+                    }
+                    pw.println("###");
+                }
+                pw.println("module.exports['" + name + "'] = " + cqlt.toJson());
             } catch (Exception e) {
+                pw.println("###");
+                pw.println("Translation Exception: " + e.getMessage());
+                pw.println("###");
+                System.err.printf("<%s#%s> %s%n", file.toFile().getName(), name, e.getMessage());
                 pw.println("module.exports['" + name + "'] = {}");
-                pw.println("###");
-                pw.println("Error translating " + name + ": " + e.getMessage());
-                pw.println("###");
             }
             pw.println();
         }

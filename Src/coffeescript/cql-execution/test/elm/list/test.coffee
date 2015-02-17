@@ -51,7 +51,7 @@ describe 'Equal', ->
   it 'should identify equal lists of tuples', ->
     @equalTupleList.exec(@ctx).should.be.true
 
-  it 'should identify unequal lists of integers', ->
+  it 'should identify unequal lists of tuples', ->
     @unequalTupleList.exec(@ctx).should.be.false
 
 describe 'NotEqual', ->
@@ -125,7 +125,7 @@ describe 'Except', ->
     @nothingExceptSomething.exec(@ctx).should.eql []
 
   it 'should except lists of tuples', ->
-    @exceptTuples.exec(@ctx).should.eql [{a: 1}, {c: 3}]
+    @exceptTuples.exec(@ctx).should.eql [{a: 1}, {a: 3}]
 
   it 'should return null if either arg is null', ->
     should(@exceptNull.exec(@ctx)).be.null
@@ -353,12 +353,6 @@ describe 'Expand', ->
   it 'should expand a list of lists', ->
     @listOfLists.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
-  it 'should do nothing with a list of integers', ->
-    @listOfInts.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-  it 'should do nothing with a mixed list', ->
-    @mixedList.exec(@ctx).should.eql [1, 2, 3, [4, 5, 6], 7, 8, 9]
-
   it 'should return null for a null list', ->
     should(@nullValue.exec(@ctx)).be.null
 
@@ -408,10 +402,10 @@ describe 'Last', ->
     @letters.exec(@ctx).should.equal 'c'
 
   it 'should get last of a list of lists', ->
-    @lists.exec(@ctx).should.eql [1,2,3]
+    @lists.exec(@ctx).should.eql ['d','e','f']
 
   it 'should get last of a list of tuples', ->
-    @tuples.exec(@ctx).should.eql { x: 24, y: 25, z: 26 }
+    @tuples.exec(@ctx).should.eql { a: 24, b: 25, c: 26 }
 
   it 'should get last of a list of unordered numbers', ->
     @unordered.exec(@ctx).should.equal 2

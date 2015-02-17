@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modelInfo name="QUICK" xsi:schemaLocation="urn:hl7-org:elm-modelinfo:r1 modelinfo.xsd" xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+  url="http://org.hl7.fhir" patientClassName="Patient" patientClassIdentifier="cqf-patient" patientBirthDatePropertyName="birthDate" schemaLocation="http://org.hl7.fhir quick.xsd" targetQualifier="quick">
+    <classInfo name="AllergyIntolerance"  topic="AllergyIntolerance" identifier="cqf-allergyintolerance" primaryCodeAttribute="substance"/>
+    <classInfo name="AllergyIntolerance"  topic="AllergyIntoleranceRefuted" identifier="cqf-allergyintolerance-refuted" primaryCodeAttribute="substance"/>
+    <classInfo name="CarePlan"  topic="CarePlan" identifier="cqf-careplan" primaryCodeAttribute="concern.code"/>
+    <classInfo name="CommunicationRequest"  topic="CommunicationRequest" identifier="cqf-communicationrequest" primaryCodeAttribute="category"/>
+    <classInfo name="Condition"  topic="Condition" identifier="cqf-condition" primaryCodeAttribute="code"/>
+    <classInfo name="Condition"  topic="ConditionRefuted" identifier="cqf-condition-refuted" primaryCodeAttribute="code"/>
+    <classInfo name="DeviceObservationReport"  topic="DeviceObservationReport" identifier="cqf-deviceobservationreport" primaryCodeAttribute="source.type"/>
+    <classInfo name="DiagnosticOrder"  topic="DiagnosticOrder" identifier="cqf-diagnosticorder" primaryCodeAttribute="item[].code"/>
+    <classInfo name="DiagnosticReport"  topic="DiagnosticReport" identifier="cqf-diagnosticreport" primaryCodeAttribute="name"/>
+    <classInfo name="Encounter"  topic="Encounter" identifier="cqf-encounter" primaryCodeAttribute="type"/>
+    <classInfo name="FamilyHistory"  topic="FamilyHistory" identifier="cqf-familyhistory"/>
+    <classInfo name="Immunization"  topic="Immunization" identifier="cqf-immunization" primaryCodeAttribute="vaccineType"/>
+    <classInfo name="Immunization"  topic="ImmunizationRefused" identifier="cqf-immunization-refused" primaryCodeAttribute="vaccineType"/>
+    <classInfo name="ImmunizationRecommendation"  topic="ImmunizationRecommendation" identifier="cqf-immunization-recommendation" primaryCodeAttribute="recommendation[].vaccineType"/>
+    <classInfo name="Location"  topic="Location" identifier="cqf-location" primaryCodeAttribute="type"/>
+    <classInfo name="Medication"  topic="Medication" identifier="cqf-medication" primaryCodeAttribute="code"/>
+    <classInfo name="MedicationAdministration"  topic="MedicationAdministration" identifier="cqf-medicationadministration" primaryCodeAttribute="medication.code"/>
+    <classInfo name="MedicationAdministration"  topic="MedicationAdministrationNotGiven" identifier="cqf-medicationadministration-notgiven" primaryCodeAttribute="medication.code"/>
+    <classInfo name="MedicationDispense"  topic="MedicationDispense" identifier="cqf-medicationdispense" primaryCodeAttribute="medication.code"/>
+    <classInfo name="MedicationPrescription"  topic="MedicationPrescription" identifier="cqf-medicationprescription" primaryCodeAttribute="medication.code"/>
+    <classInfo name="MedicationStatement"  topic="MedicationStatement" identifier="cqf-medicationstatement" primaryCodeAttribute="medication.code"/>
+    <classInfo name="MedicationStatement"  topic="MedicationStatementNotGiven" identifier="cqf-medicationstatement-notgiven" primaryCodeAttribute="medication.code"/>
+    <classInfo name="NutritionOrder"  topic="NutritionOrder" identifier="cqf-nutritionorder" primaryCodeAttribute="item[].oralDiet.type|item[].supplement.type|item[].enteralFormula.baseFormulaType|item[].enteralFormula.additiveType"/>
+    <classInfo name="Observation" topic="Observation" identifier="cqf-observation" primaryCodeAttribute="name"/>
+    <classInfo name="Observation"  topic="ObservationAbsent" identifier="cqf-observation-absent" primaryCodeAttribute="name"/>
+    <classInfo name="Patient"  topic="Patient" identifier="cqf-patient"/>
+    <classInfo name="Practitioner"  topic="Practitioner" identifier="cqf-practitioner" primaryCodeAttribute="specialty"/>
+    <classInfo name="Procedure"  topic="Procedure" identifier="cqf-procedure" primaryCodeAttribute="type"/>
+    <classInfo name="ProcedureRequest"  topic="ProcedureRequest" identifier="cqf-procedurerequest" primaryCodeAttribute="type"/>
+    <classInfo name="ProcedureRequest"  topic="ProcedureRequestRejected" identifier="cqf-procedurerequest-rejected" primaryCodeAttribute="type"/>
+    <classInfo name="Substance"  topic="Substance" identifier="cqf-substance" primaryCodeAttribute="type"/>
+</modelInfo>
