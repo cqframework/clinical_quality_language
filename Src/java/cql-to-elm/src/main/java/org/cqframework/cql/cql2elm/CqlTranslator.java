@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql_annotations.r1.Annotation;
@@ -144,16 +145,14 @@ public class CqlTranslator {
         CqlTranslator translator = fromFile(inFile, options.toArray(new Options[options.size()]));
 
         if (translator.getErrors().size() > 0) {
+            System.err.println("Translation failed due to errors:");
             for (CqlTranslatorException error : translator.getErrors()) {
-                if (error.getLocator() != null) {
-                    pw.println(String.format("%s (%d,%d)", error.getMessage(), error.getLocator().getStartLine(), error.getLocator().getStartChar()));
-                }
-                else {
-                    pw.println(error.getMessage());
-                }
+                TrackBack tb = error.getLocator();
+                String lines = tb == null ? "[n/a]" : String.format("[%d:%d, %d:%d]",
+                        tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
+                System.err.printf("%s %s%n", lines, error.getMessage());
             }
-        }
-        else {
+        } else {
             switch (format) {
                 case COFFEE:
                     pw.print("module.exports = ");
