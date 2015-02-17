@@ -121,10 +121,8 @@ module.exports.Start = class Start extends Expression
 module.exports.End = class End extends UnimplementedExpression
 
 # TODO: Spec has "Begins" defined, but shouldn't it be "Starts"?
-class Starts extends UnimplementedExpression
+module.exports.Starts = class Starts extends UnimplementedExpression
 
 module.exports.Ends = class Ends extends UnimplementedExpression
 
-module.exports.Ends = class Collapse extends UnimplementedExpression
-
-module.exports.Ends = class Width extends UnimplementedExpression
+module.exports.Collapse = class Collapse extends UnimplementedExpression
