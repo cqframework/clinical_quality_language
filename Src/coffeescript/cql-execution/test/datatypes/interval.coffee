@@ -645,26 +645,26 @@ describe 'DateTimeInterval.union', ->
 
   it 'should properly calculate before/after unions', ->
     [x, y] = xy @dIvl.before
-    (x.closed.union(y.closed) == null).should.be.true
-    (x.closed.union(y.open) == null).should.be.true
-    (x.open.union(y.closed) == null).should.be.true
-    (x.open.union(y.open) == null).should.be.true
-    (y.closed.union(x.closed) == null).should.be.true
-    (y.closed.union(x.open) == null).should.be.true
-    (y.open.union(x.closed) == null).should.be.true
-    (y.open.union(x.open) == null).should.be.true
+    should(x.closed.union(y.closed)).be.null
+    should(x.closed.union(y.open)).be.null
+    should(x.open.union(y.closed)).be.null
+    should(x.open.union(y.open)).be.null
+    should(y.closed.union(x.closed)).be.null
+    should(y.closed.union(x.open)).be.null
+    should(y.open.union(x.closed)).be.null
+    should(y.open.union(x.open)).be.null
 
   it 'should properly calculate meets unions', ->
     [x, y] = xy @dIvl.meets
     z = @all2012
     x.closed.union(y.closed).equals(z.closed).should.be.true
-    (x.closed.union(y.open) == null).should.be.true
-    (x.open.union(y.closed) == null).should.be.true
-    (x.open.union(y.open) == null).should.be.true
+    should(x.closed.union(y.open)).be.null
+    should(x.open.union(y.closed)).be.null
+    should(x.open.union(y.open)).be.null
     y.closed.union(x.closed).equals(z.closed).should.be.true
-    (y.closed.union(x.open) == null).should.be.true
-    (y.open.union(x.closed) == null).should.be.true
-    (y.open.union(x.open) == null).should.be.true
+    should(y.closed.union(x.open)).be.null
+    should(y.open.union(x.closed)).be.null
+    should(y.open.union(x.open)).be.null
 
   it 'should properly calculate left/right overlapping unions', ->
     [x, y] = xy @dIvl.overlaps
@@ -902,10 +902,10 @@ describe 'DateTimeInterval.intersect', ->
     y.toDay.intersect(x.toDay).high.should.eql x.toDay.high
 
     [x, y] = xy @dIvl.begins
-    x.toDay.intersect(y.toDay).low.should.eql  x.toDay.low
-    x.toDay.intersect(y.toDay).high.should.eql  x.toDay.high
-    y.toDay.intersect(x.toDay).low.should.eql  x.toDay.low
-    y.toDay.intersect(x.toDay).high.should.eql  x.toDay.high
+    x.toDay.intersect(y.toDay).low.should.eql x.toDay.low
+    x.toDay.intersect(y.toDay).high.should.eql x.toDay.high
+    y.toDay.intersect(x.toDay).low.should.eql x.toDay.low
+    y.toDay.intersect(x.toDay).high.should.eql x.toDay.high
 
   it 'should throw when the argument is a point', ->
     try
@@ -1007,10 +1007,10 @@ describe 'DateTimeInterval.except', ->
 
   it 'should properly handle imprecision', ->
     [x, y] = xy @dIvl.overlaps
-    (x.toDay.except(y.toDay).low  == x.toDay.low).should.be.true
-    (x.toDay.except(y.toDay).high == y.toDay.low).should.be.true
-    (y.toDay.except(x.toDay).low  == x.toDay.high).should.be.true
-    (y.toDay.except(x.toDay).high == y.toDay.high).should.be.true
+    x.toDay.except(y.toDay).low.should.eql x.toDay.low
+    x.toDay.except(y.toDay).high.should.eql y.toDay.low
+    y.toDay.except(x.toDay).low.should.eql x.toDay.high
+    y.toDay.except(x.toDay).high.should.eql y.toDay.high
 
     [x, y] = xy @dIvl.meets
     # [a,b].except([b,c]) (where b is uncertain) should result in [a,b) but spec says we don't know if they overlap
@@ -1025,14 +1025,14 @@ describe 'DateTimeInterval.except', ->
     [x, y] = xy @dIvl.ends
     should.not.exist x.toDay.except(y.toDay)
     should.not.exist x.toDay.except(y.toDay)
-    (y.toDay.except(x.toDay).low  == y.toDay.low).should.be.true
-    (y.toDay.except(x.toDay).high == x.toDay.low).should.be.true
+    y.toDay.except(x.toDay).low.should.eql y.toDay.low
+    y.toDay.except(x.toDay).high.should.eql x.toDay.low
 
     [x, y] = xy @dIvl.begins
     should.not.exist x.toDay.except(y.toDay)
     should.not.exist x.toDay.except(y.toDay)
-    (y.toDay.except(x.toDay).low  == x.toDay.high).should.be.true
-    (y.toDay.except(x.toDay).high == y.toDay.high).should.be.true
+    y.toDay.except(x.toDay).low.should.eql x.toDay.high
+    y.toDay.except(x.toDay).high.should.eql y.toDay.high
 
   it 'should throw when the argument is a point', ->
     try
@@ -2196,26 +2196,26 @@ describe 'IntegerInterval.union', ->
 
   it 'should properly calculate before/after unions', ->
     [x, y] = xy @iIvl.before
-    (x.closed.union(y.closed) == null).should.be.true
-    (x.closed.union(y.open) == null).should.be.true
-    (x.open.union(y.closed) == null).should.be.true
-    (x.open.union(y.open) == null).should.be.true
-    (y.closed.union(x.closed) == null).should.be.true
-    (y.closed.union(x.open) == null).should.be.true
-    (y.open.union(x.closed) == null).should.be.true
-    (y.open.union(x.open) == null).should.be.true
+    should(x.closed.union(y.closed)).be.null
+    should(x.closed.union(y.open)).be.null
+    should(x.open.union(y.closed)).be.null
+    should(x.open.union(y.open)).be.null
+    should(y.closed.union(x.closed)).be.null
+    should(y.closed.union(x.open)).be.null
+    should(y.open.union(x.closed)).be.null
+    should(y.open.union(x.open)).be.null
 
   it 'should properly calculate meets unions', ->
     [x, y] = xy @iIvl.meets
     z = @zeroToHundred
     x.closed.union(y.closed).equals(z.closed).should.be.true
-    (x.closed.union(y.open) == null).should.be.true
-    (x.open.union(y.closed) == null).should.be.true
-    (x.open.union(y.open) == null).should.be.true
+    should(x.closed.union(y.open)).be.null
+    should(x.open.union(y.closed)).be.null
+    should(x.open.union(y.open)).be.null
     y.closed.union(x.closed).equals(z.closed).should.be.true
-    (y.closed.union(x.open) == null).should.be.true
-    (y.open.union(x.closed) == null).should.be.true
-    (y.open.union(x.open) == null).should.be.true
+    should(y.closed.union(x.open)).be.null
+    should(y.open.union(x.closed)).be.null
+    should(y.open.union(x.open)).be.null
 
   it 'should properly calculate left/right overlapping unions', ->
     [x, y] = xy @iIvl.overlaps
@@ -2270,8 +2270,8 @@ describe 'IntegerInterval.union', ->
     uIvl.union(ivl).equals(ivl).should.be.true
 
     ivl = new Interval(-100, 0)
-    (ivl.union(uIvl) == null).should.be.true
-    (uIvl.union(ivl) == null).should.be.true
+    should(ivl.union(uIvl)).be.null
+    should(uIvl.union(ivl)).be.null
 
     ivl = new Interval(8, 17)
     i = ivl.union(uIvl)
@@ -2288,22 +2288,18 @@ describe 'IntegerInterval.union', ->
 
     ivl = new Interval(10, 15)
     i = ivl.union(uIvl)
-    (i.low.low == uIvl.low.low).should.be.true
-    (i.low.high == uIvl.low.high).should.be.true
-    (i.high.low == uIvl.high.low).should.be.true
-    (i.high.high == uIvl.high.high).should.be.true
+    i.should.eql uIvl
 
     i = uIvl.union(ivl)
-    (i.low.low == uIvl.low.low).should.be.true
-    (i.low.high == uIvl.low.high).should.be.true
-    (i.high.low == uIvl.high.low).should.be.true
-    (i.high.high == uIvl.high.high).should.be.true
+    i.should.eql uIvl
 
     ivl = new Interval(15, 20)
-    (ivl.union(uIvl).low == uIvl.low).should.be.true
-    (uIvl.union(ivl).low == uIvl.low).should.be.true
-    (ivl.union(uIvl).high == ivl.high).should.be.true
-    (uIvl.union(ivl).high == ivl.high).should.be.true
+    i = ivl.union(uIvl)
+    i.low.should.eql uIvl.low
+    i.high.should.eql ivl.high
+    i = uIvl.union(ivl)
+    i.low.should.eql uIvl.low
+    i.high.should.eql ivl.high
 
     ivl = new Interval(20, 30)
     should.not.exist ivl.union(uIvl)
@@ -2411,10 +2407,8 @@ describe 'IntegerInterval.intersect', ->
 
     x = new Interval(  b,  e)
     y = new Interval(a  ,c  )
-    (x.intersect(y).low  == b).should.be.true
-    (x.intersect(y).high == c).should.be.true
-    (y.intersect(x).low  == b).should.be.true
-    (y.intersect(x).high == c).should.be.true
+    x.intersect(y).should.eql new Interval(b, c)
+    y.intersect(x).should.eql new Interval(b, c)
 
     x = new Interval(a,b   )
     y = new Interval(  b,d )
@@ -2425,17 +2419,13 @@ describe 'IntegerInterval.intersect', ->
 
     x = new Interval(a  ,  e)
     y = new Interval(  b,d  )
-    (x.intersect(y).low  == b).should.be.true
-    (x.intersect(y).high == d).should.be.true
-    (y.intersect(x).low  == b).should.be.true
-    (y.intersect(x).high == d).should.be.true
+    x.intersect(y).should.eql y
+    y.intersect(x).should.eql y
 
     x = new Interval(a,  d )
     y = new Interval(  b, e)
-    (x.intersect(y).low  == b).should.be.true
-    (x.intersect(y).high == d).should.be.true
-    (y.intersect(x).low  == b).should.be.true
-    (y.intersect(x).high == d).should.be.true
+    x.intersect(y).should.eql new Interval(b, d)
+    y.intersect(x).should.eql new Interval(b, d)
 
     x = new Interval(a,b,   )
     y = new Interval(    d,e)
@@ -2548,12 +2538,10 @@ describe 'IntegerInterval.except', ->
     d = new Uncertainty(80,90)
     e = 100
 
-    x = new Interval(  b,  e)
-    y = new Interval(a  ,c  )
-    (x.except(y).low  == c).should.be.true
-    (x.except(y).high == e).should.be.true
-    (y.except(x).low  == a).should.be.true
-    (y.except(x).high == b).should.be.true
+    x = new Interval(  b,  e) #([10,20] , 100)
+    y = new Interval(a  ,c  ) #(   0    ,  50)
+    x.except(y).should.eql new Interval(c, e, false, true)
+    y.except(x).should.eql new Interval(a, b, true, false)
 
     x = new Interval(a,b   )
     y = new Interval(  b,d )
@@ -2569,10 +2557,8 @@ describe 'IntegerInterval.except', ->
 
     x = new Interval(a,  d )
     y = new Interval(  b, e)
-    (x.except(y).low  == a).should.be.true
-    (x.except(y).high == b).should.be.true
-    (y.except(x).low  == d).should.be.true
-    (y.except(x).high == e).should.be.true
+    x.except(y).should.eql new Interval(a, b, true, false)
+    y.except(x).should.eql new Interval(d, e, false, true)
 
     x = new Interval(a,b,   )
     y = new Interval(    d,e)
