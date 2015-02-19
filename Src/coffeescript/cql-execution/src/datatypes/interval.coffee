@@ -15,6 +15,15 @@ module.exports.Interval = class Interval
       cmp.greaterThanOrEquals(closed.high, item)
     )
 
+  properlyIncludes: (other) ->
+    if not (other instanceof Interval) then throw new Error("Argument to properlyIncludes must be an interval")
+    a = @toClosed()
+    b = other.toClosed()
+    ThreeValuedLogic.and(
+      cmp.lessThan(a.low, b.low),
+      cmp.greaterThan(a.high, b.high)
+    )
+
   includes: (other) ->
     if not (other instanceof Interval) then throw new Error("Argument to includes must be an interval")
     a = @toClosed()
@@ -122,40 +131,15 @@ module.exports.Interval = class Interval
     if (other == null) then return null
     if not (other instanceof Interval) then throw new Error("Argument to except must be an interval")
 
-    #except computes the difference between two intervals.
-    #Note that except is only defined for cases that result in a well-formed interval.
-    #For example, if either argument properly includes the other, the result of subtracting one
-    #interval from the other would be two intervals, and the result is thus not defined
-    #(i.e., this will result in a run-time error when the except operation is evaluated).
-    #
-    #The except operator for intervals returns the set difference of two intervals.
-    #More precisely, this operator returns the portion of the first interval that does not
-    #overlap with the second. If the arguments do not overlap, or if the second argument is
-    #properly contained within the first, this operator returns null.
-    #If either argument is null, the result is null.
-
-    if @overlaps(other) or @meets(other)
-      #[a, b] = [@toClosed(), other.toClosed()]
-      [a, b] = [@, other]
-
-      if cmp.greaterThanOrEquals(a.low,b.low) and cmp.lessThanOrEquals(a.high,b.high)
-        null # subtracting [A,B] from [A,B] leaves nothing, right?
-      else if cmp.lessThanOrEquals(a.low,b.low) and cmp.greaterThanOrEquals(a.high,b.low) and not cmp.lessThan(b.high,a.high)
-        [l, lc] = [@low, @lowClosed]
-        [h, hc] = [other.low, !other.lowClosed]
-        if cmp.equals(l,h)
-          null
-        else
-          new Interval(l, h, lc, hc)
-      else if cmp.lessThanOrEquals(a.low,b.high) and cmp.greaterThanOrEquals(a.high,b.high) and not cmp.lessThan(a.low,b.low)
-        [l, lc] = [other.high, !other.highClosed]
-        [h, hc] = [@high, @highClosed]
-        if cmp.equals(l,h)
-          null
-        else
-          new Interval(l, h, lc, hc)
+    if @properlyIncludes(other) is false
+      if @overlapsBefore(other)
+        new Interval(@low, other.low, @lowClosed, not other.lowClosed)
+      else if @overlapsAfter(other)
+        new Interval(other.high, @high, not other.highClosed, @highClosed)
       else
         null
+    else if @overlaps(other) is false
+      null # todo: fix bug in spec
     else
       null
 

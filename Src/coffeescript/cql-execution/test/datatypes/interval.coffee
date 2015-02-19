@@ -974,11 +974,10 @@ describe 'DateTimeInterval.except', ->
     [x, y] = xy @dIvl.begins
     b = @julydec
     should.not.exist x.closed.except(y.closed)
-    should.not.exist x.closed.except(y.open)
-    should.not.exist x.open.except(y.closed)
+    x.closed.except(y.open).should.eql new Interval(x.closed.low, x.closed.low)
     should.not.exist x.open.except(y.open)
     y.closed.except(x.closed).equals(b.openClosed).should.be.true
-    y.closed.except(x.open).equals(b.closed).should.be.true
+    should.not.exist y.closed.except(x.open)
     y.open.except(x.closed).equals(b.open).should.be.true
     y.open.except(x.open).equals(b.closedOpen).should.be.true
 
@@ -997,11 +996,11 @@ describe 'DateTimeInterval.except', ->
     [x, y] = xy @dIvl.ends
     b = @janjuly
     should.not.exist x.closed.except(y.closed)
-    should.not.exist x.closed.except(y.open)
+    x.closed.except(y.open).should.eql new Interval(x.closed.high, x.closed.high)
     should.not.exist x.open.except(y.closed)
     should.not.exist x.open.except(y.open)
     y.closed.except(x.closed).equals(b.closedOpen).should.be.true
-    y.closed.except(x.open).equals(b.closed).should.be.true
+    should.not.exist y.closed.except(x.open)
     y.open.except(x.closed).equals(b.open).should.be.true
     y.open.except(x.open).equals(b.openClosed).should.be.true
 
@@ -1025,14 +1024,20 @@ describe 'DateTimeInterval.except', ->
     [x, y] = xy @dIvl.ends
     should.not.exist x.toDay.except(y.toDay)
     should.not.exist x.toDay.except(y.toDay)
-    y.toDay.except(x.toDay).low.should.eql y.toDay.low
-    y.toDay.except(x.toDay).high.should.eql x.toDay.low
+    # x: ['2012-07-01', '2012-12-31']
+    # y: ['2012-01-01', '2012-12-31']
+    # This is a tricky one, but it really is null because of the imprecision on
+    # the interval highs.  Interval y might properly include interval x.
+    should.not.exist y.toDay.except(x.toDay)
 
     [x, y] = xy @dIvl.begins
     should.not.exist x.toDay.except(y.toDay)
     should.not.exist x.toDay.except(y.toDay)
-    y.toDay.except(x.toDay).low.should.eql x.toDay.high
-    y.toDay.except(x.toDay).high.should.eql y.toDay.high
+    # x: ['2012-01-01', '2012-07-01']
+    # y: ['2012-01-01', '2012-12-31']
+    # This is a tricky one, but it really is null because of the imprecision on
+    # the interval lows.  Interval y might properly include interval x.
+    should.not.exist y.toDay.except(x.toDay)
 
   it 'should throw when the argument is a point', ->
     try
@@ -2500,11 +2505,11 @@ describe 'IntegerInterval.except', ->
     [x, y] = xy @iIvl.begins
     b = @sixtyToHundred
     should.not.exist x.closed.except(y.closed)
-    should.not.exist x.closed.except(y.open)
+    x.closed.except(y.open).should.eql new Interval(x.closed.low, x.closed.low)
     should.not.exist x.open.except(y.closed)
     should.not.exist x.open.except(y.open)
     y.closed.except(x.closed).equals(b.openClosed).should.be.true
-    y.closed.except(x.open).equals(b.closed).should.be.true
+    should.not.exist y.closed.except(x.open)
     y.open.except(x.closed).equals(b.open).should.be.true
     y.open.except(x.open).equals(b.closedOpen).should.be.true
 
@@ -2523,11 +2528,11 @@ describe 'IntegerInterval.except', ->
     [x, y] = xy @iIvl.ends
     b = @zeroToForty
     should.not.exist x.closed.except(y.closed)
-    should.not.exist x.closed.except(y.open)
+    x.closed.except(y.open).should.eql new Interval(x.closed.high, x.closed.high)
     should.not.exist x.open.except(y.closed)
     should.not.exist x.open.except(y.open)
     y.closed.except(x.closed).equals(b.closedOpen).should.be.true
-    y.closed.except(x.open).equals(b.closed).should.be.true
+    should.not.exist y.closed.except(x.open)
     y.open.except(x.closed).equals(b.open).should.be.true
     y.open.except(x.open).equals(b.openClosed).should.be.true
 

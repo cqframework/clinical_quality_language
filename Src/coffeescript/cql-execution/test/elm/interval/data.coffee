@@ -5889,7 +5889,7 @@ module.exports['Includes'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ProperlyIncludesIntIvl = interval[1, 5] properly includes interval[1, 4]
+define ProperlyIncludesIntIvl = interval[1, 5] properly includes interval[2, 4]
 define NotProperlyIncludesIntIvl = interval[1, 5] properly includes interval[1, 5]
 define ProperlyIncludesRealIvl = interval[1.234, 3.456] properly includes interval[2.34, 2.56]
 define NotProperlyIncludesRealIvl = interval[1.234, 3.456] properly includes interval[1.234, 3.456]
@@ -5967,7 +5967,7 @@ module.exports['ProperlyIncludes'] = {
                   "type" : "Interval",
                   "low" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
+                     "value" : "2",
                      "type" : "Literal"
                   },
                   "high" : {
@@ -7961,7 +7961,7 @@ module.exports['IncludedIn'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ProperlyIncludesIntIvl = interval[1, 4] properly included in interval[1, 5]
+define ProperlyIncludesIntIvl = interval[2, 4] properly included in interval[1, 5]
 define NotProperlyIncludesIntIvl = interval[1, 5] properly included in interval[1, 5]
 define ProperlyIncludesRealIvl = interval[2.34, 2.56] properly included in interval[1.234, 3.456]
 define NotProperlyIncludesRealIvl = interval[1.23, 2.56] properly included in interval[1.23, 2.56]
@@ -8025,7 +8025,7 @@ module.exports['ProperlyIncludedIn'] = {
                   "type" : "Interval",
                   "low" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
+                     "value" : "2",
                      "type" : "Literal"
                   },
                   "high" : {

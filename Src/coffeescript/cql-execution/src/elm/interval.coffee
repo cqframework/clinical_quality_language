@@ -30,10 +30,7 @@ module.exports.doIncludes = doIncludes = (interval, subinterval) ->
 
 # Delegated to by overloaded#ProperIncludes and overloaded@ProperIncludedIn
 module.exports.doProperIncludes = (interval, subinterval) ->
-  ThreeValuedLogic.and(
-    cmp.greaterThan(interval.width(), subinterval.width()),
-    doIncludes(interval, subinterval)
-  )
+  interval.properlyIncludes subinterval
 
 # Delegated to by overloaded#After
 module.exports.doAfter = (a, b, precision) ->
