@@ -2,7 +2,7 @@
 { Context } = require '../runtime/context'
 { build } = require './builder'
 { typeIsArray , allTrue} = require '../util/util'
-{ equals } = require '../util/util'
+{ equals } = require '../util/comparison'
 
 module.exports.AliasedQuerySource = class AliasedQuerySource
   constructor: (json) ->
