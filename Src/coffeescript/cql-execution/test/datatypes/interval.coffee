@@ -880,32 +880,32 @@ describe 'DateTimeInterval.intersect', ->
 
   it 'should properly handle imprecision', ->
     [x, y] = xy @dIvl.overlaps
-    (x.toDay.intersect(y.toDay).low  == y.toDay.low).should.be.true
-    (x.toDay.intersect(y.toDay).high == x.toDay.high).should.be.true
-    (y.toDay.intersect(x.toDay).low  == y.toDay.low).should.be.true
-    (y.toDay.intersect(x.toDay).high == x.toDay.high).should.be.true
+    x.toDay.intersect(y.toDay).low.should.eql y.toDay.low
+    x.toDay.intersect(y.toDay).high.should.eql x.toDay.high
+    y.toDay.intersect(x.toDay).low.should.eql y.toDay.low
+    y.toDay.intersect(x.toDay).high.should.eql x.toDay.high
 
     [x, y] = xy @dIvl.meets
     should.not.exist x.toDay.intersect(y.toDay)
     should.not.exist y.toDay.intersect(x.toDay)
 
     [x, y] = xy @dIvl.during
-    (x.toDay.intersect(y.toDay).low  == x.toDay.low).should.be.true
-    (x.toDay.intersect(y.toDay).high == x.toDay.high).should.be.true
-    (y.toDay.intersect(x.toDay).low  == x.toDay.low).should.be.true
-    (y.toDay.intersect(x.toDay).high == x.toDay.high).should.be.true
+    x.toDay.intersect(y.toDay).low.should.eql x.toDay.low
+    x.toDay.intersect(y.toDay).high.should.eql x.toDay.high
+    y.toDay.intersect(x.toDay).low.should.eql x.toDay.low
+    y.toDay.intersect(x.toDay).high.should.eql x.toDay.high
 
     [x, y] = xy @dIvl.ends
-    (x.toDay.intersect(y.toDay).low  == x.toDay.low).should.be.true
-    (x.toDay.intersect(y.toDay).high == x.toDay.high).should.be.true
-    (y.toDay.intersect(x.toDay).low  == x.toDay.low).should.be.true
-    (y.toDay.intersect(x.toDay).high == x.toDay.high).should.be.true
+    x.toDay.intersect(y.toDay).low.should.eql x.toDay.low
+    x.toDay.intersect(y.toDay).high.should.eql x.toDay.high
+    y.toDay.intersect(x.toDay).low.should.eql x.toDay.low
+    y.toDay.intersect(x.toDay).high.should.eql x.toDay.high
 
     [x, y] = xy @dIvl.begins
-    (x.toDay.intersect(y.toDay).low  == x.toDay.low).should.be.true
-    (x.toDay.intersect(y.toDay).high == x.toDay.high).should.be.true
-    (y.toDay.intersect(x.toDay).low  == x.toDay.low).should.be.true
-    (y.toDay.intersect(x.toDay).high == x.toDay.high).should.be.true
+    x.toDay.intersect(y.toDay).low.should.eql  x.toDay.low
+    x.toDay.intersect(y.toDay).high.should.eql  x.toDay.high
+    y.toDay.intersect(x.toDay).low.should.eql  x.toDay.low
+    y.toDay.intersect(x.toDay).high.should.eql  x.toDay.high
 
   it 'should throw when the argument is a point', ->
     try

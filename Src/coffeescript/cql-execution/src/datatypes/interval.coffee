@@ -98,63 +98,23 @@ module.exports.Interval = class Interval
       null
 
   intersect: (other) ->
-    # The intersect operator for intervals returns the intersection of two intervals.
-    # More precisely, the operator returns the interval that defines the overlapping
-    # portion of both arguments. If the arguments do not overlap, this operator returns null.
-    # If either argument is null, the result is null.
-    if (other == null) then return null
-    if not (other instanceof Interval) then throw new Error("Argument to intersect must be an interval")
+    if not (other instanceof Interval) then throw new Error("Argument to union must be an interval")
+    # Note that interval union is only defined if the arguments overlap.
     if @overlaps(other)
-      [a, b] = [@, other]
-
-      plow = DateTime.Unit.MILLISECOND
-      phigh = DateTime.Unit.MILLISECOND
-      if areDateTimes(a.low,b.low)
-        if a.low.isLessPrecise(b.low)
-          plow = a.low.getPrecision()
-        else
-          plow = b.low.getPrecision()
-
-      if areDateTimes(a.high,b.high)
-        if a.high.isLessPrecise(b.high)
-          phigh = a.high.getPrecision()
-        else
-          phigh = b.high.getPrecision()
-
-      if cmp.greaterThanOrEquals(a.low,b.low,plow) and cmp.lessThanOrEquals(a.high,b.high,phigh)
-        [l, lc] = [@low, @lowClosed]
-        [h, hc] = [@high, @highClosed]
-        if cmp.equals(a.low,b.low)
-          lc = (@lowClosed and other.lowClosed)
-        if cmp.equals(a.high,b.high)
-          hc = (@highClosed and other.highClosed)
-        new Interval(l, h, lc, hc)
-      else if cmp.greaterThanOrEquals(b.low,a.low,plow) and cmp.lessThanOrEquals(b.high,a.high,phigh)
-        [l, lc] = [other.low, other.lowClosed]
-        [h, hc] = [other.high, other.highClosed]
-        if cmp.equals(a.low,b.low)
-          lc = (@lowClosed and other.lowClosed)
-        if cmp.equals(a.high,b.high)
-          hc = (@highClosed and other.highClosed)
-        new Interval(l, h, lc, hc)
-      else if cmp.lessThanOrEquals(a.low,b.low,plow) and cmp.lessThanOrEquals(a.high,b.high,phigh)
-        [l, lc] = [other.low, other.lowClosed]
-        [h, hc] = [@high, @highClosed]
-        if cmp.equals(a.low,b.low)
-          lc = (@lowClosed and other.lowClosed)
-        if cmp.equals(a.high,b.high)
-          hc = (@highClosed and other.highClosed)
-        new Interval(l, h, lc, hc)
-      else if cmp.lessThanOrEquals(b.low,a.low,plow) and cmp.lessThanOrEquals(b.high,a.high,phigh)
-        [l, lc] = [@low, @lowClosed]
-        [h, hc] = [other.high, other.highClosed]
-        if cmp.equals(a.low,b.low)
-          lc = (@lowClosed and other.lowClosed)
-        if cmp.equals(a.high,b.high)
-          hc = (@highClosed and other.highClosed)
-        new Interval(l, h, lc, hc)
-      else
-        null
+      [a, b] = [@toClosed(), other.toClosed()]
+      [l, lc] = switch
+        when cmp.greaterThanOrEquals(a.low, b.low) then [@low, @lowClosed]
+        when cmp.lessThanOrEquals(a.low, b.low) then [other.low, other.lowClosed]
+        when areNumeric(a.low, b.low) then [highestNumericUncertainty(a.low, b.low), true]
+        when areDateTimes(a.low, b.low) and b.low.isMorePrecise(a.low) then [other.low, other.lowClosed]
+        else [@low, @lowClosed]
+      [h, hc] = switch
+        when cmp.lessThanOrEquals(a.high, b.high) then [@high, @highClosed]
+        when cmp.greaterThanOrEquals(a.high, b.high) then [other.high, other.highClosed]
+        when areNumeric(a.low, b.low) then [lowestNumericUncertainty(a.high, b.high), true]
+        when areDateTimes(a.high, b.high) and b.high.isMorePrecise(a.high) then [other.high, other.highClosed]
+        else [@high, @highClosed]
+      new Interval(l, h, lc, hc)
     else
       null
 
