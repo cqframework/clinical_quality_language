@@ -56,36 +56,42 @@ module.exports.Interval = class Interval
       cmp.greaterThanOrEquals(closed.high, low)
     )
 
-  areDateTimes = (a, b) ->
-    a instanceof DateTime and b instanceof DateTime
+  areDateTimes = (x, y) ->
+    [x, y].every (z) -> z instanceof DateTime
 
-  isNumber = (x) ->
-    typeof x is 'number'
+  areNumeric = (x, y) ->
+    [x, y].every (z) -> typeof z is 'number' or (z instanceof Uncertainty and typeof z.low is 'number')
 
-  isUncertainty = (x) ->
-    x instanceof Uncertainty
+  lowestNumericUncertainty = (x, y) ->
+    if not(x instanceof Uncertainty) then x = new Uncertainty(x)
+    if not(y instanceof Uncertainty) then y = new Uncertainty(y)
+    low = if x.low < y.low then x.low else y.low
+    high = if x.high < y.high then x.high else y.high
+    if low != high then return new Uncertainty(low, high) else return low
 
-  isNumberAndUncertainty = (a, b) ->
-    ( (isUncertainty(a) and isNumber(b)) || (isUncertainty(b) and isNumber(a)) )
+  highestNumericUncertainty = (x, y) ->
+    if not(x instanceof Uncertainty) then x = new Uncertainty(x)
+    if not(y instanceof Uncertainty) then y = new Uncertainty(y)
+    low = if x.low > y.low then x.low else y.low
+    high = if x.high > y.high then x.high else y.high
+    if low != high then return new Uncertainty(low, high) else return low
 
   union: (other) ->
     if not (other instanceof Interval) then throw new Error("Argument to union must be an interval")
     # Note that interval union is only defined if the arguments overlap or meet.
-    # TODO - what is the resulting union of DateTime intervals, where the lower/higher bounds are the
-    # same DateTime with different levels of precision? Which level of precision is used?
     if @overlaps(other) or @meets(other)
       [a, b] = [@toClosed(), other.toClosed()]
       [l, lc] = switch
-        when cmp.equals(a.low, b.low) then [other.low, (other.lowClosed || @lowClosed)]
-        when cmp.greaterThan(a.low, b.low) then [other.low, other.lowClosed]
-        when (isNumberAndUncertainty(a.low, b.low) and cmp.lessThan(a.low, b.low)==false) then [other.low, other.lowClosed]
-        when areDateTimes(a.low, b.low) and a.low.isMorePrecise(b.low) then [other.low, (@lowClosed || other.lowClosed)]
+        when cmp.lessThanOrEquals(a.low, b.low) then [@low, @lowClosed]
+        when cmp.greaterThanOrEquals(a.low, b.low) then [other.low, other.lowClosed]
+        when areNumeric(a.low, b.low) then [lowestNumericUncertainty(a.low, b.low), true]
+        when areDateTimes(a.low, b.low) and a.low.isMorePrecise(b.low) then [other.low, other.lowClosed]
         else [@low, @lowClosed]
       [h, hc] = switch
-        when cmp.equals(a.high, b.high) then [other.high, (other.highClosed || @highClosed)]
-        when cmp.lessThan(a.high, b.high) then [other.high, other.highClosed]
-        when (isNumberAndUncertainty(a.high, b.high) and cmp.greaterThan(a.high, b.high)==false) then [other.high, other.highClosed]
-        when areDateTimes(a.high, b.high) and a.high.isMorePrecise(b.high) then [other.high, (@highClosed || other.highClosed)]
+        when cmp.greaterThanOrEquals(a.high, b.high) then [@high, @highClosed]
+        when cmp.lessThanOrEquals(a.high, b.high) then [other.high, other.highClosed]
+        when areNumeric(a.low, b.low) then [highestNumericUncertainty(a.high, b.high), true]
+        when areDateTimes(a.high, b.high) and a.high.isMorePrecise(b.high) then [other.high, other.highClosed]
         else [@high, @highClosed]
       new Interval(l, h, lc, hc)
     else

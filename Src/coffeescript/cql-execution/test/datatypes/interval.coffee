@@ -2273,6 +2273,19 @@ describe 'IntegerInterval.union', ->
     (ivl.union(uIvl) == null).should.be.true
     (uIvl.union(ivl) == null).should.be.true
 
+    ivl = new Interval(8, 17)
+    i = ivl.union(uIvl)
+    i.low.low is 5
+    i.low.high is 8
+    i.high.low is 17
+    i.high.high is 20
+
+    i = uIvl.union(ivl)
+    i.low.low is 5
+    i.low.high is 8
+    i.high.low is 17
+    i.high.high is 20
+
     ivl = new Interval(10, 15)
     i = ivl.union(uIvl)
     (i.low.low == uIvl.low.low).should.be.true

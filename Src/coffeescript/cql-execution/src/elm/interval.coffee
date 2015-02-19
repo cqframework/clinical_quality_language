@@ -1,7 +1,7 @@
 { Expression, UnimplementedExpression } = require './expression'
 { ThreeValuedLogic } = require '../datatypes/logic'
 { build } = require './builder'
-DT = require '../datatypes/datatypes'
+dtivl = require '../datatypes/interval'
 cmp = require '../util/comparison'
 
 
@@ -14,7 +14,7 @@ module.exports.Interval = class Interval extends Expression
     @high = build(json.high)
 
   exec: (ctx) ->
-    new DT.Interval(@low.exec(ctx), @high.exec(ctx), @lowClosed, @highClosed)
+    new dtivl.Interval(@low.exec(ctx), @high.exec(ctx), @lowClosed, @highClosed)
 
 # Equal is completely handled by overloaded#Equal
 
