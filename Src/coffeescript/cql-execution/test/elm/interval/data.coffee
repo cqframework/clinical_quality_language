@@ -11296,6 +11296,37 @@ define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), nu
 define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
+###
+Translation Error(s):
+[28:36, 28:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[28:56, 28:60] Could not determine signature for invocation of operator System.Meets.
+[29:34, 29:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[29:52, 29:56] Could not determine signature for invocation of operator System.Meets.
+[30:59, 30:75] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[30:53, 30:57] Could not determine signature for invocation of operator System.Meets.
+[31:37, 31:55] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[31:57, 31:61] Could not determine signature for invocation of operator System.Meets.
+[32:40, 32:56] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[32:58, 32:62] Could not determine signature for invocation of operator System.Meets.
+[33:35, 33:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[33:53, 33:57] Could not determine signature for invocation of operator System.Meets.
+[34:62, 34:81] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[34:56, 34:60] Could not determine signature for invocation of operator System.Meets.
+[42:37, 42:84] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[42:86, 42:90] Could not determine signature for invocation of operator System.Meets.
+[43:35, 43:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[43:84, 43:88] Could not determine signature for invocation of operator System.Meets.
+[44:118, 44:165] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[44:112, 44:116] Could not determine signature for invocation of operator System.Meets.
+[45:38, 45:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[45:87, 45:91] Could not determine signature for invocation of operator System.Meets.
+[46:41, 46:88] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[46:90, 46:94] Could not determine signature for invocation of operator System.Meets.
+[47:36, 47:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[47:85, 47:89] Could not determine signature for invocation of operator System.Meets.
+[48:123, 48:170] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[48:117, 48:121] Could not determine signature for invocation of operator System.Meets.
+###
 module.exports['Meets'] = {
    "library" : {
       "identifier" : {
@@ -11308,8 +11339,11 @@ module.exports['Meets'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -11319,7 +11353,7 @@ module.exports['Meets'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -11334,12 +11368,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "11",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }
@@ -11348,12 +11382,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -11369,12 +11403,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -11383,12 +11417,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -11404,12 +11438,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }
@@ -11418,12 +11452,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -11439,12 +11473,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.50000001",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.5",
                      "type" : "Literal"
                   }
@@ -11453,12 +11487,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.5",
                      "type" : "Literal"
                   }
@@ -11474,12 +11508,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.5",
                      "type" : "Literal"
                   }
@@ -11488,12 +11522,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.50000001",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.5",
                      "type" : "Literal"
                   }
@@ -11509,12 +11543,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
                   }
@@ -11523,12 +11557,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.0",
                      "type" : "Literal"
                   }
@@ -11545,31 +11579,31 @@ module.exports['Meets'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -11578,31 +11612,31 @@ module.exports['Meets'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -11621,31 +11655,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -11654,31 +11688,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -11701,31 +11735,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -11734,31 +11768,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -11781,31 +11815,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -11814,31 +11848,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "29",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -11864,11 +11898,11 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -11877,11 +11911,11 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      } ]
@@ -11904,11 +11938,11 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      } ]
@@ -11917,11 +11951,11 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -11944,11 +11978,11 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -11957,11 +11991,11 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -11979,11 +12013,11 @@ module.exports['Meets'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -11992,11 +12026,11 @@ module.exports['Meets'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   } ]
@@ -12018,31 +12052,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12051,31 +12085,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "29",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -12098,31 +12132,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12131,31 +12165,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "31",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -12178,31 +12212,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12211,31 +12245,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "31",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -12255,7 +12289,7 @@ module.exports['Meets'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -12264,12 +12298,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "101",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -12288,7 +12322,7 @@ module.exports['Meets'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -12297,12 +12331,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -12318,12 +12352,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -12335,7 +12369,7 @@ module.exports['Meets'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "400",
                      "type" : "Literal"
                   }
@@ -12354,7 +12388,7 @@ module.exports['Meets'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -12363,12 +12397,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "101",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -12387,7 +12421,7 @@ module.exports['Meets'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -12396,12 +12430,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "50",
                      "type" : "Literal"
                   }
@@ -12420,7 +12454,7 @@ module.exports['Meets'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -12429,12 +12463,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -12450,12 +12484,12 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -12467,7 +12501,7 @@ module.exports['Meets'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "400",
                      "type" : "Literal"
                   }
@@ -12477,235 +12511,43 @@ module.exports['Meets'] = {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "99",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1000",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "99",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "50",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Negate",
-                     "operand" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "100",
-                        "type" : "Literal"
-                     }
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
@@ -12723,31 +12565,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12760,31 +12602,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12793,31 +12635,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2030",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12840,31 +12682,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12877,31 +12719,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12910,31 +12752,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12954,31 +12796,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -12987,31 +12829,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13027,31 +12869,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13074,31 +12916,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13111,31 +12953,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13144,31 +12986,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2030",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13191,31 +13033,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13228,31 +13070,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13261,31 +13103,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13308,31 +13150,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13345,31 +13187,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13378,31 +13220,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2020",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13422,31 +13264,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13455,31 +13297,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13495,31 +13337,31 @@ module.exports['Meets'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -13530,820 +13372,43 @@ module.exports['Meets'] = {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2010",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2040",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Meets",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2040",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -14401,6 +13466,37 @@ define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), nu
 define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets after interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
+###
+Translation Error(s):
+[28:36, 28:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[28:56, 28:66] Could not determine signature for invocation of operator System.MeetsAfter.
+[29:34, 29:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[29:52, 29:62] Could not determine signature for invocation of operator System.MeetsAfter.
+[30:65, 30:81] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[30:53, 30:63] Could not determine signature for invocation of operator System.MeetsAfter.
+[31:37, 31:55] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[31:57, 31:67] Could not determine signature for invocation of operator System.MeetsAfter.
+[32:40, 32:56] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[32:58, 32:68] Could not determine signature for invocation of operator System.MeetsAfter.
+[33:35, 33:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[33:53, 33:63] Could not determine signature for invocation of operator System.MeetsAfter.
+[34:68, 34:87] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[34:56, 34:66] Could not determine signature for invocation of operator System.MeetsAfter.
+[42:37, 42:84] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[42:86, 42:96] Could not determine signature for invocation of operator System.MeetsAfter.
+[43:35, 43:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[43:84, 43:94] Could not determine signature for invocation of operator System.MeetsAfter.
+[44:124, 44:171] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[44:112, 44:122] Could not determine signature for invocation of operator System.MeetsAfter.
+[45:38, 45:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[45:87, 45:97] Could not determine signature for invocation of operator System.MeetsAfter.
+[46:41, 46:88] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[46:90, 46:100] Could not determine signature for invocation of operator System.MeetsAfter.
+[47:36, 47:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[47:85, 47:95] Could not determine signature for invocation of operator System.MeetsAfter.
+[48:129, 48:176] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[48:117, 48:127] Could not determine signature for invocation of operator System.MeetsAfter.
+###
 module.exports['MeetsAfter'] = {
    "library" : {
       "identifier" : {
@@ -14413,8 +13509,11 @@ module.exports['MeetsAfter'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -14424,7 +13523,7 @@ module.exports['MeetsAfter'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -14439,12 +13538,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "11",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }
@@ -14453,12 +13552,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -14474,12 +13573,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -14488,12 +13587,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -14509,12 +13608,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }
@@ -14523,12 +13622,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -14544,12 +13643,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.50000001",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.5",
                      "type" : "Literal"
                   }
@@ -14558,12 +13657,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.5",
                      "type" : "Literal"
                   }
@@ -14579,12 +13678,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.5",
                      "type" : "Literal"
                   }
@@ -14593,12 +13692,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.50000001",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.5",
                      "type" : "Literal"
                   }
@@ -14614,12 +13713,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
                   }
@@ -14628,12 +13727,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.0",
                      "type" : "Literal"
                   }
@@ -14650,31 +13749,31 @@ module.exports['MeetsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -14683,31 +13782,31 @@ module.exports['MeetsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -14726,31 +13825,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -14759,31 +13858,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -14806,31 +13905,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -14839,31 +13938,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -14886,31 +13985,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -14919,31 +14018,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "29",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -14969,11 +14068,11 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -14982,11 +14081,11 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      } ]
@@ -15009,11 +14108,11 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      } ]
@@ -15022,11 +14121,11 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -15049,11 +14148,11 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -15062,11 +14161,11 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -15084,11 +14183,11 @@ module.exports['MeetsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -15097,11 +14196,11 @@ module.exports['MeetsAfter'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   } ]
@@ -15123,31 +14222,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -15156,31 +14255,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "29",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -15203,31 +14302,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -15236,31 +14335,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "31",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -15283,31 +14382,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -15316,31 +14415,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "31",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -15360,7 +14459,7 @@ module.exports['MeetsAfter'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -15369,12 +14468,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "101",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -15393,7 +14492,7 @@ module.exports['MeetsAfter'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -15402,12 +14501,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -15423,12 +14522,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -15440,7 +14539,7 @@ module.exports['MeetsAfter'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "400",
                      "type" : "Literal"
                   }
@@ -15459,7 +14558,7 @@ module.exports['MeetsAfter'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -15468,12 +14567,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "101",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -15492,7 +14591,7 @@ module.exports['MeetsAfter'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -15501,12 +14600,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "50",
                      "type" : "Literal"
                   }
@@ -15525,7 +14624,7 @@ module.exports['MeetsAfter'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -15534,12 +14633,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -15555,12 +14654,12 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -15572,7 +14671,7 @@ module.exports['MeetsAfter'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "400",
                      "type" : "Literal"
                   }
@@ -15582,235 +14681,43 @@ module.exports['MeetsAfter'] = {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "99",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1000",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "99",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "50",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Negate",
-                     "operand" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "100",
-                        "type" : "Literal"
-                     }
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
@@ -15828,31 +14735,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -15865,31 +14772,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -15898,31 +14805,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2030",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -15945,31 +14852,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -15982,31 +14889,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16015,31 +14922,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16059,31 +14966,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16092,31 +14999,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16132,31 +15039,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16179,31 +15086,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16216,31 +15123,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16249,31 +15156,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2030",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16296,31 +15203,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16333,31 +15240,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16366,31 +15273,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16413,31 +15320,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16450,31 +15357,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16483,31 +15390,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2020",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16527,31 +15434,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16560,31 +15467,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16600,31 +15507,31 @@ module.exports['MeetsAfter'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -16635,820 +15542,43 @@ module.exports['MeetsAfter'] = {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2010",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2040",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsAfter",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2040",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -17506,6 +15636,37 @@ define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), nu
 define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets before interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
+###
+Translation Error(s):
+[28:36, 28:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[28:56, 28:67] Could not determine signature for invocation of operator System.MeetsBefore.
+[29:34, 29:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[29:52, 29:63] Could not determine signature for invocation of operator System.MeetsBefore.
+[30:66, 30:82] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[30:53, 30:64] Could not determine signature for invocation of operator System.MeetsBefore.
+[31:37, 31:55] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[31:57, 31:68] Could not determine signature for invocation of operator System.MeetsBefore.
+[32:40, 32:56] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[32:58, 32:69] Could not determine signature for invocation of operator System.MeetsBefore.
+[33:35, 33:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[33:53, 33:64] Could not determine signature for invocation of operator System.MeetsBefore.
+[34:69, 34:88] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[34:56, 34:67] Could not determine signature for invocation of operator System.MeetsBefore.
+[42:37, 42:84] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[42:86, 42:97] Could not determine signature for invocation of operator System.MeetsBefore.
+[43:35, 43:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[43:84, 43:95] Could not determine signature for invocation of operator System.MeetsBefore.
+[44:125, 44:172] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[44:112, 44:123] Could not determine signature for invocation of operator System.MeetsBefore.
+[45:38, 45:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[45:87, 45:98] Could not determine signature for invocation of operator System.MeetsBefore.
+[46:41, 46:88] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[46:90, 46:101] Could not determine signature for invocation of operator System.MeetsBefore.
+[47:36, 47:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[47:85, 47:96] Could not determine signature for invocation of operator System.MeetsBefore.
+[48:130, 48:177] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[48:117, 48:128] Could not determine signature for invocation of operator System.MeetsBefore.
+###
 module.exports['MeetsBefore'] = {
    "library" : {
       "identifier" : {
@@ -17518,8 +15679,11 @@ module.exports['MeetsBefore'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -17529,7 +15693,7 @@ module.exports['MeetsBefore'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -17544,12 +15708,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "11",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   }
@@ -17558,12 +15722,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -17579,12 +15743,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -17593,12 +15757,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -17614,12 +15778,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }
@@ -17628,12 +15792,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -17649,12 +15813,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.50000001",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.5",
                      "type" : "Literal"
                   }
@@ -17663,12 +15827,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.5",
                      "type" : "Literal"
                   }
@@ -17684,12 +15848,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.5",
                      "type" : "Literal"
                   }
@@ -17698,12 +15862,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.50000001",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.5",
                      "type" : "Literal"
                   }
@@ -17719,12 +15883,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "0.0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
                   }
@@ -17733,12 +15897,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "1.1",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}decimal",
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                      "value" : "2.0",
                      "type" : "Literal"
                   }
@@ -17755,31 +15919,31 @@ module.exports['MeetsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -17788,31 +15952,31 @@ module.exports['MeetsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -17831,31 +15995,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -17864,31 +16028,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -17911,31 +16075,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -17944,31 +16108,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -17991,31 +16155,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -18024,31 +16188,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "29",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -18074,11 +16238,11 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -18087,11 +16251,11 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      } ]
@@ -18114,11 +16278,11 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      } ]
@@ -18127,11 +16291,11 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -18154,11 +16318,11 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -18167,11 +16331,11 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -18189,11 +16353,11 @@ module.exports['MeetsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -18202,11 +16366,11 @@ module.exports['MeetsBefore'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   } ]
@@ -18228,31 +16392,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -18261,31 +16425,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "29",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -18308,31 +16472,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -18341,31 +16505,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "31",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -18388,31 +16552,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -18421,31 +16585,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "31",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "59",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "999",
                         "type" : "Literal"
                      } ]
@@ -18465,7 +16629,7 @@ module.exports['MeetsBefore'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -18474,12 +16638,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "101",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -18498,7 +16662,7 @@ module.exports['MeetsBefore'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -18507,12 +16671,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -18528,12 +16692,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -18545,7 +16709,7 @@ module.exports['MeetsBefore'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "400",
                      "type" : "Literal"
                   }
@@ -18564,7 +16728,7 @@ module.exports['MeetsBefore'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -18573,12 +16737,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "101",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
                   }
@@ -18597,7 +16761,7 @@ module.exports['MeetsBefore'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -18606,12 +16770,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "50",
                      "type" : "Literal"
                   }
@@ -18630,7 +16794,7 @@ module.exports['MeetsBefore'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -18639,12 +16803,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -18660,12 +16824,12 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "100",
                      "type" : "Literal"
                   }
@@ -18677,7 +16841,7 @@ module.exports['MeetsBefore'] = {
                      "type" : "Null"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "400",
                      "type" : "Literal"
                   }
@@ -18687,235 +16851,43 @@ module.exports['MeetsBefore'] = {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "99",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "1000",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "2000",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "200",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "99",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "50",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                     "value" : "100",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Negate",
-                     "operand" : {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "100",
-                        "type" : "Literal"
-                     }
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
@@ -18933,31 +16905,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -18970,31 +16942,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19003,31 +16975,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2030",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19050,31 +17022,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19087,31 +17059,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19120,31 +17092,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19164,31 +17136,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19197,31 +17169,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19237,31 +17209,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19284,31 +17256,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19321,31 +17293,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19354,31 +17326,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2030",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19401,31 +17373,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19438,31 +17410,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19471,31 +17443,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19518,31 +17490,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19555,31 +17527,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19588,31 +17560,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2020",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19632,31 +17604,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19665,31 +17637,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2010",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19705,31 +17677,31 @@ module.exports['MeetsBefore'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -19740,820 +17712,43 @@ module.exports['MeetsBefore'] = {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2010",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2040",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2000",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "MeetsBefore",
-               "operand" : [ {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2020",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2040",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  },
-                  "high" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -20568,27 +17763,12 @@ define OverlapsBeforeIntIvl = interval[1, 5] overlaps interval[2, 7]
 define OverlapsAfterIntIvl = interval[3, 8] overlaps interval[1, 6]
 define OverlapsBoundaryIntIvl = interval[1, 5] overlaps interval[5, 10]
 define NoOverlapsIntIvl = interval[1,5) overlaps interval[5, 10]
-define StartOverlapsInt = interval[1, 5] overlaps 1
-define EndOverlapsInt = interval[1, 5] overlaps 5
-define NoOverlapsInt = interval[1, 5) overlaps 5
 define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps interval[1.345, 1.678]
 define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps interval[1.234, 1.567]
 define OverlapsBoundaryRealIvl = interval[1.0, 1.234] overlaps interval[1.234, 2.0]
 define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps interval[1.23456789, 2.0]
-define StartOverlapsReal = interval[1.234, 5.678] overlaps 1.234
-define EndOverlapsReal = interval[1.234, 5.678] overlaps 5.678
-define NoOverlapsReal = interval[1.234, 5.678) overlaps 5.678
 ###
 
-###
-Translation Error(s):
-[8:42, 8:49] Could not resolve call to operator Overlaps with signature (interval<System.Integer>,System.Integer).
-[9:40, 9:47] Could not resolve call to operator Overlaps with signature (interval<System.Integer>,System.Integer).
-[10:39, 10:46] Could not resolve call to operator Overlaps with signature (interval<System.Integer>,System.Integer).
-[15:51, 15:58] Could not resolve call to operator Overlaps with signature (interval<System.Decimal>,System.Decimal).
-[16:49, 16:56] Could not resolve call to operator Overlaps with signature (interval<System.Decimal>,System.Decimal).
-[17:48, 17:55] Could not resolve call to operator Overlaps with signature (interval<System.Decimal>,System.Decimal).
-###
 module.exports['Overlaps'] = {
    "library" : {
       "identifier" : {
@@ -20761,24 +17941,6 @@ module.exports['Overlaps'] = {
                } ]
             }
          }, {
-            "name" : "StartOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
             "name" : "OverlapsBeforeRealIvl",
             "context" : "Patient",
             "expression" : {
@@ -20918,24 +18080,6 @@ module.exports['Overlaps'] = {
                   }
                } ]
             }
-         }, {
-            "name" : "StartOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
          } ]
       }
    }
@@ -20960,23 +18104,8 @@ define ImpreciseOverlap = ivlD overlaps ivlE
 define NoOverlap = ivlC overlaps ivlD
 define NoImpreciseOverlap = ivlE overlaps ivlG
 define UnknownOverlap = ivlF overlaps ivlG
-define OverlapsDate = ivlC overlaps DateTime(2012, 4, 1, 0, 0, 0, 0)
-define StartOverlapsDate = ivlC overlaps DateTime(2012, 1, 1, 0, 0, 0, 0)
-define EndOverlapsDate = ivlC overlaps DateTime(2012, 12, 31, 23, 59, 59, 999)
-define NoOverlapsDate = ivlC overlaps DateTime(2013, 4, 1, 0, 0, 0, 0)
-define UnknownOverlapsDate = ivlE overlaps DateTime(2013, 4, 1, 0, 0, 0, 0)
-define OverlapsUnknownDate = ivlB overlaps DateTime(2012)
 ###
 
-###
-Translation Error(s):
-[19:28, 19:35] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
-[20:33, 20:40] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
-[21:31, 21:38] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
-[22:30, 22:37] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
-[23:35, 23:42] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
-[24:35, 24:42] Could not resolve call to operator Overlaps with signature (interval<System.DateTime>,System.DateTime).
-###
 module.exports['OverlapsDateTime'] = {
    "library" : {
       "identifier" : {
@@ -21486,42 +18615,6 @@ module.exports['OverlapsDateTime'] = {
                   "type" : "ExpressionRef"
                } ]
             }
-         }, {
-            "name" : "OverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "StartOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "UnknownOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "OverlapsUnknownDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
          } ]
       }
    }
@@ -21535,27 +18628,12 @@ define OverlapsBeforeIntIvl = interval[1, 5] overlaps after interval[2, 7]
 define OverlapsAfterIntIvl = interval[3, 8] overlaps after interval[1, 6]
 define OverlapsBoundaryIntIvl = interval[5, 10] overlaps after interval[1, 5]
 define NoOverlapsIntIvl = interval[1,5) overlaps after interval[5, 10]
-define StartOverlapsInt = interval[1, 5] overlaps after 1
-define EndOverlapsInt = interval[1, 5] overlaps after 5
-define NoOverlapsInt = interval[1, 5) overlaps after 5
 define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps after interval[1.345, 1.678]
 define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps after interval[1.234, 1.567]
 define OverlapsBoundaryRealIvl = interval[1.234, 2.0] overlaps after interval[1.0, 1.234]
 define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps after interval[1.23456789, 2.0]
-define StartOverlapsReal = interval[1.234, 5.678] overlaps after 1.234
-define EndOverlapsReal = interval[1.234, 5.678] overlaps after 5.678
-define NoOverlapsReal = interval[1.234, 5.678) overlaps after 5.678
 ###
 
-###
-Translation Error(s):
-[8:42, 8:55] Could not resolve call to operator OverlapsAfter with signature (interval<System.Integer>,System.Integer).
-[9:40, 9:53] Could not resolve call to operator OverlapsAfter with signature (interval<System.Integer>,System.Integer).
-[10:39, 10:52] Could not resolve call to operator OverlapsAfter with signature (interval<System.Integer>,System.Integer).
-[15:51, 15:64] Could not resolve call to operator OverlapsAfter with signature (interval<System.Decimal>,System.Decimal).
-[16:49, 16:62] Could not resolve call to operator OverlapsAfter with signature (interval<System.Decimal>,System.Decimal).
-[17:48, 17:61] Could not resolve call to operator OverlapsAfter with signature (interval<System.Decimal>,System.Decimal).
-###
 module.exports['OverlapsAfter'] = {
    "library" : {
       "identifier" : {
@@ -21728,24 +18806,6 @@ module.exports['OverlapsAfter'] = {
                } ]
             }
          }, {
-            "name" : "StartOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
             "name" : "OverlapsBeforeRealIvl",
             "context" : "Patient",
             "expression" : {
@@ -21885,24 +18945,6 @@ module.exports['OverlapsAfter'] = {
                   }
                } ]
             }
-         }, {
-            "name" : "StartOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
          } ]
       }
    }
@@ -21928,23 +18970,8 @@ define ImpreciseOverlapAfter = ivlF overlaps after ivlE
 define NoOverlap = ivlC overlaps after ivlD
 define NoImpreciseOverlap = ivlE overlaps after ivlG
 define UnknownOverlap = ivlG overlaps after ivlF
-define OverlapsDate = ivlC overlaps after DateTime(2012, 4, 1, 0, 0, 0, 0)
-define StartOverlapsDate = ivlC overlaps after DateTime(2012, 1, 1, 0, 0, 0, 0)
-define EndOverlapsDate = ivlC overlaps after DateTime(2012, 12, 31, 23, 59, 59, 999)
-define NoOverlapsDate = ivlC overlaps after DateTime(2013, 4, 1, 0, 0, 0, 0)
-define UnknownOverlapsDate = ivlE overlaps after DateTime(2013, 4, 1, 0, 0, 0, 0)
-define OverlapsUnknownDate = ivlB overlaps after DateTime(2012)
 ###
 
-###
-Translation Error(s):
-[20:28, 20:41] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
-[21:33, 21:46] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
-[22:31, 22:44] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
-[23:30, 23:43] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
-[24:35, 24:48] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
-[25:35, 25:48] Could not resolve call to operator OverlapsAfter with signature (interval<System.DateTime>,System.DateTime).
-###
 module.exports['OverlapsAfterDateTime'] = {
    "library" : {
       "identifier" : {
@@ -22467,42 +19494,6 @@ module.exports['OverlapsAfterDateTime'] = {
                   "type" : "ExpressionRef"
                } ]
             }
-         }, {
-            "name" : "OverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "StartOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "UnknownOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "OverlapsUnknownDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
          } ]
       }
    }
@@ -22516,27 +19507,12 @@ define OverlapsBeforeIntIvl = interval[1, 5] overlaps before interval[2, 7]
 define OverlapsAfterIntIvl = interval[3, 8] overlaps before interval[1, 6]
 define OverlapsBoundaryIntIvl = interval[1, 5] overlaps before interval[5, 10]
 define NoOverlapsIntIvl = interval[1,5) overlaps before interval[5, 10]
-define StartOverlapsInt = interval[1, 5] overlaps before 1
-define EndOverlapsInt = interval[1, 5] overlaps before 5
-define NoOverlapsInt = interval[1, 5) overlaps before 5
 define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps before interval[1.345, 1.678]
 define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps before interval[1.234, 1.567]
 define OverlapsBoundaryRealIvl = interval[1.0, 1.234] overlaps before interval[1.234, 2.0]
 define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps before interval[1.23456789, 2.0]
-define StartOverlapsReal = interval[1.234, 5.678] overlaps before 1.234
-define EndOverlapsReal = interval[1.234, 5.678] overlaps before 5.678
-define NoOverlapsReal = interval[1.234, 5.678) overlaps before 5.678
 ###
 
-###
-Translation Error(s):
-[8:42, 8:56] Could not resolve call to operator OverlapsBefore with signature (interval<System.Integer>,System.Integer).
-[9:40, 9:54] Could not resolve call to operator OverlapsBefore with signature (interval<System.Integer>,System.Integer).
-[10:39, 10:53] Could not resolve call to operator OverlapsBefore with signature (interval<System.Integer>,System.Integer).
-[15:51, 15:65] Could not resolve call to operator OverlapsBefore with signature (interval<System.Decimal>,System.Decimal).
-[16:49, 16:63] Could not resolve call to operator OverlapsBefore with signature (interval<System.Decimal>,System.Decimal).
-[17:48, 17:62] Could not resolve call to operator OverlapsBefore with signature (interval<System.Decimal>,System.Decimal).
-###
 module.exports['OverlapsBefore'] = {
    "library" : {
       "identifier" : {
@@ -22709,24 +19685,6 @@ module.exports['OverlapsBefore'] = {
                } ]
             }
          }, {
-            "name" : "StartOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsInt",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
             "name" : "OverlapsBeforeRealIvl",
             "context" : "Patient",
             "expression" : {
@@ -22866,24 +19824,6 @@ module.exports['OverlapsBefore'] = {
                   }
                } ]
             }
-         }, {
-            "name" : "StartOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsReal",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
          } ]
       }
    }
@@ -22909,23 +19849,8 @@ define ImpreciseOverlapAfter = ivlF overlaps before ivlE
 define NoOverlap = ivlC overlaps before ivlD
 define NoImpreciseOverlap = ivlE overlaps before ivlG
 define UnknownOverlap = ivlF overlaps before ivlG
-define OverlapsDate = ivlC overlaps before DateTime(2012, 4, 1, 0, 0, 0, 0)
-define StartOverlapsDate = ivlC overlaps before DateTime(2012, 1, 1, 0, 0, 0, 0)
-define EndOverlapsDate = ivlC overlaps before DateTime(2012, 12, 31, 23, 59, 59, 999)
-define NoOverlapsDate = ivlC overlaps before DateTime(2013, 4, 1, 0, 0, 0, 0)
-define UnknownOverlapsDate = ivlE overlaps before DateTime(2013, 4, 1, 0, 0, 0, 0)
-define OverlapsUnknownDate = ivlB overlaps before DateTime(2012)
 ###
 
-###
-Translation Error(s):
-[20:28, 20:42] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
-[21:33, 21:47] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
-[22:31, 22:45] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
-[23:30, 23:44] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
-[24:35, 24:49] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
-[25:35, 25:49] Could not resolve call to operator OverlapsBefore with signature (interval<System.DateTime>,System.DateTime).
-###
 module.exports['OverlapsBeforeDateTime'] = {
    "library" : {
       "identifier" : {
@@ -23448,42 +20373,6 @@ module.exports['OverlapsBeforeDateTime'] = {
                   "type" : "ExpressionRef"
                } ]
             }
-         }, {
-            "name" : "OverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "StartOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "EndOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "NoOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "UnknownOverlapsDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "OverlapsUnknownDate",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
          } ]
       }
    }
@@ -23960,8 +20849,11 @@ module.exports['IntegerIntervalUnion'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -23971,7 +20863,7 @@ module.exports['IntegerIntervalUnion'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -23984,12 +20876,12 @@ module.exports['IntegerIntervalUnion'] = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                }
@@ -24004,12 +20896,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -24018,12 +20910,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24039,12 +20931,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -24053,12 +20945,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24074,12 +20966,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -24088,12 +20980,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24109,12 +21001,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -24123,12 +21015,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24144,12 +21036,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24158,12 +21050,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24179,12 +21071,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -24193,12 +21085,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24214,12 +21106,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -24228,12 +21120,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24249,12 +21141,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }
@@ -24263,12 +21155,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24284,12 +21176,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -24298,12 +21190,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24319,12 +21211,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -24333,12 +21225,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24354,12 +21246,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24368,12 +21260,12 @@ module.exports['IntegerIntervalUnion'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -24414,8 +21306,11 @@ module.exports['DateTimeIntervalUnion'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -24425,7 +21320,7 @@ module.exports['DateTimeIntervalUnion'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -24441,31 +21336,31 @@ module.exports['DateTimeIntervalUnion'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -24474,31 +21369,31 @@ module.exports['DateTimeIntervalUnion'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -24517,31 +21412,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24550,31 +21445,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24587,31 +21482,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24620,31 +21515,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24664,31 +21559,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24697,31 +21592,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24734,31 +21629,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24767,31 +21662,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24811,31 +21706,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24844,31 +21739,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24881,31 +21776,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24914,31 +21809,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24958,31 +21853,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -24991,31 +21886,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25028,31 +21923,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25061,31 +21956,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25105,31 +22000,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25138,31 +22033,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2012",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25175,31 +22070,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25208,31 +22103,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25252,31 +22147,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25285,31 +22180,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25322,31 +22217,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25355,31 +22250,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25399,31 +22294,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25432,31 +22327,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25469,31 +22364,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25502,31 +22397,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25546,31 +22441,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25579,31 +22474,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25616,31 +22511,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25649,31 +22544,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25693,31 +22588,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25726,31 +22621,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25763,31 +22658,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25796,31 +22691,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25840,31 +22735,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25873,31 +22768,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25910,31 +22805,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25943,31 +22838,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -25987,31 +22882,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26020,31 +22915,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26057,31 +22952,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
-                        "value" : "2013",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26090,31 +22985,31 @@ module.exports['DateTimeIntervalUnion'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26153,8 +23048,11 @@ module.exports['IntegerIntervalExcept'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -26164,7 +23062,7 @@ module.exports['IntegerIntervalExcept'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -26177,12 +23075,12 @@ module.exports['IntegerIntervalExcept'] = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                }
@@ -26195,12 +23093,12 @@ module.exports['IntegerIntervalExcept'] = {
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }
@@ -26215,12 +23113,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26229,12 +23127,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26250,12 +23148,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -26264,12 +23162,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26285,12 +23183,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -26299,12 +23197,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26320,12 +23218,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }
@@ -26334,12 +23232,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26355,12 +23253,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -26369,12 +23267,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26390,12 +23288,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -26404,12 +23302,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26425,12 +23323,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26439,12 +23337,12 @@ module.exports['IntegerIntervalExcept'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -26482,8 +23380,11 @@ module.exports['DateTimeIntervalExcept'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -26493,7 +23394,7 @@ module.exports['DateTimeIntervalExcept'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -26509,31 +23410,31 @@ module.exports['DateTimeIntervalExcept'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -26542,31 +23443,31 @@ module.exports['DateTimeIntervalExcept'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -26583,31 +23484,31 @@ module.exports['DateTimeIntervalExcept'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -26616,31 +23517,31 @@ module.exports['DateTimeIntervalExcept'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -26659,31 +23560,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26692,31 +23593,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26729,31 +23630,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26762,31 +23663,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26806,31 +23707,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26839,31 +23740,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26876,31 +23777,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26909,31 +23810,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26953,31 +23854,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -26986,31 +23887,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27023,31 +23924,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27056,31 +23957,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27100,31 +24001,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27133,31 +24034,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27170,31 +24071,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27203,31 +24104,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27247,31 +24148,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27280,31 +24181,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27317,31 +24218,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27350,31 +24251,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27394,31 +24295,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27427,31 +24328,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27464,31 +24365,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27497,31 +24398,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27541,31 +24442,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27574,31 +24475,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27611,31 +24512,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27644,31 +24545,31 @@ module.exports['DateTimeIntervalExcept'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -27711,8 +24612,11 @@ module.exports['IntegerIntervalIntersect'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -27722,7 +24626,7 @@ module.exports['IntegerIntervalIntersect'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -27735,12 +24639,12 @@ module.exports['IntegerIntervalIntersect'] = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                }
@@ -27753,12 +24657,12 @@ module.exports['IntegerIntervalIntersect'] = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }
@@ -27771,12 +24675,12 @@ module.exports['IntegerIntervalIntersect'] = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
                }
@@ -27789,12 +24693,12 @@ module.exports['IntegerIntervalIntersect'] = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }
@@ -27807,12 +24711,12 @@ module.exports['IntegerIntervalIntersect'] = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }
@@ -27825,12 +24729,12 @@ module.exports['IntegerIntervalIntersect'] = {
                "highClosed" : true,
                "type" : "Interval",
                "low" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                },
                "high" : {
-                  "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                }
@@ -27845,12 +24749,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -27859,12 +24763,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -27880,12 +24784,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }
@@ -27894,12 +24798,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -27915,12 +24819,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -27929,12 +24833,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -27950,12 +24854,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }
@@ -27964,12 +24868,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -27985,12 +24889,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -27999,12 +24903,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -28020,12 +24924,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }
@@ -28034,12 +24938,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -28055,12 +24959,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -28069,12 +24973,12 @@ module.exports['IntegerIntervalIntersect'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   },
                   "high" : {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -28116,8 +25020,11 @@ module.exports['DateTimeIntervalIntersect'] = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "statements" : {
@@ -28127,7 +25034,7 @@ module.exports['DateTimeIntervalIntersect'] = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -28143,31 +25050,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28176,31 +25083,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28217,31 +25124,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28250,31 +25157,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28291,31 +25198,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28324,31 +25231,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28365,31 +25272,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28398,31 +25305,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28439,31 +25346,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28472,31 +25379,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28513,31 +25420,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28546,31 +25453,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -28589,31 +25496,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28622,31 +25529,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28659,31 +25566,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28692,31 +25599,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28736,31 +25643,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28769,31 +25676,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28806,31 +25713,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28839,31 +25746,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28883,31 +25790,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28916,31 +25823,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28953,31 +25860,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -28986,31 +25893,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29030,31 +25937,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29063,31 +25970,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29100,31 +26007,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29133,31 +26040,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29177,31 +26084,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29210,31 +26117,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29247,31 +26154,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29280,31 +26187,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29324,31 +26231,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29357,31 +26264,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29394,31 +26301,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29427,31 +26334,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29471,31 +26378,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29504,31 +26411,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29541,31 +26448,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2012",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
@@ -29574,31 +26481,31 @@ module.exports['DateTimeIntervalIntersect'] = {
                      "name" : "DateTime",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "2013",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
                         "value" : "0",
                         "type" : "Literal"
                      } ]
