@@ -2274,16 +2274,16 @@ describe 'IntegerInterval.union', ->
 
     ivl = new Interval(8, 17)
     i = ivl.union(uIvl)
-    i.low.low is 5
-    i.low.high is 8
-    i.high.low is 17
-    i.high.high is 20
+    i.low.low.should.equal 5
+    i.low.high.should.equal 8
+    i.high.low.should.equal 17
+    i.high.high.should.equal 20
 
     i = uIvl.union(ivl)
-    i.low.low is 5
-    i.low.high is 8
-    i.high.low is 17
-    i.high.high is 20
+    i.low.low.should.equal 5
+    i.low.high.should.equal 8
+    i.high.low.should.equal 17
+    i.high.high.should.equal 20
 
     ivl = new Interval(10, 15)
     i = ivl.union(uIvl)
