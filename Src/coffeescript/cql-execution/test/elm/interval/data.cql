@@ -490,8 +490,6 @@ define IntWidthThreeToUnknown = width of interval[3, null)
 define IntWidthUnknownToThree = width of interval(null, 3]
 define RealWidth = width of interval[1.23, 4.56]
 define RealOpenWidth = width of interval(1.23, 4.56)
-define DateTimeWidth = width of interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 9, 0, 0, 0, 0)]
-define DateTimeOpenWidth = width of interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 9, 0, 0, 0, 0))
 
 // @Test: Start
 define Foo = start of interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]

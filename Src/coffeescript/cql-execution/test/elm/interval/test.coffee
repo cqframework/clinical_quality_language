@@ -719,11 +719,6 @@ describe 'Width', ->
     @realWidth.exec(@ctx).should.equal 3.33
     @realOpenWidth.exec(@ctx).should.equal 3.32999998
 
-  it 'should calculate the width of date intervals', ->
-    # TODO: Confirm this, support uncertainties if necessary
-    @dateTimeWidth.exec(@ctx).should.equal 691200000
-    @dateTimeOpenWidth.exec(@ctx).should.equal 691199998
-
   it.skip 'should calculate the width of infinite intervals', ->
     @intWidthThreeToMax.exec(@ctx).should.equal Math.pow(2,31)-4
     @intWidthMinToThree.exec(@ctx).should.equal Math.pow(2,31)+3

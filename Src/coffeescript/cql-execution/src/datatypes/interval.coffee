@@ -182,12 +182,12 @@ module.exports.Interval = class Interval
       false
 
   width: () ->
+    if @low instanceof DateTime or @high instanceof DateTime
+      throw new Error("Width of DateTime intervals is not supported")
+
     closed = @toClosed()
     if closed.low instanceof Uncertainty or closed.high instanceof Uncertainty
       null
-    else if closed.low instanceof DateTime
-      # TODO: Handle uncertainties
-      Math.abs(closed.low.durationBetween(closed.high, DateTime.Unit.MILLISECOND).low)
     else
       # TODO: Fix precision to 8 decimals in other places that return numbers
       diff = Math.abs(closed.high - closed.low)
