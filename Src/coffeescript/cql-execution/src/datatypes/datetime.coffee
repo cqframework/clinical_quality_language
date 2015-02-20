@@ -186,6 +186,30 @@ module.exports.DateTime = class DateTime
   isImprecise: () ->
     not @isPrecise()
 
+  isMorePrecise: (other) ->
+    for field in DateTime.FIELDS
+      if (other[field]? and not @[field]?) then return false
+    not @isSamePrecision(other)
+
+  isLessPrecise: (other) ->
+    not @isSamePrecision(other) and not @isMorePrecise(other)
+
+  isSamePrecision: (other) ->
+    for field in DateTime.FIELDS
+      if (@[field]? and not other[field]?) then return false
+      if (not @[field]? and other[field]?) then return false
+    true
+
+  getPrecision: () ->
+    result = null
+    if @year? then result = DateTime.Unit.YEAR else return result
+    if @month? then result = DateTime.Unit.MONTH else return result
+    if @day? then result = DateTime.Unit.DAY else return result
+    if @hour? then result = DateTime.Unit.HOUR else return result
+    if @minute? then result = DateTime.Unit.MINUTE else return result
+    if @second? then result = DateTime.Unit.SECOND else return result
+    if @millisecond? then result = DateTime.Unit.MILLISECOND else return result
+
   toUncertainty: (ignoreTimezone = false) ->
     low = @toJSDate(ignoreTimezone)
     high = (new DateTime(

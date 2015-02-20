@@ -1,6 +1,6 @@
 { Expression } = require './expression'
 { build } = require './builder'
-{ equals } = require '../util/util'
+{ equals } = require '../util/comparison'
 
 # TODO: Spec lists "Conditional", but it's "If" in the XSD
 module.exports.If = class If extends Expression

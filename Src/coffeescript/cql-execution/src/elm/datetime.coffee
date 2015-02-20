@@ -127,24 +127,13 @@ module.exports.SameOrBefore = class SameOrBefore extends Expression
     [d1, d2] = @execArgs(ctx)
     if d1? and d2? then d1.sameOrBefore(d2, @precision?.toLowerCase()) else null
 
-module.exports.After = class After extends Expression
-  constructor: (json) ->
-    super
-    @precision = json.precision
+# Delegated to by overloaded#After
+module.exports.doAfter = (a, b, precision) ->
+  a.after b, precision
 
-  exec: (ctx) ->
-    [d1, d2] = @execArgs(ctx)
-    if d1? and d2? then d1.after(d2, @precision?.toLowerCase()) else null
-
-
-module.exports.Before = class Before extends Expression
-  constructor: (json) ->
-    super
-    @precision = json.precision
-
-  exec: (ctx) ->
-    [d1, d2] = @execArgs(ctx)
-    if d1? and d2? then d1.before(d2, @precision?.toLowerCase()) else null
+# Delegated to by overloaded#Before
+module.exports.doBefore = (a, b, precision) ->
+  a.before b, precision
 
 module.exports.DurationBetween = class DurationBetween extends Expression
   constructor: (json) ->

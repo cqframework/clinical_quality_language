@@ -53,7 +53,7 @@ task "test", "run tests", ->
     --require coffee-script
     --recursive
     --colors
-  ", (err, output) ->
+  ", {maxBuffer: 1024 * 1024 }, (err, output) ->
     throw err if err
     console.log output
 
