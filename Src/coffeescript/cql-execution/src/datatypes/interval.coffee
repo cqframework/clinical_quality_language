@@ -132,14 +132,10 @@ module.exports.Interval = class Interval
     if not (other instanceof Interval) then throw new Error("Argument to except must be an interval")
 
     if @properlyIncludes(other) is false
-      if @overlapsBefore(other)
-        new Interval(@low, other.low, @lowClosed, not other.lowClosed)
-      else if @overlapsAfter(other)
-        new Interval(other.high, @high, not other.highClosed, @highClosed)
-      else
-        null
-    else if @overlaps(other) is false
-      null # todo: fix bug in spec
+      if @overlaps(other) is false then @
+      else if @overlapsBefore(other) then new Interval(@low, other.low, @lowClosed, not other.lowClosed)
+      else if @overlapsAfter(other) then new Interval(other.high, @high, not other.highClosed, @highClosed)
+      else null
     else
       null
 

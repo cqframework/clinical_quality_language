@@ -931,31 +931,25 @@ describe 'DateTimeInterval.except', ->
 
   it 'should properly calculate before/after except', ->
     [x, y] = xy @dIvl.before
-    # according to the spec these should be null, but they probably
-    # should just be themselves:
-    # [1,3] except [5,6] *should* result in [1,3] but the spec says it is *null*.
-    should.not.exist x.closed.except(y.closed)
-    should.not.exist x.closed.except(y.open)
-    should.not.exist x.open.except(y.closed)
-    should.not.exist x.open.except(y.open)
-    should.not.exist y.closed.except(x.closed)
-    should.not.exist y.closed.except(x.open)
-    should.not.exist y.open.except(x.closed)
-    should.not.exist y.open.except(x.open)
+    x.closed.except(y.closed).should.eql x.closed
+    x.closed.except(y.open).should.eql x.closed
+    x.open.except(y.closed).should.eql x.open
+    x.open.except(y.open).should.eql x.open
+    y.closed.except(x.closed).should.eql y.closed
+    y.closed.except(x.open).should.eql y.closed
+    y.open.except(x.closed).should.eql y.open
+    y.open.except(x.open).should.eql y.open
 
   it 'should properly calculate meets except', ->
     [x, y] = xy @dIvl.meets
-    # according to the spec these should be null, but they probably
-    # should just be themselves:
-    # [1,3] except [4,6] *should* result in [1,3] but the spec says it is *null*.
-    should.not.exist x.closed.except(y.closed)
-    should.not.exist x.closed.except(y.open)
-    should.not.exist x.open.except(y.closed)
-    should.not.exist x.open.except(y.open)
-    should.not.exist y.closed.except(x.closed)
-    should.not.exist y.closed.except(x.open)
-    should.not.exist y.open.except(x.closed)
-    should.not.exist y.open.except(x.open)
+    x.closed.except(y.closed).should.eql x.closed
+    x.closed.except(y.open).should.eql x.closed
+    x.open.except(y.closed).should.eql x.open
+    x.open.except(y.open).should.eql x.open
+    y.closed.except(x.closed).should.eql y.closed
+    y.closed.except(x.open).should.eql y.closed
+    y.open.except(x.closed).should.eql y.open
+    y.open.except(x.open).should.eql y.open
 
   it 'should properly calculate left/right overlapping except', ->
     [x, y] = xy @dIvl.overlaps
@@ -1013,9 +1007,9 @@ describe 'DateTimeInterval.except', ->
 
     [x, y] = xy @dIvl.meets
     # [a,b].except([b,c]) (where b is uncertain) should result in [a,b) but spec says we don't know if they overlap
-    should.not.exist x.toDay.except(y.toDay)
+    x.toDay.except(y.toDay).should.eql x.toDay
     # [b,c].except([a,b]) (where b is uncertain) should result in (b,c] but spec says we don't know if they overlap
-    should.not.exist y.toDay.except(x.toDay)
+    y.toDay.except(x.toDay).should.eql y.toDay
 
     [x, y] = xy @dIvl.during
     should.not.exist x.toDay.except(y.toDay)
@@ -2462,31 +2456,25 @@ describe 'IntegerInterval.except', ->
 
   it 'should properly calculate before/after except', ->
     [x, y] = xy @iIvl.before
-    # according to the spec these should be null, but they probably
-    # should just be themselves:
-    # [1,3] except [5,6] *should* result in [1,3] but the spec says it is *null*.
-    should.not.exist x.closed.except(y.closed)
-    should.not.exist x.closed.except(y.open)
-    should.not.exist x.open.except(y.closed)
-    should.not.exist x.open.except(y.open)
-    should.not.exist y.closed.except(x.closed)
-    should.not.exist y.closed.except(x.open)
-    should.not.exist y.open.except(x.closed)
-    should.not.exist y.open.except(x.open)
+    x.closed.except(y.closed).should.eql x.closed
+    x.closed.except(y.open).should.eql x.closed
+    x.open.except(y.closed).should.eql x.open
+    x.open.except(y.open).should.eql x.open
+    y.closed.except(x.closed).should.eql y.closed
+    y.closed.except(x.open).should.eql y.closed
+    y.open.except(x.closed).should.eql y.open
+    y.open.except(x.open).should.eql y.open
 
   it 'should properly calculate meets except', ->
     [x, y] = xy @iIvl.meets
-    # according to the spec these should be null, but they probably
-    # should just be themselves:
-    # [1,3] except [4,6] *should* result in [1,3] but the spec says it is *null*.
-    should.not.exist x.closed.except(y.closed)
-    should.not.exist x.closed.except(y.open)
-    should.not.exist x.open.except(y.closed)
-    should.not.exist x.open.except(y.open)
-    should.not.exist y.closed.except(x.closed)
-    should.not.exist y.closed.except(x.open)
-    should.not.exist y.open.except(x.closed)
-    should.not.exist y.open.except(x.open)
+    x.closed.except(y.closed).should.eql x.closed
+    x.closed.except(y.open).should.eql x.closed
+    x.open.except(y.closed).should.eql x.open
+    x.open.except(y.open).should.eql x.open
+    y.closed.except(x.closed).should.eql y.closed
+    y.closed.except(x.open).should.eql y.closed
+    y.open.except(x.closed).should.eql y.open
+    y.open.except(x.open).should.eql y.open
 
   it 'should properly calculate left/right overlapping except', ->
     [x, y] = xy @iIvl.overlaps
@@ -2567,8 +2555,8 @@ describe 'IntegerInterval.except', ->
 
     x = new Interval(a,b,   )
     y = new Interval(    d,e)
-    should.not.exist x.except(y)
-    should.not.exist y.except(x)
+    x.except(y).should.eql x
+    y.except(x).should.eql y
 
   it 'should throw when the argument is a point', ->
     try

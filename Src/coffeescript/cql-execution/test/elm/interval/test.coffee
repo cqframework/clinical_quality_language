@@ -864,7 +864,7 @@ describe 'IntegerIntervalExcept', ->
     (@intSameAsExcept.exec(@ctx) == null).should.be.true
 
   it 'should properly calculate before/after except', ->
-    (@intBeforeExcept.exec(@ctx) == null).should.be.true
+    @intBeforeExcept.exec(@ctx).should.eql new Interval(0,4)
 
   it 'should properly calculate meets except', ->
     x = @intHalfInterval.exec(@ctx)
@@ -896,7 +896,7 @@ describe 'DateTimeIntervalExcept', ->
     (@dateTimeSameAsExcept.exec(@ctx) == null).should.be.true
 
   it 'should properly calculate before/after except', ->
-    (@dateTimeBeforeExcept.exec(@ctx) == null).should.be.true
+    @dateTimeBeforeExcept.exec(@ctx).should.eql new Interval(new DateTime(2012, 1, 1, 0, 0, 0, 0), new DateTime(2012, 4, 1, 0, 0, 0, 0))
 
   it 'should properly calculate meets except', ->
     x = @dateTimeHalfInterval.exec(@ctx)
