@@ -761,7 +761,7 @@ describe 'IntegerIntervalUnion', ->
     y.equals(x).should.be.true
 
   it 'should properly calculate before/after unions', ->
-    (@intBeforeUnion.exec(@ctx) == null).should.be.true
+    should(@intBeforeUnion.exec(@ctx)).be.null
 
   it 'should properly calculate meets unions', ->
     x = @intFullInterval.exec(@ctx)
@@ -821,7 +821,7 @@ describe 'DateTimeIntervalUnion', ->
     y.equals(x).should.be.true
 
   it 'should properly calculate before/after unions', ->
-    (@dateTimeBeforeUnion.exec(@ctx) == null).should.be.true
+    should(@dateTimeBeforeUnion.exec(@ctx)).be.null
 
   it 'should properly calculate meets unions', ->
     x = @dateTimeFullInterval.exec(@ctx)
@@ -856,7 +856,7 @@ describe 'IntegerIntervalExcept', ->
     setup @, data
 
    it 'should properly calculate sameAs except', ->
-    (@intSameAsExcept.exec(@ctx) == null).should.be.true
+    should(@intSameAsExcept.exec(@ctx)).be.null
 
   it 'should properly calculate before/after except', ->
     @intBeforeExcept.exec(@ctx).should.eql new Interval(0,4)
@@ -872,13 +872,13 @@ describe 'IntegerIntervalExcept', ->
     y.equals(x).should.be.true
 
   it 'should properly calculate begins/begun by except', ->
-    (@intBeginsExcept.exec(@ctx) == null).should.be.true
+    should(@intBeginsExcept.exec(@ctx)).be.null
 
   it 'should properly calculate includes/included by except', ->
-    (@intDuringExcept.exec(@ctx) == null).should.be.true
+    should(@intDuringExcept.exec(@ctx)).be.null
 
   it 'should properly calculate ends/ended by except', ->
-    (@intEndsExcept.exec(@ctx) == null).should.be.true
+    should(@intEndsExcept.exec(@ctx)).be.null
 
 # TODO
 # it 'should properly handle imprecision', ->
@@ -887,8 +887,8 @@ describe 'DateTimeIntervalExcept', ->
   @beforeEach ->
     setup @, data
 
-   it 'should properly calculate sameAs except', ->
-    (@dateTimeSameAsExcept.exec(@ctx) == null).should.be.true
+  it 'should properly calculate sameAs except', ->
+    should(@dateTimeSameAsExcept.exec(@ctx)).be.null
 
   it 'should properly calculate before/after except', ->
     @dateTimeBeforeExcept.exec(@ctx).should.eql new Interval(new DateTime(2012, 1, 1, 0, 0, 0, 0), new DateTime(2012, 4, 1, 0, 0, 0, 0))
@@ -904,13 +904,13 @@ describe 'DateTimeIntervalExcept', ->
     y.equals(x).should.be.true
 
   it 'should properly calculate begins/begun by except', ->
-    (@dateTimeBeginsExcept.exec(@ctx) == null).should.be.true
+    should(@dateTimeBeginsExcept.exec(@ctx)).be.null
 
   it 'should properly calculate includes/included by except', ->
-    (@dateTimeDuringExcept.exec(@ctx) == null).should.be.true
+    should(@dateTimeDuringExcept.exec(@ctx)).be.null
 
   it 'should properly calculate ends/ended by except', ->
-    (@dateTimeEndsExcept.exec(@ctx) == null).should.be.true
+    should(@dateTimeEndsExcept.exec(@ctx)).be.null
 
 # TODO
 # it 'should properly handle imprecision', ->
@@ -925,7 +925,7 @@ describe 'IntegerIntervalIntersect', ->
     x.equals(y).should.be.true
 
   it 'should properly calculate before/after intersect', ->
-    (@intBeforeIntersect.exec(@ctx) == null).should.be.true
+    should(@intBeforeIntersect.exec(@ctx)).be.null
 
   it 'should properly calculate meets intersect', ->
     x = @intMeetsInterval.exec(@ctx)
@@ -962,7 +962,7 @@ describe 'DateTimeIntervalIntersect', ->
     x.equals(y).should.be.true
 
   it 'should properly calculate before/after intersect', ->
-    (@dateTimeBeforeIntersect.exec(@ctx) == null).should.be.true
+    should(@dateTimeBeforeIntersect.exec(@ctx)).be.null
 
   it 'should properly calculate meets intersect', ->
     x = @dateTimeMeetsInterval.exec(@ctx)
