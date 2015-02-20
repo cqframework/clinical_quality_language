@@ -2431,6 +2431,11 @@ describe 'IntegerInterval.intersect', ->
     should.not.exist x.intersect(y)
     should.not.exist y.intersect(x)
 
+    x = new Interval(new Uncertainty(5, 10), new Uncertainty(15, 20))
+    y = new Interval(8, 17)
+    x.intersect(y).should.eql new Interval(new Uncertainty(8, 10), new Uncertainty(15, 17))
+    y.intersect(x).should.eql new Interval(new Uncertainty(8, 10), new Uncertainty(15, 17))
+
   it 'should throw when the argument is a point', ->
     try
       @zeroToHundred.intersect 50
