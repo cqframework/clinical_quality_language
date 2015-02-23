@@ -2,60 +2,20 @@ package org.cqframework.cql.elm.tracking;
 
 import java.util.*;
 
-public class TupleType extends DataType implements NamedType {
-    private String name;
+public class TupleType extends DataType {
     private List<TupleTypeElement> elements = new ArrayList<TupleTypeElement>();
     private List<TupleTypeElement> sortedElements = null;
 
-    public TupleType(String name, DataType baseType, Collection<TupleTypeElement> elements) {
-        super(baseType);
+    public TupleType(Collection<TupleTypeElement> elements) {
+        super();
 
-        this.name = name;
         if (elements != null) {
             this.elements.addAll(elements);
         }
     }
 
     public TupleType() {
-        this(null, null, null);
-    }
-
-    public TupleType(String name) {
-        this(name, null, null);
-    }
-
-    public TupleType(String name, DataType baseType) {
-        this(name, baseType, null);
-    }
-
-    public TupleType(Collection<TupleTypeElement> elements) {
-        this(null, null, elements);
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getNamespace() {
-        if (this.name != null) {
-            int qualifierIndex = this.name.indexOf('.');
-            if (qualifierIndex > 0) {
-                return this.name.substring(0, qualifierIndex);
-            }
-        }
-
-        return "";
-    }
-
-    public String getSimpleName() {
-        if (this.name != null) {
-            int qualifierIndex = this.name.indexOf('.');
-            if (qualifierIndex > 0) {
-                return this.name.substring(qualifierIndex + 1);
-            }
-        }
-
-        return this.name;
+        this(null);
     }
 
     public Iterable<TupleTypeElement> getElements() {
@@ -90,10 +50,6 @@ public class TupleType extends DataType implements NamedType {
 
     @Override
     public int hashCode() {
-        if (this.name != null) {
-            return this.name.hashCode();
-        }
-
         int result = 13;
         for (int i = 0; i < elements.size(); i++) {
             result += (37 * elements.get(i).hashCode());
@@ -106,9 +62,6 @@ public class TupleType extends DataType implements NamedType {
     public boolean equals(Object o) {
         if (o instanceof TupleType) {
             TupleType that = (TupleType)o;
-            if (this.name != null && that.name != null && this.name.equals(that.name)) {
-                return true;
-            }
 
             if (this.elements.size() == that.elements.size()) {
                 List<TupleTypeElement> theseElements = this.getSortedElements();
@@ -131,8 +84,7 @@ public class TupleType extends DataType implements NamedType {
         if (other instanceof TupleType) {
             TupleType that = (TupleType)other;
 
-            if ((this.name == null || that.name == null)
-                    && (this.elements.size() == that.elements.size())) {
+            if (this.elements.size() == that.elements.size()) {
                 List<TupleTypeElement> theseElements = this.getSortedElements();
                 List<TupleTypeElement> thoseElements = that.getSortedElements();
                 for (int i = 0; i < theseElements.size(); i++) {
@@ -153,8 +105,7 @@ public class TupleType extends DataType implements NamedType {
         if (other instanceof TupleType) {
             TupleType that = (TupleType)other;
 
-            if ((this.name == null || that.name == null)
-                    && (this.elements.size() == that.elements.size())) {
+            if (this.elements.size() == that.elements.size()) {
                 List<TupleTypeElement> theseElements = this.getSortedElements();
                 List<TupleTypeElement> thoseElements = that.getSortedElements();
                 for (int i = 0; i < theseElements.size(); i++) {
@@ -172,10 +123,6 @@ public class TupleType extends DataType implements NamedType {
 
     @Override
     public String toString() {
-        if (this.name != null) {
-            return this.name;
-        }
-
         StringBuilder builder = new StringBuilder();
         builder.append("tuple{");
         for (int i = 0; i < elements.size(); i++) {
@@ -226,7 +173,7 @@ public class TupleType extends DataType implements NamedType {
             return this;
         }
 
-        TupleType result = new TupleType(getName(), getBaseType());
+        TupleType result = new TupleType();
         for (int i = 0; i < elements.size(); i++) {
             result.addElement(new TupleTypeElement(elements.get(i).getName(), elements.get(i).getType().instantiate(typeMap)));
         }

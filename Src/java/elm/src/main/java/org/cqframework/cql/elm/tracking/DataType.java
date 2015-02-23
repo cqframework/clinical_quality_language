@@ -5,16 +5,14 @@ import org.hl7.elm_modelinfo.r1.TypeInfo;
 import java.util.Map;
 
 public abstract class DataType {
-    private DataType baseType;
-
     public DataType() {
         this(null);
     }
-
     public DataType(DataType baseType) {
         this.baseType = baseType == null ? DataType.any : baseType;
     }
 
+    private DataType baseType;
     public DataType getBaseType() {
         return baseType;
     }

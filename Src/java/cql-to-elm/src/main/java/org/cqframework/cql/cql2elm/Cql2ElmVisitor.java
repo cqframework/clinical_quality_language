@@ -2669,6 +2669,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private DataType resolveProperty(DataType sourceType, String identifier) {
         DataType currentType = sourceType;
         while (currentType != null) {
+            if (currentType instanceof ClassType) {
+                ClassType classType = (ClassType)currentType;
+                for (ClassTypeElement e : classType.getElements()) {
+                    if (e.getName().equals(identifier)) {
+                        return e.getType();
+                    }
+                }
+            }
             if (currentType instanceof TupleType) {
                 TupleType tupleType = (TupleType)currentType;
                 for (TupleTypeElement e : tupleType.getElements()) {

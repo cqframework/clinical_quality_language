@@ -36,10 +36,10 @@ public class ModelImporter {
             if (t instanceof SimpleTypeInfo) {
                 typeInfoIndex.put(((SimpleTypeInfo)t).getName(), t);
             }
-            else if (t instanceof TupleTypeInfo) {
-                TupleTypeInfo tupleTypeInfo = (TupleTypeInfo)t;
-                if (tupleTypeInfo.getName() != null) {
-                    typeInfoIndex.put(tupleTypeInfo.getName(), tupleTypeInfo);
+            else if (t instanceof ClassInfo) {
+                ClassInfo classInfo = (ClassInfo)t;
+                if (classInfo.getName() != null) {
+                    typeInfoIndex.put(classInfo.getName(), classInfo);
                 }
             }
         }
@@ -160,20 +160,16 @@ public class ModelImporter {
     }
 
     private TupleType resolveTupleType(TupleTypeInfo t) {
-        if (t.getName() != null) {
-            TupleType result = (TupleType)lookupType(t.getName());
-            if (result == null) {
-                result = new TupleType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
-                resolvedTypes.put(result.getName(), result);
-                result.addElements(resolveTupleTypeElements(t.getElement()));
-            }
+        TupleType result = new TupleType(resolveTupleTypeElements(t.getElement()));
+        return result;
+    }
 
-            return result;
+    private Collection<ClassTypeElement> resolveClassTypeElements(Collection<ClassInfoElement> infoElements) {
+        List<ClassTypeElement> elements = new ArrayList();
+        for (ClassInfoElement e : infoElements) {
+            elements.add(new ClassTypeElement(e.getName(), resolveTypeSpecifier(e.getType())));
         }
-        else {
-            TupleType result = new TupleType(null, null, resolveTupleTypeElements(t.getElement()));
-            return result;
-        }
+        return elements;
     }
 
     private ClassType resolveClassType(ClassInfo t) {
@@ -184,11 +180,11 @@ public class ModelImporter {
         ClassType result = (ClassType)lookupType(t.getName());
         if (result == null) {
             result = new ClassType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
-            result.addElements(resolveTupleTypeElements(t.getElement()));
+            resolvedTypes.put(result.getName(), result);
+            result.addElements(resolveClassTypeElements(t.getElement()));
             result.setIdentifier(t.getIdentifier());
             result.setTopic(t.getTopic());
             result.setPrimaryCodePath(t.getPrimaryCodePath());
-            resolvedTypes.put(result.getName(), result);
         }
 
         return result;

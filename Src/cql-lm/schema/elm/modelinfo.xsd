@@ -48,12 +48,24 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+	<xs:complexType name="ClassInfoElement">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="type" type="xs:string"/>
+	</xs:complexType>
 	<xs:complexType name="ClassInfo">
 		<xs:annotation>
 			<xs:documentation>The ClassInfo type models information associated with a single class in the data model.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="TupleTypeInfo">
+			<xs:extension base="TypeInfo">
+				<xs:sequence>
+					<xs:element name="element" type="ClassInfoElement" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name attribute specifies the name of the type within the data model. This corresponds to the name of the class within the class model, or the name of the type in the case of an xsd. In FHIR, this corresponds to the name of the resource.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="identifier" type="xs:string" use="required">
 					<xs:annotation>
 						<xs:documentation>The identifier attribute specifies a unique name for the class that may be independent of the name. In FHIR, this corresponds to the profile identifier.</xs:documentation>
@@ -106,11 +118,6 @@
 				<xs:sequence>
 					<xs:element name="element" type="TupleTypeInfoElement" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
-				<xs:attribute name="name" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:documentation>The name attribute specifies the name of the type within the data model. This corresponds to the name of the class within the class model, or the name of the type in the case of an xsd. In FHIR, this corresponds to the name of the resource.</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
