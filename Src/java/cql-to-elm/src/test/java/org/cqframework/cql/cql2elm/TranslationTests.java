@@ -17,7 +17,7 @@ public class TranslationTests {
         File expectedXmlFile = new File(Cql2ElmVisitorTest.class.getResource("PropertyTest_ELM.xml").getFile());
         String expectedXml = new Scanner(expectedXmlFile, "UTF-8").useDelimiter("\\Z").next();
 
-        File propertyTestFile = new File(Cql2ElmVisitorTest.class.getResource("ParameterTest.cql").getFile());
+        File propertyTestFile = new File(Cql2ElmVisitorTest.class.getResource("PropertyTest.cql").getFile());
         String actualXml = CqlTranslator.fromFile(propertyTestFile).toXml();
         assertThat(actualXml, is(expectedXml));
     }

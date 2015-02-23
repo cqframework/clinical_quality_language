@@ -157,8 +157,6 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Collapse", new Signature(new ListType(new IntervalType(new TypeParameter("T")))), new ListType(new IntervalType(new TypeParameter("T"))), new TypeParameter("T")));
         // Contains<T>(interval<T>, T) : Boolean
         system.add(new GenericOperator("Contains", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-        // Distinct<T>(list<T>) : list<T>
-        system.add(new GenericOperator("Distinct", new Signature(new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // End<T>(interval<T>) : T
         system.add(new GenericOperator("End", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Ends<T>(interval<T>, interval<T>) : Boolean
@@ -204,6 +202,8 @@ public class SystemLibraryHelper {
         // List Operators
         // Contains<T>(list<T>, T) : Boolean
         system.add(new GenericOperator("Contains", new Signature(new ListType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Distinct<T>(list<T>) : list<T>
+        system.add(new GenericOperator("Distinct", new Signature(new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // Equal<T>(list<T>, list<T>) : Boolean
         // Already covered by Equal<T>(T, T)
         //system.add(new GenericOperator("Equal", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
