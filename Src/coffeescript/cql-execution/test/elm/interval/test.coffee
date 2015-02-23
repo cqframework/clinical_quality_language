@@ -228,6 +228,8 @@ describe 'ProperlyIncludes', ->
 
   it 'should accept properly included intervals', ->
     @properlyIncludesIntIvl.exec(@ctx).should.be.true
+    @properlyIncludesIntBeginsIvl.exec(@ctx).should.be.true
+    @properlyIncludesIntEndsIvl.exec(@ctx).should.be.true
     @properlyIncludesRealIvl.exec(@ctx).should.be.true
     @properlyIncludesDateIvl.exec(@ctx).should.be.true
 
@@ -293,6 +295,8 @@ describe 'ProperlyIncludedIn', ->
 
   it 'should accept properly included intervals', ->
     @properlyIncludesIntIvl.exec(@ctx).should.be.true
+    @properlyIncludesIntBeginsIvl.exec(@ctx).should.be.true
+    @properlyIncludesIntEndsIvl.exec(@ctx).should.be.true
     @properlyIncludesRealIvl.exec(@ctx).should.be.true
     @properlyIncludesDateIvl.exec(@ctx).should.be.true
 

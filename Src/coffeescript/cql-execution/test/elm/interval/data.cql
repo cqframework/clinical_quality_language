@@ -138,6 +138,8 @@ define UnknownEndNotIncludesDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0),
 
 // @Test: ProperlyIncludes
 define ProperlyIncludesIntIvl = interval[1, 5] properly includes interval[2, 4]
+define ProperlyIncludesIntBeginsIvl = interval[1, 5] properly includes interval[1, 4]
+define ProperlyIncludesIntEndsIvl = interval[1, 5] properly includes interval[2, 5]
 define NotProperlyIncludesIntIvl = interval[1, 5] properly includes interval[1, 5]
 define ProperlyIncludesRealIvl = interval[1.234, 3.456] properly includes interval[2.34, 2.56]
 define NotProperlyIncludesRealIvl = interval[1.234, 3.456] properly includes interval[1.234, 3.456]
@@ -186,6 +188,8 @@ define UnknownEndNotIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0
 
 // @Test: ProperlyIncludedIn
 define ProperlyIncludesIntIvl = interval[2, 4] properly included in interval[1, 5]
+define ProperlyIncludesIntBeginsIvl = interval[1, 4] properly included in interval[1, 5]
+define ProperlyIncludesIntEndsIvl = interval[2, 5] properly included in interval[1, 5]
 define NotProperlyIncludesIntIvl = interval[1, 5] properly included in interval[1, 5]
 define ProperlyIncludesRealIvl = interval[2.34, 2.56] properly included in interval[1.234, 3.456]
 define NotProperlyIncludesRealIvl = interval[1.23, 2.56] properly included in interval[1.23, 2.56]

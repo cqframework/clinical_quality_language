@@ -5890,6 +5890,8 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define ProperlyIncludesIntIvl = interval[1, 5] properly includes interval[2, 4]
+define ProperlyIncludesIntBeginsIvl = interval[1, 5] properly includes interval[1, 4]
+define ProperlyIncludesIntEndsIvl = interval[1, 5] properly includes interval[2, 5]
 define NotProperlyIncludesIntIvl = interval[1, 5] properly includes interval[1, 5]
 define ProperlyIncludesRealIvl = interval[1.234, 3.456] properly includes interval[2.34, 2.56]
 define NotProperlyIncludesRealIvl = interval[1.234, 3.456] properly includes interval[1.234, 3.456]
@@ -5903,13 +5905,13 @@ define UnknownEndMayProperlyIncludeIntIvl = interval[0, null) properly includes 
 
 ###
 Translation Error(s):
-[11:42, 11:58] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[11:60, 11:76] Could not determine signature for invocation of operator System.ProperIncludes.
-[12:45, 12:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[12:81, 12:97] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[12:63, 12:79] Could not determine signature for invocation of operator System.Contains.
-[13:45, 13:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[13:63, 13:79] Could not determine signature for invocation of operator System.ProperIncludes.
+[13:42, 13:58] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[13:60, 13:76] Could not determine signature for invocation of operator System.ProperIncludes.
+[14:45, 14:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[14:81, 14:97] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[14:63, 14:79] Could not determine signature for invocation of operator System.Contains.
+[15:45, 15:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[15:63, 15:79] Could not determine signature for invocation of operator System.ProperIncludes.
 ###
 module.exports['ProperlyIncludes'] = {
    "library" : {
@@ -5973,6 +5975,76 @@ module.exports['ProperlyIncludes'] = {
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ProperlyIncludesIntBeginsIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ProperlyIncludesIntEndsIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
                      "type" : "Literal"
                   }
                } ]
@@ -7962,6 +8034,8 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define ProperlyIncludesIntIvl = interval[2, 4] properly included in interval[1, 5]
+define ProperlyIncludesIntBeginsIvl = interval[1, 4] properly included in interval[1, 5]
+define ProperlyIncludesIntEndsIvl = interval[2, 5] properly included in interval[1, 5]
 define NotProperlyIncludesIntIvl = interval[1, 5] properly included in interval[1, 5]
 define ProperlyIncludesRealIvl = interval[2.34, 2.56] properly included in interval[1.234, 3.456]
 define NotProperlyIncludesRealIvl = interval[1.23, 2.56] properly included in interval[1.23, 2.56]
@@ -7975,13 +8049,13 @@ define UnknownEndMayBeProperlyIncludedInDateIvl = interval[DateTime(2013, 1, 1, 
 
 ###
 Translation Error(s):
-[11:45, 11:92] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[11:115, 11:162] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[11:94, 11:113] Properly modifier can only be used with interval-to-interval comparisons.
-[12:48, 12:95] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[12:97, 12:116] Properly modifier can only be used with interval-to-interval comparisons.
-[13:51, 13:98] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[13:100, 13:119] Properly modifier can only be used with interval-to-interval comparisons.
+[13:45, 13:92] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[13:115, 13:162] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[13:94, 13:113] Properly modifier can only be used with interval-to-interval comparisons.
+[14:48, 14:95] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[14:97, 14:116] Properly modifier can only be used with interval-to-interval comparisons.
+[15:51, 15:98] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[15:100, 15:119] Properly modifier can only be used with interval-to-interval comparisons.
 ###
 module.exports['ProperlyIncludedIn'] = {
    "library" : {
@@ -8031,6 +8105,76 @@ module.exports['ProperlyIncludedIn'] = {
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "4",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ProperlyIncludesIntBeginsIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ProperlyIncludesIntEndsIvl",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
                      "type" : "Literal"
                   }
                }, {

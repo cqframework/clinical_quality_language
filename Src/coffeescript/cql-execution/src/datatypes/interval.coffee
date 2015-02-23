@@ -17,11 +17,9 @@ module.exports.Interval = class Interval
 
   properlyIncludes: (other) ->
     if not (other instanceof Interval) then throw new Error("Argument to properlyIncludes must be an interval")
-    a = @toClosed()
-    b = other.toClosed()
     ThreeValuedLogic.and(
-      cmp.lessThan(a.low, b.low),
-      cmp.greaterThan(a.high, b.high)
+      @includes(other),
+      ThreeValuedLogic.not(cmp.equals(@, other))
     )
 
   includes: (other) ->
@@ -131,12 +129,16 @@ module.exports.Interval = class Interval
     if (other == null) then return null
     if not (other instanceof Interval) then throw new Error("Argument to except must be an interval")
 
-    if @properlyIncludes(other) is false
-      if @overlaps(other) is false then @
-      else if @overlapsBefore(other) then new Interval(@low, other.low, @lowClosed, not other.lowClosed)
-      else if @overlapsAfter(other) then new Interval(other.high, @high, not other.highClosed, @highClosed)
+    ol = @overlaps other
+    if ol is true
+      olb = @overlapsBefore other
+      ola = @overlapsAfter other
+      if olb is true and ola is false then new Interval(@low, other.low, @lowClosed, not other.lowClosed)
+      else if ola is true and olb is false then new Interval(other.high, @high, not other.highClosed, @highClosed)
       else null
-    else
+    else if ol is false
+      @
+    else # ol is null
       null
 
   equals: (other) ->
