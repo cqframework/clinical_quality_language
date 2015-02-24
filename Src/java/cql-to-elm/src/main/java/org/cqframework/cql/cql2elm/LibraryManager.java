@@ -1,7 +1,6 @@
-package org.cqframework.cql.cql2elm.model;
+package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 import java.io.IOException;

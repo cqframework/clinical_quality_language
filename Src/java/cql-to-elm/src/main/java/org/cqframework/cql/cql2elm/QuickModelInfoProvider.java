@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.model;
+package org.cqframework.cql.cql2elm;
 
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 

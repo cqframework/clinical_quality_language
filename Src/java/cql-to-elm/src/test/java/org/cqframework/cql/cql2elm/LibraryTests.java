@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.model.LibrarySourceLoader;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

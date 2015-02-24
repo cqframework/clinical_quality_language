@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.model.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 import java.io.InputStream;

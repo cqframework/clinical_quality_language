@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.model;
+package org.cqframework.cql.cql2elm;
 
 import org.hl7.elm.r1.VersionedIdentifier;
 
