@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.cqframework.cql.elm.tracking.DataType;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
-public class SystemModel extends ModelHelper {
+public class SystemModel extends Model {
     public SystemModel(@NotNull ModelInfo modelInfo) throws ClassNotFoundException {
         super(modelInfo, null);
     }

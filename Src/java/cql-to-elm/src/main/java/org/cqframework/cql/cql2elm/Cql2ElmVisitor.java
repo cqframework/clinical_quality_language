@@ -47,7 +47,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private final List<CqlTranslatorException> errors = new ArrayList<>();
-    private Map<String, ModelHelper> modelHelpers = new HashMap<>();
+    private Map<String, Model> models = new HashMap<>();
     private boolean implicitPatientCreated = false;
 
     public void enableAnnotations() {
@@ -251,8 +251,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public UsingDef visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
-        ModelHelper modelHelper = getModelHelper(parseString(ctx.identifier()));
-        return translatedLibrary.resolveUsingRef(modelHelper.getModelInfo().getName());
+        Model model = getModel(parseString(ctx.identifier()));
+        return translatedLibrary.resolveUsingRef(model.getModelInfo().getName());
     }
 
     @Override
@@ -390,14 +390,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // If this is the first time a context definition is encountered, output a patient definition:
         // define Patient = element of [<Patient model type>]
         if (!implicitPatientCreated) {
-            String patientTypeName = getModelHelper().getModelInfo().getPatientClassName();
+            String patientTypeName = getModel().getModelInfo().getPatientClassName();
             if (patientTypeName == null || patientTypeName.equals("")) {
                 throw new IllegalArgumentException("Model definition does not contain enough information to construct a patient context.");
             }
             DataType patientType = resolveTypeName(patientTypeName);
             Retrieve patientRetrieve = of.createRetrieve().withDataType(dataTypeToQName(patientType));
             patientRetrieve.setResultType(new ListType(patientType));
-            String patientClassIdentifier = getModelHelper().getModelInfo().getPatientClassIdentifier();
+            String patientClassIdentifier = getModel().getModelInfo().getPatientClassIdentifier();
             if (patientClassIdentifier != null) {
                 patientRetrieve.setTemplateId(patientClassIdentifier);
             }
@@ -2424,7 +2424,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             operator.setOperand(fun.getOperand().get(0));
                         } else {
                             Expression source = resolveIdentifier("Patient");
-                            Property property = of.createProperty().withSource(source).withPath(getModelHelper().getModelInfo().getPatientBirthDatePropertyName());
+                            Property property = of.createProperty().withSource(source).withPath(getModel().getModelInfo().getPatientBirthDatePropertyName());
                             property.setResultType(resolveProperty(source.getResultType(), property.getPath()));
                             operator.setOperand(property);
                         }
@@ -2446,7 +2446,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         operator.getOperand().addAll(fun.getOperand());
                         if (operator.getOperand().size() == 1) {
                             Expression source = resolveIdentifier("Patient");
-                            Property property = of.createProperty().withSource(source).withPath(getModelHelper().getModelInfo().getPatientBirthDatePropertyName());
+                            Property property = of.createProperty().withSource(source).withPath(getModel().getModelInfo().getPatientBirthDatePropertyName());
                             property.setResultType(resolveProperty(source.getResultType(), property.getPath()));
                             operator.getOperand().add(0, property);
                         }
@@ -2548,10 +2548,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return fun;
     }
 
-    private UsingDef buildUsingDef(ModelHelper modelHelper) {
+    private UsingDef buildUsingDef(Model model) {
         UsingDef usingDef = of.createUsingDef()
-                .withLocalIdentifier(modelHelper.getModelInfo().getName())
-                .withUri(modelHelper.getModelInfo().getUrl());
+                .withLocalIdentifier(model.getModelInfo().getName())
+                .withUri(model.getModelInfo().getUrl());
         // TODO: .withVersion? Or will version be part of the resolved Url?
         // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
 
@@ -2559,13 +2559,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return usingDef;
     }
 
-    private ModelHelper buildModelHelper(String identifier) {
-        ModelHelper modelHelper = null;
+    private Model buildModel(String identifier) {
+        Model model = null;
         // TODO: This should load from a modelinfo file based on the modelIdentifier above. Hard-coding to QUICK for POC purposes.
         try {
             switch (identifier.toUpperCase()) {
-                case "QUICK": modelHelper = new ModelHelper(QuickModelHelper.load(), getModelHelper("System")); break;
-                case "SYSTEM": modelHelper = new SystemModel(SystemModelHelper.load()); break;
+                case "QUICK": model = new Model(JAXBModelInfoProvider.load("/org/hl7/fhir/quick-modelinfo.xml"), getModel("System")); break;
+                case "SYSTEM": model = new SystemModel(JAXBModelInfoProvider.load("/org/hl7/elm/r1/system-modelinfo.xml")); break;
                 default: throw new IllegalArgumentException("CQL-to-ELM translator currently supports only the QUICK model.");
             }
         } catch (ClassNotFoundException e) {
@@ -2574,27 +2574,27 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             e.printStackTrace();
         }
 
-        return modelHelper;
+        return model;
     }
 
-    private ModelHelper getModelHelper() {
-        return getModelHelper(null);
+    private Model getModel() {
+        return getModel(null);
     }
 
-    private ModelHelper getModelHelper(String modelName) {
+    private Model getModel(String modelName) {
         if (modelName == null) {
             modelName = "QUICK"; // Default to QUICK
         }
 
-        ModelHelper modelHelper = modelHelpers.get(modelName);
-        if (modelHelper == null) {
-            modelHelper = buildModelHelper(modelName);
-            modelHelpers.put(modelName, modelHelper);
+        Model model = models.get(modelName);
+        if (model == null) {
+            model = buildModel(modelName);
+            models.put(modelName, model);
             // Add the model using def to the output
-            buildUsingDef(modelHelper);
+            buildUsingDef(model);
         }
 
-        return modelHelper;
+        return model;
     }
 
     private String parseString(ParseTree pt) {
@@ -2612,18 +2612,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private QName dataTypeToQName(DataType type) {
         if (type instanceof NamedType) {
             NamedType namedType = (NamedType)type;
-            org.hl7.elm_modelinfo.r1.ModelInfo modelInfo = getModelHelper(namedType.getNamespace()).getModelInfo();
+            org.hl7.elm_modelinfo.r1.ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
             return new QName(modelInfo.getUrl(), namedType.getSimpleName());
         }
 
         throw new IllegalArgumentException("A named type is required in this context.");
     }
 
-    private ClassType resolveTopic(String model, String topic) {
+    private ClassType resolveTopic(String modelName, String topic) {
         ClassType result = null;
-        if (model == null || model.equals("")) {
-            for (ModelHelper modelHelper : modelHelpers.values()) {
-                ClassType modelResult = modelHelper.resolveTopic(topic);
+        if (modelName == null || modelName.equals("")) {
+            for (Model model : models.values()) {
+                ClassType modelResult = model.resolveTopic(topic);
                 if (modelResult != null) {
                     if (result != null) {
                         throw new IllegalArgumentException(String.format("Topic %s is ambiguous between %s and %s.",
@@ -2635,7 +2635,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
         else {
-            result = getModelHelper(model).resolveTopic(topic);
+            result = getModel(modelName).resolveTopic(topic);
         }
 
         return result;
@@ -2645,11 +2645,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return resolveTypeName(null, typeName);
     }
 
-    private DataType resolveTypeName(String model, String typeName) {
+    private DataType resolveTypeName(String modelName, String typeName) {
         DataType result = null;
-        if (model == null || model.equals("")) {
-            for (ModelHelper modelHelper : modelHelpers.values()) {
-                DataType modelResult = modelHelper.resolveTypeName(typeName);
+        if (modelName == null || modelName.equals("")) {
+            for (Model model : models.values()) {
+                DataType modelResult = model.resolveTypeName(typeName);
                 if (modelResult != null) {
                     if (result != null) {
                         throw new IllegalArgumentException(String.format("Type name %s is ambiguous between %s and %s.",
@@ -2661,7 +2661,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
         else {
-            result = getModelHelper(model).resolveTypeName(typeName);
+            result = getModel(modelName).resolveTypeName(typeName);
         }
         return result;
     }
@@ -2864,7 +2864,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private SystemModel getSystemModel() {
-        return (SystemModel)getModelHelper("System");
+        return (SystemModel)getModel("System");
     }
 
     private void loadSystemLibrary() {
