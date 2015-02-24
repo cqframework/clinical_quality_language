@@ -251,7 +251,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public UsingDef visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
-        Model model = getModel(parseString(ctx.identifier()));
+        Model model = getModel(parseString(ctx.identifier()), parseString(ctx.versionSpecifier()));
         return translatedLibrary.resolveUsingRef(model.getModelInfo().getName());
     }
 
@@ -2548,50 +2548,64 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return fun;
     }
 
-    private UsingDef buildUsingDef(Model model) {
+    private UsingDef buildUsingDef(VersionedIdentifier modelIdentifier, Model model) {
         UsingDef usingDef = of.createUsingDef()
-                .withLocalIdentifier(model.getModelInfo().getName())
+                .withLocalIdentifier(modelIdentifier.getId())
+                .withVersion(modelIdentifier.getVersion())
                 .withUri(model.getModelInfo().getUrl());
-        // TODO: .withVersion? Or will version be part of the resolved Url?
         // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
 
         addToLibrary(usingDef);
         return usingDef;
     }
 
-    private Model buildModel(String identifier) {
+    private Model buildModel(VersionedIdentifier identifier) {
         Model model = null;
-        // TODO: This should load from a modelinfo file based on the modelIdentifier above. Hard-coding to QUICK for POC purposes.
         try {
-            switch (identifier.toUpperCase()) {
-                case "QUICK": model = new Model(JAXBModelInfoProvider.load("/org/hl7/fhir/quick-modelinfo.xml"), getModel("System")); break;
-                case "SYSTEM": model = new SystemModel(JAXBModelInfoProvider.load("/org/hl7/elm/r1/system-modelinfo.xml")); break;
-                default: throw new IllegalArgumentException("CQL-to-ELM translator currently supports only the QUICK model.");
+            ModelInfoProvider provider = ModelInfoLoader.getModelInfoProvider(identifier);
+            if (identifier.getId().equals("System")) {
+                model = new SystemModel(provider.load());
+            }
+            else {
+                model = new Model(provider.load(), getModel("System"));
             }
         } catch (ClassNotFoundException e) {
-            // TODO: Should never occur...
-            System.err.println("Couldn't load model helper!");
-            e.printStackTrace();
+            throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s.",
+                    identifier.getId(), identifier.getVersion()));
         }
 
         return model;
     }
 
     private Model getModel() {
-        return getModel(null);
+        return getModel((String)null);
     }
 
     private Model getModel(String modelName) {
+        return getModel(modelName, null);
+    }
+
+    private Model getModel(String modelName, String version) {
         if (modelName == null) {
             modelName = "QUICK"; // Default to QUICK
         }
 
-        Model model = models.get(modelName);
+        VersionedIdentifier modelIdentifier = new VersionedIdentifier().withId(modelName).withVersion(version);
+        return getModel(modelIdentifier);
+    }
+
+    private Model getModel(VersionedIdentifier modelIdentifier) {
+        Model model = models.get(modelIdentifier.getId());
         if (model == null) {
-            model = buildModel(modelName);
-            models.put(modelName, model);
+            model = buildModel(modelIdentifier);
+            models.put(modelIdentifier.getId(), model);
             // Add the model using def to the output
-            buildUsingDef(model);
+            buildUsingDef(modelIdentifier, model);
+        }
+
+        if (modelIdentifier.getVersion() != null && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {
+            throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s because version %s is already loaded.",
+                    modelIdentifier.getId(), modelIdentifier.getVersion(), model.getModelInfo().getVersion()));
         }
 
         return model;

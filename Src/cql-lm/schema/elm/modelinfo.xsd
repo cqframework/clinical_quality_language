@@ -17,6 +17,11 @@
 				<xs:documentation>The name attribute specifies the name of the data model. This value is the same as the model identifier used in using definitions and type specifiers within CQL.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="version" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The version attribute specifies the version of the data model. If specified, this value is the same as the version used in using definitions within CQL.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="url" type="xs:anyURI" use="required">
 			<xs:annotation>
 				<xs:documentation>The url attribute specifies the xml namespace associated with the model, and is used by the CQL translator to establish the url used to reference types from the model schema within an ELM document.</xs:documentation>
