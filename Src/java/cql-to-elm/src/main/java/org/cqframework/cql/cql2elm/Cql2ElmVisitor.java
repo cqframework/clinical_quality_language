@@ -86,6 +86,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return library;
     }
 
+    public TranslatedLibrary getTranslatedLibrary() {
+        return translatedLibrary;
+    }
+
     public List<Retrieve> getRetrieves() {
         return retrieves;
     }
@@ -228,15 +232,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         loadSystemLibrary();
 
-        Object lastResult = null;
-
-        // Loop through and call visit on each child (to ensure they are tracked)
-        for (int i = 0; i < ctx.getChildCount(); i++) {
-            lastResult = visit(ctx.getChild(i));
+        if (this.libraryInfo.getLibraryName() == null) {
+            this.libraryInfo.setLibraryName("Anonymous");
         }
 
-        // Return last result (consistent with super implementation and helps w/ testing)
-        return lastResult;
+        Object lastResult = null;
+        LibraryManager.beginTranslation(this.libraryInfo.getLibraryName());
+        try {
+            // Loop through and call visit on each child (to ensure they are tracked)
+            for (int i = 0; i < ctx.getChildCount(); i++) {
+                lastResult = visit(ctx.getChild(i));
+            }
+
+            // Return last result (consistent with super implementation and helps w/ testing)
+            return lastResult;
+        }
+        finally {
+            LibraryManager.endTranslation(this.libraryInfo.getLibraryName());
+        }
     }
 
     @Override
@@ -2862,18 +2875,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private void addToLibrary(IncludeDef includeDef) {
+        if (library.getIdentifier() == null || library.getIdentifier().getId() == null) {
+            throw new IllegalArgumentException("Unnamed libraries cannot reference other libraries.");
+        }
+
         if (library.getIncludes() == null) {
             library.setIncludes(of.createLibraryIncludes());
         }
         library.getIncludes().getDef().add(includeDef);
 
-        // TODO: Resolve and prepare the actual library
-        TranslatedLibrary referencedLibrary = new TranslatedLibrary();
-        referencedLibrary.setIdentifier(
-                new VersionedIdentifier()
-                        .withId(includeDef.getPath())
-                        .withVersion(includeDef.getVersion()));
+        translatedLibrary.add(includeDef);
 
+        VersionedIdentifier libraryIdentifier = new VersionedIdentifier()
+                .withId(includeDef.getPath())
+                .withVersion(includeDef.getVersion());
+
+        TranslatedLibrary referencedLibrary = LibraryManager.resolveLibrary(libraryIdentifier, errors);
         libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
     }
 
@@ -2896,7 +2913,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private TrackBack getTrackBack(ParserRuleContext ctx) {
         TrackBack tb = new TrackBack(
-                //of.createVersionedIdentifier().withId(library.getIdentifier().getId()).withVersion(library.getIdentifier().getVersion()),
                 library.getIdentifier(),
                 ctx.getStart().getLine(),
                 ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based

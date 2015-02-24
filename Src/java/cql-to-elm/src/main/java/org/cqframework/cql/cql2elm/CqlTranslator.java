@@ -6,6 +6,7 @@ import joptsimple.OptionSpec;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
@@ -28,6 +29,7 @@ import static org.cqframework.cql.cql2elm.CqlTranslator.fromFile;
 public class CqlTranslator {
     public static enum Options { EnableDateRangeOptimization, EnableAnnotations }
     private Library library = null;
+    private TranslatedLibrary translatedLibrary = null;
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
     private List<CqlTranslatorException> errors = null;
@@ -74,6 +76,10 @@ public class CqlTranslator {
         return library;
     }
 
+    public TranslatedLibrary getTranslatedLibrary() {
+        return translatedLibrary;
+    }
+
     public Object toObject() {
         return visitResult;
     }
@@ -107,6 +113,7 @@ public class CqlTranslator {
         }
         visitResult = visitor.visit(tree);
         library = visitor.getLibrary();
+        translatedLibrary = visitor.getTranslatedLibrary();
         retrieves = visitor.getRetrieves();
         errors = visitor.getErrors();
     }
