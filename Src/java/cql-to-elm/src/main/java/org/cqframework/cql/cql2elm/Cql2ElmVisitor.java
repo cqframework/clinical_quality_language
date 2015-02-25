@@ -2590,6 +2590,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return model;
     }
 
+    private String getDefaultModelName() {
+        String modelName = null;
+        for (Model model : models.values()) {
+            if (!model.getModelInfo().getName().equals("System")) {
+                if (modelName != null) {
+                    throw new IllegalArgumentException(String.format("Could not resolve a default model between %s and %s.",
+                            modelName, model.getModelInfo().getName()));
+                }
+
+                modelName = model.getModelInfo().getName();
+            }
+        }
+
+        if (modelName == null) {
+            throw new IllegalArgumentException("Could not determine a default model because no usings have been defined.");
+        }
+
+        return modelName;
+    }
+
     private Model getModel() {
         return getModel((String)null);
     }
@@ -2600,7 +2620,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Model getModel(String modelName, String version) {
         if (modelName == null) {
-            modelName = "QUICK"; // Default to QUICK
+            modelName = getDefaultModelName();
         }
 
         VersionedIdentifier modelIdentifier = new VersionedIdentifier().withId(modelName).withVersion(version);

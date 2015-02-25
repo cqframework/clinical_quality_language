@@ -42,6 +42,12 @@ public class ModelInfoLoader {
         }
     }
 
+    public static void unregisterModelInfoProvider(VersionedIdentifier modelIdentifier) {
+        checkModelIdentifier(modelIdentifier);
+
+        PROVIDERS.remove(modelIdentifier);
+    }
+
     private static void checkModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (modelIdentifier == null) {
             throw new IllegalArgumentException("modelIdentifier is null.");
