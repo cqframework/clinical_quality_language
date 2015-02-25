@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v4_1_2" targetNamespace="urn:healthit-gov:qdm:v4_1_2" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:complexType name="Patient">
+        <xs:sequence>
+            <xs:element name="birthDatetime" type="xs:dateTime" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="QDMBaseType">
         <xs:sequence>
             <xs:element name="code" type="CodeableConcept" minOccurs="1"/>
@@ -46,10 +51,10 @@
                     <xs:element name="status" type="CodeableConcept" minOccurs="1"/>
                     <xs:element name="method" type="CodeableConcept" minOccurs="0"/>
                     <!-- TODO: Represent result as one type? -->
-                    <xs:choice>
+                    <!-- xs:choice -->
                         <xs:element name="resultCode" type="CodeableConcept" minOccurs="0"/>
                         <xs:element name="resultValue" type="Quantity" minOccurs="0"/>
-                    </xs:choice>
+                    <!-- /xs:choice -->
                     <xs:element name="reason" type="CodeableConcept" minOccurs="0"/>
                 </xs:sequence>
             </xs:extension>
