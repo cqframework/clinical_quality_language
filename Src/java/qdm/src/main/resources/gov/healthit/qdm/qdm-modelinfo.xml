@@ -15,6 +15,7 @@
                   topic="Laboratory Test, Performed" identifier="LaboratoryTestPerformed" primaryCodePath="code">
         <ns4:element name="status" type="System.Concept"/>
         <ns4:element name="method" type="System.Concept"/>
+        <ns4:element name="result" type="System.Any"/>
         <ns4:element name="result code" type="System.Concept"/>
         <ns4:element name="result value" type="System.Quantity"/>
         <ns4:element name="reason" type="System.Concept"/>

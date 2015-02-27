@@ -202,7 +202,7 @@
                   </operand>
                   <operand xsi:type="Not">
                      <operand xsi:type="IsNull">
-                        <operand path="result code" scope="R" xsi:type="Property"/>
+                        <operand path="result" scope="R" xsi:type="Property"/>
                      </operand>
                   </operand>
                </where>

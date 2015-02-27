@@ -52,6 +52,7 @@
                     <xs:element name="method" type="CodeableConcept" minOccurs="0"/>
                     <!-- TODO: Represent result as one type? -->
                     <!-- xs:choice -->
+                        <xs:element name="result" type="xs:anyType"/>
                         <xs:element name="resultCode" type="CodeableConcept" minOccurs="0"/>
                         <xs:element name="resultValue" type="Quantity" minOccurs="0"/>
                     <!-- /xs:choice -->

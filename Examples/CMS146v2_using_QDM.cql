@@ -49,4 +49,4 @@ define InDenominatorExclusions =
     HasPriorAntibiotics
 
 define InNumerator =
-    exists (["Laboratory Test, Performed": "Group A Streptococcus Test"] R where R."start datetime" during MeasurementPeriod and R."result code" is not null)
+    exists (["Laboratory Test, Performed": "Group A Streptococcus Test"] R where R."start datetime" during MeasurementPeriod and R.result is not null)
