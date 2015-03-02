@@ -16,6 +16,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testIn() throws IOException {
+        runSemanticTest("InTest.cql");
+    }
+
+    @Test
     public void testProperties() throws IOException {
         runSemanticTest("PropertyTest.cql");
     }

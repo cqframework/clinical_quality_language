@@ -873,6 +873,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     }
 
                     In in = of.createIn().withOperand(left, right);
+                    resolveBinaryCall("System", "In", in);
                     return in;
                 }
             case "contains":
@@ -1961,10 +1962,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ClassType classType = resolveTopic(model, topic);
         NamedType namedType = classType;
         if (namedType == null) {
-            namedType = (NamedType)resolveTypeName(model, topic);
-            if (namedType == null) {
-                throw new IllegalArgumentException(String.format("Could not resolve type name %s.", topic));
-            }
+            throw new IllegalArgumentException(String.format("Could not resolve topic name %s.", topic));
         }
 
         Retrieve retrieve = of.createRetrieve()
