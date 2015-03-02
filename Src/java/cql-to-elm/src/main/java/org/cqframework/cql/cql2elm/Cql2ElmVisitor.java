@@ -1967,12 +1967,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         Retrieve retrieve = of.createRetrieve()
                 .withDataType(dataTypeToQName((DataType)namedType))
-                .withTemplateId(classType != null ? classType.getIdentifier() : topic);
+                .withTemplateId(classType.getIdentifier());
 
         if (ctx.valueset() != null) {
             if (ctx.valuesetPathIdentifier() != null) {
                 retrieve.setCodeProperty(parseString(ctx.valuesetPathIdentifier()));
-            } else if (classType != null && classType.getPrimaryCodePath() != null) {
+            } else if (classType.getPrimaryCodePath() != null) {
                 retrieve.setCodeProperty(classType.getPrimaryCodePath());
             }
 
