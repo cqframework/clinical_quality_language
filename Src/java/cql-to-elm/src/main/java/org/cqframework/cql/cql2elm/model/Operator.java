@@ -21,6 +21,18 @@ public class Operator {
         this.resultType = resultType;
     }
 
+    private String libraryName;
+    public String getLibraryName() {
+        return this.libraryName;
+    }
+    public void setLibraryName(String libraryName) {
+        if (libraryName == null || libraryName.equals("")) {
+            throw new IllegalArgumentException("libraryName is null.");
+        }
+
+        this.libraryName = libraryName;
+    }
+
     private String name;
     public String getName() {
         return this.name;

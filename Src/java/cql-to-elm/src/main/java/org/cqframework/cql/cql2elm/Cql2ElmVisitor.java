@@ -5,6 +5,10 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.cqframework.cql.cql2elm.model.invocation.BinaryExpressionInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.FunctionRefInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.InValueSetInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.UnaryExpressionInvocation;
 import org.cqframework.cql.cql2elm.preprocessor.*;
 import org.cqframework.cql.elm.tracking.*;
 import org.cqframework.cql.gen.cqlBaseVisitor;
@@ -39,6 +43,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     //Put them here for now, but eventually somewhere else?
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
+    private final ConversionMap conversionMap = new ConversionMap();
     private final Stack<QueryContext> queries = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final Stack<Narrative> narratives = new Stack<>();
@@ -868,7 +873,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         InValueSet in = of.createInValueSet()
                                 .withCode(left)
                                 .withValueset((ValueSetRef) right);
-                        resolveCall("System", "InValueSet", in, in.getCode().getResultType());
+                        resolveCall("System", "InValueSet", new InValueSetInvocation(in));
                         return in;
                     }
 
@@ -894,7 +899,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         InValueSet in = of.createInValueSet()
                                 .withCode(right)
                                 .withValueset((ValueSetRef) left);
-                        resolveCall("System", "InValueSet", in, in.getCode().getResultType());
+                        resolveCall("System", "InValueSet", new InValueSetInvocation(in));
                         return in;
                     }
 
@@ -1239,10 +1244,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitConversionExpressionTerm(@NotNull cqlParser.ConversionExpressionTermContext ctx) {
         TypeSpecifier targetType = parseTypeSpecifier(ctx.typeSpecifier());
-        Convert result = of.createConvert().withOperand(parseExpression(ctx.expression()))
-                .withToType(dataTypeToQName(targetType.getResultType()));
-        result.setResultType(targetType.getResultType());
-        return result;
+        Expression operand = parseExpression(ctx.expression());
+        Conversion conversion = conversionMap.findConversion(operand.getResultType(), targetType.getResultType(), false);
+        if (conversion == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
+                    operand.getResultType(), targetType.getResultType()));
+        }
+
+        return of.createFunctionRef()
+                .withLibraryName(conversion.getOperator().getLibraryName())
+                .withName(conversion.getOperator().getName())
+                .withOperand(operand)
+                .withResultType(conversion.getOperator().getResultType());
+
+//        Convert result = of.createConvert().withOperand(parseExpression(ctx.expression()));
+//
+//        if (targetType.getResultType() instanceof NamedType) {
+//            result.setToType(dataTypeToQName(targetType.getResultType()));
+//        }
+//        else {
+//            result.setToTypeSpecifier(targetType);
+//        }
+//        result.setResultType(targetType.getResultType());
+//        return result;
     }
 
     @Override
@@ -1939,16 +1963,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitAggregateExpressionTerm(@NotNull cqlParser.AggregateExpressionTermContext ctx) {
         switch (ctx.getChild(0).getText()) {
             case "distinct":
-                Distinct distinct = of.createDistinct().withSource(parseExpression(ctx.expression()));
-                resolveCall("System", "Distinct", distinct, distinct.getSource().getResultType());
+                Distinct distinct = of.createDistinct().withOperand(parseExpression(ctx.expression()));
+                resolveUnaryCall("System", "Distinct", distinct);
                 return distinct;
             case "collapse":
                 Collapse collapse = of.createCollapse().withOperand(parseExpression(ctx.expression()));
-                resolveCall("System", "Collapse", collapse, collapse.getOperand().getResultType());
+                resolveUnaryCall("System", "Collapse", collapse);
                 return collapse;
             case "expand":
                 Expand expand = of.createExpand().withOperand(parseExpression(ctx.expression()));
-                resolveCall("System", "Expand", expand, expand.getOperand().getResultType());
+                resolveUnaryCall("System", "Expand", expand);
                 return expand;
         }
 
@@ -2394,9 +2418,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitIndexedExpressionTerm(@NotNull cqlParser.IndexedExpressionTermContext ctx) {
         Indexer indexer = of.createIndexer()
                 .withOperand(parseExpression(ctx.expressionTerm()))
-                .withIndex(parseExpression(ctx.expression()));
+                .withOperand(parseExpression(ctx.expression()));
 
-        resolveCall("System", "Indexer", indexer, indexer.getOperand().getResultType(), indexer.getIndex().getResultType());
+        resolveBinaryCall("System", "Indexer", indexer);
         return indexer;
     }
 
@@ -2469,12 +2493,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
-        List<DataType> signature = new ArrayList<>();
-        for (Expression operand : fun.getOperand()) {
-            signature.add(operand.getResultType());
-        }
-
-        resolveCall(fun.getLibraryName(), fun.getName(), fun, signature.toArray(new DataType[signature.size()]));
+        resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun));
 
         return fun;
     }
@@ -2744,36 +2763,62 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType));
     }
 
-    private Expression resolveCall(String libraryName, String operatorName, Expression invocation, DataType... signature) {
-        for (int i = 0; i < signature.length; i++) {
-            if (signature[i] == null) {
+    private Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
+        Iterable<Expression> operands = invocation.getOperands();
+        List<DataType> dataTypes = new ArrayList<>();
+        for (Expression operand : operands) {
+            if (operand.getResultType() == null) {
                 throw new IllegalArgumentException(String.format("Could not determine signature for invocation of operator %s%s.",
                         libraryName == null ? "" : libraryName + ".", operatorName));
             }
+            dataTypes.add(operand.getResultType());
         }
 
-        CallContext callContext = new CallContext(libraryName, operatorName, signature);
+        CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
         Operator operator = resolveCall(callContext);
         checkOperator(callContext, operator);
+
+        if (callContext.getConversions() != null) {
+            List<Expression> convertedOperands = new ArrayList<>();
+            Iterator<Expression> operandIterator = operands.iterator();
+            Iterator<Operator> conversionIterator = callContext.getConversions().iterator();
+            while (operandIterator.hasNext()) {
+                Expression operand = operandIterator.next();
+                Operator conversion = conversionIterator.next();
+                if (conversion != null) {
+                    FunctionRef convertedOperand = (FunctionRef)of.createFunctionRef()
+                            .withLibraryName(conversion.getLibraryName())
+                            .withName(conversion.getName())
+                            .withOperand(operand)
+                            .withResultType(conversion.getResultType());
+                    convertedOperands.add(convertedOperand);
+                }
+                else {
+                    convertedOperands.add(operand);
+                }
+            }
+
+            invocation.setOperands(convertedOperands);
+        }
         invocation.setResultType(operator.getResultType());
-        return invocation;
+        return invocation.getExpression();
     }
 
     private Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
-        return resolveCall(libraryName, operatorName, expression, expression.getOperand().getResultType());
+        return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression));
     }
 
     private Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression) {
-        return resolveCall(libraryName, operatorName, expression, expression.getOperand().get(0).getResultType(), expression.getOperand().get(1).getResultType());
+        return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression));
     }
 
     private Operator resolveCall(CallContext callContext) {
         Operator result = null;
         if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
-            result = translatedLibrary.resolveCall(callContext.getOperatorName(), callContext.getSignature());
+            result = translatedLibrary.resolveCall(callContext, conversionMap);
             if (result == null) {
                 for (TranslatedLibrary library : libraries.values()) {
-                    Operator libraryResult = library.resolveCall(callContext.getOperatorName(), callContext.getSignature());
+                    Operator libraryResult = library.resolveCall(callContext, conversionMap);
                     if (libraryResult != null) {
                         if (result != null) {
                             throw new IllegalArgumentException(String.format("Operator name %s is ambiguous between %s and %s.",
@@ -2786,7 +2831,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
         else {
-            result = this.resolveLibrary(callContext.getLibraryName()).resolveCall(callContext.getOperatorName(), callContext.getSignature());
+            result = resolveLibrary(callContext.getLibraryName()).resolveCall(callContext, conversionMap);
         }
 
         return result;
@@ -2794,7 +2839,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private void checkOperator(CallContext callContext, Operator operator) {
         if (operator == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with signature %s.", callContext.getOperatorName(), callContext.getSignature()));
+            throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with signature %s.",
+                    callContext.getOperatorName(), callContext.getSignature()));
         }
     }
 

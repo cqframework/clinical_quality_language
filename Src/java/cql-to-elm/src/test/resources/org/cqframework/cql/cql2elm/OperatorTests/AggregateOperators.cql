@@ -10,6 +10,6 @@ define ModeExpression = Mode({ 1, 2, 3, 4, 5 })
 define PopulationStdDevExpression = PopulationStdDev({ 1.0, 2.0, 3.0, 4.0, 5.0 })
 define PopulationVarianceExpression = PopulationVariance({ 1.0, 2.0, 3.0, 4.0, 5.0 })
 define StdDevExpression = StdDev({ 1.0, 2.0, 3.0, 4.0, 5.0 })
-define IntegerSum = Sum({ 1, 2, 3, 4, 5 }
+define IntegerSum = Sum({ 1, 2, 3, 4, 5 })
 define RealSum = Sum({ 1.0, 2.0, 3.0, 4.0, 5.0 })
 define VarianceExpression = Variance({ 1.0, 2.0, 3.0, 4.0, 5.0 })

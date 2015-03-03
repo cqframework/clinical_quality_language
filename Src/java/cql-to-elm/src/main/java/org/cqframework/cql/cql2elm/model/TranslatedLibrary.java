@@ -3,13 +3,13 @@ package org.cqframework.cql.cql2elm.model;
 import org.cqframework.cql.elm.tracking.DataType;
 import org.hl7.elm.r1.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class TranslatedLibrary {
     private VersionedIdentifier identifier;
     private final HashMap<String, Element> namespace = new HashMap<>();
     private final OperatorMap operators = new OperatorMap();
+    private final java.util.List<Conversion> conversions = new ArrayList<>();
 
     public VersionedIdentifier getIdentifier() {
         return identifier;
@@ -62,8 +62,25 @@ public class TranslatedLibrary {
         return new Operator(functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])), functionDef.getResultType());
     }
 
+    private void ensureLibrary(Operator operator) {
+        if (operator.getLibraryName() == null) {
+            operator.setLibraryName(this.identifier.getId());
+        }
+        else {
+            if (!operator.getLibraryName().equals(this.identifier.getId())) {
+                throw new IllegalArgumentException(String.format("Operator %s cannot be registered in library %s because it is defined in library %s.",
+                        operator.getName(), this.identifier.getId(), operator.getLibraryName()));
+            }
+        }
+    }
+
     public void add(Operator operator) {
+        ensureLibrary(operator);
         operators.addOperator(operator);
+    }
+
+    public void add(Conversion conversion) {
+        conversions.add(conversion);
     }
 
     public Element resolve(String identifier) {
@@ -115,11 +132,7 @@ public class TranslatedLibrary {
         return null;
     }
 
-    public Operator resolveCall(String operatorName, Signature signature) {
-        return operators.resolveOperator(operatorName, signature);
-    }
-
-    public Operator resolveCall(String operatorName, DataType... operandTypes) {
-        return operators.resolveOperator(operatorName, new Signature(operandTypes));
+    public Operator resolveCall(CallContext callContext, ConversionMap conversionMap) {
+        return operators.resolveOperator(callContext, conversionMap);
     }
 }

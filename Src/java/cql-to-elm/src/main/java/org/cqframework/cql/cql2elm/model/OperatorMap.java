@@ -25,8 +25,8 @@ public class OperatorMap {
         return entry;
     }
 
-    public Operator resolveOperator(String operatorName, Signature signature) {
-        OperatorEntry entry = getEntry(operatorName);
-        return entry.resolve(signature);
+    public Operator resolveOperator(CallContext callContext, ConversionMap conversionMap) {
+        OperatorEntry entry = getEntry(callContext.getOperatorName());
+        return entry.resolve(callContext, conversionMap);
     }
 }

@@ -40,14 +40,24 @@ public class OperatorEntry {
             return operator.getSignature();
         }
 
-        public Operator resolve(Signature signature) {
-            if (operator.getSignature().equals(signature)) {
+        public Operator resolve(CallContext callContext, ConversionMap conversionMap) {
+            if (operator.getSignature().equals(callContext.getSignature())) {
                 return operator;
             }
 
-            Operator result = subSignatures.resolve(signature);
-            if (result == null && operator.getSignature().isSuperTypeOf(signature)) {
+            Operator result = subSignatures.resolve(callContext, conversionMap);
+            if (result == null && operator.getSignature().isSuperTypeOf(callContext.getSignature())) {
                 result = operator;
+            }
+
+            if (result == null) {
+                // Attempt to find a conversion path from the call signature to the target signature
+                Operator[] conversions = new Operator[operator.getSignature().getSize()];
+                boolean isConvertible = callContext.getSignature().isConvertibleTo(operator.getSignature(), conversionMap, conversions);
+                if (isConvertible) {
+                    callContext.setConversions(conversions);
+                    result = operator;
+                }
             }
 
             return result;
@@ -109,15 +119,15 @@ public class OperatorEntry {
             }
         }
 
-        public Operator resolve(Signature signature) {
+        public Operator resolve(CallContext callContext, ConversionMap conversionMap) {
             Operator result = null;
 
             for (SignatureNode n : signatures.values()) {
-                Operator nodeResult = n.resolve(signature);
+                Operator nodeResult = n.resolve(callContext, conversionMap);
                 if (nodeResult != null) {
                     if (result != null) {
                         throw new IllegalArgumentException(String.format("Invocation of operator %s with signature %s is ambiguous between %s and %s.",
-                                result.getName(), signature, result.getSignature(), nodeResult.getSignature()));
+                                result.getName(), callContext.getSignature(), result.getSignature(), nodeResult.getSignature()));
                     }
 
                     result = nodeResult;
@@ -145,16 +155,16 @@ public class OperatorEntry {
         genericOperators.put(operator.getSignature(), operator);
     }
 
-    public Operator resolve(Signature signature) {
-        if (signature == null) {
-            throw new IllegalArgumentException("signature is null");
+    public Operator resolve(CallContext callContext, ConversionMap conversionMap) {
+        if (callContext == null) {
+            throw new IllegalArgumentException("callContext is null");
         }
 
-        Operator result = signatures.resolve(signature);
+        Operator result = signatures.resolve(callContext, conversionMap);
 
         // If there is no resolution, attempt to instantiate a generic signature
         if (result == null) {
-            result = instantiate(signature);
+            result = instantiate(callContext.getSignature());
             if (result != null) {
                 // If the generic signature was instantiated, store it as an actual signature.
                 signatures.add(new SignatureNode(result));

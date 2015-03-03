@@ -509,7 +509,10 @@ This operator supports conversion between String and each of Boolean, Integer, R
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
-				<xs:attribute name="toType" type="xs:QName" use="required"/>
+				<xs:sequence>
+					<xs:element name="toTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="toType" type="xs:QName" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -922,12 +925,7 @@ Indexes in strings and lists are defined to be 1-based.
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
-				<xs:sequence>
-					<xs:element name="operand" type="Expression" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="index" type="Expression" minOccurs="1" maxOccurs="1"/>
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Pos">
@@ -1664,11 +1662,7 @@ The operator uses equality comparison semantics as defined in the Equal operator
 If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
-				<xs:sequence>
-					<xs:element name="source" type="Expression"/>
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Current">

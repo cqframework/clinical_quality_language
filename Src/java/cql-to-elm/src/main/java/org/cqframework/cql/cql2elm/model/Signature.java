@@ -27,6 +27,10 @@ public class Signature {
         return this.operandTypes;
     }
 
+    public int getSize() {
+        return operandTypes.size();
+    }
+
     public boolean isSuperTypeOf(Signature other) {
         if (operandTypes.size() == other.operandTypes.size()) {
             for (int i = 0; i < operandTypes.size(); i++) {
@@ -76,6 +80,26 @@ public class Signature {
         }
 
         return new Signature(result);
+    }
+
+    public boolean isConvertibleTo(Signature other, ConversionMap conversionMap, Operator[] conversions) {
+        if (operandTypes.size() == other.operandTypes.size()) {
+            for (int i = 0; i < operandTypes.size(); i++) {
+                if (!operandTypes.get(i).isSubTypeOf(other.operandTypes.get(i))) {
+                    Conversion conversion = conversionMap.findConversion(operandTypes.get(i), other.operandTypes.get(i), true);
+                    if (conversion != null) {
+                        conversions[i] = conversion.getOperator();
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
