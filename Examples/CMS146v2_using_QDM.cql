@@ -21,32 +21,42 @@ define Pharyngitis =
 define Antibiotics =
     ["Medication, Order": "Antibiotic Medications"]
 
-define TargetEncounters =
+define PharyngitisEncounters =
     ["Encounter, Performed": "Ambulatory/ED Visit"] E
         with Pharyngitis P such that
-          interval[P."start datetime", P."stop datetime") overlaps after interval[E."start datetime", E."stop datetime")
+            interval[P."start datetime", P."stop datetime"] includes interval[E."start datetime", E."stop datetime"]
+            or P."start datetime" in interval[E."start datetime", E."stop datetime"]
         with Antibiotics A such that A."signed datetime" 3 days or less after E."start datetime"
-        where interval[E."start datetime", E."stop datetime") during MeasurementPeriod
+        where interval[E."start datetime", E."stop datetime"] during MeasurementPeriod
 
-define TargetDiagnoses =
+define PharyngitisWithPriorAntibiotics =
     Pharyngitis P
-      with TargetEncounters E such that
-        interval[P."start datetime", P."stop datetime") overlaps after interval[E."start datetime", E."stop datetime")
+        with Antibiotics A such that A."signed datetime" 30 days or less before P."start datetime"
 
-define HasPriorAntibiotics =
-    exists (Antibiotics A with TargetDiagnoses D such that A."signed datetime" 30 days or less before D."start datetime")
+define ExcludedEncounters =
+    PharyngitisEncounters E
+        with PharyngitisWithPriorAntibiotics P such that
+            interval[P."start datetime", P."stop datetime"] includes interval[E."start datetime", E."stop datetime"]
+            or P."start datetime" in interval[E."start datetime", E."stop datetime"]
 
-define HasTargetEncounter =
-    exists (TargetEncounters)
+define StrepTestEncounters =
+    PharyngitisEncounters E
+        with ["Laboratory Test, Performed": "Group A Streptococcus Test"] T
+          such that T.result is not null
+            and (
+              T."start datetime" 3 days before E."start datetime"
+              or T."start datetime" 3 days after E."stop datetime"
+              or T."start datetime" in interval[E."start datetime", E."stop datetime"]
+            )
 
-define InInitialPopulation =
-    InDemographic and HasTargetEncounter
+define IPPCount =
+    if InDemographic then Count(PharyngitisEncounters) else 0
 
-define InDenominator =
-    true
+define DenominatorCount =
+    IPPCount
 
-define InDenominatorExclusions =
-    HasPriorAntibiotics
+define DenominatorExclusionsCount =
+    if DenominatorCount > 0 then Count(ExcludedEncounters) else 0
 
-define InNumerator =
-    exists (["Laboratory Test, Performed": "Group A Streptococcus Test"] R where R."start datetime" during MeasurementPeriod and R.result is not null)
+define NumeratorCount =
+    if DenominatorCount > 0 then Count(StrepTestEncounters except ExcludedEncounters) else 0

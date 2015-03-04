@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="CMS146" version="2"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
+      <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+   </usings>
+   <parameters>
+      <def name="MeasurementPeriod">
+         <default lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low name="DateTime" xsi:type="FunctionRef">
+               <operand valueType="Integer" value="2013" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            </low>
+            <high name="DateTime" xsi:type="FunctionRef">
+               <operand valueType="Integer" value="2014" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            </high>
+         </default>
+      </def>
+   </parameters>
+   <valueSets>
+      <def name="Acute Pharyngitis" id="2.16.840.1.113883.3.464.1003.102.12.1011"/>
+      <def name="Acute Tonsillitis" id="2.16.840.1.113883.3.464.1003.102.12.1012"/>
+      <def name="Ambulatory/ED Visit" id="2.16.840.1.113883.3.464.1003.101.12.1061"/>
+      <def name="Antibiotic Medications" id="2.16.840.1.113883.3.464.1003.196.12.1001"/>
+      <def name="Group A Streptococcus Test" id="2.16.840.1.113883.3.464.1003.198.12.1012"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="quick:Patient" templateId="cqf-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="InDemographic" context="Patient">
+         <expression xsi:type="And">
+            <operand xsi:type="GreaterOrEqual">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birthDate" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="Integer" value="2" xsi:type="Literal"/>
+            </operand>
+            <operand xsi:type="Less">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birthDate" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="Integer" value="18" xsi:type="Literal"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="Pharyngitis" context="Patient">
+         <expression xsi:type="Union">
+            <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+               <codes name="Acute Pharyngitis" xsi:type="ValueSetRef"/>
+            </operand>
+            <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+               <codes name="Acute Tonsillitis" xsi:type="ValueSetRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="Antibiotics" context="Patient">
+         <expression dataType="quick:MedicationPrescription" templateId="cqf-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+            <codes name="Antibiotic Medications" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def name="PharyngitisEncounters" context="Patient">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression dataType="quick:Encounter" templateId="cqf-encounter" codeProperty="type" xsi:type="Retrieve">
+                  <codes name="Ambulatory/ED Visit" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <relationship alias="P" xsi:type="With">
+               <expression name="Pharyngitis" xsi:type="ExpressionRef"/>
+               <suchThat xsi:type="Or">
+                  <operand xsi:type="Includes">
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low path="onsetDateTime" scope="P" xsi:type="Property"/>
+                        <high path="abatementDateTime" scope="P" xsi:type="Property"/>
+                     </operand>
+                     <operand path="period" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand xsi:type="In">
+                     <operand path="onsetDateTime" scope="P" xsi:type="Property"/>
+                     <operand path="period" scope="E" xsi:type="Property"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <relationship alias="A" xsi:type="With">
+               <expression name="Antibiotics" xsi:type="ExpressionRef"/>
+               <suchThat xsi:type="In">
+                  <operand precision="Day" xsi:type="DurationBetween">
+                     <operand path="dateWritten" scope="A" xsi:type="Property"/>
+                     <operand xsi:type="Start">
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <low xsi:type="Negate">
+                        <operand valueType="Integer" value="3" xsi:type="Literal"/>
+                     </low>
+                     <high valueType="Integer" value="0" xsi:type="Literal"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <where xsi:type="IncludedIn">
+               <operand path="period" scope="E" xsi:type="Property"/>
+               <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def name="PharyngitisWithPriorAntibiotics" context="Patient">
+         <expression xsi:type="Query">
+            <source alias="P">
+               <expression name="Pharyngitis" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship alias="A" xsi:type="With">
+               <expression name="Antibiotics" xsi:type="ExpressionRef"/>
+               <suchThat xsi:type="In">
+                  <operand precision="Day" xsi:type="DurationBetween">
+                     <operand path="dateWritten" scope="A" xsi:type="Property"/>
+                     <operand path="onsetDateTime" scope="P" xsi:type="Property"/>
+                  </operand>
+                  <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                     <low valueType="Integer" value="0" xsi:type="Literal"/>
+                     <high valueType="Integer" value="30" xsi:type="Literal"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="ExcludedEncounters" context="Patient">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship alias="P" xsi:type="With">
+               <expression name="PharyngitisWithPriorAntibiotics" xsi:type="ExpressionRef"/>
+               <suchThat xsi:type="Or">
+                  <operand xsi:type="Includes">
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low path="onsetDateTime" scope="P" xsi:type="Property"/>
+                        <high path="abatementDateTime" scope="P" xsi:type="Property"/>
+                     </operand>
+                     <operand path="period" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand xsi:type="In">
+                     <operand path="onsetDateTime" scope="P" xsi:type="Property"/>
+                     <operand path="period" scope="E" xsi:type="Property"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="StrepTestEncounters" context="Patient">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship alias="T" xsi:type="With">
+               <expression dataType="quick:DiagnosticReport" templateId="cqf-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
+                  <codes name="Group A Streptococcus Test" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat xsi:type="And">
+                  <operand xsi:type="Not">
+                     <operand xsi:type="IsNull">
+                        <operand path="result" scope="T" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="Or">
+                     <operand xsi:type="Or">
+                        <operand xsi:type="Equal">
+                           <operand precision="Day" xsi:type="DurationBetween">
+                              <operand path="issued" scope="T" xsi:type="Property"/>
+                              <operand xsi:type="Start">
+                                 <operand path="period" scope="E" xsi:type="Property"/>
+                              </operand>
+                           </operand>
+                           <operand valueType="Integer" value="3" xsi:type="Literal"/>
+                        </operand>
+                        <operand xsi:type="Equal">
+                           <operand precision="Day" xsi:type="DurationBetween">
+                              <operand path="issued" scope="T" xsi:type="Property"/>
+                              <operand xsi:type="End">
+                                 <operand path="period" scope="E" xsi:type="Property"/>
+                              </operand>
+                           </operand>
+                           <operand xsi:type="Negate">
+                              <operand valueType="Integer" value="3" xsi:type="Literal"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="In">
+                        <operand path="issued" scope="T" xsi:type="Property"/>
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def name="IPPCount" context="Patient">
+         <expression xsi:type="If">
+            <condition name="InDemographic" xsi:type="ExpressionRef"/>
+            <then name="Count" xsi:type="FunctionRef">
+               <operand name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
+            </then>
+            <else valueType="Integer" value="0" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="DenominatorCount" context="Patient">
+         <expression name="IPPCount" xsi:type="ExpressionRef"/>
+      </def>
+      <def name="DenominatorExclusionsCount" context="Patient">
+         <expression xsi:type="If">
+            <condition xsi:type="Greater">
+               <operand name="DenominatorCount" xsi:type="ExpressionRef"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            </condition>
+            <then name="Count" xsi:type="FunctionRef">
+               <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
+            </then>
+            <else valueType="Integer" value="0" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="NumeratorCount" context="Patient">
+         <expression xsi:type="If">
+            <condition xsi:type="Greater">
+               <operand name="DenominatorCount" xsi:type="ExpressionRef"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            </condition>
+            <then name="Count" xsi:type="FunctionRef">
+               <operand xsi:type="Except">
+                  <operand name="StrepTestEncounters" xsi:type="ExpressionRef"/>
+                  <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
+               </operand>
+            </then>
+            <else valueType="Integer" value="0" xsi:type="Literal"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+
