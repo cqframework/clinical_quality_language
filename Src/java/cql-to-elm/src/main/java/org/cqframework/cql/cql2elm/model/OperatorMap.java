@@ -1,7 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.TypeParameter;
 
 import java.util.*;
 
@@ -30,57 +29,6 @@ public class OperatorMap {
     public OperatorResolution resolveOperator(CallContext callContext, ConversionMap conversionMap) {
         OperatorEntry entry = getEntry(callContext.getOperatorName());
         List<OperatorResolution> results = entry.resolve(callContext, conversionMap);
-
-        // If there is a resolution, but it involves generic conversion operators, instantiate the generic conversions
-        if (results != null) {
-            for (OperatorResolution resolution : results) {
-                if (resolution.hasConversions()) {
-                    Iterator<DataType> operands = resolution.getOperator().getSignature().getOperandTypes().iterator();
-                    Iterator<DataType> callOperands = callContext.getSignature().getOperandTypes().iterator();
-                    Iterator<Conversion> conversions = resolution.getConversions().iterator();
-                    List<Conversion> instantiatedConversions = new ArrayList<>();
-                    boolean anyInstantiated = false;
-                    while (operands.hasNext()) {
-                        DataType operand = operands.next();
-                        DataType callOperand = callOperands.next();
-                        Conversion conversion = conversions.next();
-                        if (conversion != null && conversion.getOperator() instanceof GenericOperator) {
-                            GenericOperator genericOperator = (GenericOperator)conversion.getOperator();
-                            Map<TypeParameter, DataType> typeParameters = new HashMap<>();
-
-                            DataType sourceType = genericOperator.getSignature().getOperandTypes().iterator().next(); // Assumes unary, enforced by the conversion map
-                            if (sourceType instanceof TypeParameter) {
-                                typeParameters.put((TypeParameter)sourceType, callOperand);
-                            }
-
-                            DataType targetType = genericOperator.getResultType();
-                            if (targetType instanceof TypeParameter) {
-                                typeParameters.put((TypeParameter)targetType, operand);
-                            }
-
-                            Operator instantiatedOperator = genericOperator.instantiate(new Signature(callOperand), typeParameters, conversionMap);
-                            Conversion instantiatedConversion = new Conversion(instantiatedOperator, conversion.isImplicit());
-                            instantiatedConversions.add(instantiatedConversion);
-
-                            // Add the instantiated operator to the operator map
-                            this.addOperator(instantiatedOperator);
-
-                            // Add the instantiated conversion to the conversion map
-                            conversionMap.add(instantiatedConversion);
-
-                            anyInstantiated = true;
-                        }
-                        else {
-                            instantiatedConversions.add(conversion);
-                        }
-                    }
-
-                    if (anyInstantiated) {
-                        resolution.setConversions(instantiatedConversions);
-                    }
-                }
-            }
-        }
 
         // Score each resolution and return the lowest score
         // Duplicate scores indicate ambiguous match
