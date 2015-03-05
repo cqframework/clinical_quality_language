@@ -1272,22 +1272,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     operand.getResultType(), targetType.getResultType()));
         }
 
-        return of.createFunctionRef()
-                .withLibraryName(conversion.getOperator().getLibraryName())
-                .withName(conversion.getOperator().getName())
-                .withOperand(operand)
-                .withResultType(conversion.getOperator().getResultType());
-
-//        Convert result = of.createConvert().withOperand(parseExpression(ctx.expression()));
-//
-//        if (targetType.getResultType() instanceof NamedType) {
-//            result.setToType(dataTypeToQName(targetType.getResultType()));
-//        }
-//        else {
-//            result.setToTypeSpecifier(targetType);
-//        }
-//        result.setResultType(targetType.getResultType());
-//        return result;
+        return convertExpression(operand, conversion);
     }
 
     @Override
@@ -2909,17 +2894,34 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Expression convertExpression(Expression expression, Conversion conversion) {
         if (conversion.isCast()) {
-            As castedOperand = (As)of.createAs()
-                    .withOperand(expression)
-                    .withResultType(conversion.getToType());
+            if (conversion.getFromType().isSuperTypeOf(conversion.getToType())) {
+                As castedOperand = (As)of.createAs()
+                        .withOperand(expression)
+                        .withResultType(conversion.getToType());
 
-            if (castedOperand.getResultType() instanceof NamedType) {
-                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
+                if (castedOperand.getResultType() instanceof NamedType) {
+                    castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
+                }
+                else {
+                    castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
+                }
+
+                return castedOperand;
             }
             else {
-                castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
+                Convert convertedOperand = (Convert)of.createConvert()
+                        .withOperand(expression)
+                        .withResultType(conversion.getToType());
+
+                if (convertedOperand.getResultType() instanceof NamedType) {
+                    convertedOperand.setToType(dataTypeToQName(convertedOperand.getResultType()));
+                }
+                else {
+                    convertedOperand.setToTypeSpecifier(dataTypeToTypeSpecifier(convertedOperand.getResultType()));
+                }
+
+                return convertedOperand;
             }
-            return castedOperand;
         }
         else {
             Operator conversionOperator = conversion.getOperator();
