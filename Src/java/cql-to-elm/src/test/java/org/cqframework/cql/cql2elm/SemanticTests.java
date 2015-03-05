@@ -100,6 +100,11 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/TupleAndClassConversions.cql");
     }
 
+    @Test
+    public void testFunctions() throws IOException {
+        runSemanticTest("OperatorTests/Functions.cql");
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         File translationTestFile = new File(Cql2ElmVisitorTest.class.getResource(testFileName).getFile());
         CqlTranslator translator = CqlTranslator.fromFile(translationTestFile);

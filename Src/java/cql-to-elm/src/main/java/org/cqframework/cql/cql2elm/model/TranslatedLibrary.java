@@ -59,17 +59,23 @@ public class TranslatedLibrary {
 
     private Operator expressionDefToOperator(FunctionDef functionDef) {
         java.util.List<DataType> operandTypes = new ArrayList<>();
+        for (OperandDef operand : functionDef.getOperand()) {
+            operandTypes.add(operand.getResultType());
+        }
         return new Operator(functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])), functionDef.getResultType());
     }
 
     private void ensureLibrary(Operator operator) {
-        if (operator.getLibraryName() == null) {
-            operator.setLibraryName(this.identifier.getId());
-        }
-        else {
-            if (!operator.getLibraryName().equals(this.identifier.getId())) {
-                throw new IllegalArgumentException(String.format("Operator %s cannot be registered in library %s because it is defined in library %s.",
-                        operator.getName(), this.identifier.getId(), operator.getLibraryName()));
+        // Functions can be defined in an anonymous library
+        if (this.identifier != null) {
+            if (operator.getLibraryName() == null) {
+                operator.setLibraryName(this.identifier.getId());
+            }
+            else {
+                if (!operator.getLibraryName().equals(this.identifier.getId())) {
+                    throw new IllegalArgumentException(String.format("Operator %s cannot be registered in library %s because it is defined in library %s.",
+                            operator.getName(), this.identifier.getId(), operator.getLibraryName()));
+                }
             }
         }
     }

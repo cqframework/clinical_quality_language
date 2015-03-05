@@ -47,6 +47,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Stack<QueryContext> queries = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final Stack<Narrative> narratives = new Stack<>();
+    private FunctionDef currentFunctionDef = null;
     private int currentToken = -1;
     private int nextLocalId = 1;
     private final List<Retrieve> retrieves = new ArrayList<>();
@@ -1167,6 +1168,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             QueryDefineRef result = of.createQueryDefineRef().withName(identifier);
             result.setResultType(define.getResultType());
             return result;
+        }
+
+        OperandRef operandRef = resolveOperandRef(identifier);
+        if (operandRef != null) {
+            return operandRef;
         }
 
         Element element = translatedLibrary.resolve(identifier);
@@ -2594,14 +2600,23 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         FunctionDef fun = of.createFunctionDef().withName(parseString(ctx.identifier()));
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                fun.getParameter().add(
-                        of.createParameterDef()
+                TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
+                fun.getOperand().add(
+                        (OperandDef)of.createOperandDef()
                                 .withName(parseString(opdef.identifier()))
-                                .withParameterTypeSpecifier(parseTypeSpecifier(opdef.typeSpecifier()))
+                                .withOperandTypeSpecifier(typeSpecifier)
+                                .withResultType(typeSpecifier.getResultType())
                 );
             }
         }
-        fun.setExpression(parseExpression(ctx.functionBody()));
+        currentFunctionDef = fun;
+        try {
+            fun.setExpression(parseExpression(ctx.functionBody()));
+        }
+        finally {
+            currentFunctionDef = null;
+        }
+
         fun.setContext(currentContext);
         fun.setResultType(fun.getExpression().getResultType());
         addToLibrary(fun);
@@ -3040,6 +3055,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             DefineClause define = query.resolveDefine(identifier);
             if (define != null) {
                 return define;
+            }
+        }
+
+        return null;
+    }
+
+    private OperandRef resolveOperandRef(String identifier) {
+        if (currentFunctionDef != null) {
+            for (OperandDef operand : currentFunctionDef.getOperand()) {
+                if (operand.getName().equals(identifier)) {
+                    return (OperandRef)of.createOperandRef()
+                            .withName(identifier)
+                            .withResultType(operand.getResultType());
+                }
             }
         }
 

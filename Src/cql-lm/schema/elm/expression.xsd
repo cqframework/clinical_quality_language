@@ -208,12 +208,12 @@ The following changes were made since the initial informative ballot in Septembe
 	</xs:complexType>
 	<xs:complexType name="FunctionDef">
 		<xs:annotation>
-			<xs:documentation>The FunctionDef type defines a named function that can be invoked by any expression in the artifact. Function names must be unique within the artifact. Functions may take any number of parameters.</xs:documentation>
+			<xs:documentation>The FunctionDef type defines a named function that can be invoked by any expression in the artifact. Function names must be unique within the artifact. Functions may take any number of operands.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="ExpressionDef">
 				<xs:sequence>
-					<xs:element name="parameter" type="ParameterDef" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="operand" type="OperandDef" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -264,6 +264,30 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:extension base="Expression">
 				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OperandDef">
+		<xs:annotation>
+			<xs:documentation>The OperandDef type defines an operand to a function that can be referenced by name anywhere within the body of a function definition.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="operandTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="operandType" type="xs:QName" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OperandRef">
+		<xs:annotation>
+			<xs:documentation>The OperandRef expression allows the value of an operand to be referenced as part of an expression within the body of a function definition.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
