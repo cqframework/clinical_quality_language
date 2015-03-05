@@ -42,24 +42,12 @@ public class TypeParameter extends DataType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, Map<TypeParameter, DataType> typeMap) {
-        DataType boundType = typeMap.get(this);
-        if (boundType == null) {
-            typeMap.put(this, callType);
-            return true;
-        }
-        else {
-            return boundType.isSuperTypeOf(callType);
-        }
+    public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        return context.isInstantiable(this, callType);
     }
 
     @Override
-    public DataType instantiate(Map<TypeParameter, DataType> typeMap) {
-        DataType result = typeMap.get(this);
-        if (result == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve type parameter %s.", this.identifier));
-        }
-
-        return result;
+    public DataType instantiate(InstantiationContext context) {
+        return context.instantiate(this);
     }
 }

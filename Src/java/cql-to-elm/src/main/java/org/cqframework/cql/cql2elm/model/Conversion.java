@@ -8,6 +8,20 @@ public class Conversion {
         setOperator(operator);
     }
 
+    public Conversion(DataType fromType, DataType toType) {
+        if (fromType == null) {
+            throw new IllegalArgumentException("fromType is null");
+        }
+
+        if (toType == null) {
+            throw new IllegalArgumentException("toType is null");
+        }
+
+        setIsImplicit(true);
+        this.fromType = fromType;
+        this.toType = toType;
+    }
+
     private boolean implicit;
     public boolean isImplicit() {
         return implicit;
@@ -23,6 +37,10 @@ public class Conversion {
     public void setOperator(Operator operator) {
         if (operator == null) {
             throw new IllegalArgumentException("operator is null");
+        }
+
+        if (operator instanceof GenericOperator) {
+            throw new IllegalArgumentException("Generic conversion operators are not supported.");
         }
 
         fromType = null;
@@ -41,6 +59,10 @@ public class Conversion {
         toType = operator.getResultType();
 
         this.operator = operator;
+    }
+
+    public boolean isCast() {
+        return operator == null;
     }
 
     private DataType fromType;

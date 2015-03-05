@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.TypeParameter;
+import org.cqframework.cql.elm.tracking.InstantiationContext;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Signature {
     public Signature(DataType... operandTypes) {
@@ -59,10 +58,10 @@ public class Signature {
         return false;
     }
 
-    public boolean isInstantiable(Signature callSignature, Map<TypeParameter, DataType> typeMap) {
+    public boolean isInstantiable(Signature callSignature, InstantiationContext context) {
         if (operandTypes.size() == callSignature.operandTypes.size()) {
             for (int i = 0; i < operandTypes.size(); i++) {
-                if (!operandTypes.get(i).isInstantiable(callSignature.operandTypes.get(i), typeMap)) {
+                if (!operandTypes.get(i).isInstantiable(callSignature.operandTypes.get(i), context)) {
                     return false;
                 }
             }
@@ -73,24 +72,23 @@ public class Signature {
         return false;
     }
 
-    public Signature instantiate(Map<TypeParameter, DataType> typeMap) {
+    public Signature instantiate(InstantiationContext context) {
         DataType[] result = new DataType[operandTypes.size()];
         for (int i = 0; i < operandTypes.size(); i++) {
-            result[i] = operandTypes.get(i).instantiate(typeMap);
+            result[i] = operandTypes.get(i).instantiate(context);
         }
 
         return new Signature(result);
     }
 
-    public boolean isConvertibleTo(Signature other, ConversionMap conversionMap, Operator[] conversions) {
+    public boolean isConvertibleTo(Signature other, ConversionMap conversionMap, Conversion[] conversions) {
         if (operandTypes.size() == other.operandTypes.size()) {
             for (int i = 0; i < operandTypes.size(); i++) {
                 if (!operandTypes.get(i).isSubTypeOf(other.operandTypes.get(i))) {
                     Conversion conversion = conversionMap.findConversion(operandTypes.get(i), other.operandTypes.get(i), true);
                     if (conversion != null) {
-                        conversions[i] = conversion.getOperator();
-                    }
-                    else {
+                        conversions[i] = conversion;
+                    } else {
                         return false;
                     }
                 }

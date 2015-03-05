@@ -21,6 +21,11 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("IfNull", new Signature(new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
 
         // Conversion Operators
+        // ToT<T>(System.Any) : T
+        //GenericOperator anyToT = new GenericOperator("ToT", new Signature(systemModel.getAny()), new TypeParameter("T"), new TypeParameter("T"));
+        //system.add(anyToT);
+        //system.add(new Conversion(anyToT, true));
+
         // ToString(Boolean) : String
         // ToString(Integer) : String
         // ToString(Decimal) : String
@@ -37,14 +42,17 @@ public class SystemLibraryHelper {
         Operator dateTimeToString = new Operator("ToString", new Signature(systemModel.getDateTime()), systemModel.getString());
         system.add(dateTimeToString);
         system.add(new Conversion(dateTimeToString, false));
+
         // ToBoolean(String) : Boolean
         Operator stringToBoolean = new Operator("ToBoolean", new Signature(systemModel.getString()), systemModel.getBoolean());
         system.add(stringToBoolean);
         system.add(new Conversion(stringToBoolean, false));
+
         // ToInteger(String) : Integer
         Operator stringToInteger = new Operator("ToInteger", new Signature(systemModel.getString()), systemModel.getInteger());
         system.add(stringToInteger);
         system.add(new Conversion(stringToInteger, false));
+
         // ToDecimal(String) : Decimal
         // ToDecimal(Integer) : Decimal
         Operator stringToDecimal = new Operator("ToDecimal", new Signature(systemModel.getString()), systemModel.getDecimal());
@@ -53,18 +61,21 @@ public class SystemLibraryHelper {
         Operator integerToDecimal = new Operator("ToDecimal", new Signature(systemModel.getInteger()), systemModel.getDecimal());
         system.add(integerToDecimal);
         system.add(new Conversion(integerToDecimal, true));
+
         // ToDateTime(String) : DateTime
         Operator stringToDateTime = new Operator("ToDateTime", new Signature(systemModel.getString()), systemModel.getDateTime());
         system.add(stringToDateTime);
         system.add(new Conversion(stringToDateTime, false));
+
         // ToTuple<T, R>(T) : R // Operator needs to participate in construction of the result type here...
-        Operator classToTuple = new ToTupleOperator("ToTuple", new Signature(new TypeParameter("T")), new TypeParameter("R"), new TypeParameter("T"), new TypeParameter("R"));
-        system.add(classToTuple);
-        system.add(new Conversion(classToTuple, true));
+        //Operator classToTuple = new ToTupleOperator("ToTuple", new Signature(new TypeParameter("T")), new TypeParameter("R"), new TypeParameter("T"), new TypeParameter("R"));
+        //system.add(classToTuple);
+        //system.add(new Conversion(classToTuple, true));
+
         // ToClass<T, R>(T) : R // Operator needs to participate in construction of the result type here...
-        Operator tupleToClass = new ToClassOperator("ToClass", new Signature(new TypeParameter("T")), new TypeParameter("R"), new TypeParameter("T"), new TypeParameter("R"));
-        system.add(tupleToClass);
-        system.add(new Conversion(tupleToClass, false));
+        //Operator tupleToClass = new ToClassOperator("ToClass", new Signature(new TypeParameter("T")), new TypeParameter("R"), new TypeParameter("T"), new TypeParameter("R"));
+        //system.add(tupleToClass);
+        //system.add(new Conversion(tupleToClass, false));
 
         // Comparison Operators
         // Equal<T>(T, T) : Boolean

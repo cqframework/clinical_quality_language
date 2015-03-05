@@ -80,11 +80,13 @@ public class ClassType extends DataType implements NamedType {
     {
         this.elements.add(element);
         sortedElements = null;
+        tupleType = null;
     }
 
     public void addElements(Collection<ClassTypeElement> elements) {
         this.elements.addAll(elements);
         sortedElements = null;
+        tupleType = null;
     }
 
     private List<ClassTypeElement> getSortedElements() {
@@ -122,6 +124,44 @@ public class ClassType extends DataType implements NamedType {
         return this.name;
     }
 
+    private TupleType tupleType;
+    private TupleType getTupleType() {
+        if (tupleType == null) {
+            tupleType = buildTupleType();
+        }
+
+        return tupleType;
+    }
+
+    private TupleType buildTupleType() {
+        List<TupleTypeElement> tupleElements = new ArrayList<>();
+        DataType currentType = this;
+        while (currentType != null) {
+            if (currentType instanceof ClassType) {
+                ClassType classType = (ClassType)currentType;
+                for (ClassTypeElement element : classType.getElements()) {
+                    TupleTypeElement tupleElement = new TupleTypeElement(element.getName(), element.getType());
+                    tupleElements.add(tupleElement);
+                }
+            }
+
+            currentType = currentType.getBaseType();
+        }
+
+        return new TupleType(tupleElements);
+    }
+
+    @Override
+    public boolean isCompatibleWith(DataType other) {
+        // TODO: Class types are compatible with tuple types...
+        if (other instanceof TupleType) {
+            TupleType tupleType = (TupleType)other;
+            return getTupleType().equals(tupleType);
+        }
+
+        return false;
+    }
+
     @Override
     public boolean isGeneric() {
         for (ClassTypeElement e : elements) {
@@ -134,7 +174,7 @@ public class ClassType extends DataType implements NamedType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, Map<TypeParameter, DataType> typeMap) {
+    public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof ClassType) {
             ClassType classType = (ClassType)callType;
             if (elements.size() == classType.elements.size()) {
@@ -142,7 +182,7 @@ public class ClassType extends DataType implements NamedType {
                 List<ClassTypeElement> thoseElements = classType.getSortedElements();
                 for (int i = 0; i < theseElements.size(); i++) {
                     if (!(theseElements.get(i).getName().equals(thoseElements.get(i).getName())
-                            && theseElements.get(i).getType().isInstantiable(thoseElements.get(i).getType(), typeMap))) {
+                            && theseElements.get(i).getType().isInstantiable(thoseElements.get(i).getType(), context))) {
                         return false;
                     }
                 }
@@ -155,14 +195,14 @@ public class ClassType extends DataType implements NamedType {
     }
 
     @Override
-    public DataType instantiate(Map<TypeParameter, DataType> typeMap) {
+    public DataType instantiate(InstantiationContext context) {
         if (!isGeneric()) {
             return this;
         }
 
         ClassType result = new ClassType(getName(), getBaseType());
         for (int i = 0; i < elements.size(); i++) {
-            result.addElement(new ClassTypeElement(elements.get(i).getName(), elements.get(i).getType().instantiate(typeMap)));
+            result.addElement(new ClassTypeElement(elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
         }
 
         return result;

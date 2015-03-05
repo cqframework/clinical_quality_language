@@ -1,9 +1,5 @@
 package org.cqframework.cql.elm.tracking;
 
-import org.hl7.elm_modelinfo.r1.TypeInfo;
-
-import java.util.Map;
-
 public abstract class DataType {
     public DataType() {
         this(null);
@@ -40,11 +36,18 @@ public abstract class DataType {
         return false;
     }
 
+    // Note that this is not how implicit/explicit conversions are defined, the notion of
+    // type compatibility is used to support implicit casting, such as casting a "null"
+    // literal to any other type, or casting a class to an equivalent tuple.
+    public boolean isCompatibleWith(DataType other) {
+        return false; // default implementation returns false.
+    }
+
     public abstract boolean isGeneric();
 
-    public abstract boolean isInstantiable(DataType callType, Map<TypeParameter, DataType> typeMap);
+    public abstract boolean isInstantiable(DataType callType, InstantiationContext context);
 
-    public abstract DataType instantiate(Map<TypeParameter, DataType> typeMap);
+    public abstract DataType instantiate(InstantiationContext context);
 
     public static final SimpleType any = new SimpleType("System.Any");
 }

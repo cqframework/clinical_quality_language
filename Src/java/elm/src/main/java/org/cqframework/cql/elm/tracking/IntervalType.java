@@ -1,7 +1,5 @@
 package org.cqframework.cql.elm.tracking;
 
-import java.util.Map;
-
 public class IntervalType extends DataType {
     private DataType pointType;
 
@@ -65,17 +63,17 @@ public class IntervalType extends DataType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, Map<TypeParameter, DataType> typeMap) {
+    public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof IntervalType) {
             IntervalType intervalType = (IntervalType)callType;
-            return pointType.isInstantiable(intervalType.pointType, typeMap);
+            return pointType.isInstantiable(intervalType.pointType, context);
         }
 
         return false;
     }
 
     @Override
-    public DataType instantiate(Map<TypeParameter, DataType> typeMap) {
-        return new IntervalType(pointType.instantiate(typeMap));
+    public DataType instantiate(InstantiationContext context) {
+        return new IntervalType(pointType.instantiate(context));
     }
 }

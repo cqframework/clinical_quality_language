@@ -80,6 +80,10 @@ public class TranslatedLibrary {
     }
 
     public void add(Conversion conversion) {
+        if (conversion.isCast()) {
+            throw new IllegalArgumentException("Casting conversions cannot be registered as part of a library.");
+        }
+
         conversions.add(conversion);
     }
 
@@ -132,7 +136,11 @@ public class TranslatedLibrary {
         return null;
     }
 
-    public Operator resolveCall(CallContext callContext, ConversionMap conversionMap) {
+    public OperatorResolution resolveCall(CallContext callContext, ConversionMap conversionMap) {
         return operators.resolveOperator(callContext, conversionMap);
+    }
+
+    public Iterable<Conversion> getConversions() {
+        return conversions;
     }
 }

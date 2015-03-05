@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.cqframework.cql.elm.tracking.DataType;
+import org.cqframework.cql.elm.tracking.InstantiationContext;
 import org.cqframework.cql.elm.tracking.TypeParameter;
 
 import java.util.ArrayList;
@@ -22,16 +23,30 @@ public class GenericOperator extends Operator {
         return this.typeParameters;
     }
 
-    public Operator instantiate(Signature callSignature) {
+    public Operator instantiate(Signature callSignature, ConversionMap conversionMap) {
+        return instantiate(callSignature, null, conversionMap);
+    }
+
+    public Operator instantiate(Signature callSignature, Map<TypeParameter, DataType> parameters, ConversionMap conversionMap) {
         Map<TypeParameter, DataType> typeMap = new HashMap<>();
 
         for (TypeParameter p : typeParameters) {
             typeMap.put(p, null);
         }
 
-        Boolean instantiable = getSignature().isInstantiable(callSignature, typeMap);
+        if (parameters != null) {
+            for (Map.Entry<TypeParameter,DataType> entry : parameters.entrySet()) {
+                typeMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        InstantiationContext context = new InstantiationContextImpl(typeMap, conversionMap);
+
+        Boolean instantiable = getSignature().isInstantiable(callSignature, context);
         if (instantiable) {
-            return new Operator(getName(), getSignature().instantiate(typeMap), getResultType().instantiate(typeMap));
+            Operator result = new Operator(getName(), getSignature().instantiate(context), getResultType().instantiate(context));
+            result.setLibraryName(getLibraryName());
+            return result;
         }
 
         return null;

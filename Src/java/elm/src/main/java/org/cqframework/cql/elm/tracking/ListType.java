@@ -64,17 +64,17 @@ public class ListType extends DataType {
         return elementType.isGeneric();
     }
 
-    public boolean isInstantiable(DataType callType, Map<TypeParameter, DataType> typeMap) {
+    public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof ListType) {
             ListType listType = (ListType)callType;
-            return elementType.isInstantiable(listType.elementType, typeMap);
+            return elementType.isInstantiable(listType.elementType, context);
         }
 
         return false;
     }
 
     @Override
-    public DataType instantiate(Map<TypeParameter, DataType> typeMap) {
-        return new ListType(elementType.instantiate(typeMap));
+    public DataType instantiate(InstantiationContext context) {
+        return new ListType(elementType.instantiate(context));
     }
 }

@@ -136,6 +136,12 @@ public class TupleType extends DataType {
     }
 
     @Override
+    public boolean isCompatibleWith(DataType other) {
+        // TODO: Class types are compatible with tuple types...
+        return false;
+    }
+
+    @Override
     public boolean isGeneric() {
         for (TupleTypeElement e : elements) {
             if (e.getType().isGeneric()) {
@@ -147,7 +153,7 @@ public class TupleType extends DataType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, Map<TypeParameter, DataType> typeMap) {
+    public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof TupleType) {
             TupleType tupleType = (TupleType)callType;
             if (elements.size() == tupleType.elements.size()) {
@@ -155,7 +161,7 @@ public class TupleType extends DataType {
                 List<TupleTypeElement> thoseElements = tupleType.getSortedElements();
                 for (int i = 0; i < theseElements.size(); i++) {
                     if (!(theseElements.get(i).getName().equals(thoseElements.get(i).getName())
-                        && theseElements.get(i).getType().isInstantiable(thoseElements.get(i).getType(), typeMap))) {
+                        && theseElements.get(i).getType().isInstantiable(thoseElements.get(i).getType(), context))) {
                         return false;
                     }
                 }
@@ -168,14 +174,14 @@ public class TupleType extends DataType {
     }
 
     @Override
-    public DataType instantiate(Map<TypeParameter, DataType> typeMap) {
+    public DataType instantiate(InstantiationContext context) {
         if (!isGeneric()) {
             return this;
         }
 
         TupleType result = new TupleType();
         for (int i = 0; i < elements.size(); i++) {
-            result.addElement(new TupleTypeElement(elements.get(i).getName(), elements.get(i).getType().instantiate(typeMap)));
+            result.addElement(new TupleTypeElement(elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
         }
 
         return result;

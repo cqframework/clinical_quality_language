@@ -206,7 +206,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 errors.add(e);
             } catch (Exception e) {
                 errors.add(new CqlTranslatorException(
-                        e.getMessage(),
+                        e.getMessage() == null ? "Internal translator error." : e.getMessage(),
                         tree instanceof ParserRuleContext ? getTrackBack((ParserRuleContext) tree) : null,
                         e));
                 o = of.createNull();
@@ -299,7 +299,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (param.getDefault() != null) {
             if (paramType != null) {
-                DataTypes.verifyType(param.getDefault().getResultType(), paramType);
+                verifyType(param.getDefault().getResultType(), paramType);
             }
             else {
                 paramType = param.getDefault().getResultType();
@@ -311,6 +311,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         param.setResultType(paramType);
+        if (param.getDefault() != null) {
+            param.setDefault(ensureCompatible(param.getDefault(), paramType));
+        }
 
         addToLibrary(param);
 
@@ -468,20 +471,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withHigh(parseExpression(ctx.expression(1)))
                 .withHighClosed(ctx.getChild(5).getText().equals("]"));
 
-        DataType lowType = result.getLow().getResultType();
-        DataType highType = result.getHigh().getResultType();
-        if ((lowType != null) && (highType != null)) {
-            DataTypes.verifyType(highType, lowType);
-        }
+        DataType pointType = ensureCompatibleTypes(result.getLow().getResultType(), result.getHigh().getResultType());
+        result.setResultType(new IntervalType(pointType));
 
-        DataType pointType = lowType != null ? lowType : highType;
-        if (pointType != null) {
-            IntervalType resultType = new IntervalType(pointType);
-            result.setResultType(resultType);
-        }
-        else {
-            throw new IllegalArgumentException("Could not determine a point type for interval selector.");
-        }
+        result.setLow(ensureCompatible(result.getLow(), pointType));
+        result.setHigh(ensureCompatible(result.getHigh(), pointType));
+
         return result;
     }
 
@@ -518,26 +513,46 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             listTypeSpecifier.setResultType(listType);
         }
 
+        DataType elementType = elementTypeSpecifier != null ? elementTypeSpecifier.getResultType() : null;
+        DataType inferredElementType = null;
+
+        List<Expression> elements = new ArrayList<>();
         for (cqlParser.ExpressionContext elementContext : ctx.expression()) {
             Expression element = parseExpression(elementContext);
-            if (listType == null) {
-                if (element.getResultType() != null) {
-                    listType = new ListType(element.getResultType());
-                }
+
+            if (elementType != null) {
+                verifyType(element.getResultType(), elementType);
             }
             else {
-                DataTypes.verifyType(element.getResultType(), listType.getElementType());
+                if (inferredElementType == null) {
+                    inferredElementType = element.getResultType();
+                }
+                else {
+                    inferredElementType = ensureCompatibleTypes(inferredElementType, element.getResultType());
+                }
             }
-            list.getElement().add(element);
+
+            elements.add(element);
+        }
+
+        if (elementType == null) {
+            elementType = inferredElementType == null ? resolveTypeName("System", "Any") : inferredElementType;
+        }
+
+        for (Expression element : elements) {
+            if (!elementType.isSuperTypeOf(element.getResultType())) {
+                list.getElement().add(convertExpression(element, elementType));
+            }
+            else {
+                list.getElement().add(element);
+            }
         }
 
         if (listType == null) {
-            // An empty untyped list is list<Any>
-            listType = new ListType(resolveTypeName("System", "Any"));
+            listType = new ListType(elementType);
         }
 
         list.setResultType(listType);
-
         return list;
     }
 
@@ -1884,10 +1899,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withElse(parseExpression(ctx.expression(2)));
 
         DataTypes.verifyType(ifObject.getCondition().getResultType(), resolveTypeName("Boolean"));
-        DataType thenType = ifObject.getThen().getResultType();
-        DataTypes.verifyType(ifObject.getElse().getResultType(), thenType);
-
-        ifObject.setResultType(thenType);
+        DataType resultType = ensureCompatibleTypes(ifObject.getThen().getResultType(), ifObject.getElse().getResultType());
+        ifObject.setResultType(resultType);
+        ifObject.setThen(ensureCompatible(ifObject.getThen(), resultType));
+        ifObject.setElse(ensureCompatible(ifObject.getElse(), resultType));
         return ifObject;
     }
 
@@ -1895,6 +1910,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitCaseExpressionTerm(@NotNull cqlParser.CaseExpressionTermContext ctx) {
         Case result = of.createCase();
         Boolean hitElse = false;
+        DataType resultType = null;
         for (ParseTree pt : ctx.children) {
             if ("else".equals(pt.getText())) {
                 hitElse = true;
@@ -1904,7 +1920,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (pt instanceof cqlParser.ExpressionContext) {
                 if (hitElse) {
                     result.setElse(parseExpression(pt));
-                    DataTypes.verifyType(result.getResultType(), result.getElse().getResultType());
+                    resultType = ensureCompatibleTypes(resultType, result.getElse().getResultType());
                 } else {
                     result.setComparand(parseExpression(pt));
                 }
@@ -1913,21 +1929,33 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (pt instanceof cqlParser.CaseExpressionItemContext) {
                 CaseItem caseItem = (CaseItem)visit(pt);
                 if (result.getComparand() != null) {
-                    DataTypes.verifyType(caseItem.getWhen().getResultType(), result.getComparand().getResultType());
+                    verifyType(caseItem.getWhen().getResultType(), result.getComparand().getResultType());
                 }
                 else {
                     DataTypes.verifyType(caseItem.getWhen().getResultType(), resolveTypeName("Boolean"));
                 }
-                if (result.getResultType() == null) {
-                    result.setResultType(caseItem.getThen().getResultType());
+
+                if (resultType == null) {
+                    resultType = caseItem.getThen().getResultType();
                 }
                 else {
-                    DataTypes.verifyType(result.getResultType(), caseItem.getThen().getResultType());
+                    resultType = ensureCompatibleTypes(resultType, caseItem.getThen().getResultType());
                 }
+
                 result.getCaseItem().add(caseItem);
             }
         }
 
+        for (CaseItem caseItem : result.getCaseItem()) {
+            if (result.getComparand() != null) {
+                caseItem.setWhen(ensureCompatible(caseItem.getWhen(), result.getComparand().getResultType()));
+            }
+
+            caseItem.setThen(ensureCompatible(caseItem.getThen(), resultType));
+        }
+
+        result.setElse(ensureCompatible(result.getElse(), resultType));
+        result.setResultType(resultType);
         return result;
     }
 
@@ -1942,20 +1970,23 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitCoalesceExpressionTerm(@NotNull cqlParser.CoalesceExpressionTermContext ctx) {
         List<Expression> expressions = new ArrayList<>();
 
-        Expression first = null;
+        DataType resultType = null;
         for (cqlParser.ExpressionContext expression : ctx.expression()) {
-            if (first == null) {
-                first = parseExpression(expression);
-                expressions.add(first);
+            Expression term = parseExpression(expression);
+
+            if (resultType == null) {
+                resultType = term.getResultType();
             }
             else {
-                Expression other = parseExpression(expression);
-                DataTypes.verifyType(first.getResultType(), other.getResultType());
+                resultType = ensureCompatibleTypes(resultType, term.getResultType());
             }
         }
 
-        Coalesce coalesce = of.createCoalesce().withOperand(expressions);
-        coalesce.setResultType(first.getResultType());
+        Coalesce coalesce = of.createCoalesce();
+        for (Expression expression : expressions) {
+            coalesce.getOperand().add(ensureCompatible(expression, resultType));
+        }
+        coalesce.setResultType(resultType);
         return coalesce;
     }
 
@@ -2683,6 +2714,55 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         throw new IllegalArgumentException("A named type is required in this context.");
     }
 
+    private TypeSpecifier dataTypeToTypeSpecifier(DataType type) {
+        // Convert the given type into an ELM TypeSpecifier representation.
+        if (type instanceof NamedType) {
+            return (TypeSpecifier)of.createNamedTypeSpecifier().withName(dataTypeToQName(type)).withResultType(type);
+        }
+        else if (type instanceof ListType) {
+            return listTypeToTypeSpecifier((ListType)type);
+        }
+        else if (type instanceof IntervalType) {
+            return intervalTypeToTypeSpecifier((IntervalType)type);
+        }
+        else if (type instanceof TupleType) {
+            return tupleTypeToTypeSpecifier((TupleType)type);
+        }
+        else {
+            throw new IllegalArgumentException(String.format("Could not convert type %s to a type specifier.", type));
+        }
+    }
+
+    private TypeSpecifier listTypeToTypeSpecifier(ListType type) {
+        return (TypeSpecifier)of.createListTypeSpecifier()
+                .withElementType(dataTypeToTypeSpecifier(type.getElementType()))
+                .withResultType(type);
+    }
+
+    private TypeSpecifier intervalTypeToTypeSpecifier(IntervalType type) {
+        return (TypeSpecifier)of.createIntervalTypeSpecifier()
+                .withPointType(dataTypeToTypeSpecifier(type.getPointType()))
+                .withResultType(type);
+    }
+
+    private TypeSpecifier tupleTypeToTypeSpecifier(TupleType type) {
+        return (TypeSpecifier)of.createTupleTypeSpecifier()
+                .withElement(tupleTypeElementsToTupleElementDefinitions(type.getElements()))
+                .withResultType(type);
+    }
+
+    private TupleElementDefinition[] tupleTypeElementsToTupleElementDefinitions(Iterable<TupleTypeElement> elements) {
+        List<TupleElementDefinition> definitions = new ArrayList<>();
+
+        for (TupleTypeElement element : elements) {
+            definitions.add(of.createTupleElementDefinition()
+                    .withName(element.getName())
+                    .withType(dataTypeToTypeSpecifier(element.getType())));
+        }
+
+        return definitions.toArray(new TupleElementDefinition[definitions.size()]);
+    }
+
     private ClassType resolveTopic(String modelName, String topic) {
         ClassType result = null;
         if (modelName == null || modelName.equals("")) {
@@ -2775,23 +2855,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
-        Operator operator = resolveCall(callContext);
-        checkOperator(callContext, operator);
+        OperatorResolution resolution = resolveCall(callContext);
+        checkOperator(callContext, resolution);
 
-        if (callContext.getConversions() != null) {
+        if (resolution.hasConversions()) {
             List<Expression> convertedOperands = new ArrayList<>();
             Iterator<Expression> operandIterator = operands.iterator();
-            Iterator<Operator> conversionIterator = callContext.getConversions().iterator();
+            Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
             while (operandIterator.hasNext()) {
                 Expression operand = operandIterator.next();
-                Operator conversion = conversionIterator.next();
+                Conversion conversion = conversionIterator.next();
                 if (conversion != null) {
-                    FunctionRef convertedOperand = (FunctionRef)of.createFunctionRef()
-                            .withLibraryName(conversion.getLibraryName())
-                            .withName(conversion.getName())
-                            .withOperand(operand)
-                            .withResultType(conversion.getResultType());
-                    convertedOperands.add(convertedOperand);
+                    convertedOperands.add(convertExpression(operand, conversion));
                 }
                 else {
                     convertedOperands.add(operand);
@@ -2800,8 +2875,82 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             invocation.setOperands(convertedOperands);
         }
-        invocation.setResultType(operator.getResultType());
+        invocation.setResultType(resolution.getOperator().getResultType());
         return invocation.getExpression();
+    }
+
+    private Expression ensureCompatible(Expression expression, DataType targetType) {
+        if (!targetType.isSuperTypeOf(expression.getResultType())) {
+            return convertExpression(expression, targetType);
+        }
+
+        return expression;
+    }
+
+    private Expression convertExpression(Expression expression, DataType targetType) {
+        Conversion conversion = conversionMap.findConversion(expression.getResultType(), targetType, true);
+        return convertExpression(expression, conversion);
+    }
+
+    private Expression convertExpression(Expression expression, Conversion conversion) {
+        if (conversion.isCast()) {
+            As castedOperand = (As)of.createAs()
+                    .withOperand(expression)
+                    .withResultType(conversion.getToType());
+
+            if (castedOperand.getResultType() instanceof NamedType) {
+                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
+            }
+            else {
+                castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
+            }
+            return castedOperand;
+        }
+        else {
+            Operator conversionOperator = conversion.getOperator();
+            FunctionRef convertedOperand = (FunctionRef)of.createFunctionRef()
+                    .withLibraryName(conversionOperator.getLibraryName())
+                    .withName(conversionOperator.getName())
+                    .withOperand(expression)
+                    .withResultType(conversionOperator.getResultType());
+            return convertedOperand;
+        }
+    }
+
+    private void verifyType(DataType actualType, DataType expectedType) {
+        if (expectedType.isSuperTypeOf(actualType) || actualType.isCompatibleWith(expectedType)) {
+            return;
+        }
+
+        Conversion conversion = conversionMap.findConversion(actualType, expectedType, true);
+        if (conversion != null) {
+            return;
+        }
+
+        DataTypes.verifyType(actualType, expectedType);
+    }
+
+    private DataType ensureCompatibleTypes(DataType first, DataType second) {
+        if (first.isSuperTypeOf(second) || second.isCompatibleWith(first)) {
+            return first;
+        }
+
+        if (second.isSuperTypeOf(first) || first.isCompatibleWith(second)) {
+            return second;
+        }
+
+        Conversion conversion = conversionMap.findConversion(second, first, true);
+        if (conversion != null) {
+            return first;
+        }
+
+        conversion = conversionMap.findConversion(first, second, true);
+        if (conversion != null) {
+            return second;
+        }
+
+        DataTypes.verifyType(second, first);
+        return first;
     }
 
     private Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
@@ -2812,17 +2961,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression));
     }
 
-    private Operator resolveCall(CallContext callContext) {
-        Operator result = null;
+    private OperatorResolution resolveCall(CallContext callContext) {
+        OperatorResolution result = null;
         if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
             result = translatedLibrary.resolveCall(callContext, conversionMap);
             if (result == null) {
                 for (TranslatedLibrary library : libraries.values()) {
-                    Operator libraryResult = library.resolveCall(callContext, conversionMap);
+                    OperatorResolution libraryResult = library.resolveCall(callContext, conversionMap);
                     if (libraryResult != null) {
                         if (result != null) {
                             throw new IllegalArgumentException(String.format("Operator name %s is ambiguous between %s and %s.",
-                                    callContext.getOperatorName(), result.getName(), libraryResult.getName()));
+                                    callContext.getOperatorName(), result.getOperator().getName(), libraryResult.getOperator().getName()));
                         }
 
                         result = libraryResult;
@@ -2837,8 +2986,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return result;
     }
 
-    private void checkOperator(CallContext callContext, Operator operator) {
-        if (operator == null) {
+    private void checkOperator(CallContext callContext, OperatorResolution resolution) {
+        if (resolution == null) {
             throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with signature %s.",
                     callContext.getOperatorName(), callContext.getSignature()));
         }
@@ -2956,6 +3105,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         TranslatedLibrary referencedLibrary = LibraryManager.resolveLibrary(libraryIdentifier, errors);
         libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
+        loadConversionMap(referencedLibrary);
     }
 
     private SystemModel getSystemModel() {
@@ -2965,6 +3115,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private void loadSystemLibrary() {
         TranslatedLibrary systemLibrary = SystemLibraryHelper.load(getSystemModel());
         libraries.put(systemLibrary.getIdentifier().getId(), systemLibrary);
+        loadConversionMap(systemLibrary);
+    }
+
+    private void loadConversionMap(TranslatedLibrary library) {
+        for (Conversion conversion : library.getConversions()) {
+            conversionMap.add(conversion);
+        }
     }
 
     private TranslatedLibrary resolveLibrary(String identifier) {
