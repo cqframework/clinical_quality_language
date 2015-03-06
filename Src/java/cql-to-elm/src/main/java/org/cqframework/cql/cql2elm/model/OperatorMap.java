@@ -35,6 +35,7 @@ public class OperatorMap {
         OperatorResolution result = null;
         if (results != null) {
             int lowestScore = Integer.MAX_VALUE;
+            List<OperatorResolution> lowestScoringResults = new ArrayList<>();
             for (OperatorResolution resolution : results) {
                 // for each operand
                     // exact match = 0
@@ -61,13 +62,24 @@ public class OperatorMap {
 
                 if (score < lowestScore) {
                     lowestScore = score;
-                    result = resolution;
+                    lowestScoringResults.clear();
+                    lowestScoringResults.add(resolution);
                 }
                 else if (score == lowestScore) {
-                    throw new IllegalArgumentException(String.format("Call to operator %s with signature %s is ambiguous between %s and %s.",
-                            callContext.getOperatorName(), callContext.getSignature(),
-                            result.getOperator().getSignature(), resolution.getOperator().getSignature()));
+                    lowestScoringResults.add(resolution);
                 }
+            }
+
+            if (lowestScoringResults.size() > 1) {
+                StringBuilder message = new StringBuilder("Call to operator ").append(callContext.getOperatorName())
+                        .append(callContext.getSignature()).append(" is ambiguous with: ");
+                for (OperatorResolution resolution : lowestScoringResults) {
+                    message.append("\n  - ").append(resolution.getOperator().getName()).append(resolution.getOperator().getSignature());
+                }
+                throw new IllegalArgumentException(message.toString());
+            }
+            else {
+                result = lowestScoringResults.get(0);
             }
         }
 
