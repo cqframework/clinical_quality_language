@@ -2083,7 +2083,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 Tuple returnExpression = of.createTuple();
                 TupleType returnType = new TupleType();
-                Boolean anyLists = false;
                 for (AliasedQuerySource aqs : sources) {
                     TupleElement element =
                             of.createTupleElement()
@@ -2092,12 +2091,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     element.setResultType(element.getValue().getResultType());
                     returnType.addElement(new TupleTypeElement(element.getName(), element.getResultType()));
                     returnExpression.getElement().add(element);
-                    if (aqs.getResultType() instanceof ListType) {
-                        anyLists = true;
-                    }
                 }
 
-                returnExpression.setResultType(anyLists ? new ListType(returnType) : returnType);
+                returnExpression.setResultType(queryContext.isSingular() ? returnType : new ListType(returnType));
                 ret.setExpression(returnExpression);
                 ret.setResultType(returnExpression.getResultType());
             }
@@ -2377,8 +2373,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         returnClause.setExpression(parseExpression(ctx.expression()));
-
-        returnClause.setResultType(returnClause.getExpression().getResultType());
+        returnClause.setResultType(queries.peek().isSingular()
+                ? returnClause.getExpression().getResultType()
+                : new ListType(returnClause.getExpression().getResultType()));
 
         return returnClause;
     }
@@ -2790,23 +2787,27 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private DataType resolveTypeName(String modelName, String typeName) {
-        DataType result = null;
-        if (modelName == null || modelName.equals("")) {
-            for (Model model : models.values()) {
-                DataType modelResult = model.resolveTypeName(typeName);
-                if (modelResult != null) {
-                    if (result != null) {
-                        throw new IllegalArgumentException(String.format("Type name %s is ambiguous between %s and %s.",
-                                typeName, ((NamedType)result).getName(), ((NamedType)modelResult).getName()));
-                    }
+        // Attempt to resolve as a topic first
+        DataType result = resolveTopic(modelName, typeName);
 
-                    result = modelResult;
+        if (result == null) {
+            if (modelName == null || modelName.equals("")) {
+                for (Model model : models.values()) {
+                    DataType modelResult = model.resolveTypeName(typeName);
+                    if (modelResult != null) {
+                        if (result != null) {
+                            throw new IllegalArgumentException(String.format("Type name %s is ambiguous between %s and %s.",
+                                    typeName, ((NamedType) result).getName(), ((NamedType) modelResult).getName()));
+                        }
+
+                        result = modelResult;
+                    }
                 }
+            } else {
+                result = getModel(modelName).resolveTypeName(typeName);
             }
         }
-        else {
-            result = getModel(modelName).resolveTypeName(typeName);
-        }
+
         return result;
     }
 

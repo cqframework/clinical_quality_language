@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.cqframework.cql.elm.tracking.ListType;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.DefineClause;
 
@@ -18,6 +19,9 @@ public class QueryContext {
 
     public void addQuerySource(AliasedQuerySource source) {
         sources.put(source.getAlias(), source);
+        if (source.getResultType() instanceof ListType) {
+            isSingularValue = false;
+        }
     }
 
     public void removeQuerySource(AliasedQuerySource source) {
@@ -40,5 +44,10 @@ public class QueryContext {
 
     public DefineClause resolveDefine(String identifier) {
         return defines.get(identifier);
+    }
+
+    private boolean isSingularValue = true;
+    public boolean isSingular() {
+        return isSingularValue;
     }
 }
