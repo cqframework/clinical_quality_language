@@ -128,12 +128,15 @@
                   </operand>
                </suchThat>
             </relationship>
-            <where xsi:type="IncludedIn">
-               <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                  <low path="start datetime" scope="E" xsi:type="Property"/>
-                  <high path="stop datetime" scope="E" xsi:type="Property"/>
+            <where xsi:type="And">
+               <operand name="InDemographic" xsi:type="ExpressionRef"/>
+               <operand xsi:type="IncludedIn">
+                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <low path="start datetime" scope="E" xsi:type="Property"/>
+                     <high path="stop datetime" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
                </operand>
-               <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
             </where>
          </expression>
       </def>
@@ -233,42 +236,24 @@
          </expression>
       </def>
       <def name="IPPCount" context="Patient">
-         <expression xsi:type="If">
-            <condition name="InDemographic" xsi:type="ExpressionRef"/>
-            <then name="Count" xsi:type="FunctionRef">
-               <operand name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
-            </then>
-            <else valueType="Integer" value="0" xsi:type="Literal"/>
+         <expression name="Count" xsi:type="FunctionRef">
+            <operand name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
          </expression>
       </def>
       <def name="DenominatorCount" context="Patient">
          <expression name="IPPCount" xsi:type="ExpressionRef"/>
       </def>
       <def name="DenominatorExclusionsCount" context="Patient">
-         <expression xsi:type="If">
-            <condition xsi:type="Greater">
-               <operand name="DenominatorCount" xsi:type="ExpressionRef"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-            </condition>
-            <then name="Count" xsi:type="FunctionRef">
-               <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
-            </then>
-            <else valueType="Integer" value="0" xsi:type="Literal"/>
+         <expression name="Count" xsi:type="FunctionRef">
+            <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
          </expression>
       </def>
       <def name="NumeratorCount" context="Patient">
-         <expression xsi:type="If">
-            <condition xsi:type="Greater">
-               <operand name="DenominatorCount" xsi:type="ExpressionRef"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-            </condition>
-            <then name="Count" xsi:type="FunctionRef">
-               <operand xsi:type="Except">
-                  <operand name="StrepTestEncounters" xsi:type="ExpressionRef"/>
-                  <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
-               </operand>
-            </then>
-            <else valueType="Integer" value="0" xsi:type="Literal"/>
+         <expression name="Count" xsi:type="FunctionRef">
+            <operand xsi:type="Except">
+               <operand name="StrepTestEncounters" xsi:type="ExpressionRef"/>
+               <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
+            </operand>
          </expression>
       </def>
    </statements>

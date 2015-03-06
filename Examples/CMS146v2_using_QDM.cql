@@ -27,7 +27,7 @@ define PharyngitisEncounters =
             interval[P."start datetime", P."stop datetime"] includes interval[E."start datetime", E."stop datetime"]
             or P."start datetime" in interval[E."start datetime", E."stop datetime"]
         with Antibiotics A such that A."signed datetime" 3 days or less after E."start datetime"
-        where interval[E."start datetime", E."stop datetime"] during MeasurementPeriod
+        where InDemographic and interval[E."start datetime", E."stop datetime"] during MeasurementPeriod
 
 define PharyngitisWithPriorAntibiotics =
     Pharyngitis P
@@ -50,13 +50,13 @@ define StrepTestEncounters =
             )
 
 define IPPCount =
-    if InDemographic then Count(PharyngitisEncounters) else 0
+    Count(PharyngitisEncounters)
 
 define DenominatorCount =
     IPPCount
 
 define DenominatorExclusionsCount =
-    if DenominatorCount > 0 then Count(ExcludedEncounters) else 0
+    Count(ExcludedEncounters)
 
 define NumeratorCount =
-    if DenominatorCount > 0 then Count(StrepTestEncounters except ExcludedEncounters) else 0
+    Count(StrepTestEncounters except ExcludedEncounters)
