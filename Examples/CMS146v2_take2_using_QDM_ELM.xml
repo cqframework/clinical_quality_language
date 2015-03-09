@@ -125,12 +125,29 @@
             <operandTypeSpecifier xmlns:ns5="urn:healthit-gov:qdm:v4_1_2" name="ns5:EncounterPerformed" xsi:type="NamedTypeSpecifier"/>
          </operand>
       </def>
-      <def name="PharyngitisEncounters" context="Patient">
+      <def name="MeasurementPeriodEncounters" context="Patient">
          <expression xsi:type="Query">
             <source alias="E">
                <expression xmlns:ns6="urn:healthit-gov:qdm:v4_1_2" dataType="ns6:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Ambulatory/ED Visit" xsi:type="ValueSetRef"/>
                </expression>
+            </source>
+            <where xsi:type="And">
+               <operand name="InDemographic" xsi:type="ExpressionRef"/>
+               <operand xsi:type="IncludedIn">
+                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <low path="start datetime" scope="E" xsi:type="Property"/>
+                     <high path="stop datetime" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="PharyngitisEncounters" context="Patient">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="MeasurementPeriodEncounters" xsi:type="ExpressionRef"/>
             </source>
             <relationship alias="P" xsi:type="With">
                <expression name="Pharyngitis" xsi:type="ExpressionRef"/>
@@ -154,16 +171,6 @@
                   </operand>
                </suchThat>
             </relationship>
-            <where xsi:type="And">
-               <operand name="InDemographic" xsi:type="ExpressionRef"/>
-               <operand xsi:type="IncludedIn">
-                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                     <low path="start datetime" scope="E" xsi:type="Property"/>
-                     <high path="stop datetime" scope="E" xsi:type="Property"/>
-                  </operand>
-                  <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
-               </operand>
-            </where>
          </expression>
       </def>
       <def name="PharyngitisWithPriorAntibiotics" context="Patient">
@@ -215,31 +222,17 @@
                         <operand path="result" scope="T" xsi:type="Property"/>
                      </operand>
                   </operand>
-                  <operand xsi:type="Or">
-                     <operand xsi:type="Or">
-                        <operand xsi:type="Equal">
-                           <operand precision="Day" xsi:type="DurationBetween">
-                              <operand path="start datetime" scope="T" xsi:type="Property"/>
-                              <operand path="start datetime" scope="E" xsi:type="Property"/>
-                           </operand>
-                           <operand valueType="Integer" value="3" xsi:type="Literal"/>
-                        </operand>
-                        <operand xsi:type="Equal">
-                           <operand precision="Day" xsi:type="DurationBetween">
-                              <operand path="start datetime" scope="T" xsi:type="Property"/>
-                              <operand path="stop datetime" scope="E" xsi:type="Property"/>
-                           </operand>
-                           <operand xsi:type="Negate">
-                              <operand valueType="Integer" value="3" xsi:type="Literal"/>
-                           </operand>
-                        </operand>
-                     </operand>
-                     <operand xsi:type="In">
-                        <operand path="start datetime" scope="T" xsi:type="Property"/>
-                        <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                           <low path="start datetime" scope="E" xsi:type="Property"/>
-                           <high path="stop datetime" scope="E" xsi:type="Property"/>
-                        </operand>
+                  <operand xsi:type="In">
+                     <operand path="start datetime" scope="T" xsi:type="Property"/>
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low xsi:type="Subtract">
+                           <operand path="start datetime" scope="E" xsi:type="Property"/>
+                           <operand value="3" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high xsi:type="Add">
+                           <operand path="stop datetime" scope="E" xsi:type="Property"/>
+                           <operand value="3" unit="days" xsi:type="Quantity"/>
+                        </high>
                      </operand>
                   </operand>
                </suchThat>

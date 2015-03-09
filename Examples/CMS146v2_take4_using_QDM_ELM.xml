@@ -159,31 +159,17 @@
                         <operand path="result" scope="T" xsi:type="Property"/>
                      </operand>
                   </operand>
-                  <operand xsi:type="Or">
-                     <operand xsi:type="Or">
-                        <operand xsi:type="Equal">
-                           <operand precision="Day" xsi:type="DurationBetween">
-                              <operand path="start datetime" scope="T" xsi:type="Property"/>
-                              <operand path="start datetime" scope="E" xsi:type="Property"/>
-                           </operand>
-                           <operand valueType="Integer" value="3" xsi:type="Literal"/>
-                        </operand>
-                        <operand xsi:type="Equal">
-                           <operand precision="Day" xsi:type="DurationBetween">
-                              <operand path="start datetime" scope="T" xsi:type="Property"/>
-                              <operand path="stop datetime" scope="E" xsi:type="Property"/>
-                           </operand>
-                           <operand xsi:type="Negate">
-                              <operand valueType="Integer" value="3" xsi:type="Literal"/>
-                           </operand>
-                        </operand>
-                     </operand>
-                     <operand xsi:type="In">
-                        <operand path="start datetime" scope="T" xsi:type="Property"/>
-                        <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                           <low path="start datetime" scope="E" xsi:type="Property"/>
-                           <high path="stop datetime" scope="E" xsi:type="Property"/>
-                        </operand>
+                  <operand xsi:type="In">
+                     <operand path="start datetime" scope="T" xsi:type="Property"/>
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low xsi:type="Subtract">
+                           <operand path="start datetime" scope="E" xsi:type="Property"/>
+                           <operand value="3" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high xsi:type="Add">
+                           <operand path="stop datetime" scope="E" xsi:type="Property"/>
+                           <operand value="3" unit="days" xsi:type="Quantity"/>
+                        </high>
                      </operand>
                   </operand>
                </expression>
@@ -209,10 +195,12 @@
                   <element name="InNumerator">
                      <value xsi:type="And">
                         <operand name="StrepTest" xsi:type="QueryDefineRef"/>
-                        <operand xsi:type="Not">
-                           <operand xsi:type="Equal">
+                        <operand xsi:type="Or">
+                           <operand xsi:type="Not">
                               <operand name="PriorAntibiotics" xsi:type="QueryDefineRef"/>
-                              <operand valueType="Boolean" value="true" xsi:type="Literal"/>
+                           </operand>
+                           <operand xsi:type="IsNull">
+                              <operand name="PriorAntibiotics" xsi:type="QueryDefineRef"/>
                            </operand>
                         </operand>
                      </value>
@@ -223,15 +211,13 @@
       </def>
       <def name="IPPCount" context="Patient">
          <expression name="Count" xsi:type="FunctionRef">
-            <operand xsi:type="Distinct">
-               <operand xsi:type="Query">
-                  <source alias="E">
-                     <expression name="EncounterData" xsi:type="ExpressionRef"/>
-                  </source>
-                  <return>
-                     <expression path="Encounter" scope="E" xsi:type="Property"/>
-                  </return>
-               </operand>
+            <operand xsi:type="Query">
+               <source alias="E">
+                  <expression name="EncounterData" xsi:type="ExpressionRef"/>
+               </source>
+               <return>
+                  <expression path="Encounter" scope="E" xsi:type="Property"/>
+               </return>
             </operand>
          </expression>
       </def>
@@ -240,37 +226,33 @@
       </def>
       <def name="DenominatorExclusionsCount" context="Patient">
          <expression name="Count" xsi:type="FunctionRef">
-            <operand xsi:type="Distinct">
-               <operand xsi:type="Query">
-                  <source alias="E">
-                     <expression name="EncounterData" xsi:type="ExpressionRef"/>
-                  </source>
-                  <where xsi:type="Equal">
-                     <operand path="InDenominatorExclusions" scope="E" xsi:type="Property"/>
-                     <operand valueType="Boolean" value="true" xsi:type="Literal"/>
-                  </where>
-                  <return>
-                     <expression path="Encounter" scope="E" xsi:type="Property"/>
-                  </return>
-               </operand>
+            <operand xsi:type="Query">
+               <source alias="E">
+                  <expression name="EncounterData" xsi:type="ExpressionRef"/>
+               </source>
+               <where xsi:type="Equal">
+                  <operand path="InDenominatorExclusions" scope="E" xsi:type="Property"/>
+                  <operand valueType="Boolean" value="true" xsi:type="Literal"/>
+               </where>
+               <return>
+                  <expression path="Encounter" scope="E" xsi:type="Property"/>
+               </return>
             </operand>
          </expression>
       </def>
       <def name="NumeratorCount" context="Patient">
          <expression name="Count" xsi:type="FunctionRef">
-            <operand xsi:type="Distinct">
-               <operand xsi:type="Query">
-                  <source alias="E">
-                     <expression name="EncounterData" xsi:type="ExpressionRef"/>
-                  </source>
-                  <where xsi:type="Equal">
-                     <operand path="InNumerator" scope="E" xsi:type="Property"/>
-                     <operand valueType="Boolean" value="true" xsi:type="Literal"/>
-                  </where>
-                  <return>
-                     <expression path="Encounter" scope="E" xsi:type="Property"/>
-                  </return>
-               </operand>
+            <operand xsi:type="Query">
+               <source alias="E">
+                  <expression name="EncounterData" xsi:type="ExpressionRef"/>
+               </source>
+               <where xsi:type="Equal">
+                  <operand path="InNumerator" scope="E" xsi:type="Property"/>
+                  <operand valueType="Boolean" value="true" xsi:type="Literal"/>
+               </where>
+               <return>
+                  <expression path="Encounter" scope="E" xsi:type="Property"/>
+               </return>
             </operand>
          </expression>
       </def>

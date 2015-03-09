@@ -33,27 +33,23 @@ define EncounterData =
         PrescribedAntibiotics = A."signed datetime" 3 days or less after E."start datetime",
         PriorAntibiotics = A."signed datetime" 30 days or less before P."start datetime",
         StrepTest = T.result is not null
-            and (
-              T."start datetime" 3 days before E."start datetime"
-              or T."start datetime" 3 days after E."stop datetime"
-              or T."start datetime" in interval[E."start datetime", E."stop datetime"]
-            )
+            and T."start datetime" in interval[E."start datetime" - 3 days, E."stop datetime" + 3 days]
     where
         InDemographic and InMP and PharyngitisDx and PrescribedAntibiotics
     return {
         Encounter: E,
         InDenominatorExclusions: PriorAntibiotics,
-        InNumerator: StrepTest and PriorAntibiotics is not true
+        InNumerator: StrepTest and (not PriorAntibiotics or PriorAntibiotics is null)
     }
 
 define IPPCount =
-    Count (distinct EncounterData E return E.Encounter)
+    Count (EncounterData E return E.Encounter)
 
 define DenominatorCount =
     IPPCount
 
 define DenominatorExclusionsCount =
-    Count (distinct EncounterData E where E.InDenominatorExclusions is true return E.Encounter)
+    Count (EncounterData E where E.InDenominatorExclusions is true return E.Encounter)
 
 define NumeratorCount =
-    Count (distinct EncounterData E where E.InNumerator is true return E.Encounter)
+    Count (EncounterData E where E.InNumerator is true return E.Encounter)

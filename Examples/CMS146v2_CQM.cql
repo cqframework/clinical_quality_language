@@ -59,13 +59,16 @@ define Pharyngitis =
 define Antibiotics =
     [MedicationPrescription: "Antibiotic Medications"]
 
-define PharyngitisEncounters =
+define MeasurementPeriodEncounters =
     [Encounter: "Ambulatory/ED Visit"] E
+        where InDemographic and E.period during MeasurementPeriod
+
+define PharyngitisEncounters =
+    MeasurementPeriodEncounters E
         with Pharyngitis P such that
             interval[P.onsetDateTime, P.abatementDateTime] includes E.period
             or P.onsetDateTime in E.period
         with Antibiotics A such that A.dateWritten 3 days or less after start of E.period
-        where InDemographic and E.period during MeasurementPeriod
 
 define PharyngitisWithPriorAntibiotics =
     Pharyngitis P
@@ -80,12 +83,8 @@ define ExcludedEncounters =
 define StrepTestEncounters =
     PharyngitisEncounters E
         with [DiagnosticReport: "Group A Streptococcus Test"] T
-          such that T.result is not null
-            and (
-              T.issued 3 days before start of E.period
-              or T.issued 3 days after end of E.period
-              or T.issued in E.period
-            )
+            such that T.result is not null
+                and T.issued in interval[start of E.period - 3 days, end of E.period + 3 days]
 
 define IPPCount =
     Count(PharyngitisEncounters)
