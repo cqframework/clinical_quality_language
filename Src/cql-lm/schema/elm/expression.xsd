@@ -481,6 +481,22 @@ The static type of the then argument within the first caseItem determines the ty
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="IsTrue">
+		<xs:annotation>
+			<xs:documentation>The IsTrue operator determines whether or not its argument evaluates to true. If the argument evaluates to true, the result is true; if the argument evaluates to false or null, the result is false.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsFalse">
+		<xs:annotation>
+			<xs:documentation>The IsFalse operator determines whether or not its argument evaluates to false. If the argument evaluates to false, the result is true; if the argument evaluates to true or null, the result is false.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="IfNull">
 		<xs:annotation>
 			<xs:documentation>The IfNull operator replaces a null with the result of a given expression. If the first argument evaluates to null, the operator returns the result of the second argument. Otherwise, the operator returns the result of the first argument. The static type of the first argument determines the type of the result, and the second argument must be of that same type.</xs:documentation>

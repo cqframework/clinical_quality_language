@@ -1305,21 +1305,33 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Expression visitBooleanExpression(@NotNull cqlParser.BooleanExpressionContext ctx) {
-        Expression exp;
+        UnaryExpression exp = null;
         Expression left = (Expression) visit(ctx.expression());
         String lastChild = ctx.getChild(ctx.getChildCount() - 1).getText();
         String nextToLast = ctx.getChild(ctx.getChildCount() - 2).getText();
-        if (lastChild.equals("null")) {
-            exp = of.createIsNull().withOperand(left);
-            resolveUnaryCall("System", "IsNull", (UnaryExpression)exp);
-        } else {
-            exp = of.createEqual().withOperand(left, createLiteral(Boolean.valueOf(lastChild)));
-            resolveBinaryCall("System", "Equal", (BinaryExpression)exp);
+        switch (lastChild) {
+            case "null" :
+                exp = of.createIsNull().withOperand(left);
+                resolveUnaryCall("System", "IsNull", exp);
+                break;
+
+            case "true" :
+                exp = of.createIsTrue().withOperand(left);
+                resolveUnaryCall("System", "IsTrue", exp);
+                break;
+
+            case "false" :
+                exp = of.createIsFalse().withOperand(left);
+                resolveUnaryCall("System", "IsFalse", exp);
+                break;
+
+            default:
+                throw new IllegalArgumentException(String.format("Unknown boolean test predicate %s.", lastChild));
         }
 
         if ("not".equals(nextToLast)) {
             exp = of.createNot().withOperand(exp);
-            resolveUnaryCall("System", "Not", (UnaryExpression)exp);
+            resolveUnaryCall("System", "Not", exp);
         }
 
         return exp;

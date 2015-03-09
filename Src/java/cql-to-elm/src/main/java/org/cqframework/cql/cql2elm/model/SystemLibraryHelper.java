@@ -18,6 +18,8 @@ public class SystemLibraryHelper {
 
         // Nullological Operators
         system.add(new Operator("IsNull", new Signature(systemModel.getAny()), systemModel.getBoolean()));
+        system.add(new Operator("IsTrue", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
+        system.add(new Operator("IsFalse", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
         system.add(new GenericOperator("IfNull", new Signature(new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
 
         // Conversion Operators

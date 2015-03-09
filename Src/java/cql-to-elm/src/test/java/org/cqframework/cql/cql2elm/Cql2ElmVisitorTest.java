@@ -152,33 +152,26 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testIsTrueExpressions(){
         ExpressionDef def = (ExpressionDef) visitData("define X = true\ndefine st = X is true");
-        Equal equal = (Equal) def.getExpression();
-        ExpressionRef left = (ExpressionRef) equal.getOperand().get(0);
-        Expression right = equal.getOperand().get(1);
+        IsTrue isTrue = (IsTrue)def.getExpression();
+        ExpressionRef left = (ExpressionRef) isTrue.getOperand();
 
         assertThat(left.getName(), is("X"));
-        assertThat(right, literalFor(true));
 
-        assertTrackable(equal);
+        assertTrackable(isTrue);
         assertTrackable(left);
-        //assertTrackable(right);
     }
 
     @Test
     public void testIsNotTrueExpressions(){
         ExpressionDef def = (ExpressionDef) visitData("define X = true\ndefine st = X is not true");
         Not not = (Not) def.getExpression();
-        Equal equal = (Equal) not.getOperand();
-        ExpressionRef left = (ExpressionRef) equal.getOperand().get(0);
-        Expression right = equal.getOperand().get(1);
+        IsTrue isTrue = (IsTrue) not.getOperand();
+        ExpressionRef left = (ExpressionRef) isTrue.getOperand();
 
         assertThat(left.getName(), is("X"));
-        assertThat(right, literalFor(true));
 
         assertTrackable(not);
-        //assertTrackable(equal);
         assertTrackable(left);
-        //assertTrackable(right);
     }
 
     @Test
