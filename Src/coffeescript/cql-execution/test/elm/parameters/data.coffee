@@ -15,6 +15,10 @@ parameter ListParameter : list<String>
 parameter TupleParameter : tuple{a : Integer, b : String, c : Boolean, d : list<Integer>, e : tuple{ f : String, g : Boolean}}
 ###
 
+###
+Translation Error(s):
+[6:126, 6:126] no viable alternative at input '<EOF>'
+###
 module.exports['ParameterDef'] = {
    "library" : {
       "identifier" : {

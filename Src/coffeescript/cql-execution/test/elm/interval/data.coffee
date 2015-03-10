@@ -1734,29 +1734,6 @@ define UnknownEndMayContainDate = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), nul
 define UnknownEndNotContainsDate = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) contains DateTime(2012, 1, 1, 0, 0, 0, 0)
 ###
 
-###
-Translation Error(s):
-[23:31, 23:47] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[23:31, 23:66] Could not determine signature for invocation of operator System.Contains.
-[24:34, 24:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[24:34, 24:62] Could not determine signature for invocation of operator System.Contains.
-[25:32, 25:48] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[25:32, 25:59] Could not determine signature for invocation of operator System.Contains.
-[26:34, 26:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[26:34, 26:69] Could not determine signature for invocation of operator System.Contains.
-[27:35, 27:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[27:35, 27:63] Could not determine signature for invocation of operator System.Contains.
-[33:32, 33:79] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[33:32, 33:121] Could not determine signature for invocation of operator System.Contains.
-[34:35, 34:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[34:35, 34:124] Could not determine signature for invocation of operator System.Contains.
-[35:33, 35:80] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[35:33, 35:122] Could not determine signature for invocation of operator System.Contains.
-[36:35, 36:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[36:35, 36:124] Could not determine signature for invocation of operator System.Contains.
-[37:36, 37:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[37:36, 37:125] Could not determine signature for invocation of operator System.Contains.
-###
 module.exports['Contains'] = {
    "library" : {
       "identifier" : {
@@ -2393,31 +2370,142 @@ module.exports['Contains'] = {
             "name" : "PosInfEndContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "123456789",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "PosInfEndNotContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "UnknownEndMayContainInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "123456789",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "UnknownEndNotContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegContainsDate",
@@ -2818,31 +2906,416 @@ module.exports['Contains'] = {
             "name" : "PosInfEndContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "PosInfEndNotContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "UnknownEndContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "UnknownEndMayContainDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "UnknownEndNotContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -2891,16 +3364,16 @@ define UnknownEndNotContainsDate = DateTime(2012, 1, 1, 0, 0, 0, 0) in interval[
 
 ###
 Translation Error(s):
-[23:44, 23:60] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[24:40, 24:56] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[25:37, 25:53] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[26:47, 26:63] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[27:41, 27:57] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[33:69, 33:116] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[34:71, 34:118] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[35:69, 35:116] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[36:71, 36:118] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[37:72, 37:119] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[18:31, 18:53] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
+[19:34, 19:55] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
+[20:32, 20:53] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
+[21:34, 21:56] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
+[22:35, 22:56] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
+[28:32, 28:115] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
+[29:35, 29:118] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
+[30:33, 30:123] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
+[31:35, 31:118] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
+[32:36, 32:119] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
 ###
 module.exports['In'] = {
    "library" : {
@@ -3417,122 +3890,31 @@ module.exports['In'] = {
             "name" : "NegInfBegContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "type" : "Negate",
-                  "operand" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "7",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NegInfBegNotContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "7",
-                  "type" : "Literal"
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownBegContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "5",
-                  "type" : "Literal"
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownBegMayContainInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "type" : "Negate",
-                  "operand" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "7",
-                     "type" : "Literal"
-                  }
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownBegNotContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "7",
-                  "type" : "Literal"
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : true,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "PosInfEndContainsInt",
@@ -3544,7 +3926,21 @@ module.exports['In'] = {
                   "value" : "123456789",
                   "type" : "Literal"
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
@@ -3560,7 +3956,21 @@ module.exports['In'] = {
                      "type" : "Literal"
                   }
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
@@ -3573,7 +3983,21 @@ module.exports['In'] = {
                   "value" : "0",
                   "type" : "Literal"
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
@@ -3586,7 +4010,21 @@ module.exports['In'] = {
                   "value" : "123456789",
                   "type" : "Literal"
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
@@ -3602,403 +4040,52 @@ module.exports['In'] = {
                      "type" : "Literal"
                   }
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
             "name" : "NegInfBegContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1900",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "NegInfBegNotContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "lowClosed" : true,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownBegContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2012",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "12",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "31",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "23",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "59",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "59",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "999",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownBegMayContainDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1900",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "UnknownBegNotContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "In",
-               "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               }, {
-                  "lowClosed" : false,
-                  "highClosed" : false,
-                  "type" : "Interval",
-                  "low" : {
-                     "type" : "Null"
-                  },
-                  "high" : {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "2013",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "0",
-                        "type" : "Literal"
-                     } ]
-                  }
-               } ]
+               "type" : "Null"
             }
          }, {
             "name" : "PosInfEndContainsDate",
@@ -4038,7 +4125,49 @@ module.exports['In'] = {
                      "type" : "Literal"
                   } ]
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
@@ -4079,7 +4208,49 @@ module.exports['In'] = {
                      "type" : "Literal"
                   } ]
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
@@ -4120,7 +4291,49 @@ module.exports['In'] = {
                      "type" : "Literal"
                   } ]
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
@@ -4161,7 +4374,49 @@ module.exports['In'] = {
                      "type" : "Literal"
                   } ]
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          }, {
@@ -4202,7 +4457,49 @@ module.exports['In'] = {
                      "type" : "Literal"
                   } ]
                }, {
-                  "type" : "Null"
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
                } ]
             }
          } ]
@@ -4250,29 +4547,6 @@ define UnknownEndMayIncludeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), 
 define UnknownEndNotIncludesDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) includes interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0)]
 ###
 
-###
-Translation Error(s):
-[23:34, 23:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[23:52, 23:59] Could not determine signature for invocation of operator System.Includes.
-[24:37, 24:53] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[24:55, 24:62] Could not determine signature for invocation of operator System.Includes.
-[25:35, 25:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[25:53, 25:60] Could not determine signature for invocation of operator System.Includes.
-[26:37, 26:53] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[26:55, 26:62] Could not determine signature for invocation of operator System.Includes.
-[27:38, 27:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[27:56, 27:63] Could not determine signature for invocation of operator System.Includes.
-[33:35, 33:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[33:84, 33:91] Could not determine signature for invocation of operator System.Includes.
-[34:38, 34:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[34:87, 34:94] Could not determine signature for invocation of operator System.Includes.
-[35:36, 35:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[35:85, 35:92] Could not determine signature for invocation of operator System.Includes.
-[36:38, 36:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[36:87, 36:94] Could not determine signature for invocation of operator System.Includes.
-[37:39, 37:86] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[37:88, 37:95] Could not determine signature for invocation of operator System.Includes.
-###
 module.exports['Includes'] = {
    "library" : {
       "identifier" : {
@@ -5239,31 +5513,192 @@ module.exports['Includes'] = {
             "name" : "PosInfEndIncludesIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5678",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotIncludesIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1234",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5678",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndIncludesIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayIncludeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5678",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotIncludesIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1234",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5678",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegIncludesDateIvl",
@@ -5854,31 +6289,606 @@ module.exports['Includes'] = {
             "name" : "PosInfEndIncludesDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2014",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2015",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotIncludesDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2014",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndIncludesDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayIncludeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2014",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2015",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotIncludesDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2014",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          } ]
       }
@@ -5903,16 +6913,13 @@ define PosInfEndNotProperlyIncludesIntIvl = interval[0, null] properly includes 
 define UnknownEndMayProperlyIncludeIntIvl = interval[0, null) properly includes interval[0, 0]
 ###
 
-###
-Translation Error(s):
-[13:42, 13:58] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[13:60, 13:76] Could not determine signature for invocation of operator System.ProperIncludes.
-[14:45, 14:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[14:81, 14:97] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[14:63, 14:79] Could not determine signature for invocation of operator System.Contains.
-[15:45, 15:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[15:63, 15:79] Could not determine signature for invocation of operator System.ProperIncludes.
-###
+[11:42, 11:58] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[11:60, 11:76] Could not determine signature for invocation of operator System.ProperIncludes.
+[12:45, 12:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[12:81, 12:97] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[12:63, 12:79] Could not determine signature for invocation of operator System.Contains.
+[13:45, 13:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
+[13:63, 13:79] Could not determine signature for invocation of operator System.ProperIncludes.
 module.exports['ProperlyIncludes'] = {
    "library" : {
       "identifier" : {
@@ -6392,19 +7399,114 @@ module.exports['ProperlyIncludes'] = {
             "name" : "PosInfEndProperlyIncludesIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1234",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5678",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotProperlyIncludesIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayProperlyIncludeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          } ]
       }
@@ -6451,33 +7553,6 @@ define UnknownEndMayBeIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0,
 define UnknownEndNotIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) included in interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
 ###
 
-###
-Translation Error(s):
-[23:36, 23:52] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[23:66, 23:85] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[23:54, 23:64] Could not determine signature for invocation of operator System.In.
-[24:39, 24:55] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[24:57, 24:67] Could not determine signature for invocation of operator System.In.
-[25:37, 25:53] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[25:67, 25:86] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[25:55, 25:65] Could not determine signature for invocation of operator System.In.
-[26:42, 26:58] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[26:60, 26:70] Could not determine signature for invocation of operator System.In.
-[27:40, 27:56] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[27:58, 27:68] Could not determine signature for invocation of operator System.In.
-[33:37, 33:84] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[33:98, 33:145] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[33:86, 33:96] Could not determine signature for invocation of operator System.In.
-[34:40, 34:87] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[34:89, 34:99] Could not determine signature for invocation of operator System.In.
-[35:38, 35:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[35:99, 35:146] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[35:87, 35:97] Could not determine signature for invocation of operator System.In.
-[36:43, 36:90] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[36:92, 36:102] Could not determine signature for invocation of operator System.In.
-[37:41, 37:88] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[37:90, 37:100] Could not determine signature for invocation of operator System.In.
-###
 module.exports['IncludedIn'] = {
    "library" : {
       "identifier" : {
@@ -7443,31 +8518,202 @@ module.exports['IncludedIn'] = {
             "name" : "PosInfEndIncludedInIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotIncludedInIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndIncludedInIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayBeIncludedInIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotIncludedInIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegIncludedInDateIvl",
@@ -7998,31 +9244,554 @@ module.exports['IncludedIn'] = {
             "name" : "PosInfEndIncludedInDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotIncludedInDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndIncludedInDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayBeIncludedInDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotIncludedInDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          } ]
       }
@@ -8047,16 +9816,13 @@ define PosInfEndNotProperlyIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 
 define UnknownEndMayBeProperlyIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) properly included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
 ###
 
-###
-Translation Error(s):
-[13:45, 13:92] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[13:115, 13:162] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[13:94, 13:113] Properly modifier can only be used with interval-to-interval comparisons.
-[14:48, 14:95] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[14:97, 14:116] Properly modifier can only be used with interval-to-interval comparisons.
-[15:51, 15:98] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[15:100, 15:119] Properly modifier can only be used with interval-to-interval comparisons.
-###
+[11:45, 11:92] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[11:115, 11:162] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[11:94, 11:113] Properly modifier can only be used with interval-to-interval comparisons.
+[12:48, 12:95] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[12:97, 12:116] Properly modifier can only be used with interval-to-interval comparisons.
+[13:51, 13:98] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
+[13:100, 13:119] Properly modifier can only be used with interval-to-interval comparisons.
 module.exports['ProperlyIncludedIn'] = {
    "library" : {
       "identifier" : {
@@ -8536,19 +10302,338 @@ module.exports['ProperlyIncludedIn'] = {
             "name" : "PosInfEndProperlyIncludedInDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotProperlyIncludedInDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayBeProperlyIncludedInDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          } ]
       }
@@ -8589,25 +10674,6 @@ define UnknownEndAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 define UnknownEndNotAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) after interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
 ###
 
-###
-Translation Error(s):
-[21:31, 21:47] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[21:49, 21:53] Could not determine signature for invocation of operator System.After.
-[22:34, 22:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[22:52, 22:56] Could not determine signature for invocation of operator System.After.
-[23:32, 23:48] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[23:50, 23:54] Could not determine signature for invocation of operator System.After.
-[24:35, 24:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[24:53, 24:57] Could not determine signature for invocation of operator System.After.
-[28:32, 28:79] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[28:81, 28:85] Could not determine signature for invocation of operator System.After.
-[29:35, 29:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[29:84, 29:88] Could not determine signature for invocation of operator System.After.
-[30:33, 30:80] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[30:82, 30:86] Could not determine signature for invocation of operator System.After.
-[31:36, 31:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[31:85, 31:89] Could not determine signature for invocation of operator System.After.
-###
 module.exports['After'] = {
    "library" : {
       "identifier" : {
@@ -9508,25 +11574,167 @@ module.exports['After'] = {
             "name" : "PosInfEndAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "20",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "20",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegNotAfterDateIvl",
@@ -9883,25 +12091,485 @@ module.exports['After'] = {
             "name" : "PosInfEndAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2010",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2010",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          } ]
       }
@@ -9942,21 +12610,6 @@ define UnknownEndMayBeBeforeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0),
 define UnknownEndNotBeforeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 ###
 
-###
-Translation Error(s):
-[22:35, 22:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[22:53, 22:58] Could not determine signature for invocation of operator System.Before.
-[23:38, 23:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[23:56, 23:61] Could not determine signature for invocation of operator System.Before.
-[24:36, 24:52] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[24:54, 24:59] Could not determine signature for invocation of operator System.Before.
-[29:36, 29:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[29:85, 29:90] Could not determine signature for invocation of operator System.Before.
-[30:39, 30:86] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[30:88, 30:93] Could not determine signature for invocation of operator System.Before.
-[31:37, 31:84] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[31:86, 31:91] Could not determine signature for invocation of operator System.Before.
-###
 module.exports['Before'] = {
    "library" : {
       "identifier" : {
@@ -10884,19 +13537,115 @@ module.exports['Before'] = {
             "name" : "PosInfEndNotBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1000",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayBeBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1000",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegBeforeDateIvl",
@@ -11370,19 +14119,364 @@ module.exports['Before'] = {
             "name" : "PosInfEndNotBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayBeBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          } ]
       }
@@ -11440,37 +14534,6 @@ define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), nu
 define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
-###
-Translation Error(s):
-[28:36, 28:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[28:56, 28:60] Could not determine signature for invocation of operator System.Meets.
-[29:34, 29:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[29:52, 29:56] Could not determine signature for invocation of operator System.Meets.
-[30:59, 30:75] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[30:53, 30:57] Could not determine signature for invocation of operator System.Meets.
-[31:37, 31:55] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[31:57, 31:61] Could not determine signature for invocation of operator System.Meets.
-[32:40, 32:56] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[32:58, 32:62] Could not determine signature for invocation of operator System.Meets.
-[33:35, 33:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[33:53, 33:57] Could not determine signature for invocation of operator System.Meets.
-[34:62, 34:81] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[34:56, 34:60] Could not determine signature for invocation of operator System.Meets.
-[42:37, 42:84] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[42:86, 42:90] Could not determine signature for invocation of operator System.Meets.
-[43:35, 43:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[43:84, 43:88] Could not determine signature for invocation of operator System.Meets.
-[44:118, 44:165] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[44:112, 44:116] Could not determine signature for invocation of operator System.Meets.
-[45:38, 45:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[45:87, 45:91] Could not determine signature for invocation of operator System.Meets.
-[46:41, 46:88] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[46:90, 46:94] Could not determine signature for invocation of operator System.Meets.
-[47:36, 47:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[47:85, 47:89] Could not determine signature for invocation of operator System.Meets.
-[48:123, 48:170] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[48:117, 48:121] Could not determine signature for invocation of operator System.Meets.
-###
 module.exports['Meets'] = {
    "library" : {
       "identifier" : {
@@ -12655,43 +15718,263 @@ module.exports['Meets'] = {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "99",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1000",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "99",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "50",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
@@ -13516,43 +16799,848 @@ module.exports['Meets'] = {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2010",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Meets",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -13610,37 +17698,6 @@ define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), nu
 define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets after interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
-###
-Translation Error(s):
-[28:36, 28:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[28:56, 28:66] Could not determine signature for invocation of operator System.MeetsAfter.
-[29:34, 29:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[29:52, 29:62] Could not determine signature for invocation of operator System.MeetsAfter.
-[30:65, 30:81] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[30:53, 30:63] Could not determine signature for invocation of operator System.MeetsAfter.
-[31:37, 31:55] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[31:57, 31:67] Could not determine signature for invocation of operator System.MeetsAfter.
-[32:40, 32:56] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[32:58, 32:68] Could not determine signature for invocation of operator System.MeetsAfter.
-[33:35, 33:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[33:53, 33:63] Could not determine signature for invocation of operator System.MeetsAfter.
-[34:68, 34:87] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[34:56, 34:66] Could not determine signature for invocation of operator System.MeetsAfter.
-[42:37, 42:84] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[42:86, 42:96] Could not determine signature for invocation of operator System.MeetsAfter.
-[43:35, 43:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[43:84, 43:94] Could not determine signature for invocation of operator System.MeetsAfter.
-[44:124, 44:171] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[44:112, 44:122] Could not determine signature for invocation of operator System.MeetsAfter.
-[45:38, 45:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[45:87, 45:97] Could not determine signature for invocation of operator System.MeetsAfter.
-[46:41, 46:88] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[46:90, 46:100] Could not determine signature for invocation of operator System.MeetsAfter.
-[47:36, 47:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[47:85, 47:95] Could not determine signature for invocation of operator System.MeetsAfter.
-[48:129, 48:176] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[48:117, 48:127] Could not determine signature for invocation of operator System.MeetsAfter.
-###
 module.exports['MeetsAfter'] = {
    "library" : {
       "identifier" : {
@@ -14825,43 +18882,263 @@ module.exports['MeetsAfter'] = {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "99",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1000",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "99",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "50",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
@@ -15686,43 +19963,848 @@ module.exports['MeetsAfter'] = {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2010",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -15780,37 +20862,6 @@ define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), nu
 define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets before interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
-###
-Translation Error(s):
-[28:36, 28:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[28:56, 28:67] Could not determine signature for invocation of operator System.MeetsBefore.
-[29:34, 29:50] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[29:52, 29:63] Could not determine signature for invocation of operator System.MeetsBefore.
-[30:66, 30:82] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[30:53, 30:64] Could not determine signature for invocation of operator System.MeetsBefore.
-[31:37, 31:55] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[31:57, 31:68] Could not determine signature for invocation of operator System.MeetsBefore.
-[32:40, 32:56] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[32:58, 32:69] Could not determine signature for invocation of operator System.MeetsBefore.
-[33:35, 33:51] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[33:53, 33:64] Could not determine signature for invocation of operator System.MeetsBefore.
-[34:69, 34:88] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[34:56, 34:67] Could not determine signature for invocation of operator System.MeetsBefore.
-[42:37, 42:84] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[42:86, 42:97] Could not determine signature for invocation of operator System.MeetsBefore.
-[43:35, 43:82] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[43:84, 43:95] Could not determine signature for invocation of operator System.MeetsBefore.
-[44:125, 44:172] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[44:112, 44:123] Could not determine signature for invocation of operator System.MeetsBefore.
-[45:38, 45:85] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[45:87, 45:98] Could not determine signature for invocation of operator System.MeetsBefore.
-[46:41, 46:88] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[46:90, 46:101] Could not determine signature for invocation of operator System.MeetsBefore.
-[47:36, 47:83] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[47:85, 47:96] Could not determine signature for invocation of operator System.MeetsBefore.
-[48:130, 48:177] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[48:117, 48:128] Could not determine signature for invocation of operator System.MeetsBefore.
-###
 module.exports['MeetsBefore'] = {
    "library" : {
       "identifier" : {
@@ -16995,43 +22046,263 @@ module.exports['MeetsBefore'] = {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "99",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1000",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "99",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "50",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
@@ -17856,43 +23127,848 @@ module.exports['MeetsBefore'] = {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2010",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2020",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2040",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -20536,13 +26612,6 @@ define RealWidth = width of interval[1.23, 4.56]
 define RealOpenWidth = width of interval(1.23, 4.56)
 ###
 
-###
-Translation Error(s):
-[6:38, 6:54] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[6:29, 6:54] Could not determine signature for invocation of operator System.Width.
-[8:42, 8:58] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[8:33, 8:58] Could not determine signature for invocation of operator System.Width.
-###
 module.exports['Width'] = {
    "library" : {
       "identifier" : {
@@ -20626,7 +26695,24 @@ module.exports['Width'] = {
             "name" : "IntWidthThreeToMax",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Width",
+               "operand" : {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }
             }
          }, {
             "name" : "IntWidthMinToThree",
@@ -20651,7 +26737,24 @@ module.exports['Width'] = {
             "name" : "IntWidthThreeToUnknown",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Width",
+               "operand" : {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "high" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }
+               }
             }
          }, {
             "name" : "IntWidthUnknownToThree",

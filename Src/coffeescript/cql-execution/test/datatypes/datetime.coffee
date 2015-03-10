@@ -2,6 +2,10 @@ should = require 'should'
 { DateTime } = require '../../lib/datatypes/datetime'
 { Uncertainty } = require '../../lib/datatypes/uncertainty'
 
+tzDate = (y, mo, d, h, mi, s, ms, offset) ->
+  if not offset? then offset = (new Date()).getTimezoneOffset() / 60 * -1
+  new Date(Date.UTC(y, mo, d, h, mi, s, ms) - (offset * 60 * 60 * 1000))
+
 describe 'DateTime', ->
 
   it 'should properly set all properties when constructed', ->
@@ -123,46 +127,46 @@ describe 'DateTime', ->
   it 'should correctly convert to uncertainties with JavaScript dates', ->
     preciseUncertainty = DateTime.parse('2000-02-25T12:15:43.123').toUncertainty()
     preciseUncertainty.isPoint().should.be.true
-    preciseUncertainty.low.should.eql new Date(2000, 1, 25, 12, 15, 43, 123)
-    preciseUncertainty.high.should.eql new Date(2000, 1, 25, 12, 15, 43, 123)
+    preciseUncertainty.low.should.eql tzDate(2000, 1, 25, 12, 15, 43, 123)
+    preciseUncertainty.high.should.eql tzDate(2000, 1, 25, 12, 15, 43, 123)
 
     toSecond = DateTime.parse('2000-02-25T12:15:43').toUncertainty()
     toSecond.isPoint().should.be.false
-    toSecond.low.should.eql new Date(2000, 1, 25, 12, 15, 43, 0)
-    toSecond.high.should.eql new Date(2000, 1, 25, 12, 15, 43, 999)
+    toSecond.low.should.eql tzDate(2000, 1, 25, 12, 15, 43, 0)
+    toSecond.high.should.eql tzDate(2000, 1, 25, 12, 15, 43, 999)
 
     toMinute = DateTime.parse('2000-02-25T12:15').toUncertainty()
     toMinute.isPoint().should.be.false
-    toMinute.low.should.eql new Date(2000, 1, 25, 12, 15, 0, 0)
-    toMinute.high.should.eql new Date(2000, 1, 25, 12, 15, 59, 999)
+    toMinute.low.should.eql tzDate(2000, 1, 25, 12, 15, 0, 0)
+    toMinute.high.should.eql tzDate(2000, 1, 25, 12, 15, 59, 999)
 
     toHour = DateTime.parse('2000-02-25T12').toUncertainty()
     toHour.isPoint().should.be.false
-    toHour.low.should.eql new Date(2000, 1, 25, 12, 0, 0, 0)
-    toHour.high.should.eql new Date(2000, 1, 25, 12, 59, 59, 999)
+    toHour.low.should.eql tzDate(2000, 1, 25, 12, 0, 0, 0)
+    toHour.high.should.eql tzDate(2000, 1, 25, 12, 59, 59, 999)
 
     toDay = DateTime.parse('2000-02-25').toUncertainty()
     toDay.isPoint().should.be.false
-    toDay.low.should.eql new Date(2000, 1, 25, 0, 0, 0, 0)
-    toDay.high.should.eql new Date(2000, 1, 25, 23, 59, 59, 999)
+    toDay.low.should.eql tzDate(2000, 1, 25, 0, 0, 0, 0)
+    toDay.high.should.eql tzDate(2000, 1, 25, 23, 59, 59, 999)
 
     toMonthLeapYear = DateTime.parse('2000-02').toUncertainty()
     toMonthLeapYear.isPoint().should.be.false
-    toMonthLeapYear.low.should.eql new Date(2000, 1, 1, 0, 0, 0, 0)
-    toMonthLeapYear.high.should.eql new Date(2000, 1, 29, 23, 59, 59, 999)
+    toMonthLeapYear.low.should.eql tzDate(2000, 1, 1, 0, 0, 0, 0)
+    toMonthLeapYear.high.should.eql tzDate(2000, 1, 29, 23, 59, 59, 999)
 
     toMonthNonLeapYear = DateTime.parse('1999-02').toUncertainty()
     toMonthNonLeapYear.isPoint().should.be.false
-    toMonthNonLeapYear.low.should.eql new Date(1999, 1, 1, 0, 0, 0, 0)
-    toMonthNonLeapYear.high.should.eql new Date(1999, 1, 28, 23, 59, 59, 999)
+    toMonthNonLeapYear.low.should.eql tzDate(1999, 1, 1, 0, 0, 0, 0)
+    toMonthNonLeapYear.high.should.eql tzDate(1999, 1, 28, 23, 59, 59, 999)
 
     toYear = DateTime.parse('2000').toUncertainty()
     toYear.isPoint().should.be.false
-    toYear.low.should.eql new Date(2000, 0, 1, 0, 0, 0, 0)
-    toYear.high.should.eql new Date(2000, 11, 31, 23, 59, 59, 999)
+    toYear.low.should.eql tzDate(2000, 0, 1, 0, 0, 0, 0)
+    toYear.high.should.eql tzDate(2000, 11, 31, 23, 59, 59, 999)
 
   it 'should convert to javascript Date', ->
-    DateTime.parse('2012-02-25T12:55:14.456').toJSDate().should.eql new Date(2012, 1, 25, 12, 55, 14, 456)
+    DateTime.parse('2012-02-25T12:55:14.456').toJSDate().should.eql tzDate(2012, 1, 25, 12, 55, 14, 456)
 
   it 'should convert to javascript Date w/ time zone offsets', ->
     DateTime.parse('2012-10-25T12:55:14.456+04:30').toJSDate().should.eql new Date('2012-10-25T12:55:14.456+04:30')
@@ -170,7 +174,7 @@ describe 'DateTime', ->
     DateTime.parse('2012-10-25T12:55:14.0-05').toJSDate().should.eql new Date('25 Oct 2012 12:55:14 EST')
 
   it 'should floor unknown values when it converts to javascript Date', ->
-    DateTime.parse('2012').toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0, 0)
+    DateTime.parse('2012').toJSDate().should.eql tzDate(2012, 0, 1, 0, 0, 0, 0)
 
 describe 'DateTime.add', ->
 

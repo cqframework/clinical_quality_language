@@ -111,11 +111,11 @@ module.exports.Expand = class Expand extends Expression
 module.exports.Distinct = class Distinct extends Expression
   constructor: (json) ->
     super
-    @source = build json.source
 
   exec: (ctx) ->
+    arg = @execArgs ctx
     container = {}
-    container[itm] = itm for itm in @source.exec(ctx)
+    container[itm] = itm for itm in arg
     value for key, value of container
 
 # ELM-only, not a product of CQL
