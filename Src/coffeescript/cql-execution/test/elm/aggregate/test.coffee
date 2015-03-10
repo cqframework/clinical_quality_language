@@ -89,19 +89,19 @@ describe 'PopulationVariance', ->
   it 'should be able to find PopulationVariance of a list ', ->
     @v.exec(@ctx).should.equal 2.5
 
-describe.skip 'Variance', ->
+describe 'Variance', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Variance of a list ', ->
     @v.exec(@ctx).should.equal 2
 
-describe.skip 'StdDev', ->
+describe 'StdDev', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Standard Dev of a list ', ->
     @std.exec(@ctx).should.equal 1.4142135623730951
 
-describe.skip 'PopulationStdDev', ->
+describe 'PopulationStdDev', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Population Standard Dev of a list ', ->

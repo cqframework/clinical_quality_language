@@ -246,10 +246,6 @@ define CombineNull = Combine(null, ';')
 define CombineNullItem = Combine({ 'abc', 'def', null, 'jkl' }, ';')
 ###
 
-###
-Translation Error(s):
-[4:22, 4:60] Could not resolve call to operator Combine with signature (list<System.String>).
-###
 module.exports['Combine'] = {
    "library" : {
       "identifier" : {
@@ -285,7 +281,28 @@ module.exports['Combine'] = {
             "name" : "NoSeparator",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Combine",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "abc",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "def",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "ghi",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "jkl",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "Separator",

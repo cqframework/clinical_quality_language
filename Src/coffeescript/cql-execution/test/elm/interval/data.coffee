@@ -2255,7 +2255,11 @@ module.exports['Contains'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -2281,7 +2285,11 @@ module.exports['Contains'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -2304,7 +2312,11 @@ module.exports['Contains'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -2327,7 +2339,11 @@ module.exports['Contains'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -2353,7 +2369,11 @@ module.exports['Contains'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -2517,7 +2537,11 @@ module.exports['Contains'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -2596,7 +2620,11 @@ module.exports['Contains'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -2675,7 +2703,11 @@ module.exports['Contains'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -2754,7 +2786,11 @@ module.exports['Contains'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -2833,7 +2869,11 @@ module.exports['Contains'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -3362,19 +3402,6 @@ define UnknownEndMayContainDate = DateTime(2014, 1, 1, 0, 0, 0, 0) in interval[D
 define UnknownEndNotContainsDate = DateTime(2012, 1, 1, 0, 0, 0, 0) in interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
-###
-Translation Error(s):
-[18:31, 18:53] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
-[19:34, 19:55] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
-[20:32, 20:53] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
-[21:34, 21:56] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
-[22:35, 22:56] Operator In already has a registration for signature: (System.Integer,interval<System.Integer>).
-[28:32, 28:115] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
-[29:35, 29:118] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
-[30:33, 30:123] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
-[31:35, 31:118] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
-[32:36, 32:119] Operator In already has a registration for signature: (System.DateTime,interval<System.DateTime>).
-###
 module.exports['In'] = {
    "library" : {
       "identifier" : {
@@ -3890,31 +3917,142 @@ module.exports['In'] = {
             "name" : "NegInfBegContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegNotContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "7",
+                  "type" : "Literal"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownBegContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "5",
+                  "type" : "Literal"
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownBegMayContainInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "7",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownBegNotContainsInt",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "7",
+                  "type" : "Literal"
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndContainsInt",
@@ -4061,31 +4199,416 @@ module.exports['In'] = {
             "name" : "NegInfBegContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1900",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "NegInfBegNotContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownBegContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "31",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "999",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownBegMayContainDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1900",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "UnknownBegNotContainsDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "In",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  },
+                  "high" : {
+                     "name" : "DateTime",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "PosInfEndContainsDate",
@@ -5348,7 +5871,11 @@ module.exports['Includes'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -5384,7 +5911,11 @@ module.exports['Includes'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -5417,7 +5948,11 @@ module.exports['Includes'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -5450,7 +5985,11 @@ module.exports['Includes'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -5486,7 +6025,11 @@ module.exports['Includes'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -5710,7 +6253,11 @@ module.exports['Includes'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -5827,7 +6374,11 @@ module.exports['Includes'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -5944,7 +6495,11 @@ module.exports['Includes'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -6061,7 +6616,11 @@ module.exports['Includes'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -6178,7 +6737,11 @@ module.exports['Includes'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -8354,7 +8917,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -8366,7 +8933,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -8385,7 +8956,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -8421,7 +8996,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -8433,7 +9012,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -8452,7 +9035,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -8488,7 +9075,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -8725,7 +9316,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -8765,7 +9360,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -8812,7 +9411,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -8929,7 +9532,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -8969,7 +9576,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -9016,7 +9627,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -9133,7 +9748,11 @@ module.exports['IncludedIn'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -11475,7 +12094,11 @@ module.exports['After'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -11511,7 +12134,11 @@ module.exports['After'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -11547,7 +12174,11 @@ module.exports['After'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -11746,7 +12377,11 @@ module.exports['After'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -11863,7 +12498,11 @@ module.exports['After'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -11980,7 +12619,11 @@ module.exports['After'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -13411,7 +14054,11 @@ module.exports['Before'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -13444,7 +14091,11 @@ module.exports['Before'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -13477,7 +14128,11 @@ module.exports['Before'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -13510,7 +14165,11 @@ module.exports['Before'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -13657,7 +14316,11 @@ module.exports['Before'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -13774,7 +14437,11 @@ module.exports['Before'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -13891,7 +14558,11 @@ module.exports['Before'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -14008,7 +14679,11 @@ module.exports['Before'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -15493,7 +16168,11 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -15526,7 +16205,11 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -15573,7 +16256,11 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -15592,7 +16279,11 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -15625,7 +16316,11 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -15658,7 +16353,11 @@ module.exports['Meets'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -15705,7 +16404,11 @@ module.exports['Meets'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -15986,7 +16689,11 @@ module.exports['Meets'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -16103,7 +16810,11 @@ module.exports['Meets'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -16290,7 +17001,11 @@ module.exports['Meets'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -16337,7 +17052,11 @@ module.exports['Meets'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -16454,7 +17173,11 @@ module.exports['Meets'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -16571,7 +17294,11 @@ module.exports['Meets'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -16758,7 +17485,11 @@ module.exports['Meets'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -18657,7 +19388,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -18690,7 +19425,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -18737,7 +19476,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -18756,7 +19499,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -18789,7 +19536,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -18822,7 +19573,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -18869,7 +19624,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -19150,7 +19909,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -19267,7 +20030,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -19454,7 +20221,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -19501,7 +20272,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -19618,7 +20393,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -19735,7 +20514,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -19922,7 +20705,11 @@ module.exports['MeetsAfter'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -21821,7 +22608,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -21854,7 +22645,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -21901,7 +22696,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -21920,7 +22719,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -21953,7 +22756,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -21986,7 +22793,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -22033,7 +22844,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -22314,7 +23129,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -22431,7 +23250,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -22618,7 +23441,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -22665,7 +23492,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -22782,7 +23613,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -22899,7 +23734,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -23086,7 +23925,11 @@ module.exports['MeetsBefore'] = {
                   "highClosed" : false,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "name" : "DateTime",
@@ -26724,7 +27567,11 @@ module.exports['Width'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -26766,7 +27613,11 @@ module.exports['Width'] = {
                   "highClosed" : true,
                   "type" : "Interval",
                   "low" : {
-                     "type" : "Null"
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
                   },
                   "high" : {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",

@@ -252,17 +252,11 @@ module.exports['IfNull'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NullNullHelloNullWorld = Coalesce(null, null, 'Hello', null, 'World')
-define FooNullNullBar = Coalesce('Foo', null, null, 'Bar')
-define AllNull = Coalesce(null, null, null)
+define NullNullHelloNullWorld = coalesce(null as String, null as String, 'Hello', null as String, 'World')
+define FooNullNullBar = coalesce('Foo', null as String, null as String, 'Bar')
+define AllNull = coalesce(null as String, null as String, null as String)
 ###
 
-###
-Translation Error(s):
-[4:33, 4:76] Could not resolve call to operator Coalesce with signature (System.Any,System.Any,System.String,System.Any,System.String).
-[5:25, 5:58] Could not resolve call to operator Coalesce with signature (System.String,System.Any,System.Any,System.String).
-[6:18, 6:43] Could not resolve call to operator Coalesce with signature (System.Any,System.Any,System.Any).
-###
 module.exports['Coalesce'] = {
    "library" : {
       "identifier" : {
@@ -298,19 +292,19 @@ module.exports['Coalesce'] = {
             "name" : "NullNullHelloNullWorld",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Coalesce"
             }
          }, {
             "name" : "FooNullNullBar",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Coalesce"
             }
          }, {
             "name" : "AllNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Coalesce"
             }
          } ]
       }

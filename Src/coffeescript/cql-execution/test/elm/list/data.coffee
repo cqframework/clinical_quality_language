@@ -14,7 +14,7 @@ define Three = 1 + 2
 define IntList = { 9, 7, 8 }
 define StringList = { 'a', 'bee', 'see' }
 define MixedList = list<Any>{ 1, 'two', Three }
-define EmptyList = {}
+define EmptyList = list<Integer>{}
 ###
 
 module.exports['List'] = {
@@ -134,7 +134,7 @@ module.exports['List'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EmptyList = exists ({})
+define EmptyList = exists (list<Integer>{})
 define FullList = exists ({ 1, 2, 3 })
 ###
 
@@ -2671,16 +2671,10 @@ context Patient
 define SecondItem = {'a', 'b', 'c', 'd'}[2]
 define ZeroIndex = {'a', 'b', 'c', 'd'}[0]
 define OutOfBounds = {'a', 'b', 'c', 'd'}[100]
-define NullList = null[1]
+define NullList = (null as list<String>)[1]
 define NullIndexer = {'a', 'b', 'c', 'd'}[null]
 ###
 
-###
-Translation Error(s):
-[7:19, 7:25] Call to operator Indexer(System.Any,System.Integer) is ambiguous with: 
-  - Indexer(list<System.String>,System.Integer)
-  - Indexer(System.String,System.Integer)
-###
 module.exports['Indexer'] = {
    "library" : {
       "identifier" : {
@@ -2806,7 +2800,25 @@ module.exports['Indexer'] = {
             "name" : "NullList",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Indexer",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NullIndexer",
@@ -3160,15 +3172,10 @@ define IsIn = { 3, 4, 5 } contains 4
 define IsNotIn = { 3, 5, 6 } contains 4
 define TupleIsIn = {tuple{a:1, b:'d'}, tuple{a:1, b:'c'}, tuple{a:2, b:'c'}} contains tuple{a: 1, b: 'c'}
 define TupleIsNotIn = {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} contains tuple{a: 1, b: 'c'}
-define InNull = null contains {1, 2, 3}
-define NullIn = 1 contains null
+define InNull = (null as list<Integer>) contains 1
+define NullIn = {1, 2, 3} contains null
 ###
 
-###
-Translation Error(s):
-[8:17, 8:39] Could not resolve call to operator Contains with signature (System.Any,list<System.Integer>).
-[9:17, 9:31] Could not resolve call to operator Contains with signature (System.Integer,System.Any).
-###
 module.exports['Contains'] = {
    "library" : {
       "identifier" : {
@@ -3412,13 +3419,53 @@ module.exports['Contains'] = {
             "name" : "InNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NullIn",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -4980,13 +5027,9 @@ define IsNotIncluded = {4, 5, 6} properly included in {1, 2, 3, 4, 5}
 define TuplesIncluded = {tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} properly included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
 define TuplesNotIncluded = {tuple{a:2, b:'d'}, tuple{a:3, b:'c'}} properly included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
 define NullIncludes = {1, 2, 3, 4, 5} properly included in null
-define NullIncluded = null properly included in {1, 2, 3, 4, 5}
+define NullIncluded = (null as list<Integer>) properly included in {1, 2, 3, 4, 5}
 ###
 
-###
-Translation Error(s):
-[11:28, 11:47] Properly modifier can only be used with interval-to-interval comparisons.
-###
 module.exports['ProperIncludedIn'] = {
    "library" : {
       "identifier" : {
@@ -5448,7 +5491,44 @@ module.exports['ProperIncludedIn'] = {
             "name" : "NullIncluded",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -5790,18 +5870,10 @@ define Letters = First({'a', 'b', 'c'})
 define Lists = First({{'a','b','c'},{'d','e','f'}})
 define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = First({3, 1, 4, 2})
-define Empty = First({})
-define NullValue = First(null)
+define Empty = First(list<Integer>{})
+define NullValue = First(null as list<Integer>)
 ###
 
-###
-Translation Error(s):
-[10:20, 10:30] Call to operator First(System.Any) is ambiguous with: 
-  - First(list<list<System.String>>)
-  - First(list<System.String>)
-  - First(list<tuple{a:System.Integer,b:System.Integer,c:System.Integer}>)
-  - First(list<System.Integer>)
-###
 module.exports['First'] = {
    "library" : {
       "identifier" : {
@@ -6024,7 +6096,22 @@ module.exports['First'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "First",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -6040,18 +6127,10 @@ define Letters = Last({'a', 'b', 'c'})
 define Lists = Last({{'a','b','c'},{'d',;'e','f'}})
 define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = Last({3, 1, 4, 2})
-define Empty = Last({})
-define NullValue = Last(null)
+define Empty = Last(list<Integer>{})
+define NullValue = Last(null as list<Integer>)
 ###
 
-###
-Translation Error(s):
-[10:20, 10:29] Call to operator Last(System.Any) is ambiguous with: 
-  - Last(list<list<System.String>>)
-  - Last(list<System.String>)
-  - Last(list<tuple{a:System.Integer,b:System.Integer,c:System.Integer}>)
-  - Last(list<System.Integer>)
-###
 module.exports['Last'] = {
    "library" : {
       "identifier" : {
@@ -6274,7 +6353,22 @@ module.exports['Last'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Last",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -6288,18 +6382,10 @@ context Patient
 define Numbers = Length({2, 4, 6, 8, 10})
 define Lists = Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
 define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
-define Empty = Length({})
-define NullValue = Length(null)
+define Empty = Length(list<Integer>{})
+define NullValue = Length(null as list<Integer>)
 ###
 
-###
-Translation Error(s):
-[8:20, 8:31] Call to operator Length(System.Any) is ambiguous with: 
-  - Length(list<list<System.Integer>>)
-  - Length(list<tuple{a:System.Integer,b:System.Integer,c:System.Integer}>)
-  - Length(list<System.Integer>)
-  - Length(System.String)
-###
 module.exports['Length'] = {
    "library" : {
       "identifier" : {
@@ -6506,7 +6592,22 @@ module.exports['Length'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Length",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          } ]
       }

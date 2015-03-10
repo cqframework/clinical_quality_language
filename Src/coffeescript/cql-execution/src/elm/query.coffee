@@ -108,7 +108,7 @@ module.exports.Query = class Query extends Expression
     super
     @sources = new MultiSource((new AliasedQuerySource(s) for s in json.source))
     @defineClauses = (new DefineClause(d) for d in (json.define ? []))
-    @relationship = build json.relationship
+    @relationship = if json.relationship? then build json.relationship else []
     @where = build json.where
     @returnClause = if json.return? then new ReturnClause(json.return) else null
     @aliases = @sources.aliases()

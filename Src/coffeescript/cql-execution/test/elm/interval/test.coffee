@@ -144,7 +144,7 @@ describe 'In', ->
     @notContainsReal.exec(@ctx).should.be.false
     @notContainsDate.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegContainsInt.exec(@ctx).should.be.true
     @negInfBegNotContainsInt.exec(@ctx).should.be.false
     @unknownBegContainsInt.exec(@ctx).should.be.true
@@ -156,7 +156,7 @@ describe 'In', ->
     should(@unknownEndMayContainInt.exec(@ctx)).be.null
     @unknownEndNotContainsInt.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegContainsDate.exec(@ctx).should.be.true
     @negInfBegNotContainsDate.exec(@ctx).should.be.false
     @unknownBegContainsDate.exec(@ctx).should.be.true

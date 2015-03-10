@@ -15,6 +15,6 @@ define ZeroAndB = IfNull(0, 1)
 define BothNull = IfNull(null, null)
 
 // @Test: Coalesce
-define NullNullHelloNullWorld = Coalesce(null, null, 'Hello', null, 'World')
-define FooNullNullBar = Coalesce('Foo', null, null, 'Bar')
-define AllNull = Coalesce(null, null, null)
+define NullNullHelloNullWorld = coalesce(null as String, null as String, 'Hello', null as String, 'World')
+define FooNullNullBar = coalesce('Foo', null as String, null as String, 'Bar')
+define AllNull = coalesce(null as String, null as String, null as String)

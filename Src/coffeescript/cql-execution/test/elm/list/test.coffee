@@ -76,7 +76,7 @@ describe 'NotEqual', ->
   it 'should identify equal lists of tuples', ->
     @equalTupleList.exec(@ctx).should.be.false
 
-  it 'should identify unequal lists of integers', ->
+  it 'should identify unequal lists of tuples', ->
     @unequalTupleList.exec(@ctx).should.be.true
 
 describe 'Union', ->

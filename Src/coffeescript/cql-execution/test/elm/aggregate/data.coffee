@@ -135,13 +135,9 @@ using QUICK
 context Patient
 define not_null= Sum({1,2,3,4,5})
 define has_null = Sum({1,null,null,null,2})
-define empty = Sum({})
+define empty = Sum(list<Integer>{})
 ###
 
-###
-Translation Error(s):
-[6:16, 6:22] Could not resolve call to operator Sum with signature (list<System.Any>).
-###
 module.exports['Sum'] = {
    "library" : {
       "identifier" : {
@@ -245,7 +241,11 @@ module.exports['Sum'] = {
             "name" : "empty",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Sum",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List"
+               } ]
             }
          } ]
       }
@@ -507,13 +507,9 @@ using QUICK
 context Patient
 define not_null= Avg({1,2,3,4,5})
 define has_null = Avg({1,null,null,2})
-define empty = Avg({})
+define empty = Avg(list<Integer>{})
 ###
 
-###
-Translation Error(s):
-[6:16, 6:22] Could not resolve call to operator Avg with signature (list<System.Any>).
-###
 module.exports['Avg'] = {
    "library" : {
       "identifier" : {
@@ -611,7 +607,11 @@ module.exports['Avg'] = {
             "name" : "empty",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Avg",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List"
+               } ]
             }
          } ]
       }
@@ -1049,10 +1049,6 @@ context Patient
 define v = Variance({1,2,3,4,5})
 ###
 
-###
-Translation Error(s):
-[4:12, 4:32] Could not resolve call to operator Variance with signature (list<System.Integer>).
-###
 module.exports['Variance'] = {
    "library" : {
       "identifier" : {
@@ -1088,7 +1084,49 @@ module.exports['Variance'] = {
             "name" : "v",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Variance",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -1176,10 +1214,6 @@ context Patient
 define std = StdDev({1,2,3,4,5})
 ###
 
-###
-Translation Error(s):
-[4:14, 4:32] Could not resolve call to operator StdDev with signature (list<System.Integer>).
-###
 module.exports['StdDev'] = {
    "library" : {
       "identifier" : {
@@ -1215,7 +1249,49 @@ module.exports['StdDev'] = {
             "name" : "std",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "StdDev",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -1229,10 +1305,6 @@ context Patient
 define dev = PopulationStdDev({1,2,3,4,5})
 ###
 
-###
-Translation Error(s):
-[4:14, 4:42] Could not resolve call to operator PopulationStdDev with signature (list<System.Integer>).
-###
 module.exports['PopulationStdDev'] = {
    "library" : {
       "identifier" : {
@@ -1268,7 +1340,49 @@ module.exports['PopulationStdDev'] = {
             "name" : "dev",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "PopulationStdDev",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
+               } ]
             }
          } ]
       }

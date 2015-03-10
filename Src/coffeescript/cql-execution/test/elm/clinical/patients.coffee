@@ -15,7 +15,7 @@ module.exports.p1 = {
         "identifier": [{ "value": "1" }],
         "name": {"given":["John"], "family": ["Smith"]},
         "gender": "M",
-        "birthDate" : "1980-02-17T06:15"}
+        "birthDate" : "1980-06-17T06:15"}
         }
   ]
 }

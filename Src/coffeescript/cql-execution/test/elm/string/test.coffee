@@ -31,7 +31,7 @@ describe 'Combine', ->
   it.skip 'should be a Combine', ->
     @separator.should.be.an.instanceOf(str.Combine)
 
-  it.skip 'should combine strings with no separator', ->
+  it 'should combine strings with no separator', ->
     @noSeparator.exec(@ctx).should.equal 'abcdefghijkl'
 
   it 'should combine strings with a separator', ->

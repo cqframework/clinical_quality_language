@@ -6,7 +6,7 @@ define empty = Count({})
 // @Test: Sum
 define not_null= Sum({1,2,3,4,5})
 define has_null = Sum({1,null,null,null,2})
-define empty = Sum({})
+define empty = Sum(list<Integer>{})
 
 // @Test: Min
 define not_null= Min({1,2,3,4,5,0})
@@ -21,7 +21,7 @@ define empty = Max({})
 // @Test: Avg
 define not_null= Avg({1,2,3,4,5})
 define has_null = Avg({1,null,null,2})
-define empty = Avg({})
+define empty = Avg(list<Integer>{})
 
 // @Test: Median
 define odd= Median({5,1,2,3,4})
