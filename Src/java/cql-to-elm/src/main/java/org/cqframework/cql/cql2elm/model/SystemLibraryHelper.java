@@ -157,6 +157,7 @@ public class SystemLibraryHelper {
 
         // String operators
         system.add(new Operator("Add", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getString()));
+        system.add(new Operator("Combine", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
         system.add(new Operator("Combine", new Signature(new ListType(systemModel.getString()), systemModel.getString()), systemModel.getString()));
         system.add(new Operator("Concatenate", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getString()));
         system.add(new Operator("Indexer", new Signature(systemModel.getString(), systemModel.getInteger()), systemModel.getString()));

@@ -2961,6 +2961,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private DataType ensureCompatibleTypes(DataType first, DataType second) {
+        if (first.equals(DataType.any)) {
+            return second;
+        }
+
+        if (second.equals(DataType.any)) {
+            return first;
+        }
+
         if (first.isSuperTypeOf(second) || second.isCompatibleWith(first)) {
             return first;
         }
