@@ -1111,8 +1111,8 @@ define NotSameMillisecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same mi
 define SameMillisecondWrongSecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond as DateTime(2000, 3, 15, 13, 30, 26, 200, +1.0)
 define Same = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NotSame = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define SameNormalized = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0))
-define SameHourWrongTimezone = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0))
+define SameNormalized = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
+define SameHourWrongTimezone = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0)
 define ImpreciseHour = DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 15)
 define ImpreciseHourWrongDay = DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 16)
 define NullLeft = null same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
@@ -1120,11 +1120,6 @@ define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as null
 define NullBoth = null same as null
 ###
 
-###
-Translation Error(s):
-[26:120, 26:120] extraneous input ')' expecting {<EOF>, 'except', '*', 'before', 'between', 'same', 'after', 'meets', 'mod', 'context', 'in', 'included in', '-', 'as', 'contains', '.', '+', 'define', '>', 'intersect', '/', 'or', '[', '<', '<=', 'properly', 'overlaps', 'union', 'xor', 'during', '=', 'within', 'div', 'ends', 'includes', '(', 'and', '^', 'is', 'starts', '<>', '>=', QUANTITY}
-[27:133, 27:133] extraneous input ')' expecting {<EOF>, 'except', '*', 'before', 'between', 'same', 'after', 'meets', 'mod', 'context', 'in', 'included in', '-', 'as', 'contains', '.', '+', 'define', '>', 'intersect', '/', 'or', '[', '<', '<=', 'properly', 'overlaps', 'union', 'xor', 'during', '=', 'within', 'div', 'ends', 'includes', '(', 'and', '^', 'is', 'starts', '<>', '>=', QUANTITY}
-###
 module.exports['SameAs'] = {
    "library" : {
       "identifier" : {
