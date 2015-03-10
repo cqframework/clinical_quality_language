@@ -17,3 +17,9 @@ define ListProperIncludes = { 1, 2, 3, 4, 5 } properly includes { 2, 3, 4 }
 define ListProperIncludedIn = { 2, 3, 4 } properly included in { 1, 2, 3, 4, 5 }
 define ListSingletonFrom = singleton from { 1 }
 define ListUnion = { 1, 2, 3 } union { 4, 5, 6 }
+
+define StringListEqual = { 'x', 'y', 'z' } = { 'x', 'y', 'z' }
+define IntegerListEqual = { 1, 2, 3, 4, 5 } = { 1, 2, 3, 4, 5 }
+define EqualTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
+define UnequalTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+

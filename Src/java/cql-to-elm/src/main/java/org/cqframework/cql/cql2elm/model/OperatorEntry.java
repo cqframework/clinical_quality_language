@@ -54,7 +54,7 @@ public class OperatorEntry {
                 results.add(new OperatorResolution(operator));
             }
 
-            if (results == null) {
+            if (results == null && conversionMap != null) {
                 // Attempt to find a conversion path from the call signature to the target signature
                 Conversion[] conversions = new Conversion[operator.getSignature().getSize()];
                 boolean isConvertible = callContext.getSignature().isConvertibleTo(operator.getSignature(), conversionMap, conversions);
@@ -94,6 +94,10 @@ public class OperatorEntry {
 
     private static class SignatureNodes {
         private Map<Signature, SignatureNode> signatures = new HashMap<>();
+
+        public boolean contains(Operator operator) {
+            return signatures.containsKey(operator.getSignature());
+        }
 
         public void add(SignatureNode node) {
             if (node == null) {
@@ -159,6 +163,16 @@ public class OperatorEntry {
         genericOperators.put(operator.getSignature(), operator);
     }
 
+    private boolean allResultsUseConversion(List<OperatorResolution> results) {
+        for (OperatorResolution resolution : results) {
+            if (!resolution.hasConversions()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public List<OperatorResolution> resolve(CallContext callContext, ConversionMap conversionMap) {
         if (callContext == null) {
             throw new IllegalArgumentException("callContext is null");
@@ -166,16 +180,19 @@ public class OperatorEntry {
 
         List<OperatorResolution> results = signatures.resolve(callContext, conversionMap);
 
-        // If there is no resolution, attempt to instantiate a generic signature
-        if (results == null) {
+        // If there is no resolution, or all resolutions require conversion, attempt to instantiate a generic signature
+        if (results == null || allResultsUseConversion(results)) {
             Operator result = instantiate(callContext.getSignature(), conversionMap);
-            if (result != null) {
+            if (result != null && !signatures.contains(result)) {
                 // If the generic signature was instantiated, store it as an actual signature.
                 signatures.add(new SignatureNode(result));
-                // re-attempt the resolution with the instantiated signature registered
-                results = signatures.resolve(callContext, conversionMap);
             }
+
+            // re-attempt the resolution with the instantiated signature registered
+            results = signatures.resolve(callContext, conversionMap);
         }
+
+
 
         return results;
     }
