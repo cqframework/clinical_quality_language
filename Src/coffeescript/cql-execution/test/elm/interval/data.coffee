@@ -7476,13 +7476,6 @@ define PosInfEndNotProperlyIncludesIntIvl = interval[0, null] properly includes 
 define UnknownEndMayProperlyIncludeIntIvl = interval[0, null) properly includes interval[0, 0]
 ###
 
-[11:42, 11:58] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[11:60, 11:76] Could not determine signature for invocation of operator System.ProperIncludes.
-[12:45, 12:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[12:81, 12:97] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[12:63, 12:79] Could not determine signature for invocation of operator System.Contains.
-[13:45, 13:61] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[13:63, 13:79] Could not determine signature for invocation of operator System.ProperIncludes.
 module.exports['ProperlyIncludes'] = {
    "library" : {
       "identifier" : {
@@ -10435,13 +10428,6 @@ define PosInfEndNotProperlyIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 
 define UnknownEndMayBeProperlyIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) properly included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
 ###
 
-[11:45, 11:92] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[11:115, 11:162] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[11:94, 11:113] Properly modifier can only be used with interval-to-interval comparisons.
-[12:48, 12:95] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[12:97, 12:116] Properly modifier can only be used with interval-to-interval comparisons.
-[13:51, 13:98] Expected an expression of type 'System.DateTime', but found an expression of type 'System.Any'.
-[13:100, 13:119] Properly modifier can only be used with interval-to-interval comparisons.
 module.exports['ProperlyIncludedIn'] = {
    "library" : {
       "identifier" : {

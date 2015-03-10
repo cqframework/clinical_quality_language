@@ -238,8 +238,7 @@ describe 'ProperlyIncludes', ->
     @notProperlyIncludesRealIvl.exec(@ctx).should.be.false
     @notProperlyIncludesDateIvl.exec(@ctx).should.be.false
 
-  # TODO: Fix once properlyIncludes patch is merged in
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @posInfEndProperlyIncludesIntIvl.exec(@ctx).should.be.true
     @posInfEndNotProperlyIncludesIntIvl.exec(@ctx).should.be.false
     should(@unknownEndMayProperlyIncludeIntIvl.exec(@ctx)).be.null
@@ -306,8 +305,7 @@ describe 'ProperlyIncludedIn', ->
     @notProperlyIncludesRealIvl.exec(@ctx).should.be.false
     @notProperlyIncludesDateIvl.exec(@ctx).should.be.false
 
-  # TODO: Fix once properlyIncludes patch is merged in
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @posInfEndProperlyIncludedInDateIvl.exec(@ctx).should.be.true
     @posInfEndNotProperlyIncludedInDateIvl.exec(@ctx).should.be.false
     should(@unknownEndMayBeProperlyIncludedInDateIvl.exec(@ctx)).be.null
