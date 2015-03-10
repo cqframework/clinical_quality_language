@@ -24,14 +24,14 @@ describe 'Concat', ->
   it 'should concat variables', ->
     @helloWorldVariables.exec(@ctx).should.equal 'HelloWorld'
 
-describe.skip 'Combine', ->
+describe 'Combine', ->
   @beforeEach ->
     setup @, data
 
   it.skip 'should be a Combine', ->
     @separator.should.be.an.instanceOf(str.Combine)
 
-  it 'should combine strings with no separator', ->
+  it.skip 'should combine strings with no separator', ->
     @noSeparator.exec(@ctx).should.equal 'abcdefghijkl'
 
   it 'should combine strings with a separator', ->

@@ -8,7 +8,7 @@ describe 'Count', ->
 
   it 'should be able to count lists without nulls', ->
     @not_null.exec(@ctx).should.equal 5
-  it.skip 'should be able to count lists with nulls', ->
+  it 'should be able to count lists with nulls', ->
     @has_null.exec(@ctx).should.equal 2
   it 'should be able to count empty list', ->
     @empty.exec(@ctx).should.equal 0
@@ -19,7 +19,7 @@ describe 'Sum', ->
 
   it 'should be able to sum lists without nulls', ->
     @not_null.exec(@ctx).should.equal 15
-  it.skip 'should be able to sum lists with nulls', ->
+  it 'should be able to sum lists with nulls', ->
     @has_null.exec(@ctx).should.equal 3
   it 'should be able to sum empty list', ->
     @empty.exec(@ctx) == null
@@ -30,7 +30,7 @@ describe 'Min', ->
 
   it 'should be able to find min in  lists without nulls', ->
     @not_null.exec(@ctx).should.equal 0
-  it.skip 'should be able to find min in  lists with nulls', ->
+  it 'should be able to find min in  lists with nulls', ->
     @has_null.exec(@ctx).should.equal -1
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
@@ -41,7 +41,7 @@ describe 'Max', ->
 
   it 'should be able to find max in  lists without nulls', ->
     @not_null.exec(@ctx).should.equal 10
-  it.skip 'should be able to find max in  lists with nulls', ->
+  it 'should be able to find max in  lists with nulls', ->
     @has_null.exec(@ctx).should.equal 2
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
@@ -51,7 +51,7 @@ describe 'Avg', ->
     setup @, data
   it 'should be able to find average   lists without nulls', ->
     @not_null.exec(@ctx).should.equal 3
-  it.skip 'should be able to find average   lists with nulls', ->
+  it 'should be able to find average   lists with nulls', ->
     @has_null.exec(@ctx).should.equal 1.5
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
@@ -76,12 +76,12 @@ describe 'Mode', ->
     setup @, data
   it 'should be able to find mode of lists without nulls', ->
     @not_null.exec(@ctx).should.equal 2
-  it.skip 'should be able to find Mode lists with nulls', ->
+  it 'should be able to find Mode lists with nulls', ->
     @has_null.exec(@ctx).should.equal 2
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
-  it.skip 'should be able to find bimodal', ->
-    @bi_modal.exec(@ctx).should.equal [2,3]
+  it 'should be able to find bimodal', ->
+    @bi_modal.exec(@ctx).should.eql [2,3]
 
 describe 'PopulationVariance', ->
   @beforeEach ->
@@ -107,7 +107,7 @@ describe.skip 'PopulationStdDev', ->
   it 'should be able to find Population Standard Dev of a list ', ->
     @dev.exec(@ctx).should.equal 1.5811388300841898
 
-describe.skip 'AllTrue', ->
+describe 'AllTrue', ->
   @beforeEach ->
     setup @, data
 
@@ -117,7 +117,7 @@ describe.skip 'AllTrue', ->
     @atf.exec(@ctx).should.equal false
     @atfwn.exec(@ctx).should.equal false
 
-describe.skip 'AnyTrue', ->
+describe 'AnyTrue', ->
   @beforeEach ->
     setup @, data
 

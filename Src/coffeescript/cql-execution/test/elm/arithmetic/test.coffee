@@ -51,7 +51,7 @@ describe 'Divide', ->
   it 'should divide two numbers that don\'t evenly divide', ->
     @tenDividedByFour.exec(@ctx).should.equal 2.5
 
-  it.skip 'should divide multiple numbers', ->
+  it 'should divide multiple numbers', ->
     @divideMultiple.exec(@ctx).should.equal 5
 
   it 'should divide variables', ->
@@ -68,7 +68,7 @@ describe 'MathPrecedence', ->
   @beforeEach ->
     setup @, data
 
-  it.skip 'should follow order of operations', ->
+  it 'should follow order of operations', ->
     @mixed.exec(@ctx).should.equal 46
 
   it 'should allow parentheses to override order of operations', ->
@@ -93,11 +93,11 @@ describe  'Truncate', ->
   @beforeEach ->
     setup @, data
 
-  it.skip "should be able to return the integer portion of a number", ->
+  it "should be able to return the integer portion of a number", ->
     @trunc.exec(@ctx).should.equal 10
     @even.exec(@ctx).should.equal 10
 
-describe.skip  'Floor', ->
+describe  'Floor', ->
   @beforeEach ->
     setup @, data
 
@@ -113,7 +113,7 @@ describe 'Ceiling', ->
       @ceil.exec(@ctx).should.equal 11
       @even.exec(@ctx).should.equal 10
 
-describe.skip 'Ln', ->
+describe 'Ln', ->
   @beforeEach ->
     setup @, data
 
