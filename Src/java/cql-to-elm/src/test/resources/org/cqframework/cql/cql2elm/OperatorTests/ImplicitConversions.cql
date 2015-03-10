@@ -48,3 +48,8 @@ define dev = PopulationStdDev({1,2,3,4,5})
 
 // Implicit Interval Conversions
 define ImplicitIntervalConversion = interval[3.0, 5.0] = interval[3, 5]
+
+define NullList = (null as list<System.Any>)[1]
+
+define NullIncluded = (null as list<System.Integer>) properly included in {1, 2, 3, 4, 5}
+

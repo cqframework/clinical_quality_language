@@ -1541,7 +1541,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (isLeftPoint) {
             // TODO: Handle is proper (no ELM representation for ProperIn)
             if (isProper) {
-                throw new IllegalArgumentException("Properly modifier can only be used with interval-to-interval comparisons.");
+                throw new IllegalArgumentException("Properly modifier can only be used with interval-to-interval or list-to-list comparisons.");
             }
 
             if (dateTimePrecision != null) {
