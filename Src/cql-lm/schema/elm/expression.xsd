@@ -208,12 +208,12 @@ The following changes were made since the initial informative ballot in Septembe
 	</xs:complexType>
 	<xs:complexType name="FunctionDef">
 		<xs:annotation>
-			<xs:documentation>The FunctionDef type defines a named function that can be invoked by any expression in the artifact. Function names must be unique within the artifact. Functions may take any number of parameters.</xs:documentation>
+			<xs:documentation>The FunctionDef type defines a named function that can be invoked by any expression in the artifact. Function names must be unique within the artifact. Functions may take any number of operands.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="ExpressionDef">
 				<xs:sequence>
-					<xs:element name="parameter" type="ParameterDef" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="operand" type="OperandDef" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -264,6 +264,30 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:extension base="Expression">
 				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OperandDef">
+		<xs:annotation>
+			<xs:documentation>The OperandDef type defines an operand to a function that can be referenced by name anywhere within the body of a function definition.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="operandTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="operandType" type="xs:QName" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OperandRef">
+		<xs:annotation>
+			<xs:documentation>The OperandRef expression allows the value of an operand to be referenced as part of an expression within the body of a function definition.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -335,7 +359,9 @@ If the high bound of the interval is null and closed, the interval is interprete
 			<xs:extension base="Expression">
 				<xs:sequence>
 					<xs:element name="low" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="lowClosedExpression" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="high" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="highClosedExpression" type="Expression" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="lowClosed" type="xs:boolean" use="optional" default="true"/>
 				<xs:attribute name="highClosed" type="xs:boolean" use="optional" default="true"/>
@@ -457,6 +483,22 @@ The static type of the then argument within the first caseItem determines the ty
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="IsTrue">
+		<xs:annotation>
+			<xs:documentation>The IsTrue operator determines whether or not its argument evaluates to true. If the argument evaluates to true, the result is true; if the argument evaluates to false or null, the result is false.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsFalse">
+		<xs:annotation>
+			<xs:documentation>The IsFalse operator determines whether or not its argument evaluates to false. If the argument evaluates to false, the result is true; if the argument evaluates to true or null, the result is false.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="IfNull">
 		<xs:annotation>
 			<xs:documentation>The IfNull operator replaces a null with the result of a given expression. If the first argument evaluates to null, the operator returns the result of the second argument. Otherwise, the operator returns the result of the first argument. The static type of the first argument determines the type of the result, and the second argument must be of that same type.</xs:documentation>
@@ -509,7 +551,10 @@ This operator supports conversion between String and each of Boolean, Integer, R
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
-				<xs:attribute name="toType" type="xs:QName" use="required"/>
+				<xs:sequence>
+					<xs:element name="toTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="toType" type="xs:QName" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -922,12 +967,7 @@ Indexes in strings and lists are defined to be 1-based.
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
-				<xs:sequence>
-					<xs:element name="operand" type="Expression" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="index" type="Expression" minOccurs="1" maxOccurs="1"/>
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Pos">
@@ -1664,11 +1704,7 @@ The operator uses equality comparison semantics as defined in the Equal operator
 If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
-				<xs:sequence>
-					<xs:element name="source" type="Expression"/>
-				</xs:sequence>
-			</xs:extension>
+			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Current">

@@ -6,8 +6,8 @@ import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.util.*;
 
-public class ModelHelper {
-    public ModelHelper(@NotNull ModelInfo modelInfo, ModelHelper systemModel) throws ClassNotFoundException {
+public class Model {
+    public Model(@NotNull ModelInfo modelInfo, Model systemModel) throws ClassNotFoundException {
         info = modelInfo;
         index = new HashMap<>();
         nameIndex = new HashMap<>();

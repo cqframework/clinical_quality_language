@@ -15,11 +15,6 @@ define has_null = Count({1,null,null,null,2})
 define empty = Count({})
 ###
 
-###
-Translation Error(s):
-[5:25, 5:44] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[5:19, 5:45] Could not determine signature for invocation of operator Count.
-###
 module.exports['Count'] = {
    "library" : {
       "identifier" : {
@@ -86,7 +81,38 @@ module.exports['Count'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Count",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "empty",
@@ -109,15 +135,9 @@ using QUICK
 context Patient
 define not_null= Sum({1,2,3,4,5})
 define has_null = Sum({1,null,null,null,2})
-define empty = Sum({})
+define empty = Sum(list<Integer>{})
 ###
 
-###
-Translation Error(s):
-[5:23, 5:42] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[5:19, 5:43] Could not determine signature for invocation of operator Sum.
-[6:16, 6:22] Could not resolve call to operator Sum with signature (list<System.Any>).
-###
 module.exports['Sum'] = {
    "library" : {
       "identifier" : {
@@ -184,13 +204,48 @@ module.exports['Sum'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Sum",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Sum",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List"
+               } ]
             }
          } ]
       }
@@ -206,11 +261,6 @@ define has_null = Min({1,null,-1,null,2})
 define empty = Min({})
 ###
 
-###
-Translation Error(s):
-[5:23, 5:40] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[5:19, 5:41] Could not determine signature for invocation of operator Min.
-###
 module.exports['Min'] = {
    "library" : {
       "identifier" : {
@@ -281,7 +331,39 @@ module.exports['Min'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Min",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "type" : "Negate",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "empty",
@@ -307,11 +389,6 @@ define has_null = Max({1,null,null,2})
 define empty = Max({})
 ###
 
-###
-Translation Error(s):
-[5:23, 5:37] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[5:19, 5:38] Could not determine signature for invocation of operator Max.
-###
 module.exports['Max'] = {
    "library" : {
       "identifier" : {
@@ -382,7 +459,32 @@ module.exports['Max'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Max",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "empty",
@@ -405,15 +507,9 @@ using QUICK
 context Patient
 define not_null= Avg({1,2,3,4,5})
 define has_null = Avg({1,null,null,2})
-define empty = Avg({})
+define empty = Avg(list<Integer>{})
 ###
 
-###
-Translation Error(s):
-[5:23, 5:37] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[5:19, 5:38] Could not determine signature for invocation of operator Avg.
-[6:16, 6:22] Could not resolve call to operator Avg with signature (list<System.Any>).
-###
 module.exports['Avg'] = {
    "library" : {
       "identifier" : {
@@ -480,13 +576,42 @@ module.exports['Avg'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Avg",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Avg",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List"
+               } ]
             }
          } ]
       }
@@ -506,11 +631,6 @@ define dup_vals_even = Median({3,1,2,2,2,3,4,5})
 define dup_vals_odd =  Median({3,1,2,2,2,3,4,5,6})
 ###
 
-###
-Translation Error(s):
-[8:26, 8:40] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[8:19, 8:41] Could not determine signature for invocation of operator Median.
-###
 module.exports['Median'] = {
    "library" : {
       "identifier" : {
@@ -622,7 +742,32 @@ module.exports['Median'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Median",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "dup_vals_even",
@@ -730,11 +875,6 @@ define empty = Mode({})
 define bi_modal= Mode({1,2,2,2,3,3,3,4,5})
 ###
 
-###
-Translation Error(s):
-[5:24, 5:40] Expected an expression of type 'System.Integer', but found an expression of type 'System.Any'.
-[5:19, 5:41] Could not determine signature for invocation of operator Mode.
-###
 module.exports['Mode'] = {
    "library" : {
       "identifier" : {
@@ -809,7 +949,36 @@ module.exports['Mode'] = {
             "name" : "has_null",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Mode",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Integer",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "empty",
@@ -880,10 +1049,6 @@ context Patient
 define v = Variance({1,2,3,4,5})
 ###
 
-###
-Translation Error(s):
-[4:12, 4:32] Could not resolve call to operator Variance with signature (list<System.Integer>).
-###
 module.exports['Variance'] = {
    "library" : {
       "identifier" : {
@@ -919,7 +1084,49 @@ module.exports['Variance'] = {
             "name" : "v",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Variance",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -1007,10 +1214,6 @@ context Patient
 define std = StdDev({1,2,3,4,5})
 ###
 
-###
-Translation Error(s):
-[4:14, 4:32] Could not resolve call to operator StdDev with signature (list<System.Integer>).
-###
 module.exports['StdDev'] = {
    "library" : {
       "identifier" : {
@@ -1046,7 +1249,49 @@ module.exports['StdDev'] = {
             "name" : "std",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "StdDev",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -1060,10 +1305,6 @@ context Patient
 define dev = PopulationStdDev({1,2,3,4,5})
 ###
 
-###
-Translation Error(s):
-[4:14, 4:42] Could not resolve call to operator PopulationStdDev with signature (list<System.Integer>).
-###
 module.exports['PopulationStdDev'] = {
    "library" : {
       "identifier" : {
@@ -1099,7 +1340,49 @@ module.exports['PopulationStdDev'] = {
             "name" : "dev",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "PopulationStdDev",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -1117,13 +1400,6 @@ define atf = AllTrue({true,true,true,false})
 define atfwn = AllTrue({true,true,null,null,true,false})
 ###
 
-###
-Translation Error(s):
-[5:23, 5:53] Expected an expression of type 'System.Boolean', but found an expression of type 'System.Any'.
-[5:15, 5:54] Could not determine signature for invocation of operator AllTrue.
-[8:24, 8:55] Expected an expression of type 'System.Boolean', but found an expression of type 'System.Any'.
-[8:16, 8:56] Could not determine signature for invocation of operator AllTrue.
-###
 module.exports['AllTrue'] = {
    "library" : {
       "identifier" : {
@@ -1186,7 +1462,40 @@ module.exports['AllTrue'] = {
             "name" : "atwn",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "AllTrue",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "atf",
@@ -1219,7 +1528,40 @@ module.exports['AllTrue'] = {
             "name" : "atfwn",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "AllTrue",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -1237,13 +1579,6 @@ define atf = AnyTrue({false,false,false,false})
 define atfwn = AnyTrue({false,false,null,null,false,false})
 ###
 
-###
-Translation Error(s):
-[5:23, 5:55] Expected an expression of type 'System.Boolean', but found an expression of type 'System.Any'.
-[5:15, 5:56] Could not determine signature for invocation of operator AnyTrue.
-[8:24, 8:58] Expected an expression of type 'System.Boolean', but found an expression of type 'System.Any'.
-[8:16, 8:59] Could not determine signature for invocation of operator AnyTrue.
-###
 module.exports['AnyTrue'] = {
    "library" : {
       "identifier" : {
@@ -1306,7 +1641,40 @@ module.exports['AnyTrue'] = {
             "name" : "atwn",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "AnyTrue",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "true",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "atf",
@@ -1339,7 +1707,40 @@ module.exports['AnyTrue'] = {
             "name" : "atfwn",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "AnyTrue",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "false",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                     "value" : "false",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }

@@ -40,17 +40,33 @@ public class OperatorEntry {
             return operator.getSignature();
         }
 
-        public Operator resolve(Signature signature) {
-            if (operator.getSignature().equals(signature)) {
-                return operator;
+        public List<OperatorResolution> resolve(CallContext callContext, ConversionMap conversionMap) {
+            List<OperatorResolution> results = null;
+            if (operator.getSignature().equals(callContext.getSignature())) {
+                results = new ArrayList<>();
+                results.add(new OperatorResolution(operator));
+                return results;
             }
 
-            Operator result = subSignatures.resolve(signature);
-            if (result == null && operator.getSignature().isSuperTypeOf(signature)) {
-                result = operator;
+            results = subSignatures.resolve(callContext, conversionMap);
+            if (results == null && operator.getSignature().isSuperTypeOf(callContext.getSignature())) {
+                results = new ArrayList<>();
+                results.add(new OperatorResolution(operator));
             }
 
-            return result;
+            if (results == null && conversionMap != null) {
+                // Attempt to find a conversion path from the call signature to the target signature
+                Conversion[] conversions = new Conversion[operator.getSignature().getSize()];
+                boolean isConvertible = callContext.getSignature().isConvertibleTo(operator.getSignature(), conversionMap, conversions);
+                if (isConvertible) {
+                    OperatorResolution resolution = new OperatorResolution(operator);
+                    resolution.setConversions(conversions);
+                    results = new ArrayList<>();
+                    results.add(resolution);
+                }
+            }
+
+            return results;
         }
 
         private SignatureNodes subSignatures = new SignatureNodes();
@@ -78,6 +94,10 @@ public class OperatorEntry {
 
     private static class SignatureNodes {
         private Map<Signature, SignatureNode> signatures = new HashMap<>();
+
+        public boolean contains(Operator operator) {
+            return signatures.containsKey(operator.getSignature());
+        }
 
         public void add(SignatureNode node) {
             if (node == null) {
@@ -109,22 +129,20 @@ public class OperatorEntry {
             }
         }
 
-        public Operator resolve(Signature signature) {
-            Operator result = null;
+        public List<OperatorResolution> resolve(CallContext callContext, ConversionMap conversionMap) {
+            ArrayList<OperatorResolution> results = null;
 
             for (SignatureNode n : signatures.values()) {
-                Operator nodeResult = n.resolve(signature);
-                if (nodeResult != null) {
-                    if (result != null) {
-                        throw new IllegalArgumentException(String.format("Invocation of operator %s with signature %s is ambiguous between %s and %s.",
-                                result.getName(), signature, result.getSignature(), nodeResult.getSignature()));
+                List<OperatorResolution> nodeResults = n.resolve(callContext, conversionMap);
+                if (nodeResults != null) {
+                    if (results == null) {
+                        results = new ArrayList();
                     }
-
-                    result = nodeResult;
+                    results.addAll(nodeResults);
                 }
             }
 
-            return result;
+            return results;
         }
     }
 
@@ -145,29 +163,44 @@ public class OperatorEntry {
         genericOperators.put(operator.getSignature(), operator);
     }
 
-    public Operator resolve(Signature signature) {
-        if (signature == null) {
-            throw new IllegalArgumentException("signature is null");
-        }
-
-        Operator result = signatures.resolve(signature);
-
-        // If there is no resolution, attempt to instantiate a generic signature
-        if (result == null) {
-            result = instantiate(signature);
-            if (result != null) {
-                // If the generic signature was instantiated, store it as an actual signature.
-                signatures.add(new SignatureNode(result));
+    private boolean allResultsUseConversion(List<OperatorResolution> results) {
+        for (OperatorResolution resolution : results) {
+            if (!resolution.hasConversions()) {
+                return false;
             }
         }
 
-        return result;
+        return true;
     }
 
-    private Operator instantiate(Signature signature) {
+    public List<OperatorResolution> resolve(CallContext callContext, ConversionMap conversionMap) {
+        if (callContext == null) {
+            throw new IllegalArgumentException("callContext is null");
+        }
+
+        List<OperatorResolution> results = signatures.resolve(callContext, conversionMap);
+
+        // If there is no resolution, or all resolutions require conversion, attempt to instantiate a generic signature
+        if (results == null || allResultsUseConversion(results)) {
+            Operator result = instantiate(callContext.getSignature(), conversionMap);
+            if (result != null && !signatures.contains(result)) {
+                // If the generic signature was instantiated, store it as an actual signature.
+                signatures.add(new SignatureNode(result));
+            }
+
+            // re-attempt the resolution with the instantiated signature registered
+            results = signatures.resolve(callContext, conversionMap);
+        }
+
+
+
+        return results;
+    }
+
+    private Operator instantiate(Signature signature, ConversionMap conversionMap) {
         List<Operator> instantiations = new ArrayList<Operator>();
         for (GenericOperator genericOperator : genericOperators.values()) {
-            Operator instantiation = genericOperator.instantiate(signature);
+            Operator instantiation = genericOperator.instantiate(signature, conversionMap);
             if (instantiation != null) {
                 instantiations.add(instantiation);
             }

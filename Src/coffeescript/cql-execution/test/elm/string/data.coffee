@@ -19,10 +19,6 @@ define World = 'World'
 define HelloWorldVariables = Hello + World
 ###
 
-###
-Translation Error(s):
-[7:21, 7:34] Could not resolve call to operator Add with signature (System.String,System.Any).
-###
 module.exports['Concat'] = {
    "library" : {
       "identifier" : {
@@ -193,7 +189,18 @@ module.exports['Concat'] = {
             "name" : "ConcatNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Add",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "Hello",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "Hello",
@@ -239,13 +246,6 @@ define CombineNull = Combine(null, ';')
 define CombineNullItem = Combine({ 'abc', 'def', null, 'jkl' }, ';')
 ###
 
-###
-Translation Error(s):
-[4:22, 4:60] Could not resolve call to operator Combine with signature (list<System.String>).
-[6:22, 6:39] Could not resolve call to operator Combine with signature (System.Any,System.String).
-[7:34, 7:62] Expected an expression of type 'System.String', but found an expression of type 'System.Any'.
-[7:26, 7:68] Could not determine signature for invocation of operator Combine.
-###
 module.exports['Combine'] = {
    "library" : {
       "identifier" : {
@@ -281,7 +281,28 @@ module.exports['Combine'] = {
             "name" : "NoSeparator",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Combine",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "abc",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "def",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "ghi",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "jkl",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "Separator",
@@ -318,13 +339,58 @@ module.exports['Combine'] = {
             "name" : "CombineNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Combine",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : ";",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "CombineNullItem",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Combine",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "abc",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "def",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "jkl",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : ";",
+                  "type" : "Literal"
+               } ]
             }
          } ]
       }
@@ -341,11 +407,6 @@ define SeparateNull = Split(null, ',')
 define SeparateUsingNull = Split('a,b,c', null)
 ###
 
-###
-Translation Error(s):
-[6:23, 6:38] Could not resolve call to operator Split with signature (System.Any,System.String).
-[7:28, 7:47] Could not resolve call to operator Split with signature (System.String,System.Any).
-###
 module.exports['Split'] = {
    "library" : {
       "identifier" : {
@@ -413,13 +474,37 @@ module.exports['Split'] = {
             "name" : "SeparateNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Split",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : ",",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "SeparateUsingNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Split",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "a,b,c",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -434,10 +519,6 @@ define ElevenLetters = Length('Hello World')
 define NullString = Length(null)
 ###
 
-###
-Translation Error(s):
-[5:21, 5:32] Could not resolve call to operator Length with signature (System.Any).
-###
 module.exports['Length'] = {
    "library" : {
       "identifier" : {
@@ -485,7 +566,15 @@ module.exports['Length'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Length",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -502,10 +591,6 @@ define CamelC = Upper('aBcDeFg123')
 define NullString = Upper(null)
 ###
 
-###
-Translation Error(s):
-[7:21, 7:31] Could not resolve call to operator Upper with signature (System.Any).
-###
 module.exports['Upper'] = {
    "library" : {
       "identifier" : {
@@ -577,7 +662,15 @@ module.exports['Upper'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Upper",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -594,10 +687,6 @@ define CamelC = Lower('aBcDeFg123')
 define NullString = Lower(null)
 ###
 
-###
-Translation Error(s):
-[7:21, 7:31] Could not resolve call to operator Lower with signature (System.Any).
-###
 module.exports['Lower'] = {
    "library" : {
       "identifier" : {
@@ -669,7 +758,15 @@ module.exports['Lower'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Lower",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -687,11 +784,6 @@ define NullString = null[4]
 define NullIndex = 'HelloWorld'[null]
 ###
 
-###
-Translation Error(s):
-[7:21, 7:27] Could not resolve call to operator Indexer with signature (System.Any,System.Integer).
-[8:20, 8:37] Could not resolve call to operator Indexer with signature (System.String,System.Any).
-###
 module.exports['Indexer'] = {
    "library" : {
       "identifier" : {
@@ -728,60 +820,79 @@ module.exports['Indexer'] = {
             "context" : "Patient",
             "expression" : {
                "type" : "Indexer",
-               "operand" : {
+               "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               },
-               "index" : {
+               }, {
                   "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
-               }
+               } ]
             }
          }, {
             "name" : "HelloWorldZero",
             "context" : "Patient",
             "expression" : {
                "type" : "Indexer",
-               "operand" : {
+               "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               },
-               "index" : {
+               }, {
                   "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
-               }
+               } ]
             }
          }, {
             "name" : "HelloWorldTwenty",
             "context" : "Patient",
             "expression" : {
                "type" : "Indexer",
-               "operand" : {
+               "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               },
-               "index" : {
+               }, {
                   "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "20",
                   "type" : "Literal"
-               }
+               } ]
             }
          }, {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Indexer",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "4",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NullIndex",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Indexer",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "HelloWorld",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -798,11 +909,6 @@ define nullPattern = Pos(null, 'abcdefg')
 define nullString = Pos('cde', null)
 ###
 
-###
-Translation Error(s):
-[6:22, 6:41] Could not resolve call to operator Pos with signature (System.Any,System.String).
-[7:21, 7:36] Could not resolve call to operator Pos with signature (System.String,System.Any).
-###
 module.exports['Pos'] = {
    "library" : {
       "identifier" : {
@@ -870,13 +976,37 @@ module.exports['Pos'] = {
             "name" : "nullPattern",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Pos",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "abcdefg",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "nullString",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Pos",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "cde",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -897,11 +1027,6 @@ define NullString = Substring(null, 5)
 define NullStart = Substring('HelloWorld', null)
 ###
 
-###
-Translation Error(s):
-[10:21, 10:38] Could not resolve call to operator Substring with signature (System.Any,System.Integer).
-[11:20, 11:48] Could not resolve call to operator Substring with signature (System.String,System.Any).
-###
 module.exports['Substring'] = {
    "library" : {
       "identifier" : {
@@ -1052,13 +1177,37 @@ module.exports['Substring'] = {
             "name" : "NullString",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Substring",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "5",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NullStart",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Substring",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "HelloWorld",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }

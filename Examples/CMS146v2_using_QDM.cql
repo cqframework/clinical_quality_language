@@ -1,14 +1,14 @@
-library CMS146_QDMß version '2'
+library CMS146_QDM version '2'
 
 using QDM
-
-parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Acute Tonsillitis" = '2.16.840.1.113883.3.464.1003.102.12.1012'
 valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
 valueset "Antibiotic Medications" = '2.16.840.1.113883.3.464.1003.196.12.1001'
 valueset "Group A Streptococcus Test" = '2.16.840.1.113883.3.464.1003.198.12.1012'
+
+parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 context Patient
 
@@ -21,32 +21,43 @@ define Pharyngitis =
 define Antibiotics =
     ["Medication, Order": "Antibiotic Medications"]
 
-define TargetEncounters =
+define MeasurementPeriodEncounters =
     ["Encounter, Performed": "Ambulatory/ED Visit"] E
+        where InDemographic
+            and interval[E."start datetime", E."stop datetime"] during MeasurementPeriod
+
+define PharyngitisEncounters =
+    MeasurementPeriodEncounters E
         with Pharyngitis P such that
-          interval[P."start datetime", P."stop datetime") overlaps after interval[E."start datetime", E."stop datetime")
-        with Antibiotics A such that A."signed datetime" starts 3 days or less after E."start datetime"
-        where interval[E."start datetime", E."stop datetime") during MeasurementPeriod
+            interval[P."start datetime", P."stop datetime"] includes interval[E."start datetime", E."stop datetime"]
+            or P."start datetime" in interval[E."start datetime", E."stop datetime"]
+        with Antibiotics A such that A."signed datetime" 3 days or less after E."start datetime"
 
-define TargetDiagnoses =
+
+define PharyngitisWithPriorAntibiotics =
     Pharyngitis P
-      with TargetEncounters E such that
-        interval[P."start datetime", P."stop datetime") overlaps after interval[E."start datetime", E."stop datetime")
+        with Antibiotics A such that A."signed datetime" 30 days or less before P."start datetime"
 
-define HasPriorAntibiotics =
-    exists (Antibiotics A with TargetDiagnoses D such that A."signed datetime" starts 30 days or less before D."start datetime")
+define ExcludedEncounters =
+    PharyngitisEncounters E
+        with PharyngitisWithPriorAntibiotics P such that
+            interval[P."start datetime", P."stop datetime"] includes interval[E."start datetime", E."stop datetime"]
+            or P."start datetime" in interval[E."start datetime", E."stop datetime"]
 
-define HasTargetEncounter =
-    exists (TargetEncounters)
+define StrepTestEncounters =
+    PharyngitisEncounters E
+        with ["Laboratory Test, Performed": "Group A Streptococcus Test"] T
+            such that T.result is not null
+                and T."start datetime" in interval[E."start datetime" - 3 days, E."stop datetime" + 3 days]
 
-define InInitialPopulation =
-    InDemographic and HasTargetEncounter
+define IPPCount =
+    Count(PharyngitisEncounters)
 
-define InDenominator =
-    true
+define DenominatorCount =
+    IPPCount
 
-define InDenominatorExclusions =
-    HasPriorAntibiotics
+define DenominatorExclusionsCount =
+    Count(ExcludedEncounters)
 
-define InNumerator =
-    exists (["Laboratory Test, Performed": "Group A Streptococcus Test"] R where R."start datetime" during MeasurementPeriod and R.result is not null)
+define NumeratorCount =
+    Count(StrepTestEncounters except ExcludedEncounters)

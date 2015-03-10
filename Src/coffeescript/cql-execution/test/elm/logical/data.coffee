@@ -21,14 +21,6 @@ define NT = null and true
 define NF = null and false
 ###
 
-###
-Translation Error(s):
-[6:13, 6:25] Could not resolve call to operator And with signature (System.Boolean,System.Any).
-[9:13, 9:26] Could not resolve call to operator And with signature (System.Boolean,System.Any).
-[10:13, 10:25] Could not resolve call to operator And with signature (System.Any,System.Any).
-[11:13, 11:25] Could not resolve call to operator And with signature (System.Any,System.Boolean).
-[12:13, 12:26] Could not resolve call to operator And with signature (System.Any,System.Boolean).
-###
 module.exports['And'] = {
    "library" : {
       "identifier" : {
@@ -94,7 +86,18 @@ module.exports['And'] = {
             "name" : "TN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "And",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "FF",
@@ -130,25 +133,71 @@ module.exports['And'] = {
             "name" : "FN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "And",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "And",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NT",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "And",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NF",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "And",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
             }
          } ]
       }
@@ -170,14 +219,6 @@ define NT = null or true
 define NF = null or false
 ###
 
-###
-Translation Error(s):
-[6:13, 6:24] Could not resolve call to operator Or with signature (System.Boolean,System.Any).
-[9:13, 9:25] Could not resolve call to operator Or with signature (System.Boolean,System.Any).
-[10:13, 10:24] Could not resolve call to operator Or with signature (System.Any,System.Any).
-[11:13, 11:24] Could not resolve call to operator Or with signature (System.Any,System.Boolean).
-[12:13, 12:25] Could not resolve call to operator Or with signature (System.Any,System.Boolean).
-###
 module.exports['Or'] = {
    "library" : {
       "identifier" : {
@@ -243,7 +284,18 @@ module.exports['Or'] = {
             "name" : "TN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Or",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "FF",
@@ -279,25 +331,71 @@ module.exports['Or'] = {
             "name" : "FN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Or",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Or",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NT",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Or",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NF",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Or",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
             }
          } ]
       }
@@ -319,14 +417,6 @@ define NT = null xor true
 define NF = null xor false
 ###
 
-###
-Translation Error(s):
-[6:13, 6:25] Could not resolve call to operator Xor with signature (System.Boolean,System.Any).
-[9:13, 9:26] Could not resolve call to operator Xor with signature (System.Boolean,System.Any).
-[10:13, 10:25] Could not resolve call to operator Xor with signature (System.Any,System.Any).
-[11:13, 11:25] Could not resolve call to operator Xor with signature (System.Any,System.Boolean).
-[12:13, 12:26] Could not resolve call to operator Xor with signature (System.Any,System.Boolean).
-###
 module.exports['XOr'] = {
    "library" : {
       "identifier" : {
@@ -392,7 +482,18 @@ module.exports['XOr'] = {
             "name" : "TN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Xor",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "true",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "FF",
@@ -428,25 +529,71 @@ module.exports['XOr'] = {
             "name" : "FN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Xor",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "false",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NN",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Xor",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NT",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Xor",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "true",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NF",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Xor",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "value" : "false",
+                  "type" : "Literal"
+               } ]
             }
          } ]
       }
@@ -462,10 +609,6 @@ define NotFalse = not false
 define NotNull = not null
 ###
 
-###
-Translation Error(s):
-[6:18, 6:25] Could not resolve call to operator Not with signature (System.Any).
-###
 module.exports['Not'] = {
    "library" : {
       "identifier" : {
@@ -523,7 +666,14 @@ module.exports['Not'] = {
             "name" : "NotNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Not",
+               "operand" : {
+                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }
             }
          } ]
       }

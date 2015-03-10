@@ -427,11 +427,6 @@ define DivideMultiple = 1000 / 4 / 10 / 5
 define DivideVariables = Hundred / Four
 ###
 
-###
-Translation Error(s):
-[8:25, 8:37] Could not resolve call to operator Divide with signature (System.Decimal,System.Integer).
-[8:25, 8:41] Could not determine signature for invocation of operator System.Divide.
-###
 module.exports['Divide'] = {
    "library" : {
       "identifier" : {
@@ -513,7 +508,40 @@ module.exports['Divide'] = {
             "name" : "DivideMultiple",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Divide",
+               "operand" : [ {
+                  "type" : "Divide",
+                  "operand" : [ {
+                     "type" : "Divide",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1000",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "name" : "ToDecimal",
+                     "libraryName" : "System",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "DivideVariables",
@@ -595,10 +623,6 @@ define Mixed = 1 + 5 * 10 - 15 / 3
 define Parenthetical = (1 + 5) * (10 - 15) / 3
 ###
 
-###
-Translation Error(s):
-[4:16, 4:34] Could not resolve call to operator Subtract with signature (System.Integer,System.Decimal).
-###
 module.exports['MathPrecedence'] = {
    "library" : {
       "identifier" : {
@@ -634,7 +658,42 @@ module.exports['MathPrecedence'] = {
             "name" : "Mixed",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "type" : "Add",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }, {
+                        "type" : "Multiply",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "10",
+                           "type" : "Literal"
+                        } ]
+                     } ]
+                  } ]
+               }, {
+                  "type" : "Divide",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "Parenthetical",
@@ -878,10 +937,6 @@ define Ceil = Ceiling(10.1)
 define Even = Ceiling(10)
 ###
 
-###
-Translation Error(s):
-[5:15, 5:25] Could not resolve call to operator Ceiling with signature (System.Integer).
-###
 module.exports['Ceiling'] = {
    "library" : {
       "identifier" : {
@@ -929,7 +984,18 @@ module.exports['Ceiling'] = {
             "name" : "Even",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Ceiling",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -944,10 +1010,6 @@ define flr = Floor(10.1)
 define Even = Floor(10)
 ###
 
-###
-Translation Error(s):
-[5:15, 5:23] Could not resolve call to operator Floor with signature (System.Integer).
-###
 module.exports['Floor'] = {
    "library" : {
       "identifier" : {
@@ -995,7 +1057,18 @@ module.exports['Floor'] = {
             "name" : "Even",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Floor",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -1010,10 +1083,6 @@ define Trunc = Truncate(10.1)
 define Even = Truncate(10)
 ###
 
-###
-Translation Error(s):
-[5:15, 5:26] Could not resolve call to operator Truncate with signature (System.Integer).
-###
 module.exports['Truncate'] = {
    "library" : {
       "identifier" : {
@@ -1061,7 +1130,18 @@ module.exports['Truncate'] = {
             "name" : "Even",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Truncate",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -1261,10 +1341,6 @@ context Patient
 define ln = Ln(4)
 ###
 
-###
-Translation Error(s):
-[4:13, 4:17] Could not resolve call to operator Ln with signature (System.Integer).
-###
 module.exports['Ln'] = {
    "library" : {
       "identifier" : {
@@ -1300,7 +1376,18 @@ module.exports['Ln'] = {
             "name" : "ln",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Ln",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -1314,10 +1401,6 @@ context Patient
 define log = Log(10,10000)
 ###
 
-###
-Translation Error(s):
-[4:14, 4:26] Could not resolve call to operator Log with signature (System.Integer,System.Integer).
-###
 module.exports['Log'] = {
    "library" : {
       "identifier" : {
@@ -1353,145 +1436,27 @@ module.exports['Log'] = {
             "name" : "log",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
-            }
-         } ]
-      }
-   }
-}
-
-### MinValue
-library TestSnippet version '1'
-using QUICK
-context Patient
-define Mi = MinValue("Integer")
-define Mr = MinValue("Real")
-define Md = MinValue("DateTime")
-###
-
-###
-Translation Error(s):
-[4:13, 4:31] Could not determine signature for invocation of operator MinValue.
-[5:13, 5:28] Could not determine signature for invocation of operator MinValue.
-[6:13, 6:32] Could not determine signature for invocation of operator MinValue.
-###
-module.exports['MinValue'] = {
-   "library" : {
-      "identifier" : {
-         "id" : "TestSnippet",
-         "version" : "1"
-      },
-      "schemaIdentifier" : {
-         "id" : "urn:hl7-org:elm",
-         "version" : "r1"
-      },
-      "usings" : {
-         "def" : [ {
-            "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
-         }, {
-            "localIdentifier" : "QUICK",
-            "uri" : "http://hl7.org/fhir"
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
-            "name" : "Patient",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "SingletonFrom",
-               "operand" : {
-                  "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
-                  "type" : "Retrieve"
-               }
-            }
-         }, {
-            "name" : "Mi",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "Mr",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "Md",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         } ]
-      }
-   }
-}
-
-### MaxValue
-library TestSnippet version '1'
-using QUICK
-context Patient
-define Mi = MaxValue("Integer")
-define Mr = MaxValue("Real")
-define Md = MaxValue("DateTime")
-###
-
-###
-Translation Error(s):
-[4:13, 4:31] Could not determine signature for invocation of operator MaxValue.
-[5:13, 5:28] Could not determine signature for invocation of operator MaxValue.
-[6:13, 6:32] Could not determine signature for invocation of operator MaxValue.
-###
-module.exports['MaxValue'] = {
-   "library" : {
-      "identifier" : {
-         "id" : "TestSnippet",
-         "version" : "1"
-      },
-      "schemaIdentifier" : {
-         "id" : "urn:hl7-org:elm",
-         "version" : "r1"
-      },
-      "usings" : {
-         "def" : [ {
-            "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
-         }, {
-            "localIdentifier" : "QUICK",
-            "uri" : "http://hl7.org/fhir"
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
-            "name" : "Patient",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "SingletonFrom",
-               "operand" : {
-                  "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
-                  "type" : "Retrieve"
-               }
-            }
-         }, {
-            "name" : "Mi",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "Mr",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
-            }
-         }, {
-            "name" : "Md",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "Null"
+               "name" : "Log",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10000",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -1829,8 +1794,6 @@ define ymdhm_date = predecessor of DateTime(2015,01,01,0,0)
 define ymdhms_date = predecessor of DateTime(2015,01,01,0,0,0)
 define ymdhmsm_date = predecessor of DateTime(2015,01,01,0,0,0,0)
 define min_date = predecessor of DateTime(1900,01,01,0,0,0,0)
-
-  
 ###
 
 module.exports['Predecessor'] = {

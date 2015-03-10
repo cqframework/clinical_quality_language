@@ -27,7 +27,8 @@ public class Main {
         XmlSchemaCollection schemaCol = new XmlSchemaCollection();
         schemaCol.setBaseUri(f.getParent());
         XmlSchema schema = schemaCol.read(new StreamSource(is));
-        ModelInfo modelInfo = ModelImporter.fromXsd(schema, "QUICK");
+        String modelName = args.length > 1 ? args[1] : "QUICK";
+        ModelInfo modelInfo = ModelImporter.fromXsd(schema, modelName);
 
         JAXBContext jc = JAXBContext.newInstance(ModelInfo.class);
         Marshaller marshaller = jc.createMarshaller();

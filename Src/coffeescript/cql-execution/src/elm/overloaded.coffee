@@ -66,11 +66,9 @@ module.exports.ArrayIndexOutOfBoundsException = ArrayIndexOutOfBoundsException =
 module.exports.Indexer = class Indexer extends Expression
   constructor: (json) ->
     super
-    @index = build json.index
 
   exec: (ctx) ->
-    operand = @execArgs ctx
-    index = @index.exec ctx
+    [operand, index] = @execArgs ctx
     if not operand? or not index? then return null
     if index <= 0 or index > operand.length then throw new ArrayIndexOutOfBoundsException()
     operand[index-1]

@@ -14,6 +14,10 @@ valueset "Unknown One Arg" = '1.2.3.4.5.6.7.8.9'
 valueset "Unknown Two Arg" = '1.2.3.4.5.6.7.8.9' version '1'
 ###
 
+###
+Translation Error(s):
+[5:60, 5:60] no viable alternative at input '<EOF>'
+###
 module.exports['ValueSetDef'] = {
    "library" : {
       "identifier" : {

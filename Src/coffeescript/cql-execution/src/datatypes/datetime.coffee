@@ -231,6 +231,36 @@ module.exports.DateTime = class DateTime
     else
       new Date(y, mo, d, h, mi, s, ms)
 
+  _pad: (num) ->
+    String("0" + x).slice(-2);
+
+  # TODO: Needs unit tests!
+  toString: () ->
+    str = ''
+    if @year?
+      str += @year
+      if @month?
+        str += '-' + @_pad(@month)
+        if @day?
+          str += '-' + @_pad(@day)
+          if @hour?
+            str += 'T' + @_pad(@hour)
+            if @minute?
+              str += ':' + @_pad(@minute)
+              if @second?
+                str += ':' + @_pad(@second)
+                if @millisecond?
+                  str += '.' + @_pad(@millisecond)
+
+    if str.indexOf('T') != -1 and @timezoneOffset?
+      str += if @timezoneOffset < 0 then '-' else '+'
+      offsetHours = Math.floor(Math.abs(@timezoneOffset))
+      str += @_pad(offsetHours)
+      offsetMin = (Math.abs(@timezoneOffset) - offsetHours) * 60
+      str += @_pad(offsetMin)
+
+    str
+
   getDate: () ->
     @reducedPrecision DateTime.Unit.DAY
 

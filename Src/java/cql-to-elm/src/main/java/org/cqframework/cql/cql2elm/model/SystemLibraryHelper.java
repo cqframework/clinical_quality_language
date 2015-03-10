@@ -18,7 +18,51 @@ public class SystemLibraryHelper {
 
         // Nullological Operators
         system.add(new Operator("IsNull", new Signature(systemModel.getAny()), systemModel.getBoolean()));
+        system.add(new Operator("IsTrue", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
+        system.add(new Operator("IsFalse", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
         system.add(new GenericOperator("IfNull", new Signature(new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
+
+        // Conversion Operators
+        // ToString(Boolean) : String
+        // ToString(Integer) : String
+        // ToString(Decimal) : String
+        // ToString(DateTime) : String
+        Operator booleanToString = new Operator("ToString", new Signature(systemModel.getBoolean()), systemModel.getString());
+        system.add(booleanToString);
+        system.add(new Conversion(booleanToString, false));
+        Operator integerToString = new Operator("ToString", new Signature(systemModel.getInteger()), systemModel.getString());
+        system.add(integerToString);
+        system.add(new Conversion(integerToString, false));
+        Operator decimalToString = new Operator("ToString", new Signature(systemModel.getDecimal()), systemModel.getString());
+        system.add(decimalToString);
+        system.add(new Conversion(decimalToString, false));
+        Operator dateTimeToString = new Operator("ToString", new Signature(systemModel.getDateTime()), systemModel.getString());
+        system.add(dateTimeToString);
+        system.add(new Conversion(dateTimeToString, false));
+
+        // ToBoolean(String) : Boolean
+        Operator stringToBoolean = new Operator("ToBoolean", new Signature(systemModel.getString()), systemModel.getBoolean());
+        system.add(stringToBoolean);
+        system.add(new Conversion(stringToBoolean, false));
+
+        // ToInteger(String) : Integer
+        Operator stringToInteger = new Operator("ToInteger", new Signature(systemModel.getString()), systemModel.getInteger());
+        system.add(stringToInteger);
+        system.add(new Conversion(stringToInteger, false));
+
+        // ToDecimal(String) : Decimal
+        // ToDecimal(Integer) : Decimal
+        Operator stringToDecimal = new Operator("ToDecimal", new Signature(systemModel.getString()), systemModel.getDecimal());
+        system.add(stringToDecimal);
+        system.add(new Conversion(stringToDecimal, false));
+        Operator integerToDecimal = new Operator("ToDecimal", new Signature(systemModel.getInteger()), systemModel.getDecimal());
+        system.add(integerToDecimal);
+        system.add(new Conversion(integerToDecimal, true));
+
+        // ToDateTime(String) : DateTime
+        Operator stringToDateTime = new Operator("ToDateTime", new Signature(systemModel.getString()), systemModel.getDateTime());
+        system.add(stringToDateTime);
+        system.add(new Conversion(stringToDateTime, false));
 
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
@@ -113,6 +157,7 @@ public class SystemLibraryHelper {
 
         // String operators
         system.add(new Operator("Add", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getString()));
+        system.add(new Operator("Combine", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
         system.add(new Operator("Combine", new Signature(new ListType(systemModel.getString()), systemModel.getString()), systemModel.getString()));
         system.add(new Operator("Concatenate", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getString()));
         system.add(new Operator("Indexer", new Signature(systemModel.getString(), systemModel.getInteger()), systemModel.getString()));
@@ -157,8 +202,6 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Collapse", new Signature(new ListType(new IntervalType(new TypeParameter("T")))), new ListType(new IntervalType(new TypeParameter("T"))), new TypeParameter("T")));
         // Contains<T>(interval<T>, T) : Boolean
         system.add(new GenericOperator("Contains", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-        // Distinct<T>(list<T>) : list<T>
-        system.add(new GenericOperator("Distinct", new Signature(new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // End<T>(interval<T>) : T
         system.add(new GenericOperator("End", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Ends<T>(interval<T>, interval<T>) : Boolean
@@ -204,6 +247,8 @@ public class SystemLibraryHelper {
         // List Operators
         // Contains<T>(list<T>, T) : Boolean
         system.add(new GenericOperator("Contains", new Signature(new ListType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Distinct<T>(list<T>) : list<T>
+        system.add(new GenericOperator("Distinct", new Signature(new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // Equal<T>(list<T>, list<T>) : Boolean
         // Already covered by Equal<T>(T, T)
         //system.add(new GenericOperator("Equal", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));

@@ -14,7 +14,7 @@ define Three = 1 + 2
 define IntList = { 9, 7, 8 }
 define StringList = { 'a', 'bee', 'see' }
 define MixedList = list<Any>{ 1, 'two', Three }
-define EmptyList = {}
+define EmptyList = list<Integer>{}
 ###
 
 module.exports['List'] = {
@@ -134,7 +134,7 @@ module.exports['List'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EmptyList = exists ({})
+define EmptyList = exists (list<Integer>{})
 define FullList = exists ({ 1, 2, 3 })
 ###
 
@@ -1044,11 +1044,6 @@ define NullUnion = null union {1, 2, 3}
 define UnionNull = {1, 2, 3} union null
 ###
 
-###
-Translation Error(s):
-[8:20, 8:39] Could not resolve call to operator Union with signature (System.Any,list<System.Integer>).
-[9:20, 9:39] Could not resolve call to operator Union with signature (list<System.Integer>,System.Any).
-###
 module.exports['Union'] = {
    "library" : {
       "identifier" : {
@@ -1298,13 +1293,69 @@ module.exports['Union'] = {
             "name" : "NullUnion",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Union",
+               "operand" : [ {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "UnionNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Union",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -1327,11 +1378,6 @@ define ExceptNull = {1, 2, 3, 4, 5} except null
 define NullExcept = null except {1, 2, 3, 4, 5}
 ###
 
-###
-Translation Error(s):
-[12:21, 12:47] Could not resolve call to operator Except with signature (list<System.Integer>,System.Any).
-[13:21, 13:47] Could not resolve call to operator Except with signature (System.Any,list<System.Integer>).
-###
 module.exports['Except'] = {
    "library" : {
       "identifier" : {
@@ -1713,13 +1759,85 @@ module.exports['Except'] = {
             "name" : "ExceptNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Except",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "NullExcept",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Except",
+               "operand" : [ {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -1740,11 +1858,6 @@ define NullIntersect = null intersect {1, 2, 3}
 define IntersectNull = {1, 2, 3} intersect null
 ###
 
-###
-Translation Error(s):
-[10:24, 10:47] Could not resolve call to operator Intersect with signature (System.Any,list<System.Integer>).
-[11:24, 11:47] Could not resolve call to operator Intersect with signature (list<System.Integer>,System.Any).
-###
 module.exports['Intersect'] = {
    "library" : {
       "identifier" : {
@@ -2229,13 +2342,69 @@ module.exports['Intersect'] = {
             "name" : "NullIntersect",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Intersect",
+               "operand" : [ {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "IntersectNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Intersect",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -2254,11 +2423,6 @@ define NullList = IndexOf(null, 'a')
 define NullItem = IndexOf({'a', 'b', 'c'}, null)
 ###
 
-###
-Translation Error(s):
-[8:19, 8:36] Could not resolve call to operator IndexOf with signature (System.Any,System.String).
-[9:19, 9:48] Could not resolve call to operator IndexOf with signature (list<System.String>,System.Any).
-###
 module.exports['IndexOf'] = {
    "library" : {
       "identifier" : {
@@ -2446,13 +2610,54 @@ module.exports['IndexOf'] = {
             "name" : "NullList",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "IndexOf",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "a",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NullItem",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "IndexOf",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "a",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "b",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "c",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -2466,15 +2671,10 @@ context Patient
 define SecondItem = {'a', 'b', 'c', 'd'}[2]
 define ZeroIndex = {'a', 'b', 'c', 'd'}[0]
 define OutOfBounds = {'a', 'b', 'c', 'd'}[100]
-define NullList = null[1]
+define NullList = (null as list<String>)[1]
 define NullIndexer = {'a', 'b', 'c', 'd'}[null]
 ###
 
-###
-Translation Error(s):
-[7:19, 7:25] Could not resolve call to operator Indexer with signature (System.Any,System.Integer).
-[8:22, 8:47] Could not resolve call to operator Indexer with signature (list<System.String>,System.Any).
-###
 module.exports['Indexer'] = {
    "library" : {
       "identifier" : {
@@ -2511,7 +2711,7 @@ module.exports['Indexer'] = {
             "context" : "Patient",
             "expression" : {
                "type" : "Indexer",
-               "operand" : {
+               "operand" : [ {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm:r1}String",
@@ -2530,19 +2730,18 @@ module.exports['Indexer'] = {
                      "value" : "d",
                      "type" : "Literal"
                   } ]
-               },
-               "index" : {
+               }, {
                   "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
-               }
+               } ]
             }
          }, {
             "name" : "ZeroIndex",
             "context" : "Patient",
             "expression" : {
                "type" : "Indexer",
-               "operand" : {
+               "operand" : [ {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm:r1}String",
@@ -2561,19 +2760,18 @@ module.exports['Indexer'] = {
                      "value" : "d",
                      "type" : "Literal"
                   } ]
-               },
-               "index" : {
+               }, {
                   "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
-               }
+               } ]
             }
          }, {
             "name" : "OutOfBounds",
             "context" : "Patient",
             "expression" : {
                "type" : "Indexer",
-               "operand" : {
+               "operand" : [ {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm:r1}String",
@@ -2592,24 +2790,67 @@ module.exports['Indexer'] = {
                      "value" : "d",
                      "type" : "Literal"
                   } ]
-               },
-               "index" : {
+               }, {
                   "valueType" : "{urn:hl7-org:elm:r1}Integer",
                   "value" : "100",
                   "type" : "Literal"
-               }
+               } ]
             }
          }, {
             "name" : "NullList",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Indexer",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NullIndexer",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Indexer",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "a",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "b",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "c",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "value" : "d",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -2873,7 +3114,11 @@ module.exports['In'] = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
-                  "type" : "Null"
+                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
                }, {
                   "type" : "List",
                   "element" : [ {
@@ -2901,7 +3146,17 @@ module.exports['In'] = {
                   "value" : "1",
                   "type" : "Literal"
                }, {
-                  "type" : "Null"
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
                } ]
             }
          } ]
@@ -2917,15 +3172,10 @@ define IsIn = { 3, 4, 5 } contains 4
 define IsNotIn = { 3, 5, 6 } contains 4
 define TupleIsIn = {tuple{a:1, b:'d'}, tuple{a:1, b:'c'}, tuple{a:2, b:'c'}} contains tuple{a: 1, b: 'c'}
 define TupleIsNotIn = {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} contains tuple{a: 1, b: 'c'}
-define InNull = null contains {1, 2, 3}
-define NullIn = 1 contains null
+define InNull = (null as list<Integer>) contains 1
+define NullIn = {1, 2, 3} contains null
 ###
 
-###
-Translation Error(s):
-[8:17, 8:39] Could not resolve call to operator Contains with signature (System.Any,list<System.Integer>).
-[9:17, 9:31] Could not resolve call to operator Contains with signature (System.Integer,System.Any).
-###
 module.exports['Contains'] = {
    "library" : {
       "identifier" : {
@@ -3169,13 +3419,53 @@ module.exports['Contains'] = {
             "name" : "InNull",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "NullIn",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -3196,11 +3486,6 @@ define NullIncluded = {1, 2, 3, 4, 5} includes null
 define NullIncludes = null includes {1, 2, 3, 4, 5}
 ###
 
-###
-Translation Error(s):
-[10:39, 10:46] Could not resolve call to operator Contains with signature (list<System.Integer>,System.Any).
-[11:28, 11:35] Could not resolve call to operator Includes with signature (System.Any,list<System.Integer>).
-###
 module.exports['Includes'] = {
    "library" : {
       "identifier" : {
@@ -3620,13 +3905,79 @@ module.exports['Includes'] = {
             "name" : "NullIncluded",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NullIncludes",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Includes",
+               "operand" : [ {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -3647,10 +3998,6 @@ define NullIncludes = {1, 2, 3, 4, 5} included in null
 define NullIncluded = null included in {1, 2, 3, 4, 5}
 ###
 
-###
-Translation Error(s):
-[10:39, 10:49] Could not resolve call to operator IncludedIn with signature (list<System.Integer>,System.Any).
-###
 module.exports['IncludedIn'] = {
    "library" : {
       "identifier" : {
@@ -4070,7 +4417,43 @@ module.exports['IncludedIn'] = {
             "name" : "NullIncludes",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "NullIncluded",
@@ -4123,11 +4506,6 @@ define NullIncluded = {1, 2, 3, 4, 5} properly includes null
 define NullIncludes = null properly includes {1, 2, 3, 4, 5}
 ###
 
-###
-Translation Error(s):
-[10:39, 10:55] Could not resolve call to operator Contains with signature (list<System.Integer>,System.Any).
-[11:28, 11:44] Could not resolve call to operator ProperIncludes with signature (System.Any,list<System.Integer>).
-###
 module.exports['ProperIncludes'] = {
    "library" : {
       "identifier" : {
@@ -4559,13 +4937,79 @@ module.exports['ProperIncludes'] = {
             "name" : "NullIncluded",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Contains",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NullIncludes",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -4583,14 +5027,9 @@ define IsNotIncluded = {4, 5, 6} properly included in {1, 2, 3, 4, 5}
 define TuplesIncluded = {tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} properly included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
 define TuplesNotIncluded = {tuple{a:2, b:'d'}, tuple{a:3, b:'c'}} properly included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
 define NullIncludes = {1, 2, 3, 4, 5} properly included in null
-define NullIncluded = null properly included in {1, 2, 3, 4, 5}
+define NullIncluded = (null as list<Integer>) properly included in {1, 2, 3, 4, 5}
 ###
 
-###
-Translation Error(s):
-[10:39, 10:58] Could not resolve call to operator ProperIncludedIn with signature (list<System.Integer>,System.Any).
-[11:28, 11:47] Properly modifier can only be used with interval-to-interval comparisons.
-###
 module.exports['ProperIncludedIn'] = {
    "library" : {
       "identifier" : {
@@ -5010,13 +5449,86 @@ module.exports['ProperIncludedIn'] = {
             "name" : "NullIncludes",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          }, {
             "name" : "NullIncluded",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }, {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          } ]
       }
@@ -5031,10 +5543,6 @@ define ListOfLists = expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, 
 define NullValue = expand null
 ###
 
-###
-Translation Error(s):
-[5:20, 5:30] Could not resolve call to operator Expand with signature (System.Any).
-###
 module.exports['Expand'] = {
    "library" : {
       "identifier" : {
@@ -5170,7 +5678,23 @@ module.exports['Expand'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Expand",
+               "operand" : {
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:hl7-org:elm:r1}Integer",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }
+                  }
+               }
             }
          } ]
       }
@@ -5221,7 +5745,7 @@ module.exports['Distinct'] = {
             "context" : "Patient",
             "expression" : {
                "type" : "Distinct",
-               "source" : {
+               "operand" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -5307,7 +5831,7 @@ module.exports['Distinct'] = {
             "context" : "Patient",
             "expression" : {
                "type" : "Distinct",
-               "source" : {
+               "operand" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm:r1}Integer",
@@ -5346,14 +5870,10 @@ define Letters = First({'a', 'b', 'c'})
 define Lists = First({{'a','b','c'},{'d','e','f'}})
 define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = First({3, 1, 4, 2})
-define Empty = First({})
-define NullValue = First(null)
+define Empty = First(list<Integer>{})
+define NullValue = First(null as list<Integer>)
 ###
 
-###
-Translation Error(s):
-[10:20, 10:30] Could not resolve call to operator First with signature (System.Any).
-###
 module.exports['First'] = {
    "library" : {
       "identifier" : {
@@ -5576,7 +6096,22 @@ module.exports['First'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "First",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -5592,14 +6127,10 @@ define Letters = Last({'a', 'b', 'c'})
 define Lists = Last({{'a','b','c'},{'d',;'e','f'}})
 define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = Last({3, 1, 4, 2})
-define Empty = Last({})
-define NullValue = Last(null)
+define Empty = Last(list<Integer>{})
+define NullValue = Last(null as list<Integer>)
 ###
 
-###
-Translation Error(s):
-[10:20, 10:29] Could not resolve call to operator Last with signature (System.Any).
-###
 module.exports['Last'] = {
    "library" : {
       "identifier" : {
@@ -5822,7 +6353,22 @@ module.exports['Last'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Last",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          } ]
       }
@@ -5836,14 +6382,10 @@ context Patient
 define Numbers = Length({2, 4, 6, 8, 10})
 define Lists = Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
 define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
-define Empty = Length({})
-define NullValue = Length(null)
+define Empty = Length(list<Integer>{})
+define NullValue = Length(null as list<Integer>)
 ###
 
-###
-Translation Error(s):
-[8:20, 8:31] Could not resolve call to operator Length with signature (System.Any).
-###
 module.exports['Length'] = {
    "library" : {
       "identifier" : {
@@ -6050,7 +6592,22 @@ module.exports['Length'] = {
             "name" : "NullValue",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "name" : "Length",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               } ]
             }
          } ]
       }

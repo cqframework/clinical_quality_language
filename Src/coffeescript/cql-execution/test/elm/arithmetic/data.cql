@@ -41,10 +41,10 @@ define Pow = 3 ^ 4
 define Trunc = TruncatedDivide(10,3)
 define Even = TruncatedDivide(9,3)
 
-// @Test: Modulo 
+// @Test: Modulo
 define Mod = Modulo(3 , 2)
 
-// @Test: Ceiling 
+// @Test: Ceiling
 define Ceil = Ceiling(10.1)
 define Even = Ceiling(10)
 
@@ -57,33 +57,22 @@ define Even = Floor(10)
 define Trunc = Truncate(10.1)
 define Even = Truncate(10)
 
-// @Test: Abs 
+// @Test: Abs
 define Pos = Abs(10)
 define Neg = Abs(-10)
 define Zero = Abs(0)
 
-// @Test: Round 
+// @Test: Round
 define Up = Round(4.56)
 define Up_percent = Round(4.56,1)
 define Down = Round(4.49)
 define Down_percent = Round(4.43,1)
 
-// @Test: Ln 
+// @Test: Ln
 define ln = Ln(4)
 
-// @Test: Log 
+// @Test: Log
 define log = Log(10,10000)
-
-
-// @Test: MinValue
-define Mi = MinValue("Integer")
-define Mr = MinValue("Real")
-define Md = MinValue("DateTime")
-
-// @Test: MaxValue 
-define Mi = MaxValue("Integer")
-define Mr = MaxValue("Real")
-define Md = MaxValue("DateTime")
 
 // @Test: Successor
 
@@ -113,5 +102,3 @@ define ymdhm_date = predecessor of DateTime(2015,01,01,0,0)
 define ymdhms_date = predecessor of DateTime(2015,01,01,0,0,0)
 define ymdhmsm_date = predecessor of DateTime(2015,01,01,0,0,0,0)
 define min_date = predecessor of DateTime(1900,01,01,0,0,0,0)
-
-  

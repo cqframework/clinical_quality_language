@@ -16,6 +16,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testIn() throws IOException {
+        runSemanticTest("InTest.cql");
+    }
+
+    @Test
     public void testProperties() throws IOException {
         runSemanticTest("PropertyTest.cql");
     }
@@ -33,6 +38,71 @@ public class SemanticTests {
     @Test
     public void testCMS146v2() throws IOException {
         runSemanticTest("CMS146v2_Test_CQM.cql");
+    }
+    
+    @Test
+    public void testAggregateOperators() throws IOException {
+        runSemanticTest("OperatorTests/AggregateOperators.cql");
+    }
+
+    @Test
+    public void testArithmeticOperators() throws IOException {
+        runSemanticTest("OperatorTests/ArithmeticOperators.cql");
+    }
+
+    @Test
+    public void testComparisonOperators() throws IOException {
+        runSemanticTest("OperatorTests/ComparisonOperators.cql");
+    }
+
+    @Test
+    public void testDateTimeOperators() throws IOException {
+        runSemanticTest("OperatorTests/DateTimeOperators.cql");
+    }
+
+    @Test
+    public void testIntervalOperators() throws IOException {
+        runSemanticTest("OperatorTests/IntervalOperators.cql");
+    }
+
+    @Test
+    public void testListOperators() throws IOException {
+        runSemanticTest("OperatorTests/ListOperators.cql");
+    }
+
+    @Test
+    public void testLogicalOperators() throws IOException {
+        runSemanticTest("OperatorTests/LogicalOperators.cql");
+    }
+
+    @Test
+    public void testNullologicalOperators() throws IOException {
+        runSemanticTest("OperatorTests/NullologicalOperators.cql");
+    }
+
+    @Test
+    public void testStringOperators() throws IOException {
+        runSemanticTest("OperatorTests/StringOperators.cql");
+    }
+
+    @Test
+    public void testTypeOperators() throws IOException {
+        runSemanticTest("OperatorTests/TypeOperators.cql");
+    }
+
+    @Test
+    public void testImplicitConversions() throws IOException {
+        runSemanticTest("OperatorTests/ImplicitConversions.cql");
+    }
+
+    @Test
+    public void testTupleAndClassConversions() throws IOException {
+        runSemanticTest("OperatorTests/TupleAndClassConversions.cql");
+    }
+
+    @Test
+    public void testFunctions() throws IOException {
+        runSemanticTest("OperatorTests/Functions.cql");
     }
 
     private void runSemanticTest(String testFileName) throws IOException {

@@ -394,10 +394,6 @@ define ImpreciseComponentTuple = tuple {
 define NullDate = year from null
 ###
 
-###
-Translation Error(s):
-[22:19, 22:32] Could not resolve call to operator DateTimeComponentFrom with signature (System.Any).
-###
 module.exports['DateTimeComponentFrom'] = {
    "library" : {
       "identifier" : {
@@ -647,7 +643,15 @@ module.exports['DateTimeComponentFrom'] = {
             "name" : "NullDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "precision" : "Year",
+               "type" : "DateTimeComponentFrom",
+               "operand" : {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }
             }
          } ]
       }
@@ -663,10 +667,6 @@ define ImpreciseDate = date from DateTime(2000)
 define NullDate = date from null
 ###
 
-###
-Translation Error(s):
-[6:19, 6:32] Could not resolve call to operator Date with signature (System.Any).
-###
 module.exports['DateFrom'] = {
    "library" : {
       "identifier" : {
@@ -760,7 +760,14 @@ module.exports['DateFrom'] = {
             "name" : "NullDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "DateFrom",
+               "operand" : {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }
             }
          } ]
       }
@@ -776,10 +783,6 @@ define NoTime = time from DateTime(2000, 3, 15)
 define NullDate = time from null
 ###
 
-###
-Translation Error(s):
-[6:19, 6:32] Could not resolve call to operator Time with signature (System.Any).
-###
 module.exports['TimeFrom'] = {
    "library" : {
       "identifier" : {
@@ -881,7 +884,14 @@ module.exports['TimeFrom'] = {
             "name" : "NullDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "TimeFrom",
+               "operand" : {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }
             }
          } ]
       }
@@ -898,10 +908,6 @@ define DefaultTimezone = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
 define NullDate = timezone from null
 ###
 
-###
-Translation Error(s):
-[7:19, 7:36] Could not resolve call to operator Timezone with signature (System.Any).
-###
 module.exports['TimezoneFrom'] = {
    "library" : {
       "identifier" : {
@@ -1065,7 +1071,14 @@ module.exports['TimezoneFrom'] = {
             "name" : "NullDate",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "TimezoneFrom",
+               "operand" : {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }
             }
          } ]
       }
@@ -1098,8 +1111,8 @@ define NotSameMillisecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same mi
 define SameMillisecondWrongSecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond as DateTime(2000, 3, 15, 13, 30, 26, 200, +1.0)
 define Same = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NotSame = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define SameNormalized = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0))
-define SameHourWrongTimezone = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0))
+define SameNormalized = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
+define SameHourWrongTimezone = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0)
 define ImpreciseHour = DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 15)
 define ImpreciseHourWrongDay = DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 16)
 define NullLeft = null same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
@@ -1107,12 +1120,6 @@ define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as null
 define NullBoth = null same as null
 ###
 
-###
-Translation Error(s):
-[30:24, 30:30] Could not resolve call to operator SameAs with signature (System.Any,System.DateTime).
-[31:65, 31:71] Could not resolve call to operator SameAs with signature (System.DateTime,System.Any).
-[32:24, 32:30] Could not resolve call to operator SameAs with signature (System.Any,System.Any).
-###
 module.exports['SameAs'] = {
    "library" : {
       "identifier" : {
@@ -3183,19 +3190,118 @@ module.exports['SameAs'] = {
             "name" : "NullLeft",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameAs",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "NullRight",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameAs",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameAs",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -3244,12 +3350,6 @@ define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after nu
 define NullBoth = null same or after null
 ###
 
-###
-Translation Error(s):
-[37:24, 37:36] Could not resolve call to operator SameOrAfter with signature (System.Any,System.DateTime).
-[38:65, 38:77] Could not resolve call to operator SameOrAfter with signature (System.DateTime,System.Any).
-[39:24, 39:36] Could not resolve call to operator SameOrAfter with signature (System.Any,System.Any).
-###
 module.exports['SameOrAfter'] = {
    "library" : {
       "identifier" : {
@@ -5847,19 +5947,118 @@ module.exports['SameOrAfter'] = {
             "name" : "NullLeft",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameOrAfter",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "NullRight",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameOrAfter",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameOrAfter",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -5908,12 +6107,6 @@ define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before n
 define NullBoth = null same or before null
 ###
 
-###
-Translation Error(s):
-[37:24, 37:37] Could not resolve call to operator SameOrBefore with signature (System.Any,System.DateTime).
-[38:65, 38:78] Could not resolve call to operator SameOrBefore with signature (System.DateTime,System.Any).
-[39:24, 39:37] Could not resolve call to operator SameOrBefore with signature (System.Any,System.Any).
-###
 module.exports['SameOrBefore'] = {
    "library" : {
       "identifier" : {
@@ -8511,19 +8704,118 @@ module.exports['SameOrBefore'] = {
             "name" : "NullLeft",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameOrBefore",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "NullRight",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameOrBefore",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameOrBefore",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -8569,12 +8861,6 @@ define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after null
 define NullBoth = null after null
 ###
 
-###
-Translation Error(s):
-[34:24, 34:28] Could not resolve call to operator After with signature (System.Any,System.DateTime).
-[35:65, 35:69] Could not resolve call to operator After with signature (System.DateTime,System.Any).
-[36:24, 36:28] Could not resolve call to operator After with signature (System.Any,System.Any).
-###
 module.exports['After'] = {
    "library" : {
       "identifier" : {
@@ -10932,19 +11218,118 @@ module.exports['After'] = {
             "name" : "NullLeft",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "NullRight",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }
@@ -10990,12 +11375,6 @@ define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before null
 define NullBoth = null before null
 ###
 
-###
-Translation Error(s):
-[34:24, 34:29] Could not resolve call to operator Before with signature (System.Any,System.DateTime).
-[35:65, 35:70] Could not resolve call to operator Before with signature (System.DateTime,System.Any).
-[36:24, 36:29] Could not resolve call to operator Before with signature (System.Any,System.Any).
-###
 module.exports['Before'] = {
    "library" : {
       "identifier" : {
@@ -13353,19 +13732,118 @@ module.exports['Before'] = {
             "name" : "NullLeft",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               } ]
             }
          }, {
             "name" : "NullRight",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "name" : "DateTime",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2000",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "15",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "13",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "30",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "25",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "200",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  }
+               } ]
             }
          } ]
       }

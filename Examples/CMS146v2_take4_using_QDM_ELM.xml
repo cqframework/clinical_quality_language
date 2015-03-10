@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="CMS146_QDM" version="2"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_1_2"/>
+   </usings>
+   <parameters>
+      <def name="MeasurementPeriod">
+         <default lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low name="DateTime" xsi:type="FunctionRef">
+               <operand valueType="Integer" value="2013" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            </low>
+            <high name="DateTime" xsi:type="FunctionRef">
+               <operand valueType="Integer" value="2014" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            </high>
+         </default>
+      </def>
+   </parameters>
+   <valueSets>
+      <def name="Acute Pharyngitis" id="2.16.840.1.113883.3.464.1003.102.12.1011"/>
+      <def name="Acute Tonsillitis" id="2.16.840.1.113883.3.464.1003.102.12.1012"/>
+      <def name="Ambulatory/ED Visit" id="2.16.840.1.113883.3.464.1003.101.12.1061"/>
+      <def name="Antibiotic Medications" id="2.16.840.1.113883.3.464.1003.196.12.1001"/>
+      <def name="Group A Streptococcus Test" id="2.16.840.1.113883.3.464.1003.198.12.1012"/>
+   </valueSets>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand xmlns:ns0="urn:healthit-gov:qdm:v4_1_2" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="InDemographic" context="Patient">
+         <expression xsi:type="And">
+            <operand xsi:type="GreaterOrEqual">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birth datetime" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="Integer" value="2" xsi:type="Literal"/>
+            </operand>
+            <operand xsi:type="Less">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birth datetime" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="Integer" value="18" xsi:type="Literal"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="EncounterData" context="Patient">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression xmlns:ns1="urn:healthit-gov:qdm:v4_1_2" dataType="ns1:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Ambulatory/ED Visit" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <source alias="P">
+               <expression xsi:type="Union">
+                  <operand xmlns:ns2="urn:healthit-gov:qdm:v4_1_2" dataType="ns2:DiagnosisActive" templateId="DiagnosisActive" codeProperty="code" xsi:type="Retrieve">
+                     <codes name="Acute Pharyngitis" xsi:type="ValueSetRef"/>
+                  </operand>
+                  <operand xmlns:ns3="urn:healthit-gov:qdm:v4_1_2" dataType="ns3:DiagnosisActive" templateId="DiagnosisActive" codeProperty="code" xsi:type="Retrieve">
+                     <codes name="Acute Tonsillitis" xsi:type="ValueSetRef"/>
+                  </operand>
+               </expression>
+            </source>
+            <source alias="A">
+               <expression xmlns:ns4="urn:healthit-gov:qdm:v4_1_2" dataType="ns4:MedicationOrder" templateId="MedicationOrder" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Antibiotic Medications" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <source alias="T">
+               <expression xmlns:ns5="urn:healthit-gov:qdm:v4_1_2" dataType="ns5:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Group A Streptococcus Test" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <define identifier="InMP">
+               <expression xsi:type="IncludedIn">
+                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <low path="start datetime" scope="E" xsi:type="Property"/>
+                     <high path="stop datetime" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+               </expression>
+            </define>
+            <define identifier="PharyngitisDx">
+               <expression xsi:type="Or">
+                  <operand xsi:type="Includes">
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low path="start datetime" scope="P" xsi:type="Property"/>
+                        <high path="stop datetime" scope="P" xsi:type="Property"/>
+                     </operand>
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low path="start datetime" scope="E" xsi:type="Property"/>
+                        <high path="stop datetime" scope="E" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="In">
+                     <operand path="start datetime" scope="P" xsi:type="Property"/>
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low path="start datetime" scope="E" xsi:type="Property"/>
+                        <high path="stop datetime" scope="E" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </expression>
+            </define>
+            <define identifier="PrescribedAntibiotics">
+               <expression xsi:type="In">
+                  <operand precision="Day" xsi:type="DurationBetween">
+                     <operand path="signed datetime" scope="A" xsi:type="Property"/>
+                     <operand path="start datetime" scope="E" xsi:type="Property"/>
+                  </operand>
+                  <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <low xsi:type="Negate">
+                        <operand valueType="Integer" value="3" xsi:type="Literal"/>
+                     </low>
+                     <high valueType="Integer" value="0" xsi:type="Literal"/>
+                  </operand>
+               </expression>
+            </define>
+            <define identifier="PriorAntibiotics">
+               <expression xsi:type="In">
+                  <operand precision="Day" xsi:type="DurationBetween">
+                     <operand path="signed datetime" scope="A" xsi:type="Property"/>
+                     <operand path="start datetime" scope="P" xsi:type="Property"/>
+                  </operand>
+                  <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                     <low valueType="Integer" value="0" xsi:type="Literal"/>
+                     <high valueType="Integer" value="30" xsi:type="Literal"/>
+                  </operand>
+               </expression>
+            </define>
+            <define identifier="StrepTest">
+               <expression xsi:type="And">
+                  <operand xsi:type="Not">
+                     <operand xsi:type="IsNull">
+                        <operand path="result" scope="T" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="In">
+                     <operand path="start datetime" scope="T" xsi:type="Property"/>
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low xsi:type="Subtract">
+                           <operand path="start datetime" scope="E" xsi:type="Property"/>
+                           <operand value="3" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high xsi:type="Add">
+                           <operand path="stop datetime" scope="E" xsi:type="Property"/>
+                           <operand value="3" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+               </expression>
+            </define>
+            <where xsi:type="And">
+               <operand xsi:type="And">
+                  <operand xsi:type="And">
+                     <operand name="InDemographic" xsi:type="ExpressionRef"/>
+                     <operand name="InMP" xsi:type="QueryDefineRef"/>
+                  </operand>
+                  <operand name="PharyngitisDx" xsi:type="QueryDefineRef"/>
+               </operand>
+               <operand name="PrescribedAntibiotics" xsi:type="QueryDefineRef"/>
+            </where>
+            <return>
+               <expression xsi:type="Tuple">
+                  <element name="Encounter">
+                     <value name="E" xsi:type="AliasRef"/>
+                  </element>
+                  <element name="InDenominatorExclusions">
+                     <value name="PriorAntibiotics" xsi:type="QueryDefineRef"/>
+                  </element>
+                  <element name="InNumerator">
+                     <value xsi:type="And">
+                        <operand name="StrepTest" xsi:type="QueryDefineRef"/>
+                        <operand xsi:type="Or">
+                           <operand xsi:type="Not">
+                              <operand name="PriorAntibiotics" xsi:type="QueryDefineRef"/>
+                           </operand>
+                           <operand xsi:type="IsNull">
+                              <operand name="PriorAntibiotics" xsi:type="QueryDefineRef"/>
+                           </operand>
+                        </operand>
+                     </value>
+                  </element>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def name="IPPCount" context="Patient">
+         <expression name="Count" xsi:type="FunctionRef">
+            <operand xsi:type="Query">
+               <source alias="E">
+                  <expression name="EncounterData" xsi:type="ExpressionRef"/>
+               </source>
+               <return>
+                  <expression path="Encounter" scope="E" xsi:type="Property"/>
+               </return>
+            </operand>
+         </expression>
+      </def>
+      <def name="DenominatorCount" context="Patient">
+         <expression name="IPPCount" xsi:type="ExpressionRef"/>
+      </def>
+      <def name="DenominatorExclusionsCount" context="Patient">
+         <expression name="Count" xsi:type="FunctionRef">
+            <operand xsi:type="Query">
+               <source alias="E">
+                  <expression name="EncounterData" xsi:type="ExpressionRef"/>
+               </source>
+               <where xsi:type="Equal">
+                  <operand path="InDenominatorExclusions" scope="E" xsi:type="Property"/>
+                  <operand valueType="Boolean" value="true" xsi:type="Literal"/>
+               </where>
+               <return>
+                  <expression path="Encounter" scope="E" xsi:type="Property"/>
+               </return>
+            </operand>
+         </expression>
+      </def>
+      <def name="NumeratorCount" context="Patient">
+         <expression name="Count" xsi:type="FunctionRef">
+            <operand xsi:type="Query">
+               <source alias="E">
+                  <expression name="EncounterData" xsi:type="ExpressionRef"/>
+               </source>
+               <where xsi:type="Equal">
+                  <operand path="InNumerator" scope="E" xsi:type="Property"/>
+                  <operand valueType="Boolean" value="true" xsi:type="Literal"/>
+               </where>
+               <return>
+                  <expression path="Encounter" scope="E" xsi:type="Property"/>
+               </return>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

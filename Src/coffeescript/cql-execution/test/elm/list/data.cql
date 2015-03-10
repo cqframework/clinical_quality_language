@@ -3,11 +3,11 @@ define Three = 1 + 2
 define IntList = { 9, 7, 8 }
 define StringList = { 'a', 'bee', 'see' }
 define MixedList = list<Any>{ 1, 'two', Three }
-define EmptyList = {}
+define EmptyList = list<Integer>{}
 
 
 // @Test: Exists
-define EmptyList = exists ({})
+define EmptyList = exists (list<Integer>{})
 define FullList = exists ({ 1, 2, 3 })
 
 // @Test: Equal
@@ -70,7 +70,7 @@ define NullItem = IndexOf({'a', 'b', 'c'}, null)
 define SecondItem = {'a', 'b', 'c', 'd'}[2]
 define ZeroIndex = {'a', 'b', 'c', 'd'}[0]
 define OutOfBounds = {'a', 'b', 'c', 'd'}[100]
-define NullList = null[1]
+define NullList = (null as list<String>)[1]
 define NullIndexer = {'a', 'b', 'c', 'd'}[null]
 
 // @Test: In
@@ -86,8 +86,8 @@ define IsIn = { 3, 4, 5 } contains 4
 define IsNotIn = { 3, 5, 6 } contains 4
 define TupleIsIn = {tuple{a:1, b:'d'}, tuple{a:1, b:'c'}, tuple{a:2, b:'c'}} contains tuple{a: 1, b: 'c'}
 define TupleIsNotIn = {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} contains tuple{a: 1, b: 'c'}
-define InNull = null contains {1, 2, 3}
-define NullIn = 1 contains null
+define InNull = (null as list<Integer>) contains 1
+define NullIn = {1, 2, 3} contains null
 
 // @Test: Includes
 define IsIncluded = {1, 2, 3, 4, 5} includes {2, 3, 4}
@@ -127,7 +127,7 @@ define IsNotIncluded = {4, 5, 6} properly included in {1, 2, 3, 4, 5}
 define TuplesIncluded = {tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} properly included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
 define TuplesNotIncluded = {tuple{a:2, b:'d'}, tuple{a:3, b:'c'}} properly included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
 define NullIncludes = {1, 2, 3, 4, 5} properly included in null
-define NullIncluded = null properly included in {1, 2, 3, 4, 5}
+define NullIncluded = (null as list<Integer>) properly included in {1, 2, 3, 4, 5}
 
 // @Test: Expand
 define ListOfLists = expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
@@ -143,8 +143,8 @@ define Letters = First({'a', 'b', 'c'})
 define Lists = First({{'a','b','c'},{'d','e','f'}})
 define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = First({3, 1, 4, 2})
-define Empty = First({})
-define NullValue = First(null)
+define Empty = First(list<Integer>{})
+define NullValue = First(null as list<Integer>)
 
 // @Test: Last
 define Numbers = Last({1, 2, 3, 4})
@@ -152,12 +152,12 @@ define Letters = Last({'a', 'b', 'c'})
 define Lists = Last({{'a','b','c'},{'d',;'e','f'}})
 define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
 define Unordered = Last({3, 1, 4, 2})
-define Empty = Last({})
-define NullValue = Last(null)
+define Empty = Last(list<Integer>{})
+define NullValue = Last(null as list<Integer>)
 
 // @Test: Length
 define Numbers = Length({2, 4, 6, 8, 10})
 define Lists = Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
 define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
-define Empty = Length({})
-define NullValue = Length(null)
+define Empty = Length(list<Integer>{})
+define NullValue = Length(null as list<Integer>)

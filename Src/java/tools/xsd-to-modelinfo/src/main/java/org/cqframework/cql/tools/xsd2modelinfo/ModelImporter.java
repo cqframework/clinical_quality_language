@@ -44,6 +44,8 @@ public class ModelImporter {
 
         if (dataType instanceof SimpleType) {
             return toSimpleTypeInfo((SimpleType) dataType);
+        } else if (dataType instanceof ClassType) {
+            return toClassInfo((ClassType) dataType);
         } else if (dataType instanceof IntervalType) {
             return toIntervalTypeInfo((IntervalType) dataType);
         } else if (dataType instanceof ListType) {
@@ -65,6 +67,22 @@ public class ModelImporter {
         return result;
     }
 
+    private static ClassInfo toClassInfo(ClassType dataType) {
+        ClassInfo result = new ClassInfo();
+        result.setName(dataType.getName());
+        if (dataType.getBaseType() != null) {
+            result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
+        }
+
+        for (ClassTypeElement element : dataType.getElements()) {
+            result.getElement().add(new ClassInfoElement()
+                    .withName(element.getName())
+                    .withType(toTypeSpecifier(element.getType())));
+        }
+
+        return result;
+    }
+
     private static IntervalTypeInfo toIntervalTypeInfo(IntervalType dataType) {
         IntervalTypeInfo result = new IntervalTypeInfo();
         result.setPointType(toTypeSpecifier(dataType.getPointType()));
@@ -79,7 +97,6 @@ public class ModelImporter {
 
     private static TupleTypeInfo toTupleTypeInfo(TupleType dataType) {
         TupleTypeInfo result = new TupleTypeInfo();
-        result.setName(dataType.getName());
         if (dataType.getBaseType() != null) {
             result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
         }
@@ -100,6 +117,8 @@ public class ModelImporter {
 
         if (dataType instanceof SimpleType) {
             return toSimpleTypeSpecifier((SimpleType) dataType);
+        } else if (dataType instanceof ClassType) {
+            return toClassTypeSpecifier((ClassType) dataType);
         } else if (dataType instanceof IntervalType) {
             return toIntervalTypeSpecifier((IntervalType) dataType);
         } else if (dataType instanceof ListType) {
@@ -115,6 +134,10 @@ public class ModelImporter {
         return dataType.getName();
     }
 
+    private static String toClassTypeSpecifier(ClassType dataType) {
+        return dataType.getName();
+    }
+
     private static String toIntervalTypeSpecifier(IntervalType dataType) {
         return String.format("interval<%s>", toTypeSpecifier(dataType.getPointType()));
     }
@@ -124,11 +147,7 @@ public class ModelImporter {
     }
 
     private static String toTupleTypeSpecifier(TupleType dataType) {
-        if (dataType.getName() == null) {
-            throw new IllegalArgumentException("Anonymous tuple types cannot be used in type specifiers.");
-        }
-
-        return dataType.getName();
+        throw new IllegalArgumentException("Tuple types cannot be used in type specifiers.");
     }
 
     private static Collection<DataType> fromXsd(XmlSchema schema, String modelName, Map<String, DataType> typeCatalog) {
@@ -237,10 +256,10 @@ public class ModelImporter {
             }
 
             // Create and register the type
-            TupleType tupleType = new TupleType(typeName, baseType);
-            dataTypes.put(typeName, tupleType);
+            ClassType classType = new ClassType(typeName, baseType);
+            dataTypes.put(typeName, classType);
 
-            List<TupleTypeElement> elements = new ArrayList<>();
+            List<ClassTypeElement> elements = new ArrayList<>();
 
             List<XmlSchemaAttributeOrGroupRef> attributeContent = null;
             XmlSchemaParticle particleContent = null;
@@ -264,12 +283,12 @@ public class ModelImporter {
             }
 
             for (XmlSchemaAttributeOrGroupRef attribute : attributeContent) {
-                resolveTupleTypeElements(schema, attribute, namespaces, dataTypes, elements);
+                resolveClassTypeElements(schema, attribute, namespaces, dataTypes, elements);
             }
 
             XmlSchemaParticle particle = particleContent;
             if (particle instanceof XmlSchemaElement) {
-                TupleTypeElement element = resolveTupleTypeElement(schema, (XmlSchemaElement)particle, namespaces, dataTypes);
+                ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)particle, namespaces, dataTypes);
                 if (element != null) {
                     elements.add(element);
                 }
@@ -278,7 +297,7 @@ public class ModelImporter {
                 XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
                 for (XmlSchemaSequenceMember member : sequence.getItems()) {
                     if (member instanceof XmlSchemaElement) {
-                        TupleTypeElement element = resolveTupleTypeElement(schema, (XmlSchemaElement)member, namespaces, dataTypes);
+                        ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)member, namespaces, dataTypes);
                         if (element != null) {
                             elements.add(element);
                         }
@@ -289,7 +308,7 @@ public class ModelImporter {
                 XmlSchemaChoice choice = (XmlSchemaChoice)particle;
                 for (XmlSchemaChoiceMember member : choice.getItems()) {
                     if (member instanceof XmlSchemaElement) {
-                        TupleTypeElement element = resolveTupleTypeElement(schema, (XmlSchemaElement)member, namespaces, dataTypes);
+                        ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)member, namespaces, dataTypes);
                         if (element != null) {
                             elements.add(element);
                         }
@@ -297,14 +316,14 @@ public class ModelImporter {
                 }
             }
 
-            tupleType.addElements(elements);
-            resultType = tupleType;
+            classType.addElements(elements);
+            resultType = classType;
         }
 
         return resultType;
     }
 
-    private static TupleTypeElement resolveTupleTypeElement(XmlSchema schema, XmlSchemaElement element, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
+    private static ClassTypeElement resolveClassTypeElement(XmlSchema schema, XmlSchemaElement element, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
         boolean isList = element.getMaxOccurs() > 1;
 
         if (element.isRef()) {
@@ -332,10 +351,10 @@ public class ModelImporter {
             elementType = new ListType(elementType);
         }
 
-        return new TupleTypeElement(element.getName(), elementType);
+        return new ClassTypeElement(element.getName(), elementType);
     }
 
-    private static TupleTypeElement resolveTupleTypeElement(XmlSchema schema, XmlSchemaAttribute attribute, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
+    private static ClassTypeElement resolveClassTypeElement(XmlSchema schema, XmlSchemaAttribute attribute, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
         if (attribute.isRef()) {
             attribute = attribute.getRef().getTarget();
         }
@@ -357,34 +376,34 @@ public class ModelImporter {
             //throw new IllegalStateException(String.format("Unable to resolve type %s of attribute %s.", attribute.getSchemaTypeName(), attribute.getName()));
         }
 
-        return new TupleTypeElement(attribute.getName(), elementType);
+        return new ClassTypeElement(attribute.getName(), elementType);
     }
 
-    private static void resolveTupleTypeElements(XmlSchema schema, XmlSchemaAttributeOrGroupRef attribute, Map<String, String> namespaces, Map<String, DataType> dataTypes, List<TupleTypeElement> elements) {
+    private static void resolveClassTypeElements(XmlSchema schema, XmlSchemaAttributeOrGroupRef attribute, Map<String, String> namespaces, Map<String, DataType> dataTypes, List<ClassTypeElement> elements) {
         if (attribute instanceof XmlSchemaAttribute) {
-            TupleTypeElement element = resolveTupleTypeElement(schema, (XmlSchemaAttribute)attribute, namespaces, dataTypes);
+            ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaAttribute)attribute, namespaces, dataTypes);
             if (element != null) {
                 elements.add(element);
             }
         }
         else if (attribute instanceof XmlSchemaAttributeGroupRef) {
-            resolveTupleTypeElements(schema, ((XmlSchemaAttributeGroupRef)attribute).getRef().getTarget(), namespaces, dataTypes, elements);
+            resolveClassTypeElements(schema, ((XmlSchemaAttributeGroupRef)attribute).getRef().getTarget(), namespaces, dataTypes, elements);
         }
     }
 
-    private static void resolveTupleTypeElements(XmlSchema schema, XmlSchemaAttributeGroup attributeGroup, Map<String, String> namespaces, Map<String, DataType> dataTypes, List<TupleTypeElement> elements) {
+    private static void resolveClassTypeElements(XmlSchema schema, XmlSchemaAttributeGroup attributeGroup, Map<String, String> namespaces, Map<String, DataType> dataTypes, List<ClassTypeElement> elements) {
         for (XmlSchemaAttributeGroupMember member : attributeGroup.getAttributes()) {
             if (member instanceof XmlSchemaAttribute) {
-                TupleTypeElement element = resolveTupleTypeElement(schema, (XmlSchemaAttribute)member, namespaces, dataTypes);
+                ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaAttribute)member, namespaces, dataTypes);
                 if (element != null) {
                     elements.add(element);
                 }
             }
             else if (member instanceof XmlSchemaAttributeGroupRef) {
-                resolveTupleTypeElements(schema, ((XmlSchemaAttributeGroupRef)member).getRef().getTarget(), namespaces, dataTypes, elements);
+                resolveClassTypeElements(schema, ((XmlSchemaAttributeGroupRef)member).getRef().getTarget(), namespaces, dataTypes, elements);
             }
             else if (member instanceof XmlSchemaAttributeGroup) {
-                resolveTupleTypeElements(schema, (XmlSchemaAttributeGroup)member, namespaces, dataTypes, elements);
+                resolveClassTypeElements(schema, (XmlSchemaAttributeGroup)member, namespaces, dataTypes, elements);
             }
         }
     }

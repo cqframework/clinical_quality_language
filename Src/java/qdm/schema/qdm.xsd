@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v4_1_2" targetNamespace="urn:healthit-gov:qdm:v4_1_2" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:complexType name="Patient">
+        <xs:sequence>
+            <xs:element name="birthDatetime" type="xs:dateTime" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="QDMBaseType">
+        <xs:sequence>
+            <xs:element name="code" type="CodeableConcept" minOccurs="1"/>
+            <xs:element name="startDatetime" type="xs:dateTime" minOccurs="1"/>
+            <xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="negationRationale" type="CodeableConcept" minOccurs="0"/>
+            <xs:element name="patientPreference" type="CodeableConcept" minOccurs="0"/>
+            <xs:element name="providerPreference" type="CodeableConcept" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DiagnosisActive">
+        <xs:complexContent>
+            <xs:extension base="QDMBaseType">
+                <xs:sequence>
+                    <xs:element name="anatomicalLocation" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="laterality" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="severity" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="ordinality" type="CodeableConcept" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="EncounterPerformed">
+        <xs:complexContent>
+            <xs:extension base="QDMBaseType">
+                <xs:sequence>
+                    <xs:element name="admissionDatetime" type="xs:dateTime" minOccurs="1"/>
+                    <xs:element name="dischargeDatetime" type="xs:dateTime" minOccurs="1"/>
+                    <xs:element name="dischargeStatus" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="facilityLocation" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="facilityLocationArrivalDatetime" type="xs:dateTime" minOccurs="0"/>
+                    <xs:element name="facilityLocationDepartureDatetime" type="xs:dateTime" minOccurs="0"/>
+                    <!-- note: no mapping in QRDA DSTU 3 -->
+                    <xs:element name="lengthOfStay" type="Quantity" minOccurs="0"/>
+                    <xs:element name="reason" type="CodeableConcept" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LaboratoryTestPerformed">
+        <xs:complexContent>
+            <xs:extension base="QDMBaseType">
+                <xs:sequence>
+                    <xs:element name="status" type="CodeableConcept" minOccurs="1"/>
+                    <xs:element name="method" type="CodeableConcept" minOccurs="0"/>
+                    <!-- TODO: Represent result as one type? -->
+                    <!-- xs:choice -->
+                        <xs:element name="result" type="xs:anyType"/>
+                        <xs:element name="resultCode" type="CodeableConcept" minOccurs="0"/>
+                        <xs:element name="resultValue" type="Quantity" minOccurs="0"/>
+                    <!-- /xs:choice -->
+                    <xs:element name="reason" type="CodeableConcept" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MedicationOrder">
+        <xs:complexContent>
+            <xs:extension base="QDMBaseType">
+                <xs:sequence>
+                    <xs:element name="activeDatetime" type="xs:dateTime" minOccurs="1"/>
+                    <xs:element name="signedDatetime" type="xs:dateTime" minOccurs="1"/>
+                    <xs:element name="refills" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="dose" type="Quantity" minOccurs="0"/>
+                    <!-- TODO: Fix alignment of frequency representation with QRDA PIVL_TS -->
+                    <xs:element name="frequency" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="route" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="method" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="reason" type="CodeableConcept" minOccurs="0"/>
+                    <xs:element name="cumulativeMedicationDuration" type="Quantity" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CodeableConcept"/>
+    <xs:complexType name="Quantity"/>
+</xs:schema>

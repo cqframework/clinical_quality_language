@@ -11,34 +11,34 @@ describe 'Interval', ->
   it 'should properly represent an open interval', ->
     @open.lowClosed.should.be.false
     @open.highClosed.should.be.false
-    @open.low.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    @open.high.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    @open.low.exec(@ctx).should.eql new DateTime(2012, 1, 1)
+    @open.high.exec(@ctx).should.eql new DateTime(2013, 1, 1)
 
   it 'should properly represent a left-open interval', ->
     @leftOpen.lowClosed.should.be.false
     @leftOpen.highClosed.should.be.true
-    @leftOpen.low.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    @leftOpen.high.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    @leftOpen.low.exec(@ctx).should.eql new DateTime(2012, 1, 1)
+    @leftOpen.high.exec(@ctx).should.eql new DateTime(2013, 1, 1)
 
   it 'should properly represent a right-open interval', ->
     @rightOpen.lowClosed.should.be.true
     @rightOpen.highClosed.should.be.false
-    @rightOpen.low.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    @rightOpen.high.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    @rightOpen.low.exec(@ctx).should.eql new DateTime(2012, 1, 1)
+    @rightOpen.high.exec(@ctx).should.eql new DateTime(2013, 1, 1)
 
   it 'should properly represent a closed interval', ->
     @closed.lowClosed.should.be.true
     @closed.highClosed.should.be.true
-    @closed.low.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    @closed.high.exec(@ctx).toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    @closed.low.exec(@ctx).should.eql new DateTime(2012, 1, 1)
+    @closed.high.exec(@ctx).should.eql new DateTime(2013, 1, 1)
 
   it 'should exec to native Interval datatype', ->
     ivl = @open.exec(@cql)
     ivl.should.be.instanceOf Interval
     ivl.lowClosed.should.equal @open.lowClosed
     ivl.highClosed.should.equal @open.highClosed
-    ivl.low.toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
-    ivl.high.toJSDate().should.eql new Date(2013, 0, 1, 0, 0, 0)
+    ivl.low.should.eql new DateTime(2012, 1, 1)
+    ivl.high.should.eql new DateTime(2013, 1, 1)
 
 describe 'Equal', ->
   @beforeEach ->
@@ -98,7 +98,7 @@ describe 'Contains', ->
     @notContainsReal.exec(@ctx).should.be.false
     @notContainsDate.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegContainsInt.exec(@ctx).should.be.true
     @negInfBegNotContainsInt.exec(@ctx).should.be.false
     @unknownBegContainsInt.exec(@ctx).should.be.true
@@ -110,7 +110,7 @@ describe 'Contains', ->
     should(@unknownEndMayContainInt.exec(@ctx)).be.null
     @unknownEndNotContainsInt.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegContainsDate.exec(@ctx).should.be.true
     @negInfBegNotContainsDate.exec(@ctx).should.be.false
     @unknownBegContainsDate.exec(@ctx).should.be.true
@@ -144,7 +144,7 @@ describe 'In', ->
     @notContainsReal.exec(@ctx).should.be.false
     @notContainsDate.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegContainsInt.exec(@ctx).should.be.true
     @negInfBegNotContainsInt.exec(@ctx).should.be.false
     @unknownBegContainsInt.exec(@ctx).should.be.true
@@ -156,7 +156,7 @@ describe 'In', ->
     should(@unknownEndMayContainInt.exec(@ctx)).be.null
     @unknownEndNotContainsInt.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegContainsDate.exec(@ctx).should.be.true
     @negInfBegNotContainsDate.exec(@ctx).should.be.false
     @unknownBegContainsDate.exec(@ctx).should.be.true
@@ -190,7 +190,7 @@ describe 'Includes', ->
     @notIncludesRealIvl.exec(@ctx).should.be.false
     @notIncludesDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegIncludesIntIvl.exec(@ctx).should.be.true
     @negInfBegNotIncludesIntIvl.exec(@ctx).should.be.false
     @unknownBegIncludesIntIvl.exec(@ctx).should.be.true
@@ -202,7 +202,7 @@ describe 'Includes', ->
     should(@unknownEndMayIncludeIntIvl.exec(@ctx)).be.null
     @unknownEndNotIncludesIntIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegIncludesDateIvl.exec(@ctx).should.be.true
     @negInfBegNotIncludesDateIvl.exec(@ctx).should.be.false
     @unknownBegIncludesDateIvl.exec(@ctx).should.be.true
@@ -238,7 +238,7 @@ describe 'ProperlyIncludes', ->
     @notProperlyIncludesRealIvl.exec(@ctx).should.be.false
     @notProperlyIncludesDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @posInfEndProperlyIncludesIntIvl.exec(@ctx).should.be.true
     @posInfEndNotProperlyIncludesIntIvl.exec(@ctx).should.be.false
     should(@unknownEndMayProperlyIncludeIntIvl.exec(@ctx)).be.null
@@ -257,7 +257,7 @@ describe 'IncludedIn', ->
     @notIncludesRealIvl.exec(@ctx).should.be.false
     @notIncludesDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegIncludedInIntIvl.exec(@ctx).should.be.true
     @negInfBegNotIncludedInIntIvl.exec(@ctx).should.be.false
     @unknownBegIncludedInIntIvl.exec(@ctx).should.be.true
@@ -269,7 +269,7 @@ describe 'IncludedIn', ->
     should(@unknownEndMayBeIncludedInIntIvl.exec(@ctx)).be.null
     @unknownEndNotIncludedInIntIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegIncludedInDateIvl.exec(@ctx).should.be.true
     @negInfBegNotIncludedInDateIvl.exec(@ctx).should.be.false
     @unknownBegIncludedInDateIvl.exec(@ctx).should.be.true
@@ -305,7 +305,7 @@ describe 'ProperlyIncludedIn', ->
     @notProperlyIncludesRealIvl.exec(@ctx).should.be.false
     @notProperlyIncludesDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @posInfEndProperlyIncludedInDateIvl.exec(@ctx).should.be.true
     @posInfEndNotProperlyIncludedInDateIvl.exec(@ctx).should.be.false
     should(@unknownEndMayBeProperlyIncludedInDateIvl.exec(@ctx)).be.null
@@ -324,7 +324,7 @@ describe 'After', ->
     @notAfterRealIvl.exec(@ctx).should.be.false
     @notAfterDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegNotAfterIntIvl.exec(@ctx).should.be.false
     should(@unknownBegMayBeAfterIntIvl.exec(@ctx)).be.null
     @unknownBegNotAfterIntIvl.exec(@ctx).should.be.false
@@ -333,7 +333,7 @@ describe 'After', ->
     @unknownEndAfterIntIvl.exec(@ctx).should.be.true
     @unknownEndNotAfterIntIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegNotAfterDateIvl.exec(@ctx).should.be.false
     should(@unknownBegMayBeAfterDateIvl.exec(@ctx)).be.null
     @unknownBegNotAfterDateIvl.exec(@ctx).should.be.false
@@ -364,7 +364,7 @@ describe 'Before', ->
     @notBeforeRealIvl.exec(@ctx).should.be.false
     @notBeforeDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegBeforeIntIvl.exec(@ctx).should.be.true
     @negInfBegNotBeforeIntIvl.exec(@ctx).should.be.false
     @unknownBegBeforeIntIvl.exec(@ctx).should.be.true
@@ -373,7 +373,7 @@ describe 'Before', ->
     should(@unknownEndMayBeBeforeIntIvl.exec(@ctx)).be.null
     @unknownEndNotBeforeIntIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegBeforeDateIvl.exec(@ctx).should.be.true
     @negInfBegNotBeforeDateIvl.exec(@ctx).should.be.false
     @unknownBegBeforeDateIvl.exec(@ctx).should.be.true
@@ -409,7 +409,7 @@ describe 'Meets', ->
     @notMeetsRealIvl.exec(@ctx).should.be.false
     @notMeetsDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegMeetsBeforeIntIvl.exec(@ctx).should.be.true
     @negInfBegNotMeetsIntIvl.exec(@ctx).should.be.false
     @intIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
@@ -425,7 +425,7 @@ describe 'Meets', ->
     @unknownEndNotMeetsIntIvl.exec(@ctx).should.be.false
     should(@intIvlMayMeetAfterUnknownEnd.exec(@ctx)).be.null
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegMeetsBeforeDateIvl.exec(@ctx).should.be.true
     @negInfBegNotMeetsDateIvl.exec(@ctx).should.be.false
     @dateIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
@@ -468,7 +468,7 @@ describe 'MeetsAfter', ->
     @notMeetsRealIvl.exec(@ctx).should.be.false
     @notMeetsDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegMeetsBeforeIntIvl.exec(@ctx).should.be.false
     @negInfBegNotMeetsIntIvl.exec(@ctx).should.be.false
     @intIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
@@ -484,7 +484,7 @@ describe 'MeetsAfter', ->
     @unknownEndNotMeetsIntIvl.exec(@ctx).should.be.false
     should(@intIvlMayMeetAfterUnknownEnd.exec(@ctx)).be.null
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegMeetsBeforeDateIvl.exec(@ctx).should.be.false
     @negInfBegNotMeetsDateIvl.exec(@ctx).should.be.false
     @dateIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
@@ -527,7 +527,7 @@ describe 'MeetsBefore', ->
     @notMeetsRealIvl.exec(@ctx).should.be.false
     @notMeetsDateIvl.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (int)', ->
+  it 'should correctly handle null endpoints (int)', ->
     @negInfBegMeetsBeforeIntIvl.exec(@ctx).should.be.true
     @negInfBegNotMeetsIntIvl.exec(@ctx).should.be.false
     @intIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
@@ -543,7 +543,7 @@ describe 'MeetsBefore', ->
     @unknownEndNotMeetsIntIvl.exec(@ctx).should.be.false
     @intIvlMayMeetAfterUnknownEnd.exec(@ctx).should.be.false
 
-  it.skip 'should correctly handle null endpoints (date)', ->
+  it 'should correctly handle null endpoints (date)', ->
     @negInfBegMeetsBeforeDateIvl.exec(@ctx).should.be.true
     @negInfBegNotMeetsDateIvl.exec(@ctx).should.be.false
     @dateIvlNotMeetsNegInfBeg.exec(@ctx).should.be.false
@@ -587,7 +587,7 @@ describe 'Overlaps', ->
   it 'should reject non-overlaps (real)', ->
     @noOverlapsRealIvl.exec(@ctx).should.be.false
 
-describe.skip 'OverlapsDateTime', ->
+describe 'OverlapsDateTime', ->
   @beforeEach ->
     setup @, data
 
@@ -600,7 +600,7 @@ describe.skip 'OverlapsDateTime', ->
   it 'should accept imprecise overlaps', ->
     @impreciseOverlap.exec(@ctx).should.be.true
 
-  it.skip 'should reject non-overlaps', ->
+  it 'should reject non-overlaps', ->
     @noOverlap.exec(@ctx).should.be.false
 
   it 'should reject imprecise non-overlaps', ->
@@ -609,7 +609,7 @@ describe.skip 'OverlapsDateTime', ->
   it 'should return null for imprecise overlaps that are unknown', ->
     should(@unknownOverlap.exec(@ctx)).be.null
 
-describe.skip 'OverlapsAfter', ->
+describe 'OverlapsAfter', ->
   @beforeEach ->
     setup @, data
 
@@ -633,7 +633,7 @@ describe.skip 'OverlapsAfter', ->
   it 'should reject non-overlaps (real)', ->
     @noOverlapsRealIvl.exec(@ctx).should.be.false
 
-describe.skip 'OverlapsAfterDateTime', ->
+describe 'OverlapsAfterDateTime', ->
   @beforeEach ->
     setup @, data
 
@@ -644,14 +644,14 @@ describe.skip 'OverlapsAfterDateTime', ->
   it 'should accept imprecise overlaps that are after', ->
     @impreciseOverlapAfter.exec(@ctx).should.be.true
 
-  it.skip 'should reject overlaps that are not before', ->
+  it 'should reject overlaps that are not before', ->
     @overlapsBefore.exec(@ctx).should.be.false
     @overlapsContained.exec(@ctx).should.be.false
 
   it 'should reject imprecise overlaps that are not before', ->
     @impreciseOverlapBefore.exec(@ctx).should.be.false
 
-  it.skip 'should reject non-overlaps', ->
+  it 'should reject non-overlaps', ->
     @noOverlap.exec(@ctx).should.be.false
 
   it 'should reject imprecise non-overlaps', ->
@@ -660,7 +660,7 @@ describe.skip 'OverlapsAfterDateTime', ->
   it 'should return null for imprecise overlaps that are unknown', ->
     should(@unknownOverlap.exec(@ctx)).be.null
 
-describe.skip 'OverlapsBefore', ->
+describe 'OverlapsBefore', ->
   @beforeEach ->
     setup @, data
 
@@ -684,7 +684,7 @@ describe.skip 'OverlapsBefore', ->
   it 'should reject non-overlaps (real)', ->
     @noOverlapsRealIvl.exec(@ctx).should.be.false
 
-describe.skip 'OverlapsBeforeDateTime', ->
+describe 'OverlapsBeforeDateTime', ->
   @beforeEach ->
     setup @, data
 
@@ -695,14 +695,14 @@ describe.skip 'OverlapsBeforeDateTime', ->
   it 'should accept imprecise overlaps that are before', ->
     @impreciseOverlapBefore.exec(@ctx).should.be.true
 
-  it.skip 'should reject overlaps that are not before', ->
+  it 'should reject overlaps that are not before', ->
     @overlapsAfter.exec(@ctx).should.be.false
     @overlapsContained.exec(@ctx).should.be.false
 
   it 'should reject imprecise overlaps that are not before', ->
     @impreciseOverlapAfter.exec(@ctx).should.be.false
 
-  it.skip 'should reject non-overlaps', ->
+  it 'should reject non-overlaps', ->
     @noOverlap.exec(@ctx).should.be.false
 
   it 'should reject imprecise non-overlaps', ->
@@ -723,7 +723,7 @@ describe 'Width', ->
     @realWidth.exec(@ctx).should.equal 3.33
     @realOpenWidth.exec(@ctx).should.equal 3.32999998
 
-  it.skip 'should calculate the width of infinite intervals', ->
+  it 'should calculate the width of infinite intervals', ->
     @intWidthThreeToMax.exec(@ctx).should.equal Math.pow(2,31)-4
     @intWidthMinToThree.exec(@ctx).should.equal Math.pow(2,31)+3
 
@@ -736,7 +736,7 @@ describe 'Start', ->
     setup @, data
 
   it 'should execute as the start of the interval', ->
-    @foo.exec(@ctx).toJSDate().should.eql new Date(2012, 0, 1, 0, 0, 0)
+    @foo.exec(@ctx).should.eql new DateTime(2012, 1, 1)
 
 describe 'IntegerIntervalUnion', ->
   @beforeEach ->

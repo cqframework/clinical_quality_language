@@ -3,9 +3,11 @@ package org.cqframework.cql.cql2elm;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.misc.Nullable;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
@@ -14,6 +16,7 @@ import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Retrieve;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -28,6 +31,7 @@ import static org.cqframework.cql.cql2elm.CqlTranslator.fromFile;
 public class CqlTranslator {
     public static enum Options { EnableDateRangeOptimization, EnableAnnotations }
     private Library library = null;
+    private TranslatedLibrary translatedLibrary = null;
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
     private List<CqlTranslatorException> errors = null;
@@ -74,6 +78,10 @@ public class CqlTranslator {
         return library;
     }
 
+    public TranslatedLibrary getTranslatedLibrary() {
+        return translatedLibrary;
+    }
+
     public Object toObject() {
         return visitResult;
     }
@@ -84,11 +92,21 @@ public class CqlTranslator {
 
     public List<CqlTranslatorException> getErrors() { return errors; }
 
+    private class CqlErrorListener extends BaseErrorListener {
+        @Override
+        public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
+            TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
+            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
+        }
+    }
+
     private void translateToELM(ANTLRInputStream is, Options... options) {
         cqlLexer lexer = new cqlLexer(is);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
+        errors = new ArrayList<CqlTranslatorException>();
+        parser.addErrorListener(new CqlErrorListener());
         ParseTree tree = parser.logic();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
@@ -107,8 +125,9 @@ public class CqlTranslator {
         }
         visitResult = visitor.visit(tree);
         library = visitor.getLibrary();
+        translatedLibrary = visitor.getTranslatedLibrary();
         retrieves = visitor.getRetrieves();
-        errors = visitor.getErrors();
+        errors.addAll(visitor.getErrors());
     }
 
     private String convertToXML(Library library) throws JAXBException {

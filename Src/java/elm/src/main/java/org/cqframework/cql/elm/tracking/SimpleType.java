@@ -1,7 +1,5 @@
 package org.cqframework.cql.elm.tracking;
 
-import java.util.Map;
-
 public class SimpleType extends DataType implements NamedType {
     private String name;
 
@@ -61,17 +59,23 @@ public class SimpleType extends DataType implements NamedType {
     }
 
     @Override
+    public boolean isCompatibleWith(DataType other) {
+        // The system type "Any" can be implicitly cast to any other type.
+        return this.equals(DataType.any);
+    }
+
+    @Override
     public boolean isGeneric() {
         return false;
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, Map<TypeParameter, DataType> typeMap) {
+    public boolean isInstantiable(DataType callType, InstantiationContext context) {
         return isSuperTypeOf(callType);
     }
 
     @Override
-    public DataType instantiate(Map<TypeParameter, DataType> typeMap) {
+    public DataType instantiate(InstantiationContext context) {
         return this;
     }
 }
