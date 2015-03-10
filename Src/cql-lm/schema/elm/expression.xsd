@@ -359,7 +359,9 @@ If the high bound of the interval is null and closed, the interval is interprete
 			<xs:extension base="Expression">
 				<xs:sequence>
 					<xs:element name="low" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="lowClosedExpression" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="high" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="highClosedExpression" type="Expression" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="lowClosed" type="xs:boolean" use="optional" default="true"/>
 				<xs:attribute name="highClosed" type="xs:boolean" use="optional" default="true"/>

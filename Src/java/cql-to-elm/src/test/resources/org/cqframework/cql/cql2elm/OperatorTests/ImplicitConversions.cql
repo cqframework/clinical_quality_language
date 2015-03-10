@@ -40,3 +40,11 @@ define DecimalCase = case when true then 1 else 1.0 end
 define DecimalIntegerCase = case when true then 1.0 else 1 end
 define NullComparandCase = case 1 when null then 0 else 1 end
 define IntegerComparandCase = case 1.0 when 1 then 1.0 else 1 end
+
+// Implicit List Conversions
+define v = Variance({1,2,3,4,5})
+define std = StdDev({1,2,3,4,5})
+define dev = PopulationStdDev({1,2,3,4,5})
+
+// Implicit Interval Conversions
+define ImplicitIntervalConversion = interval[3.0, 5.0] = interval[3, 5]

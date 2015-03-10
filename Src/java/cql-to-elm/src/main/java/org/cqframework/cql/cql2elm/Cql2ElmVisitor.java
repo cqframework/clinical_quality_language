@@ -2834,12 +2834,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     }
                 }
             }
-            if (currentType instanceof TupleType) {
+            else if (currentType instanceof TupleType) {
                 TupleType tupleType = (TupleType)currentType;
                 for (TupleTypeElement e : tupleType.getElements()) {
                     if (e.getName().equals(identifier)) {
                         return e.getType();
                     }
+                }
+            }
+            else if (currentType instanceof IntervalType) {
+                IntervalType intervalType = (IntervalType)currentType;
+                switch (identifier) {
+                    case "low":
+                    case "high":
+                        return intervalType.getPointType();
+                    case "lowClosed":
+                    case "highClosed":
+                        return resolveTypeName("Boolean");
+                    default:
+                        throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
                 }
             }
 
@@ -2850,8 +2863,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 break;
             }
         }
-
-        // TODO: Resolve property accessors for interval types? The grammar does not provide for this, nor does the specification at this point...
 
         throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType));
     }
@@ -2905,6 +2916,51 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return convertExpression(expression, conversion);
     }
 
+    private Expression convertListExpression(Expression expression, Conversion conversion) {
+        ListType fromType = (ListType)conversion.getFromType();
+        ListType toType = (ListType)conversion.getToType();
+
+        Query query = (Query)of.createQuery()
+                .withSource((AliasedQuerySource)of.createAliasedQuerySource()
+                        .withAlias("X")
+                        .withExpression(expression)
+                        .withResultType(fromType))
+                .withReturn((ReturnClause)of.createReturnClause()
+                        .withExpression(convertExpression((AliasRef)of.createAliasRef()
+                                .withName("X")
+                                .withResultType(fromType.getElementType()),
+                                conversion.getConversion()))
+                        .withResultType(toType))
+                .withResultType(toType);
+        return query;
+    }
+
+    private Expression convertIntervalExpression(Expression expression, Conversion conversion) {
+        IntervalType fromType = (IntervalType)conversion.getFromType();
+        IntervalType toType = (IntervalType)conversion.getToType();
+        Interval interval = (Interval)of.createInterval()
+                .withLow(convertExpression((Property)of.createProperty()
+                        .withSource(expression)
+                        .withPath("low")
+                        .withResultType(fromType.getPointType()),
+                        conversion.getConversion()))
+                .withLowClosedExpression((Property)of.createProperty()
+                        .withSource(expression)
+                        .withPath("lowClosed")
+                        .withResultType(resolveTypeName("Boolean")))
+                .withHigh(convertExpression((Property)of.createProperty()
+                        .withSource(expression)
+                        .withPath("high")
+                        .withResultType(fromType.getPointType()),
+                        conversion.getConversion()))
+                .withHighClosedExpression((Property)of.createProperty()
+                        .withSource(expression)
+                        .withPath("highClosed")
+                        .withResultType(resolveTypeName("Boolean")))
+                .withResultType(toType);
+        return interval;
+    }
+
     private Expression convertExpression(Expression expression, Conversion conversion) {
         if (conversion.isCast()) {
             if (conversion.getFromType().isSuperTypeOf(conversion.getToType())) {
@@ -2935,6 +2991,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 return convertedOperand;
             }
+        }
+        else if (conversion.isListConversion()) {
+            return convertListExpression(expression, conversion);
+        }
+        else if (conversion.isIntervalConversion()) {
+            return convertIntervalExpression(expression, conversion);
         }
         else {
             Operator conversionOperator = conversion.getOperator();

@@ -1,6 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.cqframework.cql.elm.tracking.DataType;
+import org.cqframework.cql.elm.tracking.IntervalType;
+import org.cqframework.cql.elm.tracking.ListType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +44,26 @@ public class ConversionMap {
         return null;
     }
 
+    public Conversion findListConversion(ListType fromType, ListType toType) {
+        Conversion elementConversion = findConversion(fromType.getElementType(), toType.getElementType(), true);
+
+        if (elementConversion != null) {
+            return new Conversion(fromType, toType, elementConversion);
+        }
+
+        return null;
+    }
+
+    public Conversion findIntervalConversion(IntervalType fromType, IntervalType toType) {
+        Conversion pointConversion = findConversion(fromType.getPointType(), toType.getPointType(), true);
+
+        if (pointConversion != null) {
+            return new Conversion(fromType, toType, pointConversion);
+        }
+
+        return null;
+    }
+
     public Conversion findConversion(DataType fromType, DataType toType, boolean isImplicit) {
         Conversion result = findCompatibleConversion(fromType, toType);
         if (result == null) {
@@ -62,6 +84,18 @@ public class ConversionMap {
                                 fromType.toString(), result.getToType().toString(), conversion.getToType().toString()));
                     }
                 }
+            }
+        }
+
+        if (result == null) {
+            // If both types are lists, attempt to find a conversion between the element types
+            if (fromType instanceof ListType && toType instanceof ListType) {
+                result = findListConversion((ListType)fromType, (ListType)toType);
+            }
+
+            // If both types are intervals, attempt to find a conversion between the point types
+            if (fromType instanceof IntervalType && toType instanceof IntervalType) {
+                result = findIntervalConversion((IntervalType)fromType, (IntervalType)toType);
             }
         }
 

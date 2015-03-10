@@ -1,5 +1,6 @@
 define StringAdd = 'John' + ' ' + 'Doe'
 define StringCombine = Combine({ 'First', 'Second', 'Third', 'Fourth' }, ',')
+define StringCombineNoSeparator = Combine({ 'abc', 'def', 'ghi', 'jkl' })
 define StringConcatenate = Concatenate('John', 'Doe')
 define StringIndexer = 'John'[1]
 define StringLength = Length('John')
