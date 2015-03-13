@@ -254,6 +254,7 @@ expression
 
 dateTimePrecision
     : 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond'
+    | 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms'
     ;
 
 dateTimeComponent
@@ -265,6 +266,7 @@ dateTimeComponent
 
 pluralDateTimePrecision
     : 'years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds'
+    | 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms'
     ;
 
 expressionTerm
@@ -355,6 +357,8 @@ literal
     : nullLiteral
     | booleanLiteral
     | stringLiteral
+    | dateTimeLiteral
+    | timeLiteral
     | quantityLiteral
     ;
 
@@ -371,18 +375,32 @@ stringLiteral
     : STRING
     ;
 
+dateTimeLiteral
+    : DATETIME
+    ;
+
+timeLiteral
+    : TIME
+    ;
+
 quantityLiteral
     : QUANTITY unit?
     ;
 
+//ucumDateTimePrecision
+//    : 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms'
+//    ;
+
 unit
     : dateTimePrecision
     | pluralDateTimePrecision
+//    | ucumDateTimePrecision
     | STRING // UCUM syntax for units of measure
     ;
 
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
+    | 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms' // include here any tokens that should be keywords, but not reserved words.
     ;
 
 /*
@@ -396,6 +414,63 @@ IDENTIFIER
 QUANTITY
     : [0-9]+('.'[0-9]+)?
     ;
+
+DATETIME
+    : '@'
+        [0-9][0-9][0-9][0-9] // year
+        (
+            '-'[0-9][0-9] // month
+            (
+                '-'[0-9][0-9] // day
+                (
+                    'T'
+                        [0-9][0-9] (':'[0-9][0-9] (':'[0-9][0-9] ('.'[0-9]+)?)?)?
+                        (('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone
+                )?
+             )?
+         )?
+         'Z'? // UTC specifier
+    ;
+
+TIME
+    : '@'
+        'T'
+            [0-9][0-9] (':'[0-9][0-9] (':'[0-9][0-9] ('.'[0-9]+)?)?)?
+            ('Z' | (('+' | '-') [0-9][0-9]':'[0-9][0-9]))? // timezone
+    ;
+
+// These versions limit each field to only potentially valid combinations of digits.
+// However, it still doesn't suffice to provide actual valid date enforcement, and
+// when it doesn't match the rule, the parser will turn it into a subtraction expression in most cases,
+// which is never what we want, so I think we should go with the more lenient (and simpler) expressions
+// above, and rely on the translator to actually perform value validation.
+//DATETIME
+//    : '@'
+//        [0-9][0-9][0-9][0-9] // year
+//        (
+//            '-'(('0'[1-9]) | ('1'[0-2])) // month
+//            (
+//                '-'(('0'[1-9]) | ([1-2][0-9]) | ('3'[0-1])) // day
+//                (
+//                    'T'
+//                        (
+//                            ((([0-1][0-9])|('2'[0-3])) (':'([0-5][0-9]) (':'([0-5][0-9]) ('.'[0-9]+)?)?)?
+//                                | ('24:00:00'('.''0'+)?))
+//                        )
+//                        (('+' | '-') (((([0-1][0-9]) | ('2'[0-3]))':'([0-5][0-9])) | '14:00'))? // timezone
+//                )?
+//             )?
+//         )?
+//         'Z'? // UTC specifier
+//    ;
+
+//TIME
+//    : '@'
+//        'T'
+//            ((([0-1][0-9])|('2'[0-3])) (':'([0-5][0-9]) (':'([0-5][0-9]) ('.'[0-9]+)?)?)?
+//            | ('24:00:00'('.''0'+)?))
+//        ('Z' | (('+' | '-') (((([0-1][0-9]) | ('2'[0-3]))':'([0-5][0-9])) | '14:00')))? // timezone
+//    ;
 
 QUOTEDIDENTIFIER
     : '"' ( ~[\\"] )* '"'
@@ -420,3 +495,4 @@ COMMENT
 LINE_COMMENT
     :   '//' ~[\r\n]* -> skip
     ;
+

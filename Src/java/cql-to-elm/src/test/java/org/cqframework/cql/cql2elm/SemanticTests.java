@@ -86,6 +86,10 @@ public class SemanticTests {
     }
 
     @Test
+    public void testTimeOperators() throws IOException {
+        runSemanticTest("OperatorTests/TimeOperators.cql");
+    }
+    @Test
     public void testTypeOperators() throws IOException {
         runSemanticTest("OperatorTests/TypeOperators.cql");
     }
@@ -103,6 +107,11 @@ public class SemanticTests {
     @Test
     public void testFunctions() throws IOException {
         runSemanticTest("OperatorTests/Functions.cql");
+    }
+
+    @Test
+    public void testDateTimeLiteral() throws IOException {
+        runSemanticTest("DateTimeLiteralTest.cql");
     }
 
     private void runSemanticTest(String testFileName) throws IOException {

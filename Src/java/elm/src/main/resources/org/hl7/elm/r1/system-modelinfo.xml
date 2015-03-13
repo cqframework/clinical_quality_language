@@ -6,6 +6,7 @@
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Decimal" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.String" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.DateTime" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Time" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="System.Uri" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Quantity" baseType="System.Any">
         <ns4:element name="value" type="System.Decimal"/>

@@ -27,6 +27,10 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.util.Date.*;
 
 public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
@@ -558,6 +562,229 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitTimeLiteral(@NotNull cqlParser.TimeLiteralContext ctx) {
+        String input = ctx.getText();
+        if (input.startsWith("@")) {
+            input = input.substring(1);
+        }
+
+        Pattern dateTimePattern =
+                Pattern.compile("T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?");
+                               //-12-------3---4-------5---6-------7---8-------------91---11-----1-------1----1------------
+                               //-----------------------------------------------------0---12-----3-------4----5------------
+
+        Matcher matcher = dateTimePattern.matcher(input);
+        if (matcher.matches()) {
+            try {
+                Time result = of.createTime();
+                int hour = Integer.parseInt(matcher.group(2));
+                int minute = -1;
+                int second = -1;
+                int millisecond = -1;
+                if (hour < 0 || hour > 24) {
+                    throw new IllegalArgumentException(String.format("Invalid hour in time literal (%s).", input));
+                }
+                result.setHour(createLiteral(hour));
+
+                if (matcher.group(4) != null) {
+                    minute = Integer.parseInt(matcher.group(4));
+                    if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
+                        throw new IllegalArgumentException(String.format("Invalid minute in time literal (%s).", input));
+                    }
+                    result.setMinute(createLiteral(minute));
+                }
+
+                if (matcher.group(6) != null) {
+                    second = Integer.parseInt(matcher.group(6));
+                    if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
+                        throw new IllegalArgumentException(String.format("Invalid second in time literal (%s).", input));
+                    }
+                    result.setSecond(createLiteral(second));
+                }
+
+                if (matcher.group(8) != null) {
+                    millisecond = Integer.parseInt(matcher.group(8));
+                    if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
+                        throw new IllegalArgumentException(String.format("Invalid millisecond in time literal (%s).", input));
+                    }
+                    result.setMillisecond(createLiteral(millisecond));
+                }
+
+                if (matcher.group(10) != null && matcher.group(10).equals("Z")) {
+                    result.setTimezoneOffset(createLiteral(0.0));
+                }
+
+                if (matcher.group(12) != null) {
+                    int offsetPolarity = matcher.group(12).equals("+") ? 1 : 0;
+
+                    if (matcher.group(15) != null) {
+                        int hourOffset = Integer.parseInt(matcher.group(13));
+                        if (hourOffset < 0 || hourOffset > 14) {
+                            throw new IllegalArgumentException(String.format("Timezone hour offset out of range in time literal (%s).", input));
+                        }
+
+                        int minuteOffset = Integer.parseInt(matcher.group(15));
+                        if (minuteOffset < 0 || minuteOffset >= 60 || (hourOffset == 14 && minuteOffset > 0)) {
+                            throw new IllegalArgumentException(String.format("Timezone minute offset out of range in time literal (%s).", input));
+                        }
+                        result.setTimezoneOffset(createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
+                    }
+                    else {
+                        if (matcher.group(13) != null) {
+                            int hourOffset = Integer.parseInt(matcher.group(13));
+                            if (hourOffset < 0 || hourOffset > 14) {
+                                throw new IllegalArgumentException(String.format("Timezone hour offset out of range in time literal (%s).", input));
+                            }
+                            result.setTimezoneOffset(createLiteral((double)(hourOffset * offsetPolarity)));
+                        }
+                    }
+                }
+
+                result.setResultType(resolveTypeName("Time"));
+                return result;
+            }
+            catch (RuntimeException e) {
+                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input), e);
+            }
+        }
+        else {
+            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input));
+        }
+    }
+
+    @Override
+    public Object visitDateTimeLiteral(@NotNull cqlParser.DateTimeLiteralContext ctx) {
+        String input = ctx.getText();
+        if (input.startsWith("@")) {
+            input = input.substring(1);
+        }
+
+        Pattern dateTimePattern =
+                Pattern.compile("(\\d{4})(-(\\d{2}))?(-(\\d{2}))?((Z)|(T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?))?");
+                               //1-------2-3---------4-5---------67---8-91-------1---1-------1---1-------1---1-------------11---12-----2-------2----2---------------
+                               //----------------------------------------0-------1---2-------3---4-------5---6-------------78---90-----1-------2----3---------------
+
+        Matcher matcher = dateTimePattern.matcher(input);
+        if (matcher.matches()) {
+            try {
+                GregorianCalendar calendar = (GregorianCalendar)GregorianCalendar.getInstance();
+                DateTime result = of.createDateTime();
+                int year = Integer.parseInt(matcher.group(1));
+                int month = -1;
+                int day = -1;
+                int hour = -1;
+                int minute = -1;
+                int second = -1;
+                int millisecond = -1;
+                result.setYear(createLiteral(year));
+                if (matcher.group(3) != null) {
+                    month = Integer.parseInt(matcher.group(3));
+                    if (month < 0 || month > 12) {
+                        throw new IllegalArgumentException(String.format("Invalid month in date/time literal (%s).", input));
+                    }
+                    result.setMonth(createLiteral(month));
+                }
+
+                if (matcher.group(5) != null) {
+                    day = Integer.parseInt(matcher.group(5));
+                    int maxDay = 31;
+                    switch (month) {
+                        case 2: maxDay = calendar.isLeapYear(year) ? 29 : 28;
+                            break;
+                        case 4:
+                        case 6:
+                        case 9:
+                        case 11: maxDay = 30;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (day < 0 || day > maxDay) {
+                        throw new IllegalArgumentException(String.format("Invalid day in date/time literal (%s).", input));
+                    }
+
+                    result.setDay(createLiteral(day));
+                }
+
+                if (matcher.group(10) != null) {
+                    hour = Integer.parseInt(matcher.group(10));
+                    if (hour < 0 || hour > 24) {
+                        throw new IllegalArgumentException(String.format("Invalid hour in date/time literal (%s).", input));
+                    }
+                    result.setHour(createLiteral(hour));
+                }
+
+                if (matcher.group(12) != null) {
+                    minute = Integer.parseInt(matcher.group(12));
+                    if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
+                        throw new IllegalArgumentException(String.format("Invalid minute in date/time literal (%s).", input));
+                    }
+                    result.setMinute(createLiteral(minute));
+                }
+
+                if (matcher.group(14) != null) {
+                    second = Integer.parseInt(matcher.group(14));
+                    if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
+                        throw new IllegalArgumentException(String.format("Invalid second in date/time literal (%s).", input));
+                    }
+                    result.setSecond(createLiteral(second));
+                }
+
+                if (matcher.group(16) != null) {
+                    millisecond = Integer.parseInt(matcher.group(16));
+                    if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
+                        throw new IllegalArgumentException(String.format("Invalid millisecond in date/time literal (%s).", input));
+                    }
+                    result.setMillisecond(createLiteral(millisecond));
+                }
+
+                if ((matcher.group(7) != null && matcher.group(7).equals("Z"))
+                        || ((matcher.group(18) != null) && matcher.group(18).equals("Z"))) {
+                    result.setTimezoneOffset(createLiteral(0.0));
+                }
+
+                if (matcher.group(20) != null) {
+                    int offsetPolarity = matcher.group(20).equals("+") ? 1 : 0;
+
+                    if (matcher.group(23) != null) {
+                        int hourOffset = Integer.parseInt(matcher.group(21));
+                        if (hourOffset < 0 || hourOffset > 14) {
+                            throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
+                        }
+
+                        int minuteOffset = Integer.parseInt(matcher.group(23));
+                        if (minuteOffset < 0 || minuteOffset >= 60 || (hourOffset == 14 && minuteOffset > 0)) {
+                            throw new IllegalArgumentException(String.format("Timezone minute offset is out of range in date/time literal (%s).", input));
+                        }
+
+                        result.setTimezoneOffset(createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
+                    }
+                    else {
+                        if (matcher.group(21) != null) {
+                            int hourOffset = Integer.parseInt(matcher.group(21));
+                            if (hourOffset < 0 || hourOffset > 14) {
+                                throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
+                            }
+
+                            result.setTimezoneOffset(createLiteral((double)(hourOffset * offsetPolarity)));
+                        }
+                    }
+                }
+
+                result.setResultType(resolveTypeName("DateTime"));
+                return result;
+            }
+            catch (RuntimeException e) {
+                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input), e);
+            }
+        }
+        else {
+            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input));
+        }
+    }
+
+    @Override
     public Null visitNullLiteral(@NotNull cqlParser.NullLiteralContext ctx) {
         Null result = of.createNull();
         result.setResultType(resolveTypeName("System", "Any"));
@@ -739,24 +966,31 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private DateTimePrecision parseDateTimePrecision(String dateTimePrecision) {
         switch (dateTimePrecision) {
+            case "a":
             case "year":
             case "years":
                 return DateTimePrecision.YEAR;
+            case "mo":
             case "month":
             case "months":
                 return DateTimePrecision.MONTH;
+            case "d":
             case "day":
             case "days":
                 return DateTimePrecision.DAY;
+            case "h":
             case "hour":
             case "hours":
                 return DateTimePrecision.HOUR;
+            case "min":
             case "minute":
             case "minutes":
                 return DateTimePrecision.MINUTE;
+            case "s":
             case "second":
             case "seconds":
                 return DateTimePrecision.SECOND;
+            case "ms":
             case "millisecond":
             case "milliseconds":
                 return DateTimePrecision.MILLISECOND;
@@ -774,22 +1008,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         switch (component) {
             case "date":
                 result = of.createDateFrom().withOperand(parseExpression(ctx.expressionTerm()));
-                operatorName = "Date";
+                operatorName = "DateFrom";
                 break;
             case "time":
                 result = of.createTimeFrom().withOperand(parseExpression(ctx.expressionTerm()));
-                operatorName = "Time";
+                operatorName = "TimeFrom";
                 break;
             case "timezone":
                 result = of.createTimezoneFrom().withOperand(parseExpression(ctx.expressionTerm()));
-                operatorName = "Timezone";
+                operatorName = "TimezoneFrom";
                 break;
+            case "a":
             case "year":
+            case "mo":
             case "month":
+            case "d":
             case "day":
+            case "h":
             case "hour":
+            case "min":
             case "minute":
+            case "s":
             case "second":
+            case "ms":
             case "millisecond":
                 result = of.createDateTimeComponentFrom()
                         .withOperand(parseExpression(ctx.expressionTerm()))
@@ -2921,14 +3162,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ListType toType = (ListType)conversion.getToType();
 
         Query query = (Query)of.createQuery()
-                .withSource((AliasedQuerySource)of.createAliasedQuerySource()
+                .withSource((AliasedQuerySource) of.createAliasedQuerySource()
                         .withAlias("X")
                         .withExpression(expression)
                         .withResultType(fromType))
-                .withReturn((ReturnClause)of.createReturnClause()
-                        .withExpression(convertExpression((AliasRef)of.createAliasRef()
-                                .withName("X")
-                                .withResultType(fromType.getElementType()),
+                .withReturn((ReturnClause) of.createReturnClause()
+                        .withExpression(convertExpression((AliasRef) of.createAliasRef()
+                                        .withName("X")
+                                        .withResultType(fromType.getElementType()),
                                 conversion.getConversion()))
                         .withResultType(toType))
                 .withResultType(toType);
@@ -3110,6 +3351,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Literal createLiteral(Integer integer) {
         return createLiteral(String.valueOf(integer), "Integer");
+    }
+
+    private Literal createLiteral(Double value) {
+        return createLiteral(String.valueOf(value), "Decimal");
     }
 
     private boolean isBooleanLiteral(Expression expression, Boolean bool) {

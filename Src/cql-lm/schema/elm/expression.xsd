@@ -1048,7 +1048,7 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="TimeFrom">
 		<xs:annotation>
-			<xs:documentation>The TimeFrom operator returns the time (with the date components set to the minimum date of January 1st, 1900) of the argument.
+			<xs:documentation>The TimeFrom operator returns the Time of the argument.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1112,6 +1112,26 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 					<xs:element name="month" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="day" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="hour" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="minute" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="second" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="millisecond" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="timezoneOffset" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Time">
+		<xs:annotation>
+			<xs:documentation>The Time operator constructs a time value from the given components.
+			
+At least one component other than timezoneOffset must be specified, and no component may be specified at a precision below an unspecified precision. For example, minute may be null, but if it is, second, and millisecond must all be null as well.
+
+If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="hour" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="minute" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="second" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="millisecond" type="Expression" minOccurs="0" maxOccurs="1"/>
