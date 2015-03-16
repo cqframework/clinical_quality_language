@@ -1026,7 +1026,19 @@ If stringToSub or startIndex is null, the result is null.</xs:documentation>
 	</xs:simpleType>
 	<xs:complexType name="DurationBetween">
 		<xs:annotation>
-			<xs:documentation>The DurationBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. 
+			<xs:documentation>The DurationBetween operator returns the number of whole periods of the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional periods are dropped.
+			
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression">
+				<xs:attribute name="precision" type="DateTimePrecision"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DifferenceBetween">
+		<xs:annotation>
+			<xs:documentation>The DifferenceBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. 
 			
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>

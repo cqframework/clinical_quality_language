@@ -1096,6 +1096,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitTimeDifferenceExpression(@NotNull cqlParser.TimeDifferenceExpressionContext ctx) {
+        BinaryExpression result = of.createDifferenceBetween()
+                .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
+                .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
+
+        resolveBinaryCall("System", "DifferenceBetween", result);
+        return result;
+    }
+
+    @Override
     public Object visitWidthExpressionTerm(@NotNull cqlParser.WidthExpressionTermContext ctx) {
         UnaryExpression result = of.createWidth().withOperand(parseExpression(ctx.expressionTerm()));
         resolveUnaryCall("System", "Width", result);

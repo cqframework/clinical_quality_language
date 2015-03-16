@@ -233,23 +233,24 @@ qualifiedIdentifier
     ;
 
 expression
-    : expressionTerm                                                         # termExpression
-    | retrieve                                                               # retrieveExpression
-    | query                                                                  # queryExpression
-    | expression 'is' 'not'? ('null' | 'true' | 'false')                     # booleanExpression
-    | expression ('is' | 'as') typeSpecifier                                 # typeExpression
-    | 'cast' expression 'as' typeSpecifier                                   # castExpression
-    | 'not' expression                                                       # notExpression
-    | 'exists' expression                                                    # existenceExpression
-    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm   # rangeExpression
-    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm  # timeRangeExpression
-    | expression ('<=' | '<' | '>' | '>=') expression                        # inequalityExpression
-    | expression intervalOperatorPhrase expression                           # timingExpression
-    | expression ('=' | '<>') expression                                     # equalityExpression
-    | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression  # membershipExpression
-    | expression 'and' expression                                            # andExpression
-    | expression ('or' | 'xor') expression                                   # orExpression
-    | expression ('union' | 'intersect' | 'except') expression               # inFixSetExpression
+    : expressionTerm                                                                                # termExpression
+    | retrieve                                                                                      # retrieveExpression
+    | query                                                                                         # queryExpression
+    | expression 'is' 'not'? ('null' | 'true' | 'false')                                            # booleanExpression
+    | expression ('is' | 'as') typeSpecifier                                                        # typeExpression
+    | 'cast' expression 'as' typeSpecifier                                                          # castExpression
+    | 'not' expression                                                                              # notExpression
+    | 'exists' expression                                                                           # existenceExpression
+    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm                          # rangeExpression
+    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm                         # timeRangeExpression
+    | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       # timeDifferenceExpression
+    | expression ('<=' | '<' | '>' | '>=') expression                                               # inequalityExpression
+    | expression intervalOperatorPhrase expression                                                  # timingExpression
+    | expression ('=' | '<>') expression                                                            # equalityExpression
+    | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression                         # membershipExpression
+    | expression 'and' expression                                                                   # andExpression
+    | expression ('or' | 'xor') expression                                                          # orExpression
+    | expression ('union' | 'intersect' | 'except') expression                                      # inFixSetExpression
     ;
 
 dateTimePrecision
