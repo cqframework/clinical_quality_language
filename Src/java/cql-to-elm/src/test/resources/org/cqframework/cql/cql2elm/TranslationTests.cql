@@ -25,7 +25,6 @@ define EqLists = { 1, 2, 3 } = { 1, 2, 3 }
 
 define IsNull = 5 is null
 define StringConcat = 'a' + 'b'
-define IfNullExpression = IfNull(5, 5)
 define CoalesceExpression = coalesce ( 1, 2, 3, 4, 5 )
 define CoalesceWithNulls = coalesce ( 1, null, null, 4, 5 )
 

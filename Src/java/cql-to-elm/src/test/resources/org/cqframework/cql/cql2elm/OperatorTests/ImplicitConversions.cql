@@ -6,11 +6,6 @@ define DecimalIntegerMultiplication = 5.0 * 5
 // null to any type
 define IntegerAnyMultiplication = 5 * null
 
-// Within IfNull
-define NullIfNull = IfNull(null, 1)
-define IntegerIfNull = IfNull(1, 5.0)
-define DecimalIfNull = IfNull(1.0, 5)
-
 // Within Coalesce
 define NullCoalesce = coalesce ( null, 1, 2, 3 )
 define IntegerCoalesce = coalesce ( 1, 2.0, 3.0, null )
