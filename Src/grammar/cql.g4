@@ -196,7 +196,7 @@ singleSourceClause
     ;
 
 multipleSourceClause
-    : 'foreach' aliasedQuerySource (',' aliasedQuerySource)*
+    : 'from' aliasedQuerySource (',' aliasedQuerySource)*
     ;
 
 defineClause
