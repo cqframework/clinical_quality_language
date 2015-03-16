@@ -1,5 +1,9 @@
 define IntervalAfter = interval[10, 15] after interval [1, 5]
+define PointIntervalAfter = 10 after interval [1, 5]
+define IntervalPointAfter = interval[10, 15] after 5
 define IntervalBefore = interval[1, 5] before interval[10, 15]
+define PointIntervalBefore = 5 before interval[10, 15]
+define IntervalPointBefore = interval[1, 5] before 10
 define IntervalCollapse = Collapse({ interval[1, 5], interval[3, 7], interval[5, 10], interval[50, 100] })
 define IntervalContains = interval[1, 5] contains 3
 define IntervalEnd = end of interval[1, 5]
