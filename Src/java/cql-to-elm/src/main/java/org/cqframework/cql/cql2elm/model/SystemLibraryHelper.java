@@ -173,7 +173,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Indexer", new Signature(systemModel.getString(), systemModel.getInteger()), systemModel.getString()));
         system.add(new Operator("Length", new Signature(systemModel.getString()), systemModel.getInteger()));
         system.add(new Operator("Lower", new Signature(systemModel.getString()), systemModel.getString()));
-        system.add(new Operator("Pos", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getInteger()));
+        system.add(new Operator("PositionOf", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getInteger()));
         system.add(new Operator("Split", new Signature(systemModel.getString(), systemModel.getString()), new ListType(systemModel.getString())));
         system.add(new Operator("Substring", new Signature(systemModel.getString(), systemModel.getInteger()), systemModel.getString()));
         system.add(new Operator("Substring", new Signature(systemModel.getString(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getString()));

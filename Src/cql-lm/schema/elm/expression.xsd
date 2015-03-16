@@ -962,9 +962,9 @@ If either argument is null, the result is null.</xs:documentation>
 			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="Pos">
+	<xs:complexType name="PositionOf">
 		<xs:annotation>
-			<xs:documentation>The Pos operator returns the 1-based index of the given pattern in the given string.
+			<xs:documentation>The PositionOf operator returns the 1-based index of the given pattern in the given string.
 			
 If the pattern is not found, the result is 0.
 
