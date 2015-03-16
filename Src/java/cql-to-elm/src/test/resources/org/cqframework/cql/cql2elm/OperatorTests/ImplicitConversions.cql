@@ -7,9 +7,9 @@ define DecimalIntegerMultiplication = 5.0 * 5
 define IntegerAnyMultiplication = 5 * null
 
 // Within Coalesce
-define NullCoalesce = coalesce ( null, 1, 2, 3 )
-define IntegerCoalesce = coalesce ( 1, 2.0, 3.0, null )
-define DecimalCoalesce = coalesce ( 1.0, 2, 3, null )
+define NullCoalesce = Coalesce(null, 1, 2, 3)
+define IntegerCoalesce = Coalesce(1, 2.0, 3.0, null)
+define DecimalCoalesce = Coalesce(1.0, 2, 3, null)
 
 // Within Interval selector
 define IntegerIntervalSelector = interval[5, null]

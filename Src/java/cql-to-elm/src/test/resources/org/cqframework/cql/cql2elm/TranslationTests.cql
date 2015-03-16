@@ -25,19 +25,12 @@ define EqLists = { 1, 2, 3 } = { 1, 2, 3 }
 
 define IsNull = 5 is null
 define StringConcat = 'a' + 'b'
-define CoalesceExpression = coalesce ( 1, 2, 3, 4, 5 )
-define CoalesceWithNulls = coalesce ( 1, null, null, 4, 5 )
+define CoalesceExpression = Coalesce(1, 2, 3, 4, 5)
+define CoalesceWithNulls = Coalesce(1, null, null, 4, 5)
 
-//define HasNull = Count({ 1, null, null, null, 2 })
+define HasNull = Count({ 1, null, null, null, 2 })
 define Empty = Count({ })
 
-//define TypedHasNull = Count(list<Integer> { 1, null, null, null, 2 })
+define TypedHasNull = Count(list<Integer> { 1, null, null, null, 2 })
 define TypedEmpty = Count(list<Integer> { })
 
-// We actually want to be able to support this:
-/*
-define class A { id: Integer }
-define class B: A { name: String }
-define BInstance := new B { id := 1, name := "John" }
-define TupleEqual := BInstance = tuple { id := 1, name := "John" }
-*/

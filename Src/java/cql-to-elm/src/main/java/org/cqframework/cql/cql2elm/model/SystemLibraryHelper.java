@@ -18,6 +18,16 @@ public class SystemLibraryHelper {
 
         // Nullological Operators
         system.add(new Operator("IsNull", new Signature(systemModel.getAny()), systemModel.getBoolean()));
+        // Coalesce<T>(list<T>)
+        // Coalesce<T>(T, T)
+        // Coalesce<T>(T, T, T)
+        // Coalesce<T>(T, T, T, T)
+        // Coalesce<T>(T, T, T, T, T)
+        system.add(new GenericOperator("Coalesce", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
+        system.add(new GenericOperator("Coalesce", new Signature(new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
+        system.add(new GenericOperator("Coalesce", new Signature(new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
+        system.add(new GenericOperator("Coalesce", new Signature(new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
+        system.add(new GenericOperator("Coalesce", new Signature(new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
         system.add(new Operator("IsTrue", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
         system.add(new Operator("IsFalse", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
 

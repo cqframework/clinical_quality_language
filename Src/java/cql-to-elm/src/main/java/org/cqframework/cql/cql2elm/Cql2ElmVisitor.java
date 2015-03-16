@@ -2294,30 +2294,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitCoalesceExpressionTerm(@NotNull cqlParser.CoalesceExpressionTermContext ctx) {
-        List<Expression> expressions = new ArrayList<>();
-
-        DataType resultType = null;
-        for (cqlParser.ExpressionContext expression : ctx.expression()) {
-            Expression term = parseExpression(expression);
-
-            if (resultType == null) {
-                resultType = term.getResultType();
-            }
-            else {
-                resultType = ensureCompatibleTypes(resultType, term.getResultType());
-            }
-        }
-
-        Coalesce coalesce = of.createCoalesce();
-        for (Expression expression : expressions) {
-            coalesce.getOperand().add(ensureCompatible(expression, resultType));
-        }
-        coalesce.setResultType(resultType);
-        return coalesce;
-    }
-
-    @Override
     public Object visitAggregateExpressionTerm(@NotNull cqlParser.AggregateExpressionTermContext ctx) {
         switch (ctx.getChild(0).getText()) {
             case "distinct":

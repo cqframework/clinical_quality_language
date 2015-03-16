@@ -289,7 +289,6 @@ expressionTerm
     | expressionTerm ('+' | '-') expressionTerm                          # additionExpressionTerm
     | 'if' expression 'then' expression 'else' expression                # ifThenElseExpressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     # caseExpressionTerm
-    | 'coalesce' '(' expression (',' expression)+ ')'                    # coalesceExpressionTerm
     | ('distinct' | 'collapse' | 'expand') expression                    # aggregateExpressionTerm
     ;
 
@@ -388,14 +387,9 @@ quantityLiteral
     : QUANTITY unit?
     ;
 
-//ucumDateTimePrecision
-//    : 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms'
-//    ;
-
 unit
     : dateTimePrecision
     | pluralDateTimePrecision
-//    | ucumDateTimePrecision
     | STRING // UCUM syntax for units of measure
     ;
 
