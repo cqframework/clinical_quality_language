@@ -1603,7 +1603,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitConcurrentWithIntervalOperatorPhrase(@NotNull cqlParser.ConcurrentWithIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?
+        // ('starts' | 'ends' | 'occurs')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?
         TimingOperatorContext timingOperator = timingOperators.peek();
         ParseTree firstChild = ctx.getChild(0);
         if ("starts".equals(firstChild.getText())) {
@@ -1711,7 +1711,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (isRightPoint) {
-            // TODO: Handle is proper (no ELM representation for ProperContains)
+            if (isProper) {
+                if (dateTimePrecision != null) {
+                    ProperContains properContains = of.createProperContains().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                            .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                    resolveBinaryCall("System", "ProperContains", properContains);
+                    return properContains;
+                }
+
+                ProperContains properContains = of.createProperContains()
+                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                resolveBinaryCall("System", "ProperContains", properContains);
+                return properContains;
+            }
             if (dateTimePrecision != null) {
                 Contains contains = of.createContains().withPrecision(parseDateTimePrecision(dateTimePrecision))
                         .withOperand(timingOperator.getLeft(), timingOperator.getRight());
@@ -1752,7 +1764,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIncludedInIntervalOperatorPhrase(@NotNull cqlParser.IncludedInIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?
+        // ('starts' | 'ends' | 'occurs')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?
         boolean isProper = false;
         boolean isLeftPoint = false;
         TimingOperatorContext timingOperator = timingOperators.peek();
@@ -1790,11 +1802,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (isLeftPoint) {
-            // TODO: Handle is proper (no ELM representation for ProperIn)
             if (isProper) {
-                throw new IllegalArgumentException("Properly modifier can only be used with interval-to-interval or list-to-list comparisons.");
-            }
+                if (dateTimePrecision != null) {
+                    ProperIn properIn = of.createProperIn().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                            .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                    resolveBinaryCall("System", "ProperIn", properIn);
+                    return properIn;
+                }
 
+                ProperIn properIn = of.createProperIn().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                resolveBinaryCall("System", "ProperIn", properIn);
+                return properIn;
+            }
             if (dateTimePrecision != null) {
                 In in = of.createIn().withPrecision(parseDateTimePrecision(dateTimePrecision))
                         .withOperand(timingOperator.getLeft(), timingOperator.getRight());
@@ -1834,7 +1853,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitBeforeOrAfterIntervalOperatorPhrase(@NotNull cqlParser.BeforeOrAfterIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' | 'end')?
+        // ('starts' | 'ends' | 'occurs')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' | 'end')?
 
         // duration before/after
         // A starts 3 days before start B
@@ -1922,8 +1941,42 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         } else {
             Quantity quantity = (Quantity)visit(ctx.quantityOffset().quantityLiteral());
             Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
-            BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(),
-                    timingOperator.getLeft(), timingOperator.getRight());
+            Expression lowerBound = null;
+            Expression upperBound = null;
+
+            if (timingOperator.getLeft().getResultType() instanceof IntervalType) {
+                if (isBefore) {
+                    End end = of.createEnd().withOperand(timingOperator.getLeft());
+                    resolveUnaryCall("System", "End", end);
+                    lowerBound = end;
+                }
+                else {
+                    Start start = of.createStart().withOperand(timingOperator.getLeft());
+                    resolveUnaryCall("System", "Start", start);
+                    lowerBound = start;
+                }
+            }
+            else {
+                lowerBound = timingOperator.getLeft();
+            }
+
+            if (timingOperator.getRight().getResultType() instanceof IntervalType) {
+                if (isBefore) {
+                    Start start = of.createStart().withOperand(timingOperator.getRight());
+                    resolveUnaryCall("System", "Start", start);
+                    upperBound = start;
+                }
+                else {
+                    End end = of.createEnd().withOperand(timingOperator.getRight());
+                    resolveUnaryCall("System", "End", end);
+                    upperBound = end;
+                }
+            }
+            else {
+                upperBound = timingOperator.getRight();
+            }
+
+            BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(), lowerBound, upperBound);
             if (betweenOperator != null) {
                 if (ctx.quantityOffset().offsetRelativeQualifier() == null) {
                     if (isBefore) {
@@ -1994,9 +2047,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitWithinIntervalOperatorPhrase(@NotNull cqlParser.WithinIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
+        // ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
         // A starts within 3 days of start B
-        // days between start of A and start of B in [-3, 3]
+        // days between start of A and start of B >= -3 and days between start of A and start of B <= 3
+        // A starts within 3 days of B
+        // days between start of A and start of B >= -3 and days between start of A and end of B <= 3
 
         TimingOperatorContext timingOperator = timingOperators.peek();
         boolean isProper = false;
@@ -2011,6 +2066,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if ("ends".equals(child.getText())) {
                 End end = of.createEnd().withOperand(timingOperator.getLeft());
                 resolveUnaryCall("System", "End", end);
+                timingOperator.setLeft(end);
                 continue;
             }
 
@@ -2036,19 +2092,36 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         Quantity quantity = (Quantity)visit(ctx.quantityLiteral());
         Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
-        Interval quantityInterval = of.createInterval()
-                .withLow(of.createNegate().withOperand(quantityLiteral)).withLowClosed(!isProper)
-                .withHigh(quantityLiteral).withHighClosed(!isProper);
-        quantityInterval.setResultType(new IntervalType(quantityLiteral.getResultType()));
-        BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(),
-                timingOperator.getLeft(), timingOperator.getRight());
-        if (betweenOperator != null) {
-            In in = of.createIn().withOperand(betweenOperator, quantityInterval);
-            resolveBinaryCall("System", "In", in);
-            return in;
+        Negate negativeQuantityLiteral = of.createNegate().withOperand(createLiteral(quantity.getValue().intValueExact()));
+        resolveUnaryCall("System", "Negate", negativeQuantityLiteral);
+
+        Expression lowerBound = null;
+        Expression upperBound = null;
+        if (timingOperator.getRight().getResultType() instanceof IntervalType) {
+            lowerBound = of.createStart().withOperand(timingOperator.getRight());
+            resolveUnaryCall("System", "Start", (Start)lowerBound);
+            upperBound = of.createEnd().withOperand(timingOperator.getRight());
+            resolveUnaryCall("System", "End", (End)upperBound);
+        }
+        else {
+            lowerBound = timingOperator.getRight();
+            upperBound = timingOperator.getRight();
         }
 
-        throw new IllegalArgumentException("Could not resolve interval operator phrase.");
+        BinaryExpression leftBetween = resolveBetweenOperator(quantity.getUnit(), timingOperator.getLeft(), lowerBound);
+        BinaryExpression rightBetween = resolveBetweenOperator(quantity.getUnit(), timingOperator.getLeft(), upperBound);
+
+        BinaryExpression leftCompare = (isProper ? of.createGreater() : of.createGreaterOrEqual())
+                .withOperand(leftBetween, negativeQuantityLiteral);
+        resolveBinaryCall("System", isProper ? "Greater" : "GreaterOrEqual", leftCompare);
+
+        BinaryExpression rightCompare = (isProper ? of.createLess() : of.createLessOrEqual())
+                .withOperand(rightBetween, quantityLiteral);
+        resolveBinaryCall("System", isProper ? "Less" : "LessOrEqual", rightCompare);
+
+        And result = of.createAnd().withOperand(leftCompare, rightCompare);
+        resolveBinaryCall("System", "And", result);
+        return result;
     }
 
     @Override

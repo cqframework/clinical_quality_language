@@ -1241,6 +1241,26 @@ If either argument is null, the result is null.</xs:documentation>
 		</xs:complexContent>
 		<!-- Contains(i, p) = (if lowClosed then p >= IfNull(i.low, p) else p > i.low) and (if highClosed then p <= IfNull(i.high, p) else p < i.high) -->
 	</xs:complexType>
+	<xs:complexType name="ProperContains">
+		<xs:annotation>
+			<xs:documentation>The ProperContains operator returns true if the first operand properly contains the second.
+
+There are two overloads of this operator:
+	List, T: The type of T must be the same as the element type of the list.
+	Interval, T : The type of T must be the same as the point type of the interval.
+	
+For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list.
+
+For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression">
+				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+		<!-- ProperContains(i, p) = p > Start(i) and p < End(i) -->
+	</xs:complexType>
 	<xs:complexType name="In">
 		<xs:annotation>
 			<xs:documentation>The In operator tests for membership in an interval or list.
@@ -1261,6 +1281,25 @@ If either argument is null, the result is null.</xs:documentation>
 			</xs:extension>
 		</xs:complexContent>
 		<!-- In(p, i) = (if lowClosed then p >= IfNull(i.low, p) else p > i.low) and (if highClosed then p <= IfNull(i.high, p) else p < i.high) -->
+	</xs:complexType>
+	<xs:complexType name="ProperIn">
+		<xs:annotation>
+			<xs:documentation>The ProperIn operator tests for proper membership in an interval or list.
+			
+There are two overloads of this operator:
+	T, List : The type of T must be the same as the element type of the list.
+	T, Interval : The type of T must be the same as the point type of the interval.
+	
+For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list.
+
+For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression">
+				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+		<!-- In(p, i) = p > Start(i) and p < End(i) -->
 	</xs:complexType>
 	<xs:complexType name="Includes">
 		<xs:annotation>

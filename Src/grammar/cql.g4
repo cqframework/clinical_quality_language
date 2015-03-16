@@ -316,15 +316,15 @@ quantityOffset
     ;
 
 intervalOperatorPhrase
-    : ('starts' | 'ends')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?              #concurrentWithIntervalOperatorPhrase
-    | 'properly'? 'includes' dateTimePrecisionSpecifier? ('start' | 'end')?                                     #includesIntervalOperatorPhrase
-    | ('starts' | 'ends')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?                   #includedInIntervalOperatorPhrase
-    | ('starts' | 'ends')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' | 'end')?  #beforeOrAfterIntervalOperatorPhrase
-    | ('starts' | 'ends')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?                         #withinIntervalOperatorPhrase
-    | 'meets' ('before' | 'after')? dateTimePrecisionSpecifier?                                                 #meetsIntervalOperatorPhrase
-    | 'overlaps' ('before' | 'after')? dateTimePrecisionSpecifier?                                              #overlapsIntervalOperatorPhrase
-    | 'starts' dateTimePrecisionSpecifier?                                                                      #startsIntervalOperatorPhrase
-    | 'ends' dateTimePrecisionSpecifier?                                                                        #endsIntervalOperatorPhrase
+    : ('starts' | 'ends' | 'occurs')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?               #concurrentWithIntervalOperatorPhrase
+    | 'properly'? 'includes' dateTimePrecisionSpecifier? ('start' | 'end')?                                                 #includesIntervalOperatorPhrase
+    | ('starts' | 'ends' | 'occurs')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?                    #includedInIntervalOperatorPhrase
+    | ('starts' | 'ends' | 'occurs')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' | 'end')?   #beforeOrAfterIntervalOperatorPhrase
+    | ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?                          #withinIntervalOperatorPhrase
+    | 'meets' ('before' | 'after')? dateTimePrecisionSpecifier?                                                             #meetsIntervalOperatorPhrase
+    | 'overlaps' ('before' | 'after')? dateTimePrecisionSpecifier?                                                          #overlapsIntervalOperatorPhrase
+    | 'starts' dateTimePrecisionSpecifier?                                                                                  #startsIntervalOperatorPhrase
+    | 'ends' dateTimePrecisionSpecifier?                                                                                    #endsIntervalOperatorPhrase
     ;
 
 term

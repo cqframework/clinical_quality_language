@@ -267,10 +267,20 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("OverlapsBefore", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // OverlapsAfter<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("OverlapsAfter", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // ProperContains<T>(interval<T>, T) : Boolean
+        system.add(new GenericOperator("ProperContains", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // ProperIn<T>(T, interval<T>) : Boolean
+        system.add(new GenericOperator("ProperIn", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // ProperIncludes<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("ProperIncludes", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // ProperIncludedIn<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("ProperIncludedIn", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameAs<T>(interval<T>, interval<T>) : Boolean
+        system.add(new GenericOperator("SameAs", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameOrAfter<T>(interval<T>, interval<T>) : Boolean
+        system.add(new GenericOperator("SameOrAfter", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameOrBefore<T>(interval<T>, interval<T>) : Boolean
+        system.add(new GenericOperator("SameOrBefore", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Start<T>(interval<T>) : T
         system.add(new GenericOperator("Start", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Starts<T>(interval<T>, interval<T>) : Boolean
@@ -312,6 +322,10 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Last", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Length<T>(list<T>) : Integer
         system.add(new GenericOperator("Length", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
+        // ProperContains<T>(list<T>, T) : Boolean
+        system.add(new GenericOperator("ProperContains", new Signature(new ListType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // ProperIn<T>(T, list<T>) : Boolean
+        system.add(new GenericOperator("ProperIn", new Signature(new TypeParameter("T"), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // ProperIncludes<T>(list<T>, list<T>) : Boolean
         system.add(new GenericOperator("ProperIncludes", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // ProperIncludedIn<T>(list<T>, list<T>) : Boolean
