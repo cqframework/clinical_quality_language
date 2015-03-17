@@ -5,10 +5,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.cqframework.cql.cql2elm.model.invocation.BinaryExpressionInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.FunctionRefInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.InValueSetInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.UnaryExpressionInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
 import org.cqframework.cql.elm.tracking.*;
 import org.cqframework.cql.gen.cqlBaseVisitor;
@@ -378,19 +375,37 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public String visitCodeSystemVersion(@NotNull cqlParser.CodeSystemVersionContext ctx) {
-        return parseString(ctx.codeSystemId()) + ' ' + parseString(ctx.versionSpecifier());
+    public CodeSystemDef visitCodesystemDefinition(@NotNull cqlParser.CodesystemDefinitionContext ctx) {
+        CodeSystemDef cs = (CodeSystemDef)of.createCodeSystemDef()
+                .withName(parseString(ctx.identifier()))
+                .withId(parseString(ctx.codesystemId()))
+                .withVersion(parseString(ctx.versionSpecifier()))
+                .withResultType(new ListType(resolveTypeName("Code")));
+
+        addToLibrary(cs);
+        return cs;
     }
 
     @Override
-    public String visitCodeSystemVersions(@NotNull cqlParser.CodeSystemVersionsContext ctx) {
-        StringBuilder result = new StringBuilder();
-        for (cqlParser.CodeSystemVersionContext childCtx : ctx.codeSystemVersion()) {
-            String codeSystemVersion = (String) visit(childCtx);
-            result.append(result.length() > 0 ? " " : "").append(codeSystemVersion);
+    public CodeSystemRef visitCodesystemIdentifier(@NotNull cqlParser.CodesystemIdentifierContext ctx) {
+        String libraryName = parseString(ctx.libraryIdentifier());
+        String name = parseString(ctx.identifier());
+        CodeSystemDef def;
+        if (libraryName != null) {
+            def = resolveLibrary(libraryName).resolveCodeSystemRef(name);
+        }
+        else {
+            def = translatedLibrary.resolveCodeSystemRef(name);
         }
 
-        return result.toString();
+        if (def == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve reference to code system %s.", name));
+        }
+
+        return (CodeSystemRef)of.createCodeSystemRef()
+                .withLibraryName(libraryName)
+                .withName(name)
+                .withResultType(def.getResultType());
     }
 
     @Override
@@ -398,12 +413,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ValueSetDef vs = of.createValueSetDef()
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.valuesetId()))
-                .withVersion(parseString(ctx.versionSpecifier()))
-                .withCodeSystemVersions(
-                        ctx.codeSystemVersions() != null
-                                ? (String) visit(ctx.codeSystemVersions())
-                                : null
-                );
+                .withVersion(parseString(ctx.versionSpecifier()));
+
+        if (ctx.codesystems() != null) {
+            for (cqlParser.CodesystemIdentifierContext codesystem : ctx.codesystems().codesystemIdentifier()) {
+                vs.getCodeSystem().add((CodeSystemRef)visit(codesystem));
+            }
+        }
+        vs.setResultType(new ListType(resolveTypeName("Code")));
         addToLibrary(vs);
 
         return vs;
@@ -1144,6 +1161,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         return in;
                     }
 
+                    if (right instanceof CodeSystemRef) {
+                        InCodeSystem in = of.createInCodeSystem()
+                                .withCode(left)
+                                .withCodesystem((CodeSystemRef)right);
+                        resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
+                        return in;
+                    }
+
                     In in = of.createIn().withOperand(left, right);
                     resolveBinaryCall("System", "In", in);
                     return in;
@@ -1167,6 +1192,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 .withCode(right)
                                 .withValueset((ValueSetRef) left);
                         resolveCall("System", "InValueSet", new InValueSetInvocation(in));
+                        return in;
+                    }
+
+                    if (left instanceof CodeSystemRef) {
+                        InCodeSystem in = of.createInCodeSystem()
+                                .withCode(right)
+                                .withCodesystem((CodeSystemRef)left);
+                        resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
                         return in;
                     }
 
@@ -1302,7 +1335,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Expression resolveAccessor(Expression left, String memberIdentifier) {
         // if left is a LibraryRef
         // if right is an identifier
-        // right may be an ExpressionRef, a ValueSetRef, or a ParameterRef -- need to resolve on the referenced library
+        // right may be an ExpressionRef, a CodeSystemRef, a ValueSetRef, or a ParameterRef -- need to resolve on the referenced library
         // if left is an ExpressionRef
         // if right is an identifier
         // return a Property with the ExpressionRef as source and identifier as Path
@@ -1341,7 +1374,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 ValueSetRef result = of.createValueSetRef()
                         .withLibraryName(((LibraryRef) left).getLibraryName())
                         .withName(memberIdentifier);
-                result.setResultType(new ListType(resolveTypeName("Code")));
+                result.setResultType(element.getResultType());
+                return result;
+            }
+
+            if (element instanceof CodeSystemDef) {
+                CodeSystemRef result = of.createCodeSystemRef()
+                        .withLibraryName(((LibraryRef) left).getLibraryName())
+                        .withName(memberIdentifier);
+                result.setResultType(element.getResultType());
                 return result;
             }
 
@@ -1364,25 +1405,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             result.setResultType(resolveProperty(left.getResultType(), memberIdentifier));
             return result;
         }
-//        else if (left instanceof ExpressionRef) {
-//            Property result = of.createProperty()
-//                    .withSource(left)
-//                    .withPath(memberIdentifier);
-//            result.setResultType(resolveProperty(left.getResultType(), memberIdentifier));
-//            return result;
-//        }
-//        else if (left instanceof Property) {
-//            Property property = (Property) left;
-//            property.setPath(String.format("%s.%s", property.getPath(), memberIdentifier));
-//            property.setResultType(resolveProperty(left.getResultType(), memberIdentifier));
-//            return property;
-//        } else if (left instanceof IdentifierRef) {
-//            IdentifierRef identifier = (IdentifierRef) left;
-//            identifier.setName(String.format("%s.%s", identifier.getName(), memberIdentifier));
-//            return identifier;
-//        }
-
-//        throw new IllegalArgumentException(String.format("Unexpected left hand expression type: %s.", left.getClass().getSimpleName()));
     }
 
     @Override
@@ -1399,8 +1421,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // 3: The name of an expression
         // 4: The name of a parameter
         // 5: The name of a valueset
-        // 6: The name of a library
-        // 7: An unresolved identifier that must be resolved later (by a method or accessor)
+        // 6: The name of a codesystem
+        // 7: The name of a library
+        // 8: An unresolved identifier that must be resolved later (by a method or accessor)
 
         AliasedQuerySource alias = resolveAlias(identifier);
         if (alias != null) {
@@ -1464,6 +1487,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
             valuesetRef.setResultType(element.getResultType());
             return valuesetRef;
+        }
+
+        if (element instanceof CodeSystemDef) {
+            CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
+            codesystemRef.setResultType(element.getResultType());
+            return codesystemRef;
+
         }
 
         if (element instanceof IncludeDef) {
@@ -3476,6 +3506,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         library.getUsings().getDef().add(usingDef);
 
         translatedLibrary.add(usingDef);
+    }
+
+    private void addToLibrary(CodeSystemDef cs) {
+        if (library.getCodeSystems() == null) {
+            library.setCodeSystems(of.createLibraryCodeSystems());
+        }
+        library.getCodeSystems().getDef().add(cs);
+
+        translatedLibrary.add(cs);
     }
 
     private void addToLibrary(ValueSetDef vs) {

@@ -36,6 +36,11 @@ public class TranslatedLibrary {
         namespace.put(include.getLocalIdentifier(), include);
     }
 
+    public void add(CodeSystemDef codesystem) {
+        checkNamespace(codesystem.getName());
+        namespace.put(codesystem.getName(), codesystem);
+    }
+
     public void add(ValueSetDef valueset) {
         checkNamespace(valueset.getName());
         namespace.put(valueset.getName(), valueset);
@@ -110,6 +115,15 @@ public class TranslatedLibrary {
         Element element = resolve(identifier);
         if (element instanceof IncludeDef) {
             return (IncludeDef)element;
+        }
+
+        return null;
+    }
+
+    public CodeSystemDef resolveCodeSystemRef(String identifier) {
+        Element element = resolve(identifier);
+        if (element instanceof CodeSystemDef) {
+            return (CodeSystemDef)element;
         }
 
         return null;

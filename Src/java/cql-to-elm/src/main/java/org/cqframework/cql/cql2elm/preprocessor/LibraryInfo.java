@@ -8,6 +8,7 @@ public class LibraryInfo {
 
     private final Map<String, UsingDefinitionInfo> usingDefinitions;
     private final Map<String, IncludeDefinitionInfo> includeDefinitions;
+    private final Map<String, CodesystemDefinitionInfo> codesystemDefinitions;
     private final Map<String, ValuesetDefinitionInfo> valuesetDefinitions;
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
     private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
@@ -16,6 +17,7 @@ public class LibraryInfo {
     public LibraryInfo() {
         usingDefinitions = new LinkedHashMap<>();
         includeDefinitions = new LinkedHashMap<>();
+        codesystemDefinitions = new LinkedHashMap<>();
         valuesetDefinitions = new LinkedHashMap<>();
         parameterDefinitions = new LinkedHashMap<>();
         expressionDefinitions = new LinkedHashMap<>();
@@ -88,6 +90,14 @@ public class LibraryInfo {
         }
 
         return null;
+    }
+
+    public void addCodesystemDefinition(CodesystemDefinitionInfo codesystemDefinition) {
+        codesystemDefinitions.put(codesystemDefinition.getName(), codesystemDefinition);
+    }
+
+    public CodesystemDefinitionInfo resolveCodesystemReference(String identifier) {
+        return codesystemDefinitions.get(identifier);
     }
 
     public void addValuesetDefinition(ValuesetDefinitionInfo valuesetDefinition) {

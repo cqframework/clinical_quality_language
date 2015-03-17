@@ -134,6 +134,16 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
+					<xs:element name="codeSystems" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The code systems defined within this library.</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="def" type="CodeSystemDef" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 					<xs:element name="valueSets" minOccurs="0" maxOccurs="1">
 						<xs:annotation>
 							<xs:documentation>The value sets defined within this library.</xs:documentation>

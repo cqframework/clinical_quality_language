@@ -9,6 +9,7 @@ logic
     libraryDefinition?
     usingDefinition*
 	includeDefinition*
+	codesystemDefinition*
 	valuesetDefinition*
 	parameterDefinition*
 	statement+
@@ -38,19 +39,27 @@ parameterDefinition
     : 'parameter' identifier (typeSpecifier)? ('default' expression)?
     ;
 
+codesystemDefinition
+    : 'codesystem' identifier ':' codesystemId ('version' versionSpecifier)?
+    ;
+
 valuesetDefinition
-    : 'valueset' identifier ':' valuesetId ('version' versionSpecifier)? codeSystemVersions?
+    : 'valueset' identifier ':' valuesetId ('version' versionSpecifier)? codesystems?
     ;
 
-codeSystemVersions
-    : 'code systems' '(' codeSystemVersion (',' codeSystemVersion)* ')'
+codesystems
+    : 'codesystems' '(' codesystemIdentifier (',' codesystemIdentifier)* ')'
     ;
 
-codeSystemVersion
-    : codeSystemId 'version' versionSpecifier
+codesystemIdentifier
+    : (libraryIdentifier '.')? identifier
     ;
 
-codeSystemId
+libraryIdentifier
+    : identifier
+    ;
+
+codesystemId
     : STRING
     ;
 

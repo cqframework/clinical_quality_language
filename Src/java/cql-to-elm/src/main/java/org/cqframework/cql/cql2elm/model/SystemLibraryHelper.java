@@ -376,6 +376,10 @@ public class SystemLibraryHelper {
         system.add(new Operator("InValueSet", new Signature(systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("InValueSet", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
 
+        system.add(new Operator("InCodeSystem", new Signature(systemModel.getString()), systemModel.getBoolean()));
+        system.add(new Operator("InCodeSystem", new Signature(systemModel.getCode()), systemModel.getBoolean()));
+        system.add(new Operator("InCodeSystem", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
+
         return system;
     }
 }

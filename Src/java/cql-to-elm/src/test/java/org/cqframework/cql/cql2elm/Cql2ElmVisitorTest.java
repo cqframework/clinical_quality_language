@@ -313,7 +313,7 @@ public class Cql2ElmVisitorTest {
         assertThat(def.getName(), is("Female Administrative Sex"));
         assertThat(def.getId(), is("2.16.840.1.113883.3.560.100.2"));
         assertThat(def.getVersion(), is(nullValue()));
-        assertThat(def.getCodeSystemVersions(), is(nullValue()));
+        assertThat(def.getCodeSystem().size(), is(0));
     }
 
     @Test
@@ -325,20 +325,39 @@ public class Cql2ElmVisitorTest {
         assertThat(def.getName(), is("Female Administrative Sex"));
         assertThat(def.getId(), is("2.16.840.1.113883.3.560.100.2"));
         assertThat(def.getVersion(), is("1"));
-        assertThat(def.getCodeSystemVersions(), is(nullValue()));
+        assertThat(def.getCodeSystem().size(), is(0));
     }
 
     @Test
     public void testStaticallyBoundValueSet() {
-        String cql = "valueset \"Female Administrative Sex\" : '2.16.840.1.113883.3.560.100.2' version '1'\n" +
-                "    code systems ( 'SNOMED-CT' version '2014', 'ICD-9' version '2014' )\n" +
+        String cql = "codesystem \"SNOMED-CT:2014\" : 'SNOMED-CT' version '2014'\n" +
+                "codesystem \"ICD-9:2014\" : 'ICD-9' version '2014'\n" +
+                "valueset \"Female Administrative Sex\" : '2.16.840.1.113883.3.560.100.2' version '1'\n" +
+                "    codesystems ( \"SNOMED-CT:2014\", \"ICD-9:2014\" )\n" +
                 "define X : 1";
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);
         assertThat(def.getName(), is("Female Administrative Sex"));
         assertThat(def.getId(), is("2.16.840.1.113883.3.560.100.2"));
         assertThat(def.getVersion(), is("1"));
-        assertThat(def.getCodeSystemVersions(), is("SNOMED-CT 2014 ICD-9 2014"));
+        assertThat(def.getCodeSystem(), is(not(nullValue())));
+        assertThat(def.getCodeSystem().size(), is(2));
+        CodeSystemRef r = def.getCodeSystem().get(0);
+        assertThat(r.getName(), is("SNOMED-CT:2014"));
+        assertThat(r.getLibraryName(), is(nullValue()));
+        r = def.getCodeSystem().get(1);
+        assertThat(r.getName(), is("ICD-9:2014"));
+        assertThat(r.getLibraryName(), is(nullValue()));
+
+        CodeSystemDef snomedCT = l.getCodeSystems().getDef().get(0);
+        assertThat(snomedCT.getName(), is("SNOMED-CT:2014"));
+        assertThat(snomedCT.getId(), is("SNOMED-CT"));
+        assertThat(snomedCT.getVersion(), is("2014"));
+
+        CodeSystemDef icd9 = l.getCodeSystems().getDef().get(1);
+        assertThat(icd9.getName(), is("ICD-9:2014"));
+        assertThat(icd9.getId(), is("ICD-9"));
+        assertThat(icd9.getVersion(), is("2014"));
     }
 
     @Test
