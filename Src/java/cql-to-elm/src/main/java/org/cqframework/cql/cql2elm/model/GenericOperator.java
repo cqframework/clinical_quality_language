@@ -45,6 +45,7 @@ public class GenericOperator extends Operator {
         Boolean instantiable = getSignature().isInstantiable(callSignature, context);
         if (instantiable) {
             Operator result = new Operator(getName(), getSignature().instantiate(context), getResultType().instantiate(context));
+            result.setAccessLevel(getAccessLevel());
             result.setLibraryName(getLibraryName());
             return result;
         }

@@ -125,6 +125,7 @@ If the dateHighProperty is present, the dateLowProperty must also be present, an
 						<xs:documentation>The version of the code system to be used. If no version is specified, the most current published version of the code system is assumed.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -159,6 +160,7 @@ Note that the recommended approach to statically binding to an expansion set is 
 						<xs:documentation>The version of the value set to be retrieved. If no version is provided, the most current published version of the value set is assumed.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

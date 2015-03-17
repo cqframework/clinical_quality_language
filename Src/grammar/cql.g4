@@ -35,16 +35,21 @@ localIdentifier
     : identifier
     ;
 
+accessModifier
+    : 'public'
+    | 'private'
+    ;
+
 parameterDefinition
-    : 'parameter' identifier (typeSpecifier)? ('default' expression)?
+    : accessModifier? 'parameter' identifier (typeSpecifier)? ('default' expression)?
     ;
 
 codesystemDefinition
-    : 'codesystem' identifier ':' codesystemId ('version' versionSpecifier)?
+    : accessModifier? 'codesystem' identifier ':' codesystemId ('version' versionSpecifier)?
     ;
 
 valuesetDefinition
-    : 'valueset' identifier ':' valuesetId ('version' versionSpecifier)? codesystems?
+    : accessModifier? 'valueset' identifier ':' valuesetId ('version' versionSpecifier)? codesystems?
     ;
 
 codesystems
@@ -117,7 +122,7 @@ statement
     ;
 
 expressionDefinition
-    : 'define' identifier ':' expression
+    : 'define' accessModifier? identifier ':' expression
     ;
 
 contextDefinition
@@ -125,7 +130,7 @@ contextDefinition
     ;
 
 functionDefinition
-    : 'define' 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')' functionBody
+    : 'define' accessModifier? 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')' functionBody
     ;
 
 operandDefinition

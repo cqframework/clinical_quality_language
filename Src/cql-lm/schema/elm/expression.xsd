@@ -191,6 +191,15 @@ The following changes were made since the initial informative ballot in Septembe
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:simpleType name="AccessModifier">
+		<xs:annotation>
+			<xs:documentation>The AccessModifier type is used to specify the access level for the various definitions within a library such as parameters, expressions, and functions. If no access modifier is specified, public is assumed. Private definitions can only be accessed within the library in which they are defined.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Public"/>
+			<xs:enumeration value="Private"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:complexType name="ExpressionDef">
 		<xs:annotation>
 			<xs:documentation>The ExpressionDef type defines an expression and an associated name that can be referenced by any expression in the artifact. The name must be unique within the artifact.
@@ -203,6 +212,7 @@ The following changes were made since the initial informative ballot in Septembe
 				</xs:sequence>
 				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="context" type="xs:string" use="optional"/>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -253,6 +263,7 @@ The following changes were made since the initial informative ballot in Septembe
 				</xs:sequence>
 				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="parameterType" type="xs:QName" use="optional"/>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

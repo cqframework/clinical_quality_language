@@ -20,6 +20,7 @@
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
             "default" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -96,19 +97,24 @@
       "valueSets" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
-            "id" : "2.16.840.1.113883.3.464.1003.102.12.1011"
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+            "accessLevel" : "Public"
          }, {
             "name" : "Acute Tonsillitis",
-            "id" : "2.16.840.1.113883.3.464.1003.102.12.1012"
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1012",
+            "accessLevel" : "Public"
          }, {
             "name" : "Ambulatory/ED Visit",
-            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+            "accessLevel" : "Public"
          }, {
             "name" : "Antibiotic Medications",
-            "id" : "2.16.840.1.113883.3.464.1003.196.12.1001"
+            "id" : "2.16.840.1.113883.3.464.1003.196.12.1001",
+            "accessLevel" : "Public"
          }, {
             "name" : "Group A Streptococcus Test",
-            "id" : "2.16.840.1.113883.3.464.1003.198.12.1012"
+            "id" : "2.16.840.1.113883.3.464.1003.198.12.1012",
+            "accessLevel" : "Public"
          } ]
       },
       "statements" : {
@@ -126,6 +132,7 @@
          }, {
             "name" : "InDemographic",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -181,6 +188,7 @@
          }, {
             "name" : "Pharyngitis",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -206,6 +214,7 @@
          }, {
             "name" : "Antibiotics",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
                "templateId" : "cqf-medicationprescription",
@@ -219,6 +228,7 @@
          }, {
             "name" : "TargetEncounters",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -322,6 +332,7 @@
          }, {
             "name" : "TargetDiagnoses",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -365,6 +376,7 @@
          }, {
             "name" : "HasPriorAntibiotics",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -419,6 +431,7 @@
          }, {
             "name" : "HasTargetEncounter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -429,6 +442,7 @@
          }, {
             "name" : "InInitialPopulation",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -442,6 +456,7 @@
          }, {
             "name" : "InDenominator",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                "value" : "true",
@@ -450,6 +465,7 @@
          }, {
             "name" : "InDenominatorExclusions",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "HasPriorAntibiotics",
                "type" : "ExpressionRef"
@@ -457,6 +473,7 @@
          }, {
             "name" : "InNumerator",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Exists",
                "operand" : {

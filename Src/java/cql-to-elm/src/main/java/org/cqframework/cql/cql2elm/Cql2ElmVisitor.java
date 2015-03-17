@@ -290,6 +290,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public ParameterDef visitParameterDefinition(@NotNull cqlParser.ParameterDefinitionContext ctx) {
         ParameterDef param = of.createParameterDef()
+                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
                 .withDefault(parseExpression(ctx.expression()))
                 .withParameterTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()));
@@ -375,8 +376,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public AccessModifier visitAccessModifier(@NotNull cqlParser.AccessModifierContext ctx) {
+        switch (ctx.getText().toLowerCase()) {
+            case "public" : return AccessModifier.PUBLIC;
+            case "private" : return AccessModifier.PRIVATE;
+            default: throw new IllegalArgumentException(String.format("Unknown access modifier %s.", ctx.getText().toLowerCase()));
+        }
+    }
+
+    @Override
     public CodeSystemDef visitCodesystemDefinition(@NotNull cqlParser.CodesystemDefinitionContext ctx) {
         CodeSystemDef cs = (CodeSystemDef)of.createCodeSystemDef()
+                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codesystemId()))
                 .withVersion(parseString(ctx.versionSpecifier()))
@@ -393,6 +404,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         CodeSystemDef def;
         if (libraryName != null) {
             def = resolveLibrary(libraryName).resolveCodeSystemRef(name);
+            checkAccessLevel(libraryName, name, def.getAccessLevel());
         }
         else {
             def = translatedLibrary.resolveCodeSystemRef(name);
@@ -411,6 +423,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public ValueSetDef visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
         ValueSetDef vs = of.createValueSetDef()
+                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.valuesetId()))
                 .withVersion(parseString(ctx.versionSpecifier()));
@@ -465,6 +478,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ExpressionDef def = translatedLibrary.resolveExpressionRef(identifier);
         if (def == null) {
             def = of.createExpressionDef()
+                    .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                     .withName(identifier)
                     .withContext(currentContext)
                     .withExpression((Expression) visit(ctx.expression()));
@@ -1350,44 +1364,49 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // return an Identifier for resolution later by a method or accessor
 
         if (left instanceof LibraryRef) {
-            TranslatedLibrary referencedLibrary = resolveLibrary(((LibraryRef) left).getLibraryName());
+            String libraryName = ((LibraryRef)left).getLibraryName();
+            TranslatedLibrary referencedLibrary = resolveLibrary(libraryName);
 
             Element element = referencedLibrary.resolve(memberIdentifier);
 
             if (element instanceof ExpressionDef) {
+                checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef)element).getAccessLevel());
                 Expression result = of.createExpressionRef()
-                        .withLibraryName(((LibraryRef) left).getLibraryName())
+                        .withLibraryName(libraryName)
                         .withName(memberIdentifier);
                 result.setResultType(element.getResultType());
                 return result;
             }
 
             if (element instanceof ParameterDef) {
+                checkAccessLevel(libraryName, memberIdentifier, ((ParameterDef)element).getAccessLevel());
                 Expression result = of.createParameterRef()
-                        .withLibraryName(((LibraryRef) left).getLibraryName())
+                        .withLibraryName(libraryName)
                         .withName(memberIdentifier);
                 result.setResultType(element.getResultType());
                 return result;
             }
 
             if (element instanceof ValueSetDef) {
+                checkAccessLevel(libraryName, memberIdentifier, ((ValueSetDef)element).getAccessLevel());
                 ValueSetRef result = of.createValueSetRef()
-                        .withLibraryName(((LibraryRef) left).getLibraryName())
+                        .withLibraryName(libraryName)
                         .withName(memberIdentifier);
                 result.setResultType(element.getResultType());
                 return result;
             }
 
             if (element instanceof CodeSystemDef) {
+                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef)element).getAccessLevel());
                 CodeSystemRef result = of.createCodeSystemRef()
-                        .withLibraryName(((LibraryRef) left).getLibraryName())
+                        .withLibraryName(libraryName)
                         .withName(memberIdentifier);
                 result.setResultType(element.getResultType());
                 return result;
             }
 
             IdentifierRef identifier = new IdentifierRef();
-            identifier.setLibraryName(((LibraryRef) left).getLibraryName());
+            identifier.setLibraryName(libraryName);
             identifier.setName(memberIdentifier);
             return identifier;
         }
@@ -2921,7 +2940,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
-        FunctionDef fun = of.createFunctionDef().withName(parseString(ctx.identifier()));
+        FunctionDef fun = of.createFunctionDef()
+                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                .withName(parseString(ctx.identifier()));
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
                 TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
@@ -3029,6 +3050,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return model;
+    }
+
+    private AccessModifier parseAccessModifier(ParseTree pt) {
+        return pt == null ? AccessModifier.PUBLIC : (AccessModifier)visit(pt);
     }
 
     private String parseString(ParseTree pt) {
@@ -3407,6 +3432,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         result = libraryResult;
                     }
                 }
+
+                if (result != null) {
+                    checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
+                            result.getOperator().getAccessLevel());
+                }
             }
         }
         else {
@@ -3420,6 +3450,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (resolution == null) {
             throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with signature %s.",
                     callContext.getOperatorName(), callContext.getSignature()));
+        }
+    }
+
+    private void checkAccessLevel(String libraryName, String objectName, AccessModifier accessModifier) {
+        if (accessModifier == AccessModifier.PRIVATE) {
+            throw new IllegalArgumentException(String.format("Object %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
         }
     }
 

@@ -67,7 +67,8 @@ public class TranslatedLibrary {
         for (OperandDef operand : functionDef.getOperand()) {
             operandTypes.add(operand.getResultType());
         }
-        return new Operator(functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])), functionDef.getResultType());
+        return new Operator(functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])),
+                functionDef.getResultType()).withAccessLevel(functionDef.getAccessLevel());
     }
 
     private void ensureLibrary(Operator operator) {
