@@ -19,45 +19,45 @@ import static org.testng.Assert.assertTrue;
 public class Cql2ElmVisitorTest {
     @Test
     public void testLet(){
-        ExpressionDef def = (ExpressionDef) visitData("define b = true");
+        ExpressionDef def = (ExpressionDef) visitData("define b : true");
         assertThat(def.getName(), is("b"));
         assertTrackable(def);
     }
 
     @Test
     public void testBooleanLiteral(){
-        ExpressionDef def = (ExpressionDef) visitData("define b = true");
+        ExpressionDef def = (ExpressionDef) visitData("define b : true");
         assertThat(def.getExpression(), literalFor(true));
         assertTrackable(def.getExpression());
 
-        def = (ExpressionDef) visitData("define b = false");
+        def = (ExpressionDef) visitData("define b : false");
         assertThat(def.getExpression(), literalFor(false));
     }
 
     @Test
     public void testStringLiteral(){
-        ExpressionDef def = (ExpressionDef) visitData("define st = 'hey its a string'");
+        ExpressionDef def = (ExpressionDef) visitData("define st : 'hey its a string'");
         assertThat(def.getExpression(), literalFor("hey its a string"));
         assertTrackable(def.getExpression());
     }
 
     @Test
     public void testNullLiteral(){
-        ExpressionDef def = (ExpressionDef) visitData("define st = null");
+        ExpressionDef def = (ExpressionDef) visitData("define st : null");
         assertThat(def.getExpression(), instanceOf(Null.class));
         assertTrackable(def.getExpression());
     }
 
     @Test
     public void testQuantityLiteral(){
-        ExpressionDef def = (ExpressionDef) visitData("define st = 1");
+        ExpressionDef def = (ExpressionDef) visitData("define st : 1");
         assertThat(def.getExpression(), literalFor(1));
         assertTrackable(def.getExpression());
 
-        def = (ExpressionDef) visitData("define st = 1.1");
+        def = (ExpressionDef) visitData("define st : 1.1");
         assertThat(def.getExpression(), literalFor(1.1));
 
-        def = (ExpressionDef) visitData("define st = 1.1 'mm'");
+        def = (ExpressionDef) visitData("define st : 1.1 'mm'");
         Quantity quantity = (Quantity) def.getExpression();
         assertThat(quantity.getValue(), is(BigDecimal.valueOf(1.1)));
         assertThat(quantity.getUnit(), is("'mm'"));
@@ -66,7 +66,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testAndExpressions(){
-        ExpressionDef def = (ExpressionDef) visitData("define st = true and false");
+        ExpressionDef def = (ExpressionDef) visitData("define st : true and false");
         And and = (And) def.getExpression();
         Expression left = and.getOperand().get(0);
         Expression right = and.getOperand().get(1);
@@ -81,7 +81,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testOrExpressions(){
-        ExpressionDef def = (ExpressionDef) visitData("define st = true or false");
+        ExpressionDef def = (ExpressionDef) visitData("define st : true or false");
         Or or = (Or) def.getExpression();
         Expression left = or.getOperand().get(0);
         Expression right = or.getOperand().get(1);
@@ -93,7 +93,7 @@ public class Cql2ElmVisitorTest {
         assertTrackable(left);
         assertTrackable(right);
 
-        def = (ExpressionDef) visitData("define st = true xor false");
+        def = (ExpressionDef) visitData("define st : true xor false");
         Xor xor = (Xor) def.getExpression();
         left = xor.getOperand().get(0);
         right = xor.getOperand().get(1);
@@ -117,7 +117,7 @@ public class Cql2ElmVisitorTest {
         }};
 
         for (Map.Entry<String, Class> e : comparisons.entrySet()) {
-            ExpressionDef def = (ExpressionDef) visitData("define st = 1 " + e.getKey() + " 2");
+            ExpressionDef def = (ExpressionDef) visitData("define st : 1 " + e.getKey() + " 2");
             BinaryExpression binary = (BinaryExpression) def.getExpression();
             Expression left = binary.getOperand().get(0);
             Expression right = binary.getOperand().get(1);
@@ -134,7 +134,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testNotEqualExpression() {
-        ExpressionDef def = (ExpressionDef)visitData("define st = 1 <> 2");
+        ExpressionDef def = (ExpressionDef)visitData("define st : 1 <> 2");
         Not not = (Not)def.getExpression();
         Equal equal = (Equal)not.getOperand();
         Expression left = equal.getOperand().get(0);
@@ -151,7 +151,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testIsTrueExpressions(){
-        ExpressionDef def = (ExpressionDef) visitData("define X = true\ndefine st = X is true");
+        ExpressionDef def = (ExpressionDef) visitData("define X : true\ndefine st : X is true");
         IsTrue isTrue = (IsTrue)def.getExpression();
         ExpressionRef left = (ExpressionRef) isTrue.getOperand();
 
@@ -163,7 +163,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testIsNotTrueExpressions(){
-        ExpressionDef def = (ExpressionDef) visitData("define X = true\ndefine st = X is not true");
+        ExpressionDef def = (ExpressionDef) visitData("define X : true\ndefine st : X is not true");
         Not not = (Not) def.getExpression();
         IsTrue isTrue = (IsTrue) not.getOperand();
         ExpressionRef left = (ExpressionRef) isTrue.getOperand();
@@ -176,7 +176,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testIsNullExpressions(){
-        ExpressionDef def = (ExpressionDef) visitData("define X = 1\ndefine st = X is null");
+        ExpressionDef def = (ExpressionDef) visitData("define X : 1\ndefine st : X is null");
         IsNull isNull = (IsNull) def.getExpression();
         ExpressionRef id = (ExpressionRef) isNull.getOperand();
 
@@ -188,7 +188,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testIsNotNullExpressions(){
-        ExpressionDef def = (ExpressionDef) visitData("define X = 1\ndefine st = X is not null");
+        ExpressionDef def = (ExpressionDef) visitData("define X : 1\ndefine st : X is not null");
         Not not = (Not) def.getExpression();
         IsNull isNull = (IsNull) not.getOperand();
         ExpressionRef id = (ExpressionRef) isNull.getOperand();
@@ -204,8 +204,8 @@ public class Cql2ElmVisitorTest {
     public void testExpressionReference() {
         String cql =
                 "using QUICK\n" +
-                "define X = [Condition]\n" +
-                "define st = X";
+                "define X : [Condition]\n" +
+                "define st : X";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         ExpressionRef exp = (ExpressionRef) def.getExpression();
         assertThat(exp.getName(), is("X"));
@@ -216,8 +216,8 @@ public class Cql2ElmVisitorTest {
     public void testPropertyReference() {
         String cql =
                 "using QUICK\n" +
-                "define X = First([Condition])\n" +
-                "define st = X.onsetDateTime";
+                "define X : First([Condition])\n" +
+                "define st : X.onsetDateTime";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Property prop = (Property) def.getExpression();
         ExpressionRef source = (ExpressionRef) prop.getSource();
@@ -230,8 +230,8 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testValueSetReference() {
         String cql =
-                "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
-                "define st = \"Acute Pharyngitis\"";
+                "valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
+                "define st : \"Acute Pharyngitis\"";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         ValueSetRef vs = (ValueSetRef) def.getExpression();
         assertThat(vs.getName(), is("Acute Pharyngitis"));
@@ -241,8 +241,8 @@ public class Cql2ElmVisitorTest {
     @Test
     public void testInValueSetExpression() {
         String cql =
-                "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
-                "define m = 'Value' in \"Acute Pharyngitis\"";
+                "valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
+                "define m : 'Value' in \"Acute Pharyngitis\"";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         InValueSet ivs = (InValueSet)def.getExpression();
         assertThat(ivs.getValueset().getName(), is("Acute Pharyngitis"));
@@ -253,7 +253,7 @@ public class Cql2ElmVisitorTest {
     public void testFunctionReference() {
         String cql =
                 "define function MyFunction() { return true }\n" +
-                "define st = MyFunction()";
+                "define st : MyFunction()";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         FunctionRef fun = (FunctionRef) def.getExpression();
         assertThat(fun.getName(), is("MyFunction"));
@@ -265,8 +265,8 @@ public class Cql2ElmVisitorTest {
     @Test(enabled=false)
     public void testFunctionReferenceWithArguments() {
         String cql =
-                "define function MyFunction(arg: String) { return arg }\n" +
-                "define st = MyFunction('hello there')";
+                "define function MyFunction(arg String) { return arg }\n" +
+                "define st : MyFunction('hello there')";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         FunctionRef fun = (FunctionRef) def.getExpression();
         assertThat(fun.getName(), is("MyFunction"));
@@ -289,7 +289,7 @@ public class Cql2ElmVisitorTest {
         }};
 
         for (Map.Entry<String, Class> e : comparisons.entrySet()) {
-            ExpressionDef def = (ExpressionDef) visitData("define st = 1 " + e.getKey() + " 2");
+            ExpressionDef def = (ExpressionDef) visitData("define st : 1 " + e.getKey() + " 2");
             BinaryExpression binary = (BinaryExpression) def.getExpression();
             Expression left = binary.getOperand().get(0);
             Expression right = binary.getOperand().get(1);
@@ -306,8 +306,8 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testBasicValueSet() {
-        String cql = "valueset \"Female Administrative Sex\" = '2.16.840.1.113883.3.560.100.2'\n" +
-                "define X = 1";
+        String cql = "valueset \"Female Administrative Sex\" : '2.16.840.1.113883.3.560.100.2'\n" +
+                "define X : 1";
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);
         assertThat(def.getName(), is("Female Administrative Sex"));
@@ -318,8 +318,8 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testVersionedValueSet() {
-        String cql = "valueset \"Female Administrative Sex\" = '2.16.840.1.113883.3.560.100.2' version '1'\n" +
-                "define X = 1";
+        String cql = "valueset \"Female Administrative Sex\" : '2.16.840.1.113883.3.560.100.2' version '1'\n" +
+                "define X : 1";
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);
         assertThat(def.getName(), is("Female Administrative Sex"));
@@ -330,9 +330,9 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testStaticallyBoundValueSet() {
-        String cql = "valueset \"Female Administrative Sex\" = '2.16.840.1.113883.3.560.100.2' version '1'\n" +
+        String cql = "valueset \"Female Administrative Sex\" : '2.16.840.1.113883.3.560.100.2' version '1'\n" +
                 "    code systems ( 'SNOMED-CT' version '2014', 'ICD-9' version '2014' )\n" +
-                "define X = 1";
+                "define X : 1";
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);
         assertThat(def.getName(), is("Female Administrative Sex"));
@@ -343,7 +343,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testRetrieveTopic() {
-        ExpressionDef def = (ExpressionDef) visitData("using QUICK define st = [Condition]");
+        ExpressionDef def = (ExpressionDef) visitData("using QUICK define st : [Condition]");
         Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("Condition"));
         assertThat(request.getCodeProperty(), is(nullValue()));
@@ -359,8 +359,8 @@ public class Cql2ElmVisitorTest {
     public void testRetrieveTopicAndValueSet() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
-                "define st = [Condition: \"Acute Pharyngitis\"]";
+                "valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
+                "define st : [Condition: \"Acute Pharyngitis\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("Condition"));
@@ -379,8 +379,8 @@ public class Cql2ElmVisitorTest {
     public void testRetrieveTopicAndSpecifiedCodeAttribute() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Moderate or Severe\" = '2.16.840.1.113883.3.526.3.1092'\n" +
-                "define st = [Condition: severity in \"Moderate or Severe\"]";
+                "valueset \"Moderate or Severe\" : '2.16.840.1.113883.3.526.3.1092'\n" +
+                "define st : [Condition: severity in \"Moderate or Severe\"]";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Retrieve request = (Retrieve) def.getExpression();
         assertThat(request.getDataType(), quickDataType("Condition"));
@@ -399,8 +399,8 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDateIntervalLiteral() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -432,9 +432,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDefaultedDateIntervalParameter() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
                 "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -454,9 +454,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForTypedDateIntervalParameter() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "parameter MeasurementPeriod : interval<DateTime>\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+                "parameter MeasurementPeriod interval<DateTime>\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -476,9 +476,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDateIntervalExpressionReference() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "define twentyThirteen = interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+                "define twentyThirteen : interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during twentyThirteen";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -499,8 +499,8 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDateTimeLiteral() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during DateTime(2013, 6)";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -523,9 +523,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDefaultedDateTimeParameter() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
                 "parameter MyDate default DateTime(2013, 6)\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MyDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -546,9 +546,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForTypedDateTimeParameter() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "parameter MyDate : DateTime\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+                "parameter MyDate DateTime\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MyDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -569,9 +569,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDateTimeExpressionReference() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "define myDate = DateTime(2013, 6)\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+                "define myDate : DateTime(2013, 6)\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during myDate";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -591,9 +591,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForAndedWhere() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
                 "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
                 "    and E.period during MeasurementPeriod";
 
@@ -621,9 +621,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForDeeplyAndedWhere() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
                 "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
                 "    and E.length < 14 days\n" +
                 "    and (First(E.location).location as QUICK.Location).name = 'The Good Hospital'\n" +
@@ -680,9 +680,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationForMultipleQualifyingClauses() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
                 "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod\n" +
                 "    and E.period during MeasurementPeriod";
 
@@ -710,9 +710,9 @@ public class Cql2ElmVisitorTest {
     public void testDateRangeOptimizationNotDoneWhenDisabled() {
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
                 "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql, false);
@@ -739,10 +739,10 @@ public class Cql2ElmVisitorTest {
         // NOTE: I'm not sure that the below statement is even valid without a "with" clause
         String cql =
                 "using QUICK\n" +
-                "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-                "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
-                "define pharyngitis = [Condition: \"Acute Pharyngitis\"]\n" +
-                "define st = [Encounter: \"Inpatient\"] E\n" +
+                "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+                "valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
+                "define pharyngitis : [Condition: \"Acute Pharyngitis\"]\n" +
+                "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during pharyngitis";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
@@ -790,10 +790,10 @@ public class Cql2ElmVisitorTest {
     public void testComplexQuery() {
         String cql =
             "using QUICK\n" +
-            "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-            "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
+            "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+            "valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
             "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
-            "define st = [Encounter: \"Inpatient\"] E\n" +
+            "define st : [Encounter: \"Inpatient\"] E\n" +
             "    with [Condition: \"Acute Pharyngitis\"] P\n" +
             "        such that interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period\n" +
             "    where duration in days of E.period >= 120\n" +
@@ -913,9 +913,9 @@ public class Cql2ElmVisitorTest {
     public void testQueryThatReturnsDefine() {
         String cql =
             "using QUICK\n" +
-            "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-            "define st =  [Encounter: \"Inpatient\"] E\n" +
-            "    define a = 1\n" +
+            "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+            "define st : [Encounter: \"Inpatient\"] E\n" +
+            "    define a : 1\n" +
             "    return a";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Query query = (Query) def.getExpression();
@@ -1161,9 +1161,9 @@ public class Cql2ElmVisitorTest {
     private Expression testInpatientWithPharyngitisWhere(String withWhereClause) {
         String cql =
             "using QUICK\n" +
-            "valueset \"Inpatient\" = '2.16.840.1.113883.3.666.5.307'\n" +
-            "valueset \"Acute Pharyngitis\" = '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
-            "define st = [Encounter: \"Inpatient\"] E\n" +
+            "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
+            "valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
+            "define st : [Encounter: \"Inpatient\"] E\n" +
             "    with [Condition: \"Acute Pharyngitis\"] P\n" +
             "    such that " + withWhereClause;
 

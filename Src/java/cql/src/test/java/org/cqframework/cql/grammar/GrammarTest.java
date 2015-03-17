@@ -19,7 +19,7 @@ public class GrammarTest {
 
     @Test
     public void ageAt() {
-        ParseTree tree = parseToTree("define inIPP = AgeAt(start of MeasurementPeriod) < 18");
+        ParseTree tree = parseToTree("define inIPP : AgeAt(start of MeasurementPeriod) < 18");
         LogicContext logic = (LogicContext) tree.getPayload();
 
         ExpressionDefinitionContext def = logic.statement(0).expressionDefinition();

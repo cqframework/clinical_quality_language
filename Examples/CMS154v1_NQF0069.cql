@@ -71,11 +71,11 @@ using QUICK
 
 context Patient
 
-define InDemographic =
+define InDemographic :
     AgeInMonthsAt(start of MeasurementPeriod) >= 3
         and AgeInYearsAt(start of MeasurementPeriod) <= 18 years
 
-define ValidEncounters =
+define ValidEncounters :
 	[Encounter: "Office Visit"]
 		union [Encounter: "Emergency Department Visit"]
 		union [Encounter: "Preventive Care- Initial Office Visit, 0 to 17"]
@@ -83,29 +83,29 @@ define ValidEncounters =
 		union [Encounter: "Hospital Observation Care - Initial"]
 		union [Encounter: "Face-to-Face Interaction"]
 
-define EncountersDuringMeasurementPeriod =
+define EncountersDuringMeasurementPeriod :
 	ValidEncounters E where E.period during MeasurementPeriod
 
-define URIDiagnosis =
+define URIDiagnosis :
 	[Condition: "Upper Respiratory Infection"]
 
-define ValidDiagnosis =
+define ValidDiagnosis :
 	URIDiagnosis U 
 		where exists (EncountersDuringMeasurementPeriod E where U.onsetDate during E.period)
 			or exists (ValidEncounters E where interval[U.onsetDate, U.abatementDate] includes E.period)
 
-define InitialPopulation =
+define InitialPopulation :
 	ValidDiagnosis V
 		where InDemographic
 
-define Denominator =
+define Denominator :
 	true
 
-define Numerator =
+define Numerator :
 	ValidDiagnosis V where not exists ([MedicationPrescription: "Antibiotic Medications"] M where M.dateWritten starts 3 days or less after start of V.period)
 
 context Population
 
-define MeasureScore = (Count(Numerator) / Count(Denominator)) * 100
+define MeasureScore : (Count(Numerator) / Count(Denominator)) * 100
 
 

@@ -35,11 +35,11 @@ localIdentifier
     ;
 
 parameterDefinition
-    : 'parameter' identifier (':' typeSpecifier)? ('default' expression)?
+    : 'parameter' identifier (typeSpecifier)? ('default' expression)?
     ;
 
 valuesetDefinition
-    : 'valueset' identifier '=' valuesetId ('version' versionSpecifier)? codeSystemVersions?
+    : 'valueset' identifier ':' valuesetId ('version' versionSpecifier)? codeSystemVersions?
     ;
 
 codeSystemVersions
@@ -94,7 +94,7 @@ tupleTypeSpecifier
     ;
 
 tupleElementDefinition
-    : identifier ':' typeSpecifier
+    : identifier typeSpecifier
     ;
 
 /*
@@ -108,7 +108,7 @@ statement
     ;
 
 expressionDefinition
-    : 'define' identifier '=' expression
+    : 'define' identifier ':' expression
     ;
 
 contextDefinition
@@ -120,7 +120,7 @@ functionDefinition
     ;
 
 operandDefinition
-    : identifier ':' typeSpecifier
+    : identifier typeSpecifier
     ;
 
 functionBody
@@ -204,7 +204,7 @@ defineClause
     ;
 
 defineClauseItem
-    : identifier '=' expression
+    : identifier ':' expression
     ;
 
 whereClause

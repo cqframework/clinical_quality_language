@@ -32,22 +32,22 @@ using QUICK
 
 parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
-valueset "Asthma" = '2.16.840.1.113883.3.117.1.7.1.271'
-valueset "Asthma Management Plan" = '2.16.840.1.113883.3.117.1.7.1.131'
+valueset "Asthma" : '2.16.840.1.113883.3.117.1.7.1.271'
+valueset "Asthma Management Plan" : '2.16.840.1.113883.3.117.1.7.1.131'
 
 context Patient
 
-define "In Demographic" =
+define "In Demographic" :
   AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) <= 17
 
-define "Asthma Encounters" =
+define "Asthma Encounters" :
   [Encounter: reason in "Asthma"] E
     where E.class = 'inpatient'
       and E.length <= 120 days
       and E.hospitalization.dischargeDisposition = 'home'
       and E.period ends during MeasurementPeriod
 
-define "Asthma Encounters with Plan" =
+define "Asthma Encounters with Plan" :
   "Asthma Encounters" E
     with [CommunicationRequest] C
       such that C.encounter.identifier = E.identifier
@@ -55,13 +55,13 @@ define "Asthma Encounters with Plan" =
         and C.sender.role = 'doctor'
         and C.recipient.identifier = C.subject.identifier
 
-define "In Initial Patient Population" =
+define "In Initial Patient Population" :
     "In Demographic" and exists (AsthmaEncounters)
 
 context Population
 
-define Denominator = "Asthma Encounters"
+define Denominator : "Asthma Encounters"
 
-define Numerator = "Asthma Encounters with Plan"
+define Numerator : "Asthma Encounters with Plan"
 
 

@@ -2,55 +2,55 @@ library ClauseTesting
 
 using QUICK
 
-define SimpleQuery =
+define SimpleQuery :
 	[ObservationResult: "Lab Tests for Sexually Transmitted Infections"]
 
-define WhereClause =
+define WhereClause :
 	[ObservationResult: "Pregnancy"] R where R.effectiveTime during MeasurementPeriod
 
-define TargetEncounters =
+define TargetEncounters :
 	[Encounter, Performance: "Ambulatory/ED Visit"] E 
 		with Pharyngitis P such that P.effectiveTime overlaps after E.PerformanceAtTime
 		with Antibiotics A such that A.orderedAtTime starts at most 3 days after start E.PerformanceAtTime
 	    where E.PerformanceAtTime during MeasurementPeriod
 
-define SimpleRetrieve =
+define SimpleRetrieve :
 	[Encounter, Performance]
 
-define CodedRetrieve =
+define CodedRetrieve :
 	[Encounter, Performance: "Ambulatory/ED Visit"]
 
-define ExplicitlyCodedRetrieve =
+define ExplicitlyCodedRetrieve :
 	[Encounter, Performance: serviceType in "Ambulatory/ED Visit"]
 
-// define WhereExplicitlyCodedRetrieve =
+// define WhereExplicitlyCodedRetrieve :
 //  [Encounter, Performance where serviceType in "Ambulatory/ED Visit"]
 
-define CodedWhere =
+define CodedWhere :
 	[Encounter, Performance] E where E.serviceType in ValueSet("Ambulatory/ED Visit")
 
-define RangedRetrieve =
+define RangedRetrieve :
 	[Encounter, Performance, during MeasurementPeriod]
 
-define ExplicitlyRangedRetrieve =
+define ExplicitlyRangedRetrieve :
 	[Encounter, Performance, PerformanceAtTime during MeasurementPeriod]
 
-// define WhereExplicitlyRangedRetrieve =
+// define WhereExplicitlyRangedRetrieve :
 //  	[Encounter, Performance where PerformanceAtTime during MeasurementPeriod]
 
-define RangedWhere =
+define RangedWhere :
 	[Encounter, Performance] E where E.PerformanceAtTime during MeasurementPeriod
 
-define CodedRangedRetrieve =
+define CodedRangedRetrieve :
 	[Encounter, Performance: "Ambulatory/ED Visit", during MeasurementPeriod]
 
-define ExplicitlyCodedRangedRetrieve =
+define ExplicitlyCodedRangedRetrieve :
 	[Encounter, Performance: serviceType in "Ambulatory/ED Visit", PerformanceAtTime during MeasurementPeriod]
 
-// define WhereExplicitlyCodedRangedRetrieve =
+// define WhereExplicitlyCodedRangedRetrieve :
 //  	[Encounter, Performance where serviceType in "Ambulatory/ED Visit" and PerformanceAtTime during MeasurementPeriod]
 
-define CodedRangedWhere =
+define CodedRangedWhere :
 	[Encounter, Performance] E 
 		where E.serviceType in ValueSet("Ambulatory/ED Visit") 
 			and E.PerformanceAtTime during MeasurementPeriod

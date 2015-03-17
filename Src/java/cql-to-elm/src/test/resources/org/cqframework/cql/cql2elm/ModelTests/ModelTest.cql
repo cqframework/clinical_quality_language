@@ -4,4 +4,4 @@ using Test
 
 context Patient
 
-define Medications = [MedicationStatement]
+define Medications : [MedicationStatement]
