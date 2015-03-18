@@ -69,6 +69,7 @@ public class SemanticTests {
     public void testIntervalOperatorPhrases() throws IOException {
         runSemanticTest("OperatorTests/IntervalOperatorPhrases.cql");
     }
+
     @Test
     public void testListOperators() throws IOException {
         runSemanticTest("OperatorTests/ListOperators.cql");

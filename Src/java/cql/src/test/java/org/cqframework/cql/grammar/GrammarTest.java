@@ -29,9 +29,10 @@ public class GrammarTest {
         assertEquals("<", cmpExpr.getChild(1).getText());
 
         TermExpressionContext methodExpr = (TermExpressionContext) cmpExpr.expression(0);
-        MethodExpressionTermContext methodEpressionTerm = (MethodExpressionTermContext) methodExpr.expressionTerm();
-        assertEquals("AgeAt", methodEpressionTerm.expressionTerm().getText());
-        TermExpressionContext argExpression = (TermExpressionContext) methodEpressionTerm.expression(0);
+        InvocationExpressionTermContext methodExpressionTerm = (InvocationExpressionTermContext)methodExpr.expressionTerm();
+        assertEquals("AgeAt", methodExpressionTerm.identifier().getText());
+
+        TermExpressionContext argExpression = (TermExpressionContext) methodExpressionTerm.expression(0);
         TimeBoundaryExpressionTermContext argExpressionTerm = (TimeBoundaryExpressionTermContext) argExpression.expressionTerm();
         assertEquals("start", argExpressionTerm.getChild(0).getText());
         assertEquals("MeasurementPeriod", argExpressionTerm.expressionTerm().getText());

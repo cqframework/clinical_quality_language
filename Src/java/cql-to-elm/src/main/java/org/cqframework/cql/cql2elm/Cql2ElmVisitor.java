@@ -45,6 +45,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     //Put them here for now, but eventually somewhere else?
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
     private final ConversionMap conversionMap = new ConversionMap();
+    private final Stack<String> expressionDefinitions = new Stack<>();
     private final Stack<QueryContext> queries = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final Stack<Narrative> narratives = new Stack<>();
@@ -477,13 +478,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = translatedLibrary.resolveExpressionRef(identifier);
         if (def == null) {
-            def = of.createExpressionDef()
-                    .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                    .withName(identifier)
-                    .withContext(currentContext)
-                    .withExpression((Expression) visit(ctx.expression()));
-            def.setResultType(def.getExpression().getResultType());
-            addToLibrary(def);
+            pushExpressionDefinition(identifier);
+            try {
+                def = of.createExpressionDef()
+                        .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                        .withName(identifier)
+                        .withContext(currentContext)
+                        .withExpression((Expression) visit(ctx.expression()));
+                def.setResultType(def.getExpression().getResultType());
+                addToLibrary(def);
+            }
+            finally {
+                popExpressionDefinition();
+            }
         }
 
         return def;
@@ -2812,14 +2819,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitMethodExpressionTerm(@NotNull cqlParser.MethodExpressionTermContext ctx) {
-        FunctionRef fun = of.createFunctionRef();
-        Expression left = parseExpression(ctx.expressionTerm());
-
-        if (left instanceof IdentifierRef) {
-            fun.setLibraryName(((IdentifierRef) left).getLibraryName());
-            fun.setName(((IdentifierRef)left).getName());
-        }
+    public Object visitInvocationExpressionTerm(@NotNull cqlParser.InvocationExpressionTermContext ctx) {
+        FunctionRef fun = of.createFunctionRef()
+                .withLibraryName(parseString(ctx.qualifier()))
+                .withName(parseString(ctx.identifier()));
 
         if (ctx.expression() != null) {
             for (cqlParser.ExpressionContext expressionContext : ctx.expression()) {
@@ -3585,6 +3588,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         library.getStatements().getDef().add(expDef);
 
         translatedLibrary.add(expDef);
+    }
+
+    private void pushExpressionDefinition(String identifier) {
+        if (expressionDefinitions.contains(identifier)) {
+            throw new IllegalArgumentException(String.format("Cannot resolve reference to expression %s because it results in a circular reference.", identifier));
+        }
+        expressionDefinitions.push(identifier);
+    }
+
+    private void popExpressionDefinition() {
+        expressionDefinitions.pop();
     }
 
     private void addToLibrary(IncludeDef includeDef) {

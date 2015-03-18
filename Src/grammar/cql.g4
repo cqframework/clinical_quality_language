@@ -288,7 +288,7 @@ expressionTerm
     : term                                                               # termExpressionTerm
     | expressionTerm '.' identifier                                      # accessorExpressionTerm
     | expressionTerm '[' expression ']'                                  # indexedExpressionTerm
-    | expressionTerm '(' (expression (',' expression)*)? ')'             # methodExpressionTerm
+    | (qualifier '.')? identifier '(' (expression (',' expression)*)? ')'# invocationExpressionTerm
     | 'convert' expression 'to' typeSpecifier                            # conversionExpressionTerm
     | ('+' | '-') expressionTerm                                         # polarityExpressionTerm
     | ('start' | 'end') 'of' expressionTerm                              # timeBoundaryExpressionTerm
