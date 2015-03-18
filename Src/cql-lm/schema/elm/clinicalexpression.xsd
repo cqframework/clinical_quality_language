@@ -188,7 +188,7 @@ Note that the recommended approach to statically binding to an expansion set is 
 	</xs:complexType>
 	<xs:complexType name="InCodeSystem">
 		<xs:annotation>
-			<xs:documentation>The InCodeSystem operator returns true if the given code is in the given value set.
+			<xs:documentation>The InCodeSystem operator returns true if the given code is in the given code system.
 			
 Note that this operator explicitly requires a CodeSystemRef as its codesystem argument. This allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
