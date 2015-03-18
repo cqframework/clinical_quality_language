@@ -1552,6 +1552,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType) {
             // chop off leading and trailing ' or "
             text = text.substring(1, text.length() - 1);
+
+            if (cqlLexer.STRING == tokenType) {
+                text = text.replace("''", "'");
+            }
+            else {
+                text = text.replace("\"\"", "\"");
+            }
         }
 
         return text;
