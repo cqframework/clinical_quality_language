@@ -255,9 +255,9 @@ expression
     | 'cast' expression 'as' typeSpecifier                                                          # castExpression
     | 'not' expression                                                                              # notExpression
     | 'exists' expression                                                                           # existenceExpression
-    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm                          # rangeExpression
-    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm                         # timeRangeExpression
-    | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       # timeDifferenceExpression
+    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm                          # betweenExpression
+    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm                         # durationBetweenExpression
+    | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       # differenceBetweenExpression
     | expression ('<=' | '<' | '>' | '>=') expression                                               # inequalityExpression
     | expression intervalOperatorPhrase expression                                                  # timingExpression
     | expression ('=' | '<>') expression                                                            # equalityExpression

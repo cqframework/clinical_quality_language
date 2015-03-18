@@ -1096,7 +1096,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitRangeExpression(@NotNull cqlParser.RangeExpressionContext ctx) {
+    public Object visitBetweenExpression(@NotNull cqlParser.BetweenExpressionContext ctx) {
         // X properly? between Y and Z
         Expression first = parseExpression(ctx.expression());
         Expression second = parseExpression(ctx.expressionTerm(0));
@@ -1117,7 +1117,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitTimeRangeExpression(@NotNull cqlParser.TimeRangeExpressionContext ctx) {
+    public Object visitDurationBetweenExpression(@NotNull cqlParser.DurationBetweenExpressionContext ctx) {
         BinaryExpression result = of.createDurationBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
                 .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
@@ -1127,7 +1127,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitTimeDifferenceExpression(@NotNull cqlParser.TimeDifferenceExpressionContext ctx) {
+    public Object visitDifferenceBetweenExpression(@NotNull cqlParser.DifferenceBetweenExpressionContext ctx) {
         BinaryExpression result = of.createDifferenceBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
                 .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
