@@ -31,6 +31,7 @@ ext.xjc = [
 ]
 
 task generateSources << {
+    System.setProperty('javax.xml.accessExternalSchema', 'file')
     file(xjc.destDir).mkdirs()
 
     ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
