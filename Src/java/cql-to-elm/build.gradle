@@ -9,7 +9,7 @@ apply plugin: 'eclipse'
 
 group = 'org.cqframework'
 version = '0.1'
-sourceCompatibility = '1.7'
+sourceCompatibility = '1.8'
 
 mainClassName = 'org.cqframework.cql.cql2elm.CqlTranslator'
 run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql", "--stdout"]

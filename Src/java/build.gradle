@@ -2,12 +2,12 @@ apply plugin: 'idea'
 apply plugin: 'maven'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2'
+    gradleVersion = '2.3'
 }
 
 idea {
   project {
-    languageLevel = '1.7'
+    languageLevel = '1.8'
     ipr {
       withXml { provider ->
         provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
