@@ -1,6 +1,5 @@
 fs = require 'fs'
 
-{print} = require 'sys'
 {spawn, exec} = require 'child_process'
 
 build = (src, dest, watch = false) ->
@@ -11,7 +10,7 @@ build = (src, dest, watch = false) ->
   coffee.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
   coffee.stdout.on 'data', (data) ->
-    print data.toString()
+    console.log data.toString()
 
 buildTestData = (watch = false) ->
   args = if watch then [':cql-to-elm:watchTestData'] else [':cql-to-elm:generateTestData']
@@ -20,7 +19,7 @@ buildTestData = (watch = false) ->
   gradle.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
   gradle.stdout.on 'data', (data) ->
-    print data.toString()
+    console.log data.toString()
 
 task 'build', 'Build lib/ and lib-test/ from src/ and test/', ->
   build('src', 'lib')
@@ -53,7 +52,7 @@ task "test", "run tests", ->
     --require coffee-script
     --recursive
     --colors
-  ", {maxBuffer: 1024 * 1024 }, (err, output) ->
+  ", {maxBuffer: 2048 * 1024 }, (err, output) ->
     throw err if err
     console.log output
 
@@ -72,6 +71,6 @@ task "debug-test", "run tests", ->
     --colors
     --debug-brk
     ./lib-test/
-  ", (err, output) ->
+  ", { maxBuffer: 2048 * 1024 }, (err, output) ->
     throw err if err
     console.log output
