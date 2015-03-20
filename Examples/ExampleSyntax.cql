@@ -606,7 +606,7 @@ define EncountersAndConditions =
 
 
 // Function definition
-define function CumulativeDuration(Intervals: list<interval<Timestamp>>)
+define function CumulativeDuration(Intervals list<interval<Timestamp>>)
 {
 	return Sum((collapse Intervals) X return duration in days of X)
 }

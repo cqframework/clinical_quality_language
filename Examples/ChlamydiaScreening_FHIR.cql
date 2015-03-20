@@ -115,7 +115,7 @@ define retrieve [QUICK.MyCondition: code in Concept, effectiveTime during Range]
 }
 
 
-define function ToFHIR(procedureProposal: [Procedure, Proposal])
+define function ToFHIR(procedureProposal [Procedure, Proposal])
 {
 	return
 		tuple ([FHIR.Procedure])
