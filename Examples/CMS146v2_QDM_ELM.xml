@@ -8,26 +8,9 @@
    </usings>
    <parameters>
       <def name="MeasurementPeriod" accessLevel="Public">
-         <default lowClosed="true" highClosed="false" xsi:type="Interval">
-            <low name="DateTime" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="2013" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-            </low>
-            <high name="DateTime" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="2014" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-            </high>
-         </default>
+         <parameterTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
       </def>
    </parameters>
    <valueSets>

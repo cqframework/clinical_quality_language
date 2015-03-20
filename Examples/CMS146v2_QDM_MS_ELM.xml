@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
-   <identifier id="CMS146_QDM" version="2"/>
+   <identifier id="CMS146_QDM_MS" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
@@ -8,26 +8,9 @@
    </usings>
    <parameters>
       <def name="MeasurementPeriod" accessLevel="Public">
-         <default lowClosed="true" highClosed="false" xsi:type="Interval">
-            <low name="DateTime" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="2013" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-            </low>
-            <high name="DateTime" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="2014" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-            </high>
-         </default>
+         <parameterTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
       </def>
    </parameters>
    <valueSets>
