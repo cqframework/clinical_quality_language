@@ -13,7 +13,7 @@ valueset "Ambulatory/ED Visit" : '2.16.840.1.113883.3.464.1003.101.12.1061'
 valueset "Antibiotic Medications" : '2.16.840.1.113883.3.464.1003.196.12.1001'
 valueset "Group A Streptococcus Test" : '2.16.840.1.113883.3.464.1003.198.12.1012'
 
-parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+parameter MeasurementPeriod Interval<DateTime>
 
 context Patient
 
@@ -26,7 +26,7 @@ define Pharyngitis :
 define Antibiotics :
     ["Medication, Order": "Antibiotic Medications"]
 
-define function isRelated(P: DiagnosisActive, E: EncounterPerformed) {
+define function isRelated(P DiagnosisActive, E EncounterPerformed) {
     return Interval[P."start datetime", P."stop datetime"] includes Interval[E."start datetime", E."stop datetime"]
     or P."start datetime" in Interval[E."start datetime", E."stop datetime"]
 }
