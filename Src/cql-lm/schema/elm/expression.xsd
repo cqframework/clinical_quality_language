@@ -327,7 +327,7 @@ The following changes were made since the initial informative ballot in Septembe
 	</xs:complexType>
 	<xs:complexType name="TupleElement">
 		<xs:annotation>
-			<xs:documentation>The TupleElement is used within the Tuple to provide the value of a specific element within a tuple literal expression.</xs:documentation>
+			<xs:documentation>The TupleElement is used within a Tuple expression to provide the value of a specific element within a tuple literal expression.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="value" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -336,14 +336,35 @@ The following changes were made since the initial informative ballot in Septembe
 	</xs:complexType>
 	<xs:complexType name="Tuple">
 		<xs:annotation>
-			<xs:documentation>The TupleSelector allows tuples of any type to be built up as an expression. The tupleType attribute specifies the type of the tuple being built, if any, and the list of tuple elements specify the values for the elements of the tuple. Note that the value of an element may be any expression, including another TupleSelector.</xs:documentation>
+			<xs:documentation>The Tuple expression allows tuples of any type to be built up as an expression. The tupleType attribute specifies the type of the tuple being built, if any, and the list of tuple elements specify the values for the elements of the tuple. Note that the value of an element may be any expression, including another Tuple.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:sequence>
 					<xs:element name="element" type="TupleElement" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
-				<xs:attribute name="tupleType" type="xs:QName"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InstanceElement">
+		<xs:annotation>
+			<xs:documentation>The InstanceElement is used within an Instance expression to provide the value of a specific element within an object literal expression.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="value" type="Expression" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="Instance">
+		<xs:annotation>
+			<xs:documentation>The Instance expression allows class instances of any type to be built up as an expression. The classType attribute specifies the type of the class instance being built, and the list of instance elements specify the values for the elements of the class instance. Note that the value of an element may be any expression, including another Instance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="element" type="InstanceElement" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="classType" type="xs:QName" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

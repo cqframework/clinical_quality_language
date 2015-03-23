@@ -345,6 +345,7 @@ term
     | literal               #literalTerm
     | intervalSelector      #intervalSelectorTerm
     | tupleSelector         #tupleSelectorTerm
+    | instanceSelector      #instanceSelectorTerm
     | listSelector          #listSelectorTerm
     | '(' expression ')'    #parenthesizedTerm
     ;
@@ -360,6 +361,14 @@ tupleSelector
     ;
 
 tupleElementSelector
+    : identifier ':' expression
+    ;
+
+instanceSelector
+    : namedTypeSpecifier '{' (':' | (instanceElementSelector (',' instanceElementSelector)*)) '}'
+    ;
+
+instanceElementSelector
     : identifier ':' expression
     ;
 

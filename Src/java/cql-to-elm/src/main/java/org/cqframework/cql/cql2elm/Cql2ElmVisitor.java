@@ -546,6 +546,30 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitInstanceElementSelector(@NotNull cqlParser.InstanceElementSelectorContext ctx) {
+        InstanceElement result = of.createInstanceElement()
+                .withName(parseString(ctx.identifier()))
+                .withValue(parseExpression(ctx.expression()));
+        result.setResultType(result.getValue().getResultType());
+        return result;
+    }
+
+    @Override
+    public Object visitInstanceSelector(@NotNull cqlParser.InstanceSelectorContext ctx) {
+        Instance instance = of.createInstance();
+        NamedTypeSpecifier classTypeSpecifier = visitNamedTypeSpecifier(ctx.namedTypeSpecifier());
+        instance.setClassType(classTypeSpecifier.getName());
+        instance.setResultType(classTypeSpecifier.getResultType());
+
+        for (cqlParser.InstanceElementSelectorContext elementContext : ctx.instanceElementSelector()) {
+            InstanceElement element = (InstanceElement)visit(elementContext);
+            instance.getElement().add(element);
+        }
+
+        return instance;
+    }
+
+    @Override
     public Object visitListSelector(@NotNull cqlParser.ListSelectorContext ctx) {
         TypeSpecifier elementTypeSpecifier = parseTypeSpecifier(ctx.typeSpecifier());
         org.hl7.elm.r1.List list = of.createList();
