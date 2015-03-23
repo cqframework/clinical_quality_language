@@ -9,9 +9,9 @@ define RealEqual : 1.0 = 1.0
 define StringEqual : 'Alpha' = 'Omega'
 define DateTimeEqual : DateTime(2014, 1, 1) = DateTime(2014, 1, 1)
 define QuantityEqual : 5'mm[Hg]' = 5'mm[Hg]'
-define IntervalEqual : interval[1, 10] = interval[1, 10]
+define IntervalEqual : Interval[1, 10] = Interval[1, 10]
 define ListEqual : { 1, 2, 3 } = { 1, 2, 3 }
-define TupleEqual : tuple { Id : 1, Name : 'Joe' } = tuple { Id : 1, Name : 'Joe' }
+define TupleEqual : Tuple { Id : 1, Name : 'Joe' } = Tuple { Id : 1, Name : 'Joe' }
 
 define IntegerLess : 4 < 5
 define RealLess : 4.0 < 5.0
@@ -42,8 +42,8 @@ define RealNotEqual : 1.0 <> 1.0
 define StringNotEqual : 'Alpha' <> 'Omega'
 define DateTimeNotEqual : DateTime(2014, 1, 1) <> DateTime(2014, 1, 1)
 define QuantityNotEqual : 5'mm[Hg]' <> 5'mm[Hg]'
-define IntervalNotEqual : interval[1, 10] <> interval[1, 10]
+define IntervalNotEqual : Interval[1, 10] <> Interval[1, 10]
 define ListNotEqual : { 1, 2, 3 } <> { 1, 2, 3 }
-define TupleNotEqual : tuple { Id : 1, Name : 'Joe' } <> tuple { Id : 1, Name : 'Joe' }
+define TupleNotEqual : Tuple { Id : 1, Name : 'Joe' } <> Tuple { Id : 1, Name : 'Joe' }
 
 

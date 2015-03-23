@@ -92,7 +92,7 @@ define URIDiagnosis :
 define ValidDiagnosis :
 	URIDiagnosis U 
 		where exists (EncountersDuringMeasurementPeriod E where U.onsetDate during E.period)
-			or exists (ValidEncounters E where interval[U.onsetDate, U.abatementDate] includes E.period)
+			or exists (ValidEncounters E where Interval[U.onsetDate, U.abatementDate] includes E.period)
 
 define InitialPopulation :
 	ValidDiagnosis V

@@ -12,16 +12,16 @@ define IntegerCoalesce : Coalesce(1, 2.0, 3.0, null)
 define DecimalCoalesce : Coalesce(1.0, 2, 3, null)
 
 // Within Interval selector
-define IntegerIntervalSelector : interval[5, null]
-define DecimalIntervalSelector : interval[5, 5.0]
+define IntegerIntervalSelector : Interval[5, null]
+define DecimalIntervalSelector : Interval[5, 5.0]
 
 // Within List selector
 define EmptyList : { }
 define IntegerList : { null, 1 }
 define DecimalList : { 1, 1.5 }
 define DecimalIntegerList : { 1.5, 1 }
-define ExplicitIntegerList : list<Integer> { null, 1, 2, 3 }
-define ExplicitDecimalList : list<Decimal> { 1.0, null, 3 }
+define ExplicitIntegerList : List<Integer> { null, 1, 2, 3 }
+define ExplicitDecimalList : List<Decimal> { 1.0, null, 3 }
 
 // Within If
 define NullIf : if true then null else 1
@@ -42,9 +42,9 @@ define std : StdDev({1,2,3,4,5})
 define dev : PopulationStdDev({1,2,3,4,5})
 
 // Implicit Interval Conversions
-define ImplicitIntervalConversion : interval[3.0, 5.0] = interval[3, 5]
+define ImplicitIntervalConversion : Interval[3.0, 5.0] = Interval[3, 5]
 
-define NullList : (null as list<System.Any>)[1]
+define NullList : (null as List<System.Any>)[1]
 
-define NullIncluded : (null as list<System.Integer>) properly included in {1, 2, 3, 4, 5}
+define NullIncluded : (null as List<System.Integer>) properly included in {1, 2, 3, 4, 5}
 

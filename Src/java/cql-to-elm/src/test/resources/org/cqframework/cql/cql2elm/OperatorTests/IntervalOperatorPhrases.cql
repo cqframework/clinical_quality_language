@@ -1,5 +1,5 @@
-define A : interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1, 0, 0, 0, 0))
-define B : interval[DateTime(2014, 6, 1, 0, 0, 0, 0), DateTime(2014, 6, 2, 0, 0, 0, 0))
+define A : Interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1, 0, 0, 0, 0))
+define B : Interval[DateTime(2014, 6, 1, 0, 0, 0, 0), DateTime(2014, 6, 2, 0, 0, 0, 0))
 define PointA : DateTime(2014, 1, 1, 0, 0, 0, 0)
 define PointB : DateTime(2014, 6, 1, 0, 0, 0, 0)
 
@@ -385,3 +385,8 @@ define IntervalEndsWithinStart : A ends within 3 days of start B
 define IntervalEndsProperlyWithinStart : A ends properly within 3 days of start B
 define IntervalEndsWithinEnd : A ends within 3 days of end B
 define IntervalEndsProperlyWithinEnd : A ends properly within 3 days of end B
+
+
+//define IntervalWithin: IntervalA occurs within 3 days of IntervalB
+//define IntervalExpression: IntervalA starts same day or after start of IntervalB - 3 days and IntervalA ends same day or before end of IntervalB + 3 days
+

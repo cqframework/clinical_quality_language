@@ -1,5 +1,5 @@
-parameter x tuple { x Boolean }
-parameter a list<list<Boolean>>
+parameter x Tuple { x Boolean }
+parameter a List<List<Boolean>>
 
 define b : a[1][1]
 

@@ -192,7 +192,7 @@ define st : [Procedure: type in "Counseling for Physical Activity"]
 
 # Had to make up valueset for Coronary Heart Disease
 
-parameter "Measurement Period" interval<DateTime>
+parameter "Measurement Period" Interval<DateTime>
 valueset "Framingham coronary heart disease 10 year risk" : '2.16.840.1.113883.3.600.1561'
 valueset "Coronary Heart Disease" : '1.2.3.4.5.6.7.8.9'
 define st : [RiskAssessment: method in "Framingham coronary heart disease 10 year risk"] R
@@ -236,7 +236,7 @@ exists ( [DiagnosticOrder: "Pregnancy Test"] O
 ["Encounter, Performed": "Ambulatory/ED Visit"] E
   with ["Diagnosis, Active": "Acute Pharyngitis"] P
     such that
-      interval[P."start datetime", P."stop datetime") overlaps after interval[E."start datetime", E."stop datetime")
+      Interval[P."start datetime", P."stop datetime") overlaps after Interval[E."start datetime", E."stop datetime")
 
 #10: Value Sets w/ versions and code versions
 

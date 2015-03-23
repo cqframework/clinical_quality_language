@@ -46,7 +46,7 @@ valueset "Ambulatory/ED Visit" : '2.16.840.1.113883.3.464.1003.101.12.1061'
 valueset "Antibiotic Medications" : '2.16.840.1.113883.3.464.1003.196.12.1001'
 valueset "Group A Streptococcus Test" : '2.16.840.1.113883.3.464.1003.198.12.1012'
 
-parameter MeasurementPeriod interval<DateTime>
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 context Patient
 
@@ -66,7 +66,7 @@ define MeasurementPeriodEncounters :
 define PharyngitisEncounters :
     MeasurementPeriodEncounters E
         with Pharyngitis P such that
-            interval[P.onsetDateTime, P.abatementDateTime] includes E.period
+            Interval[P.onsetDateTime, P.abatementDateTime] includes E.period
             or P.onsetDateTime in E.period
         with Antibiotics A such that A.dateWritten 3 days or less after start of E.period
 
@@ -77,7 +77,7 @@ define PharyngitisWithPriorAntibiotics :
 define ExcludedEncounters :
     PharyngitisEncounters E
         with PharyngitisWithPriorAntibiotics P such that
-            interval[P.onsetDateTime, P.abatementDateTime] includes E.period
+            Interval[P.onsetDateTime, P.abatementDateTime] includes E.period
             or P.onsetDateTime in E.period
 
 define StrepTestEncounters :

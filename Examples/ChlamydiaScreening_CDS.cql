@@ -38,14 +38,14 @@ define SexuallyActive :
 	or exists ([DiagnosticOrder: "Lab Tests for Sexually Transmitted Infections"])
 		
 define NoScreening :
-    not exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during interval[Today() - 1 years, Today()] and R.result is not null)
+    not exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during Interval[Today() - 1 years, Today()] and R.result is not null)
     and not exists ([ProcedureRequest: "Chlamydia Screening"] P where P.requestDateTime same day or after Today())
 	and not exists ([Observation: "Reason for not performing Chlamydia Screening"])
 
 define NeedScreening : InDemographic and SexuallyActive and NoScreening
 
 //define Proposal :
-//	tuple(typeof[Procedure, Proposal]) { procedureCode: CodeableConcept { code: 'XYZ', codeSystem: 'SNOMED-CT', displayName: 'Chlamydia Screening' } };
+//	"Procedure, Proposal" { procedureCode: CodeableConcept { code: 'XYZ', codeSystem: 'SNOMED-CT', displayName: 'Chlamydia Screening' } };
 
 // Need to be able to map this to FHIR, something like: ToFHIR(Proposal)
 // The mapping needs to be kept separate from the artifact definition, the same way the FHIRMap libraries are separate

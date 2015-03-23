@@ -1214,7 +1214,7 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
-		<!-- Start(i) = if i.lowClosed then IfNull(i.low, T.MinimumValue()) else Succ(i.low) -->
+		<!-- Start(i) = if i.lowClosed then Coalesce(i.low, T.MinimumValue()) else Succ(i.low) -->
 	</xs:complexType>
 	<xs:complexType name="End">
 		<xs:annotation>
@@ -1229,7 +1229,7 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
-		<!-- End(i) = if highClosed then IfNull(i.high, T.MaximumValue()) else Predecessor(i.high) -->
+		<!-- End(i) = if highClosed then Coalesce(i.high, T.MaximumValue()) else Predecessor(i.high) -->
 	</xs:complexType>
 	<xs:complexType name="Contains">
 		<xs:annotation>
@@ -1250,7 +1250,7 @@ If either argument is null, the result is null.</xs:documentation>
 				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
-		<!-- Contains(i, p) = (if lowClosed then p >= IfNull(i.low, p) else p > i.low) and (if highClosed then p <= IfNull(i.high, p) else p < i.high) -->
+		<!-- Contains(i, p) = (if lowClosed then p >= Coalesce(i.low, p) else p > i.low) and (if highClosed then p <= Coalesce(i.high, p) else p < i.high) -->
 	</xs:complexType>
 	<xs:complexType name="ProperContains">
 		<xs:annotation>
@@ -1291,7 +1291,7 @@ If either argument is null, the result is null.</xs:documentation>
 				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
-		<!-- In(p, i) = (if lowClosed then p >= IfNull(i.low, p) else p > i.low) and (if highClosed then p <= IfNull(i.high, p) else p < i.high) -->
+		<!-- In(p, i) = (if lowClosed then p >= Coalesce(i.low, p) else p > i.low) and (if highClosed then p <= Coalesce(i.high, p) else p < i.high) -->
 	</xs:complexType>
 	<xs:complexType name="ProperIn">
 		<xs:annotation>

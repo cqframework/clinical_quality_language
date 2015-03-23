@@ -20,6 +20,6 @@ define ListUnion : { 1, 2, 3 } union { 4, 5, 6 }
 
 define StringListEqual : { 'x', 'y', 'z' } = { 'x', 'y', 'z' }
 define IntegerListEqual : { 1, 2, 3, 4, 5 } = { 1, 2, 3, 4, 5 }
-define EqualTupleList : list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
-define UnequalTupleList : list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+define EqualTupleList : List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } = List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} }
+define UnequalTupleList : List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } = List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
 

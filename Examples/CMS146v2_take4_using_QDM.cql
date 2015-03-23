@@ -1,8 +1,8 @@
 library CMS146_QDM version '2'
 
 /*
- * This take differs from the original in that it uses one multi-source query
- * instead of multiple single-source queries.
+ * This take differs from take3 in that it constructs a tuple with explicit
+ * flags indicating what population each encounter falls into.
  */
 
 using QDM
@@ -30,31 +30,26 @@ define EncounterData :
         InMP : Interval[E."start datetime", E."stop datetime"] during MeasurementPeriod,
         PharyngitisDx : Interval[P."start datetime", P."stop datetime"] includes Interval[E."start datetime", E."stop datetime"]
             or P."start datetime" in Interval[E."start datetime", E."stop datetime"],
-        PrescribedAntibiotics : A."signed datetime" 3 days or less after E."start datetime"
+        PrescribedAntibiotics : A."signed datetime" 3 days or less after E."start datetime",
+        PriorAntibiotics : A."signed datetime" 30 days or less before P."start datetime",
+        StrepTest : T.result is not null
+            and T."start datetime" in Interval[E."start datetime" - 3 days, E."stop datetime" + 3 days]
     where
         InDemographic and InMP and PharyngitisDx and PrescribedAntibiotics
     return {
         Encounter: E,
-        PriorAntibiotics: A."signed datetime" 30 days or less before P."start datetime",
-        StrepTest: T.result is not null
-            and T."start datetime" in Interval[E."start datetime" - 3 days, E."stop datetime" + 3 days]
+        InDenominatorExclusions: PriorAntibiotics,
+        InNumerator: StrepTest and (not PriorAntibiotics or PriorAntibiotics is null)
     }
 
-define IPPCount : Count (
-    EncounterData E return E.Encounter
-)
+define IPPCount :
+    Count (EncounterData E return E.Encounter)
 
-define DenominatorCount : IPPCount
+define DenominatorCount :
+    IPPCount
 
-define DenominatorExclusionsCount : Count (
-    EncounterData E
-        where E.PriorAntibiotics
-        return E.Encounter
-)
+define DenominatorExclusionsCount :
+    Count (EncounterData E where E.InDenominatorExclusions is true return E.Encounter)
 
-define NumeratorCount : Count (
-    EncounterData E
-        where E.StrepTest
-            and (not E.PriorAntibiotics or E.PriorAntibiotics is null)
-        return E.Encounter
-)
+define NumeratorCount :
+    Count (EncounterData E where E.InNumerator is true return E.Encounter)

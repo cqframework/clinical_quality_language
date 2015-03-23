@@ -2,7 +2,7 @@ library CMS153_CQM version '2'
 
 using QUICK
 
-parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Female Administrative Sex" : '2.16.840.1.113883.3.560.100.2'
 valueset "Other Female Reproductive Conditions" : '2.16.840.1.113883.3.464.1003.111.12.1006'

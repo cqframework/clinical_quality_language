@@ -96,15 +96,15 @@ modelIdentifier
     ;
 
 listTypeSpecifier
-    : 'list' '<' typeSpecifier '>'
+    : 'List' '<' typeSpecifier '>'
     ;
 
 intervalTypeSpecifier
-    : 'interval' '<' typeSpecifier '>'
+    : 'Interval' '<' typeSpecifier '>'
     ;
 
 tupleTypeSpecifier
-    : 'tuple' '{' tupleElementDefinition (',' tupleElementDefinition)* '}'
+    : 'Tuple' '{' tupleElementDefinition (',' tupleElementDefinition)* '}'
     ;
 
 tupleElementDefinition
@@ -352,11 +352,11 @@ term
 intervalSelector
     : // TODO: Consider this as an alternative syntax for intervals... (would need to be moved up to expression to make it work)
     //expression ( '..' | '*.' | '.*' | '**' ) expression;
-    'interval' ('['|'(') expression ',' expression (']'|')')
+    'Interval' ('['|'(') expression ',' expression (']'|')')
     ;
 
 tupleSelector
-    : 'tuple'? '{' (':' | (tupleElementSelector (',' tupleElementSelector)*)) '}'
+    : 'Tuple'? '{' (':' | (tupleElementSelector (',' tupleElementSelector)*)) '}'
     ;
 
 tupleElementSelector
@@ -364,7 +364,7 @@ tupleElementSelector
     ;
 
 listSelector
-    : ('list' ('<' typeSpecifier '>')?)? '{' expression? (',' expression)* '}'
+    : ('List' ('<' typeSpecifier '>')?)? '{' expression? (',' expression)* '}'
     ;
 
 literal

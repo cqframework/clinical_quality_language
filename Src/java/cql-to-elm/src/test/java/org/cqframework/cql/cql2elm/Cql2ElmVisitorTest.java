@@ -420,12 +420,12 @@ public class Cql2ElmVisitorTest {
                 "using QUICK\n" +
                 "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
                 "define st : [Encounter: \"Inpatient\"] E\n" +
-                "    where E.period during interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))";
+                "    where E.period during Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))";
 
         Query query = testEncounterPerformanceInpatientForDateRangeOptimization(cql);
         Retrieve request = (Retrieve) query.getSource().get(0).getExpression();
 
-        // First check the source and ensure the "during interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))" migrated up!
+        // First check the source and ensure the "during Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))" migrated up!
         assertThat(request.getDateProperty(), is("period"));
         Interval ivl = (Interval) request.getDateRange();
         assertTrue(ivl.isLowClosed());
@@ -452,7 +452,7 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "using QUICK\n" +
                 "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
-                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod";
 
@@ -474,7 +474,7 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "using QUICK\n" +
                 "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
-                "parameter MeasurementPeriod interval<DateTime>\n" +
+                "parameter MeasurementPeriod Interval<DateTime>\n" +
                 "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod";
 
@@ -496,7 +496,7 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "using QUICK\n" +
                 "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
-                "define twentyThirteen : interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
+                "define twentyThirteen : Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during twentyThirteen";
 
@@ -611,7 +611,7 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "using QUICK\n" +
                 "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
-                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
                 "    and E.period during MeasurementPeriod";
@@ -641,7 +641,7 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "using QUICK\n" +
                 "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
-                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.length > 2 days\n" +
                 "    and E.length < 14 days\n" +
@@ -700,7 +700,7 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "using QUICK\n" +
                 "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
-                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod\n" +
                 "    and E.period during MeasurementPeriod";
@@ -730,7 +730,7 @@ public class Cql2ElmVisitorTest {
         String cql =
                 "using QUICK\n" +
                 "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
-                "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
+                "parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
                 "define st : [Encounter: \"Inpatient\"] E\n" +
                 "    where E.period during MeasurementPeriod";
 
@@ -811,12 +811,12 @@ public class Cql2ElmVisitorTest {
             "using QUICK\n" +
             "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
             "valueset \"Acute Pharyngitis\" : '2.16.840.1.113883.3.464.1003.102.12.1011'\n" +
-            "parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
+            "parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
             "define st : [Encounter: \"Inpatient\"] E\n" +
             "    with [Condition: \"Acute Pharyngitis\"] P\n" +
-            "        such that interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period\n" +
+            "        such that Interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period\n" +
             "    where duration in days of E.period >= 120\n" +
-            "    return tuple { id: E.id, lengthOfStay: duration in days of E.period }\n" +
+            "    return Tuple { id: E.id, lengthOfStay: duration in days of E.period }\n" +
             "    sort by lengthOfStay desc";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Query query = (Query) def.getExpression();

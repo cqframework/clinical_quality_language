@@ -30,7 +30,7 @@ library CMS26 version '2'
 
 using QUICK
 
-parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Asthma" : '2.16.840.1.113883.3.117.1.7.1.271'
 valueset "Asthma Management Plan" : '2.16.840.1.113883.3.117.1.7.1.131'

@@ -4,7 +4,7 @@ library CMS179 version '2'
 
 using QUICK
 
-parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 valueset "Flutter Diagnosis" : '2.16.840.1.113883.3.117.1.7.1.202'
 valueset "Warfarin Medication" : '2.16.840.1.113883.3.117.1.7.1.232'
@@ -26,10 +26,10 @@ define InDemographic :
 	AgeInYearsAt(start of MeasurementPeriod) >= 18
 
 define InpatientEncounters : FaceToFaceEncounters union OfficeVisitEncounters
-define ActiveFlutterDiagnoses : FlutterDiagnoses F where interval[F.onsetDate, F.abatementDate] overlaps before MeasurementPeriod
-define ActiveValvularHeartDiseaseDiagnoses : ValvularHeartDiseaseDiagnoses D where interval[D.onsetDate, D.abatementDate] overlaps before MeasurementPeriod
+define ActiveFlutterDiagnoses : FlutterDiagnoses F where Interval[F.onsetDate, F.abatementDate] overlaps before MeasurementPeriod
+define ActiveValvularHeartDiseaseDiagnoses : ValvularHeartDiseaseDiagnoses D where Interval[D.onsetDate, D.abatementDate] overlaps before MeasurementPeriod
 
-define LookbackInterval : interval[start of MeasurementPeriod - 200 days, start of MeasurementPeriod]
+define LookbackInterval : Interval[start of MeasurementPeriod - 200 days, start of MeasurementPeriod]
 
 define ActiveWarfarinDuringLookback :
 	WarfarinMedications M where M.administeredTime overlaps LookbackInterval
@@ -63,7 +63,7 @@ define INRResultsPerDay :
     ) X
 	sort by X.resultDate
 
-define TherapeuticRange : interval[2.0, 3.0] // TODO: Units?
+define TherapeuticRange : Interval[2.0, 3.0] // TODO: Units?
 
 define INRIntervals :
 	(INRResultsPerDay S return tuple { startResult: S, endResult: First(INRResultsPerDay E where S.resultDate > E.resultDate) }) X
