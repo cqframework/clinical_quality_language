@@ -84,7 +84,7 @@ define StrepTestEncounters :
     PharyngitisEncounters E
         with [DiagnosticReport: "Group A Streptococcus Test"] T
             such that T.result is not null
-                and T.issued in interval[start of E.period - 3 days, end of E.period + 3 days]
+                and T.issued in Interval[start of E.period - 3 days, end of E.period + 3 days]
 
 define IPPCount :
     Count(PharyngitisEncounters)
