@@ -1,13 +1,13 @@
 // @Test: If
-parameter var : Boolean
-define exp = if var then 'true return' else 'false return'
+parameter var Boolean
+define exp: if var then 'true return' else 'false return'
 
 // @Test: Case
-parameter var : Integer
-parameter X : Integer
-parameter Y : Integer
+parameter var Integer
+parameter X Integer
+parameter Y Integer
 
-define selected =
+define selected:
   case var
    when 1 then 'one'
    when 2 then 'two'
@@ -15,7 +15,7 @@ define selected =
     '?'
   end
 
-define standard =
+define standard:
   case
     when X > Y then 'X > Y'
     when X < Y then 'X < Y'

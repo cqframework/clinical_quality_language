@@ -9,12 +9,12 @@
 ### DateRangeOptimizedQuery
 library TestSnippet version '1'
 using QUICK
-valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
-parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
+valueset "Ambulatory/ED Visit": '2.16.840.1.113883.3.464.1003.101.12.1061'
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 context Patient
-define EncountersDuringMP = [Encounter] E where E.period during MeasurementPeriod
-define AmbulatoryEncountersDuringMP = [Encounter: "Ambulatory/ED Visit"] E where E.period during MeasurementPeriod
-define AmbulatoryEncountersIncludedInMP = [Encounter: "Ambulatory/ED Visit"] E where E.period included in MeasurementPeriod
+define EncountersDuringMP: [Encounter] E where E.period during MeasurementPeriod
+define AmbulatoryEncountersDuringMP: [Encounter: "Ambulatory/ED Visit"] E where E.period during MeasurementPeriod
+define AmbulatoryEncountersIncludedInMP: [Encounter: "Ambulatory/ED Visit"] E where E.period included in MeasurementPeriod
 ###
 
 module.exports['DateRangeOptimizedQuery'] = {
@@ -39,6 +39,7 @@ module.exports['DateRangeOptimizedQuery'] = {
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
             "default" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -83,7 +84,8 @@ module.exports['DateRangeOptimizedQuery'] = {
       "valueSets" : {
          "def" : [ {
             "name" : "Ambulatory/ED Visit",
-            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+            "accessLevel" : "Public"
          } ]
       },
       "statements" : {
@@ -101,6 +103,7 @@ module.exports['DateRangeOptimizedQuery'] = {
          }, {
             "name" : "EncountersDuringMP",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -121,6 +124,7 @@ module.exports['DateRangeOptimizedQuery'] = {
          }, {
             "name" : "AmbulatoryEncountersDuringMP",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -146,6 +150,7 @@ module.exports['DateRangeOptimizedQuery'] = {
          }, {
             "name" : "AmbulatoryEncountersIncludedInMP",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -176,10 +181,10 @@ module.exports['DateRangeOptimizedQuery'] = {
 ### IncludesQuery
 library TestSnippet version '1'
 using QUICK
-valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
-parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
+valueset "Ambulatory/ED Visit": '2.16.840.1.113883.3.464.1003.101.12.1061'
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 context Patient
-define MPIncludedAmbulatoryEncounters = [Encounter: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.period
+define MPIncludedAmbulatoryEncounters: [Encounter: "Ambulatory/ED Visit"] E where MeasurementPeriod includes E.period
 ###
 
 module.exports['IncludesQuery'] = {
@@ -204,6 +209,7 @@ module.exports['IncludesQuery'] = {
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
             "default" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -248,7 +254,8 @@ module.exports['IncludesQuery'] = {
       "valueSets" : {
          "def" : [ {
             "name" : "Ambulatory/ED Visit",
-            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+            "accessLevel" : "Public"
          } ]
       },
       "statements" : {
@@ -266,6 +273,7 @@ module.exports['IncludesQuery'] = {
          }, {
             "name" : "MPIncludedAmbulatoryEncounters",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -302,25 +310,25 @@ module.exports['IncludesQuery'] = {
 ### MultiSourceQuery
 library TestSnippet version '1'
 using QUICK
-parameter MeasurementPeriod default interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 context Patient
-define msQueryWhere = foreach [Encounter] E,
+define msQueryWhere: from [Encounter] E,
 [Condition] C
 where E.period included in MeasurementPeriod
 
-define msQueryWhere2 = foreach [Encounter] E, [Condition] C
+define msQueryWhere2: from [Encounter] E, [Condition] C
 where  E.period  included in MeasurementPeriod and C.id = 'http://cqframework.org/3/2'
 
-define msQuery = foreach [Encounter] E, [Condition] C return {E: E, C:C}
+define msQuery: from [Encounter] E, [Condition] C return {E: E, C:C}
 ###
 
 ###
 Translation Error(s):
-[5:23, 7:44] type
+[5:22, 7:44] type
 [10:52, 10:86] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
 [10:8, 10:86] Could not determine signature for invocation of operator System.And.
 [10:1, 10:86] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[9:24, 10:86] type
+[9:23, 10:86] type
 ###
 module.exports['MultiSourceQuery'] = {
    "library" : {
@@ -344,6 +352,7 @@ module.exports['MultiSourceQuery'] = {
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
             "default" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -400,18 +409,21 @@ module.exports['MultiSourceQuery'] = {
          }, {
             "name" : "msQueryWhere",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Null"
             }
          }, {
             "name" : "msQueryWhere2",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Null"
             }
          }, {
             "name" : "msQuery",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -458,16 +470,16 @@ module.exports['MultiSourceQuery'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define withQuery =  [Encounter] E
+define withQuery:  [Encounter] E
 with [Condition] C such that C.id = 'http://cqframework.org/3/2'
 
-define withQuery2 =  [Encounter] E
+define withQuery2:  [Encounter] E
 with [Condition] C such that C.id = 'http://cqframework.org/3'
 
-define withOutQuery =  [Encounter] E
+define withOutQuery:  [Encounter] E
 without [Condition] C such that C.id = 'http://cqframework.org/3/'
 
-define withOutQuery2 =  [Encounter] E
+define withOutQuery2:  [Encounter] E
 without [Condition] C such that C.id = 'http://cqframework.org/3/2'
 ###
 
@@ -475,16 +487,16 @@ without [Condition] C such that C.id = 'http://cqframework.org/3/2'
 Translation Error(s):
 [5:30, 5:64] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
 [5:1, 5:64] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[4:21, 5:64] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
+[4:20, 5:64] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
 [8:30, 8:62] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
 [8:1, 8:62] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[7:22, 8:62] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
+[7:21, 8:62] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
 [11:33, 11:66] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
 [11:1, 11:66] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[10:24, 11:66] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
+[10:23, 11:66] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
 [14:33, 14:67] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
 [14:1, 14:67] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[13:25, 14:67] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
+[13:24, 14:67] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
 ###
 module.exports['QueryRelationship'] = {
    "library" : {
@@ -520,24 +532,28 @@ module.exports['QueryRelationship'] = {
          }, {
             "name" : "withQuery",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Null"
             }
          }, {
             "name" : "withQuery2",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Null"
             }
          }, {
             "name" : "withOutQuery",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Null"
             }
          }, {
             "name" : "withOutQuery2",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Null"
             }
@@ -550,8 +566,8 @@ module.exports['QueryRelationship'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define query =  [Encounter] E
-define a = E
+define query:  [Encounter] E
+define a: E
 return {E: E, a:a}
 ###
 
@@ -589,6 +605,7 @@ module.exports['QueryDefine'] = {
          }, {
             "name" : "query",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -635,7 +652,7 @@ module.exports['QueryDefine'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define query =  [Encounter] E return {id: E.id, thing: E.status}
+define query:  [Encounter] E return {id: E.id, thing: E.status}
 ###
 
 module.exports['Tuple'] = {
@@ -672,6 +689,7 @@ module.exports['Tuple'] = {
          }, {
             "name" : "query",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -713,20 +731,20 @@ module.exports['Tuple'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define tupleAsc = [Encounter] E sort by id
-define tupleReturnAsc = [Encounter] E return E sort by id
-define tupleReturnTupleAsc = [Encounter] E return {E : E} sort by E.id
-define tupleDesc = [Encounter] E sort by id desc
-define tupleReturnDesc = [Encounter] E return E sort by id desc
-define tupleReturnTupleDesc =  [Encounter] E return {E : E} sort by E.id desc
-define numberAsc = ({8, 6, 7, 5, 3, 0, 9}) N sort asc
-define numberReturnAsc = ({8, 6, 7, 5, 3, 0, 9}) N return N sort asc
-define numberDesc = ({8, 6, 7, 5, 3, 0, 9}) N sort desc
-define numberReturnDesc = ({8, 6, 7, 5, 3, 0, 9}) N return N sort desc
-define stringAsc = ({'jenny', 'dont', 'change', 'your', 'number'}) S sort asc
-define stringReturnAsc = ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort asc
-define stringDesc = ({'jenny', 'dont', 'change', 'your', 'number'}) S sort desc
-define stringReturnDesc = ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort desc
+define TupleAsc: [Encounter] E sort by id
+define TupleReturnAsc: [Encounter] E return E sort by id
+define TupleReturnTupleAsc: [Encounter] E return {E : E} sort by E.id
+define TupleDesc: [Encounter] E sort by id desc
+define TupleReturnDesc: [Encounter] E return E sort by id desc
+define TupleReturnTupleDesc:  [Encounter] E return {E : E} sort by E.id desc
+define numberAsc: ({8, 6, 7, 5, 3, 0, 9}) N sort asc
+define numberReturnAsc: ({8, 6, 7, 5, 3, 0, 9}) N return N sort asc
+define numberDesc: ({8, 6, 7, 5, 3, 0, 9}) N sort desc
+define numberReturnDesc: ({8, 6, 7, 5, 3, 0, 9}) N return N sort desc
+define stringAsc: ({'jenny', 'dont', 'change', 'your', 'number'}) S sort asc
+define stringReturnAsc: ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort asc
+define stringDesc: ({'jenny', 'dont', 'change', 'your', 'number'}) S sort desc
+define stringReturnDesc: ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort desc
 ###
 
 module.exports['Sorting'] = {
@@ -761,8 +779,9 @@ module.exports['Sorting'] = {
                }
             }
          }, {
-            "name" : "tupleAsc",
+            "name" : "TupleAsc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -786,8 +805,9 @@ module.exports['Sorting'] = {
                }
             }
          }, {
-            "name" : "tupleReturnAsc",
+            "name" : "TupleReturnAsc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -817,8 +837,9 @@ module.exports['Sorting'] = {
                }
             }
          }, {
-            "name" : "tupleReturnTupleAsc",
+            "name" : "TupleReturnTupleAsc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -855,8 +876,9 @@ module.exports['Sorting'] = {
                }
             }
          }, {
-            "name" : "tupleDesc",
+            "name" : "TupleDesc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -880,8 +902,9 @@ module.exports['Sorting'] = {
                }
             }
          }, {
-            "name" : "tupleReturnDesc",
+            "name" : "TupleReturnDesc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -911,8 +934,9 @@ module.exports['Sorting'] = {
                }
             }
          }, {
-            "name" : "tupleReturnTupleDesc",
+            "name" : "TupleReturnTupleDesc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -951,6 +975,7 @@ module.exports['Sorting'] = {
          }, {
             "name" : "numberAsc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -999,6 +1024,7 @@ module.exports['Sorting'] = {
          }, {
             "name" : "numberReturnAsc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1053,6 +1079,7 @@ module.exports['Sorting'] = {
          }, {
             "name" : "numberDesc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1101,6 +1128,7 @@ module.exports['Sorting'] = {
          }, {
             "name" : "numberReturnDesc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1155,6 +1183,7 @@ module.exports['Sorting'] = {
          }, {
             "name" : "stringAsc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1195,6 +1224,7 @@ module.exports['Sorting'] = {
          }, {
             "name" : "stringReturnAsc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1241,6 +1271,7 @@ module.exports['Sorting'] = {
          }, {
             "name" : "stringDesc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1281,6 +1312,7 @@ module.exports['Sorting'] = {
          }, {
             "name" : "stringReturnDesc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1333,15 +1365,15 @@ module.exports['Sorting'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define defaultNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return N
-define defaultStrings = ({'foo', 'bar', 'baz', 'bar'}) S return S
-define defaultTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return T
-define distinctNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return distinct N
-define distinctStrings = ({'foo', 'bar', 'baz', 'bar'}) S return distinct S
-define distinctTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return distinct T
-define allNumbers = ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return all N
-define allStrings = ({'foo', 'bar', 'baz', 'bar'}) S return all S
-define allTuples = ({tuple{a: 1, b:2}, tuple{a: 2, b: 3}, tuple{a: 1, b: 2}}) T return all T
+define defaultNumbers: ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return N
+define defaultStrings: ({'foo', 'bar', 'baz', 'bar'}) S return S
+define defaultTuples: ({Tuple{a: 1, b:2}, Tuple{a: 2, b: 3}, Tuple{a: 1, b: 2}}) T return T
+define distinctNumbers: ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return distinct N
+define distinctStrings: ({'foo', 'bar', 'baz', 'bar'}) S return distinct S
+define distinctTuples: ({Tuple{a: 1, b:2}, Tuple{a: 2, b: 3}, Tuple{a: 1, b: 2}}) T return distinct T
+define allNumbers: ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return all N
+define allStrings: ({'foo', 'bar', 'baz', 'bar'}) S return all S
+define allTuples: ({Tuple{a: 1, b:2}, Tuple{a: 2, b: 3}, Tuple{a: 1, b: 2}}) T return all T
 ###
 
 module.exports['Distinct'] = {
@@ -1378,6 +1410,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "defaultNumbers",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1462,6 +1495,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "defaultStrings",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1498,6 +1532,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "defaultTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1569,6 +1604,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "distinctNumbers",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1654,6 +1690,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "distinctStrings",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1691,6 +1728,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "distinctTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1763,6 +1801,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "allNumbers",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1848,6 +1887,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "allStrings",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -1885,6 +1925,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "allTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {

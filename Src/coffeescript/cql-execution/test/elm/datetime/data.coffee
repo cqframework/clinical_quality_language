@@ -10,14 +10,14 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Year = DateTime(2012)
-define Month = DateTime(2012, 2)
-define Day = DateTime(2012, 2, 15)
-define Hour = DateTime(2012, 2, 15, 12)
-define Minute = DateTime(2012, 2, 15, 12, 10)
-define Second = DateTime(2012, 2, 15, 12, 10, 59)
-define Millisecond = DateTime(2012, 2, 15, 12, 10, 59, 456)
-define TimezoneOffset = DateTime(2012, 2, 15, 12, 10, 59, 456, -8.0)
+define Year: DateTime(2012)
+define Month: DateTime(2012, 2)
+define Day: DateTime(2012, 2, 15)
+define Hour: DateTime(2012, 2, 15, 12)
+define Minute: DateTime(2012, 2, 15, 12, 10)
+define Second: DateTime(2012, 2, 15, 12, 10, 59)
+define Millisecond: DateTime(2012, 2, 15, 12, 10, 59, 456)
+define TimezoneOffset: DateTime(2012, 2, 15, 12, 10, 59, 456, -8.0)
 ###
 
 module.exports['DateTime'] = {
@@ -54,6 +54,7 @@ module.exports['DateTime'] = {
          }, {
             "name" : "Year",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -66,6 +67,7 @@ module.exports['DateTime'] = {
          }, {
             "name" : "Month",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -82,6 +84,7 @@ module.exports['DateTime'] = {
          }, {
             "name" : "Day",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -102,6 +105,7 @@ module.exports['DateTime'] = {
          }, {
             "name" : "Hour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -126,6 +130,7 @@ module.exports['DateTime'] = {
          }, {
             "name" : "Minute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -154,6 +159,7 @@ module.exports['DateTime'] = {
          }, {
             "name" : "Second",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -186,6 +192,7 @@ module.exports['DateTime'] = {
          }, {
             "name" : "Millisecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -222,6 +229,7 @@ module.exports['DateTime'] = {
          }, {
             "name" : "TimezoneOffset",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -271,7 +279,7 @@ module.exports['DateTime'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define TodayVar = Today()
+define TodayVar: Today()
 ###
 
 module.exports['Today'] = {
@@ -308,6 +316,7 @@ module.exports['Today'] = {
          }, {
             "name" : "TodayVar",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Today",
                "type" : "FunctionRef",
@@ -322,7 +331,7 @@ module.exports['Today'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NowVar = Now()
+define NowVar: Now()
 ###
 
 module.exports['Now'] = {
@@ -359,6 +368,7 @@ module.exports['Now'] = {
          }, {
             "name" : "NowVar",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Now",
                "type" : "FunctionRef",
@@ -373,16 +383,16 @@ module.exports['Now'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IdesOfMarch = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define Year = year from IdesOfMarch
-define Month = month from IdesOfMarch
-define Day = day from IdesOfMarch
-define Hour = hour from IdesOfMarch
-define Minute = minute from IdesOfMarch
-define Second = second from IdesOfMarch
-define Millisecond = millisecond from IdesOfMarch
-define ImpreciseIdesOfMarch = DateTime(2000, 3, 15)
-define ImpreciseComponentTuple = tuple {
+define IdesOfMarch: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define Year: year from IdesOfMarch
+define Month: month from IdesOfMarch
+define Day: day from IdesOfMarch
+define Hour: hour from IdesOfMarch
+define Minute: minute from IdesOfMarch
+define Second: second from IdesOfMarch
+define Millisecond: millisecond from IdesOfMarch
+define ImpreciseIdesOfMarch: DateTime(2000, 3, 15)
+define ImpreciseComponentTuple: Tuple {
   Year: year from ImpreciseIdesOfMarch,
   Month: month from ImpreciseIdesOfMarch,
   Day: day from ImpreciseIdesOfMarch,
@@ -391,9 +401,15 @@ define ImpreciseComponentTuple = tuple {
   Second: second from ImpreciseIdesOfMarch,
   Millisecond: millisecond from ImpreciseIdesOfMarch
 }
-define NullDate = year from null
+define NullDate: year from null
 ###
 
+###
+Translation Error(s):
+[22:18, 22:31] Call to operator DateTimeComponentFrom(System.Any) is ambiguous with: 
+  - DateTimeComponentFrom(System.Time)
+  - DateTimeComponentFrom(System.DateTime)
+###
 module.exports['DateTimeComponentFrom'] = {
    "library" : {
       "identifier" : {
@@ -428,6 +444,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "IdesOfMarch",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -468,6 +485,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "Year",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "DateTimeComponentFrom",
@@ -479,6 +497,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "Month",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "DateTimeComponentFrom",
@@ -490,6 +509,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "Day",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "DateTimeComponentFrom",
@@ -501,6 +521,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "Hour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "DateTimeComponentFrom",
@@ -512,6 +533,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "Minute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "DateTimeComponentFrom",
@@ -523,6 +545,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "Second",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "DateTimeComponentFrom",
@@ -534,6 +557,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "Millisecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "DateTimeComponentFrom",
@@ -545,6 +569,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "ImpreciseIdesOfMarch",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -565,6 +590,7 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "ImpreciseComponentTuple",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Tuple",
                "element" : [ {
@@ -642,16 +668,9 @@ module.exports['DateTimeComponentFrom'] = {
          }, {
             "name" : "NullDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "precision" : "Year",
-               "type" : "DateTimeComponentFrom",
-               "operand" : {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               }
+               "type" : "Null"
             }
          } ]
       }
@@ -662,9 +681,9 @@ module.exports['DateTimeComponentFrom'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Date = date from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define ImpreciseDate = date from DateTime(2000)
-define NullDate = date from null
+define Date: date from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define ImpreciseDate: date from DateTime(2000)
+define NullDate: date from null
 ###
 
 module.exports['DateFrom'] = {
@@ -701,6 +720,7 @@ module.exports['DateFrom'] = {
          }, {
             "name" : "Date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "DateFrom",
                "operand" : {
@@ -744,6 +764,7 @@ module.exports['DateFrom'] = {
          }, {
             "name" : "ImpreciseDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "DateFrom",
                "operand" : {
@@ -759,6 +780,7 @@ module.exports['DateFrom'] = {
          }, {
             "name" : "NullDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "DateFrom",
                "operand" : {
@@ -778,9 +800,9 @@ module.exports['DateFrom'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Time = time from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NoTime = time from DateTime(2000, 3, 15)
-define NullDate = time from null
+define Time: time from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define NoTime: time from DateTime(2000, 3, 15)
+define NullDate: time from null
 ###
 
 module.exports['TimeFrom'] = {
@@ -817,6 +839,7 @@ module.exports['TimeFrom'] = {
          }, {
             "name" : "Time",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "TimeFrom",
                "operand" : {
@@ -860,6 +883,7 @@ module.exports['TimeFrom'] = {
          }, {
             "name" : "NoTime",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "TimeFrom",
                "operand" : {
@@ -883,6 +907,7 @@ module.exports['TimeFrom'] = {
          }, {
             "name" : "NullDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "TimeFrom",
                "operand" : {
@@ -902,12 +927,18 @@ module.exports['TimeFrom'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define CentralEuropean = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define EasternStandard = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0)
-define DefaultTimezone = timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
-define NullDate = timezone from null
+define CentralEuropean: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define EasternStandard: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0)
+define DefaultTimezone: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
+define NullDate: timezone from null
 ###
 
+###
+Translation Error(s):
+[7:18, 7:35] Call to operator TimezoneFrom(System.Any) is ambiguous with: 
+  - TimezoneFrom(System.Time)
+  - TimezoneFrom(System.DateTime)
+###
 module.exports['TimezoneFrom'] = {
    "library" : {
       "identifier" : {
@@ -942,6 +973,7 @@ module.exports['TimezoneFrom'] = {
          }, {
             "name" : "CentralEuropean",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "TimezoneFrom",
                "operand" : {
@@ -985,6 +1017,7 @@ module.exports['TimezoneFrom'] = {
          }, {
             "name" : "EasternStandard",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "TimezoneFrom",
                "operand" : {
@@ -1031,6 +1064,7 @@ module.exports['TimezoneFrom'] = {
          }, {
             "name" : "DefaultTimezone",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "TimezoneFrom",
                "operand" : {
@@ -1070,15 +1104,9 @@ module.exports['TimezoneFrom'] = {
          }, {
             "name" : "NullDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "TimezoneFrom",
-               "operand" : {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               }
+               "type" : "Null"
             }
          } ]
       }
@@ -1089,37 +1117,43 @@ module.exports['TimezoneFrom'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define SameYear = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year as DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
-define NotSameYear = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year as DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
-define SameMonth = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month as DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
-define NotSameMonth = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month as DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
-define SameMonthWrongYear = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month as DateTime(2001, 3, 23, 8, 14, 47, 500, +1.0)
-define SameDay = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day as DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
-define NotSameDay = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day as DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
-define SameDayWrongMonth = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day as DateTime(2000, 4, 15, 8, 14, 47, 500, +1.0)
-define SameHour = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
-define NotSameHour = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
-define SameHourWrongDay = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 16, 13, 14, 47, 500, +1.0)
-define SameMinute = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute as DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
-define NotSameMinute = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute as DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
-define SameMinuteWrongHour = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute as DateTime(2000, 3, 15, 14, 30, 47, 500, +1.0)
-define SameSecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second as DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define NotSameSecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second as DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
-define SameSecondWrongMinute = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second as DateTime(2000, 3, 15, 13, 31, 25, 500, +1.0)
-define SameMillisecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NotSameMillisecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond as DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define SameMillisecondWrongSecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond as DateTime(2000, 3, 15, 13, 30, 26, 200, +1.0)
-define Same = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NotSame = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define SameNormalized = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
-define SameHourWrongTimezone = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0)
-define ImpreciseHour = DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 15)
-define ImpreciseHourWrongDay = DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 16)
-define NullLeft = null same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as null
-define NullBoth = null same as null
+define SameYear: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year as DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
+define NotSameYear: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year as DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
+define SameMonth: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month as DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
+define NotSameMonth: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month as DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
+define SameMonthWrongYear: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month as DateTime(2001, 3, 23, 8, 14, 47, 500, +1.0)
+define SameDay: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day as DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
+define NotSameDay: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day as DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
+define SameDayWrongMonth: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day as DateTime(2000, 4, 15, 8, 14, 47, 500, +1.0)
+define SameHour: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
+define NotSameHour: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
+define SameHourWrongDay: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 16, 13, 14, 47, 500, +1.0)
+define SameMinute: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute as DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
+define NotSameMinute: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute as DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
+define SameMinuteWrongHour: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute as DateTime(2000, 3, 15, 14, 30, 47, 500, +1.0)
+define SameSecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second as DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
+define NotSameSecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second as DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
+define SameSecondWrongMinute: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second as DateTime(2000, 3, 15, 13, 31, 25, 500, +1.0)
+define SameMillisecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define NotSameMillisecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond as DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
+define SameMillisecondWrongSecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond as DateTime(2000, 3, 15, 13, 30, 26, 200, +1.0)
+define Same: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define NotSame: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
+define SameNormalized: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
+define SameHourWrongTimezone: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour as DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0)
+define ImpreciseHour: DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 15)
+define ImpreciseHourWrongDay: DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 16)
+define NullLeft: null same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as null
+define NullBoth: null same as null
 ###
 
+###
+Translation Error(s):
+[32:23, 32:29] Call to operator SameAs(System.Any,System.Any) is ambiguous with: 
+  - SameAs(System.DateTime,System.DateTime)
+  - SameAs(System.Time,System.Time)
+###
 module.exports['SameAs'] = {
    "library" : {
       "identifier" : {
@@ -1154,6 +1188,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameYear",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "SameAs",
@@ -1234,6 +1269,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NotSameYear",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "SameAs",
@@ -1314,6 +1350,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameMonth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameAs",
@@ -1394,6 +1431,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NotSameMonth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameAs",
@@ -1474,6 +1512,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameMonthWrongYear",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameAs",
@@ -1554,6 +1593,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameAs",
@@ -1634,6 +1674,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NotSameDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameAs",
@@ -1714,6 +1755,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameDayWrongMonth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameAs",
@@ -1794,6 +1836,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameHour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameAs",
@@ -1874,6 +1917,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NotSameHour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameAs",
@@ -1954,6 +1998,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameHourWrongDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameAs",
@@ -2034,6 +2079,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameMinute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameAs",
@@ -2114,6 +2160,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NotSameMinute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameAs",
@@ -2194,6 +2241,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameMinuteWrongHour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameAs",
@@ -2274,6 +2322,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameSecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameAs",
@@ -2354,6 +2403,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NotSameSecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameAs",
@@ -2434,6 +2484,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameSecondWrongMinute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameAs",
@@ -2514,6 +2565,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameMillisecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameAs",
@@ -2594,6 +2646,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NotSameMillisecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameAs",
@@ -2674,6 +2727,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameMillisecondWrongSecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameAs",
@@ -2754,6 +2808,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "Same",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameAs",
                "operand" : [ {
@@ -2833,6 +2888,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NotSame",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameAs",
                "operand" : [ {
@@ -2912,6 +2968,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameNormalized",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameAs",
                "operand" : [ {
@@ -2994,6 +3051,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "SameHourWrongTimezone",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameAs",
@@ -3077,6 +3135,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "ImpreciseHour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameAs",
@@ -3133,6 +3192,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "ImpreciseHourWrongDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameAs",
@@ -3189,6 +3249,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NullLeft",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameAs",
                "operand" : [ {
@@ -3238,6 +3299,7 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NullRight",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameAs",
                "operand" : [ {
@@ -3287,21 +3349,9 @@ module.exports['SameAs'] = {
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "SameAs",
-               "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -3312,44 +3362,50 @@ module.exports['SameAs'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define SameYear = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or after DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
-define YearAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or after DateTime(1999, 11, 23, 8, 14, 47, 500, +1.0)
-define YearBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or after DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
-define SameMonth = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or after DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
-define MonthAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or after DateTime(2000, 2, 23, 8, 14, 47, 500, +1.0)
-define MonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or after DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
-define SameDay = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
-define DayAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 3, 14, 8, 14, 47, 500, +1.0)
-define DayBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 3, 16, 8, 14, 47, 500, +1.0)
-define SameHour = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
-define HourAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 12, 14, 47, 500, +1.0)
-define HourBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 14, 14, 47, 500, +1.0)
-define SameMinute = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or after DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
-define MinuteAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or after DateTime(2000, 3, 15, 13, 29, 47, 500, +1.0)
-define MinuteBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or after DateTime(2000, 3, 15, 13, 31, 47, 500, +1.0)
-define SameSecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or after DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define SecondAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or after DateTime(2000, 3, 15, 13, 30, 24, 500, +1.0)
-define SecondBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or after DateTime(2000, 3, 15, 13, 30, 26, 500, +1.0)
-define SameMillisecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define MillisecondAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or after DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
-define MillisecondBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or after DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define Same = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define After = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
-define Before = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define SameDayMonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 4, 15, 8, 14, 47, 500, +1.0)
-define DayAfterMonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 4, 14, 8, 14, 47, 500, +1.0)
-define DayBeforeMonthAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 2, 16, 8, 14, 47, 500, +1.0)
-define ImpreciseDay = DateTime(2000, 3, 15, 13, 30, 25, 200) same day or after DateTime(2000, 3)
-define ImpreciseDayMonthAfter = DateTime(2000, 3, 15, 13, 30, 25, 200) same day or after DateTime(2000, 2)
-define ImpreciseDayMonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200) same day or after DateTime(2000, 4)
-define SameHourNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
-define HourAfterNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 6, 30, 25, 200, -5.0)
-define HourBeforeNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
-define NullLeft = null same or after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after null
-define NullBoth = null same or after null
+define SameYear: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or after DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
+define YearAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or after DateTime(1999, 11, 23, 8, 14, 47, 500, +1.0)
+define YearBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or after DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
+define SameMonth: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or after DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
+define MonthAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or after DateTime(2000, 2, 23, 8, 14, 47, 500, +1.0)
+define MonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or after DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
+define SameDay: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
+define DayAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 3, 14, 8, 14, 47, 500, +1.0)
+define DayBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 3, 16, 8, 14, 47, 500, +1.0)
+define SameHour: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
+define HourAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 12, 14, 47, 500, +1.0)
+define HourBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 14, 14, 47, 500, +1.0)
+define SameMinute: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or after DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
+define MinuteAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or after DateTime(2000, 3, 15, 13, 29, 47, 500, +1.0)
+define MinuteBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or after DateTime(2000, 3, 15, 13, 31, 47, 500, +1.0)
+define SameSecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or after DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
+define SecondAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or after DateTime(2000, 3, 15, 13, 30, 24, 500, +1.0)
+define SecondBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or after DateTime(2000, 3, 15, 13, 30, 26, 500, +1.0)
+define SameMillisecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define MillisecondAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or after DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
+define MillisecondBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or after DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define Same: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define After: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
+define Before: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define SameDayMonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 4, 15, 8, 14, 47, 500, +1.0)
+define DayAfterMonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 4, 14, 8, 14, 47, 500, +1.0)
+define DayBeforeMonthAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or after DateTime(2000, 2, 16, 8, 14, 47, 500, +1.0)
+define ImpreciseDay: DateTime(2000, 3, 15, 13, 30, 25, 200) same day or after DateTime(2000, 3)
+define ImpreciseDayMonthAfter: DateTime(2000, 3, 15, 13, 30, 25, 200) same day or after DateTime(2000, 2)
+define ImpreciseDayMonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200) same day or after DateTime(2000, 4)
+define SameHourNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
+define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 6, 30, 25, 200, -5.0)
+define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
+define NullLeft: null same or after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after null
+define NullBoth: null same or after null
 ###
 
+###
+Translation Error(s):
+[39:23, 39:35] Call to operator SameOrAfter(System.Any,System.Any) is ambiguous with: 
+  - SameOrAfter(System.DateTime,System.DateTime)
+  - SameOrAfter(System.Time,System.Time)
+###
 module.exports['SameOrAfter'] = {
    "library" : {
       "identifier" : {
@@ -3384,6 +3440,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameYear",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "SameOrAfter",
@@ -3464,6 +3521,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "YearAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "SameOrAfter",
@@ -3544,6 +3602,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "YearBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "SameOrAfter",
@@ -3624,6 +3683,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameMonth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameOrAfter",
@@ -3704,6 +3764,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "MonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameOrAfter",
@@ -3784,6 +3845,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "MonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameOrAfter",
@@ -3864,6 +3926,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -3944,6 +4007,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "DayAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -4024,6 +4088,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "DayBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -4104,6 +4169,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameHour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrAfter",
@@ -4184,6 +4250,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "HourAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrAfter",
@@ -4264,6 +4331,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "HourBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrAfter",
@@ -4344,6 +4412,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameMinute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameOrAfter",
@@ -4424,6 +4493,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "MinuteAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameOrAfter",
@@ -4504,6 +4574,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "MinuteBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameOrAfter",
@@ -4584,6 +4655,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameSecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameOrAfter",
@@ -4664,6 +4736,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SecondAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameOrAfter",
@@ -4744,6 +4817,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SecondBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameOrAfter",
@@ -4824,6 +4898,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameMillisecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameOrAfter",
@@ -4904,6 +4979,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "MillisecondAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameOrAfter",
@@ -4984,6 +5060,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "MillisecondBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameOrAfter",
@@ -5064,6 +5141,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "Same",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrAfter",
                "operand" : [ {
@@ -5143,6 +5221,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "After",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrAfter",
                "operand" : [ {
@@ -5222,6 +5301,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "Before",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrAfter",
                "operand" : [ {
@@ -5301,6 +5381,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameDayMonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -5381,6 +5462,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "DayAfterMonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -5461,6 +5543,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "DayBeforeMonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -5541,6 +5624,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "ImpreciseDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -5593,6 +5677,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "ImpreciseDayMonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -5645,6 +5730,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "ImpreciseDayMonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrAfter",
@@ -5697,6 +5783,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "SameHourNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrAfter",
@@ -5780,6 +5867,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "HourAfterNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrAfter",
@@ -5863,6 +5951,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "HourBeforeNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrAfter",
@@ -5946,6 +6035,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "NullLeft",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrAfter",
                "operand" : [ {
@@ -5995,6 +6085,7 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "NullRight",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrAfter",
                "operand" : [ {
@@ -6044,21 +6135,9 @@ module.exports['SameOrAfter'] = {
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "SameOrAfter",
-               "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -6069,44 +6148,50 @@ module.exports['SameOrAfter'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define SameYear = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or before DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
-define YearAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or before DateTime(1999, 11, 23, 8, 14, 47, 500, +1.0)
-define YearBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or before DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
-define SameMonth = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or before DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
-define MonthAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or before DateTime(2000, 2, 23, 8, 14, 47, 500, +1.0)
-define MonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or before DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
-define SameDay = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
-define DayAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 3, 14, 8, 14, 47, 500, +1.0)
-define DayBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 3, 16, 8, 14, 47, 500, +1.0)
-define SameHour = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
-define HourAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 12, 14, 47, 500, +1.0)
-define HourBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 14, 14, 47, 500, +1.0)
-define SameMinute = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or before DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
-define MinuteAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or before DateTime(2000, 3, 15, 13, 29, 47, 500, +1.0)
-define MinuteBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or before DateTime(2000, 3, 15, 13, 31, 47, 500, +1.0)
-define SameSecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or before DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define SecondAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or before DateTime(2000, 3, 15, 13, 30, 24, 500, +1.0)
-define SecondBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or before DateTime(2000, 3, 15, 13, 30, 26, 500, +1.0)
-define SameMillisecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define MillisecondAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or before DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
-define MillisecondBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or before DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define Same = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define After = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
-define Before = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define SameDayMonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 4, 15, 8, 14, 47, 500, +1.0)
-define DayAfterMonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 4, 14, 8, 14, 47, 500, +1.0)
-define DayBeforeMonthAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 2, 16, 8, 14, 47, 500, +1.0)
-define ImpreciseDay = DateTime(2000, 3, 15, 13, 30, 25, 200) same day or before DateTime(2000, 3)
-define ImpreciseDayMonthAfter = DateTime(2000, 3, 15, 13, 30, 25, 200) same day or before DateTime(2000, 2)
-define ImpreciseDayMonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200) same day or before DateTime(2000, 4)
-define SameHourNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
-define HourAfterNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 6, 30, 25, 200, -5.0)
-define HourBeforeNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
-define NullLeft = null same or before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before null
-define NullBoth = null same or before null
+define SameYear: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or before DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
+define YearAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or before DateTime(1999, 11, 23, 8, 14, 47, 500, +1.0)
+define YearBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or before DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
+define SameMonth: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or before DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
+define MonthAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or before DateTime(2000, 2, 23, 8, 14, 47, 500, +1.0)
+define MonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same month or before DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
+define SameDay: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
+define DayAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 3, 14, 8, 14, 47, 500, +1.0)
+define DayBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 3, 16, 8, 14, 47, 500, +1.0)
+define SameHour: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
+define HourAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 12, 14, 47, 500, +1.0)
+define HourBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 14, 14, 47, 500, +1.0)
+define SameMinute: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or before DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
+define MinuteAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or before DateTime(2000, 3, 15, 13, 29, 47, 500, +1.0)
+define MinuteBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same minute or before DateTime(2000, 3, 15, 13, 31, 47, 500, +1.0)
+define SameSecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or before DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
+define SecondAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or before DateTime(2000, 3, 15, 13, 30, 24, 500, +1.0)
+define SecondBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same second or before DateTime(2000, 3, 15, 13, 30, 26, 500, +1.0)
+define SameMillisecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define MillisecondAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or before DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
+define MillisecondBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same millisecond or before DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define Same: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define After: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
+define Before: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define SameDayMonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 4, 15, 8, 14, 47, 500, +1.0)
+define DayAfterMonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 4, 14, 8, 14, 47, 500, +1.0)
+define DayBeforeMonthAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same day or before DateTime(2000, 2, 16, 8, 14, 47, 500, +1.0)
+define ImpreciseDay: DateTime(2000, 3, 15, 13, 30, 25, 200) same day or before DateTime(2000, 3)
+define ImpreciseDayMonthAfter: DateTime(2000, 3, 15, 13, 30, 25, 200) same day or before DateTime(2000, 2)
+define ImpreciseDayMonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200) same day or before DateTime(2000, 4)
+define SameHourNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
+define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 6, 30, 25, 200, -5.0)
+define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
+define NullLeft: null same or before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before null
+define NullBoth: null same or before null
 ###
 
+###
+Translation Error(s):
+[39:23, 39:36] Call to operator SameOrBefore(System.Any,System.Any) is ambiguous with: 
+  - SameOrBefore(System.DateTime,System.DateTime)
+  - SameOrBefore(System.Time,System.Time)
+###
 module.exports['SameOrBefore'] = {
    "library" : {
       "identifier" : {
@@ -6141,6 +6226,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameYear",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "SameOrBefore",
@@ -6221,6 +6307,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "YearAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "SameOrBefore",
@@ -6301,6 +6388,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "YearBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "SameOrBefore",
@@ -6381,6 +6469,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameMonth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameOrBefore",
@@ -6461,6 +6550,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "MonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameOrBefore",
@@ -6541,6 +6631,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "MonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "SameOrBefore",
@@ -6621,6 +6712,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -6701,6 +6793,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "DayAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -6781,6 +6874,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "DayBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -6861,6 +6955,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameHour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrBefore",
@@ -6941,6 +7036,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "HourAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrBefore",
@@ -7021,6 +7117,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "HourBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrBefore",
@@ -7101,6 +7198,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameMinute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameOrBefore",
@@ -7181,6 +7279,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "MinuteAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameOrBefore",
@@ -7261,6 +7360,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "MinuteBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "SameOrBefore",
@@ -7341,6 +7441,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameSecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameOrBefore",
@@ -7421,6 +7522,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SecondAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameOrBefore",
@@ -7501,6 +7603,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SecondBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "SameOrBefore",
@@ -7581,6 +7684,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameMillisecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameOrBefore",
@@ -7661,6 +7765,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "MillisecondAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameOrBefore",
@@ -7741,6 +7846,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "MillisecondBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "SameOrBefore",
@@ -7821,6 +7927,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "Same",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrBefore",
                "operand" : [ {
@@ -7900,6 +8007,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "After",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrBefore",
                "operand" : [ {
@@ -7979,6 +8087,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "Before",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrBefore",
                "operand" : [ {
@@ -8058,6 +8167,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameDayMonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -8138,6 +8248,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "DayAfterMonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -8218,6 +8329,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "DayBeforeMonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -8298,6 +8410,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "ImpreciseDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -8350,6 +8463,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "ImpreciseDayMonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -8402,6 +8516,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "ImpreciseDayMonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "SameOrBefore",
@@ -8454,6 +8569,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "SameHourNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrBefore",
@@ -8537,6 +8653,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "HourAfterNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrBefore",
@@ -8620,6 +8737,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "HourBeforeNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "SameOrBefore",
@@ -8703,6 +8821,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "NullLeft",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrBefore",
                "operand" : [ {
@@ -8752,6 +8871,7 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "NullRight",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "SameOrBefore",
                "operand" : [ {
@@ -8801,21 +8921,9 @@ module.exports['SameOrBefore'] = {
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "SameOrBefore",
-               "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -8826,41 +8934,47 @@ module.exports['SameOrBefore'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define SameYear = DateTime(2000, 12, 15, 13, 30, 25, 200, +1.0) after year of DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
-define YearAfter = DateTime(2000, 12, 15, 13, 30, 25, 200, +1.0) after year of DateTime(1999, 11, 23, 8, 14, 47, 500, +1.0)
-define YearBefore = DateTime(2000, 12, 15, 13, 30, 25, 200, +1.0) after year of DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
-define SameMonth = DateTime(2000, 3, 25, 13, 30, 25, 200, +1.0) after month of DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
-define MonthAfter = DateTime(2000, 3, 25, 13, 30, 25, 200, +1.0) after month of DateTime(2000, 2, 23, 8, 14, 47, 500, +1.0)
-define MonthBefore = DateTime(2000, 3, 25, 13, 30, 25, 200, +1.0) after month of DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
-define SameDay = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after day of DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
-define DayAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after day of DateTime(2000, 3, 14, 8, 14, 47, 500, +1.0)
-define DayBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after day of DateTime(2000, 3, 16, 8, 14, 47, 500, +1.0)
-define SameHour = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
-define HourAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 12, 14, 47, 500, +1.0)
-define HourBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 14, 14, 47, 500, +1.0)
-define SameMinute = DateTime(2000, 3, 15, 13, 30, 55, 200, +1.0) after minute of DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
-define MinuteAfter = DateTime(2000, 3, 15, 13, 30, 55, 200, +1.0) after minute of DateTime(2000, 3, 15, 13, 29, 47, 500, +1.0)
-define MinuteBefore = DateTime(2000, 3, 15, 13, 30, 55, 200, +1.0) after minute of DateTime(2000, 3, 15, 13, 31, 47, 500, +1.0)
-define SameSecond = DateTime(2000, 3, 15, 13, 30, 25, 700, +1.0) after second of DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define SecondAfter = DateTime(2000, 3, 15, 13, 30, 25, 700, +1.0) after second of DateTime(2000, 3, 15, 13, 30, 24, 500, +1.0)
-define SecondBefore = DateTime(2000, 3, 15, 13, 30, 25, 700, +1.0) after second of DateTime(2000, 3, 15, 13, 30, 26, 500, +1.0)
-define SameMillisecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after millisecond of DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define MillisecondAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after millisecond of DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
-define MillisecondBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after millisecond of DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define Same = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define After = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
-define Before = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define ImpreciseDay = DateTime(2000, 3, 15, 13, 30, 25, 200) after day of DateTime(2000, 3)
-define ImpreciseDayMonthAfter = DateTime(2000, 3, 15, 13, 30, 25, 200) after day of DateTime(2000, 2)
-define ImpreciseDayMonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200) after day of DateTime(2000, 4)
-define SameHourNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
-define HourAfterNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 6, 30, 25, 200, -5.0)
-define HourBeforeNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
-define NullLeft = null after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after null
-define NullBoth = null after null
+define SameYear: DateTime(2000, 12, 15, 13, 30, 25, 200, +1.0) after year of DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
+define YearAfter: DateTime(2000, 12, 15, 13, 30, 25, 200, +1.0) after year of DateTime(1999, 11, 23, 8, 14, 47, 500, +1.0)
+define YearBefore: DateTime(2000, 12, 15, 13, 30, 25, 200, +1.0) after year of DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
+define SameMonth: DateTime(2000, 3, 25, 13, 30, 25, 200, +1.0) after month of DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
+define MonthAfter: DateTime(2000, 3, 25, 13, 30, 25, 200, +1.0) after month of DateTime(2000, 2, 23, 8, 14, 47, 500, +1.0)
+define MonthBefore: DateTime(2000, 3, 25, 13, 30, 25, 200, +1.0) after month of DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
+define SameDay: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after day of DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
+define DayAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after day of DateTime(2000, 3, 14, 8, 14, 47, 500, +1.0)
+define DayBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after day of DateTime(2000, 3, 16, 8, 14, 47, 500, +1.0)
+define SameHour: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
+define HourAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 12, 14, 47, 500, +1.0)
+define HourBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 14, 14, 47, 500, +1.0)
+define SameMinute: DateTime(2000, 3, 15, 13, 30, 55, 200, +1.0) after minute of DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
+define MinuteAfter: DateTime(2000, 3, 15, 13, 30, 55, 200, +1.0) after minute of DateTime(2000, 3, 15, 13, 29, 47, 500, +1.0)
+define MinuteBefore: DateTime(2000, 3, 15, 13, 30, 55, 200, +1.0) after minute of DateTime(2000, 3, 15, 13, 31, 47, 500, +1.0)
+define SameSecond: DateTime(2000, 3, 15, 13, 30, 25, 700, +1.0) after second of DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
+define SecondAfter: DateTime(2000, 3, 15, 13, 30, 25, 700, +1.0) after second of DateTime(2000, 3, 15, 13, 30, 24, 500, +1.0)
+define SecondBefore: DateTime(2000, 3, 15, 13, 30, 25, 700, +1.0) after second of DateTime(2000, 3, 15, 13, 30, 26, 500, +1.0)
+define SameMillisecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after millisecond of DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define MillisecondAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after millisecond of DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
+define MillisecondBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after millisecond of DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define Same: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define After: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
+define Before: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define ImpreciseDay: DateTime(2000, 3, 15, 13, 30, 25, 200) after day of DateTime(2000, 3)
+define ImpreciseDayMonthAfter: DateTime(2000, 3, 15, 13, 30, 25, 200) after day of DateTime(2000, 2)
+define ImpreciseDayMonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200) after day of DateTime(2000, 4)
+define SameHourNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
+define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 6, 30, 25, 200, -5.0)
+define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
+define NullLeft: null after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after null
+define NullBoth: null after null
 ###
 
+###
+Translation Error(s):
+[36:23, 36:27] Call to operator After(System.Any,System.Any) is ambiguous with: 
+  - After(System.DateTime,System.DateTime)
+  - After(System.Time,System.Time)
+###
 module.exports['After'] = {
    "library" : {
       "identifier" : {
@@ -8895,6 +9009,7 @@ module.exports['After'] = {
          }, {
             "name" : "SameYear",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "After",
@@ -8975,6 +9090,7 @@ module.exports['After'] = {
          }, {
             "name" : "YearAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "After",
@@ -9055,6 +9171,7 @@ module.exports['After'] = {
          }, {
             "name" : "YearBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "After",
@@ -9135,6 +9252,7 @@ module.exports['After'] = {
          }, {
             "name" : "SameMonth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "After",
@@ -9215,6 +9333,7 @@ module.exports['After'] = {
          }, {
             "name" : "MonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "After",
@@ -9295,6 +9414,7 @@ module.exports['After'] = {
          }, {
             "name" : "MonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "After",
@@ -9375,6 +9495,7 @@ module.exports['After'] = {
          }, {
             "name" : "SameDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "After",
@@ -9455,6 +9576,7 @@ module.exports['After'] = {
          }, {
             "name" : "DayAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "After",
@@ -9535,6 +9657,7 @@ module.exports['After'] = {
          }, {
             "name" : "DayBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "After",
@@ -9615,6 +9738,7 @@ module.exports['After'] = {
          }, {
             "name" : "SameHour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "After",
@@ -9695,6 +9819,7 @@ module.exports['After'] = {
          }, {
             "name" : "HourAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "After",
@@ -9775,6 +9900,7 @@ module.exports['After'] = {
          }, {
             "name" : "HourBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "After",
@@ -9855,6 +9981,7 @@ module.exports['After'] = {
          }, {
             "name" : "SameMinute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "After",
@@ -9935,6 +10062,7 @@ module.exports['After'] = {
          }, {
             "name" : "MinuteAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "After",
@@ -10015,6 +10143,7 @@ module.exports['After'] = {
          }, {
             "name" : "MinuteBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "After",
@@ -10095,6 +10224,7 @@ module.exports['After'] = {
          }, {
             "name" : "SameSecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "After",
@@ -10175,6 +10305,7 @@ module.exports['After'] = {
          }, {
             "name" : "SecondAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "After",
@@ -10255,6 +10386,7 @@ module.exports['After'] = {
          }, {
             "name" : "SecondBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "After",
@@ -10335,6 +10467,7 @@ module.exports['After'] = {
          }, {
             "name" : "SameMillisecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "After",
@@ -10415,6 +10548,7 @@ module.exports['After'] = {
          }, {
             "name" : "MillisecondAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "After",
@@ -10495,6 +10629,7 @@ module.exports['After'] = {
          }, {
             "name" : "MillisecondBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "After",
@@ -10575,6 +10710,7 @@ module.exports['After'] = {
          }, {
             "name" : "Same",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -10654,6 +10790,7 @@ module.exports['After'] = {
          }, {
             "name" : "After",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -10733,6 +10870,7 @@ module.exports['After'] = {
          }, {
             "name" : "Before",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -10812,6 +10950,7 @@ module.exports['After'] = {
          }, {
             "name" : "ImpreciseDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "After",
@@ -10864,6 +11003,7 @@ module.exports['After'] = {
          }, {
             "name" : "ImpreciseDayMonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "After",
@@ -10916,6 +11056,7 @@ module.exports['After'] = {
          }, {
             "name" : "ImpreciseDayMonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "After",
@@ -10968,6 +11109,7 @@ module.exports['After'] = {
          }, {
             "name" : "SameHourNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "After",
@@ -11051,6 +11193,7 @@ module.exports['After'] = {
          }, {
             "name" : "HourAfterNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "After",
@@ -11134,6 +11277,7 @@ module.exports['After'] = {
          }, {
             "name" : "HourBeforeNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "After",
@@ -11217,6 +11361,7 @@ module.exports['After'] = {
          }, {
             "name" : "NullLeft",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11266,6 +11411,7 @@ module.exports['After'] = {
          }, {
             "name" : "NullRight",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11315,21 +11461,9 @@ module.exports['After'] = {
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "After",
-               "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -11340,41 +11474,47 @@ module.exports['After'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define SameYear = DateTime(2000, 10, 15, 13, 30, 25, 200, +1.0) before year of DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
-define YearAfter = DateTime(2000, 10, 15, 13, 30, 25, 200, +1.0) before year of DateTime(1999, 11, 23, 8, 14, 47, 500, +1.0)
-define YearBefore = DateTime(2000, 10, 15, 13, 30, 25, 200, +1.0) before year of DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
-define SameMonth = DateTime(2000, 3, 22, 13, 30, 25, 200, +1.0) before month of DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
-define MonthAfter = DateTime(2000, 3, 22, 13, 30, 25, 200, +1.0) before month of DateTime(2000, 2, 23, 8, 14, 47, 500, +1.0)
-define MonthBefore = DateTime(2000, 3, 22, 13, 30, 25, 200, +1.0) before month of DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
-define SameDay = DateTime(2000, 3, 15, 6, 30, 25, 200, +1.0) before day of DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
-define DayAfter = DateTime(2000, 3, 15, 6, 30, 25, 200, +1.0) before day of DateTime(2000, 3, 14, 8, 14, 47, 500, +1.0)
-define DayBefore = DateTime(2000, 3, 15, 6, 30, 25, 200, +1.0) before day of DateTime(2000, 3, 16, 8, 14, 47, 500, +1.0)
-define SameHour = DateTime(2000, 3, 15, 13, 10, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
-define HourAfter = DateTime(2000, 3, 15, 13, 10, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 12, 14, 47, 500, +1.0)
-define HourBefore = DateTime(2000, 3, 15, 13, 10, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 14, 14, 47, 500, +1.0)
-define SameMinute = DateTime(2000, 3, 15, 13, 30, 44, 200, +1.0) before minute of DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
-define MinuteAfter = DateTime(2000, 3, 15, 13, 30, 44, 200, +1.0) before minute of DateTime(2000, 3, 15, 13, 29, 47, 500, +1.0)
-define MinuteBefore = DateTime(2000, 3, 15, 13, 30, 44, 200, +1.0) before minute of DateTime(2000, 3, 15, 13, 31, 47, 500, +1.0)
-define SameSecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before second of DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
-define SecondAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before second of DateTime(2000, 3, 15, 13, 30, 24, 500, +1.0)
-define SecondBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before second of DateTime(2000, 3, 15, 13, 30, 26, 500, +1.0)
-define SameMillisecond = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before millisecond of DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define MillisecondAfter = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before millisecond of DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
-define MillisecondBefore = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before millisecond of DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define Same = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define After = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
-define Before = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define ImpreciseDay = DateTime(2000, 3, 15, 13, 30, 25, 200) before day of DateTime(2000, 3)
-define ImpreciseDayMonthAfter = DateTime(2000, 3, 15, 13, 30, 25, 200) before day of DateTime(2000, 2)
-define ImpreciseDayMonthBefore = DateTime(2000, 3, 15, 13, 30, 25, 200) before day of DateTime(2000, 4)
-define SameHourNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
-define HourAfterNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 6, 30, 25, 200, -5.0)
-define HourBeforeNormalizeZones = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
-define NullLeft = null before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NullRight = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before null
-define NullBoth = null before null
+define SameYear: DateTime(2000, 10, 15, 13, 30, 25, 200, +1.0) before year of DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
+define YearAfter: DateTime(2000, 10, 15, 13, 30, 25, 200, +1.0) before year of DateTime(1999, 11, 23, 8, 14, 47, 500, +1.0)
+define YearBefore: DateTime(2000, 10, 15, 13, 30, 25, 200, +1.0) before year of DateTime(2001, 11, 23, 8, 14, 47, 500, +1.0)
+define SameMonth: DateTime(2000, 3, 22, 13, 30, 25, 200, +1.0) before month of DateTime(2000, 3, 23, 8, 14, 47, 500, +1.0)
+define MonthAfter: DateTime(2000, 3, 22, 13, 30, 25, 200, +1.0) before month of DateTime(2000, 2, 23, 8, 14, 47, 500, +1.0)
+define MonthBefore: DateTime(2000, 3, 22, 13, 30, 25, 200, +1.0) before month of DateTime(2000, 4, 23, 8, 14, 47, 500, +1.0)
+define SameDay: DateTime(2000, 3, 15, 6, 30, 25, 200, +1.0) before day of DateTime(2000, 3, 15, 8, 14, 47, 500, +1.0)
+define DayAfter: DateTime(2000, 3, 15, 6, 30, 25, 200, +1.0) before day of DateTime(2000, 3, 14, 8, 14, 47, 500, +1.0)
+define DayBefore: DateTime(2000, 3, 15, 6, 30, 25, 200, +1.0) before day of DateTime(2000, 3, 16, 8, 14, 47, 500, +1.0)
+define SameHour: DateTime(2000, 3, 15, 13, 10, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 13, 14, 47, 500, +1.0)
+define HourAfter: DateTime(2000, 3, 15, 13, 10, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 12, 14, 47, 500, +1.0)
+define HourBefore: DateTime(2000, 3, 15, 13, 10, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 14, 14, 47, 500, +1.0)
+define SameMinute: DateTime(2000, 3, 15, 13, 30, 44, 200, +1.0) before minute of DateTime(2000, 3, 15, 13, 30, 47, 500, +1.0)
+define MinuteAfter: DateTime(2000, 3, 15, 13, 30, 44, 200, +1.0) before minute of DateTime(2000, 3, 15, 13, 29, 47, 500, +1.0)
+define MinuteBefore: DateTime(2000, 3, 15, 13, 30, 44, 200, +1.0) before minute of DateTime(2000, 3, 15, 13, 31, 47, 500, +1.0)
+define SameSecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before second of DateTime(2000, 3, 15, 13, 30, 25, 500, +1.0)
+define SecondAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before second of DateTime(2000, 3, 15, 13, 30, 24, 500, +1.0)
+define SecondBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before second of DateTime(2000, 3, 15, 13, 30, 26, 500, +1.0)
+define SameMillisecond: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before millisecond of DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define MillisecondAfter: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before millisecond of DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
+define MillisecondBefore: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before millisecond of DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define Same: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define After: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before DateTime(2000, 3, 15, 13, 30, 25, 199, +1.0)
+define Before: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define ImpreciseDay: DateTime(2000, 3, 15, 13, 30, 25, 200) before day of DateTime(2000, 3)
+define ImpreciseDayMonthAfter: DateTime(2000, 3, 15, 13, 30, 25, 200) before day of DateTime(2000, 2)
+define ImpreciseDayMonthBefore: DateTime(2000, 3, 15, 13, 30, 25, 200) before day of DateTime(2000, 4)
+define SameHourNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 7, 30, 25, 200, -5.0)
+define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 6, 30, 25, 200, -5.0)
+define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
+define NullLeft: null before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before null
+define NullBoth: null before null
 ###
 
+###
+Translation Error(s):
+[36:23, 36:28] Call to operator Before(System.Any,System.Any) is ambiguous with: 
+  - Before(System.DateTime,System.DateTime)
+  - Before(System.Time,System.Time)
+###
 module.exports['Before'] = {
    "library" : {
       "identifier" : {
@@ -11409,6 +11549,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SameYear",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "Before",
@@ -11489,6 +11630,7 @@ module.exports['Before'] = {
          }, {
             "name" : "YearAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "Before",
@@ -11569,6 +11711,7 @@ module.exports['Before'] = {
          }, {
             "name" : "YearBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "Before",
@@ -11649,6 +11792,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SameMonth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "Before",
@@ -11729,6 +11873,7 @@ module.exports['Before'] = {
          }, {
             "name" : "MonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "Before",
@@ -11809,6 +11954,7 @@ module.exports['Before'] = {
          }, {
             "name" : "MonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "Before",
@@ -11889,6 +12035,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SameDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "Before",
@@ -11969,6 +12116,7 @@ module.exports['Before'] = {
          }, {
             "name" : "DayAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "Before",
@@ -12049,6 +12197,7 @@ module.exports['Before'] = {
          }, {
             "name" : "DayBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "Before",
@@ -12129,6 +12278,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SameHour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "Before",
@@ -12209,6 +12359,7 @@ module.exports['Before'] = {
          }, {
             "name" : "HourAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "Before",
@@ -12289,6 +12440,7 @@ module.exports['Before'] = {
          }, {
             "name" : "HourBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "Before",
@@ -12369,6 +12521,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SameMinute",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "Before",
@@ -12449,6 +12602,7 @@ module.exports['Before'] = {
          }, {
             "name" : "MinuteAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "Before",
@@ -12529,6 +12683,7 @@ module.exports['Before'] = {
          }, {
             "name" : "MinuteBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "Before",
@@ -12609,6 +12764,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SameSecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "Before",
@@ -12689,6 +12845,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SecondAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "Before",
@@ -12769,6 +12926,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SecondBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "Before",
@@ -12849,6 +13007,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SameMillisecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "Before",
@@ -12929,6 +13088,7 @@ module.exports['Before'] = {
          }, {
             "name" : "MillisecondAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "Before",
@@ -13009,6 +13169,7 @@ module.exports['Before'] = {
          }, {
             "name" : "MillisecondBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "Before",
@@ -13089,6 +13250,7 @@ module.exports['Before'] = {
          }, {
             "name" : "Same",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13168,6 +13330,7 @@ module.exports['Before'] = {
          }, {
             "name" : "After",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13247,6 +13410,7 @@ module.exports['Before'] = {
          }, {
             "name" : "Before",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13326,6 +13490,7 @@ module.exports['Before'] = {
          }, {
             "name" : "ImpreciseDay",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "Before",
@@ -13378,6 +13543,7 @@ module.exports['Before'] = {
          }, {
             "name" : "ImpreciseDayMonthAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "Before",
@@ -13430,6 +13596,7 @@ module.exports['Before'] = {
          }, {
             "name" : "ImpreciseDayMonthBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "Before",
@@ -13482,6 +13649,7 @@ module.exports['Before'] = {
          }, {
             "name" : "SameHourNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "Before",
@@ -13565,6 +13733,7 @@ module.exports['Before'] = {
          }, {
             "name" : "HourAfterNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "Before",
@@ -13648,6 +13817,7 @@ module.exports['Before'] = {
          }, {
             "name" : "HourBeforeNormalizeZones",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "Before",
@@ -13731,6 +13901,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NullLeft",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13780,6 +13951,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NullRight",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13829,21 +14001,9 @@ module.exports['Before'] = {
          }, {
             "name" : "NullBoth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Before",
-               "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               }, {
-                  "asType" : "{urn:hl7-org:elm:r1}DateTime",
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  }
-               } ]
+               "type" : "Null"
             }
          } ]
       }
@@ -13854,25 +14014,25 @@ module.exports['Before'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NewYear2013 = DateTime(2013, 1, 1, 0, 0, 0, 0)
-define NewYear2014 = DateTime(2014, 1, 1, 0, 0, 0, 0)
-define January2014 = DateTime(2014, 1)
-define YearsBetween = years between NewYear2013 and NewYear2014
-define MonthsBetween = months between NewYear2013 and NewYear2014
-define DaysBetween = days between NewYear2013 and NewYear2014
-define HoursBetween = hours between NewYear2013 and NewYear2014
-define MinutesBetween = minutes between NewYear2013 and NewYear2014
-define SecondsBetween = seconds between NewYear2013 and NewYear2014
-define MillisecondsBetween = milliseconds between NewYear2013 and NewYear2014
-define MillisecondsBetweenReversed = milliseconds between NewYear2014 and NewYear2013
-define YearsBetweenUncertainty = years between NewYear2014 and January2014
-define MonthsBetweenUncertainty = months between NewYear2014 and January2014
-define DaysBetweenUncertainty = days between NewYear2014 and January2014
-define HoursBetweenUncertainty = hours between NewYear2014 and January2014
-define MinutesBetweenUncertainty = minutes between NewYear2014 and January2014
-define SecondsBetweenUncertainty = seconds between NewYear2014 and January2014
-define MillisecondsBetweenUncertainty = milliseconds between NewYear2014 and January2014
-define MillisecondsBetweenReversedUncertainty = milliseconds between January2014 and NewYear2014
+define NewYear2013: DateTime(2013, 1, 1, 0, 0, 0, 0)
+define NewYear2014: DateTime(2014, 1, 1, 0, 0, 0, 0)
+define January2014: DateTime(2014, 1)
+define YearsBetween: years between NewYear2013 and NewYear2014
+define MonthsBetween: months between NewYear2013 and NewYear2014
+define DaysBetween: days between NewYear2013 and NewYear2014
+define HoursBetween: hours between NewYear2013 and NewYear2014
+define MinutesBetween: minutes between NewYear2013 and NewYear2014
+define SecondsBetween: seconds between NewYear2013 and NewYear2014
+define MillisecondsBetween: milliseconds between NewYear2013 and NewYear2014
+define MillisecondsBetweenReversed: milliseconds between NewYear2014 and NewYear2013
+define YearsBetweenUncertainty: years between NewYear2014 and January2014
+define MonthsBetweenUncertainty: months between NewYear2014 and January2014
+define DaysBetweenUncertainty: days between NewYear2014 and January2014
+define HoursBetweenUncertainty: hours between NewYear2014 and January2014
+define MinutesBetweenUncertainty: minutes between NewYear2014 and January2014
+define SecondsBetweenUncertainty: seconds between NewYear2014 and January2014
+define MillisecondsBetweenUncertainty: milliseconds between NewYear2014 and January2014
+define MillisecondsBetweenReversedUncertainty: milliseconds between January2014 and NewYear2014
 ###
 
 module.exports['DurationBetween'] = {
@@ -13909,6 +14069,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "NewYear2013",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -13945,6 +14106,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "NewYear2014",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -13981,6 +14143,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "January2014",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -13997,6 +14160,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "YearsBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "DurationBetween",
@@ -14011,6 +14175,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "MonthsBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "DurationBetween",
@@ -14025,6 +14190,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "DaysBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "DurationBetween",
@@ -14039,6 +14205,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "HoursBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "DurationBetween",
@@ -14053,6 +14220,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "MinutesBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "DurationBetween",
@@ -14067,6 +14235,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "SecondsBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "DurationBetween",
@@ -14081,6 +14250,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "MillisecondsBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "DurationBetween",
@@ -14095,6 +14265,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "MillisecondsBetweenReversed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "DurationBetween",
@@ -14109,6 +14280,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "YearsBetweenUncertainty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "DurationBetween",
@@ -14123,6 +14295,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "MonthsBetweenUncertainty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "DurationBetween",
@@ -14137,6 +14310,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "DaysBetweenUncertainty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "DurationBetween",
@@ -14151,6 +14325,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "HoursBetweenUncertainty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "DurationBetween",
@@ -14165,6 +14340,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "MinutesBetweenUncertainty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "DurationBetween",
@@ -14179,6 +14355,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "SecondsBetweenUncertainty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "DurationBetween",
@@ -14193,6 +14370,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "MillisecondsBetweenUncertainty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "DurationBetween",
@@ -14207,6 +14385,7 @@ module.exports['DurationBetween'] = {
          }, {
             "name" : "MillisecondsBetweenReversedUncertainty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Millisecond",
                "type" : "DurationBetween",
@@ -14227,26 +14406,26 @@ module.exports['DurationBetween'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NewYear2014 = DateTime(2014, 1, 1, 0, 0, 0, 0)
-define February2014 = DateTime(2014, 2)
-define GreaterThan25DaysAfter = days between NewYear2014 and February2014 > 25
-define GreaterThan40DaysAfter = days between NewYear2014 and February2014 > 40
-define GreaterThan80DaysAfter = days between NewYear2014 and February2014 > 80
-define GreaterOrEqualTo25DaysAfter = days between NewYear2014 and February2014 >= 25
-define GreaterOrEqualTo40DaysAfter = days between NewYear2014 and February2014 >= 40
-define GreaterOrEqualTo80DaysAfter = days between NewYear2014 and February2014 >= 80
-define EqualTo25DaysAfter = days between NewYear2014 and February2014 = 25
-define EqualTo40DaysAfter = days between NewYear2014 and February2014 = 40
-define EqualTo80DaysAfter = days between NewYear2014 and February2014 = 80
-define LessOrEqualTo25DaysAfter = days between NewYear2014 and February2014 <= 25
-define LessOrEqualTo40DaysAfter = days between NewYear2014 and February2014 <= 40
-define LessOrEqualTo80DaysAfter = days between NewYear2014 and February2014 <= 80
-define LessThan25DaysAfter = days between NewYear2014 and February2014 < 25
-define LessThan40DaysAfter = days between NewYear2014 and February2014 < 40
-define LessThan80DaysAfter = days between NewYear2014 and February2014 < 80
-define TwentyFiveDaysLessThanDaysBetween = 25 < days between NewYear2014 and February2014
-define FortyDaysEqualToDaysBetween = 40 = days between NewYear2014 and February2014
-define TwentyFiveDaysGreaterThanDaysBetween = 25 > days between NewYear2014 and February2014
+define NewYear2014: DateTime(2014, 1, 1, 0, 0, 0, 0)
+define February2014: DateTime(2014, 2)
+define GreaterThan25DaysAfter: days between NewYear2014 and February2014 > 25
+define GreaterThan40DaysAfter: days between NewYear2014 and February2014 > 40
+define GreaterThan80DaysAfter: days between NewYear2014 and February2014 > 80
+define GreaterOrEqualTo25DaysAfter: days between NewYear2014 and February2014 >= 25
+define GreaterOrEqualTo40DaysAfter: days between NewYear2014 and February2014 >= 40
+define GreaterOrEqualTo80DaysAfter: days between NewYear2014 and February2014 >= 80
+define EqualTo25DaysAfter: days between NewYear2014 and February2014 = 25
+define EqualTo40DaysAfter: days between NewYear2014 and February2014 = 40
+define EqualTo80DaysAfter: days between NewYear2014 and February2014 = 80
+define LessOrEqualTo25DaysAfter: days between NewYear2014 and February2014 <= 25
+define LessOrEqualTo40DaysAfter: days between NewYear2014 and February2014 <= 40
+define LessOrEqualTo80DaysAfter: days between NewYear2014 and February2014 <= 80
+define LessThan25DaysAfter: days between NewYear2014 and February2014 < 25
+define LessThan40DaysAfter: days between NewYear2014 and February2014 < 40
+define LessThan80DaysAfter: days between NewYear2014 and February2014 < 80
+define TwentyFiveDaysLessThanDaysBetween: 25 < days between NewYear2014 and February2014
+define FortyDaysEqualToDaysBetween: 40 = days between NewYear2014 and February2014
+define TwentyFiveDaysGreaterThanDaysBetween: 25 > days between NewYear2014 and February2014
 ###
 
 module.exports['DurationBetween Comparisons'] = {
@@ -14283,6 +14462,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "NewYear2014",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -14319,6 +14499,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "February2014",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "DateTime",
                "type" : "FunctionRef",
@@ -14335,6 +14516,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "GreaterThan25DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -14356,6 +14538,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "GreaterThan40DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -14377,6 +14560,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "GreaterThan80DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -14398,6 +14582,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "GreaterOrEqualTo25DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
@@ -14419,6 +14604,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "GreaterOrEqualTo40DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
@@ -14440,6 +14626,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "GreaterOrEqualTo80DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
@@ -14461,6 +14648,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "EqualTo25DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -14482,6 +14670,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "EqualTo40DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -14503,6 +14692,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "EqualTo80DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -14524,6 +14714,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "LessOrEqualTo25DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -14545,6 +14736,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "LessOrEqualTo40DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -14566,6 +14758,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "LessOrEqualTo80DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -14587,6 +14780,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "LessThan25DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -14608,6 +14802,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "LessThan40DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -14629,6 +14824,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "LessThan80DaysAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -14650,6 +14846,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "TwentyFiveDaysLessThanDaysBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -14671,6 +14868,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "FortyDaysEqualToDaysBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -14692,6 +14890,7 @@ module.exports['DurationBetween Comparisons'] = {
          }, {
             "name" : "TwentyFiveDaysGreaterThanDaysBetween",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {

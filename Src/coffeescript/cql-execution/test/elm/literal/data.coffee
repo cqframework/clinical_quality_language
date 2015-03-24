@@ -10,11 +10,11 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define BoolTrue = true
-define BoolFalse = false
-define IntOne = 1
-define DecimalTenth = 0.1
-define StringTrue = 'true'
+define BoolTrue: true
+define BoolFalse: false
+define IntOne: 1
+define DecimalTenth: 0.1
+define StringTrue: 'true'
 ###
 
 module.exports['Literal'] = {
@@ -51,6 +51,7 @@ module.exports['Literal'] = {
          }, {
             "name" : "BoolTrue",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                "value" : "true",
@@ -59,6 +60,7 @@ module.exports['Literal'] = {
          }, {
             "name" : "BoolFalse",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                "value" : "false",
@@ -67,6 +69,7 @@ module.exports['Literal'] = {
          }, {
             "name" : "IntOne",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "1",
@@ -75,6 +78,7 @@ module.exports['Literal'] = {
          }, {
             "name" : "DecimalTenth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Decimal",
                "value" : "0.1",
@@ -83,6 +87,7 @@ module.exports['Literal'] = {
          }, {
             "name" : "StringTrue",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "true",

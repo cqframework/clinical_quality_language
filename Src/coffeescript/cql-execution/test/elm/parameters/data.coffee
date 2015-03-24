@@ -10,14 +10,14 @@
 library TestSnippet version '1'
 using QUICK
 parameter MeasureYear default 2012
-parameter IntParameter : Integer
-parameter ListParameter : list<String>
-parameter TupleParameter : tuple{a : Integer, b : String, c : Boolean, d : list<Integer>, e : tuple{ f : String, g : Boolean}}
+parameter IntParameter Integer
+parameter ListParameter List<String>
+parameter TupleParameter Tuple{a Integer, b String, c Boolean, d List<Integer>, e Tuple{ f String, g Boolean}}
 ###
 
 ###
 Translation Error(s):
-[6:126, 6:126] no viable alternative at input '<EOF>'
+[6:110, 6:110] no viable alternative at input '<EOF>'
 ###
 module.exports['ParameterDef'] = {
    "library" : {
@@ -41,6 +41,7 @@ module.exports['ParameterDef'] = {
       "parameters" : {
          "def" : [ {
             "name" : "MeasureYear",
+            "accessLevel" : "Public",
             "default" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "2012",
@@ -48,12 +49,14 @@ module.exports['ParameterDef'] = {
             }
          }, {
             "name" : "IntParameter",
+            "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
                "name" : "{urn:hl7-org:elm:r1}Integer",
                "type" : "NamedTypeSpecifier"
             }
          }, {
             "name" : "ListParameter",
+            "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
                "type" : "ListTypeSpecifier",
                "elementType" : {
@@ -63,6 +66,7 @@ module.exports['ParameterDef'] = {
             }
          }, {
             "name" : "TupleParameter",
+            "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
                "type" : "TupleTypeSpecifier",
                "element" : [ {
@@ -122,7 +126,7 @@ library TestSnippet version '1'
 using QUICK
 parameter FooP default 'Bar'
 context Patient
-define Foo = FooP
+define Foo: FooP
 ###
 
 module.exports['ParameterRef'] = {
@@ -147,6 +151,7 @@ module.exports['ParameterRef'] = {
       "parameters" : {
          "def" : [ {
             "name" : "FooP",
+            "accessLevel" : "Public",
             "default" : {
                "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "Bar",
@@ -169,6 +174,7 @@ module.exports['ParameterRef'] = {
          }, {
             "name" : "Foo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "FooP",
                "type" : "ParameterRef"

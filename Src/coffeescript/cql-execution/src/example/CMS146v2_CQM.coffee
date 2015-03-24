@@ -10,13 +10,17 @@ module.exports = {
       },
       "usings" : {
          "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm:r1"
+         }, {
             "localIdentifier" : "QUICK",
-            "uri" : "http://org.hl7.fhir"
+            "uri" : "http://hl7.org/fhir"
          } ]
       },
       "parameters" : {
          "def" : [ {
             "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
             "default" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -25,31 +29,31 @@ module.exports = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -58,31 +62,31 @@ module.exports = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -93,19 +97,24 @@ module.exports = {
       "valueSets" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
-            "id" : "2.16.840.1.113883.3.464.1003.102.12.1011"
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+            "accessLevel" : "Public"
          }, {
             "name" : "Acute Tonsillitis",
-            "id" : "2.16.840.1.113883.3.464.1003.102.12.1012"
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1012",
+            "accessLevel" : "Public"
          }, {
             "name" : "Ambulatory/ED Visit",
-            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+            "accessLevel" : "Public"
          }, {
             "name" : "Antibiotic Medications",
-            "id" : "2.16.840.1.113883.3.464.1003.196.12.1001"
+            "id" : "2.16.840.1.113883.3.464.1003.196.12.1001",
+            "accessLevel" : "Public"
          }, {
             "name" : "Group A Streptococcus Test",
-            "id" : "2.16.840.1.113883.3.464.1003.198.12.1012"
+            "id" : "2.16.840.1.113883.3.464.1003.198.12.1012",
+            "accessLevel" : "Public"
          } ]
       },
       "statements" : {
@@ -115,7 +124,7 @@ module.exports = {
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{http://org.hl7.fhir}Patient",
+                  "dataType" : "{http://hl7.org/fhir}Patient",
                   "templateId" : "cqf-patient",
                   "type" : "Retrieve"
                }
@@ -123,6 +132,7 @@ module.exports = {
          }, {
             "name" : "InDemographic",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -145,7 +155,7 @@ module.exports = {
                         }
                      } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -169,7 +179,7 @@ module.exports = {
                         }
                      } ]
                   }, {
-                     "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
                      "value" : "18",
                      "type" : "Literal"
                   } ]
@@ -178,10 +188,11 @@ module.exports = {
          }, {
             "name" : "Pharyngitis",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
-                  "dataType" : "{http://org.hl7.fhir}Condition",
+                  "dataType" : "{http://hl7.org/fhir}Condition",
                   "templateId" : "cqf-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
@@ -190,7 +201,7 @@ module.exports = {
                      "type" : "ValueSetRef"
                   }
                }, {
-                  "dataType" : "{http://org.hl7.fhir}Condition",
+                  "dataType" : "{http://hl7.org/fhir}Condition",
                   "templateId" : "cqf-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
@@ -203,8 +214,9 @@ module.exports = {
          }, {
             "name" : "Antibiotics",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "dataType" : "{http://org.hl7.fhir}MedicationPrescription",
+               "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
                "templateId" : "cqf-medicationprescription",
                "codeProperty" : "medication.code",
                "type" : "Retrieve",
@@ -216,14 +228,15 @@ module.exports = {
          }, {
             "name" : "TargetEncounters",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{http://org.hl7.fhir}Encounter",
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
                      "templateId" : "cqf-encounter",
-                     "codeProperty" : "class",
+                     "codeProperty" : "type",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Ambulatory/ED Visit",
@@ -245,12 +258,12 @@ module.exports = {
                         "highClosed" : true,
                         "type" : "Interval",
                         "low" : {
-                           "path" : "onsetDate",
+                           "path" : "onsetDateTime",
                            "scope" : "P",
                            "type" : "Property"
                         },
                         "high" : {
-                           "path" : "abatementDate",
+                           "path" : "abatementDateTime",
                            "scope" : "P",
                            "type" : "Property"
                         }
@@ -291,13 +304,13 @@ module.exports = {
                         "low" : {
                            "type" : "Negate",
                            "operand" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "3",
                               "type" : "Literal"
                            }
                         },
                         "high" : {
-                           "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
                            "value" : "0",
                            "type" : "Literal"
                         }
@@ -307,7 +320,7 @@ module.exports = {
                "where" : {
                   "type" : "IncludedIn",
                   "operand" : [ {
-                     "path" : "performedAtTime",
+                     "path" : "period",
                      "scope" : "E",
                      "type" : "Property"
                   }, {
@@ -319,6 +332,7 @@ module.exports = {
          }, {
             "name" : "TargetDiagnoses",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Query",
                "source" : [ {
@@ -342,12 +356,12 @@ module.exports = {
                         "highClosed" : true,
                         "type" : "Interval",
                         "low" : {
-                           "path" : "onsetDate",
+                           "path" : "onsetDateTime",
                            "scope" : "P",
                            "type" : "Property"
                         },
                         "high" : {
-                           "path" : "abatementDate",
+                           "path" : "abatementDateTime",
                            "scope" : "P",
                            "type" : "Property"
                         }
@@ -362,6 +376,7 @@ module.exports = {
          }, {
             "name" : "HasPriorAntibiotics",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -386,14 +401,11 @@ module.exports = {
                            "precision" : "Day",
                            "type" : "DurationBetween",
                            "operand" : [ {
-                              "type" : "Start",
-                              "operand" : {
-                                 "path" : "dateWritten",
-                                 "scope" : "A",
-                                 "type" : "Property"
-                              }
+                              "path" : "dateWritten",
+                              "scope" : "A",
+                              "type" : "Property"
                            }, {
-                              "path" : "onsetDate",
+                              "path" : "onsetDateTime",
                               "scope" : "D",
                               "type" : "Property"
                            } ]
@@ -402,12 +414,12 @@ module.exports = {
                            "highClosed" : true,
                            "type" : "Interval",
                            "low" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "0",
                               "type" : "Literal"
                            },
                            "high" : {
-                              "valueType" : "{http://www.w3.org/2001/XMLSchema}int",
+                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
                               "value" : "30",
                               "type" : "Literal"
                            }
@@ -419,6 +431,7 @@ module.exports = {
          }, {
             "name" : "HasTargetEncounter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -429,6 +442,7 @@ module.exports = {
          }, {
             "name" : "InInitialPopulation",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -442,14 +456,16 @@ module.exports = {
          }, {
             "name" : "InDenominator",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{http://www.w3.org/2001/XMLSchema}bool",
+               "valueType" : "{urn:hl7-org:elm:r1}Boolean",
                "value" : "true",
                "type" : "Literal"
             }
          }, {
             "name" : "InDenominatorExclusions",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "HasPriorAntibiotics",
                "type" : "ExpressionRef"
@@ -457,6 +473,7 @@ module.exports = {
          }, {
             "name" : "InNumerator",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -464,7 +481,7 @@ module.exports = {
                   "source" : [ {
                      "alias" : "R",
                      "expression" : {
-                        "dataType" : "{http://org.hl7.fhir}DiagnosticReport",
+                        "dataType" : "{http://hl7.org/fhir}DiagnosticReport",
                         "templateId" : "cqf-diagnosticreport",
                         "codeProperty" : "name",
                         "type" : "Retrieve",
@@ -478,9 +495,9 @@ module.exports = {
                   "where" : {
                      "type" : "And",
                      "operand" : [ {
-                        "type" : "IncludedIn",
+                        "type" : "In",
                         "operand" : [ {
-                           "path" : "diagnosticDateTime",
+                           "path" : "issued",
                            "scope" : "R",
                            "type" : "Property"
                         }, {

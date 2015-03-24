@@ -10,11 +10,11 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Ten = 10
-define Eleven = 11
-define OnePlusTwo = 1 + 2
-define AddMultiple = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
-define AddVariables = Ten + Eleven
+define Ten: 10
+define Eleven: 11
+define OnePlusTwo: 1 + 2
+define AddMultiple: 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
+define AddVariables: Ten + Eleven
 ###
 
 module.exports['Add'] = {
@@ -51,6 +51,7 @@ module.exports['Add'] = {
          }, {
             "name" : "Ten",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "10",
@@ -59,6 +60,7 @@ module.exports['Add'] = {
          }, {
             "name" : "Eleven",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "11",
@@ -67,6 +69,7 @@ module.exports['Add'] = {
          }, {
             "name" : "OnePlusTwo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -82,6 +85,7 @@ module.exports['Add'] = {
          }, {
             "name" : "AddMultiple",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -153,6 +157,7 @@ module.exports['Add'] = {
          }, {
             "name" : "AddVariables",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -172,11 +177,11 @@ module.exports['Add'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Ten = 10
-define Eleven = 11
-define FiveMinusTwo = 5 - 2
-define SubtractMultiple = 100 - 50 - 25 - 10
-define SubtractVariables = Eleven - Ten
+define Ten: 10
+define Eleven: 11
+define FiveMinusTwo: 5 - 2
+define SubtractMultiple: 100 - 50 - 25 - 10
+define SubtractVariables: Eleven - Ten
 ###
 
 module.exports['Subtract'] = {
@@ -213,6 +218,7 @@ module.exports['Subtract'] = {
          }, {
             "name" : "Ten",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "10",
@@ -221,6 +227,7 @@ module.exports['Subtract'] = {
          }, {
             "name" : "Eleven",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "11",
@@ -229,6 +236,7 @@ module.exports['Subtract'] = {
          }, {
             "name" : "FiveMinusTwo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
@@ -244,6 +252,7 @@ module.exports['Subtract'] = {
          }, {
             "name" : "SubtractMultiple",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
@@ -273,6 +282,7 @@ module.exports['Subtract'] = {
          }, {
             "name" : "SubtractVariables",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
@@ -292,11 +302,11 @@ module.exports['Subtract'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Ten = 10
-define Eleven = 11
-define FiveTimesTwo = 5 * 2
-define MultiplyMultiple = 1 * 2 * 3 * 4 * 5
-define MultiplyVariables = Eleven * Ten
+define Ten: 10
+define Eleven: 11
+define FiveTimesTwo: 5 * 2
+define MultiplyMultiple: 1 * 2 * 3 * 4 * 5
+define MultiplyVariables: Eleven * Ten
 ###
 
 module.exports['Multiply'] = {
@@ -333,6 +343,7 @@ module.exports['Multiply'] = {
          }, {
             "name" : "Ten",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "10",
@@ -341,6 +352,7 @@ module.exports['Multiply'] = {
          }, {
             "name" : "Eleven",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "11",
@@ -349,6 +361,7 @@ module.exports['Multiply'] = {
          }, {
             "name" : "FiveTimesTwo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
@@ -364,6 +377,7 @@ module.exports['Multiply'] = {
          }, {
             "name" : "MultiplyMultiple",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
@@ -400,6 +414,7 @@ module.exports['Multiply'] = {
          }, {
             "name" : "MultiplyVariables",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
@@ -419,12 +434,12 @@ module.exports['Multiply'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Hundred = 100
-define Four = 4
-define TenDividedByTwo = 10 / 2
-define TenDividedByFour = 10 / 4
-define DivideMultiple = 1000 / 4 / 10 / 5
-define DivideVariables = Hundred / Four
+define Hundred: 100
+define Four: 4
+define TenDividedByTwo: 10 / 2
+define TenDividedByFour: 10 / 4
+define DivideMultiple: 1000 / 4 / 10 / 5
+define DivideVariables: Hundred / Four
 ###
 
 module.exports['Divide'] = {
@@ -461,6 +476,7 @@ module.exports['Divide'] = {
          }, {
             "name" : "Hundred",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "100",
@@ -469,6 +485,7 @@ module.exports['Divide'] = {
          }, {
             "name" : "Four",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "4",
@@ -477,6 +494,7 @@ module.exports['Divide'] = {
          }, {
             "name" : "TenDividedByTwo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -492,6 +510,7 @@ module.exports['Divide'] = {
          }, {
             "name" : "TenDividedByFour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -507,6 +526,7 @@ module.exports['Divide'] = {
          }, {
             "name" : "DivideMultiple",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -546,6 +566,7 @@ module.exports['Divide'] = {
          }, {
             "name" : "DivideVariables",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -565,7 +586,7 @@ module.exports['Divide'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NegativeOne = -1
+define NegativeOne: -1
 ###
 
 module.exports['Negate'] = {
@@ -602,6 +623,7 @@ module.exports['Negate'] = {
          }, {
             "name" : "NegativeOne",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Negate",
                "operand" : {
@@ -619,8 +641,8 @@ module.exports['Negate'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Mixed = 1 + 5 * 10 - 15 / 3
-define Parenthetical = (1 + 5) * (10 - 15) / 3
+define Mixed: 1 + 5 * 10 - 15 / 3
+define Parenthetical: (1 + 5) * (10 - 15) / 3
 ###
 
 module.exports['MathPrecedence'] = {
@@ -657,6 +679,7 @@ module.exports['MathPrecedence'] = {
          }, {
             "name" : "Mixed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
@@ -698,6 +721,7 @@ module.exports['MathPrecedence'] = {
          }, {
             "name" : "Parenthetical",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
@@ -740,7 +764,7 @@ module.exports['MathPrecedence'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Pow = 3 ^ 4
+define Pow: 3 ^ 4
 ###
 
 module.exports['Power'] = {
@@ -777,6 +801,7 @@ module.exports['Power'] = {
          }, {
             "name" : "Pow",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Power",
                "operand" : [ {
@@ -798,8 +823,8 @@ module.exports['Power'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Trunc = TruncatedDivide(10,3)
-define Even = TruncatedDivide(9,3)
+define Trunc: TruncatedDivide(10,3)
+define Even: TruncatedDivide(9,3)
 ###
 
 module.exports['TruncatedDivide'] = {
@@ -836,6 +861,7 @@ module.exports['TruncatedDivide'] = {
          }, {
             "name" : "Trunc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "TruncatedDivide",
                "type" : "FunctionRef",
@@ -852,6 +878,7 @@ module.exports['TruncatedDivide'] = {
          }, {
             "name" : "Even",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "TruncatedDivide",
                "type" : "FunctionRef",
@@ -874,7 +901,7 @@ module.exports['TruncatedDivide'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Mod = Modulo(3 , 2)
+define Mod: Modulo(3 , 2)
 ###
 
 module.exports['Modulo'] = {
@@ -911,6 +938,7 @@ module.exports['Modulo'] = {
          }, {
             "name" : "Mod",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Modulo",
                "type" : "FunctionRef",
@@ -933,8 +961,8 @@ module.exports['Modulo'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Ceil = Ceiling(10.1)
-define Even = Ceiling(10)
+define Ceil: Ceiling(10.1)
+define Even: Ceiling(10)
 ###
 
 module.exports['Ceiling'] = {
@@ -971,6 +999,7 @@ module.exports['Ceiling'] = {
          }, {
             "name" : "Ceil",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Ceiling",
                "type" : "FunctionRef",
@@ -983,6 +1012,7 @@ module.exports['Ceiling'] = {
          }, {
             "name" : "Even",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Ceiling",
                "type" : "FunctionRef",
@@ -1006,8 +1036,8 @@ module.exports['Ceiling'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define flr = Floor(10.1)
-define Even = Floor(10)
+define flr: Floor(10.1)
+define Even: Floor(10)
 ###
 
 module.exports['Floor'] = {
@@ -1044,6 +1074,7 @@ module.exports['Floor'] = {
          }, {
             "name" : "flr",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Floor",
                "type" : "FunctionRef",
@@ -1056,6 +1087,7 @@ module.exports['Floor'] = {
          }, {
             "name" : "Even",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Floor",
                "type" : "FunctionRef",
@@ -1079,8 +1111,8 @@ module.exports['Floor'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Trunc = Truncate(10.1)
-define Even = Truncate(10)
+define Trunc: Truncate(10.1)
+define Even: Truncate(10)
 ###
 
 module.exports['Truncate'] = {
@@ -1117,6 +1149,7 @@ module.exports['Truncate'] = {
          }, {
             "name" : "Trunc",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Truncate",
                "type" : "FunctionRef",
@@ -1129,6 +1162,7 @@ module.exports['Truncate'] = {
          }, {
             "name" : "Even",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Truncate",
                "type" : "FunctionRef",
@@ -1152,9 +1186,9 @@ module.exports['Truncate'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Pos = Abs(10)
-define Neg = Abs(-10)
-define Zero = Abs(0)
+define Pos: Abs(10)
+define Neg: Abs(-10)
+define Zero: Abs(0)
 ###
 
 module.exports['Abs'] = {
@@ -1191,6 +1225,7 @@ module.exports['Abs'] = {
          }, {
             "name" : "Pos",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Abs",
                "type" : "FunctionRef",
@@ -1203,6 +1238,7 @@ module.exports['Abs'] = {
          }, {
             "name" : "Neg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Abs",
                "type" : "FunctionRef",
@@ -1218,6 +1254,7 @@ module.exports['Abs'] = {
          }, {
             "name" : "Zero",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Abs",
                "type" : "FunctionRef",
@@ -1236,10 +1273,10 @@ module.exports['Abs'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Up = Round(4.56)
-define Up_percent = Round(4.56,1)
-define Down = Round(4.49)
-define Down_percent = Round(4.43,1)
+define Up: Round(4.56)
+define Up_percent: Round(4.56,1)
+define Down: Round(4.49)
+define Down_percent: Round(4.43,1)
 ###
 
 module.exports['Round'] = {
@@ -1276,6 +1313,7 @@ module.exports['Round'] = {
          }, {
             "name" : "Up",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Round",
                "type" : "FunctionRef",
@@ -1288,6 +1326,7 @@ module.exports['Round'] = {
          }, {
             "name" : "Up_percent",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Round",
                "type" : "FunctionRef",
@@ -1304,6 +1343,7 @@ module.exports['Round'] = {
          }, {
             "name" : "Down",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Round",
                "type" : "FunctionRef",
@@ -1316,6 +1356,7 @@ module.exports['Round'] = {
          }, {
             "name" : "Down_percent",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Round",
                "type" : "FunctionRef",
@@ -1338,7 +1379,7 @@ module.exports['Round'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ln = Ln(4)
+define ln: Ln(4)
 ###
 
 module.exports['Ln'] = {
@@ -1375,6 +1416,7 @@ module.exports['Ln'] = {
          }, {
             "name" : "ln",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Ln",
                "type" : "FunctionRef",
@@ -1398,7 +1440,7 @@ module.exports['Ln'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define log = Log(10,10000)
+define log: Log(10,10000)
 ###
 
 module.exports['Log'] = {
@@ -1435,6 +1477,7 @@ module.exports['Log'] = {
          }, {
             "name" : "log",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Log",
                "type" : "FunctionRef",
@@ -1468,17 +1511,17 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 
-define Is = successor of 2
-define Rs = successor of 2.2
-define ofr = successor of 2147483647
-define y_date = successor of DateTime(2015)
-define ym_date = successor of DateTime(2015,01)
-define ymd_date = successor of DateTime(2015,01,01)
-define ymdh_date = successor of DateTime(2015,01,01,0)
-define ymdhm_date = successor of DateTime(2015,01,01,0,0)
-define ymdhms_date = successor of DateTime(2015,01,01,0,0,0)
-define ymdhmsm_date = successor of  DateTime(2015,01,01,0,0,0,0)
-define max_date = successor of DateTime(9999,12,31,23,59,59,999)
+define Is: successor of 2
+define Rs: successor of 2.2
+define ofr: successor of 2147483647
+define y_date: successor of DateTime(2015)
+define ym_date: successor of DateTime(2015,01)
+define ymd_date: successor of DateTime(2015,01,01)
+define ymdh_date: successor of DateTime(2015,01,01,0)
+define ymdhm_date: successor of DateTime(2015,01,01,0,0)
+define ymdhms_date: successor of DateTime(2015,01,01,0,0,0)
+define ymdhmsm_date: successor of  DateTime(2015,01,01,0,0,0,0)
+define max_date: successor of DateTime(9999,12,31,23,59,59,999)
 ###
 
 module.exports['Successor'] = {
@@ -1515,6 +1558,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "Is",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1526,6 +1570,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "Rs",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1537,6 +1582,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "ofr",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1548,6 +1594,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "y_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1563,6 +1610,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "ym_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1582,6 +1630,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "ymd_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1605,6 +1654,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "ymdh_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1632,6 +1682,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "ymdhm_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1663,6 +1714,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "ymdhms_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1698,6 +1750,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "ymdhmsm_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1737,6 +1790,7 @@ module.exports['Successor'] = {
          }, {
             "name" : "max_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Successor",
                "operand" : {
@@ -1783,17 +1837,17 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 
-define Is = predecessor of 2
-define Rs = predecessor of 2.2
-define ufr = predecessor of -2147483648
-define y_date = predecessor of DateTime(2015)
-define ym_date = predecessor of DateTime(2015,01)
-define ymd_date = predecessor of DateTime(2015,01,01)
-define ymdh_date = predecessor of DateTime(2015,01,01,0)
-define ymdhm_date = predecessor of DateTime(2015,01,01,0,0)
-define ymdhms_date = predecessor of DateTime(2015,01,01,0,0,0)
-define ymdhmsm_date = predecessor of DateTime(2015,01,01,0,0,0,0)
-define min_date = predecessor of DateTime(1900,01,01,0,0,0,0)
+define Is: predecessor of 2
+define Rs: predecessor of 2.2
+define ufr: predecessor of -2147483648
+define y_date: predecessor of DateTime(2015)
+define ym_date: predecessor of DateTime(2015,01)
+define ymd_date: predecessor of DateTime(2015,01,01)
+define ymdh_date: predecessor of DateTime(2015,01,01,0)
+define ymdhm_date: predecessor of DateTime(2015,01,01,0,0)
+define ymdhms_date: predecessor of DateTime(2015,01,01,0,0,0)
+define ymdhmsm_date: predecessor of DateTime(2015,01,01,0,0,0,0)
+define min_date: predecessor of DateTime(1900,01,01,0,0,0,0)
 ###
 
 module.exports['Predecessor'] = {
@@ -1830,6 +1884,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "Is",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -1841,6 +1896,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "Rs",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -1852,6 +1908,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "ufr",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -1866,6 +1923,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "y_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -1881,6 +1939,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "ym_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -1900,6 +1959,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "ymd_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -1923,6 +1983,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "ymdh_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -1950,6 +2011,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "ymdhm_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -1981,6 +2043,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "ymdhms_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -2016,6 +2079,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "ymdhmsm_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
@@ -2055,6 +2119,7 @@ module.exports['Predecessor'] = {
          }, {
             "name" : "min_date",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Predecessor",
                "operand" : {

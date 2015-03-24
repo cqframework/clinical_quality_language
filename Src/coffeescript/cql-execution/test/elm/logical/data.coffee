@@ -10,15 +10,15 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define TT = true and true
-define TF = true and false
-define TN = true and null
-define FF = false and false
-define FT = false and true
-define FN = false and null
-define NN = null and null
-define NT = null and true
-define NF = null and false
+define TT: true and true
+define TF: true and false
+define TN: true and null
+define FF: false and false
+define FT: false and true
+define FN: false and null
+define NN: null and null
+define NT: null and true
+define NF: null and false
 ###
 
 module.exports['And'] = {
@@ -55,6 +55,7 @@ module.exports['And'] = {
          }, {
             "name" : "TT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -70,6 +71,7 @@ module.exports['And'] = {
          }, {
             "name" : "TF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -85,6 +87,7 @@ module.exports['And'] = {
          }, {
             "name" : "TN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -102,6 +105,7 @@ module.exports['And'] = {
          }, {
             "name" : "FF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -117,6 +121,7 @@ module.exports['And'] = {
          }, {
             "name" : "FT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -132,6 +137,7 @@ module.exports['And'] = {
          }, {
             "name" : "FN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -149,6 +155,7 @@ module.exports['And'] = {
          }, {
             "name" : "NN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -168,6 +175,7 @@ module.exports['And'] = {
          }, {
             "name" : "NT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -185,6 +193,7 @@ module.exports['And'] = {
          }, {
             "name" : "NF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "And",
                "operand" : [ {
@@ -208,15 +217,15 @@ module.exports['And'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define TT = true or true
-define TF = true or false
-define TN = true or null
-define FF = false or false
-define FT = false or true
-define FN = false or null
-define NN = null or null
-define NT = null or true
-define NF = null or false
+define TT: true or true
+define TF: true or false
+define TN: true or null
+define FF: false or false
+define FT: false or true
+define FN: false or null
+define NN: null or null
+define NT: null or true
+define NF: null or false
 ###
 
 module.exports['Or'] = {
@@ -253,6 +262,7 @@ module.exports['Or'] = {
          }, {
             "name" : "TT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -268,6 +278,7 @@ module.exports['Or'] = {
          }, {
             "name" : "TF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -283,6 +294,7 @@ module.exports['Or'] = {
          }, {
             "name" : "TN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -300,6 +312,7 @@ module.exports['Or'] = {
          }, {
             "name" : "FF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -315,6 +328,7 @@ module.exports['Or'] = {
          }, {
             "name" : "FT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -330,6 +344,7 @@ module.exports['Or'] = {
          }, {
             "name" : "FN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -347,6 +362,7 @@ module.exports['Or'] = {
          }, {
             "name" : "NN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -366,6 +382,7 @@ module.exports['Or'] = {
          }, {
             "name" : "NT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -383,6 +400,7 @@ module.exports['Or'] = {
          }, {
             "name" : "NF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Or",
                "operand" : [ {
@@ -406,15 +424,15 @@ module.exports['Or'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define TT = true xor true
-define TF = true xor false
-define TN = true xor null
-define FF = false xor false
-define FT = false xor true
-define FN = false xor null
-define NN = null xor null
-define NT = null xor true
-define NF = null xor false
+define TT: true xor true
+define TF: true xor false
+define TN: true xor null
+define FF: false xor false
+define FT: false xor true
+define FN: false xor null
+define NN: null xor null
+define NT: null xor true
+define NF: null xor false
 ###
 
 module.exports['XOr'] = {
@@ -451,6 +469,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "TT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -466,6 +485,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "TF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -481,6 +501,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "TN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -498,6 +519,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "FF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -513,6 +535,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "FT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -528,6 +551,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "FN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -545,6 +569,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "NN",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -564,6 +589,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "NT",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -581,6 +607,7 @@ module.exports['XOr'] = {
          }, {
             "name" : "NF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
@@ -604,9 +631,9 @@ module.exports['XOr'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NotTrue = not true
-define NotFalse = not false
-define NotNull = not null
+define NotTrue: not true
+define NotFalse: not false
+define NotNull: not null
 ###
 
 module.exports['Not'] = {
@@ -643,6 +670,7 @@ module.exports['Not'] = {
          }, {
             "name" : "NotTrue",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -654,6 +682,7 @@ module.exports['Not'] = {
          }, {
             "name" : "NotFalse",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -665,6 +694,7 @@ module.exports['Not'] = {
          }, {
             "name" : "NotNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {

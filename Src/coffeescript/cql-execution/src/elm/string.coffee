@@ -103,7 +103,7 @@ module.exports.LowerFunctionRef = class LowerFunctionRef extends FunctionRef
 
 # Indexer is completely handled by overloaded#Indexer
 
-module.exports.Pos = class Pos extends Expression
+module.exports.PositionOf = class PositionOf extends Expression
   constructor: (json) ->
     super
     @pattern = build json.pattern
@@ -114,12 +114,12 @@ module.exports.Pos = class Pos extends Expression
     string = @string.exec(ctx)
     if not (pattern? and string?) then null else 1 + string.indexOf(pattern)
 
-# TODO: Remove functionref when ELM does Pos natively
-module.exports.PosFunctionRef = class PosFunctionRef extends FunctionRef
+# TODO: Remove functionref when ELM does PositionOf natively
+module.exports.PositionOfFunctionRef = class PositionOfFunctionRef extends FunctionRef
   constructor: (json) ->
     super
-    @pos = new Pos {
-      "type" : "Pos",
+    @pos = new PositionOf {
+      "type" : "PositionOf",
       "pattern" : json.operand[0],
       "string" : json.operand[1]
     }

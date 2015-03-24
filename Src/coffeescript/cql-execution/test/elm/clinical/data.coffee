@@ -9,14 +9,14 @@
 ### ValueSetDef
 library TestSnippet version '1'
 using QUICK
-valueset "Known" = '2.16.840.1.113883.3.464.1003.101.12.1061'
-valueset "Unknown One Arg" = '1.2.3.4.5.6.7.8.9'
-valueset "Unknown Two Arg" = '1.2.3.4.5.6.7.8.9' version '1'
+valueset "Known": '2.16.840.1.113883.3.464.1003.101.12.1061'
+valueset "Unknown One Arg": '1.2.3.4.5.6.7.8.9'
+valueset "Unknown Two Arg": '1.2.3.4.5.6.7.8.9' version '1'
 ###
 
 ###
 Translation Error(s):
-[5:60, 5:60] no viable alternative at input '<EOF>'
+[5:59, 5:59] no viable alternative at input '<EOF>'
 ###
 module.exports['ValueSetDef'] = {
    "library" : {
@@ -40,14 +40,17 @@ module.exports['ValueSetDef'] = {
       "valueSets" : {
          "def" : [ {
             "name" : "Known",
-            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061"
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+            "accessLevel" : "Public"
          }, {
             "name" : "Unknown One Arg",
-            "id" : "1.2.3.4.5.6.7.8.9"
+            "id" : "1.2.3.4.5.6.7.8.9",
+            "accessLevel" : "Public"
          }, {
             "name" : "Unknown Two Arg",
             "id" : "1.2.3.4.5.6.7.8.9",
-            "version" : "1"
+            "version" : "1",
+            "accessLevel" : "Public"
          } ]
       }
    }
@@ -56,9 +59,9 @@ module.exports['ValueSetDef'] = {
 ### ValueSetRef
 library TestSnippet version '1'
 using QUICK
-valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.101.12.1001'
+valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.101.12.1001'
 context Patient
-define Foo = "Acute Pharyngitis"
+define Foo: "Acute Pharyngitis"
 ###
 
 module.exports['ValueSetRef'] = {
@@ -83,7 +86,8 @@ module.exports['ValueSetRef'] = {
       "valueSets" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
-            "id" : "2.16.840.1.113883.3.464.1003.101.12.1001"
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1001",
+            "accessLevel" : "Public"
          } ]
       },
       "statements" : {
@@ -101,6 +105,7 @@ module.exports['ValueSetRef'] = {
          }, {
             "name" : "Foo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Acute Pharyngitis",
                "type" : "ValueSetRef"
@@ -113,35 +118,25 @@ module.exports['ValueSetRef'] = {
 ### InValueSet
 library TestSnippet version '1'
 using QUICK
-valueset "Female" = '2.16.840.1.113883.3.560.100.2'
-valueset "Versioned Female" = '2.16.840.1.113883.3.560.100.2' version '20121025'
+valueset "Female": '2.16.840.1.113883.3.560.100.2'
+valueset "Versioned Female": '2.16.840.1.113883.3.560.100.2' version '20121025'
 context Patient
-define String = 'F' in "Female"
-define StringInVersionedValueSet = 'F' in "Versioned Female"
-define ShortCode = Code('F') in "Female"
-define MediumCode = Code('F', '2.16.840.1.113883.18.2') in "Female"
-define LongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.5') in "Female"
-define WrongString = 'M' in "Female"
-define WrongStringInVersionedValueSet = 'M' in "Versioned Female"
-define WrongShortCode = Code('M') in "Female"
-define WrongMediumCode = Code('F', '3.16.840.1.113883.18.2') in "Female"
-define WrongLongCode = Code('F', '2.16.840.1.113883.18.2', 'HL7V2.6') in "Female"
+define String: 'F' in "Female"
+define StringInVersionedValueSet: 'F' in "Versioned Female"
+define ShortCode: Code { code: 'F' } in "Female"
+define MediumCode: Code { code: 'F', system: '2.16.840.1.113883.18.2' } in "Female"
+define LongCode: Code { code: 'F', system: '2.16.840.1.113883.18.2', version: 'HL7V2.5' } in "Female"
+define WrongString: 'M' in "Female"
+define WrongStringInVersionedValueSet: 'M' in "Versioned Female"
+define WrongShortCode: Code { code: 'M' } in "Female"
+define WrongMediumCode: Code { code: 'F', system: '3.16.840.1.113883.18.2' } in "Female"
+define WrongLongCode: Code { code: 'F', system: '2.16.840.1.113883.18.2', version: 'HL7V2.6' } in "Female"
 ###
 
 ###
 Translation Error(s):
-[8:20, 8:28] Could not resolve call to operator Code with signature (System.String).
-[8:20, 8:40] Could not determine signature for invocation of operator System.InValueSet.
-[9:21, 9:55] Could not resolve call to operator Code with signature (System.String,System.String).
-[9:21, 9:67] Could not determine signature for invocation of operator System.InValueSet.
-[10:19, 10:64] Could not resolve call to operator Code with signature (System.String,System.String,System.String).
-[10:19, 10:76] Could not determine signature for invocation of operator System.InValueSet.
-[13:25, 13:33] Could not resolve call to operator Code with signature (System.String).
-[13:25, 13:45] Could not determine signature for invocation of operator System.InValueSet.
-[14:26, 14:60] Could not resolve call to operator Code with signature (System.String,System.String).
-[14:26, 14:72] Could not determine signature for invocation of operator System.InValueSet.
-[15:24, 15:69] Could not resolve call to operator Code with signature (System.String,System.String,System.String).
-[15:24, 15:81] Could not determine signature for invocation of operator System.InValueSet.
+[10:69, 10:69] mismatched input 'version' expecting {'min', 'd', 'ms', 's', 'a', 'mo', 'h', IDENTIFIER, QUOTEDIDENTIFIER}
+[15:74, 15:74] mismatched input 'version' expecting {'min', 'd', 'ms', 's', 'a', 'mo', 'h', IDENTIFIER, QUOTEDIDENTIFIER}
 ###
 module.exports['InValueSet'] = {
    "library" : {
@@ -165,11 +160,13 @@ module.exports['InValueSet'] = {
       "valueSets" : {
          "def" : [ {
             "name" : "Female",
-            "id" : "2.16.840.1.113883.3.560.100.2"
+            "id" : "2.16.840.1.113883.3.560.100.2",
+            "accessLevel" : "Public"
          }, {
             "name" : "Versioned Female",
             "id" : "2.16.840.1.113883.3.560.100.2",
-            "version" : "20121025"
+            "version" : "20121025",
+            "accessLevel" : "Public"
          } ]
       },
       "statements" : {
@@ -187,6 +184,7 @@ module.exports['InValueSet'] = {
          }, {
             "name" : "String",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "InValueSet",
                "code" : {
@@ -201,6 +199,7 @@ module.exports['InValueSet'] = {
          }, {
             "name" : "StringInVersionedValueSet",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "InValueSet",
                "code" : {
@@ -215,24 +214,93 @@ module.exports['InValueSet'] = {
          }, {
             "name" : "ShortCode",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "MediumCode",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "system",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "2.16.840.1.113883.18.2",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "LongCode",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "system",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "2.16.840.1.113883.18.2",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "HL7V2.5",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongString",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "InValueSet",
                "code" : {
@@ -247,6 +315,7 @@ module.exports['InValueSet'] = {
          }, {
             "name" : "WrongStringInVersionedValueSet",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "InValueSet",
                "code" : {
@@ -261,20 +330,88 @@ module.exports['InValueSet'] = {
          }, {
             "name" : "WrongShortCode",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "M",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongMediumCode",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "system",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "3.16.840.1.113883.18.2",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongLongCode",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "system",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "2.16.840.1.113883.18.2",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "HL7V2.6",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          } ]
       }
@@ -284,9 +421,9 @@ module.exports['InValueSet'] = {
 ### Patient Property In ValueSet
 library TestSnippet version '1'
 using QUICK
-valueset "Female" = '2.16.840.1.113883.3.560.100.2'
+valueset "Female": '2.16.840.1.113883.3.560.100.2'
 context Patient
-define IsFemale = Patient.gender in "Female"
+define IsFemale: Patient.gender in "Female"
 ###
 
 module.exports['Patient Property In ValueSet'] = {
@@ -311,7 +448,8 @@ module.exports['Patient Property In ValueSet'] = {
       "valueSets" : {
          "def" : [ {
             "name" : "Female",
-            "id" : "2.16.840.1.113883.3.560.100.2"
+            "id" : "2.16.840.1.113883.3.560.100.2",
+            "accessLevel" : "Public"
          } ]
       },
       "statements" : {
@@ -329,6 +467,7 @@ module.exports['Patient Property In ValueSet'] = {
          }, {
             "name" : "IsFemale",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "InValueSet",
                "code" : {
@@ -352,12 +491,12 @@ module.exports['Patient Property In ValueSet'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Years = AgeInYears()
-define Months = AgeInMonths()
-define Days = AgeInDays()
-define Hours = AgeInHours()
-define Minutes = AgeInMinutes()
-define Seconds = AgeInSeconds()
+define Years: AgeInYears()
+define Months: AgeInMonths()
+define Days: AgeInDays()
+define Hours: AgeInHours()
+define Minutes: AgeInMinutes()
+define Seconds: AgeInSeconds()
 ###
 
 module.exports['CalculateAge'] = {
@@ -394,6 +533,7 @@ module.exports['CalculateAge'] = {
          }, {
             "name" : "Years",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "CalculateAge",
@@ -409,6 +549,7 @@ module.exports['CalculateAge'] = {
          }, {
             "name" : "Months",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
                "type" : "CalculateAge",
@@ -424,6 +565,7 @@ module.exports['CalculateAge'] = {
          }, {
             "name" : "Days",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
                "type" : "CalculateAge",
@@ -439,6 +581,7 @@ module.exports['CalculateAge'] = {
          }, {
             "name" : "Hours",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Hour",
                "type" : "CalculateAge",
@@ -454,6 +597,7 @@ module.exports['CalculateAge'] = {
          }, {
             "name" : "Minutes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Minute",
                "type" : "CalculateAge",
@@ -469,6 +613,7 @@ module.exports['CalculateAge'] = {
          }, {
             "name" : "Seconds",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Second",
                "type" : "CalculateAge",
@@ -490,9 +635,9 @@ module.exports['CalculateAge'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AgeAt2012 = AgeInYearsAt(DateTime(2012))
-define AgeAt19810216 = AgeInYearsAt(DateTime(1981, 2, 16))
-define AgeAt1975 = AgeInYearsAt(DateTime(1975))
+define AgeAt2012: AgeInYearsAt(DateTime(2012))
+define AgeAt19810216: AgeInYearsAt(DateTime(1981, 2, 16))
+define AgeAt1975: AgeInYearsAt(DateTime(1975))
 ###
 
 module.exports['CalculateAgeAt'] = {
@@ -529,6 +674,7 @@ module.exports['CalculateAgeAt'] = {
          }, {
             "name" : "AgeAt2012",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "CalculateAgeAt",
@@ -552,6 +698,7 @@ module.exports['CalculateAgeAt'] = {
          }, {
             "name" : "AgeAt19810216",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "CalculateAgeAt",
@@ -583,6 +730,7 @@ module.exports['CalculateAgeAt'] = {
          }, {
             "name" : "AgeAt1975",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "precision" : "Year",
                "type" : "CalculateAgeAt",

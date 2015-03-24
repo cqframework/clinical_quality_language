@@ -10,7 +10,7 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Foo = 'Bar'
+define Foo: 'Bar'
 ###
 
 module.exports['ExpressionDef'] = {
@@ -47,6 +47,7 @@ module.exports['ExpressionDef'] = {
          }, {
             "name" : "Foo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "Bar",
@@ -61,8 +62,8 @@ module.exports['ExpressionDef'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Life = 42
-define Foo = Life
+define Life: 42
+define Foo: Life
 ###
 
 module.exports['ExpressionRef'] = {
@@ -99,6 +100,7 @@ module.exports['ExpressionRef'] = {
          }, {
             "name" : "Life",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "42",
@@ -107,6 +109,7 @@ module.exports['ExpressionRef'] = {
          }, {
             "name" : "Foo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Life",
                "type" : "ExpressionRef"
@@ -120,9 +123,9 @@ module.exports['ExpressionRef'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define function foo (a:Integer ,b:Integer)
+define function foo (a Integer, b Integer)
 { return a + b }
-define testValue = foo(1,2)
+define testValue: foo(1,2)
 ###
 
 module.exports['FunctionDefinitions'] = {
@@ -159,6 +162,7 @@ module.exports['FunctionDefinitions'] = {
          }, {
             "name" : "foo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "type" : "FunctionDef",
             "expression" : {
                "type" : "Add",
@@ -186,6 +190,7 @@ module.exports['FunctionDefinitions'] = {
          }, {
             "name" : "testValue",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "foo",
                "type" : "FunctionRef",

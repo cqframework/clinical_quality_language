@@ -10,7 +10,7 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Nil = null
+define Nil: null
 ###
 
 module.exports['Nil'] = {
@@ -47,6 +47,7 @@ module.exports['Nil'] = {
          }, {
             "name" : "Nil",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Null"
             }
@@ -59,12 +60,12 @@ module.exports['Nil'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Nil = null
-define One = 1
-define NullIsNull = IsNull(null)
-define NullVarIsNull = IsNull(Nil)
-define StringIsNull = IsNull('')
-define NonNullVarIsNull = IsNull(One)
+define Nil: null
+define One: 1
+define NullIsNull: IsNull(null)
+define NullVarIsNull: IsNull(Nil)
+define StringIsNull: IsNull('')
+define NonNullVarIsNull: IsNull(One)
 ###
 
 module.exports['IsNull'] = {
@@ -101,12 +102,14 @@ module.exports['IsNull'] = {
          }, {
             "name" : "Nil",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Null"
             }
          }, {
             "name" : "One",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}Integer",
                "value" : "1",
@@ -115,6 +118,7 @@ module.exports['IsNull'] = {
          }, {
             "name" : "NullIsNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IsNull",
                "type" : "FunctionRef",
@@ -125,6 +129,7 @@ module.exports['IsNull'] = {
          }, {
             "name" : "NullVarIsNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IsNull",
                "type" : "FunctionRef",
@@ -136,6 +141,7 @@ module.exports['IsNull'] = {
          }, {
             "name" : "StringIsNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IsNull",
                "type" : "FunctionRef",
@@ -148,6 +154,7 @@ module.exports['IsNull'] = {
          }, {
             "name" : "NonNullVarIsNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IsNull",
                "type" : "FunctionRef",
@@ -161,100 +168,13 @@ module.exports['IsNull'] = {
    }
 }
 
-### IfNull
-library TestSnippet version '1'
-using QUICK
-context Patient
-define NullAndA = IfNull(null, 'a')
-define ZeroAndB = IfNull(0, 1)
-define BothNull = IfNull(null, null)
-###
-
-module.exports['IfNull'] = {
-   "library" : {
-      "identifier" : {
-         "id" : "TestSnippet",
-         "version" : "1"
-      },
-      "schemaIdentifier" : {
-         "id" : "urn:hl7-org:elm",
-         "version" : "r1"
-      },
-      "usings" : {
-         "def" : [ {
-            "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
-         }, {
-            "localIdentifier" : "QUICK",
-            "uri" : "http://hl7.org/fhir"
-         } ]
-      },
-      "statements" : {
-         "def" : [ {
-            "name" : "Patient",
-            "context" : "Patient",
-            "expression" : {
-               "type" : "SingletonFrom",
-               "operand" : {
-                  "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
-                  "type" : "Retrieve"
-               }
-            }
-         }, {
-            "name" : "NullAndA",
-            "context" : "Patient",
-            "expression" : {
-               "name" : "IfNull",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
-                  "value" : "a",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "ZeroAndB",
-            "context" : "Patient",
-            "expression" : {
-               "name" : "IfNull",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "0",
-                  "type" : "Literal"
-               }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "1",
-                  "type" : "Literal"
-               } ]
-            }
-         }, {
-            "name" : "BothNull",
-            "context" : "Patient",
-            "expression" : {
-               "name" : "IfNull",
-               "type" : "FunctionRef",
-               "operand" : [ {
-                  "type" : "Null"
-               }, {
-                  "type" : "Null"
-               } ]
-            }
-         } ]
-      }
-   }
-}
-
 ### Coalesce
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NullNullHelloNullWorld = coalesce(null as String, null as String, 'Hello', null as String, 'World')
-define FooNullNullBar = coalesce('Foo', null as String, null as String, 'Bar')
-define AllNull = coalesce(null as String, null as String, null as String)
+define NullNullHelloNullWorld: Coalesce(null as String, null as String, 'Hello', null as String, 'World')
+define FooNullNullBar: Coalesce('Foo', null as String, null as String, 'Bar')
+define AllNull: Coalesce(null as String, null as String, null as String)
 ###
 
 module.exports['Coalesce'] = {
@@ -291,20 +211,125 @@ module.exports['Coalesce'] = {
          }, {
             "name" : "NullNullHelloNullWorld",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Coalesce"
+               "name" : "Coalesce",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "Hello",
+                  "type" : "Literal"
+               }, {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "World",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "FooNullNullBar",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Coalesce"
+               "name" : "Coalesce",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "Foo",
+                  "type" : "Literal"
+               }, {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "value" : "Bar",
+                  "type" : "Literal"
+               } ]
             }
          }, {
             "name" : "AllNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Coalesce"
+               "name" : "Coalesce",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               } ]
             }
          } ]
       }
