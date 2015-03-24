@@ -3304,7 +3304,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Expression convertExpression(Expression expression, DataType targetType) {
         Conversion conversion = conversionMap.findConversion(expression.getResultType(), targetType, true);
-        return convertExpression(expression, conversion);
+        if (conversion != null) {
+            return convertExpression(expression, conversion);
+        }
+
+        DataTypes.verifyType(expression.getResultType(), targetType);
+        return expression;
     }
 
     private Expression convertListExpression(Expression expression, Conversion conversion) {
