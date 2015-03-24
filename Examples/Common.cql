@@ -4,7 +4,7 @@ using QUICK
 
 context Patient
 
-define Patient : singleton from [Patient]
+define Patient: singleton from [Patient]
 
 define function CalculateAgeInYearsAt(birthDate DateTime, asOf DateTime)
 {
@@ -20,4 +20,3 @@ define function AgeInYears()
 {
     return CalculateAgeInYears(Patient.birthDate)
 }
-

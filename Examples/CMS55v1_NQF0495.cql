@@ -46,21 +46,21 @@ Supplemental Data Elements
 
 using QUICK
 
-valueset "Inpatient" : '2.16.840.1.113883.3.666.5.307'
-valueset "Emergency Department Visit" : '2.16.840.1.113883.3.117.1.7.1.293'
+valueset "Inpatient": '2.16.840.1.113883.3.666.5.307'
+valueset "Emergency Department Visit": '2.16.840.1.113883.3.117.1.7.1.293'
 
 context Patient
 
-define InpatientEncounters :
+define InpatientEncounters:
 	[Encounter: "Inpatient"] E
 		where E.length <= 120 days
 			and E.period ends during MeasurementPeriod
 
-define EDEncounters :
+define EDEncounters:
 	[Encounter: "Emergency Department Visit"] ED
 		with InpatientEncounters E such that ED.period ends 1 hour or less before start of E.period
 
-define MeasureObservation :
+define MeasureObservation:
 	EDEncounters E
 		where E.facilityLocationArrivalDateTime is not null
 			and E.facilityLocationDepartureDateTime is not null
@@ -68,4 +68,4 @@ define MeasureObservation :
 
 context Population
 
-define MeasureScore : Median(MeasureObservation)
+define MeasureScore: Median(MeasureObservation)

@@ -1,8 +1,8 @@
 //* CQL Updates
 // Difference Between/Duration Between
 
-define DurationBetweenExpression : days between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
-define DifferenceBetweenExpression : difference in days between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
+define DurationBetweenExpression: days between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
+define DifferenceBetweenExpression: difference in days between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
 
 // Translation of Timing Phrases
 // Removed IfNull operator in favor of Coalesce
@@ -19,7 +19,7 @@ define PointIntervalExpression: PointA before IntervalB
 
 // occurs Keyword
 
-define OccursExpression : [Encounter] E where E.startDate occurs before MeasurementPeriod
+define OccursExpression: [Encounter] E where E.startDate occurs before MeasurementPeriod
 
 // Point/Interval overload of within
 
@@ -60,4 +60,3 @@ list<Integer>
 list<Integer> { 1, 2, 3, 4, 5 }
 
 tuple { integerList list<Integer> }
-
