@@ -419,6 +419,7 @@ unit
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
     | 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms' // include here any tokens that should be keywords, but not reserved words.
+    | 'version'
     ;
 
 /*
