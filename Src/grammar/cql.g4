@@ -269,7 +269,6 @@ expression
 
 dateTimePrecision
     : 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond'
-    | 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms'
     ;
 
 dateTimeComponent
@@ -281,7 +280,6 @@ dateTimeComponent
 
 pluralDateTimePrecision
     : 'years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds'
-    | 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms'
     ;
 
 expressionTerm
@@ -418,8 +416,7 @@ unit
 
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
-    | 'a' | 'mo' | 'd' | 'h' | 'min' | 's' | 'ms' // include here any tokens that should be keywords, but not reserved words.
-    | 'version'
+    | 'version' // Include here any keyword that should not be a reserved word
     ;
 
 /*

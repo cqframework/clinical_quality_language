@@ -31,22 +31,15 @@ define TimeZoneDateTimeLiteral: @2014-02-12T10:30:15.0000-07:00
 
 define YearExpression: 1 year
 define YearsExpression: 10 years
-define UCUMYearExpression: 1 a
 define MonthExpression: 1 month
 define MonthsExpression: 10 months
-define UCUMMonthExpression: 1 mo
 define DayExpression: 1 day
 define DaysExpression: 10 days
-define UCUMDayExpression: 1 d
 define HourExpression: 1 hour
 define HoursExpression: 10 hours
-define UCUMHourExpression: 1 h
 define MinuteExpression: 1 minute
 define MinutesExpression: 10 minutes
-define UCUMMinuteExpression: 1 min
 define SecondExpression: 1 second
 define SecondsExpression: 10 seconds
-define UCUMSecondExpression: 1 s
 define MillisecondExpression: 1 millisecond
 define MillisecondsExpression: 10 milliseconds
-define UCUMMillisecondExpression: 1 ms
