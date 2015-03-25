@@ -148,6 +148,8 @@ define IntervalBeforeWithOffsetWithPrecision: A 3 days before day of B
 define IntervalBeforeWithOffsetOrLessWithPrecision: A 3 days or less before day of B
 define IntervalBeforeWithOffsetOrMoreWithPrecision: A 3 days or more before day of B
 
+define IntervalBeforeUsingUCUM: A 3 'd' before B
+
 define IntervalBeforeStart: A before start B
 define IntervalBeforeStartWithPrecision: A before day of start B
 define IntervalBeforeStartWithOffset: A 3 days before start B
@@ -355,6 +357,8 @@ define IntervalOccursBeforeEndWithOffsetWithPrecision: A occurs 3 days before da
 define IntervalOccursBeforeEndWithOffsetOrLessWithPrecision: A occurs 3 days or less before day of end B
 define IntervalOccursBeforeEndWithOffsetOrMoreWithPrecision: A occurs 3 days or more before day of end B
 
+define IntervalOccursUsingUCUM: A occurs 3 'd' before B
+
 // Within interval operator phrase
 // ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
 //define IntervalWithin: A within 3 days of B // This should not be supported, it's too ambiguous
@@ -386,6 +390,7 @@ define IntervalEndsProperlyWithinStart: A ends properly within 3 days of start B
 define IntervalEndsWithinEnd: A ends within 3 days of end B
 define IntervalEndsProperlyWithinEnd: A ends properly within 3 days of end B
 
+define IntervalWithinUsingUCUM: A starts within 3 'd' of B
 
 //define IntervalWithin: IntervalA occurs within 3 days of IntervalB
 //define IntervalExpression: IntervalA starts same day or after start of IntervalB - 3 days and IntervalA ends same day or before end of IntervalB + 3 days

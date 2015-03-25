@@ -863,12 +863,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             try {
                 Quantity result = of.createQuantity()
                         .withValue((BigDecimal) df.parse(ctx.QUANTITY().getText()))
-                        .withUnit(ctx.unit().getText());
+                        .withUnit(parseString(ctx.unit()));
                 result.setResultType(resolveTypeName("Quantity"));
                 return result;
             } catch (ParseException e) {
-                // Should never occur, just return null
-                return of.createNull();
+                throw new IllegalArgumentException(String.format("Could not parse quantity literal: %s", ctx.getText()), e);
             }
         } else {
             String quantity = ctx.QUANTITY().getText();
@@ -1028,7 +1027,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return result;
     }
 
+    private DateTimePrecision fromUCUMUnits(String ucumUnit) {
+        if (ucumUnit == null) {
+            throw new IllegalArgumentException("ucumUnit is null");
+        }
+
+        switch (ucumUnit.toLowerCase()) {
+            case "a": return DateTimePrecision.YEAR;
+            case "mo": return DateTimePrecision.MONTH;
+            case "d": return DateTimePrecision.DAY;
+            case "h": return DateTimePrecision.HOUR;
+            case "min": return DateTimePrecision.MINUTE;
+            case "s": return DateTimePrecision.SECOND;
+            case "ms": return DateTimePrecision.MILLISECOND;
+            default:
+                throw new IllegalArgumentException(String.format("Could not determine date/time precision for UCUM unit specifier: %s", ucumUnit));
+        }
+    }
+
     private DateTimePrecision parseDateTimePrecision(String dateTimePrecision) {
+        if (dateTimePrecision == null) {
+            throw new IllegalArgumentException("dateTimePrecision is null");
+        }
+
         switch (dateTimePrecision) {
             case "a":
             case "year":
@@ -1082,19 +1103,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 result = of.createTimezoneFrom().withOperand(parseExpression(ctx.expressionTerm()));
                 operatorName = "TimezoneFrom";
                 break;
-            case "a":
             case "year":
-            case "mo":
             case "month":
-            case "d":
             case "day":
-            case "h":
             case "hour":
-            case "min":
             case "minute":
-            case "s":
             case "second":
-            case "ms":
             case "millisecond":
                 result = of.createDateTimeComponentFrom()
                         .withOperand(parseExpression(ctx.expressionTerm()))
