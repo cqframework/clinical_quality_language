@@ -3476,6 +3476,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
             result = translatedLibrary.resolveCall(callContext, conversionMap);
             if (result == null) {
+                result = getSystemLibrary().resolveCall(callContext, conversionMap);
+                /*
+                // Implicit resolution is only allowed for the system library functions.
                 for (TranslatedLibrary library : libraries.values()) {
                     OperatorResolution libraryResult = library.resolveCall(callContext, conversionMap);
                     if (libraryResult != null) {
@@ -3487,6 +3490,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         result = libraryResult;
                     }
                 }
+                */
 
                 if (result != null) {
                     checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
@@ -3681,6 +3685,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         for (Conversion conversion : library.getConversions()) {
             conversionMap.add(conversion);
         }
+    }
+
+    private TranslatedLibrary getSystemLibrary() {
+        return resolveLibrary("System");
     }
 
     private TranslatedLibrary resolveLibrary(String identifier) {
