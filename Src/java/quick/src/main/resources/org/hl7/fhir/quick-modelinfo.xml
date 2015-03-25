@@ -19,7 +19,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.NutritionOrderStatus" baseType="QUICK.Element">
         <ns4:element name="value" type="QUICK.NutritionOrderStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.AllergyIntolerance" baseType="QUICK.DomainResource" topic="AllergyIntolerance" identifier="cqf-allergyintolerance" primaryCodePath="substance">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.AllergyIntolerance" baseType="QUICK.DomainResource" retrievable="true" label="AllergyIntolerance" identifier="cqf-allergyintolerance" primaryCodePath="substance">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="recordedDate" type="System.DateTime"/>
         <ns4:element name="recorder" type="QUICK.Reference"/>
@@ -47,7 +47,7 @@
         <ns4:element name="schedule" type="QUICK.Timing"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.RemittanceOutcome_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Medication" baseType="QUICK.DomainResource" topic="Medication" identifier="cqf-medication" primaryCodePath="code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Medication" baseType="QUICK.DomainResource" retrievable="true" label="Medication" identifier="cqf-medication" primaryCodePath="code">
         <ns4:element name="name" type="System.String"/>
         <ns4:element name="code" type="System.Concept"/>
         <ns4:element name="isBrand" type="System.Boolean"/>
@@ -187,7 +187,7 @@
         <ns4:element name="photo" type="list&lt;QUICK.Attachment&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.CommunicationRequest.MessagePart" baseType="QUICK.BackboneElement"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Encounter" baseType="QUICK.DomainResource" topic="Encounter" identifier="cqf-encounter" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Encounter" baseType="QUICK.DomainResource" retrievable="true" label="Encounter" identifier="cqf-encounter" primaryCodePath="type">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="status" type="QUICK.EncounterState"/>
         <ns4:element name="class" type="QUICK.EncounterClass"/>
@@ -352,7 +352,7 @@
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.CarePlanStatus_list"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.ConditionStatus_list"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.OrderOutcomeStatus_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Practitioner" baseType="QUICK.DomainResource" topic="Practitioner" identifier="cqf-practitioner" primaryCodePath="specialty">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Practitioner" baseType="QUICK.DomainResource" retrievable="true" label="Practitioner" identifier="cqf-practitioner" primaryCodePath="specialty">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="name" type="QUICK.HumanName"/>
         <ns4:element name="telecom" type="list&lt;QUICK.ContactPoint&gt;"/>
@@ -592,7 +592,7 @@
         <ns4:element name="comment" type="System.String"/>
         <ns4:element name="link" type="QUICK.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationDispense" baseType="QUICK.DomainResource" topic="MedicationDispense" identifier="cqf-medicationdispense" primaryCodePath="medication.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationDispense" baseType="QUICK.DomainResource" retrievable="true" label="MedicationDispense" identifier="cqf-medicationdispense" primaryCodePath="medication.code">
         <ns4:element name="identifier" type="QUICK.Identifier"/>
         <ns4:element name="status" type="QUICK.MedicationDispenseStatus"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
@@ -830,7 +830,7 @@
         <ns4:element name="person" type="QUICK.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.DiagnosticOrderPriority_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Immunization" baseType="QUICK.DomainResource" topic="Immunization" identifier="cqf-immunization" primaryCodePath="vaccineType">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Immunization" baseType="QUICK.DomainResource" retrievable="true" label="Immunization" identifier="cqf-immunization" primaryCodePath="vaccineType">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="date" type="System.DateTime"/>
         <ns4:element name="vaccineType" type="System.Concept"/>
@@ -906,7 +906,7 @@
         <ns4:element name="lastModifiedBy" type="QUICK.Reference"/>
         <ns4:element name="lastModified" type="System.DateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Substance" baseType="QUICK.DomainResource" topic="Substance" identifier="cqf-substance" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Substance" baseType="QUICK.DomainResource" retrievable="true" label="Substance" identifier="cqf-substance" primaryCodePath="type">
         <ns4:element name="type" type="System.Concept"/>
         <ns4:element name="description" type="System.String"/>
         <ns4:element name="instance" type="QUICK.Substance.Instance"/>
@@ -935,7 +935,7 @@
         <ns4:element name="linkId" type="System.Integer"/>
         <ns4:element name="dateTime" type="System.DateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.CommunicationRequest" baseType="QUICK.DomainResource" topic="CommunicationRequest" identifier="cqf-communicationrequest" primaryCodePath="category">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.CommunicationRequest" baseType="QUICK.DomainResource" retrievable="true" label="CommunicationRequest" identifier="cqf-communicationrequest" primaryCodePath="category">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="category" type="System.Concept"/>
         <ns4:element name="sender" type="QUICK.Reference"/>
@@ -1214,7 +1214,7 @@
         <ns4:element name="quantity" type="QUICK.Ratio"/>
         <ns4:element name="substance" type="QUICK.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Procedure" baseType="QUICK.DomainResource" topic="Procedure" identifier="cqf-procedure" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Procedure" baseType="QUICK.DomainResource" retrievable="true" label="Procedure" identifier="cqf-procedure" primaryCodePath="type">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
         <ns4:element name="type" type="System.Concept"/>
@@ -1255,7 +1255,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationDispenseStatus" baseType="QUICK.Element">
         <ns4:element name="value" type="QUICK.MedicationDispenseStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Observation" baseType="QUICK.DomainResource" topic="Observation" identifier="cqf-observation" primaryCodePath="name">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Observation" baseType="QUICK.DomainResource" retrievable="true" label="Observation" identifier="cqf-observation" primaryCodePath="name">
         <ns4:element name="name" type="System.Concept"/>
         <ns4:element name="valueQuantity" type="System.Quantity"/>
         <ns4:element name="dataAbsentReason" type="QUICK.DataAbsentReason"/>
@@ -1278,7 +1278,7 @@
         <ns4:element name="value" type="QUICK.SecurityEventOutcome_list"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.ReferralStatus_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DiagnosticOrder" baseType="QUICK.DomainResource" topic="DiagnosticOrder" identifier="cqf-diagnosticorder" primaryCodePath="item[].code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DiagnosticOrder" baseType="QUICK.DomainResource" retrievable="true" label="DiagnosticOrder" identifier="cqf-diagnosticorder" primaryCodePath="item[].code">
         <ns4:element name="subject" type="QUICK.Reference"/>
         <ns4:element name="orderer" type="QUICK.Reference"/>
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
@@ -1335,7 +1335,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DocumentReferenceStatus" baseType="QUICK.Element">
         <ns4:element name="value" type="QUICK.DocumentReferenceStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ImmunizationRecommendation" baseType="QUICK.DomainResource" topic="ImmunizationRecommendation" identifier="cqf-immunization-recommendation" primaryCodePath="recommendation[].vaccineType">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ImmunizationRecommendation" baseType="QUICK.DomainResource" retrievable="true" label="ImmunizationRecommendation" identifier="cqf-immunization-recommendation" primaryCodePath="recommendation[].vaccineType">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="subject" type="QUICK.Reference"/>
         <ns4:element name="recommendation" type="list&lt;QUICK.ImmunizationRecommendation.Recommendation&gt;"/>
@@ -1591,7 +1591,7 @@
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.DeviceUseRequestStatus_list"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.SampledDataDataType_primitive"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.CompositionStatus_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Condition" baseType="QUICK.DomainResource" topic="Condition" identifier="cqf-condition" primaryCodePath="code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Condition" baseType="QUICK.DomainResource" retrievable="true" label="Condition" identifier="cqf-condition" primaryCodePath="code">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="subject" type="QUICK.Reference"/>
         <ns4:element name="encounter" type="QUICK.Reference"/>
@@ -1704,7 +1704,7 @@
         <ns4:element name="type" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="individual" type="QUICK.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationStatement" baseType="QUICK.DomainResource" topic="MedicationStatement" identifier="cqf-medicationstatement" primaryCodePath="medication.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationStatement" baseType="QUICK.DomainResource" retrievable="true" label="MedicationStatement" identifier="cqf-medicationstatement" primaryCodePath="medication.code">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
         <ns4:element name="wasNotGiven" type="System.Boolean"/>
@@ -1884,7 +1884,7 @@
         <ns4:element name="deleted" type="QUICK.Bundle.Deleted"/>
         <ns4:element name="resource" type="QUICK.ResourceContainer"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.FamilyHistory" baseType="QUICK.DomainResource" topic="FamilyHistory" identifier="cqf-familyhistory">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.FamilyHistory" baseType="QUICK.DomainResource" retrievable="true" label="FamilyHistory" identifier="cqf-familyhistory">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
         <ns4:element name="date" type="System.DateTime"/>
@@ -1991,7 +1991,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ValueSetStatus" baseType="QUICK.Element">
         <ns4:element name="value" type="QUICK.ValueSetStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationAdministration" baseType="QUICK.DomainResource" topic="MedicationAdministration" identifier="cqf-medicationadministration" primaryCodePath="medication.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationAdministration" baseType="QUICK.DomainResource" retrievable="true" label="MedicationAdministration" identifier="cqf-medicationadministration" primaryCodePath="medication.code">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="status" type="QUICK.MedicationAdministrationStatus"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
@@ -2373,7 +2373,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ParticipantStatus" baseType="QUICK.Element">
         <ns4:element name="value" type="QUICK.ParticipantStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ProcedureRequest" baseType="QUICK.DomainResource" topic="ProcedureRequest" identifier="cqf-procedurerequest" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ProcedureRequest" baseType="QUICK.DomainResource" retrievable="true" label="ProcedureRequest" identifier="cqf-procedurerequest" primaryCodePath="type">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="subject" type="QUICK.Reference"/>
         <ns4:element name="type" type="System.Concept"/>
@@ -2511,7 +2511,7 @@
         <ns4:element name="contentType" type="QUICK.code"/>
         <ns4:element name="content" type="QUICK.base64Binary"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.CarePlan" baseType="QUICK.DomainResource" topic="CarePlan" identifier="cqf-careplan" primaryCodePath="concern.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.CarePlan" baseType="QUICK.DomainResource" retrievable="true" label="CarePlan" identifier="cqf-careplan" primaryCodePath="concern.code">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
         <ns4:element name="status" type="QUICK.CarePlanStatus"/>
@@ -2598,7 +2598,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.DataAbsentReason_list"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.FHIRDefinedType_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.NutritionOrder" baseType="QUICK.DomainResource" topic="NutritionOrder" identifier="cqf-nutritionorder" primaryCodePath="item[].oralDiet.type|item[].supplement.type|item[].enteralFormula.baseFormulaType|item[].enteralFormula.additiveType">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.NutritionOrder" baseType="QUICK.DomainResource" retrievable="true" label="NutritionOrder" identifier="cqf-nutritionorder" primaryCodePath="item[].oralDiet.type|item[].supplement.type|item[].enteralFormula.baseFormulaType|item[].enteralFormula.additiveType">
         <ns4:element name="subject" type="QUICK.Reference"/>
         <ns4:element name="orderer" type="QUICK.Reference"/>
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
@@ -2627,7 +2627,7 @@
         <ns4:element name="rate" type="QUICK.Ratio"/>
         <ns4:element name="maxDosePerPeriod" type="QUICK.Ratio"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Patient" baseType="QUICK.DomainResource" topic="Patient" identifier="cqf-patient">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Patient" baseType="QUICK.DomainResource" retrievable="true" label="Patient" identifier="cqf-patient">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="name" type="list&lt;QUICK.HumanName&gt;"/>
         <ns4:element name="telecom" type="list&lt;QUICK.ContactPoint&gt;"/>
@@ -2649,7 +2649,7 @@
         <ns4:element name="fee" type="QUICK.Money"/>
         <ns4:element name="adjudication" type="list&lt;QUICK.ClaimResponse.Adjudication4&gt;"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationPrescription" baseType="QUICK.DomainResource" topic="MedicationPrescription" identifier="cqf-medicationprescription" primaryCodePath="medication.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationPrescription" baseType="QUICK.DomainResource" retrievable="true" label="MedicationPrescription" identifier="cqf-medicationprescription" primaryCodePath="medication.code">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="dateWritten" type="System.DateTime"/>
         <ns4:element name="status" type="QUICK.MedicationPrescriptionStatus"/>
@@ -2800,7 +2800,7 @@
         <ns4:element name="value" type="QUICK.SecurityEventObjectRole_list"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.uuid_primitive"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DiagnosticReport" baseType="QUICK.DomainResource" topic="DiagnosticReport" identifier="cqf-diagnosticreport" primaryCodePath="name">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DiagnosticReport" baseType="QUICK.DomainResource" retrievable="true" label="DiagnosticReport" identifier="cqf-diagnosticreport" primaryCodePath="name">
         <ns4:element name="name" type="System.Concept"/>
         <ns4:element name="status" type="QUICK.DiagnosticReportStatus"/>
         <ns4:element name="issued" type="System.DateTime"/>
@@ -2837,7 +2837,7 @@
         <ns4:element name="value" type="QUICK.CommunicationRequestMode_list"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.DocumentRelationshipType_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Location" baseType="QUICK.DomainResource" topic="Location" identifier="cqf-location" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Location" baseType="QUICK.DomainResource" retrievable="true" label="Location" identifier="cqf-location" primaryCodePath="type">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="name" type="System.String"/>
         <ns4:element name="description" type="System.String"/>

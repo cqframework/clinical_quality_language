@@ -2418,13 +2418,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Retrieve visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
-        String model = parseString(ctx.topic().namedTypeSpecifier().modelIdentifier());
-        String topic = parseString(ctx.topic().namedTypeSpecifier().identifier());
-        ClassType classType = resolveTopic(model, topic);
-        NamedType namedType = classType;
-        if (namedType == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve topic name %s.", topic));
+        String model = parseString(ctx.namedTypeSpecifier().modelIdentifier());
+        String label = parseString(ctx.namedTypeSpecifier().identifier());
+        DataType dataType = resolveTypeName(model, label);
+        if (dataType == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve type name %s.", label));
         }
+
+        if (!(dataType instanceof ClassType) || !((ClassType)dataType).isRetrievable()) {
+            throw new IllegalArgumentException(String.format("Specified data type %s does not support retrieval.", label));
+        }
+
+        ClassType classType = (ClassType)dataType;
+        NamedType namedType = classType;
 
         Retrieve retrieve = of.createRetrieve()
                 .withDataType(dataTypeToQName((DataType)namedType))
@@ -3177,15 +3183,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return definitions.toArray(new TupleElementDefinition[definitions.size()]);
     }
 
-    private ClassType resolveTopic(String modelName, String topic) {
+    private ClassType resolveLabel(String modelName, String label) {
         ClassType result = null;
         if (modelName == null || modelName.equals("")) {
             for (Model model : models.values()) {
-                ClassType modelResult = model.resolveTopic(topic);
+                ClassType modelResult = model.resolveLabel(label);
                 if (modelResult != null) {
                     if (result != null) {
-                        throw new IllegalArgumentException(String.format("Topic %s is ambiguous between %s and %s.",
-                                topic, result.getName(), modelResult.getName()));
+                        throw new IllegalArgumentException(String.format("Label %s is ambiguous between %s and %s.",
+                                label, result.getName(), modelResult.getName()));
                     }
 
                     result = modelResult;
@@ -3193,7 +3199,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
         else {
-            result = getModel(modelName).resolveTopic(topic);
+            result = getModel(modelName).resolveLabel(label);
         }
 
         return result;
@@ -3204,8 +3210,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private DataType resolveTypeName(String modelName, String typeName) {
-        // Attempt to resolve as a topic first
-        DataType result = resolveTopic(modelName, typeName);
+        // Attempt to resolve as a label first
+        DataType result = resolveLabel(modelName, typeName);
 
         if (result == null) {
             if (modelName == null || modelName.equals("")) {

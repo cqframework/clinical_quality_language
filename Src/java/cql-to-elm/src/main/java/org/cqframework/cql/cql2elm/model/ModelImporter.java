@@ -183,7 +183,8 @@ public class ModelImporter {
             resolvedTypes.put(result.getName(), result);
             result.addElements(resolveClassTypeElements(t.getElement()));
             result.setIdentifier(t.getIdentifier());
-            result.setTopic(t.getTopic());
+            result.setLabel(t.getLabel());
+            result.setRetrievable(t.isRetrievable());
             result.setPrimaryCodePath(t.getPrimaryCodePath());
         }
 

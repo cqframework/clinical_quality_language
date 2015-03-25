@@ -177,11 +177,7 @@ withoutClause
     ;
 
 retrieve
-    : '[' topic (':' (valuesetPathIdentifier 'in')? valueset)? ']'
-    ;
-
-topic
-    : namedTypeSpecifier
+    : '[' namedTypeSpecifier (':' (valuesetPathIdentifier 'in')? valueset)? ']'
     ;
 
 valuesetPathIdentifier

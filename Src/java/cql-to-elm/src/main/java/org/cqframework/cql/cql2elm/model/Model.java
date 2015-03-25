@@ -18,7 +18,7 @@ public class Model {
 
         for (DataType t : index.values()) {
             if (t instanceof ClassType) {
-                classIndex.put(((ClassType)t).getTopic(), (ClassType)t);
+                classIndex.put(((ClassType)t).getLabel(), (ClassType)t);
             }
 
             if (t instanceof NamedType) {
@@ -43,7 +43,7 @@ public class Model {
         return result;
     }
 
-    public ClassType resolveTopic(@NotNull String topic) {
-        return classIndex.get(topic);
+    public ClassType resolveLabel(@NotNull String label) {
+        return classIndex.get(label);
     }
 }
