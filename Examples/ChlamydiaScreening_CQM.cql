@@ -34,8 +34,8 @@ define SexuallyActive:
 		or exists ([Condition: "HIV"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
 		or exists ([Condition: "Syphilis"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
 		or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"] C where interval[C.onsetDateTime, C.abatementDateTime] overlaps MeasurementPeriod)
-		or exists ([DiagnosticOrder: "Pregnancy Test"] O where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
-		or exists ([DiagnosticOrder: "Pap Test"] O where where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
+		or exists ([DiagnosticOrder: "Pregnancy Test"] O where Last(O.event E where E.status = 'completed' sort by E.date).date during MeasurementPeriod)
+		or exists ([DiagnosticOrder: "Pap Test"] O where where Last(O.event E where E.status = 'completed' sort by E.date).date during MeasurementPeriod)
 		or exists ([DiagnosticOrder: "Lab Tests During Pregnancy"] O where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
 		or exists ([DiagnosticOrder: "Lab Tests for Sexually Transmitted Infections"] O where Last(O.event E where E.status = 'completed').date during MeasurementPeriod)
 

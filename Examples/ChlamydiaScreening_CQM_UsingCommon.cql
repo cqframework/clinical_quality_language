@@ -15,7 +15,7 @@ define "In Demographic":
 
 define "Sexually Active":
     exists(Common."Conditions Indicating Sexual Activity" C where Interval[C.onsetDateTime, C.abatementDateTime] overlaps "Measurement Period")
-        or exists(Common."Laboratory Tests Indicating Sexual Activity" O where Last(O.event E where E.status = "completed").date during "Measurement Period")
+        or exists(Common."Laboratory Tests Indicating Sexual Activity" O where Last(O.event E where E.status = "completed" sort by E.date).date during "Measurement Period")
 
 define "In Initial Population":
     "In Demographic" and "Sexually Active"

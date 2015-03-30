@@ -18,6 +18,8 @@ public class SystemLibraryHelper {
 
         // Nullological Operators
         system.add(new Operator("IsNull", new Signature(systemModel.getAny()), systemModel.getBoolean()));
+        system.add(new Operator("IsTrue", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
+        system.add(new Operator("IsFalse", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
         // Coalesce<T>(list<T>)
         // Coalesce<T>(T, T)
         // Coalesce<T>(T, T, T)
@@ -28,8 +30,6 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Coalesce", new Signature(new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
         system.add(new GenericOperator("Coalesce", new Signature(new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
         system.add(new GenericOperator("Coalesce", new Signature(new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T"), new TypeParameter("T")), new TypeParameter("T"), new TypeParameter("T")));
-        system.add(new Operator("IsTrue", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
-        system.add(new Operator("IsFalse", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
 
         // Conversion Operators
         // ToString(Boolean) : String
@@ -117,9 +117,9 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Ceiling", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
 
-        system.add(new Operator("Divide", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getDecimal()));
         system.add(new Operator("Divide", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        system.add(new Operator("Divide", new Signature(systemModel.getDecimal(), systemModel.getQuantity()), systemModel.getQuantity()));
         system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Floor", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
@@ -133,8 +133,9 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Modulo", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Modulo", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getInteger()), systemModel.getQuantity()));
-        system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        // BTR -> Removed these, we should make sure we have a clear use case for this operator before adding these signatures
+        //system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getInteger()), systemModel.getQuantity()));
+        //system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
 
         system.add(new Operator("Multiply", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
@@ -172,8 +173,9 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("TruncatedDivide", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("TruncatedDivide", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        system.add(new Operator("TruncatedDivide", new Signature(systemModel.getQuantity(), systemModel.getInteger()), systemModel.getQuantity()));
-        system.add(new Operator("TruncatedDivide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        // BTR -> Removed these, we should make sure we have a clear use case for this operator before adding these signatures
+        // system.add(new Operator("TruncatedDivide", new Signature(systemModel.getQuantity(), systemModel.getInteger()), systemModel.getQuantity()));
+        //system.add(new Operator("TruncatedDivide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
 
         // String operators
         system.add(new Operator("Add", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getString()));
@@ -348,7 +350,6 @@ public class SystemLibraryHelper {
         // Aggregate Operators
         system.add(new Operator("AllTrue", new Signature(new ListType(systemModel.getBoolean())), systemModel.getBoolean()));
         system.add(new Operator("AnyTrue", new Signature(new ListType(systemModel.getBoolean())), systemModel.getBoolean()));
-        system.add(new Operator("Avg", new Signature(new ListType(systemModel.getInteger())), systemModel.getDecimal()));
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         // Count<T>(list<T>) : Integer
         system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));

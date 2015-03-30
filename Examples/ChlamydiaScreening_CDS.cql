@@ -39,7 +39,7 @@ define SexuallyActive:
 
 define NoScreening:
     not exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during Interval[Today() - 1 years, Today()] and R.result is not null)
-    and not exists ([ProcedureRequest: "Chlamydia Screening"] P where P.requestDateTime same day or after Today())
+    and not exists ([ProcedureRequest: "Chlamydia Screening"] P where P.timingDateTime same day or after Today())
 	and not exists ([Observation: "Reason for not performing Chlamydia Screening"])
 
 define NeedScreening: InDemographic and SexuallyActive and NoScreening
