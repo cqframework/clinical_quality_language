@@ -37,6 +37,7 @@ public class SystemLibraryHelper {
         // ToString(Decimal) : String
         // ToString(DateTime) : String
         // ToString(Time) : String
+        // ToString(Quantity) : String
         Operator booleanToString = new Operator("ToString", new Signature(systemModel.getBoolean()), systemModel.getString());
         system.add(booleanToString);
         system.add(new Conversion(booleanToString, false));
@@ -52,6 +53,9 @@ public class SystemLibraryHelper {
         Operator timeToString = new Operator("ToString", new Signature(systemModel.getTime()), systemModel.getString());
         system.add(timeToString);
         system.add(new Conversion(timeToString, false));
+        Operator quantityToString = new Operator("ToString", new Signature(systemModel.getQuantity()), systemModel.getString());
+        system.add(quantityToString);
+        system.add(new Conversion(quantityToString, false));
 
         // ToBoolean(String) : Boolean
         Operator stringToBoolean = new Operator("ToBoolean", new Signature(systemModel.getString()), systemModel.getBoolean());
@@ -81,6 +85,11 @@ public class SystemLibraryHelper {
         Operator stringToTime = new Operator("ToTime", new Signature(systemModel.getString()), systemModel.getTime());
         system.add(stringToTime);
         system.add(new Conversion(stringToTime, false));
+
+        // ToQuantity(String) : Quantity
+        Operator stringToQuantity = new Operator("ToQuantity", new Signature(systemModel.getString()), systemModel.getQuantity());
+        system.add(stringToQuantity);
+        system.add(new Conversion(stringToQuantity, false));
 
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
