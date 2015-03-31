@@ -28,9 +28,9 @@ describe 'Min', ->
   @beforeEach ->
     setup @, data
 
-  it 'should be able to find min in  lists without nulls', ->
+  it 'should be able to find min in lists without nulls', ->
     @not_null.exec(@ctx).should.equal 0
-  it 'should be able to find min in  lists with nulls', ->
+  it 'should be able to find min in lists with nulls', ->
     @has_null.exec(@ctx).should.equal -1
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
@@ -39,9 +39,9 @@ describe 'Max', ->
   @beforeEach ->
     setup @, data
 
-  it 'should be able to find max in  lists without nulls', ->
+  it 'should be able to find max in lists without nulls', ->
     @not_null.exec(@ctx).should.equal 10
-  it 'should be able to find max in  lists with nulls', ->
+  it 'should be able to find max in lists with nulls', ->
     @has_null.exec(@ctx).should.equal 2
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
@@ -49,9 +49,9 @@ describe 'Max', ->
 describe 'Avg', ->
   @beforeEach ->
     setup @, data
-  it 'should be able to find average   lists without nulls', ->
+  it 'should be able to find average for lists without nulls', ->
     @not_null.exec(@ctx).should.equal 3
-  it 'should be able to find average   lists with nulls', ->
+  it 'should be able to find average for lists with nulls', ->
     @has_null.exec(@ctx).should.equal 1.5
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null

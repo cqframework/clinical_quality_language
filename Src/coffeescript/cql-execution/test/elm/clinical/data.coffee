@@ -133,17 +133,6 @@ define WrongMediumCode: Code { code: 'F', system: '3.16.840.1.113883.18.2' } in 
 define WrongLongCode: Code { code: 'F', system: '2.16.840.1.113883.18.2', version: 'HL7V2.6' } in "Female"
 ###
 
-###
-Translation Error(s):
-[9:20, 9:71] Internal translator error.
-[9:20, 9:83] Could not determine signature for invocation of operator System.InValueSet.
-[10:18, 10:89] Internal translator error.
-[10:18, 10:101] Could not determine signature for invocation of operator System.InValueSet.
-[14:25, 14:76] Internal translator error.
-[14:25, 14:88] Could not determine signature for invocation of operator System.InValueSet.
-[15:23, 15:94] Internal translator error.
-[15:23, 15:106] Could not determine signature for invocation of operator System.InValueSet.
-###
 module.exports['InValueSet'] = {
    "library" : {
       "identifier" : {
@@ -244,14 +233,65 @@ module.exports['InValueSet'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "system",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "2.16.840.1.113883.18.2",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "LongCode",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "system",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "2.16.840.1.113883.18.2",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "version",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "HL7V2.5",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongString",
@@ -310,14 +350,65 @@ module.exports['InValueSet'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "system",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "3.16.840.1.113883.18.2",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          }, {
             "name" : "WrongLongCode",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "InValueSet",
+               "code" : {
+                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "type" : "Instance",
+                  "element" : [ {
+                     "name" : "code",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "F",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "system",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "2.16.840.1.113883.18.2",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "name" : "version",
+                     "value" : {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "HL7V2.6",
+                        "type" : "Literal"
+                     }
+                  } ]
+               },
+               "valueset" : {
+                  "name" : "Female"
+               }
             }
          } ]
       }

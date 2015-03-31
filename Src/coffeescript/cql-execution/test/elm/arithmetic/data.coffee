@@ -498,13 +498,23 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "10",
-                  "type" : "Literal"
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "2",
-                  "type" : "Literal"
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
                } ]
             }
          }, {
@@ -514,13 +524,23 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "10",
-                  "type" : "Literal"
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "4",
-                  "type" : "Literal"
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "4",
+                     "type" : "Literal"
+                  } ]
                } ]
             }
          }, {
@@ -534,13 +554,23 @@ module.exports['Divide'] = {
                   "operand" : [ {
                      "type" : "Divide",
                      "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1000",
-                        "type" : "Literal"
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1000",
+                           "type" : "Literal"
+                        } ]
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "4",
-                        "type" : "Literal"
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        } ]
                      } ]
                   }, {
                      "name" : "ToDecimal",
@@ -570,11 +600,21 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "name" : "Hundred",
-                  "type" : "ExpressionRef"
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "name" : "Hundred",
+                     "type" : "ExpressionRef"
+                  } ]
                }, {
-                  "name" : "Four",
-                  "type" : "ExpressionRef"
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "name" : "Four",
+                     "type" : "ExpressionRef"
+                  } ]
                } ]
             }
          } ]
@@ -708,13 +748,23 @@ module.exports['MathPrecedence'] = {
                }, {
                   "type" : "Divide",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "15",
-                     "type" : "Literal"
+                     "name" : "ToDecimal",
+                     "libraryName" : "System",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "15",
+                        "type" : "Literal"
+                     } ]
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
+                     "name" : "ToDecimal",
+                     "libraryName" : "System",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     } ]
                   } ]
                } ]
             }
@@ -725,34 +775,44 @@ module.exports['MathPrecedence'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "type" : "Multiply",
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
                   "operand" : [ {
-                     "type" : "Add",
+                     "type" : "Multiply",
                      "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "1",
-                        "type" : "Literal"
+                        "type" : "Add",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "5",
-                        "type" : "Literal"
-                     } ]
-                  }, {
-                     "type" : "Subtract",
-                     "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "10",
-                        "type" : "Literal"
-                     }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                        "value" : "15",
-                        "type" : "Literal"
+                        "type" : "Subtract",
+                        "operand" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "10",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "15",
+                           "type" : "Literal"
+                        } ]
                      } ]
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                  "value" : "3",
-                  "type" : "Literal"
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
                } ]
             }
          } ]

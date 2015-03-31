@@ -561,28 +561,45 @@ module.exports['Avg'] = {
                "name" : "Avg",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          }, {
@@ -593,28 +610,45 @@ module.exports['Avg'] = {
                "name" : "Avg",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "asType" : "{urn:hl7-org:elm:r1}Integer",
-                     "type" : "As",
-                     "operand" : {
-                        "type" : "Null"
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "asType" : "{urn:hl7-org:elm:r1}Integer",
+                           "type" : "As",
+                           "operand" : {
+                              "type" : "Null"
+                           }
+                        }, {
+                           "asType" : "{urn:hl7-org:elm:r1}Integer",
+                           "type" : "As",
+                           "operand" : {
+                              "type" : "Null"
+                           }
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        } ]
                      }
-                  }, {
-                     "asType" : "{urn:hl7-org:elm:r1}Integer",
-                     "type" : "As",
-                     "operand" : {
-                        "type" : "Null"
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
                      }
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -625,7 +659,24 @@ module.exports['Avg'] = {
                "name" : "Avg",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List"
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List"
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          } ]
