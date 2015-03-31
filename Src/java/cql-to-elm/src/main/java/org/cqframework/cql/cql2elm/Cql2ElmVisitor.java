@@ -572,6 +572,34 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitCodeSelector(@NotNull cqlParser.CodeSelectorContext ctx) {
+        Code code = of.createCode();
+        code.setCode(parseString(ctx.stringLiteral().STRING()));
+        code.setSystem((CodeSystemRef)visit(ctx.codesystemIdentifier()));
+        if (ctx.labelClause() != null) {
+            code.setDisplay(parseString(ctx.labelClause().stringLiteral().STRING()));
+        }
+
+        code.setResultType(resolveTypeName("Code"));
+        return code;
+    }
+
+    @Override
+    public Object visitConceptSelector(@NotNull cqlParser.ConceptSelectorContext ctx) {
+        Concept concept = of.createConcept();
+        if (ctx.labelClause() != null) {
+            concept.setDisplay(parseString(ctx.labelClause().stringLiteral().STRING()));
+        }
+
+        for (cqlParser.CodeSelectorContext codeContext : ctx.codeSelector()) {
+            concept.getCode().add((Code)visit(codeContext));
+        }
+
+        concept.setResultType(resolveTypeName("Concept"));
+        return concept;
+    }
+
+    @Override
     public Object visitListSelector(@NotNull cqlParser.ListSelectorContext ctx) {
         TypeSpecifier elementTypeSpecifier = parseTypeSpecifier(ctx.typeSpecifier());
         org.hl7.elm.r1.List list = of.createList();

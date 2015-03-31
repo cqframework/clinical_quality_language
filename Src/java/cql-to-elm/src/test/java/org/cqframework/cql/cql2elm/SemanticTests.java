@@ -119,6 +119,11 @@ public class SemanticTests {
         runSemanticTest("DateTimeLiteralTest.cql");
     }
 
+    @Test
+    public void testCodeAndConcepts() throws IOException {
+        runSemanticTest("CodeAndConceptTest.cql");
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         File translationTestFile = new File(Cql2ElmVisitorTest.class.getResource(testFileName).getFile());
         CqlTranslator translator = CqlTranslator.fromFile(translationTestFile);

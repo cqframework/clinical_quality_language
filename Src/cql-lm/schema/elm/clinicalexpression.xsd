@@ -186,6 +186,33 @@ Note that the recommended approach to statically binding to an expansion set is 
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Code">
+		<xs:annotation>
+			<xs:documentation>The Code type represents a literal code selector.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="system" type="CodeSystemRef"/>
+				</xs:sequence>
+				<xs:attribute name="code" type="xs:string" use="required"/>
+				<xs:attribute name="display" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Concept">
+		<xs:annotation>
+			<xs:documentation>The Concept type represents a literal concept selector.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="code" type="Code" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="display" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="InCodeSystem">
 		<xs:annotation>
 			<xs:documentation>The InCodeSystem operator returns true if the given code is in the given code system.

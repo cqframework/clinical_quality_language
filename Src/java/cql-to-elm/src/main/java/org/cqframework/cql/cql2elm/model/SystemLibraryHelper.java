@@ -370,6 +370,16 @@ public class SystemLibraryHelper {
         system.add(new Operator("Variance", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
 
         // Clinical
+        // ToCode(Concept)
+        Operator codeToConcept = new Operator("ToConcept", new Signature(systemModel.getCode()), systemModel.getConcept());
+        system.add(codeToConcept);
+        system.add(new Conversion(codeToConcept, true));
+
+        // ToCode(List<Concept>)
+        Operator codeListToConcept = new Operator("ToConcept", new Signature(new ListType(systemModel.getCode())), systemModel.getConcept());
+        system.add(codeListToConcept);
+        system.add(new Conversion(codeListToConcept, true));
+
         system.add(new Operator("CalculateAge", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
         system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
 

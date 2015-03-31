@@ -341,6 +341,8 @@ term
     | tupleSelector         #tupleSelectorTerm
     | instanceSelector      #instanceSelectorTerm
     | listSelector          #listSelectorTerm
+    | codeSelector          #codeSelectorTerm
+    | conceptSelector       #conceptSelectorTerm
     | '(' expression ')'    #parenthesizedTerm
     ;
 
@@ -367,7 +369,19 @@ instanceElementSelector
     ;
 
 listSelector
-    : ('List' ('<' typeSpecifier '>')?)? '{' expression? (',' expression)* '}'
+    : ('List' ('<' typeSpecifier '>')?)? '{' (expression (',' expression)*)? '}'
+    ;
+
+labelClause
+    : 'labeled' stringLiteral
+    ;
+
+codeSelector
+    : 'Code' stringLiteral 'from' codesystemIdentifier labelClause?
+    ;
+
+conceptSelector
+    : 'Concept' '{' codeSelector (',' codeSelector)* '}' labelClause?
     ;
 
 literal
@@ -412,7 +426,10 @@ unit
 
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
-    | 'version' // Include here any keyword that should not be a reserved word
+    // Include here any keyword that should not be a reserved word
+    | 'version'
+    | 'Code'
+    | 'Concept'
     ;
 
 /*
