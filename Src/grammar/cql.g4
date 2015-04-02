@@ -372,16 +372,16 @@ listSelector
     : ('List' ('<' typeSpecifier '>')?)? '{' (expression (',' expression)*)? '}'
     ;
 
-labelClause
-    : 'labeled' stringLiteral
+displayClause
+    : 'display' stringLiteral
     ;
 
 codeSelector
-    : 'Code' stringLiteral 'from' codesystemIdentifier labelClause?
+    : 'Code' stringLiteral 'from' codesystemIdentifier displayClause?
     ;
 
 conceptSelector
-    : 'Concept' '{' codeSelector (',' codeSelector)* '}' labelClause?
+    : 'Concept' '{' codeSelector (',' codeSelector)* '}' displayClause?
     ;
 
 literal
@@ -427,6 +427,7 @@ unit
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
     // Include here any keyword that should not be a reserved word
+    | 'display'
     | 'version'
     | 'Code'
     | 'Concept'

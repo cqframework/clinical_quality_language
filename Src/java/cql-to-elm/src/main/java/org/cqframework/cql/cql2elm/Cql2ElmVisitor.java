@@ -576,8 +576,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Code code = of.createCode();
         code.setCode(parseString(ctx.stringLiteral().STRING()));
         code.setSystem((CodeSystemRef)visit(ctx.codesystemIdentifier()));
-        if (ctx.labelClause() != null) {
-            code.setDisplay(parseString(ctx.labelClause().stringLiteral().STRING()));
+        if (ctx.displayClause() != null) {
+            code.setDisplay(parseString(ctx.displayClause().stringLiteral().STRING()));
         }
 
         code.setResultType(resolveTypeName("Code"));
@@ -587,8 +587,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitConceptSelector(@NotNull cqlParser.ConceptSelectorContext ctx) {
         Concept concept = of.createConcept();
-        if (ctx.labelClause() != null) {
-            concept.setDisplay(parseString(ctx.labelClause().stringLiteral().STRING()));
+        if (ctx.displayClause() != null) {
+            concept.setDisplay(parseString(ctx.displayClause().stringLiteral().STRING()));
         }
 
         for (cqlParser.CodeSelectorContext codeContext : ctx.codeSelector()) {
