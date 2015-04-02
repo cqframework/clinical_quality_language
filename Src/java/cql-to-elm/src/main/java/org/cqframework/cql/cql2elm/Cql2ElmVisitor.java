@@ -3024,13 +3024,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitReturnStatement(@NotNull cqlParser.ReturnStatementContext ctx) {
-        return visit(ctx.expression());
-    }
-
-    @Override
     public Object visitFunctionBody(@NotNull cqlParser.FunctionBodyContext ctx) {
-        return visit(ctx.returnStatement());
+        return visit(ctx.expression());
     }
 
     @Override

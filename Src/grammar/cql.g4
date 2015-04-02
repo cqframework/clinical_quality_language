@@ -130,7 +130,7 @@ contextDefinition
     ;
 
 functionDefinition
-    : 'define' accessModifier? 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')' functionBody
+    : 'define' accessModifier? 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')' ':' functionBody
     ;
 
 operandDefinition
@@ -138,11 +138,7 @@ operandDefinition
     ;
 
 functionBody
-    : '{' returnStatement '}'
-    ;
-
-returnStatement
-    : 'return' expression
+    : expression
     ;
 
 /*

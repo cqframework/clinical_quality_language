@@ -1,6 +1,6 @@
-define function NilaryFunction() { return true }
-define function UnaryFunction(operand String) { return operand }
-define function BinaryFunction(left Integer, right Integer) { return left + right }
+define function NilaryFunction(): true
+define function UnaryFunction(operand String): operand
+define function BinaryFunction(left Integer, right Integer): left + right
 
 define NilaryFunctionCall: NilaryFunction()
 define UnaryFunctionCall: UnaryFunction('Operand')
