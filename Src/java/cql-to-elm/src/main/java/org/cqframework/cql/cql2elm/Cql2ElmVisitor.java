@@ -1361,18 +1361,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Expression visitEqualityExpression(@NotNull cqlParser.EqualityExpressionContext ctx) {
-        BinaryExpression equal = of.createEqual().withOperand(
-                parseExpression(ctx.expression(0)),
-                parseExpression(ctx.expression(1)));
+        String operator = parseString(ctx.getChild(1));
+        if (operator.equals("equivalent to")) {
+            BinaryExpression equivalent = of.createEquivalent().withOperand(
+                    parseExpression(ctx.expression(0)),
+                    parseExpression(ctx.expression(1)));
 
-        resolveBinaryCall("System", "Equal", equal);
-        if (!"=".equals(parseString(ctx.getChild(1)))) {
-            Not not = of.createNot().withOperand(equal);
-            resolveUnaryCall("System", "Not", not);
-            return not;
+            resolveBinaryCall("System", "Equivalent", equivalent);
+            return equivalent;
         }
+        else {
+            BinaryExpression equal = of.createEqual().withOperand(
+                    parseExpression(ctx.expression(0)),
+                    parseExpression(ctx.expression(1)));
 
-        return equal;
+            resolveBinaryCall("System", "Equal", equal);
+            if (!"=".equals(parseString(ctx.getChild(1)))) {
+                Not not = of.createNot().withOperand(equal);
+                resolveUnaryCall("System", "Not", not);
+                return not;
+            }
+
+            return equal;
+        }
     }
 
     @Override

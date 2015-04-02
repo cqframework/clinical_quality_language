@@ -94,6 +94,8 @@ public class SystemLibraryHelper {
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
         system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equivalent<T>(T, T) : Boolean
+        system.add(new GenericOperator("Equivalent", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         system.add(new Operator("Less", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
@@ -110,6 +112,10 @@ public class SystemLibraryHelper {
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("Less", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
+        system.add(new Operator("LessOrEqual", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
+        system.add(new Operator("Greater", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
+        system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
@@ -379,15 +385,10 @@ public class SystemLibraryHelper {
         system.add(new Operator("Variance", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
 
         // Clinical
-        // ToCode(Concept)
+        // ToConcept(Code)
         Operator codeToConcept = new Operator("ToConcept", new Signature(systemModel.getCode()), systemModel.getConcept());
         system.add(codeToConcept);
         system.add(new Conversion(codeToConcept, true));
-
-        // ToCode(List<Concept>)
-        Operator codeListToConcept = new Operator("ToConcept", new Signature(new ListType(systemModel.getCode())), systemModel.getConcept());
-        system.add(codeListToConcept);
-        system.add(new Conversion(codeListToConcept, true));
 
         system.add(new Operator("CalculateAge", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
         system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
