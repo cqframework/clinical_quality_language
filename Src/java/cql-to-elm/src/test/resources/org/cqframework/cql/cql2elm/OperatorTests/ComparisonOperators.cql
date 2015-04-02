@@ -53,13 +53,13 @@ define IntervalNotEqual: Interval[1, 10] <> Interval[1, 10]
 define ListNotEqual: { 1, 2, 3 } <> { 1, 2, 3 }
 define TupleNotEqual: Tuple { Id: 1, Name: 'Joe' } <> Tuple { Id: 1, Name: 'Joe' }
 
-define IntegerEquivalent: 1 equivalent to 1
-define RealEquivalent: 1.0 equivalent to 1.0
-define StringEquivalent: 'Foo' equivalent to 'Foo'
-define DateTimeEquivalent: DateTime(2015) equivalent to DateTime(2015)
-define TimeEquivalent: Time(10) equivalent to Time(10)
-define QuantityEquivalent: 5'mm[Hg]' equivalent to 5'mm[Hg]'
-define IntervalEquivalent: Interval[1, 10] equivalent to Interval[1, 10]
-define ListEquivalent: { 1, 2, 3 } equivalent to { 1, 2, 3 }
-define TupleEquivalent: Tuple { Id: 1, Name: 'Joe' } equivalent to Tuple { Id: 1, Name: 'Joe' }
+define IntegerMatches: 1 matches 1
+define RealMatches: 1.0 matches 1.0
+define StringMatches: 'Foo' matches 'Foo'
+define DateTimeMatches: DateTime(2015) matches DateTime(2015)
+define TimeMatches: Time(10) matches Time(10)
+define QuantityMatches: 5'mm[Hg]' matches 5'mm[Hg]'
+define IntervalMatches: Interval[1, 10] matches Interval[1, 10]
+define ListMatches: { 1, 2, 3 } matches { 1, 2, 3 }
+define TupleMatches: Tuple { Id: 1, Name: 'Joe' } matches Tuple { Id: 1, Name: 'Joe' }
 

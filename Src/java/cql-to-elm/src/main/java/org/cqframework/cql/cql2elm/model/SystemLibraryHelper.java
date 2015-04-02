@@ -94,8 +94,8 @@ public class SystemLibraryHelper {
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
         system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-        // Equivalent<T>(T, T) : Boolean
-        system.add(new GenericOperator("Equivalent", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Matches<T>(T, T) : Boolean
+        system.add(new GenericOperator("Matches", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         system.add(new Operator("Less", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));

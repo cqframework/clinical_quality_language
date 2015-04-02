@@ -603,17 +603,17 @@ If either argument is null, the result is null.</xs:documentation>
 			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="Equivalent">
+	<xs:complexType name="Matches">
 		<xs:annotation>
-			<xs:documentation>The Equivalent operator returns true if the arguments are the same value, or if they are both null; and false otherwise.
+			<xs:documentation>The Matches operator returns true if the arguments are the same value, or if they are both null; and false otherwise.
 
-For tuple types, this means that two tuple values are equivalent if and only if the tuples are of the same type, and the values for all elements by name are equivalent.
+For tuple types, this means that two tuple values match if and only if the tuples are of the same type, and the values for all elements by name match.
 
-For list types, this means that two lists are equivalent if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equivalent.
+For list types, this means that two lists match if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements match.
 
-For interval types, this means that two intervals are equivalent if and only if the intervals are over the same point type, and the starting and ending points of the intervals are equivalent as determined by the Start and End operators.
+For interval types, this means that two intervals match if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators match.
 
-Note that this operator will always return true or false, even if either or both of its arguments are null.</xs:documentation>
+Note that this operator will always return true or false, even if either or both of its arguments are null or contain null components.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
