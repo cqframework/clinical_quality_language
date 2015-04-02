@@ -1032,6 +1032,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitTypeExtentExpressionTerm(@NotNull cqlParser.TypeExtentExpressionTermContext ctx) {
+        String extent = parseString(ctx.getChild(0));
+        TypeSpecifier targetType = parseTypeSpecifier(ctx.namedTypeSpecifier());
+        switch (extent) {
+            case "minimum": {
+                MinValue minimum = of.createMinValue();
+                minimum.setValueType(dataTypeToQName(targetType.getResultType()));
+                minimum.setResultType(targetType.getResultType());
+                return minimum;
+            }
+
+            case "maximum": {
+                MaxValue maximum = of.createMaxValue();
+                maximum.setValueType(dataTypeToQName(targetType.getResultType()));
+                maximum.setResultType(targetType.getResultType());
+                return maximum;
+            }
+
+            default: throw new IllegalArgumentException(String.format("Unknown extent: %s", extent));
+        }
+    }
+
+    @Override
     public Object visitTimeBoundaryExpressionTerm(@NotNull cqlParser.TimeBoundaryExpressionTermContext ctx) {
         UnaryExpression result = null;
         String operatorName = null;

@@ -20,3 +20,13 @@ define StringToDecimal: convert '3.0' to Decimal
 define IntegerToDecimal: convert 1 to Decimal
 // ToDateTime(String) : DateTime
 define StringToDateTime: convert '2014-01-01T00:00:00:00.0000+0700' to DateTime
+
+define MinimumInteger: minimum Integer
+define MinimumDecimal: minimum Decimal
+define MinimumDateTime: minimum DateTime
+define MinimumTime: minimum Time
+
+define MaximumInteger: maximum Integer
+define MaximumDecimal: maximum Decimal
+define MaximumDateTime: maximum DateTime
+define MaximumTime: maximum Time
