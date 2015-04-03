@@ -60,3 +60,11 @@ list<Integer>
 list<Integer> { 1, 2, 3, 4, 5 }
 
 tuple { integerList list<Integer> }
+
+
+// any/all quantifiers
+
+
+define AnyCode: any X in "Y" === AnyTrue(X X where X in "Y")
+define AllCode: all X in "Y" === AllTrue(X X where X in "Y")
+

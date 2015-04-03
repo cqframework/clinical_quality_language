@@ -4,6 +4,8 @@ using QUICK
 
 include CMS153_Common version '2' called Common
 
+codesystem "LOINC": '2.16.840.1.113883.6.1'
+
 valueset "Reason for not performing Chlamydia Screening": 'TBD'
 
 context Patient
@@ -21,3 +23,10 @@ define "No Screening":
     and not exists ([Observation: "Reason for not performing Chlamydia Screening"])
 
 define "Need Screening": "In Demographic" and "Sexually Active" and "No Screening"
+
+define ChlamydiaScreeningRequest: ProcedureRequest {
+  type: Code '31777-6' from "LOINC" display 'Chlamydia trachomatis Ag [Presence] in Unspecified specimen'
+  status: 'proposed'
+  // values for other elements of the request...
+}
+
