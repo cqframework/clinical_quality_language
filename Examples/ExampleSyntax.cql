@@ -4,9 +4,9 @@ library ExampleSyntax
 
 [Encounter, Performance|Occurrence]
 
-define AllProcedures = [Procedure, Performance]
+define AllProcedures: [Procedure, Performance]
 
-define ImagingProcedures = AllProcedures P where P is [ImagingProcedure, Performance] return P as [ImagingProcedure, Performance]
+define ImagingProcedures: AllProcedures P where P is [ImagingProcedure, Performance] return P as [ImagingProcedure, Performance]
 
 A starts at most same day as start B
 
@@ -32,37 +32,37 @@ end of IntervalA < start of IntervalB
 
 start of A >= start of B
 
-define MostRecentOfficeVisit =
+define MostRecentOfficeVisit:
 	Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)
 
-define HighBP =
+define HighBP:
 	[SimpleObservationResult: "Systolic Blood Pressure"] SBP
-		with (Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)) OV 
+		with (Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)) OV
 			where SBP.observedAtTime during OV.performanceTime
 		where SBP.value < 140 u'mm[Hg]'
 
-define HighBP =
+define HighBP:
 	Last([Encounter, Performance: "Office Visit"] E sort by E.effectiveTime)
 
 
-define InpatientCode = CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' }
+define InpatientCode: CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' }
 
-define InpatientEncounters = [Encounter, Performance] E where E.code = InpatientCode
+define InpatientEncounters: [Encounter, Performance] E where E.code = InpatientCode
 
-define "Inpatient" = { CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' } }
+define "Inpatient": { CodeableConcept { code: 'IMP', codeSystem: '2.16.840.1.113883.5.4' } }
 
-define InpatientEncounters = [Encounter, Performance: "Inpatient"]
+define InpatientEncounters: [Encounter, Performance: "Inpatient"]
 
 
 // Declaration Examples
 
-define "Severities" = ValueSet('http://hl7.fhir.org/vs/condition-severity')
+define "Severities": ValueSet('http://hl7.fhir.org/vs/condition-severity')
 
 { Coding { code: 'fatal',  }, Coding { 'severe' }, Coding { 'moderate' }, Coding { 'mild' } }
 
-define "Fatal Severities" = ValueSet('http://hl7.fhir.org/vs/fatal-condition-severities')
+define "Fatal Severities": ValueSet('http://hl7.fhir.org/vs/fatal-condition-severities')
 
-define "Fatal Severities" = "Severities" S where S.code = 'fatal'
+define "Fatal Severities": "Severities" S where S.code = 'fatal'
 
 [Condition: "Fatal Severities"]
 
@@ -208,7 +208,7 @@ A meets B is false
 
 where unit of P.height = u"m" and P.height > 2.0 u"m"
 
-define IsTall = height.units = 'm' and height.value > 2
+define IsTall: height.units = 'm' and height.value > 2
 
 = <> < <= > >=
 + - * /
@@ -258,7 +258,7 @@ no [Encounter, Performance]
 A starts
 
 [Encounter, Performance] E
-	with [Condition] C 
+	with [Condition] C
 		where E.effectiveTime starts before or same day end C.effectiveTime
 
 A starts during B
@@ -273,28 +273,28 @@ using QUICK
 include CMS153_Common version '2' as Common
 
 // Define additional value sets for use within this artifact
-valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
+valueset "Reason for not performing Chlamydia Screening": ValueSet('TBD')
 
 // Establish PATIENT context
 context PATIENT
 
 // Data Type examples
 // Simple Types
-define BooleanLiteral = true  false
-define StringLiteral = 'female'  'pending', 'active', 'complete'
-define ValuesetLiteral = "Female Administrative Sex"
-define NumberLiteral = 16, -28,  100.015
+define BooleanLiteral: true  false
+define StringLiteral: 'female'  'pending', 'active', 'complete'
+define ValuesetLiteral: "Female Administrative Sex"
+define NumberLiteral: 16, -28,  100.015
 
 // Clinical Types
-define QuantityLiteral = 6 u'gm/cm3'  // UCUM units
+define QuantityLiteral: 6 u'gm/cm3'  // UCUM units
 80 u'mm[Hg]'
-define TimespanLiteral = 3 months
+define TimespanLiteral: 3 months
 
 // Structured Types
-define Encounters = [Encounter, Performance]
-define Info = tuple { Name: 'Patrick', DOB: DateTime(2014, 7, 5) }
+define Encounters: [Encounter, Performance]
+define Info: tuple { Name: 'Patrick', DOB: DateTime(2014, 7, 5) }
 
-define PharyngitisEffectiveTime = FirstPharyngitis.effectiveTime
+define PharyngitisEffectiveTime: FirstPharyngitis.effectiveTime
 
 no unknown
 
@@ -304,10 +304,10 @@ date of X year of X minute of X
 
 
 // List Types
-define ListLiteral = { 1, 2, 3, 4, 5 }
+define ListLiteral: { 1, 2, 3, 4, 5 }
 
 // Interval Types
-define IntervalLiteral = interval[Today() - 1 years, Today()]
+define IntervalLiteral: interval[Today() - 1 years, Today()]
 interval[3, 5)
 
 Today() - 1 years
@@ -321,7 +321,7 @@ Sum([ObservationResult] R return R.result)
 
 if Count(X) > 0 then X[1] else 0
 
-interval[3, 5) contains 4 
+interval[3, 5) contains 4
 4 in interval[3, 5)
 
 interval[3, null) contains 5
@@ -339,12 +339,12 @@ X starts at least 3
 5 minutes
 
 // Simple Expressions
-define LogicalAnd = A and B
-define LogicalAndNotOr = A and not (B or C)
-define GreaterOrEqual = A >= B
-define NotEqual = A <> B
-define Addition = A + B
-define Precedence = A + B * C
+define LogicalAnd: A and B
+define LogicalAndNotOr: A and not (B or C)
+define GreaterOrEqual: A >= B
+define NotEqual: A <> B
+define Addition: A + B
+define Precedence: A + B * C
 
 5 = 'completed'
 { 1, 2, 3, 4, 5 } = { 1, 2, 3, 4, 5 }
@@ -352,22 +352,22 @@ define Precedence = A + B * C
 
 
 // Timing/Interval Operations
-define StartsBeforeStart = A starts before start B
-define StartsConccurrent = A starts concurrent with B
-define Starts3DaysBeforeStart = A starts 3 days before start B
-define StartsWithinBefore = A starts within 3 days before start
-define StartsWithinOf = A starts within 3 days of start
+define StartsBeforeStart: A starts before start B
+define StartsConccurrent: A starts concurrent with B
+define Starts3DaysBeforeStart: A starts 3 days before start B
+define StartsWithinBefore: A starts within 3 days before start
+define StartsWithinOf: A starts within 3 days of start
 
 // Interval Operators
-define Meets = A meets B
-define Overlaps = A overlaps B
-define During = A during B
+define Meets: A meets B
+define Overlaps: A overlaps B
+define During: A during B
 
 // Point Access
-define StartOf = start of MeasurementPeriod
+define StartOf: start of MeasurementPeriod
 
 // Membership
-define Membership = X in interval[4, 6]
+define Membership: X in interval[4, 6]
 
 // List Operations
 
@@ -397,23 +397,23 @@ X starts within 3 days of start Y
 dateTimeX within 3 days of dateTimeY
 
 // Date/Time Manipulation
-define DateSelector = DateTime(2014, 1, 1, 12, 0, 0, -6)
-define Now = Now()
-define Today = Today()
-define ConvertedDate = convert '20140101120000-0600' to Datetime
-define DateAdd = Today() + 3 months - 2 days
-define DateDiff = months between start of X and end of X
-define Duration = duration in months of X
-define DateComponent = date of start of X
-define TimeComponent = time of D
-define Months = month of start of X
+define DateSelector: DateTime(2014, 1, 1, 12, 0, 0, -6)
+define Now: Now()
+define Today: Today()
+define ConvertedDate: convert '20140101120000-0600' to Datetime
+define DateAdd: Today() + 3 months - 2 days
+define DateDiff: months between start of X and end of X
+define Duration: duration in months of X
+define DateComponent: date of start of X
+define TimeComponent: time of D
+define Months: month of start of X
 
 // Conditional Expressions
-define IfExpression =
+define IfExpression:
 	// conditional expression
 	if X > Y then X else Y
 
-define SelectedCaseExpression =
+define SelectedCaseExpression:
 	// selected case expression
 	case X when 1 then 12 when 2 then 14 else 15 end
 
@@ -426,12 +426,12 @@ Combine({ "completed", "refused", "pending" }, ";") "completed;refused;pending"
 Split("completed;refused;pending", ";") { "completed", "refused", "pending" }
 
 
-define GeneralCaseExpression =
+define GeneralCaseExpression:
 	// general case expression
 	case when X > Y then X when Y > X then Y else 0 end
 
 // Aggregate Expressions
-define CountExpression =
+define CountExpression:
 	Count([Encounter, Performance])
 
 	Sum({ 1, 2, 3, 4, 5 })
@@ -439,131 +439,131 @@ define CountExpression =
 	Avg([ObservationResult] R return R.result)
 
 // Retrieve
-define SimpleRetrieve =
+define SimpleRetrieve:
 	[Encounter, Performance]
 
-define CodedRetrieve =
+define CodedRetrieve:
 	[Encounter, Performance: "Ambulatory/ED Visit"]
 
-define ExplicitlyCodedRetrieve =
+define ExplicitlyCodedRetrieve:
 	[Encounter, Performance: serviceType in "Ambulatory/ED Visit"]
 
-define WhereExplicitlyCodedRetrieve =
+define WhereExplicitlyCodedRetrieve:
 	[Encounter, Performance where serviceType in "Ambulatory/ED Visit"]
 
-define CodedWhere =
+define CodedWhere:
 	[Encounter, Performance] E where E.serviceType in ValueSet("Ambulatory/ED Visit")
 
-define RangedRetrieve =
+define RangedRetrieve:
 	[Encounter, Performance, during MeasurementPeriod]
 
-define ExplicitlyRangedRetrieve =
+define ExplicitlyRangedRetrieve:
 	[Encounter, Performance, performanceTime during MeasurementPeriod]
 
-define WhereExplicitlyRangedRetrieve =
+define WhereExplicitlyRangedRetrieve:
 	[Encounter, Performance where performanceTime during MeasurementPeriod]
 
-define RangedWhere =
+define RangedWhere:
 	[Encounter, Performance] E where E.performanceTime during MeasurementPeriod
 
-define CodedRangedRetrieve =
+define CodedRangedRetrieve:
 	[Encounter, Performance: "Ambulatory/ED Visit", during MeasurementPeriod]
 
-define ExplicitlyCodedRangedRetrieve =
+define ExplicitlyCodedRangedRetrieve:
 	[Encounter, Performance: serviceType in "Ambulatory/ED Visit", performanceTime during MeasurementPeriod]
 
-define WhereExplicitlyCodedRangedRetrieve =
+define WhereExplicitlyCodedRangedRetrieve:
 	[Encounter, Performance where serviceType in "Ambulatory/ED Visit" and performanceTime during MeasurementPeriod]
 
-define CodedRangedWhere =
-	[Encounter, Performance] E 
-		where E.serviceType in ValueSet("Ambulatory/ED Visit") 
+define CodedRangedWhere:
+	[Encounter, Performance] E
+		where E.serviceType in ValueSet("Ambulatory/ED Visit")
 			and E.performanceTime during MeasurementPeriod
 
 // Query
-define Encounters =
+define Encounters:
 	[Encounter, Performance: "Inpatient"] E
 
 // Filter
-define FilteredEncounters =
+define FilteredEncounters:
 	[Encounter, Performance: "Inpatient"] E where duration in days of E.effectiveTime >= 120 days
 
 // Return
-define ProjectedEncounters =
+define ProjectedEncounters:
 	// Select columns to be returned
 	[Encounter, Performance: "Inpatient"] E
 		return tuple { id: E.id, effectiveTime: E.effectiveTime, serviceType: E.serviceType }
 
-define ComputedEncounters =
+define ComputedEncounters:
 	// Compute values for returned columns
-	[Encounter, Performance: "Inpatient"] E 
+	[Encounter, Performance: "Inpatient"] E
 		return tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime }
 
-define ExtractedEncounters =
+define ExtractedEncounters:
 	// Extract values
 	[Encounter, Performance: "Inpatient"] E
 		return duration in days of E.effectiveTime
 
 // Sort
-define SortedEncounters =
-	[Encounter, Performance: "Inpatient"] E 
+define SortedEncounters:
+	[Encounter, Performance: "Inpatient"] E
 		sort by effectiveTime
 
-	[Encounter, Performance: "Inpatient"] E 
-		return tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime } 
+	[Encounter, Performance: "Inpatient"] E
+		return tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime }
 		sort by lengthOfStay desc
 
 // With
-define TargetEncounters =
-	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+define TargetEncounters:
+	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		with [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.PerformanceAtTime
 
-define TargetEncounters =
-	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+define TargetEncounters:
+	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		with Pharyngitis P such that P.effectiveTime overlaps after E.performanceTime
-		with Antibiotics A such that A.orderedAtTime starts within 3 days after start E.performanceTime 
+		with Antibiotics A such that A.orderedAtTime starts within 3 days after start E.performanceTime
 	    where E.PerformanceAtTime during MeasurementPeriod
 
 // Full Query
-define FullQuery =
-	[Encounter, Performance: "Inpatient"] E 
-		with [Condition: "Acute Pharyngitis"] P 
-			where P.effectiveTime overlaps after E.PerformanceAtTime 
-		where duration in days of E.effectiveTime >= 120 days 
-		return tuple { id: E.id, lengthOfStay: duration in days of E.EffectiveTime } 
+define FullQuery:
+	[Encounter, Performance: "Inpatient"] E
+		with [Condition: "Acute Pharyngitis"] P
+			where P.effectiveTime overlaps after E.PerformanceAtTime
+		where duration in days of E.effectiveTime >= 120 days
+		return tuple { id: E.id, lengthOfStay: duration in days of E.EffectiveTime }
 		sort by lengthOfStay desc
 
 // Combine
-define EncountersAndConditions =
+define EncountersAndConditions:
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		combine [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.PerformanceAtTime
 
-define FilteredEncountersAndConditions =
+define FilteredEncountersAndConditions:
 	EncountersAndConditions E where E.E.providerType in ValueSet("Provider Types")
 
-define EncountersAndConditionsAndAntibiotics =
-	FilteredEncountersAndConditions F combine [MedicationPrescription: "Antibiotic Medications"] A 
+define EncountersAndConditionsAndAntibiotics:
+	FilteredEncountersAndConditions F combine [MedicationPrescription: "Antibiotic Medications"] A
 		where A.orderedAtTime within 3 days after start F.E.effectiveTime
 
-define FilteredEncountersAndConditionsAndAntibiotics =
+define FilteredEncountersAndConditionsAndAntibiotics:
 	EncountersWithConditionsAndAntibiotics E where E.A.quantity > 1
 
-define EncountersAndConditions =
+define EncountersAndConditions:
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
-		combine [Condition: "Acute Pharyngitis"] P 
+		combine [Condition: "Acute Pharyngitis"] P
 			where P.effectiveTime overlaps after E.PerformanceAtTime
 		return tuple { Encounter: E, Pharyngitis: P }
 
-define EncountersAndConditions =
+define EncountersAndConditions:
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
-		combine [Condition: "Acute Pharyngitis"] P 
+		combine [Condition: "Acute Pharyngitis"] P
 			where P.effectiveTime overlaps after E.PerformanceAtTime
 		return tuple { EncounterId: E.Id, EncounterEffectiveTime: E.effectiveTime, PharyngitisCode: P.Code }
 
 ObservationResults R return R.result
 
-define UnionedEncounters =
-	[Encounter, Performance: "Ambulatory/ED Visit"] 
+define UnionedEncounters:
+	[Encounter, Performance: "Ambulatory/ED Visit"]
 		union [Encounter, Performance: "Inpatient"]
 
 	[Encounter, Performance: "Ambulatory/ED Visit"]
@@ -579,18 +579,18 @@ define UnionedEncounters =
 // with/combine
 // redefine
 
-define X = tuple { X: 1, Y: 1 }
-define NewX = X X return
+define X: tuple { X: 1, Y: 1 }
+define NewX: X X return
 
 
 // This combine
-define EncountersAndConditions =
+define EncountersAndConditions:
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
-		combine [Condition: "Acute Pharyngitis"] P 
+		combine [Condition: "Acute Pharyngitis"] P
 			where P.effectiveTime overlaps after E.PerformanceAtTime
 
 // Is equivalent to nested foreach invocations
-define CombinedEncountersAndConditions =
+define CombinedEncountersAndConditions:
 	expand
 	(
 		foreach E in [Encounter, Performance: "Ambulatory/ED Visit"]
@@ -600,25 +600,25 @@ define CombinedEncountersAndConditions =
 	)
 
 // followed by a filter
-define EncountersAndConditions =
-	CombinedEncountersAndConditions EC 
+define EncountersAndConditions:
+	CombinedEncountersAndConditions EC
 		where EC.Condition.effectiveTime overlaps after EC.Encounter.PerformanceAtTime
 
 
 // Function definition
-define function CumulativeDuration(Intervals: list<interval<Timestamp>>)
+define function CumulativeDuration(Intervals list<interval<Timestamp>>)
 {
 	return Sum((collapse Intervals) X return duration in days of X)
 }
 
-define Encounters = [Encounter, Performance: "Inpatient Visit"]
+define Encounters: [Encounter, Performance: "Inpatient Visit"]
 
-define CMD = CumulativeDuration(Encounters E return E.effectiveTime)
+define CMD: CumulativeDuration(Encounters E return E.effectiveTime)
 
-define CombinedValueSet = "Ambulatory/ED Visit" union "Inpatient Visit"
+define CombinedValueSet: "Ambulatory/ED Visit" union "Inpatient Visit"
 
-define XYZCode = First(CombinedValueSet VS where VS.code = 'XYZ')
-define XYZCode = tuple { code: 'XYZ' }
+define XYZCode: First(CombinedValueSet VS where VS.code = 'XYZ')
+define XYZCode: tuple { code: 'XYZ' }
 
 Sum({ 1, 2, 3, 4, 5 })
 Count([Encounter, Performance])
@@ -635,36 +635,36 @@ foreach R in [ObservationResult] return R.result
 
 // foreach vs return clause
 
-define Z = foreach X in [Encounter, Performance]
+define Z: foreach X in [Encounter, Performance]
 	return foreach Y in [ObservationResult] return tuple { X: X, Y: Y }
 
-define A = [Encounter, Performance] X return [ObservationResult] Y return tuple { X: X, Y: Y }
+define A: [Encounter, Performance] X return [ObservationResult] Y return tuple { X: X, Y: Y }
 
 // Aggregates
 
-define A = Sum(result from [ObservationResult])
-define A = Sum([ObservationResult] X return X.result)
-define A = Sum({ 1, 2, 3, 4, 5 })
+define A: Sum(result from [ObservationResult])
+define A: Sum([ObservationResult] X return X.result)
+define A: Sum({ 1, 2, 3, 4, 5 })
 
-define Encounters =
+define Encounters:
 	[Encounter, Performance, during MeasurementPeriod]
 
-define EncountersWithDates =
+define EncountersWithDates:
 	Encounters X return tuple { encounter: X, effectiveDate: date of X.effectiveTime }
 
-define Dates =
+define Dates:
 	distinct (EncountersWithDates X return X.effectiveDate)
 
-define NumberOfEncountersPerDate =
+define NumberOfEncountersPerDate:
 	Dates D return tuple { encounterDate: D, number: Count(EncountersWithDates E where E.effectiveDate = D) }
 
 using QUICK
 
 context = PATIENT
 
-define InCohort = year of birthDate >= 1965 and year of birthDate < 1992
+define InCohort: year of birthDate >= 1965 and year of birthDate < 1992
 
-define Transfusions = [Procedure, Performance: "Blood transfusion"] P where year of P.performanceTime < 1992
+define Transfusions: [Procedure, Performance: "Blood transfusion"] P where year of P.performanceTime < 1992
 
 
 
@@ -678,11 +678,11 @@ using QUICK
 
 parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
-valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
+valueset "Female Administrative Sex": ValueSet('2.16.840.1.113883.3.560.100.2')
 
 context PATIENT
 
-define InDemographic =
+define InDemographic:
 	AgeAt(start of MeasurementPeriod) >= 16
 		and AgeAt(start of MeasurementPeriod) < 24
 		and Gender in "Female Administrative Sex"
@@ -695,7 +695,7 @@ AND: "Patient Characteristic Sex: Female"
 // Population Criteria
 
 // NOTE: Other clinically relevant indicators omitted for brevity
-define SexuallyActive =
+define SexuallyActive:
 	exists ([Condition: "Chlamydia"] C where C.effectiveTime overlaps MeasurementPeriod)
 	or exists ([Condition: "HIV"] C where C.effectiveTime overlaps MeasurementPeriod)
 	or exists ([Condition: "Syphilis"] C where C.effectiveTime overlaps MeasurementPeriod)
@@ -708,10 +708,10 @@ OR: "Diagnosis, Active: Syphilis" overlaps "Measurement Period"
 // Timing Phrases
 
 // Assumes previous definition of Antibiotics and TargetDiagnoses
-define HasPriorAntibiotics =
+define HasPriorAntibiotics:
 	exists (
 		Antibiotics A
-			with TargetDiagnoses D 
+			with TargetDiagnoses D
 				where A.orderedAtTime starts within 30 days before start D.effectiveTime
 	)
 
@@ -728,17 +728,17 @@ using QUICK
 
 parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
-valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
+valueset "Female Administrative Sex": ValueSet('2.16.840.1.113883.3.560.100.2')
 ... // Additional valueset definitions omitted for brevity
 
 context PATIENT
 
-define InDemographic =
+define InDemographic:
 	AgeAt(start of MeasurementPeriod) >= 16
 		and AgeAt(start of MeasurementPeriod) < 24
 		and Gender in "Female Administrative Sex"
 
-define SexuallyActive =
+define SexuallyActive:
 	exists ([Condition: "Other Female Reproductive Conditions"] C where C.effectiveTime overlaps before MeasurementPeriod)
 		or exists ([Condition: "Genital Herpes"] C where C.effectiveTime overlaps before MeasurementPeriod)
 		or exists ([Condition: "Genococcal Infections and Venereal Diseases"] C where C.effectiveTime overlaps before MeasurementPeriod)
@@ -752,13 +752,13 @@ define SexuallyActive =
 		or exists ([ObservationResult: "Lab Tests During Pregnancy"] R where R.effectiveTime during MeasurementPeriod)
 		or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"] R where R.observedAtTime during MeasurementPeriod)
 
-define InInitialPopulation =
+define InInitialPopulation:
 	InDemographic and SexuallyActive
 
-define InDenominator =
+define InDenominator:
 	InInitialPopulation
 
-define InNumerator =
+define InNumerator:
 	InDenominator
 		and exists ([ObservationResult: "Chlamydia Screening"] R where R.effectiveTime during MeasurementPeriod and R.result is not null)
 
@@ -768,15 +768,15 @@ library CMS153_CDS
 
 using QUICK
 
-valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
+valueset "Female Administrative Sex": ValueSet('2.16.840.1.113883.3.560.100.2')
 ... // Other valueset definitions omitted for brevity
 
 context PATIENT
 
-define InDemographic =
+define InDemographic:
 	Age() >= 16 and Age() < 24 and Gender in "Female Administrative Sex"
 
-define SexuallyActive =
+define SexuallyActive:
 	exists ([Condition: "Other Female Reproductive Conditions"])
 	or exists ([Condition: "Genital Herpes"])
 	or exists ([Condition: "Genococcal Infections and Venereal Diseases"])
@@ -789,13 +789,13 @@ define SexuallyActive =
 	or exists ([ObservationResult: "Pap Test"])
 	or exists ([ObservationResult: "Lab Tests During Pregnancy"])
 	or exists ([ObservationResult: "Lab Tests for Sexually Transmitted Infections"])
-		
-define NoScreening =
+
+define NoScreening:
 	not exists ([ObservationResult: "Chlamydia Screening", during interval[Today() - 1 years, Today()]] R where R.result is not null)
 	and not exists ([Procedure, Plan: "Chlamydia Screening", during interval[Today(), null]])
 	and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
-define NeedScreening = InDemographic and SexuallyActive and NoScreening
+define NeedScreening: InDemographic and SexuallyActive and NoScreening
 
 
 // Chlamydia Screening, Common
@@ -804,12 +804,12 @@ library CMS153_Common
 
 using QUICK
 
-valueset "Female Administrative Sex" = ValueSet('2.16.840.1.113883.3.560.100.2')
+valueset "Female Administrative Sex": ValueSet('2.16.840.1.113883.3.560.100.2')
 ... // Other valueset definitions omitted for brevity
 
 context PATIENT
 
-define ConditionsIndicatingSexualActivity =
+define ConditionsIndicatingSexualActivity:
     union(
         [Condition: "Other Female Reproductive Conditions"],
         [Condition: "Genital Herpes"],
@@ -821,7 +821,7 @@ define ConditionsIndicatingSexualActivity =
         [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
     )
 
-define ResultsIndicatingSexualActivity =
+define ResultsIndicatingSexualActivity:
     union(
         [ObservationResult: "Pregnancy"],
         [ObservationResult: "Pap"],
@@ -829,7 +829,7 @@ define ResultsIndicatingSexualActivity =
         [ObservationResult: "Lab Tests for Sexually Transmitted Infections"]
     )
 
-define ResultsPresentForChlamydiaScreening =
+define ResultsPresentForChlamydiaScreening:
     [ObservationResult: "Chlamydia Screening"] R where R.result is not null
 
 not exists ([Condition])
@@ -850,23 +850,23 @@ parameter MeasurementPeriod : interval<Datetime>
 
 context PATIENT
 
-define InDemographic =
+define InDemographic:
     AgeAt(start of MeasurementPeriod) >= 16
         and AgeAt(start of MeasurementPeriod) < 24
         and Gender in Common."Female Administrative Sex"
 
-define SexuallyActive =
+define SexuallyActive:
     exists(Common.ConditionsIndicatingSexualActivity C where C.effectiveTime overlaps before MeasurementPeriod)
         or exists(Common.ResultsIndicatingSexualActivity R where R.effectiveTime during MeasurementPeriod)
 
-define InInitialPopulation =
+define InInitialPopulation:
     InDemographic and SexuallyActive
 
-define InDenominator =
+define InDenominator:
     InInitialPopulation
 
-define InNumerator =
-    InDenominator 
+define InNumerator:
+    InDenominator
 		and exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during MeasurementPeriod)
 
 
@@ -878,39 +878,39 @@ using QUICK
 
 include CMS153_Common as Common
 
-valueset "Reason for not performing Chlamydia Screening" = ValueSet('TBD')
+valueset "Reason for not performing Chlamydia Screening": ValueSet('TBD')
 
 context PATIENT
 
-define InDemographic =
+define InDemographic:
     Age() >= 16 and Age() < 24 and Gender in Common."Female Administrative Sex"
 
-define SexuallyActive =
+define SexuallyActive:
     exists (Common.ConditionsIndicatingSexualActivity)
     or exists (Common.ResultsIndicatingSexualActivity)
 
-define NoScreening =
+define NoScreening:
     not exists (Common.ResultsPresentForChlamydiaScreening S where S.effectiveTime during interval[Today() - 1 years, Today()])
     and not exists ([Procedure, Plan: Common."Chlamydia Screening"] P where P.effectiveTime >= now)
     and not exists ([ObservationResult: "Reason for not performing Chlamydia Screening"])
 
-define NeedScreening = InDemographic and SexuallyActive and NoScreening
+define NeedScreening: InDemographic and SexuallyActive and NoScreening
 
-define TargetEncounters =
-	[Encounter, Performance: "Ambulatory/ED Visit"] E 
-		with [Condition: "Acute Pharyngitis"] P 
+define TargetEncounters:
+	[Encounter, Performance: "Ambulatory/ED Visit"] E
+		with [Condition: "Acute Pharyngitis"] P
 			where not P.effectiveTime overlaps after E.performanceTime
 
-define TargetEncounters =
-	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+define TargetEncounters:
+	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		where exists ([Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime)
 
-define TargetEncounters =
-	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+define TargetEncounters:
+	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		without [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime
 
-define TargetEncounters =
-	[Encounter, Performance: "Ambulatory/ED Visit"] E 
+define TargetEncounters:
+	[Encounter, Performance: "Ambulatory/ED Visit"] E
 		where not exists ([Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.performanceTime)
 
 
@@ -933,14 +933,14 @@ library CMS153_Common version '2'
 
 using QUICK
 
-valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2' version '1'
-valueset "Other Female Reproductive Conditions" = '2.16.840.1.113883.3.464.1003.111.12.1006' version '1'
-valueset "Genital Herpes" = '2.16.840.1.113883.3.464.1003.110.12.1049' version '1'
+valueset "Female Administrative Sex": '2.16.840.1.113883.3.560.100.2' version '1'
+valueset "Other Female Reproductive Conditions": '2.16.840.1.113883.3.464.1003.111.12.1006' version '1'
+valueset "Genital Herpes": '2.16.840.1.113883.3.464.1003.110.12.1049' version '1'
 ...
 
 context PATIENT
 
-define "Conditions Indicating Sexual Activity" =
+define "Conditions Indicating Sexual Activity":
 	[Condition: "Other Female Reproductive Conditions"]
 	    union [Condition: "Genital Herpes"]
         union [Condition: "Genococcal Infections and Venereal Diseases"]
@@ -950,18 +950,14 @@ define "Conditions Indicating Sexual Activity" =
         union [Condition: "Syphilis"]
         union [Condition: "Complications of Pregnancy, Childbirth and the Puerperium"]
 
-define "Laboratory Tests Indicating Sexual Activity" =
+define "Laboratory Tests Indicating Sexual Activity":
     [LaboratoryTest, Order: "Pregnancy Test"]
         union [LaboratoryTest, Order: "Pap Test"]
         union [LaboratoryTest, Order: "Lab Tests During Pregnancy"]
 	    union [LaboratoryTest, Order: "Lab Tests for Sexually Transmitted Infections"]
 
-define "Tests Performed For Chlamydia" =
+define "Tests Performed For Chlamydia":
 	[Procedure, Performance: "Chlamydia Screening"]
 
-define "Results Present For Chlamydia Screening" =
+define "Results Present For Chlamydia Screening":
     [ObservationResult: "Chlamydia Screening"] R where R.result is not null
-
-
-
-

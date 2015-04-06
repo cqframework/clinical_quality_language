@@ -10,17 +10,17 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AGtB_Int = 5 = 4
-define AEqB_Int = 5 = 5
-define ALtB_Int = 5 = 6
-define EqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: 1}}
-define UneqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: -1}}
-define EqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define UneqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define EqDateTimesTZ = DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) = DateTime(2000, 3, 16, 2, 30, 25, 200, +4.0)
-define UneqDateTimesTZ = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
-define PossiblyEqualDateTimes = DateTime(2000, 3, 15) = DateTime(2000)
-define ImpossiblyEqualDateTimes = DateTime(2000, 3, 15) = DateTime(2000, 4)
+define AGtB_Int: 5 = 4
+define AEqB_Int: 5 = 5
+define ALtB_Int: 5 = 6
+define EqTuples: Tuple{a: 1, b: Tuple{c: 1}} = Tuple{a: 1, b: Tuple{c: 1}}
+define UneqTuples: Tuple{a: 1, b: Tuple{c: 1}} = Tuple{a: 1, b: Tuple{c: -1}}
+define EqDateTimes: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define UneqDateTimes: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define EqDateTimesTZ: DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) = DateTime(2000, 3, 16, 2, 30, 25, 200, +4.0)
+define UneqDateTimesTZ: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
+define PossiblyEqualDateTimes: DateTime(2000, 3, 15) = DateTime(2000)
+define ImpossiblyEqualDateTimes: DateTime(2000, 3, 15) = DateTime(2000, 4)
 ###
 
 module.exports['Equal'] = {
@@ -57,6 +57,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "AGtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -72,6 +73,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "AEqB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -87,6 +89,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "ALtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -102,6 +105,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -155,6 +159,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UneqTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -211,6 +216,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqDateTimes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -290,6 +296,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UneqDateTimes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -369,6 +376,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqDateTimesTZ",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -448,6 +456,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UneqDateTimesTZ",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -527,6 +536,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "PossiblyEqualDateTimes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -558,6 +568,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "ImpossiblyEqualDateTimes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -599,17 +610,17 @@ module.exports['Equal'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AGtB_Int = 5 <> 4
-define AEqB_Int = 5 <> 5
-define ALtB_Int = 5 <> 6
-define EqTuples = tuple{a: 1, b: tuple{c: 1}} <> tuple{a: 1, b: tuple{c: 1}}
-define UneqTuples = tuple{a: 1, b: tuple{c: 1}} <> tuple{a: 1, b: tuple{c: -1}}
-define EqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define UneqDateTimes = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
-define EqDateTimesTZ = DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) <> DateTime(2000, 3, 16, 2, 30, 25, 200, +4.0)
-define UneqDateTimesTZ = DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
-define PossiblyEqualDateTimes = DateTime(2000, 3, 15) <> DateTime(2000)
-define ImpossiblyEqualDateTimes = DateTime(2000, 3, 15) <> DateTime(2000, 4)
+define AGtB_Int: 5 <> 4
+define AEqB_Int: 5 <> 5
+define ALtB_Int: 5 <> 6
+define EqTuples: Tuple{a: 1, b: Tuple{c: 1}} <> Tuple{a: 1, b: Tuple{c: 1}}
+define UneqTuples: Tuple{a: 1, b: Tuple{c: 1}} <> Tuple{a: 1, b: Tuple{c: -1}}
+define EqDateTimes: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
+define UneqDateTimes: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
+define EqDateTimesTZ: DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) <> DateTime(2000, 3, 16, 2, 30, 25, 200, +4.0)
+define UneqDateTimesTZ: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) <> DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
+define PossiblyEqualDateTimes: DateTime(2000, 3, 15) <> DateTime(2000)
+define ImpossiblyEqualDateTimes: DateTime(2000, 3, 15) <> DateTime(2000, 4)
 ###
 
 module.exports['NotEqual'] = {
@@ -646,6 +657,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "AGtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -664,6 +676,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "AEqB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -682,6 +695,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "ALtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -700,6 +714,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -756,6 +771,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UneqTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -815,6 +831,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqDateTimes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -897,6 +914,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UneqDateTimes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -979,6 +997,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqDateTimesTZ",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1061,6 +1080,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UneqDateTimesTZ",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1143,6 +1163,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "PossiblyEqualDateTimes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1177,6 +1198,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "ImpossiblyEqualDateTimes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1221,9 +1243,9 @@ module.exports['NotEqual'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AGtB_Int = 5 < 4
-define AEqB_Int = 5 < 5
-define ALtB_Int = 5 < 6
+define AGtB_Int: 5 < 4
+define AEqB_Int: 5 < 5
+define ALtB_Int: 5 < 6
 ###
 
 module.exports['Less'] = {
@@ -1260,6 +1282,7 @@ module.exports['Less'] = {
          }, {
             "name" : "AGtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -1275,6 +1298,7 @@ module.exports['Less'] = {
          }, {
             "name" : "AEqB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -1290,6 +1314,7 @@ module.exports['Less'] = {
          }, {
             "name" : "ALtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Less",
                "operand" : [ {
@@ -1311,9 +1336,9 @@ module.exports['Less'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AGtB_Int = 5 <= 4
-define AEqB_Int = 5 <= 5
-define ALtB_Int = 5 <= 6
+define AGtB_Int: 5 <= 4
+define AEqB_Int: 5 <= 5
+define ALtB_Int: 5 <= 6
 ###
 
 module.exports['LessOrEqual'] = {
@@ -1350,6 +1375,7 @@ module.exports['LessOrEqual'] = {
          }, {
             "name" : "AGtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -1365,6 +1391,7 @@ module.exports['LessOrEqual'] = {
          }, {
             "name" : "AEqB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -1380,6 +1407,7 @@ module.exports['LessOrEqual'] = {
          }, {
             "name" : "ALtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "LessOrEqual",
                "operand" : [ {
@@ -1401,9 +1429,9 @@ module.exports['LessOrEqual'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AGtB_Int = 5 > 4
-define AEqB_Int = 5 > 5
-define ALtB_Int = 5 > 6
+define AGtB_Int: 5 > 4
+define AEqB_Int: 5 > 5
+define ALtB_Int: 5 > 6
 ###
 
 module.exports['Greater'] = {
@@ -1440,6 +1468,7 @@ module.exports['Greater'] = {
          }, {
             "name" : "AGtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -1455,6 +1484,7 @@ module.exports['Greater'] = {
          }, {
             "name" : "AEqB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -1470,6 +1500,7 @@ module.exports['Greater'] = {
          }, {
             "name" : "ALtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Greater",
                "operand" : [ {
@@ -1491,9 +1522,9 @@ module.exports['Greater'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AGtB_Int = 5 >= 4
-define AEqB_Int = 5 >= 5
-define ALtB_Int = 5 >= 6
+define AGtB_Int: 5 >= 4
+define AEqB_Int: 5 >= 5
+define ALtB_Int: 5 >= 6
 ###
 
 module.exports['GreaterOrEqual'] = {
@@ -1530,6 +1561,7 @@ module.exports['GreaterOrEqual'] = {
          }, {
             "name" : "AGtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
@@ -1545,6 +1577,7 @@ module.exports['GreaterOrEqual'] = {
          }, {
             "name" : "AEqB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {
@@ -1560,6 +1593,7 @@ module.exports['GreaterOrEqual'] = {
          }, {
             "name" : "ALtB_Int",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "GreaterOrEqual",
                "operand" : [ {

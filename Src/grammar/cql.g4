@@ -9,6 +9,7 @@ logic
     libraryDefinition?
     usingDefinition*
 	includeDefinition*
+	codesystemDefinition*
 	valuesetDefinition*
 	parameterDefinition*
 	statement+
@@ -34,23 +35,36 @@ localIdentifier
     : identifier
     ;
 
+accessModifier
+    : 'public'
+    | 'private'
+    ;
+
 parameterDefinition
-    : 'parameter' identifier (':' typeSpecifier)? ('default' expression)?
+    : accessModifier? 'parameter' identifier (typeSpecifier)? ('default' expression)?
+    ;
+
+codesystemDefinition
+    : accessModifier? 'codesystem' identifier ':' codesystemId ('version' versionSpecifier)?
     ;
 
 valuesetDefinition
-    : 'valueset' identifier '=' valuesetId ('version' versionSpecifier)? codeSystemVersions?
+    : accessModifier? 'valueset' identifier ':' valuesetId ('version' versionSpecifier)? codesystems?
     ;
 
-codeSystemVersions
-    : 'code systems' '(' codeSystemVersion (',' codeSystemVersion)* ')'
+codesystems
+    : 'codesystems' '(' codesystemIdentifier (',' codesystemIdentifier)* ')'
     ;
 
-codeSystemVersion
-    : codeSystemId 'version' versionSpecifier
+codesystemIdentifier
+    : (libraryIdentifier '.')? identifier
     ;
 
-codeSystemId
+libraryIdentifier
+    : identifier
+    ;
+
+codesystemId
     : STRING
     ;
 
@@ -82,19 +96,19 @@ modelIdentifier
     ;
 
 listTypeSpecifier
-    : 'list' '<' typeSpecifier '>'
+    : 'List' '<' typeSpecifier '>'
     ;
 
 intervalTypeSpecifier
-    : 'interval' '<' typeSpecifier '>'
+    : 'Interval' '<' typeSpecifier '>'
     ;
 
 tupleTypeSpecifier
-    : 'tuple' '{' tupleElementDefinition (',' tupleElementDefinition)* '}'
+    : 'Tuple' '{' tupleElementDefinition (',' tupleElementDefinition)* '}'
     ;
 
 tupleElementDefinition
-    : identifier ':' typeSpecifier
+    : identifier typeSpecifier
     ;
 
 /*
@@ -108,7 +122,7 @@ statement
     ;
 
 expressionDefinition
-    : 'define' identifier '=' expression
+    : 'define' accessModifier? identifier ':' expression
     ;
 
 contextDefinition
@@ -116,19 +130,15 @@ contextDefinition
     ;
 
 functionDefinition
-    : 'define' 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')' functionBody
+    : 'define' accessModifier? 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')' ':' functionBody
     ;
 
 operandDefinition
-    : identifier ':' typeSpecifier
+    : identifier typeSpecifier
     ;
 
 functionBody
-    : '{' returnStatement '}'
-    ;
-
-returnStatement
-    : 'return' expression
+    : expression
     ;
 
 /*
@@ -163,11 +173,7 @@ withoutClause
     ;
 
 retrieve
-    : '[' topic (':' (valuesetPathIdentifier 'in')? valueset)? ']'
-    ;
-
-topic
-    : namedTypeSpecifier
+    : '[' namedTypeSpecifier (':' (valuesetPathIdentifier 'in')? valueset)? ']'
     ;
 
 valuesetPathIdentifier
@@ -196,7 +202,7 @@ singleSourceClause
     ;
 
 multipleSourceClause
-    : 'foreach' aliasedQuerySource (',' aliasedQuerySource)*
+    : 'from' aliasedQuerySource (',' aliasedQuerySource)*
     ;
 
 defineClause
@@ -204,7 +210,7 @@ defineClause
     ;
 
 defineClauseItem
-    : identifier '=' expression
+    : identifier ':' expression
     ;
 
 whereClause
@@ -233,23 +239,24 @@ qualifiedIdentifier
     ;
 
 expression
-    : expressionTerm                                                         # termExpression
-    | retrieve                                                               # retrieveExpression
-    | query                                                                  # queryExpression
-    | expression 'is' 'not'? ('null' | 'true' | 'false')                     # booleanExpression
-    | expression ('is' | 'as') typeSpecifier                                 # typeExpression
-    | 'cast' expression 'as' typeSpecifier                                   # castExpression
-    | 'not' expression                                                       # notExpression
-    | 'exists' expression                                                    # existenceExpression
-    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm   # rangeExpression
-    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm  # timeRangeExpression
-    | expression ('<=' | '<' | '>' | '>=') expression                        # inequalityExpression
-    | expression intervalOperatorPhrase expression                           # timingExpression
-    | expression ('=' | '<>') expression                                     # equalityExpression
-    | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression  # membershipExpression
-    | expression 'and' expression                                            # andExpression
-    | expression ('or' | 'xor') expression                                   # orExpression
-    | expression ('union' | 'intersect' | 'except') expression               # inFixSetExpression
+    : expressionTerm                                                                                # termExpression
+    | retrieve                                                                                      # retrieveExpression
+    | query                                                                                         # queryExpression
+    | expression 'is' 'not'? ('null' | 'true' | 'false')                                            # booleanExpression
+    | expression ('is' | 'as') typeSpecifier                                                        # typeExpression
+    | 'cast' expression 'as' typeSpecifier                                                          # castExpression
+    | 'not' expression                                                                              # notExpression
+    | 'exists' expression                                                                           # existenceExpression
+    | expression 'properly'? 'between' expressionTerm 'and' expressionTerm                          # betweenExpression
+    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm                         # durationBetweenExpression
+    | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       # differenceBetweenExpression
+    | expression ('<=' | '<' | '>' | '>=') expression                                               # inequalityExpression
+    | expression intervalOperatorPhrase expression                                                  # timingExpression
+    | expression ('=' | '<>' | 'matches' ) expression                                               # equalityExpression
+    | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression                         # membershipExpression
+    | expression 'and' expression                                                                   # andExpression
+    | expression ('or' | 'xor') expression                                                          # orExpression
+    | expression ('union' | 'intersect' | 'except') expression                                      # inFixSetExpression
     ;
 
 dateTimePrecision
@@ -271,7 +278,7 @@ expressionTerm
     : term                                                               # termExpressionTerm
     | expressionTerm '.' identifier                                      # accessorExpressionTerm
     | expressionTerm '[' expression ']'                                  # indexedExpressionTerm
-    | expressionTerm '(' (expression (',' expression)*)? ')'             # methodExpressionTerm
+    | (qualifier '.')? identifier '(' (expression (',' expression)*)? ')'# invocationExpressionTerm
     | 'convert' expression 'to' typeSpecifier                            # conversionExpressionTerm
     | ('+' | '-') expressionTerm                                         # polarityExpressionTerm
     | ('start' | 'end') 'of' expressionTerm                              # timeBoundaryExpressionTerm
@@ -281,12 +288,12 @@ expressionTerm
     | 'successor' 'of' expressionTerm                                    # successorExpressionTerm
     | 'predecessor' 'of' expressionTerm                                  # predecessorExpressionTerm
     | 'singleton' 'from' expressionTerm                                  # elementExtractorExpressionTerm
+    | ('minimum' | 'maximum') namedTypeSpecifier                         # typeExtentExpressionTerm
     | expressionTerm '^' expressionTerm                                  # powerExpressionTerm
     | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm          # multiplicationExpressionTerm
     | expressionTerm ('+' | '-') expressionTerm                          # additionExpressionTerm
     | 'if' expression 'then' expression 'else' expression                # ifThenElseExpressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     # caseExpressionTerm
-    | 'coalesce' '(' expression (',' expression)+ ')'                    # coalesceExpressionTerm
     | ('distinct' | 'collapse' | 'expand') expression                    # aggregateExpressionTerm
     ;
 
@@ -313,15 +320,15 @@ quantityOffset
     ;
 
 intervalOperatorPhrase
-    : ('starts' | 'ends')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?              #concurrentWithIntervalOperatorPhrase
-    | 'properly'? 'includes' dateTimePrecisionSpecifier? ('start' | 'end')?                                     #includesIntervalOperatorPhrase
-    | ('starts' | 'ends')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?                   #includedInIntervalOperatorPhrase
-    | ('starts' | 'ends')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' | 'end')?  #beforeOrAfterIntervalOperatorPhrase
-    | ('starts' | 'ends')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?                         #withinIntervalOperatorPhrase
-    | 'meets' ('before' | 'after')? dateTimePrecisionSpecifier?                                                 #meetsIntervalOperatorPhrase
-    | 'overlaps' ('before' | 'after')? dateTimePrecisionSpecifier?                                              #overlapsIntervalOperatorPhrase
-    | 'starts' dateTimePrecisionSpecifier?                                                                      #startsIntervalOperatorPhrase
-    | 'ends' dateTimePrecisionSpecifier?                                                                        #endsIntervalOperatorPhrase
+    : ('starts' | 'ends' | 'occurs')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?               #concurrentWithIntervalOperatorPhrase
+    | 'properly'? 'includes' dateTimePrecisionSpecifier? ('start' | 'end')?                                                 #includesIntervalOperatorPhrase
+    | ('starts' | 'ends' | 'occurs')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?                    #includedInIntervalOperatorPhrase
+    | ('starts' | 'ends' | 'occurs')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' | 'end')?   #beforeOrAfterIntervalOperatorPhrase
+    | ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?                          #withinIntervalOperatorPhrase
+    | 'meets' ('before' | 'after')? dateTimePrecisionSpecifier?                                                             #meetsIntervalOperatorPhrase
+    | 'overlaps' ('before' | 'after')? dateTimePrecisionSpecifier?                                                          #overlapsIntervalOperatorPhrase
+    | 'starts' dateTimePrecisionSpecifier?                                                                                  #startsIntervalOperatorPhrase
+    | 'ends' dateTimePrecisionSpecifier?                                                                                    #endsIntervalOperatorPhrase
     ;
 
 term
@@ -329,32 +336,57 @@ term
     | literal               #literalTerm
     | intervalSelector      #intervalSelectorTerm
     | tupleSelector         #tupleSelectorTerm
+    | instanceSelector      #instanceSelectorTerm
     | listSelector          #listSelectorTerm
+    | codeSelector          #codeSelectorTerm
+    | conceptSelector       #conceptSelectorTerm
     | '(' expression ')'    #parenthesizedTerm
     ;
 
 intervalSelector
     : // TODO: Consider this as an alternative syntax for intervals... (would need to be moved up to expression to make it work)
     //expression ( '..' | '*.' | '.*' | '**' ) expression;
-    'interval' ('['|'(') expression ',' expression (']'|')')
+    'Interval' ('['|'(') expression ',' expression (']'|')')
     ;
 
 tupleSelector
-    : 'tuple'? '{' (':' | (tupleElementSelector (',' tupleElementSelector)*)) '}'
+    : 'Tuple'? '{' (':' | (tupleElementSelector (',' tupleElementSelector)*)) '}'
     ;
 
 tupleElementSelector
     : identifier ':' expression
     ;
 
+instanceSelector
+    : namedTypeSpecifier '{' (':' | (instanceElementSelector (',' instanceElementSelector)*)) '}'
+    ;
+
+instanceElementSelector
+    : identifier ':' expression
+    ;
+
 listSelector
-    : ('list' ('<' typeSpecifier '>')?)? '{' expression? (',' expression)* '}'
+    : ('List' ('<' typeSpecifier '>')?)? '{' (expression (',' expression)*)? '}'
+    ;
+
+displayClause
+    : 'display' stringLiteral
+    ;
+
+codeSelector
+    : 'Code' stringLiteral 'from' codesystemIdentifier displayClause?
+    ;
+
+conceptSelector
+    : 'Concept' '{' codeSelector (',' codeSelector)* '}' displayClause?
     ;
 
 literal
     : nullLiteral
     | booleanLiteral
     | stringLiteral
+    | dateTimeLiteral
+    | timeLiteral
     | quantityLiteral
     ;
 
@@ -371,6 +403,14 @@ stringLiteral
     : STRING
     ;
 
+dateTimeLiteral
+    : DATETIME
+    ;
+
+timeLiteral
+    : TIME
+    ;
+
 quantityLiteral
     : QUANTITY unit?
     ;
@@ -383,6 +423,11 @@ unit
 
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
+    // Include here any keyword that should not be a reserved word
+    | 'display'
+    | 'version'
+    | 'Code'
+    | 'Concept'
     ;
 
 /*
@@ -397,12 +442,69 @@ QUANTITY
     : [0-9]+('.'[0-9]+)?
     ;
 
+DATETIME
+    : '@'
+        [0-9][0-9][0-9][0-9] // year
+        (
+            '-'[0-9][0-9] // month
+            (
+                '-'[0-9][0-9] // day
+                (
+                    'T'
+                        [0-9][0-9] (':'[0-9][0-9] (':'[0-9][0-9] ('.'[0-9]+)?)?)?
+                        (('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone
+                )?
+             )?
+         )?
+         'Z'? // UTC specifier
+    ;
+
+TIME
+    : '@'
+        'T'
+            [0-9][0-9] (':'[0-9][0-9] (':'[0-9][0-9] ('.'[0-9]+)?)?)?
+            ('Z' | (('+' | '-') [0-9][0-9]':'[0-9][0-9]))? // timezone
+    ;
+
+// These versions limit each field to only potentially valid combinations of digits.
+// However, it still doesn't suffice to provide actual valid date enforcement, and
+// when it doesn't match the rule, the parser will turn it into a subtraction expression in most cases,
+// which is never what we want, so I think we should go with the more lenient (and simpler) expressions
+// above, and rely on the translator to actually perform value validation.
+//DATETIME
+//    : '@'
+//        [0-9][0-9][0-9][0-9] // year
+//        (
+//            '-'(('0'[1-9]) | ('1'[0-2])) // month
+//            (
+//                '-'(('0'[1-9]) | ([1-2][0-9]) | ('3'[0-1])) // day
+//                (
+//                    'T'
+//                        (
+//                            ((([0-1][0-9])|('2'[0-3])) (':'([0-5][0-9]) (':'([0-5][0-9]) ('.'[0-9]+)?)?)?
+//                                | ('24:00:00'('.''0'+)?))
+//                        )
+//                        (('+' | '-') (((([0-1][0-9]) | ('2'[0-3]))':'([0-5][0-9])) | '14:00'))? // timezone
+//                )?
+//             )?
+//         )?
+//         'Z'? // UTC specifier
+//    ;
+
+//TIME
+//    : '@'
+//        'T'
+//            ((([0-1][0-9])|('2'[0-3])) (':'([0-5][0-9]) (':'([0-5][0-9]) ('.'[0-9]+)?)?)?
+//            | ('24:00:00'('.''0'+)?))
+//        ('Z' | (('+' | '-') (((([0-1][0-9]) | ('2'[0-3]))':'([0-5][0-9])) | '14:00')))? // timezone
+//    ;
+
 QUOTEDIDENTIFIER
-    : '"' ( ~[\\"] )* '"'
+    : '"' ( ~[\\"] | '""' )* '"'
     ;
 
 STRING
-    : ('\'') ( ~[\\'] )* ('\'')
+    : ('\'') ( ~[\\'] | '\'\'' )* ('\'')
     ;
 
 WS
@@ -420,3 +522,4 @@ COMMENT
 LINE_COMMENT
     :   '//' ~[\r\n]* -> skip
     ;
+

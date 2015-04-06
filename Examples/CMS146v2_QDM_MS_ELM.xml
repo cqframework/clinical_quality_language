@@ -1,41 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
-   <identifier id="CMS146_QDM" version="2"/>
+   <identifier id="CMS146_QDM_MS" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
       <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_1_2"/>
    </usings>
    <parameters>
-      <def name="MeasurementPeriod">
-         <default lowClosed="true" highClosed="false" xsi:type="Interval">
-            <low name="DateTime" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="2013" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-            </low>
-            <high name="DateTime" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="2014" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-            </high>
-         </default>
+      <def name="MeasurementPeriod" accessLevel="Public">
+         <parameterTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
       </def>
    </parameters>
    <valueSets>
-      <def name="Acute Pharyngitis" id="2.16.840.1.113883.3.464.1003.102.12.1011"/>
-      <def name="Acute Tonsillitis" id="2.16.840.1.113883.3.464.1003.102.12.1012"/>
-      <def name="Ambulatory/ED Visit" id="2.16.840.1.113883.3.464.1003.101.12.1061"/>
-      <def name="Antibiotic Medications" id="2.16.840.1.113883.3.464.1003.196.12.1001"/>
-      <def name="Group A Streptococcus Test" id="2.16.840.1.113883.3.464.1003.198.12.1012"/>
+      <def name="Acute Pharyngitis" id="2.16.840.1.113883.3.464.1003.102.12.1011" accessLevel="Public"/>
+      <def name="Acute Tonsillitis" id="2.16.840.1.113883.3.464.1003.102.12.1012" accessLevel="Public"/>
+      <def name="Ambulatory/ED Visit" id="2.16.840.1.113883.3.464.1003.101.12.1061" accessLevel="Public"/>
+      <def name="Antibiotic Medications" id="2.16.840.1.113883.3.464.1003.196.12.1001" accessLevel="Public"/>
+      <def name="Group A Streptococcus Test" id="2.16.840.1.113883.3.464.1003.198.12.1012" accessLevel="Public"/>
    </valueSets>
    <statements>
       <def name="Patient" context="Patient">
@@ -43,7 +26,7 @@
             <operand xmlns:ns0="urn:healthit-gov:qdm:v4_1_2" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
          </expression>
       </def>
-      <def name="InDemographic" context="Patient">
+      <def name="InDemographic" context="Patient" accessLevel="Public">
          <expression xsi:type="And">
             <operand xsi:type="GreaterOrEqual">
                <operand precision="Year" xsi:type="CalculateAgeAt">
@@ -69,7 +52,7 @@
             </operand>
          </expression>
       </def>
-      <def name="EncounterData" context="Patient">
+      <def name="EncounterData" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
                <expression xmlns:ns1="urn:healthit-gov:qdm:v4_1_2" dataType="ns1:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
@@ -193,7 +176,7 @@
             </return>
          </expression>
       </def>
-      <def name="IPPCount" context="Patient">
+      <def name="IPPCount" context="Patient" accessLevel="Public">
          <expression name="Count" xsi:type="FunctionRef">
             <operand xsi:type="Query">
                <source alias="E">
@@ -205,10 +188,10 @@
             </operand>
          </expression>
       </def>
-      <def name="DenominatorCount" context="Patient">
+      <def name="DenominatorCount" context="Patient" accessLevel="Public">
          <expression name="IPPCount" xsi:type="ExpressionRef"/>
       </def>
-      <def name="DenominatorExclusionsCount" context="Patient">
+      <def name="DenominatorExclusionsCount" context="Patient" accessLevel="Public">
          <expression name="Count" xsi:type="FunctionRef">
             <operand xsi:type="Query">
                <source alias="E">
@@ -221,7 +204,7 @@
             </operand>
          </expression>
       </def>
-      <def name="NumeratorCount" context="Patient">
+      <def name="NumeratorCount" context="Patient" accessLevel="Public">
          <expression name="Count" xsi:type="FunctionRef">
             <operand xsi:type="Query">
                <source alias="E">

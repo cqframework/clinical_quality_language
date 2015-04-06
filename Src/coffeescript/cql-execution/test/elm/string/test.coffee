@@ -142,11 +142,11 @@ describe 'Indexer', ->
   it 'should return null when index is null', ->
     should(@nullIndex.exec(@ctx)).be.null
 
-describe 'Pos', ->
+describe 'PositionOf', ->
   @beforeEach ->
     setup @, data
 
-  it.skip 'should be a Pos', ->
+  it.skip 'should be a PositionOf', ->
     @found.should.be.an.instanceOf(str.Pos)
 
   it 'should return 1-based position', ->

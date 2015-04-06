@@ -76,9 +76,14 @@
 						<xs:documentation>The identifier attribute specifies a unique name for the class that may be independent of the name. In FHIR, this corresponds to the profile identifier.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="topic" type="xs:string" use="required">
+				<xs:attribute name="label" type="xs:string" use="required">
 					<xs:annotation>
-						<xs:documentation>The topic attribute specifies the name of the class as it is referenced from CQL. This is the identifier for the class that will appear within retrieve expressions in CQL.</xs:documentation>
+						<xs:documentation>The label attribute specifies the name of the class as it is referenced from CQL. This is a user-friendly identifier for the class that can be used within CQL as an alternative way to reference the class.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="retrievable" type="xs:boolean" use="optional" default="false">
+					<xs:annotation>
+						<xs:documentation>The retrievable attribute specifies whether the class can be used within a retrieve statement. This flag is intended to allow the implementation to control whether or not the class can be used as a data access point for the data model.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="primaryCodePath" type="xs:string" use="optional">

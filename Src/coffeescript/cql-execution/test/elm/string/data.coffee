@@ -10,13 +10,13 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define HelloWorld = 'Hello' + 'World'
-define Sentence = 'The' + ' ' + 'quick' + ' ' + 'brown' + ' ' + 'fox' + ' ' + 'jumps' + ' '
+define HelloWorld: 'Hello' + 'World'
+define Sentence: 'The' + ' ' + 'quick' + ' ' + 'brown' + ' ' + 'fox' + ' ' + 'jumps' + ' '
                   + 'over' + ' ' + 'the' + ' ' + 'lazy' + ' ' + 'dog.'
-define ConcatNull = 'Hello' + null
-define Hello = 'Hello'
-define World = 'World'
-define HelloWorldVariables = Hello + World
+define ConcatNull: 'Hello' + null
+define Hello: 'Hello'
+define World: 'World'
+define HelloWorldVariables: Hello + World
 ###
 
 module.exports['Concat'] = {
@@ -53,6 +53,7 @@ module.exports['Concat'] = {
          }, {
             "name" : "HelloWorld",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -68,6 +69,7 @@ module.exports['Concat'] = {
          }, {
             "name" : "Sentence",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -188,6 +190,7 @@ module.exports['Concat'] = {
          }, {
             "name" : "ConcatNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -205,6 +208,7 @@ module.exports['Concat'] = {
          }, {
             "name" : "Hello",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "Hello",
@@ -213,6 +217,7 @@ module.exports['Concat'] = {
          }, {
             "name" : "World",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "valueType" : "{urn:hl7-org:elm:r1}String",
                "value" : "World",
@@ -221,6 +226,7 @@ module.exports['Concat'] = {
          }, {
             "name" : "HelloWorldVariables",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -240,10 +246,10 @@ module.exports['Concat'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NoSeparator = Combine({ 'abc', 'def', 'ghi', 'jkl' })
-define Separator = Combine({ 'abc', 'def', 'ghi', 'jkl' }, ';')
-define CombineNull = Combine(null, ';')
-define CombineNullItem = Combine({ 'abc', 'def', null, 'jkl' }, ';')
+define NoSeparator: Combine({ 'abc', 'def', 'ghi', 'jkl' })
+define Separator: Combine({ 'abc', 'def', 'ghi', 'jkl' }, ';')
+define CombineNull: Combine(null, ';')
+define CombineNullItem: Combine({ 'abc', 'def', null, 'jkl' }, ';')
 ###
 
 module.exports['Combine'] = {
@@ -280,6 +286,7 @@ module.exports['Combine'] = {
          }, {
             "name" : "NoSeparator",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Combine",
                "type" : "FunctionRef",
@@ -307,6 +314,7 @@ module.exports['Combine'] = {
          }, {
             "name" : "Separator",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Combine",
                "type" : "FunctionRef",
@@ -338,6 +346,7 @@ module.exports['Combine'] = {
          }, {
             "name" : "CombineNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Combine",
                "type" : "FunctionRef",
@@ -362,6 +371,7 @@ module.exports['Combine'] = {
          }, {
             "name" : "CombineNullItem",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Combine",
                "type" : "FunctionRef",
@@ -401,10 +411,10 @@ module.exports['Combine'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define CommaSeparated = Split('a,b,c,,1,2,3', ',')
-define SeparatorNotUsed = Split('a,b,c,,1,2,3', ';')
-define SeparateNull = Split(null, ',')
-define SeparateUsingNull = Split('a,b,c', null)
+define CommaSeparated: Split('a,b,c,,1,2,3', ',')
+define SeparatorNotUsed: Split('a,b,c,,1,2,3', ';')
+define SeparateNull: Split(null, ',')
+define SeparateUsingNull: Split('a,b,c', null)
 ###
 
 module.exports['Split'] = {
@@ -441,6 +451,7 @@ module.exports['Split'] = {
          }, {
             "name" : "CommaSeparated",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Split",
                "type" : "FunctionRef",
@@ -457,6 +468,7 @@ module.exports['Split'] = {
          }, {
             "name" : "SeparatorNotUsed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Split",
                "type" : "FunctionRef",
@@ -473,6 +485,7 @@ module.exports['Split'] = {
          }, {
             "name" : "SeparateNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Split",
                "type" : "FunctionRef",
@@ -491,6 +504,7 @@ module.exports['Split'] = {
          }, {
             "name" : "SeparateUsingNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Split",
                "type" : "FunctionRef",
@@ -515,8 +529,8 @@ module.exports['Split'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ElevenLetters = Length('Hello World')
-define NullString = Length(null)
+define ElevenLetters: Length('Hello World')
+define NullString: Length(null)
 ###
 
 module.exports['Length'] = {
@@ -553,6 +567,7 @@ module.exports['Length'] = {
          }, {
             "name" : "ElevenLetters",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Length",
                "type" : "FunctionRef",
@@ -565,6 +580,7 @@ module.exports['Length'] = {
          }, {
             "name" : "NullString",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Length",
                "type" : "FunctionRef",
@@ -585,10 +601,10 @@ module.exports['Length'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define LowerC = Upper('abcdefg123')
-define UpperC = Upper('ABCDEFG123')
-define CamelC = Upper('aBcDeFg123')
-define NullString = Upper(null)
+define LowerC: Upper('abcdefg123')
+define UpperC: Upper('ABCDEFG123')
+define CamelC: Upper('aBcDeFg123')
+define NullString: Upper(null)
 ###
 
 module.exports['Upper'] = {
@@ -625,6 +641,7 @@ module.exports['Upper'] = {
          }, {
             "name" : "LowerC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Upper",
                "type" : "FunctionRef",
@@ -637,6 +654,7 @@ module.exports['Upper'] = {
          }, {
             "name" : "UpperC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Upper",
                "type" : "FunctionRef",
@@ -649,6 +667,7 @@ module.exports['Upper'] = {
          }, {
             "name" : "CamelC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Upper",
                "type" : "FunctionRef",
@@ -661,6 +680,7 @@ module.exports['Upper'] = {
          }, {
             "name" : "NullString",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Upper",
                "type" : "FunctionRef",
@@ -681,10 +701,10 @@ module.exports['Upper'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define LowerC = Lower('abcdefg123')
-define UpperC = Lower('ABCDEFG123')
-define CamelC = Lower('aBcDeFg123')
-define NullString = Lower(null)
+define LowerC: Lower('abcdefg123')
+define UpperC: Lower('ABCDEFG123')
+define CamelC: Lower('aBcDeFg123')
+define NullString: Lower(null)
 ###
 
 module.exports['Lower'] = {
@@ -721,6 +741,7 @@ module.exports['Lower'] = {
          }, {
             "name" : "LowerC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Lower",
                "type" : "FunctionRef",
@@ -733,6 +754,7 @@ module.exports['Lower'] = {
          }, {
             "name" : "UpperC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Lower",
                "type" : "FunctionRef",
@@ -745,6 +767,7 @@ module.exports['Lower'] = {
          }, {
             "name" : "CamelC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Lower",
                "type" : "FunctionRef",
@@ -757,6 +780,7 @@ module.exports['Lower'] = {
          }, {
             "name" : "NullString",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Lower",
                "type" : "FunctionRef",
@@ -777,11 +801,11 @@ module.exports['Lower'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define HelloWorldSix = 'HelloWorld'[6]
-define HelloWorldZero = 'HelloWorld'[0]
-define HelloWorldTwenty = 'HelloWorld'[20]
-define NullString = null[4]
-define NullIndex = 'HelloWorld'[null]
+define HelloWorldSix: 'HelloWorld'[6]
+define HelloWorldZero: 'HelloWorld'[0]
+define HelloWorldTwenty: 'HelloWorld'[20]
+define NullString: null[4]
+define NullIndex: 'HelloWorld'[null]
 ###
 
 module.exports['Indexer'] = {
@@ -818,6 +842,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "HelloWorldSix",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -833,6 +858,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "HelloWorldZero",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -848,6 +874,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "HelloWorldTwenty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -863,6 +890,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "NullString",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -880,6 +908,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "NullIndex",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -899,17 +928,17 @@ module.exports['Indexer'] = {
    }
 }
 
-### Pos
+### PositionOf
 library TestSnippet version '1'
 using QUICK
 context Patient
-define found = Pos('cde', 'abcdefg')
-define notFound = Pos('fgh', 'abcdefg')
-define nullPattern = Pos(null, 'abcdefg')
-define nullString = Pos('cde', null)
+define found: PositionOf('cde', 'abcdefg')
+define notFound: PositionOf('fgh', 'abcdefg')
+define nullPattern: PositionOf(null, 'abcdefg')
+define nullString: PositionOf('cde', null)
 ###
 
-module.exports['Pos'] = {
+module.exports['PositionOf'] = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -943,8 +972,9 @@ module.exports['Pos'] = {
          }, {
             "name" : "found",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "name" : "Pos",
+               "name" : "PositionOf",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm:r1}String",
@@ -959,8 +989,9 @@ module.exports['Pos'] = {
          }, {
             "name" : "notFound",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "name" : "Pos",
+               "name" : "PositionOf",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm:r1}String",
@@ -975,8 +1006,9 @@ module.exports['Pos'] = {
          }, {
             "name" : "nullPattern",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "name" : "Pos",
+               "name" : "PositionOf",
                "type" : "FunctionRef",
                "operand" : [ {
                   "asType" : "{urn:hl7-org:elm:r1}String",
@@ -993,8 +1025,9 @@ module.exports['Pos'] = {
          }, {
             "name" : "nullString",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "name" : "Pos",
+               "name" : "PositionOf",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm:r1}String",
@@ -1017,14 +1050,14 @@ module.exports['Pos'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define World = Substring('HelloWorld', 6)
-define Or = Substring('HelloWorld', 7, 2)
-define ZeroLength = Substring('HelloWorld', 7, 0)
-define StartTooLow = Substring('HelloWorld', 0)
-define TooMuchLength = Substring('HelloWorld', 7, 25)
-define NegativeLength = Substring('HelloWorld', 7, -1)
-define NullString = Substring(null, 5)
-define NullStart = Substring('HelloWorld', null)
+define World: Substring('HelloWorld', 6)
+define Or: Substring('HelloWorld', 7, 2)
+define ZeroLength: Substring('HelloWorld', 7, 0)
+define StartTooLow: Substring('HelloWorld', 0)
+define TooMuchLength: Substring('HelloWorld', 7, 25)
+define NegativeLength: Substring('HelloWorld', 7, -1)
+define NullString: Substring(null, 5)
+define NullStart: Substring('HelloWorld', null)
 ###
 
 module.exports['Substring'] = {
@@ -1061,6 +1094,7 @@ module.exports['Substring'] = {
          }, {
             "name" : "World",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Substring",
                "type" : "FunctionRef",
@@ -1077,6 +1111,7 @@ module.exports['Substring'] = {
          }, {
             "name" : "Or",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Substring",
                "type" : "FunctionRef",
@@ -1097,6 +1132,7 @@ module.exports['Substring'] = {
          }, {
             "name" : "ZeroLength",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Substring",
                "type" : "FunctionRef",
@@ -1117,6 +1153,7 @@ module.exports['Substring'] = {
          }, {
             "name" : "StartTooLow",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Substring",
                "type" : "FunctionRef",
@@ -1133,6 +1170,7 @@ module.exports['Substring'] = {
          }, {
             "name" : "TooMuchLength",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Substring",
                "type" : "FunctionRef",
@@ -1153,6 +1191,7 @@ module.exports['Substring'] = {
          }, {
             "name" : "NegativeLength",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Substring",
                "type" : "FunctionRef",
@@ -1176,6 +1215,7 @@ module.exports['Substring'] = {
          }, {
             "name" : "NullString",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Substring",
                "type" : "FunctionRef",
@@ -1194,6 +1234,7 @@ module.exports['Substring'] = {
          }, {
             "name" : "NullStart",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Substring",
                "type" : "FunctionRef",

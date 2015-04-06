@@ -9,7 +9,7 @@ apply plugin: 'coffeescript-base'
 
 group = 'org.cqframework'
 version = '0.1'
-sourceCompatibility = '1.7'
+sourceCompatibility = '1.8'
 
 repositories {
   mavenCentral()

@@ -21,7 +21,7 @@ module.exports.ToStringFunctionRef = class ToStringFunctionRef extends FunctionR
 
   exec: (ctx) ->
     ary = @execArgs ctx
-    if ary.length > 0 then ary[0].toString() else null
+    if ary.length > 0  and ary[0]? then ary[0].toString() else null
 
 module.exports.ToBooleanFunctionRef = class ToBooleanFunctionRef extends FunctionRef
   constructor: (json) ->
@@ -29,7 +29,7 @@ module.exports.ToBooleanFunctionRef = class ToBooleanFunctionRef extends Functio
 
   exec: (ctx) ->
     ary = @execArgs ctx
-    if ary.length > 0
+    if ary.length > 0 and ary[0]?
       switch ary[0]
         when 'true' then true
         when 'false' then false
@@ -43,7 +43,7 @@ module.exports.ToIntegerFunctionRef = class ToIntegerFunctionRef extends Functio
 
   exec: (ctx) ->
     ary = @execArgs ctx
-    if ary.length > 0 then parseInt(ary[0]) else null
+    if ary.length > 0  and ary[0]? then parseInt(ary[0]) else null
 
 module.exports.ToDecimalFunctionRef = class ToDecimalFunctionRef extends FunctionRef
   constructor: (json) ->
@@ -51,7 +51,7 @@ module.exports.ToDecimalFunctionRef = class ToDecimalFunctionRef extends Functio
 
   exec: (ctx) ->
     ary = @execArgs ctx
-    if ary.length > 0
+    if ary.length > 0 and ary[0]?
       if typeof ary[0] is 'number' then ary[0] else parseFloat(ary[0])
     else
       null
@@ -62,7 +62,7 @@ module.exports.ToDateTime = class ToDateTime extends FunctionRef
 
   exec: (ctx) ->
     ary = @execArgs ctx
-    if ary.length > 0 then DateTime.parse(ary[0]) else null
+    if ary.length > 0  and ary[0]? then DateTime.parse(ary[0]) else null
 
 module.exports.Convert = class Convert extends UnimplementedExpression
 

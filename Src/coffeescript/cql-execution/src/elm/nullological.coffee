@@ -27,26 +27,6 @@ module.exports.IsNullFunctionRef = class IsNullFunctionRef extends FunctionRef
   exec: (ctx) ->
     @isNull.exec(ctx)
 
-module.exports.IfNull = class IfNull extends Expression
-  constructor: (json) ->
-    super
-
-  exec: (ctx) ->
-    @args[0].exec(ctx) ? @args[1].exec(ctx)
-
-
-# TODO: Remove functionref when ELM does IfNull natively
-module.exports.IfNullFunctionRef = class IfNullFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @ifNull = new IfNull {
-      "type" : "IfNull",
-      "operand" : json.operand
-    }
-
-  exec: (ctx) ->
-    @ifNull.exec(ctx)
-
 module.exports.Coalesce = class Coalesce extends Expression
   constructor: (json) ->
     super

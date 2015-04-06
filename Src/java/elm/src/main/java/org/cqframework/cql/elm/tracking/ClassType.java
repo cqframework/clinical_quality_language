@@ -61,9 +61,17 @@ public class ClassType extends DataType implements NamedType {
     public String getIdentifier() { return identifier; }
     public void setIdentifier(String identifier) { this.identifier = identifier; }
 
-    private String topic;
-    public String getTopic() { return topic; }
-    public void setTopic(String topic) { this.topic = topic; }
+    private String label;
+    public String getLabel() { return label; }
+    public void setLabel(String label) { this.label = label; }
+
+    private boolean retrievable;
+    public boolean isRetrievable() {
+        return retrievable;
+    }
+    public void setRetrievable(boolean retrievable) {
+        this.retrievable = retrievable;
+    }
 
     private String primaryCodePath;
     public String getPrimaryCodePath() { return primaryCodePath; }

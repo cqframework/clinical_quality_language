@@ -25,19 +25,6 @@ describe 'IsNull', ->
   it 'should detect that non-null variable is not null', ->
     @nonNullVarIsNull.exec(@ctx).should.be.false
 
-describe 'IfNull', ->
-  @beforeEach ->
-    setup @, data
-
-  it 'should return second arg when first is null', ->
-    @nullAndA.exec(@ctx).should.equal 'a'
-
-  it 'should return first arg when it is zero', ->
-    @zeroAndB.exec(@ctx).should.equal 0
-
-  it 'should return null when both args are null', ->
-    should(@bothNull.exec(@ctx)).be.null
-
 describe.skip 'Coalesce', ->
   @beforeEach ->
     setup @, data

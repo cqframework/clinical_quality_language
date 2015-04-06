@@ -2,36 +2,28 @@ library PropertyTest
 
 using QUICK
 
-valueset "Female Administrative Sex" = '2.16.840.1.113883.3.560.100.2'
+valueset "Female Administrative Sex": '2.16.840.1.113883.3.560.100.2'
 
 context Patient
 
-define InDemographic =
+define InDemographic:
     AgeInYears() >= 18
         and Patient.gender in "Female Administrative Sex"
 
-define ListsOfLists = list<list<Any>>{{'a','b','c'},{1,2,3}}
-define LotsOfDups = distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
-define IsIncluded = {2, 3, 4} included in {1, 2, 3, 4, 5}
-define IsProperlyIncludes = {1, 2, 3, 4, 5} properly includes {2, 3, 4, 5}
-define IsProperlyIncluded = {2, 3, 4} properly included in {1, 2, 3, 4, 5}
-define EqInteger = 4 = 4
-define EqIntervals = interval[1, 3] = interval[1, 3]
-define EqTuples = tuple{a: 1, b: tuple{c: 1}} = tuple{a: 1, b: tuple{c: 1}}
-define EqLists = { 1, 2, 3 } = { 1, 2, 3 }
+define ListsOfLists: List<List<Any>>{{'a','b','c'},{1,2,3}}
+define LotsOfDups: distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
+define IsIncluded: {2, 3, 4} included in {1, 2, 3, 4, 5}
+define IsProperlyIncludes: {1, 2, 3, 4, 5} properly includes {2, 3, 4, 5}
+define IsProperlyIncluded: {2, 3, 4} properly included in {1, 2, 3, 4, 5}
+define EqInteger: 4 = 4
+define EqIntervals: Interval[1, 3] = Interval[1, 3]
+define EqTuples: Tuple{a: 1, b: Tuple{c: 1}} = Tuple{a: 1, b: Tuple{c: 1}}
+define EqLists: { 1, 2, 3 } = { 1, 2, 3 }
 
-define IsNull = 5 is null
+define IsNull: 5 is null
 
-//define HasNull = Count({ 1, null, null, null, 2 })
-define Empty = Count({ })
+define HasNull: Count({ 1, null, null, null, 2 })
+define Empty: Count({ })
 
-//define TypedHasNull = Count(list<Integer> { 1, null, null, null, 2 })
-define TypedEmpty = Count(list<Integer> { })
-
-// We actually want to be able to support this:
-/*
-define class A { id: Integer }
-define class B: A { name: String }
-define BInstance := new B { id := 1, name := "John" }
-define TupleEqual := BInstance = tuple { id := 1, name := "John" }
-*/
+define TypedHasNull: Count(List<Integer> { 1, null, null, null, 2 })
+define TypedEmpty: Count(List<Integer> { })

@@ -10,11 +10,11 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Three = 1 + 2
-define IntList = { 9, 7, 8 }
-define StringList = { 'a', 'bee', 'see' }
-define MixedList = list<Any>{ 1, 'two', Three }
-define EmptyList = list<Integer>{}
+define Three: 1 + 2
+define IntList: { 9, 7, 8 }
+define StringList: { 'a', 'bee', 'see' }
+define MixedList: List<Any>{ 1, 'two', Three }
+define EmptyList: List<Integer>{}
 ###
 
 module.exports['List'] = {
@@ -51,6 +51,7 @@ module.exports['List'] = {
          }, {
             "name" : "Three",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Add",
                "operand" : [ {
@@ -66,6 +67,7 @@ module.exports['List'] = {
          }, {
             "name" : "IntList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "List",
                "element" : [ {
@@ -85,6 +87,7 @@ module.exports['List'] = {
          }, {
             "name" : "StringList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "List",
                "element" : [ {
@@ -104,6 +107,7 @@ module.exports['List'] = {
          }, {
             "name" : "MixedList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "List",
                "element" : [ {
@@ -122,6 +126,7 @@ module.exports['List'] = {
          }, {
             "name" : "EmptyList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "List"
             }
@@ -134,8 +139,8 @@ module.exports['List'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EmptyList = exists (list<Integer>{})
-define FullList = exists ({ 1, 2, 3 })
+define EmptyList: exists (List<Integer>{})
+define FullList: exists ({ 1, 2, 3 })
 ###
 
 module.exports['Exists'] = {
@@ -172,6 +177,7 @@ module.exports['Exists'] = {
          }, {
             "name" : "EmptyList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -181,6 +187,7 @@ module.exports['Exists'] = {
          }, {
             "name" : "FullList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Exists",
                "operand" : {
@@ -209,13 +216,13 @@ module.exports['Exists'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EqualIntList = {1, 2, 3} = {1, 2, 3}
-define UnequalIntList = {1, 2, 3} = {1, 2}
-define ReverseIntList = {1, 2, 3} = {3, 2, 1}
-define EqualStringList = {'hello', 'world'} = {'hello', 'world'}
-define UnequalStringList = {'hello', 'world'} = {'foo', 'bar'}
-define EqualTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
-define UnequalTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } = list<Any>{ tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+define EqualIntList: {1, 2, 3} = {1, 2, 3}
+define UnequalIntList: {1, 2, 3} = {1, 2}
+define ReverseIntList: {1, 2, 3} = {3, 2, 1}
+define EqualStringList: {'hello', 'world'} = {'hello', 'world'}
+define UnequalStringList: {'hello', 'world'} = {'foo', 'bar'}
+define EqualTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } = List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} }
+define UnequalTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } = List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
 ###
 
 module.exports['Equal'] = {
@@ -252,6 +259,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqualIntList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -289,6 +297,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UnequalIntList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -322,6 +331,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "ReverseIntList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -359,6 +369,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqualStringList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -388,6 +399,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UnequalStringList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -417,6 +429,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqualTupleList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -510,6 +523,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UnequalTupleList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -612,13 +626,13 @@ module.exports['Equal'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EqualIntList = {1, 2, 3} <> {1, 2, 3}
-define UnequalIntList = {1, 2, 3} <> {1, 2}
-define ReverseIntList = {1, 2, 3} <> {3, 2, 1}
-define EqualStringList = {'hello', 'world'} <> {'hello', 'world'}
-define UnequalStringList = {'hello', 'world'} <> {'foo', 'bar'}
-define EqualTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} }
-define UnequalTupleList = list<Any>{ tuple{a: 1, b: tuple{c: 1}}, tuple{x: 'y', z: 2} } <> list<Any>{ tuple{a: 1, b: tuple{c: -1}}, tuple{x: 'y', z: 2} }
+define EqualIntList: {1, 2, 3} <> {1, 2, 3}
+define UnequalIntList: {1, 2, 3} <> {1, 2}
+define ReverseIntList: {1, 2, 3} <> {3, 2, 1}
+define EqualStringList: {'hello', 'world'} <> {'hello', 'world'}
+define UnequalStringList: {'hello', 'world'} <> {'foo', 'bar'}
+define EqualTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } <> List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} }
+define UnequalTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } <> List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
 ###
 
 module.exports['NotEqual'] = {
@@ -655,6 +669,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqualIntList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -695,6 +710,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UnequalIntList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -731,6 +747,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "ReverseIntList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -771,6 +788,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqualStringList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -803,6 +821,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UnequalStringList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -835,6 +854,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqualTupleList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -931,6 +951,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UnequalTupleList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1036,12 +1057,12 @@ module.exports['NotEqual'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define OneToTen = {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}
-define OneToFiveOverlapped = {1, 2, 3, 4} union {3, 4, 5}
-define Disjoint = {1, 2} union {4, 5}
-define NestedToFifteen = {1, 2, 3} union {4, 5, 6} union {7 ,8 , 9} union {10, 11, 12} union {13, 14, 15}
-define NullUnion = null union {1, 2, 3}
-define UnionNull = {1, 2, 3} union null
+define OneToTen: {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}
+define OneToFiveOverlapped: {1, 2, 3, 4} union {3, 4, 5}
+define Disjoint: {1, 2} union {4, 5}
+define NestedToFifteen: {1, 2, 3} union {4, 5, 6} union {7 ,8 , 9} union {10, 11, 12} union {13, 14, 15}
+define NullUnion: null union {1, 2, 3}
+define UnionNull: {1, 2, 3} union null
 ###
 
 module.exports['Union'] = {
@@ -1078,6 +1099,7 @@ module.exports['Union'] = {
          }, {
             "name" : "OneToTen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -1131,6 +1153,7 @@ module.exports['Union'] = {
          }, {
             "name" : "OneToFiveOverlapped",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -1172,6 +1195,7 @@ module.exports['Union'] = {
          }, {
             "name" : "Disjoint",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -1201,6 +1225,7 @@ module.exports['Union'] = {
          }, {
             "name" : "NestedToFifteen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -1292,6 +1317,7 @@ module.exports['Union'] = {
          }, {
             "name" : "NullUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -1326,6 +1352,7 @@ module.exports['Union'] = {
          }, {
             "name" : "UnionNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -1366,16 +1393,16 @@ module.exports['Union'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ExceptThreeFour = {1, 2, 3, 4, 5} except {3, 4}
-define ThreeFourExcept = {3, 4} except {1, 2, 3, 4, 5}
-define ExceptFiveThree = {1, 2, 3, 4, 5} except {5, 3}
-define ExceptNoOp = {1, 2, 3, 4, 5} except {6, 7, 8, 9, 10}
-define ExceptEverything = {1, 2, 3, 4, 5} except {1, 2, 3, 4, 5}
-define SomethingExceptNothing = {1, 2, 3, 4, 5} except list<Integer>{}
-define NothingExceptSomething = list<Integer>{} except {1, 2, 3, 4, 5}
-define ExceptTuples = {tuple{a: 1}, tuple{a: 2}, tuple{a: 3}} except {tuple{a: 2}}
-define ExceptNull = {1, 2, 3, 4, 5} except null
-define NullExcept = null except {1, 2, 3, 4, 5}
+define ExceptThreeFour: {1, 2, 3, 4, 5} except {3, 4}
+define ThreeFourExcept: {3, 4} except {1, 2, 3, 4, 5}
+define ExceptFiveThree: {1, 2, 3, 4, 5} except {5, 3}
+define ExceptNoOp: {1, 2, 3, 4, 5} except {6, 7, 8, 9, 10}
+define ExceptEverything: {1, 2, 3, 4, 5} except {1, 2, 3, 4, 5}
+define SomethingExceptNothing: {1, 2, 3, 4, 5} except List<Integer>{}
+define NothingExceptSomething: List<Integer>{} except {1, 2, 3, 4, 5}
+define ExceptTuples: {Tuple{a: 1}, Tuple{a: 2}, Tuple{a: 3}} except {Tuple{a: 2}}
+define ExceptNull: {1, 2, 3, 4, 5} except null
+define NullExcept: null except {1, 2, 3, 4, 5}
 ###
 
 module.exports['Except'] = {
@@ -1412,6 +1439,7 @@ module.exports['Except'] = {
          }, {
             "name" : "ExceptThreeFour",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1453,6 +1481,7 @@ module.exports['Except'] = {
          }, {
             "name" : "ThreeFourExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1494,6 +1523,7 @@ module.exports['Except'] = {
          }, {
             "name" : "ExceptFiveThree",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1535,6 +1565,7 @@ module.exports['Except'] = {
          }, {
             "name" : "ExceptNoOp",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1588,6 +1619,7 @@ module.exports['Except'] = {
          }, {
             "name" : "ExceptEverything",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1641,6 +1673,7 @@ module.exports['Except'] = {
          }, {
             "name" : "SomethingExceptNothing",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1673,6 +1706,7 @@ module.exports['Except'] = {
          }, {
             "name" : "NothingExceptSomething",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1705,6 +1739,7 @@ module.exports['Except'] = {
          }, {
             "name" : "ExceptTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1758,6 +1793,7 @@ module.exports['Except'] = {
          }, {
             "name" : "ExceptNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1800,6 +1836,7 @@ module.exports['Except'] = {
          }, {
             "name" : "NullExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -1848,14 +1885,14 @@ module.exports['Except'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NoIntersection = {1, 2, 3} intersect {4, 5, 6}
-define IntersectOnFive = {4, 5, 6} intersect {1, 3, 5, 7}
-define IntersectOnEvens = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} intersect {0, 2, 4, 6, 8, 10, 12}
-define IntersectOnAll = {1, 2, 3, 4, 5} intersect {5, 4, 3, 2, 1}
-define NestedIntersects = {1, 2, 3, 4, 5} intersect {2, 3, 4, 5, 6} intersect {3, 4, 5, 6, 7} intersect {4, 5, 6, 7, 8}
-define IntersectTuples = {tuple{a:1, b:'d'}, tuple{a:1, b:'c'}, tuple{a:2, b:'c'}} intersect {tuple{a:2, b:'d'}, tuple{a:1, b:'c'}, tuple{a:2, b:'c'}, tuple{a:5, b:'e'}}
-define NullIntersect = null intersect {1, 2, 3}
-define IntersectNull = {1, 2, 3} intersect null
+define NoIntersection: {1, 2, 3} intersect {4, 5, 6}
+define IntersectOnFive: {4, 5, 6} intersect {1, 3, 5, 7}
+define IntersectOnEvens: {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} intersect {0, 2, 4, 6, 8, 10, 12}
+define IntersectOnAll: {1, 2, 3, 4, 5} intersect {5, 4, 3, 2, 1}
+define NestedIntersects: {1, 2, 3, 4, 5} intersect {2, 3, 4, 5, 6} intersect {3, 4, 5, 6, 7} intersect {4, 5, 6, 7, 8}
+define IntersectTuples: {Tuple{a:1, b:'d'}, Tuple{a:1, b:'c'}, Tuple{a:2, b:'c'}} intersect {Tuple{a:2, b:'d'}, Tuple{a:1, b:'c'}, Tuple{a:2, b:'c'}, Tuple{a:5, b:'e'}}
+define NullIntersect: null intersect {1, 2, 3}
+define IntersectNull: {1, 2, 3} intersect null
 ###
 
 module.exports['Intersect'] = {
@@ -1892,6 +1929,7 @@ module.exports['Intersect'] = {
          }, {
             "name" : "NoIntersection",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -1929,6 +1967,7 @@ module.exports['Intersect'] = {
          }, {
             "name" : "IntersectOnFive",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -1970,6 +2009,7 @@ module.exports['Intersect'] = {
          }, {
             "name" : "IntersectOnEvens",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -2051,6 +2091,7 @@ module.exports['Intersect'] = {
          }, {
             "name" : "IntersectOnAll",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -2104,6 +2145,7 @@ module.exports['Intersect'] = {
          }, {
             "name" : "NestedIntersects",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -2209,6 +2251,7 @@ module.exports['Intersect'] = {
          }, {
             "name" : "IntersectTuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -2341,6 +2384,7 @@ module.exports['Intersect'] = {
          }, {
             "name" : "NullIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -2375,6 +2419,7 @@ module.exports['Intersect'] = {
          }, {
             "name" : "IntersectNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -2415,12 +2460,12 @@ module.exports['Intersect'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IndexOfSecond = IndexOf({'a', 'b', 'c', 'd'}, 'b')
-define IndexOfThirdTuple = IndexOf({tuple{a: 1}, tuple{a: 2}, tuple{a: 3}}, tuple{a: 3})
-define MultipleMatches = IndexOf({'a', 'b', 'c', 'd', 'd', 'e', 'd'}, 'd')
-define ItemNotFound = IndexOf({'a', 'b', 'c'}, 'd')
-define NullList = IndexOf(null, 'a')
-define NullItem = IndexOf({'a', 'b', 'c'}, null)
+define IndexOfSecond: IndexOf({'a', 'b', 'c', 'd'}, 'b')
+define IndexOfThirdTuple: IndexOf({Tuple{a: 1}, Tuple{a: 2}, Tuple{a: 3}}, Tuple{a: 3})
+define MultipleMatches: IndexOf({'a', 'b', 'c', 'd', 'd', 'e', 'd'}, 'd')
+define ItemNotFound: IndexOf({'a', 'b', 'c'}, 'd')
+define NullList: IndexOf(null, 'a')
+define NullItem: IndexOf({'a', 'b', 'c'}, null)
 ###
 
 module.exports['IndexOf'] = {
@@ -2457,6 +2502,7 @@ module.exports['IndexOf'] = {
          }, {
             "name" : "IndexOfSecond",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IndexOf",
                "type" : "FunctionRef",
@@ -2488,6 +2534,7 @@ module.exports['IndexOf'] = {
          }, {
             "name" : "IndexOfThirdTuple",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IndexOf",
                "type" : "FunctionRef",
@@ -2539,6 +2586,7 @@ module.exports['IndexOf'] = {
          }, {
             "name" : "MultipleMatches",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IndexOf",
                "type" : "FunctionRef",
@@ -2582,6 +2630,7 @@ module.exports['IndexOf'] = {
          }, {
             "name" : "ItemNotFound",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IndexOf",
                "type" : "FunctionRef",
@@ -2609,6 +2658,7 @@ module.exports['IndexOf'] = {
          }, {
             "name" : "NullList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IndexOf",
                "type" : "FunctionRef",
@@ -2633,6 +2683,7 @@ module.exports['IndexOf'] = {
          }, {
             "name" : "NullItem",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "IndexOf",
                "type" : "FunctionRef",
@@ -2668,11 +2719,11 @@ module.exports['IndexOf'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define SecondItem = {'a', 'b', 'c', 'd'}[2]
-define ZeroIndex = {'a', 'b', 'c', 'd'}[0]
-define OutOfBounds = {'a', 'b', 'c', 'd'}[100]
-define NullList = (null as list<String>)[1]
-define NullIndexer = {'a', 'b', 'c', 'd'}[null]
+define SecondItem: {'a', 'b', 'c', 'd'}[2]
+define ZeroIndex: {'a', 'b', 'c', 'd'}[0]
+define OutOfBounds: {'a', 'b', 'c', 'd'}[100]
+define NullList: (null as List<String>)[1]
+define NullIndexer: {'a', 'b', 'c', 'd'}[null]
 ###
 
 module.exports['Indexer'] = {
@@ -2709,6 +2760,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "SecondItem",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -2739,6 +2791,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "ZeroIndex",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -2769,6 +2822,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "OutOfBounds",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -2799,6 +2853,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "NullList",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -2823,6 +2878,7 @@ module.exports['Indexer'] = {
          }, {
             "name" : "NullIndexer",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
@@ -2861,12 +2917,12 @@ module.exports['Indexer'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IsIn = 4 in { 3, 4, 5 }
-define IsNotIn = 4 in { 3, 5, 6 }
-define TupleIsIn = tuple{a: 1, b: 'c'} in {tuple{a:1, b:'d'}, tuple{a:1, b:'c'}, tuple{a:2, b:'c'}}
-define TupleIsNotIn = tuple{a: 1, b: 'c'} in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
-define NullIn = null in {1, 2, 3}
-define InNull = 1 in null
+define IsIn: 4 in { 3, 4, 5 }
+define IsNotIn: 4 in { 3, 5, 6 }
+define TupleIsIn: Tuple{a: 1, b: 'c'} in {Tuple{a:1, b:'d'}, Tuple{a:1, b:'c'}, Tuple{a:2, b:'c'}}
+define TupleIsNotIn: Tuple{a: 1, b: 'c'} in {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
+define NullIn: null in {1, 2, 3}
+define InNull: 1 in null
 ###
 
 module.exports['In'] = {
@@ -2903,6 +2959,7 @@ module.exports['In'] = {
          }, {
             "name" : "IsIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -2929,6 +2986,7 @@ module.exports['In'] = {
          }, {
             "name" : "IsNotIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -2955,6 +3013,7 @@ module.exports['In'] = {
          }, {
             "name" : "TupleIsIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3033,6 +3092,7 @@ module.exports['In'] = {
          }, {
             "name" : "TupleIsNotIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3111,6 +3171,7 @@ module.exports['In'] = {
          }, {
             "name" : "NullIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3139,6 +3200,7 @@ module.exports['In'] = {
          }, {
             "name" : "InNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3168,12 +3230,12 @@ module.exports['In'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IsIn = { 3, 4, 5 } contains 4
-define IsNotIn = { 3, 5, 6 } contains 4
-define TupleIsIn = {tuple{a:1, b:'d'}, tuple{a:1, b:'c'}, tuple{a:2, b:'c'}} contains tuple{a: 1, b: 'c'}
-define TupleIsNotIn = {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} contains tuple{a: 1, b: 'c'}
-define InNull = (null as list<Integer>) contains 1
-define NullIn = {1, 2, 3} contains null
+define IsIn: { 3, 4, 5 } contains 4
+define IsNotIn: { 3, 5, 6 } contains 4
+define TupleIsIn: {Tuple{a:1, b:'d'}, Tuple{a:1, b:'c'}, Tuple{a:2, b:'c'}} contains Tuple{a: 1, b: 'c'}
+define TupleIsNotIn: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} contains Tuple{a: 1, b: 'c'}
+define InNull: (null as List<Integer>) contains 1
+define NullIn: {1, 2, 3} contains null
 ###
 
 module.exports['Contains'] = {
@@ -3210,6 +3272,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "IsIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3236,6 +3299,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "IsNotIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3262,6 +3326,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "TupleIsIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3340,6 +3405,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "TupleIsNotIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3418,6 +3484,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "InNull",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3442,6 +3509,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NullIn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3476,14 +3544,14 @@ module.exports['Contains'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IsIncluded = {1, 2, 3, 4, 5} includes {2, 3, 4}
-define IsIncludedReversed = {1, 2, 3, 4, 5} includes {4, 3, 2}
-define IsSame = {1, 2, 3, 4, 5} includes {1, 2, 3, 4, 5}
-define IsNotIncluded = {1, 2, 3, 4, 5} includes {4, 5, 6}
-define TuplesIncluded = {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} includes {tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
-define TuplesNotIncluded = {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} includes {tuple{a:2, b:'d'}, tuple{a:3, b:'c'}}
-define NullIncluded = {1, 2, 3, 4, 5} includes null
-define NullIncludes = null includes {1, 2, 3, 4, 5}
+define IsIncluded: {1, 2, 3, 4, 5} includes {2, 3, 4}
+define IsIncludedReversed: {1, 2, 3, 4, 5} includes {4, 3, 2}
+define IsSame: {1, 2, 3, 4, 5} includes {1, 2, 3, 4, 5}
+define IsNotIncluded: {1, 2, 3, 4, 5} includes {4, 5, 6}
+define TuplesIncluded: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} includes {Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
+define TuplesNotIncluded: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} includes {Tuple{a:2, b:'d'}, Tuple{a:3, b:'c'}}
+define NullIncluded: {1, 2, 3, 4, 5} includes null
+define NullIncludes: null includes {1, 2, 3, 4, 5}
 ###
 
 module.exports['Includes'] = {
@@ -3520,6 +3588,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "IsIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -3565,6 +3634,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "IsIncludedReversed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -3610,6 +3680,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "IsSame",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -3663,6 +3734,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "IsNotIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -3708,6 +3780,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "TuplesIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -3806,6 +3879,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "TuplesNotIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -3904,6 +3978,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NullIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3940,6 +4015,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NullIncludes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -3988,14 +4064,14 @@ module.exports['Includes'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IsIncluded = {2, 3, 4} included in {1, 2, 3, 4, 5}
-define IsIncludedReversed = {4, 3, 2} included in {1, 2, 3, 4, 5}
-define IsSame = {1, 2, 3, 4, 5} included in {1, 2, 3, 4, 5}
-define IsNotIncluded = {4, 5, 6} included in {1, 2, 3, 4, 5}
-define TuplesIncluded = {tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
-define TuplesNotIncluded = {tuple{a:2, b:'d'}, tuple{a:3, b:'c'}} included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
-define NullIncludes = {1, 2, 3, 4, 5} included in null
-define NullIncluded = null included in {1, 2, 3, 4, 5}
+define IsIncluded: {2, 3, 4} included in {1, 2, 3, 4, 5}
+define IsIncludedReversed: {4, 3, 2} included in {1, 2, 3, 4, 5}
+define IsSame: {1, 2, 3, 4, 5} included in {1, 2, 3, 4, 5}
+define IsNotIncluded: {4, 5, 6} included in {1, 2, 3, 4, 5}
+define TuplesIncluded: {Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} included in {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
+define TuplesNotIncluded: {Tuple{a:2, b:'d'}, Tuple{a:3, b:'c'}} included in {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
+define NullIncludes: {1, 2, 3, 4, 5} included in null
+define NullIncluded: null included in {1, 2, 3, 4, 5}
 ###
 
 module.exports['IncludedIn'] = {
@@ -4032,6 +4108,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "IsIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -4077,6 +4154,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "IsIncludedReversed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -4122,6 +4200,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "IsSame",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -4175,6 +4254,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "IsNotIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -4220,6 +4300,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "TuplesIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -4318,6 +4399,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "TuplesNotIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -4416,6 +4498,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NullIncludes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -4458,6 +4541,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NullIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4496,14 +4580,14 @@ module.exports['IncludedIn'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IsIncluded = {1, 2, 3, 4, 5} properly includes {2, 3, 4, 5}
-define IsIncludedReversed = {1, 2, 3, 4, 5} properly includes {5, 4, 3, 2}
-define IsSame = {1, 2, 3, 4, 5} properly includes {1, 2, 3, 4, 5}
-define IsNotIncluded = {1, 2, 3, 4, 5} properly includes {3, 4, 5, 6}
-define TuplesIncluded = {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} properly includes {tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
-define TuplesNotIncluded = {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} properly includes {tuple{a:2, b:'d'}, tuple{a:3, b:'c'}}
-define NullIncluded = {1, 2, 3, 4, 5} properly includes null
-define NullIncludes = null properly includes {1, 2, 3, 4, 5}
+define IsIncluded: {1, 2, 3, 4, 5} properly includes {2, 3, 4, 5}
+define IsIncludedReversed: {1, 2, 3, 4, 5} properly includes {5, 4, 3, 2}
+define IsSame: {1, 2, 3, 4, 5} properly includes {1, 2, 3, 4, 5}
+define IsNotIncluded: {1, 2, 3, 4, 5} properly includes {3, 4, 5, 6}
+define TuplesIncluded: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} properly includes {Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
+define TuplesNotIncluded: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} properly includes {Tuple{a:2, b:'d'}, Tuple{a:3, b:'c'}}
+define NullIncluded: {1, 2, 3, 4, 5} properly includes null
+define NullIncludes: null properly includes {1, 2, 3, 4, 5}
 ###
 
 module.exports['ProperIncludes'] = {
@@ -4540,6 +4624,7 @@ module.exports['ProperIncludes'] = {
          }, {
             "name" : "IsIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -4589,6 +4674,7 @@ module.exports['ProperIncludes'] = {
          }, {
             "name" : "IsIncludedReversed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -4638,6 +4724,7 @@ module.exports['ProperIncludes'] = {
          }, {
             "name" : "IsSame",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -4691,6 +4778,7 @@ module.exports['ProperIncludes'] = {
          }, {
             "name" : "IsNotIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -4740,6 +4828,7 @@ module.exports['ProperIncludes'] = {
          }, {
             "name" : "TuplesIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -4838,6 +4927,7 @@ module.exports['ProperIncludes'] = {
          }, {
             "name" : "TuplesNotIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -4936,8 +5026,9 @@ module.exports['ProperIncludes'] = {
          }, {
             "name" : "NullIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
-               "type" : "Contains",
+               "type" : "ProperContains",
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
@@ -4972,6 +5063,7 @@ module.exports['ProperIncludes'] = {
          }, {
             "name" : "NullIncludes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -5020,14 +5112,14 @@ module.exports['ProperIncludes'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IsIncluded = {2, 3, 4} properly included in {1, 2, 3, 4, 5}
-define IsIncludedReversed = {4, 3, 2} properly included in {1, 2, 3, 4, 5}
-define IsSame = {1, 2, 3, 4, 5} properly included in {1, 2, 3, 4, 5}
-define IsNotIncluded = {4, 5, 6} properly included in {1, 2, 3, 4, 5}
-define TuplesIncluded = {tuple{a:2, b:'d'}, tuple{a:2, b:'c'}} properly included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
-define TuplesNotIncluded = {tuple{a:2, b:'d'}, tuple{a:3, b:'c'}} properly included in {tuple{a:1, b:'d'}, tuple{a:2, b:'d'}, tuple{a:2, b:'c'}}
-define NullIncludes = {1, 2, 3, 4, 5} properly included in null
-define NullIncluded = (null as list<Integer>) properly included in {1, 2, 3, 4, 5}
+define IsIncluded: {2, 3, 4} properly included in {1, 2, 3, 4, 5}
+define IsIncludedReversed: {4, 3, 2} properly included in {1, 2, 3, 4, 5}
+define IsSame: {1, 2, 3, 4, 5} properly included in {1, 2, 3, 4, 5}
+define IsNotIncluded: {4, 5, 6} properly included in {1, 2, 3, 4, 5}
+define TuplesIncluded: {Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} properly included in {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
+define TuplesNotIncluded: {Tuple{a:2, b:'d'}, Tuple{a:3, b:'c'}} properly included in {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
+define NullIncludes: {1, 2, 3, 4, 5} properly included in null
+define NullIncluded: (null as List<Integer>) properly included in {1, 2, 3, 4, 5}
 ###
 
 module.exports['ProperIncludedIn'] = {
@@ -5064,6 +5156,7 @@ module.exports['ProperIncludedIn'] = {
          }, {
             "name" : "IsIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -5109,6 +5202,7 @@ module.exports['ProperIncludedIn'] = {
          }, {
             "name" : "IsIncludedReversed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -5154,6 +5248,7 @@ module.exports['ProperIncludedIn'] = {
          }, {
             "name" : "IsSame",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -5207,6 +5302,7 @@ module.exports['ProperIncludedIn'] = {
          }, {
             "name" : "IsNotIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -5252,6 +5348,7 @@ module.exports['ProperIncludedIn'] = {
          }, {
             "name" : "TuplesIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -5350,6 +5447,7 @@ module.exports['ProperIncludedIn'] = {
          }, {
             "name" : "TuplesNotIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -5448,6 +5546,7 @@ module.exports['ProperIncludedIn'] = {
          }, {
             "name" : "NullIncludes",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -5490,6 +5589,7 @@ module.exports['ProperIncludedIn'] = {
          }, {
             "name" : "NullIncluded",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -5539,8 +5639,8 @@ module.exports['ProperIncludedIn'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ListOfLists = expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
-define NullValue = expand null
+define ListOfLists: expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
+define NullValue: expand null
 ###
 
 module.exports['Expand'] = {
@@ -5577,6 +5677,7 @@ module.exports['Expand'] = {
          }, {
             "name" : "ListOfLists",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Expand",
                "operand" : {
@@ -5677,6 +5778,7 @@ module.exports['Expand'] = {
          }, {
             "name" : "NullValue",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Expand",
                "operand" : {
@@ -5705,8 +5807,8 @@ module.exports['Expand'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define LotsOfDups = distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
-define NoDups = distinct {2, 4, 6, 8, 10}
+define LotsOfDups: distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
+define NoDups: distinct {2, 4, 6, 8, 10}
 ###
 
 module.exports['Distinct'] = {
@@ -5743,6 +5845,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "LotsOfDups",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Distinct",
                "operand" : {
@@ -5829,6 +5932,7 @@ module.exports['Distinct'] = {
          }, {
             "name" : "NoDups",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Distinct",
                "operand" : {
@@ -5865,13 +5969,13 @@ module.exports['Distinct'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Numbers = First({1, 2, 3, 4})
-define Letters = First({'a', 'b', 'c'})
-define Lists = First({{'a','b','c'},{'d','e','f'}})
-define Tuples = First({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
-define Unordered = First({3, 1, 4, 2})
-define Empty = First(list<Integer>{})
-define NullValue = First(null as list<Integer>)
+define Numbers: First({1, 2, 3, 4})
+define Letters: First({'a', 'b', 'c'})
+define Lists: First({{'a','b','c'},{'d','e','f'}})
+define Tuples: First({ Tuple{a: 1, b: 2, c: 3}, Tuple{a: 24, b: 25, c: 26} })
+define Unordered: First({3, 1, 4, 2})
+define Empty: First(List<Integer>{})
+define NullValue: First(null as List<Integer>)
 ###
 
 module.exports['First'] = {
@@ -5908,6 +6012,7 @@ module.exports['First'] = {
          }, {
             "name" : "Numbers",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "First",
                "type" : "FunctionRef",
@@ -5935,6 +6040,7 @@ module.exports['First'] = {
          }, {
             "name" : "Letters",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "First",
                "type" : "FunctionRef",
@@ -5958,6 +6064,7 @@ module.exports['First'] = {
          }, {
             "name" : "Lists",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "First",
                "type" : "FunctionRef",
@@ -5999,6 +6106,7 @@ module.exports['First'] = {
          }, {
             "name" : "Tuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "First",
                "type" : "FunctionRef",
@@ -6058,6 +6166,7 @@ module.exports['First'] = {
          }, {
             "name" : "Unordered",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "First",
                "type" : "FunctionRef",
@@ -6085,6 +6194,7 @@ module.exports['First'] = {
          }, {
             "name" : "Empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "First",
                "type" : "FunctionRef",
@@ -6095,6 +6205,7 @@ module.exports['First'] = {
          }, {
             "name" : "NullValue",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "First",
                "type" : "FunctionRef",
@@ -6122,13 +6233,13 @@ module.exports['First'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Numbers = Last({1, 2, 3, 4})
-define Letters = Last({'a', 'b', 'c'})
-define Lists = Last({{'a','b','c'},{'d',;'e','f'}})
-define Tuples = Last({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
-define Unordered = Last({3, 1, 4, 2})
-define Empty = Last(list<Integer>{})
-define NullValue = Last(null as list<Integer>)
+define Numbers: Last({1, 2, 3, 4})
+define Letters: Last({'a', 'b', 'c'})
+define Lists: Last({{'a','b','c'},{'d','e','f'}})
+define Tuples: Last({ Tuple{a: 1, b: 2, c: 3}, Tuple{a: 24, b: 25, c: 26} })
+define Unordered: Last({3, 1, 4, 2})
+define Empty: Last(List<Integer>{})
+define NullValue: Last(null as List<Integer>)
 ###
 
 module.exports['Last'] = {
@@ -6165,6 +6276,7 @@ module.exports['Last'] = {
          }, {
             "name" : "Numbers",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Last",
                "type" : "FunctionRef",
@@ -6192,6 +6304,7 @@ module.exports['Last'] = {
          }, {
             "name" : "Letters",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Last",
                "type" : "FunctionRef",
@@ -6215,6 +6328,7 @@ module.exports['Last'] = {
          }, {
             "name" : "Lists",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Last",
                "type" : "FunctionRef",
@@ -6256,6 +6370,7 @@ module.exports['Last'] = {
          }, {
             "name" : "Tuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Last",
                "type" : "FunctionRef",
@@ -6315,6 +6430,7 @@ module.exports['Last'] = {
          }, {
             "name" : "Unordered",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Last",
                "type" : "FunctionRef",
@@ -6342,6 +6458,7 @@ module.exports['Last'] = {
          }, {
             "name" : "Empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Last",
                "type" : "FunctionRef",
@@ -6352,6 +6469,7 @@ module.exports['Last'] = {
          }, {
             "name" : "NullValue",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Last",
                "type" : "FunctionRef",
@@ -6379,11 +6497,11 @@ module.exports['Last'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Numbers = Length({2, 4, 6, 8, 10})
-define Lists = Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
-define Tuples = Length({ tuple{a: 1, b: 2, c: 3}, tuple{a: 24, b: 25, c: 26} })
-define Empty = Length(list<Integer>{})
-define NullValue = Length(null as list<Integer>)
+define Numbers: Length({2, 4, 6, 8, 10})
+define Lists: Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
+define Tuples: Length({ Tuple{a: 1, b: 2, c: 3}, Tuple{a: 24, b: 25, c: 26} })
+define Empty: Length(List<Integer>{})
+define NullValue: Length(null as List<Integer>)
 ###
 
 module.exports['Length'] = {
@@ -6420,6 +6538,7 @@ module.exports['Length'] = {
          }, {
             "name" : "Numbers",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Length",
                "type" : "FunctionRef",
@@ -6451,6 +6570,7 @@ module.exports['Length'] = {
          }, {
             "name" : "Lists",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Length",
                "type" : "FunctionRef",
@@ -6522,6 +6642,7 @@ module.exports['Length'] = {
          }, {
             "name" : "Tuples",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Length",
                "type" : "FunctionRef",
@@ -6581,6 +6702,7 @@ module.exports['Length'] = {
          }, {
             "name" : "Empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Length",
                "type" : "FunctionRef",
@@ -6591,6 +6713,7 @@ module.exports['Length'] = {
          }, {
             "name" : "NullValue",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Length",
                "type" : "FunctionRef",

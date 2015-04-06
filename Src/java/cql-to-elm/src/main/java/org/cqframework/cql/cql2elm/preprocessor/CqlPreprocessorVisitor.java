@@ -48,6 +48,15 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitCodesystemDefinition(@NotNull cqlParser.CodesystemDefinitionContext ctx) {
+        CodesystemDefinitionInfo codesystemDefinition = new CodesystemDefinitionInfo();
+        codesystemDefinition.setName((String)visit(ctx.identifier()));
+        codesystemDefinition.setDefinition(ctx);
+        libraryInfo.addCodesystemDefinition(codesystemDefinition);
+        return codesystemDefinition;
+    }
+
+    @Override
     public Object visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
         ValuesetDefinitionInfo valuesetDefinition = new ValuesetDefinitionInfo();
         valuesetDefinition.setName((String)visit(ctx.identifier()));

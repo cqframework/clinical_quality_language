@@ -5,14 +5,14 @@
         <ns4:element name="birth datetime" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosisActive" baseType="QDM.QDMBaseType"
-                  topic="Diagnosis, Active" identifier="DiagnosisActive" primaryCodePath="code">
+                  retrievable="true" label="Diagnosis, Active" identifier="DiagnosisActive" primaryCodePath="code">
         <ns4:element name="anatomical location" type="System.Concept"/>
         <ns4:element name="laterality" type="System.Concept"/>
         <ns4:element name="severity" type="System.Concept"/>
         <ns4:element name="ordinality" type="System.Concept"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestPerformed" baseType="QDM.QDMBaseType"
-                  topic="Laboratory Test, Performed" identifier="LaboratoryTestPerformed" primaryCodePath="code">
+                  retrievable="true" label="Laboratory Test, Performed" identifier="LaboratoryTestPerformed" primaryCodePath="code">
         <ns4:element name="status" type="System.Concept"/>
         <ns4:element name="method" type="System.Concept"/>
         <ns4:element name="result" type="System.Any"/>
@@ -21,7 +21,7 @@
         <ns4:element name="reason" type="System.Concept"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterPerformed" baseType="QDM.QDMBaseType"
-                  topic="Encounter, Performed" identifier="EncounterPerformed" primaryCodePath="code">
+                  retrievable="true" label="Encounter, Performed" identifier="EncounterPerformed" primaryCodePath="code">
         <ns4:element name="admission datetime" type="System.DateTime"/>
         <ns4:element name="discharge datetime" type="System.DateTime"/>
         <ns4:element name="discharge status" type="System.Concept"/>
@@ -40,7 +40,7 @@
         <ns4:element name="provider preference" type="System.Concept"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationOrder" baseType="QDM.QDMBaseType"
-                  topic="Medication, Order" identifier="MedicationOrder" primaryCodePath="code">
+                  retrievable="true" label="Medication, Order" identifier="MedicationOrder" primaryCodePath="code">
         <ns4:element name="active datetime" type="System.DateTime"/>
         <ns4:element name="signed datetime" type="System.DateTime"/>
         <ns4:element name="refills" type="System.Integer"/>

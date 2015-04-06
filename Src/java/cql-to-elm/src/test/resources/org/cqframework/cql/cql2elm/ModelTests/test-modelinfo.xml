@@ -19,7 +19,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.NutritionOrderStatus" baseType="Test.Element">
         <ns4:element name="value" type="Test.NutritionOrderStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.AllergyIntolerance" baseType="Test.DomainResource" topic="AllergyIntolerance" identifier="cqf-allergyintolerance" primaryCodePath="substance">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.AllergyIntolerance" baseType="Test.DomainResource" retrievable="true" label="AllergyIntolerance" identifier="cqf-allergyintolerance" primaryCodePath="substance">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="recordedDate" type="System.DateTime"/>
         <ns4:element name="recorder" type="Test.Reference"/>
@@ -47,7 +47,7 @@
         <ns4:element name="schedule" type="Test.Timing"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.RemittanceOutcome_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Medication" baseType="Test.DomainResource" topic="Medication" identifier="cqf-medication" primaryCodePath="code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Medication" baseType="Test.DomainResource" retrievable="true" label="Medication" identifier="cqf-medication" primaryCodePath="code">
         <ns4:element name="name" type="System.String"/>
         <ns4:element name="code" type="System.Concept"/>
         <ns4:element name="isBrand" type="System.Boolean"/>
@@ -187,7 +187,7 @@
         <ns4:element name="photo" type="list&lt;Test.Attachment&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.CommunicationRequest.MessagePart" baseType="Test.BackboneElement"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Encounter" baseType="Test.DomainResource" topic="Encounter" identifier="cqf-encounter" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Encounter" baseType="Test.DomainResource" retrievable="true" label="Encounter" identifier="cqf-encounter" primaryCodePath="type">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="status" type="Test.EncounterState"/>
         <ns4:element name="class" type="Test.EncounterClass"/>
@@ -352,7 +352,7 @@
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.CarePlanStatus_list"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.ConditionStatus_list"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.OrderOutcomeStatus_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Practitioner" baseType="Test.DomainResource" topic="Practitioner" identifier="cqf-practitioner" primaryCodePath="specialty">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Practitioner" baseType="Test.DomainResource" retrievable="true" label="Practitioner" identifier="cqf-practitioner" primaryCodePath="specialty">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="name" type="Test.HumanName"/>
         <ns4:element name="telecom" type="list&lt;Test.ContactPoint&gt;"/>
@@ -592,7 +592,7 @@
         <ns4:element name="comment" type="System.String"/>
         <ns4:element name="link" type="Test.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationDispense" baseType="Test.DomainResource" topic="MedicationDispense" identifier="cqf-medicationdispense" primaryCodePath="medication.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationDispense" baseType="Test.DomainResource" retrievable="true" label="MedicationDispense" identifier="cqf-medicationdispense" primaryCodePath="medication.code">
         <ns4:element name="identifier" type="Test.Identifier"/>
         <ns4:element name="status" type="Test.MedicationDispenseStatus"/>
         <ns4:element name="patient" type="Test.Reference"/>
@@ -830,7 +830,7 @@
         <ns4:element name="person" type="Test.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.DiagnosticOrderPriority_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Immunization" baseType="Test.DomainResource" topic="Immunization" identifier="cqf-immunization" primaryCodePath="vaccineType">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Immunization" baseType="Test.DomainResource" retrievable="true" label="Immunization" identifier="cqf-immunization" primaryCodePath="vaccineType">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="date" type="System.DateTime"/>
         <ns4:element name="vaccineType" type="System.Concept"/>
@@ -906,7 +906,7 @@
         <ns4:element name="lastModifiedBy" type="Test.Reference"/>
         <ns4:element name="lastModified" type="System.DateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Substance" baseType="Test.DomainResource" topic="Substance" identifier="cqf-substance" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Substance" baseType="Test.DomainResource" retrievable="true" label="Substance" identifier="cqf-substance" primaryCodePath="type">
         <ns4:element name="type" type="System.Concept"/>
         <ns4:element name="description" type="System.String"/>
         <ns4:element name="instance" type="Test.Substance.Instance"/>
@@ -935,7 +935,7 @@
         <ns4:element name="linkId" type="System.Integer"/>
         <ns4:element name="dateTime" type="System.DateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.CommunicationRequest" baseType="Test.DomainResource" topic="CommunicationRequest" identifier="cqf-communicationrequest" primaryCodePath="category">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.CommunicationRequest" baseType="Test.DomainResource" retrievable="true" label="CommunicationRequest" identifier="cqf-communicationrequest" primaryCodePath="category">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="category" type="System.Concept"/>
         <ns4:element name="sender" type="Test.Reference"/>
@@ -1214,7 +1214,7 @@
         <ns4:element name="quantity" type="Test.Ratio"/>
         <ns4:element name="substance" type="Test.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Procedure" baseType="Test.DomainResource" topic="Procedure" identifier="cqf-procedure" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Procedure" baseType="Test.DomainResource" retrievable="true" label="Procedure" identifier="cqf-procedure" primaryCodePath="type">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="patient" type="Test.Reference"/>
         <ns4:element name="type" type="System.Concept"/>
@@ -1255,7 +1255,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationDispenseStatus" baseType="Test.Element">
         <ns4:element name="value" type="Test.MedicationDispenseStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Observation" baseType="Test.DomainResource" topic="Observation" identifier="cqf-observation" primaryCodePath="name">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Observation" baseType="Test.DomainResource" retrievable="true" label="Observation" identifier="cqf-observation" primaryCodePath="name">
         <ns4:element name="name" type="System.Concept"/>
         <ns4:element name="valueQuantity" type="System.Quantity"/>
         <ns4:element name="dataAbsentReason" type="Test.DataAbsentReason"/>
@@ -1278,7 +1278,7 @@
         <ns4:element name="value" type="Test.SecurityEventOutcome_list"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.ReferralStatus_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.DiagnosticOrder" baseType="Test.DomainResource" topic="DiagnosticOrder" identifier="cqf-diagnosticorder" primaryCodePath="item[].code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.DiagnosticOrder" baseType="Test.DomainResource" retrievable="true" label="DiagnosticOrder" identifier="cqf-diagnosticorder" primaryCodePath="item[].code">
         <ns4:element name="subject" type="Test.Reference"/>
         <ns4:element name="orderer" type="Test.Reference"/>
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
@@ -1335,7 +1335,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.DocumentReferenceStatus" baseType="Test.Element">
         <ns4:element name="value" type="Test.DocumentReferenceStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.ImmunizationRecommendation" baseType="Test.DomainResource" topic="ImmunizationRecommendation" identifier="cqf-immunization-recommendation" primaryCodePath="recommendation[].vaccineType">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.ImmunizationRecommendation" baseType="Test.DomainResource" retrievable="true" label="ImmunizationRecommendation" identifier="cqf-immunization-recommendation" primaryCodePath="recommendation[].vaccineType">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="subject" type="Test.Reference"/>
         <ns4:element name="recommendation" type="list&lt;Test.ImmunizationRecommendation.Recommendation&gt;"/>
@@ -1591,7 +1591,7 @@
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.DeviceUseRequestStatus_list"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.SampledDataDataType_primitive"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.CompositionStatus_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Condition" baseType="Test.DomainResource" topic="Condition" identifier="cqf-condition" primaryCodePath="code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Condition" baseType="Test.DomainResource" retrievable="true" label="Condition" identifier="cqf-condition" primaryCodePath="code">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="subject" type="Test.Reference"/>
         <ns4:element name="encounter" type="Test.Reference"/>
@@ -1704,7 +1704,7 @@
         <ns4:element name="type" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="individual" type="Test.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationStatement" baseType="Test.DomainResource" topic="MedicationStatement" identifier="cqf-medicationstatement" primaryCodePath="medication.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationStatement" baseType="Test.DomainResource" retrievable="true" label="MedicationStatement" identifier="cqf-medicationstatement" primaryCodePath="medication.code">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="patient" type="Test.Reference"/>
         <ns4:element name="wasNotGiven" type="System.Boolean"/>
@@ -1884,7 +1884,7 @@
         <ns4:element name="deleted" type="Test.Bundle.Deleted"/>
         <ns4:element name="resource" type="Test.ResourceContainer"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.FamilyHistory" baseType="Test.DomainResource" topic="FamilyHistory" identifier="cqf-familyhistory">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.FamilyHistory" baseType="Test.DomainResource" retrievable="true" label="FamilyHistory" identifier="cqf-familyhistory">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="patient" type="Test.Reference"/>
         <ns4:element name="date" type="System.DateTime"/>
@@ -1991,7 +1991,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.ValueSetStatus" baseType="Test.Element">
         <ns4:element name="value" type="Test.ValueSetStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationAdministration" baseType="Test.DomainResource" topic="MedicationAdministration" identifier="cqf-medicationadministration" primaryCodePath="medication.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationAdministration" baseType="Test.DomainResource" retrievable="true" label="MedicationAdministration" identifier="cqf-medicationadministration" primaryCodePath="medication.code">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="status" type="Test.MedicationAdministrationStatus"/>
         <ns4:element name="patient" type="Test.Reference"/>
@@ -2373,7 +2373,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.ParticipantStatus" baseType="Test.Element">
         <ns4:element name="value" type="Test.ParticipantStatus_list"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.ProcedureRequest" baseType="Test.DomainResource" topic="ProcedureRequest" identifier="cqf-procedurerequest" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.ProcedureRequest" baseType="Test.DomainResource" retrievable="true" label="ProcedureRequest" identifier="cqf-procedurerequest" primaryCodePath="type">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="subject" type="Test.Reference"/>
         <ns4:element name="type" type="System.Concept"/>
@@ -2511,7 +2511,7 @@
         <ns4:element name="contentType" type="Test.code"/>
         <ns4:element name="content" type="Test.base64Binary"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.CarePlan" baseType="Test.DomainResource" topic="CarePlan" identifier="cqf-careplan" primaryCodePath="concern.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.CarePlan" baseType="Test.DomainResource" retrievable="true" label="CarePlan" identifier="cqf-careplan" primaryCodePath="concern.code">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="patient" type="Test.Reference"/>
         <ns4:element name="status" type="Test.CarePlanStatus"/>
@@ -2598,7 +2598,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.DataAbsentReason_list"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.FHIRDefinedType_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.NutritionOrder" baseType="Test.DomainResource" topic="NutritionOrder" identifier="cqf-nutritionorder" primaryCodePath="item[].oralDiet.type|item[].supplement.type|item[].enteralFormula.baseFormulaType|item[].enteralFormula.additiveType">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.NutritionOrder" baseType="Test.DomainResource" retrievable="true" label="NutritionOrder" identifier="cqf-nutritionorder" primaryCodePath="item[].oralDiet.type|item[].supplement.type|item[].enteralFormula.baseFormulaType|item[].enteralFormula.additiveType">
         <ns4:element name="subject" type="Test.Reference"/>
         <ns4:element name="orderer" type="Test.Reference"/>
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
@@ -2627,7 +2627,7 @@
         <ns4:element name="rate" type="Test.Ratio"/>
         <ns4:element name="maxDosePerPeriod" type="Test.Ratio"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Patient" baseType="Test.DomainResource" topic="Patient" identifier="cqf-patient">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Patient" baseType="Test.DomainResource" retrievable="true" label="Patient" identifier="cqf-patient">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="name" type="list&lt;Test.HumanName&gt;"/>
         <ns4:element name="telecom" type="list&lt;Test.ContactPoint&gt;"/>
@@ -2649,7 +2649,7 @@
         <ns4:element name="fee" type="Test.Money"/>
         <ns4:element name="adjudication" type="list&lt;Test.ClaimResponse.Adjudication4&gt;"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationPrescription" baseType="Test.DomainResource" topic="MedicationPrescription" identifier="cqf-medicationprescription" primaryCodePath="medication.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.MedicationPrescription" baseType="Test.DomainResource" retrievable="true" label="MedicationPrescription" identifier="cqf-medicationprescription" primaryCodePath="medication.code">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="dateWritten" type="System.DateTime"/>
         <ns4:element name="status" type="Test.MedicationPrescriptionStatus"/>
@@ -2800,7 +2800,7 @@
         <ns4:element name="value" type="Test.SecurityEventObjectRole_list"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.uuid_primitive"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.DiagnosticReport" baseType="Test.DomainResource" topic="DiagnosticReport" identifier="cqf-diagnosticreport" primaryCodePath="name">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.DiagnosticReport" baseType="Test.DomainResource" retrievable="true" label="DiagnosticReport" identifier="cqf-diagnosticreport" primaryCodePath="name">
         <ns4:element name="name" type="System.Concept"/>
         <ns4:element name="status" type="Test.DiagnosticReportStatus"/>
         <ns4:element name="issued" type="System.DateTime"/>
@@ -2837,7 +2837,7 @@
         <ns4:element name="value" type="Test.CommunicationRequestMode_list"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Test.DocumentRelationshipType_list"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Location" baseType="Test.DomainResource" topic="Location" identifier="cqf-location" primaryCodePath="type">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Location" baseType="Test.DomainResource" retrievable="true" label="Location" identifier="cqf-location" primaryCodePath="type">
         <ns4:element name="identifier" type="list&lt;Test.Identifier&gt;"/>
         <ns4:element name="name" type="System.String"/>
         <ns4:element name="description" type="System.String"/>

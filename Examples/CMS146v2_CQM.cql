@@ -40,60 +40,60 @@ library CMS146 version '2'
 
 using QUICK
 
-valueset "Acute Pharyngitis" = '2.16.840.1.113883.3.464.1003.102.12.1011'
-valueset "Acute Tonsillitis" = '2.16.840.1.113883.3.464.1003.102.12.1012'
-valueset "Ambulatory/ED Visit" = '2.16.840.1.113883.3.464.1003.101.12.1061'
-valueset "Antibiotic Medications" = '2.16.840.1.113883.3.464.1003.196.12.1001'
-valueset "Group A Streptococcus Test" = '2.16.840.1.113883.3.464.1003.198.12.1012'
+valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.102.12.1011'
+valueset "Acute Tonsillitis": '2.16.840.1.113883.3.464.1003.102.12.1012'
+valueset "Ambulatory/ED Visit": '2.16.840.1.113883.3.464.1003.101.12.1061'
+valueset "Antibiotic Medications": '2.16.840.1.113883.3.464.1003.196.12.1001'
+valueset "Group A Streptococcus Test": '2.16.840.1.113883.3.464.1003.198.12.1012'
 
-parameter MeasurementPeriod default interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+parameter MeasurementPeriod Interval<DateTime>
 
 context Patient
 
-define InDemographic =
+define InDemographic:
     AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
-define Pharyngitis =
+define Pharyngitis:
     [Condition: "Acute Pharyngitis"] union [Condition: "Acute Tonsillitis"]
 
-define Antibiotics =
+define Antibiotics:
     [MedicationPrescription: "Antibiotic Medications"]
 
-define MeasurementPeriodEncounters =
+define MeasurementPeriodEncounters:
     [Encounter: "Ambulatory/ED Visit"] E
         where InDemographic and E.period during MeasurementPeriod
 
-define PharyngitisEncounters =
+define PharyngitisEncounters:
     MeasurementPeriodEncounters E
         with Pharyngitis P such that
-            interval[P.onsetDateTime, P.abatementDateTime] includes E.period
+            Interval[P.onsetDateTime, P.abatementDateTime] includes E.period
             or P.onsetDateTime in E.period
         with Antibiotics A such that A.dateWritten 3 days or less after start of E.period
 
-define PharyngitisWithPriorAntibiotics =
+define PharyngitisWithPriorAntibiotics:
     Pharyngitis P
         with Antibiotics A such that A.dateWritten 30 days or less before P.onsetDateTime
 
-define ExcludedEncounters =
+define ExcludedEncounters:
     PharyngitisEncounters E
         with PharyngitisWithPriorAntibiotics P such that
-            interval[P.onsetDateTime, P.abatementDateTime] includes E.period
+            Interval[P.onsetDateTime, P.abatementDateTime] includes E.period
             or P.onsetDateTime in E.period
 
-define StrepTestEncounters =
+define StrepTestEncounters:
     PharyngitisEncounters E
         with [DiagnosticReport: "Group A Streptococcus Test"] T
             such that T.result is not null
-                and T.issued in interval[start of E.period - 3 days, end of E.period + 3 days]
+                and T.issued in Interval[start of E.period - 3 days, end of E.period + 3 days]
 
-define IPPCount =
+define IPPCount:
     Count(PharyngitisEncounters)
 
-define DenominatorCount =
+define DenominatorCount:
     IPPCount
 
-define DenominatorExclusionsCount =
+define DenominatorExclusionsCount:
     Count(ExcludedEncounters)
 
-define NumeratorCount =
+define NumeratorCount:
     Count(StrepTestEncounters except ExcludedEncounters)

@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.cqframework.cql.elm.tracking.DataType;
+import org.hl7.elm.r1.AccessModifier;
 
 public class Operator {
     public Operator(String name, Signature signature, DataType resultType) {
@@ -31,6 +32,20 @@ public class Operator {
         }
 
         this.libraryName = libraryName;
+    }
+
+    private AccessModifier accessLevel = AccessModifier.PUBLIC;
+    public AccessModifier getAccessLevel() {
+        return accessLevel;
+    }
+
+    public void setAccessLevel(AccessModifier accessLevel) {
+        this.accessLevel = accessLevel;
+    }
+
+    public Operator withAccessLevel(AccessModifier accessLevel) {
+        setAccessLevel(accessLevel);
+        return this;
     }
 
     private String name;

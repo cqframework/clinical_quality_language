@@ -22,7 +22,7 @@
             ]
           },
           "onsetDateTime": "$ONSET$",
-          "abatementDate": "$ABATEMENT$",
+          "abatementDateTime": "$ABATEMENT$",
           "issued": "1982-03-15T15:15:00"
         }
     }

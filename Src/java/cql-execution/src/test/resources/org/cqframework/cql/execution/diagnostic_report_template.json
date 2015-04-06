@@ -48,6 +48,6 @@
           "result": [{
             "reference": "Observation/result"
           }],
-          "diagnosticDateTime": "$DATETIME$"
+          "issued": "$DATETIME$"
         }
       }

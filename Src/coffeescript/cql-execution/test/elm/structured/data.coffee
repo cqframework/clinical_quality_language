@@ -10,7 +10,7 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define tup = {a: 1, b: 2}
+define tup: {a: 1, b: 2}
 ###
 
 module.exports['Tuple'] = {
@@ -47,6 +47,7 @@ module.exports['Tuple'] = {
          }, {
             "name" : "tup",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Tuple",
                "element" : [ {

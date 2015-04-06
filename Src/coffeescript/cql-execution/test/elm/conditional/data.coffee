@@ -9,9 +9,9 @@
 ### If
 library TestSnippet version '1'
 using QUICK
-parameter var : Boolean
+parameter var Boolean
 context Patient
-define exp = if var then 'true return' else 'false return'
+define exp: if var then 'true return' else 'false return'
 ###
 
 module.exports['If'] = {
@@ -36,6 +36,7 @@ module.exports['If'] = {
       "parameters" : {
          "def" : [ {
             "name" : "var",
+            "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
                "name" : "{urn:hl7-org:elm:r1}Boolean",
                "type" : "NamedTypeSpecifier"
@@ -57,6 +58,7 @@ module.exports['If'] = {
          }, {
             "name" : "exp",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "If",
                "condition" : {
@@ -82,12 +84,12 @@ module.exports['If'] = {
 ### Case
 library TestSnippet version '1'
 using QUICK
-parameter var : Integer
-parameter X : Integer
-parameter Y : Integer
+parameter var Integer
+parameter X Integer
+parameter Y Integer
 context Patient
 
-define selected =
+define selected:
   case var
    when 1 then 'one'
    when 2 then 'two'
@@ -95,7 +97,7 @@ define selected =
     '?'
   end
 
-define standard =
+define standard:
   case
     when X > Y then 'X > Y'
     when X < Y then 'X < Y'
@@ -125,18 +127,21 @@ module.exports['Case'] = {
       "parameters" : {
          "def" : [ {
             "name" : "var",
+            "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
                "name" : "{urn:hl7-org:elm:r1}Integer",
                "type" : "NamedTypeSpecifier"
             }
          }, {
             "name" : "X",
+            "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
                "name" : "{urn:hl7-org:elm:r1}Integer",
                "type" : "NamedTypeSpecifier"
             }
          }, {
             "name" : "Y",
+            "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
                "name" : "{urn:hl7-org:elm:r1}Integer",
                "type" : "NamedTypeSpecifier"
@@ -158,6 +163,7 @@ module.exports['Case'] = {
          }, {
             "name" : "selected",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Case",
                "comparand" : {
@@ -196,6 +202,7 @@ module.exports['Case'] = {
          }, {
             "name" : "standard",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Case",
                "caseItem" : [ {

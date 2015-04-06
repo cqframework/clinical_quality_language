@@ -4,36 +4,36 @@
 
 # 2
 
-valueset "Acute Myocardial Infarction" = '2.16.840.1.113883.3.464.1003.104.12.1001'
-define st = [Condition: "Acute Myocardial Infarction"] C
+valueset "Acute Myocardial Infarction": '2.16.840.1.113883.3.464.1003.104.12.1001'
+define st: [Condition: "Acute Myocardial Infarction"] C
   where C.onsetDateTime starts 12 months or less before start of "Measurement Period"
 
 #3
 
-valueset "Percutaneous Coronary Interventions" = '2.16.840.1.113883.3.464.1003.104.12.1010'
-define st = [Procedure: "Percutaneous Coronary Interventions"] P
+valueset "Percutaneous Coronary Interventions": '2.16.840.1.113883.3.464.1003.104.12.1010'
+define st: [Procedure: "Percutaneous Coronary Interventions"] P
   where P.date ends 12 months or less before start of "Measurement Period"
 
 #4
 
-define st = [MedicationStatement: "Aspirin and Other Anti-thrombotics"] M
+define st: [MedicationStatement: "Aspirin and Other Anti-thrombotics"] M
   where M.whenGiven ends before start of "Measurement Period"
 
 #5
 
-define st = foreach
+define st: from
   [Encounter: "Non-Elective Inpatient Encounter"] I,
   [Encounter: "Emergency Department Visit"] E
 where I.period starts 1 hour or less after end of E.period
 return I
 
-define st = [Encounter: "Non-Elective Inpatient Encounter"] I
+define st: [Encounter: "Non-Elective Inpatient Encounter"] I
   with [Encounter: "Emergency Department Visit"] E such that
     I.period starts 1 hour or less after end of E.period
 
 #6
 
-define st = [Observation: "Group A Streptococcus Test"] T
+define st: [Observation: "Group A Streptococcus Test"] T
   with [Encounter: "Ambulatory/ED Visit"] E such that
     T.issued starts 3 days or less before start of E.period
     or T.issued starts during E.period
@@ -41,21 +41,21 @@ define st = [Observation: "Group A Streptococcus Test"] T
 
 #7
 
-define st = [Observation: "Best Corrected Visual Acuity"] T
+define st: [Observation: "Best Corrected Visual Acuity"] T
   with [Procedure: "Cataract Surgery"] P such that
     T.issued starts 90 days or less after end of P.date
   where T.valueCodeableConcept in "Visual acuity 20/40 or Better"
 
 #8
 
-define LastOfficeVisit = Last([Encounter: "Office Visit"])
-define st = [Observation: "Systolic Blood Pressure"] S
+define LastOfficeVisit: Last([Encounter: "Office Visit"])
+define st: [Observation: "Systolic Blood Pressure"] S
   where S.issued during LastOfficeVisit.period
   and T.valueQuantity < 140 'mmHg'
 
 #9
 
-define st = [Observation: "HbA1c Laboratory Test"] S
+define st: [Observation: "HbA1c Laboratory Test"] S
   where S.issued during "Measurement Period"
   and T.valueQuantity > 9 '%'
 
@@ -63,37 +63,37 @@ define st = [Observation: "HbA1c Laboratory Test"] S
 
 # Using not-yet-developed ProcedureRejected (profile on ProcedureRequest w/ status = 'rejected')
 
-define st = [ProcedureRejected] P
+define st: [ProcedureRejected] P
   where p.encounter.type in "Encounter Inpatient"
 
 #16
 
 # The following assumes that "substance" is mapped as primary code attribute of AllergyIntolerance
 
-valueset "Inhaled Corticosteroids" = '2.16.840.1.113883.3.464.1003.196.11.1085'
-define st = [AllergyIntolerance: "Inhaled Corticosteroids"]
+valueset "Inhaled Corticosteroids": '2.16.840.1.113883.3.464.1003.196.11.1085'
+define st: [AllergyIntolerance: "Inhaled Corticosteroids"]
 
 # If you want it spelled out
 
-valueset "Inhaled Corticosteroids" = '2.16.840.1.113883.3.464.1003.196.11.1085'
-define st = [AllergyIntolerance: substance in "Inhaled Corticosteroids"]
+valueset "Inhaled Corticosteroids": '2.16.840.1.113883.3.464.1003.196.11.1085'
+define st: [AllergyIntolerance: substance in "Inhaled Corticosteroids"]
 
 #17
 
 # The following assumes that "substance" is mapped as primary code attribute of AllergyIntoleranceRefuted
 
-valueset "ACE Inhibitor or ARB" = '2.16.840.1.113883.3.526.3.1139'
-define st = [AllergyIntoleranceRefuted: "ACE Inhibitor or ARB"]
+valueset "ACE Inhibitor or ARB": '2.16.840.1.113883.3.526.3.1139'
+define st: [AllergyIntoleranceRefuted: "ACE Inhibitor or ARB"]
 
 # If you want it spelled out:
 
-valueset "ACE Inhibitor or ARB" = '2.16.840.1.113883.3.526.3.1139'
-define st = [AllergyIntoleranceRefuted: substance in "ACE Inhibitor or ARB"]
+valueset "ACE Inhibitor or ARB": '2.16.840.1.113883.3.526.3.1139'
+define st: [AllergyIntoleranceRefuted: substance in "ACE Inhibitor or ARB"]
 
 #19
 
-valueset "Breast Cancer" = '2.16.840.1.113883.3.526.3.389'
-define st = [FamilyHistory] F
+valueset "Breast Cancer": '2.16.840.1.113883.3.526.3.389'
+define st: [FamilyHistory] F
   where exists (
     F.relation R where R.relationship = 'NMTH' and exists (
       R.condition C where C.type in "Breast Cancer"
@@ -104,8 +104,8 @@ define st = [FamilyHistory] F
 
 # If QUICK uses only one form of abatement[x] use that, otherwise test all three to be sure
 
-valueset "All Cancer" = '2.16.840.1.113883.3.464.1003.108.12.1011'
-define st = [Condition: "All Cancer"] C
+valueset "All Cancer": '2.16.840.1.113883.3.464.1003.108.12.1011'
+define st: [Condition: "All Cancer"] C
   where C.abatementDateTime is null
   and C.abatementAge is null
   and not C.abatementBoolean is true
@@ -115,16 +115,16 @@ define st = [Condition: "All Cancer"] C
 # Note: This finds all statements on non-pregnancy, but to be complete you
 # should probably make sure there isn't a more recent statement of pregnancy
 
-valueset "Pregnancy" = '2.16.840.1.113883.3.526.3.378'
-define st = [ConditionRefuted: "Pregnancy"]
+valueset "Pregnancy": '2.16.840.1.113883.3.526.3.378'
+define st: [ConditionRefuted: "Pregnancy"]
 
 # Here is the more complex example making sure there is not a more recent
 # assertion of pregnancy
 
-valueset "Pregnancy" = '2.16.840.1.113883.3.526.3.378'
-define "Last Assertion of Pregnancy" = Last([Condition: "Pregnancy"])
-define "Last Refutal of Pregnancy" = Last([ConditionRefuted: "Pregnancy"])
-define lastAssertionIsRefutal = "Last Refutal of Pregnancy" is not null
+valueset "Pregnancy": '2.16.840.1.113883.3.526.3.378'
+define "Last Assertion of Pregnancy": Last([Condition: "Pregnancy"])
+define "Last Refutal of Pregnancy": Last([ConditionRefuted: "Pregnancy"])
+define lastAssertionIsRefutal: "Last Refutal of Pregnancy" is not null
   and (
     "Last Assertion of Pregnancy" is null
     or "Last Assertion of Pregnancy".dateAsserted before "Last Refutal of Pregancy".dateAsserted
@@ -137,7 +137,7 @@ define lastAssertionIsRefutal = "Last Refutal of Pregnancy" is not null
 # order to indicate a communication *should* occur.  Lastly, matching on message text is probably not the
 # best approach-- using a code or value set would likely be better.
 
-define st = [CommunicationRequest] C
+define st: [CommunicationRequest] C
   where C.mode = 'ordered' and sender.role = 'nurse' and recipient.role = 'doctor'
   and exists (C.messagePart M where M.contentString = 'temperature above 104 F')
 
@@ -147,55 +147,55 @@ define st = [CommunicationRequest] C
 # there are no statements one way or the other.  I don't know if that's what you want, but here it is.
 # Also note that I had to make up a value set for Penicillin (it doesn't already exist in VSAC).
 
-valueset "Penicillin" = '1.2.3.4.5.6.7.8.9'
-define "known to be allergic" = exists([AllergyIntolerance: "Penicillin"])
-define "known to be tolerant" = exists([AllergyIntoleranceRefuted: "Penicillin"])
-define st = not "known to be allergic" and not "known to be tolerant"
+valueset "Penicillin": '1.2.3.4.5.6.7.8.9'
+define "known to be allergic": exists([AllergyIntolerance: "Penicillin"])
+define "known to be tolerant": exists([AllergyIntoleranceRefuted: "Penicillin"])
+define st: not "known to be allergic" and not "known to be tolerant"
 
 # 57
 
 # Note: Might be better to use a valueset than a code, but there isn't a valueset for it.
 # Also note that this is not a proposal-- it is an order.
 
-define "Protein Supplementation" = Code('226282004', '2.16.840.1.113883.6.96')
-define st = [NutritionOrder] N
+define "Protein Supplementation": Code('226282004', '2.16.840.1.113883.6.96')
+define st: [NutritionOrder] N
   where exists(N.item I where I.supplement.type = "Protein Supplementation")
 
 #60
 
 # NOTE: Had to make up a valueset for HBV Case Management Program
 
-valueset "HBV Case Management Program" = '1.2.3.4.5.6.7.8.9'
-define st = [ReferralRequest: serviceRequested in "HBV Case Management Program"]
+valueset "HBV Case Management Program": '1.2.3.4.5.6.7.8.9'
+define st: [ReferralRequest: serviceRequested in "HBV Case Management Program"]
 
 #61
 
 # NOTE: Assuming 'inactive' is different than 'abated'.  In that case, FHIR doesn't represent that,
 # so you might need to use a value set to capture it.  I made one up for this example.
 
-valueset "Inactive Cystic Fibrosis" = '1.2.3.4.5.6.7.8.9'
-define st = [Condition: "Inactive Cystic Fibrosis"]
+valueset "Inactive Cystic Fibrosis": '1.2.3.4.5.6.7.8.9'
+define st: [Condition: "Inactive Cystic Fibrosis"]
 
 #65
 
 # The following assumes that "type" is mapped as primary code attribute of Procedure
 
-valueset "Counseling for Physical Activity" = '2.16.840.1.113883.3.464.1003.118.12.1035'
-define st = [Procedure: "Counseling for Physical Activity"]
+valueset "Counseling for Physical Activity": '2.16.840.1.113883.3.464.1003.118.12.1035'
+define st: [Procedure: "Counseling for Physical Activity"]
 
 # If you want it spelled out
 
-valueset "Counseling for Physical Activity" = '2.16.840.1.113883.3.464.1003.118.12.1035'
-define st = [Procedure: type in "Counseling for Physical Activity"]
+valueset "Counseling for Physical Activity": '2.16.840.1.113883.3.464.1003.118.12.1035'
+define st: [Procedure: type in "Counseling for Physical Activity"]
 
 # 67
 
 # Had to make up valueset for Coronary Heart Disease
 
-parameter "Measurement Period" : interval<DateTime>
-valueset "Framingham coronary heart disease 10 year risk" = '2.16.840.1.113883.3.600.1561'
-valueset "Coronary Heart Disease" = '1.2.3.4.5.6.7.8.9'
-define st = [RiskAssessment: method in "Framingham coronary heart disease 10 year risk"] R
+parameter "Measurement Period" Interval<DateTime>
+valueset "Framingham coronary heart disease 10 year risk": '2.16.840.1.113883.3.600.1561'
+valueset "Coronary Heart Disease": '1.2.3.4.5.6.7.8.9'
+define st: [RiskAssessment: method in "Framingham coronary heart disease 10 year risk"] R
   where R.date during "Measurement Period"
   and exists (
     R.prediction P
@@ -206,7 +206,7 @@ define st = [RiskAssessment: method in "Framingham coronary heart disease 10 yea
 
 # ??
 
-define st = [DiagnosticOrder] D
+define st: [DiagnosticOrder] D
   where D.status = 'completed'
   return tuple {
     OrderIds: D.identifier,
@@ -236,13 +236,13 @@ exists ( [DiagnosticOrder: "Pregnancy Test"] O
 ["Encounter, Performed": "Ambulatory/ED Visit"] E
   with ["Diagnosis, Active": "Acute Pharyngitis"] P
     such that
-      interval[P."start datetime", P."stop datetime") overlaps after interval[E."start datetime", E."stop datetime")
+      Interval[P."start datetime", P."stop datetime") overlaps after Interval[E."start datetime", E."stop datetime")
 
 #10: Value Sets w/ versions and code versions
 
-valueset "Diabetes" = '2.16.840.1.113883.3.464.1003.103.12.1001' version '20140501'
+valueset "Diabetes": '2.16.840.1.113883.3.464.1003.103.12.1001' version '20140501'
 
-valueset "Diabetes" = '2.16.840.1.113883.3.464.1003.103.12.1001' version '20140501'
+valueset "Diabetes": '2.16.840.1.113883.3.464.1003.103.12.1001' version '20140501'
   code systems (
     '2.16.840.1.113883.6.96' version '2013-09',
     '2.16.840.1.113883.6.103' version '2014',
@@ -258,18 +258,18 @@ valueset "Diabetes" = '2.16.840.1.113883.3.464.1003.103.12.1001' version '201405
 
 context Population
 
-define "Number of Cancer Patients" = Count(
+define "Number of Cancer Patients": Count(
   [Patient] P
     with [Condition: "Cancer"] C such that C.subject.identifier = P.identifier
 )
 
-define "Number of Female Cancer Patients" = Count(
+define "Number of Female Cancer Patients": Count(
   [Patient] P
     with [Condition: "Cancer"] C such that C.subject.identifier = P.identifier
     where P.gender = 'female'
 )
 
-define "Number of Female Breast Cancer Patients Age 40-49" = Count(
+define "Number of Female Breast Cancer Patients Age 40-49": Count(
   [Patient] P
     with [Condition: "Breast Cancer"] C such that C.subject.identifier = P.identifier
     where P.gender = 'female' and CalculateAgeInYears(P.birthDate) between 40 and 49
@@ -287,16 +287,16 @@ define "Number of Female Breast Cancer Patients Age 40-49" = Count(
 
 # Or ObjectRedefine
 
-define FirstInpatientEncounter = First([Encounter] E where E.class = 'inpatient')
-define RedefinedEncounter = FirstInpatientEncounter E
+define FirstInpatientEncounter: First([Encounter] E where E.class = 'inpatient')
+define RedefinedEncounter: FirstInpatientEncounter E
   return tuple {
     type: E.type,
     admissionDate: E.period.start
     dischargeDate: E.period.end
   }
 
-define FirstInpatientEncounter = First([Encounter] E where E.class = 'inpatient')
-define RedefinedEncounter = tuple {
+define FirstInpatientEncounter: First([Encounter] E where E.class = 'inpatient')
+define RedefinedEncounter: tuple {
     type: FirstInpatientEncounter.type,
     admissionDate: FirstInpatientEncounter.period.start
     dischargeDate: FirstInpatientEncounter.period.end
@@ -308,17 +308,17 @@ define RedefinedEncounter = tuple {
 
 # 2.5.2.1 And
 
-define IsTrue = true and true
-define IsFalse = true and false
-define IsAlsoFalse = false and null
-define IsNull = true and null
+define IsTrue: true and true
+define IsFalse: true and false
+define IsAlsoFalse: false and null
+define IsNull: true and null
 
 # 2.5.2.2 Or
 
-define IsTrue = true or false
-define IsAlsoTrue = true or null
-define IsFalse = false or false
-define IsNull = false or null
+define IsTrue: true or false
+define IsAlsoTrue: true or null
+define IsFalse: false or false
+define IsNull: false or null
 
 # 2.5.6.1 Operating on Lists: First and Last
 
@@ -340,7 +340,7 @@ Last({})
 
 # NOTE: I made up the "Fever" valueset
 
-define st = [CommunicationRequest] C
+define st: [CommunicationRequest] C
   where C.mode = 'ordered'
     and C.sender.role = 'nurse'
     and C.recipient.role = 'doctor'
@@ -348,7 +348,7 @@ define st = [CommunicationRequest] C
 
 #146: Proposal Construction (DRAFT)
 
-define ProposalForProteinSupplement = tuple {
+define ProposalForProteinSupplement: tuple {
   item: [
     supplement {
       type: [ Code('226282004', '2.16.840.1.113883.6.96', '2014_09_01') ]
@@ -358,25 +358,25 @@ define ProposalForProteinSupplement = tuple {
 
 #180: Inclusion (With) Using Non-Date Attributes
 
-define DispensesForActivePrescription = [MedicationDispense: "Warfarin"] D
+define DispensesForActivePrescription: [MedicationDispense: "Warfarin"] D
   with [MedicationPrescription: "Warfarin"] P
     such that P.status = 'active' and P.identifier = D.authorizingPrescription.identifier
 
 #185: Examples of Occurrence, NonOccurrence, and Not Exists
 
 # The following is true if and only if the EHR contains a record confirming Diabetes
-define ConditionKnownToExist = exists ( [Condition: "Diabetes"] )
+define ConditionKnownToExist: exists ( [Condition: "Diabetes"] )
 
 # The following is true if and only if the EHR contains a record refuting Diabetes
-define ConditionKnownToBeAbsent = exists ( [ConditonRefuted: "Diabetes"] )
+define ConditionKnownToBeAbsent: exists ( [ConditonRefuted: "Diabetes"] )
 
 # The following is true if and only if the EHR does not contain a record confirming Diabetes
 # Note: This does not imply that a doctor ever refuted the condition of Diabetes
-define ConditionNotKnownToExist = not exists ( [Condition: "Diabetes"] )
+define ConditionNotKnownToExist: not exists ( [Condition: "Diabetes"] )
 
 # The following is true if and only if the EHR does not contain a record refuting Diabetes
 # Note: This does not imply that a doctor ever diagnosed the condition of Diabetes
-define ConditionNotKnownToBeAbsent = not exists ( [ConditionRefuted: "Diabetes"] )
+define ConditionNotKnownToBeAbsent: not exists ( [ConditionRefuted: "Diabetes"] )
 
 # The following is true if and only if the EHR has no records at all concerning Diabetes
-define NoInformationOnCondition = not exists ( [Condition: "Diabetes"] union [ConditionRefuted: "Diabetes"] )
+define NoInformationOnCondition: not exists ( [Condition: "Diabetes"] union [ConditionRefuted: "Diabetes"] )

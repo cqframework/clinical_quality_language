@@ -4,15 +4,14 @@ using QUICK
 
 context Patient
 
-define Patient = tuple from [Patient]
-define Patient = [Patient][]
+define Patient: singleton from [Patient]
 
-define function CalculateAgeInYearsAt(birthDate: DateTime, asOf: DateTime)
+define function CalculateAgeInYearsAt(birthDate DateTime, asOf DateTime)
 {
     return ...
 }
 
-define function CalculateAgeInYears(birthDate: DateTime)
+define function CalculateAgeInYears(birthDate DateTime)
 {
     return CalculateAgeInYearsAt(birthDate, Today())
 }
@@ -21,4 +20,3 @@ define function AgeInYears()
 {
     return CalculateAgeInYears(Patient.birthDate)
 }
-

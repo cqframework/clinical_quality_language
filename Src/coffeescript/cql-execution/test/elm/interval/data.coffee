@@ -10,10 +10,10 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Open = interval(DateTime(2012, 1, 1), DateTime(2013, 1, 1))
-define LeftOpen = interval(DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
-define RightOpen = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
-define Closed = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
+define Open: Interval(DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define LeftOpen: Interval(DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
+define RightOpen: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define Closed: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
 ###
 
 module.exports['Interval'] = {
@@ -50,6 +50,7 @@ module.exports['Interval'] = {
          }, {
             "name" : "Open",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : false,
                "highClosed" : false,
@@ -92,6 +93,7 @@ module.exports['Interval'] = {
          }, {
             "name" : "LeftOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : false,
                "highClosed" : true,
@@ -134,6 +136,7 @@ module.exports['Interval'] = {
          }, {
             "name" : "RightOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -176,6 +179,7 @@ module.exports['Interval'] = {
          }, {
             "name" : "Closed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -224,16 +228,16 @@ module.exports['Interval'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EqualClosed = interval[1, 5] = interval[1, 5]
-define EqualOpen = interval(1, 5) = interval(1, 5)
-define EqualOpenClosed = interval(1, 5) = interval[2, 4]
-define UnequalClosed = interval[1, 5] = interval[2, 4]
-define UnequalOpen = interval(1, 5) = interval(2, 4)
-define UnequalClosedOpen = interval[1, 5] = interval(2, 4)
-define EqualDates = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define EqualDatesOpenClosed = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
-define SameDays = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
-define DifferentDays = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) = interval[DateTime(2012, 1, 1), DateTime(2012, 7, 1))
+define EqualClosed: Interval[1, 5] = Interval[1, 5]
+define EqualOpen: Interval(1, 5) = Interval(1, 5)
+define EqualOpenClosed: Interval(1, 5) = Interval[2, 4]
+define UnequalClosed: Interval[1, 5] = Interval[2, 4]
+define UnequalOpen: Interval(1, 5) = Interval(2, 4)
+define UnequalClosedOpen: Interval[1, 5] = Interval(2, 4)
+define EqualDates: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) = Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define EqualDatesOpenClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) = Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
+define SameDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) = Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define DifferentDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) = Interval[DateTime(2012, 1, 1), DateTime(2012, 7, 1))
 ###
 
 module.exports['Equal'] = {
@@ -270,6 +274,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqualClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -305,6 +310,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqualOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -340,6 +346,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqualOpenClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -375,6 +382,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UnequalClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -410,6 +418,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UnequalOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -445,6 +454,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "UnequalClosedOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -480,6 +490,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqualDates",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -627,6 +638,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "EqualDatesOpenClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -774,6 +786,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "SameDays",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -857,6 +870,7 @@ module.exports['Equal'] = {
          }, {
             "name" : "DifferentDays",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
@@ -946,16 +960,16 @@ module.exports['Equal'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EqualClosed = interval[1, 5] <> interval[1, 5]
-define EqualOpen = interval(1, 5) <> interval(1, 5)
-define EqualOpenClosed = interval(1, 5) <> interval[2, 4]
-define UnequalClosed = interval[1, 5] <> interval[2, 4]
-define UnequalOpen = interval(1, 5) <> interval(2, 4)
-define UnequalClosedOpen = interval[1, 5] <> interval(2, 4)
-define EqualDates = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) <> interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define EqualDatesOpenClosed = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) <> interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
-define SameDays = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) <> interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
-define DifferentDays = interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) <> interval[DateTime(2012, 1, 1), DateTime(2012, 7, 1))
+define EqualClosed: Interval[1, 5] <> Interval[1, 5]
+define EqualOpen: Interval(1, 5) <> Interval(1, 5)
+define EqualOpenClosed: Interval(1, 5) <> Interval[2, 4]
+define UnequalClosed: Interval[1, 5] <> Interval[2, 4]
+define UnequalOpen: Interval(1, 5) <> Interval(2, 4)
+define UnequalClosedOpen: Interval[1, 5] <> Interval(2, 4)
+define EqualDates: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) <> Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define EqualDatesOpenClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) <> Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
+define SameDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) <> Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define DifferentDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) <> Interval[DateTime(2012, 1, 1), DateTime(2012, 7, 1))
 ###
 
 module.exports['NotEqual'] = {
@@ -992,6 +1006,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqualClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1030,6 +1045,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqualOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1068,6 +1084,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqualOpenClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1106,6 +1123,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UnequalClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1144,6 +1162,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UnequalOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1182,6 +1201,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "UnequalClosedOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1220,6 +1240,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqualDates",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1370,6 +1391,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "EqualDatesOpenClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1520,6 +1542,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "SameDays",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1606,6 +1629,7 @@ module.exports['NotEqual'] = {
          }, {
             "name" : "DifferentDays",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Not",
                "operand" : {
@@ -1698,40 +1722,40 @@ module.exports['NotEqual'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ContainsInt = interval[1, 5] contains 3
-define NotContainsInt = interval(1, 5] contains 1
-define ContainsReal = interval[1.234, 3.456] contains 2.345
-define NotContainsReal = interval[1.234, 3.456] contains 4.567
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define ContainsDate = DateIvl contains DateTime(2012, 6, 1, 0, 0, 0, 0)
-define NotContainsDate = DateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
-define ContainsImpreciseDate = DateIvl contains DateTime(2012, 4)
-define NotContainsImpreciseDate = DateIvl contains DateTime(2012, 9)
-define MayContainImpreciseDate = DateIvl contains DateTime(2012)
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseContainsDate = ImpDateIvl contains DateTime(2012, 6, 1, 0, 0, 0, 0)
-define ImpreciseNotContainsDate = ImpDateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
-define ImpreciseMayContainDate = ImpDateIvl contains DateTime(2012, 3, 15, 0, 0, 0, 0)
-define NegInfBegContainsInt = interval[null, 5] contains -7
-define NegInfBegNotContainsInt = interval[null, 5] contains 7
-define UnknownBegContainsInt = interval(null, 5] contains 5
-define UnknownBegMayContainInt = interval(null, 5] contains -7
-define UnknownBegNotContainsInt = interval(null, 5] contains 7
-define PosInfEndContainsInt = interval[0, null] contains 123456789
-define PosInfEndNotContainsInt = interval[0, null] contains -1
-define UnknownEndContainsInt = interval[0, null) contains 0
-define UnknownEndMayContainInt = interval[0, null) contains 123456789
-define UnknownEndNotContainsInt = interval[0, null) contains -1
-define NegInfBegContainsDate = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(1900, 1, 1, 0, 0, 0, 0)
-define NegInfBegNotContainsDate = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2013, 1, 2, 0, 0, 0, 0)
-define UnknownBegContainsDate = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2012, 12, 31, 23, 59, 59, 999)
-define UnknownBegMayContainDate = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(1900, 1, 1, 0, 0, 0, 0)
-define UnknownBegNotContainsDate = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2013, 1, 2, 0, 0, 0, 0)
-define PosInfEndContainsDate = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] contains DateTime(2014, 1, 1, 0, 0, 0, 0)
-define PosInfEndNotContainsDate = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] contains DateTime(2012, 1, 1, 0, 0, 0, 0)
-define UnknownEndContainsDate = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) contains DateTime(2013, 1, 1, 0, 0, 0, 0)
-define UnknownEndMayContainDate = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) contains DateTime(2014, 1, 1, 0, 0, 0, 0)
-define UnknownEndNotContainsDate = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) contains DateTime(2012, 1, 1, 0, 0, 0, 0)
+define ContainsInt: Interval[1, 5] contains 3
+define NotContainsInt: Interval(1, 5] contains 1
+define ContainsReal: Interval[1.234, 3.456] contains 2.345
+define NotContainsReal: Interval[1.234, 3.456] contains 4.567
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define ContainsDate: DateIvl contains DateTime(2012, 6, 1, 0, 0, 0, 0)
+define NotContainsDate: DateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
+define ContainsImpreciseDate: DateIvl contains DateTime(2012, 4)
+define NotContainsImpreciseDate: DateIvl contains DateTime(2012, 9)
+define MayContainImpreciseDate: DateIvl contains DateTime(2012)
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseContainsDate: ImpDateIvl contains DateTime(2012, 6, 1, 0, 0, 0, 0)
+define ImpreciseNotContainsDate: ImpDateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
+define ImpreciseMayContainDate: ImpDateIvl contains DateTime(2012, 3, 15, 0, 0, 0, 0)
+define NegInfBegContainsInt: Interval[null, 5] contains -7
+define NegInfBegNotContainsInt: Interval[null, 5] contains 7
+define UnknownBegContainsInt: Interval(null, 5] contains 5
+define UnknownBegMayContainInt: Interval(null, 5] contains -7
+define UnknownBegNotContainsInt: Interval(null, 5] contains 7
+define PosInfEndContainsInt: Interval[0, null] contains 123456789
+define PosInfEndNotContainsInt: Interval[0, null] contains -1
+define UnknownEndContainsInt: Interval[0, null) contains 0
+define UnknownEndMayContainInt: Interval[0, null) contains 123456789
+define UnknownEndNotContainsInt: Interval[0, null) contains -1
+define NegInfBegContainsDate: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(1900, 1, 1, 0, 0, 0, 0)
+define NegInfBegNotContainsDate: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2013, 1, 2, 0, 0, 0, 0)
+define UnknownBegContainsDate: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2012, 12, 31, 23, 59, 59, 999)
+define UnknownBegMayContainDate: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(1900, 1, 1, 0, 0, 0, 0)
+define UnknownBegNotContainsDate: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2013, 1, 2, 0, 0, 0, 0)
+define PosInfEndContainsDate: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] contains DateTime(2014, 1, 1, 0, 0, 0, 0)
+define PosInfEndNotContainsDate: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] contains DateTime(2012, 1, 1, 0, 0, 0, 0)
+define UnknownEndContainsDate: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) contains DateTime(2013, 1, 1, 0, 0, 0, 0)
+define UnknownEndMayContainDate: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) contains DateTime(2014, 1, 1, 0, 0, 0, 0)
+define UnknownEndNotContainsDate: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) contains DateTime(2012, 1, 1, 0, 0, 0, 0)
 ###
 
 module.exports['Contains'] = {
@@ -1768,6 +1792,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "ContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -1793,6 +1818,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -1818,6 +1844,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "ContainsReal",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -1843,6 +1870,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NotContainsReal",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -1868,6 +1896,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -1942,6 +1971,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "ContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -1984,6 +2014,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2026,6 +2057,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "ContainsImpreciseDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2048,6 +2080,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NotContainsImpreciseDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2070,6 +2103,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "MayContainImpreciseDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2088,6 +2122,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -2122,6 +2157,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "ImpreciseContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2164,6 +2200,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "ImpreciseNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2206,6 +2243,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "ImpreciseMayContainDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2248,6 +2286,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NegInfBegContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2278,6 +2317,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NegInfBegNotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2305,6 +2345,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownBegContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2332,6 +2373,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownBegMayContainInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2362,6 +2404,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownBegNotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2389,6 +2432,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "PosInfEndContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2416,6 +2460,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "PosInfEndNotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2446,6 +2491,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownEndContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2473,6 +2519,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownEndMayContainInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2500,6 +2547,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownEndNotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2530,6 +2578,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NegInfBegContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2613,6 +2662,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "NegInfBegNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2696,6 +2746,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownBegContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2779,6 +2830,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownBegMayContainDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2862,6 +2914,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownBegNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -2945,6 +2998,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "PosInfEndContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3028,6 +3082,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "PosInfEndNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3111,6 +3166,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownEndContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3194,6 +3250,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownEndMayContainDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3277,6 +3334,7 @@ module.exports['Contains'] = {
          }, {
             "name" : "UnknownEndNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Contains",
                "operand" : [ {
@@ -3366,40 +3424,40 @@ module.exports['Contains'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ContainsInt = 3 in interval[1, 5]
-define NotContainsInt = 1 in interval(1, 5]
-define ContainsReal = 2.345 in interval[1.234, 3.456]
-define NotContainsReal = 4.567 in interval[1.234, 3.456]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define ContainsDate = DateTime(2012, 6, 1, 0, 0, 0, 0) in DateIvl
-define NotContainsDate = DateTime(2012, 9, 1, 0, 0, 0, 0) in DateIvl
-define ContainsImpreciseDate = DateTime(2012, 4) in DateIvl
-define NotContainsImpreciseDate = DateTime(2012, 9) in DateIvl
-define MayContainImpreciseDate = DateTime(2012) in DateIvl
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseContainsDate = DateTime(2012, 6, 1, 0, 0, 0, 0) in ImpDateIvl
-define ImpreciseNotContainsDate = DateTime(2012, 9, 1, 0, 0, 0, 0) in ImpDateIvl
-define ImpreciseMayContainDate = DateTime(2012, 3, 15, 0, 0, 0, 0) in ImpDateIvl
-define NegInfBegContainsInt = -7 in interval[null, 5]
-define NegInfBegNotContainsInt = 7 in interval[null, 5]
-define UnknownBegContainsInt = 5 in interval(null, 5]
-define UnknownBegMayContainInt = -7 in interval(null, 5]
-define UnknownBegNotContainsInt = 7 in interval(null, 5]
-define PosInfEndContainsInt = 123456789 in interval[0, null]
-define PosInfEndNotContainsInt = -1 in interval[0, null]
-define UnknownEndContainsInt = 0 in interval[0, null)
-define UnknownEndMayContainInt = 123456789 in interval[0, null)
-define UnknownEndNotContainsInt = -1 in interval[0, null)
-define NegInfBegContainsDate = DateTime(1900, 1, 1, 0, 0, 0, 0) in interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define NegInfBegNotContainsDate = DateTime(2013, 1, 2, 0, 0, 0, 0) in interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownBegContainsDate = DateTime(2012, 12, 31, 23, 59, 59, 999) in interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownBegMayContainDate = DateTime(1900, 1, 1, 0, 0, 0, 0) in interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownBegNotContainsDate = DateTime(2013, 1, 2, 0, 0, 0, 0) in interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define PosInfEndContainsDate =  DateTime(2014, 1, 1, 0, 0, 0, 0) in interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
-define PosInfEndNotContainsDate = DateTime(2012, 1, 1, 0, 0, 0, 0) in interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
-define UnknownEndContainsDate = DateTime(2013, 1, 1, 0, 0, 0, 0) in interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
-define UnknownEndMayContainDate = DateTime(2014, 1, 1, 0, 0, 0, 0) in interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
-define UnknownEndNotContainsDate = DateTime(2012, 1, 1, 0, 0, 0, 0) in interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
+define ContainsInt: 3 in Interval[1, 5]
+define NotContainsInt: 1 in Interval(1, 5]
+define ContainsReal: 2.345 in Interval[1.234, 3.456]
+define NotContainsReal: 4.567 in Interval[1.234, 3.456]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define ContainsDate: DateTime(2012, 6, 1, 0, 0, 0, 0) in DateIvl
+define NotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in DateIvl
+define ContainsImpreciseDate: DateTime(2012, 4) in DateIvl
+define NotContainsImpreciseDate: DateTime(2012, 9) in DateIvl
+define MayContainImpreciseDate: DateTime(2012) in DateIvl
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseContainsDate: DateTime(2012, 6, 1, 0, 0, 0, 0) in ImpDateIvl
+define ImpreciseNotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in ImpDateIvl
+define ImpreciseMayContainDate: DateTime(2012, 3, 15, 0, 0, 0, 0) in ImpDateIvl
+define NegInfBegContainsInt: -7 in Interval[null, 5]
+define NegInfBegNotContainsInt: 7 in Interval[null, 5]
+define UnknownBegContainsInt: 5 in Interval(null, 5]
+define UnknownBegMayContainInt: -7 in Interval(null, 5]
+define UnknownBegNotContainsInt: 7 in Interval(null, 5]
+define PosInfEndContainsInt: 123456789 in Interval[0, null]
+define PosInfEndNotContainsInt: -1 in Interval[0, null]
+define UnknownEndContainsInt: 0 in Interval[0, null)
+define UnknownEndMayContainInt: 123456789 in Interval[0, null)
+define UnknownEndNotContainsInt: -1 in Interval[0, null)
+define NegInfBegContainsDate: DateTime(1900, 1, 1, 0, 0, 0, 0) in Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define NegInfBegNotContainsDate: DateTime(2013, 1, 2, 0, 0, 0, 0) in Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownBegContainsDate: DateTime(2012, 12, 31, 23, 59, 59, 999) in Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownBegMayContainDate: DateTime(1900, 1, 1, 0, 0, 0, 0) in Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownBegNotContainsDate: DateTime(2013, 1, 2, 0, 0, 0, 0) in Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define PosInfEndContainsDate:  DateTime(2014, 1, 1, 0, 0, 0, 0) in Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
+define PosInfEndNotContainsDate: DateTime(2012, 1, 1, 0, 0, 0, 0) in Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
+define UnknownEndContainsDate: DateTime(2013, 1, 1, 0, 0, 0, 0) in Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
+define UnknownEndMayContainDate: DateTime(2014, 1, 1, 0, 0, 0, 0) in Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
+define UnknownEndNotContainsDate: DateTime(2012, 1, 1, 0, 0, 0, 0) in Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
 module.exports['In'] = {
@@ -3436,6 +3494,7 @@ module.exports['In'] = {
          }, {
             "name" : "ContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3461,6 +3520,7 @@ module.exports['In'] = {
          }, {
             "name" : "NotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3486,6 +3546,7 @@ module.exports['In'] = {
          }, {
             "name" : "ContainsReal",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3511,6 +3572,7 @@ module.exports['In'] = {
          }, {
             "name" : "NotContainsReal",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3536,6 +3598,7 @@ module.exports['In'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -3610,6 +3673,7 @@ module.exports['In'] = {
          }, {
             "name" : "ContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3652,6 +3716,7 @@ module.exports['In'] = {
          }, {
             "name" : "NotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3694,6 +3759,7 @@ module.exports['In'] = {
          }, {
             "name" : "ContainsImpreciseDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3716,6 +3782,7 @@ module.exports['In'] = {
          }, {
             "name" : "NotContainsImpreciseDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3738,6 +3805,7 @@ module.exports['In'] = {
          }, {
             "name" : "MayContainImpreciseDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3756,6 +3824,7 @@ module.exports['In'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -3790,6 +3859,7 @@ module.exports['In'] = {
          }, {
             "name" : "ImpreciseContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3832,6 +3902,7 @@ module.exports['In'] = {
          }, {
             "name" : "ImpreciseNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3874,6 +3945,7 @@ module.exports['In'] = {
          }, {
             "name" : "ImpreciseMayContainDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3916,6 +3988,7 @@ module.exports['In'] = {
          }, {
             "name" : "NegInfBegContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3946,6 +4019,7 @@ module.exports['In'] = {
          }, {
             "name" : "NegInfBegNotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -3973,6 +4047,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownBegContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4000,6 +4075,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownBegMayContainInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4030,6 +4106,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownBegNotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4057,6 +4134,7 @@ module.exports['In'] = {
          }, {
             "name" : "PosInfEndContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4084,6 +4162,7 @@ module.exports['In'] = {
          }, {
             "name" : "PosInfEndNotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4114,6 +4193,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownEndContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4141,6 +4221,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownEndMayContainInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4168,6 +4249,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownEndNotContainsInt",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4198,6 +4280,7 @@ module.exports['In'] = {
          }, {
             "name" : "NegInfBegContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4281,6 +4364,7 @@ module.exports['In'] = {
          }, {
             "name" : "NegInfBegNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4364,6 +4448,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownBegContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4447,6 +4532,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownBegMayContainDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4530,6 +4616,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownBegNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4613,6 +4700,7 @@ module.exports['In'] = {
          }, {
             "name" : "PosInfEndContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4696,6 +4784,7 @@ module.exports['In'] = {
          }, {
             "name" : "PosInfEndNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4779,6 +4868,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownEndContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4862,6 +4952,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownEndMayContainDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -4945,6 +5036,7 @@ module.exports['In'] = {
          }, {
             "name" : "UnknownEndNotContainsDate",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "In",
                "operand" : [ {
@@ -5034,40 +5126,40 @@ module.exports['In'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IncludesIntIvl = interval[1, 5] includes interval[1, 4]
-define NotIncludesIntIvl = interval(1, 5] includes interval[1, 4]
-define IncludesRealIvl = interval[1.234, 3.456] includes interval[2.34, 2.56]
-define NotIncludesRealIvl = interval[1.234, 3.456] includes interval[1.23, 2.56]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define IncludesDateIvl = DateIvl includes interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define NotIncludesDateIvl = DateIvl includes interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0)]
-define IncludesImpreciseDateIvl = DateIvl includes interval[DateTime(2012, 4), DateTime(2012, 6)]
-define NotIncludesImpreciseDateIvl = DateIvl includes interval[DateTime(2012, 4), DateTime(2012, 9)]
-define MayIncludeImpreciseDateIvl = DateIvl includes interval[DateTime(2012), DateTime(2012)]
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseIncludesDateIvl = ImpDateIvl includes interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define ImpreciseNotIncludesDateIvl = ImpDateIvl includes interval[DateTime(2012, 2, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define ImpreciseMayIncludeDateIvl = ImpDateIvl includes interval[DateTime(2012, 3, 15, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define NegInfBegIncludesIntIvl = interval[null, 5] includes interval[-7, 2]
-define NegInfBegNotIncludesIntIvl = interval[null, 5] includes interval[4, 7]
-define UnknownBegIncludesIntIvl = interval(null, 5] includes interval[5, 5]
-define UnknownBegMayIncludeIntIvl = interval(null, 5] includes interval[-7, 2]
-define UnknownBegNotIncludesIntIvl = interval(null, 5] includes interval[4, 7]
-define PosInfEndIncludesIntIvl = interval[0, null] includes interval[1234, 5678]
-define PosInfEndNotIncludesIntIvl = interval[0, null] includes interval[-1234, 5678]
-define UnknownEndIncludesIntIvl = interval[0, null) includes interval[0, 0]
-define UnknownEndMayIncludeIntIvl = interval[0, null) includes interval[1234, 5678]
-define UnknownEndNotIncludesIntIvl = interval[0, null) includes interval[-1234, 5678]
-define NegInfBegIncludesDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
-define NegInfBegNotIncludesDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define UnknownBegIncludesDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes interval[DateTime(2012, 12, 31, 23, 59, 59, 999), DateTime(2012, 12, 31, 23, 59, 59, 999)]
-define UnknownBegMayIncludeDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotIncludesDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define PosInfEndIncludesDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] includes interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1, 0, 0, 0, 0)]
-define PosInfEndNotIncludesDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] includes interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0)]
-define UnknownEndIncludesDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) includes interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define UnknownEndMayIncludeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) includes interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1, 0, 0, 0, 0)]
-define UnknownEndNotIncludesDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) includes interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0)]
+define IncludesIntIvl: Interval[1, 5] includes Interval[1, 4]
+define NotIncludesIntIvl: Interval(1, 5] includes Interval[1, 4]
+define IncludesRealIvl: Interval[1.234, 3.456] includes Interval[2.34, 2.56]
+define NotIncludesRealIvl: Interval[1.234, 3.456] includes Interval[1.23, 2.56]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define IncludesDateIvl: DateIvl includes Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define NotIncludesDateIvl: DateIvl includes Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0)]
+define IncludesImpreciseDateIvl: DateIvl includes Interval[DateTime(2012, 4), DateTime(2012, 6)]
+define NotIncludesImpreciseDateIvl: DateIvl includes Interval[DateTime(2012, 4), DateTime(2012, 9)]
+define MayIncludeImpreciseDateIvl: DateIvl includes Interval[DateTime(2012), DateTime(2012)]
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseIncludesDateIvl: ImpDateIvl includes Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define ImpreciseNotIncludesDateIvl: ImpDateIvl includes Interval[DateTime(2012, 2, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define ImpreciseMayIncludeDateIvl: ImpDateIvl includes Interval[DateTime(2012, 3, 15, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define NegInfBegIncludesIntIvl: Interval[null, 5] includes Interval[-7, 2]
+define NegInfBegNotIncludesIntIvl: Interval[null, 5] includes Interval[4, 7]
+define UnknownBegIncludesIntIvl: Interval(null, 5] includes Interval[5, 5]
+define UnknownBegMayIncludeIntIvl: Interval(null, 5] includes Interval[-7, 2]
+define UnknownBegNotIncludesIntIvl: Interval(null, 5] includes Interval[4, 7]
+define PosInfEndIncludesIntIvl: Interval[0, null] includes Interval[1234, 5678]
+define PosInfEndNotIncludesIntIvl: Interval[0, null] includes Interval[-1234, 5678]
+define UnknownEndIncludesIntIvl: Interval[0, null) includes Interval[0, 0]
+define UnknownEndMayIncludeIntIvl: Interval[0, null) includes Interval[1234, 5678]
+define UnknownEndNotIncludesIntIvl: Interval[0, null) includes Interval[-1234, 5678]
+define NegInfBegIncludesDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
+define NegInfBegNotIncludesDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define UnknownBegIncludesDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(2012, 12, 31, 23, 59, 59, 999), DateTime(2012, 12, 31, 23, 59, 59, 999)]
+define UnknownBegMayIncludeDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotIncludesDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define PosInfEndIncludesDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] includes Interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1, 0, 0, 0, 0)]
+define PosInfEndNotIncludesDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] includes Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0)]
+define UnknownEndIncludesDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) includes Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define UnknownEndMayIncludeDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) includes Interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1, 0, 0, 0, 0)]
+define UnknownEndNotIncludesDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) includes Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0)]
 ###
 
 module.exports['Includes'] = {
@@ -5104,6 +5196,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "IncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5139,6 +5232,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NotIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5174,6 +5268,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "IncludesRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5209,6 +5304,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NotIncludesRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5244,6 +5340,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -5318,6 +5415,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "IncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5398,6 +5496,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NotIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5478,6 +5577,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "IncludesImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5518,6 +5618,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NotIncludesImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5558,6 +5659,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "MayIncludeImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5590,6 +5692,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -5624,6 +5727,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "ImpreciseIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5704,6 +5808,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "ImpreciseNotIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5784,6 +5889,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "ImpreciseMayIncludeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5864,6 +5970,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NegInfBegIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5904,6 +6011,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NegInfBegNotIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5941,6 +6049,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownBegIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -5978,6 +6087,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownBegMayIncludeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6018,6 +6128,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownBegNotIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6055,6 +6166,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "PosInfEndIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6092,6 +6204,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "PosInfEndNotIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6132,6 +6245,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownEndIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6169,6 +6283,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownEndMayIncludeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6206,6 +6321,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownEndNotIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6246,6 +6362,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NegInfBegIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6367,6 +6484,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "NegInfBegNotIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6488,6 +6606,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownBegIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6609,6 +6728,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownBegMayIncludeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6730,6 +6850,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownBegNotIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6851,6 +6972,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "PosInfEndIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -6972,6 +7094,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "PosInfEndNotIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -7093,6 +7216,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownEndIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -7214,6 +7338,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownEndMayIncludeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -7335,6 +7460,7 @@ module.exports['Includes'] = {
          }, {
             "name" : "UnknownEndNotIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Includes",
                "operand" : [ {
@@ -7462,18 +7588,18 @@ module.exports['Includes'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ProperlyIncludesIntIvl = interval[1, 5] properly includes interval[2, 4]
-define ProperlyIncludesIntBeginsIvl = interval[1, 5] properly includes interval[1, 4]
-define ProperlyIncludesIntEndsIvl = interval[1, 5] properly includes interval[2, 5]
-define NotProperlyIncludesIntIvl = interval[1, 5] properly includes interval[1, 5]
-define ProperlyIncludesRealIvl = interval[1.234, 3.456] properly includes interval[2.34, 2.56]
-define NotProperlyIncludesRealIvl = interval[1.234, 3.456] properly includes interval[1.234, 3.456]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define ProperlyIncludesDateIvl = DateIvl properly includes interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define NotProperlyIncludesDateIvl = DateIvl properly includes interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define PosInfEndProperlyIncludesIntIvl = interval[0, null] properly includes interval[1234, 5678]
-define PosInfEndNotProperlyIncludesIntIvl = interval[0, null] properly includes interval[0, null]
-define UnknownEndMayProperlyIncludeIntIvl = interval[0, null) properly includes interval[0, 0]
+define ProperlyIncludesIntIvl: Interval[1, 5] properly includes Interval[2, 4]
+define ProperlyIncludesIntBeginsIvl: Interval[1, 5] properly includes Interval[1, 4]
+define ProperlyIncludesIntEndsIvl: Interval[1, 5] properly includes Interval[2, 5]
+define NotProperlyIncludesIntIvl: Interval[1, 5] properly includes Interval[1, 5]
+define ProperlyIncludesRealIvl: Interval[1.234, 3.456] properly includes Interval[2.34, 2.56]
+define NotProperlyIncludesRealIvl: Interval[1.234, 3.456] properly includes Interval[1.234, 3.456]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define ProperlyIncludesDateIvl: DateIvl properly includes Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define NotProperlyIncludesDateIvl: DateIvl properly includes Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define PosInfEndProperlyIncludesIntIvl: Interval[0, null] properly includes Interval[1234, 5678]
+define PosInfEndNotProperlyIncludesIntIvl: Interval[0, null] properly includes Interval[0, null]
+define UnknownEndMayProperlyIncludeIntIvl: Interval[0, null) properly includes Interval[0, 0]
 ###
 
 module.exports['ProperlyIncludes'] = {
@@ -7510,6 +7636,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "ProperlyIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7545,6 +7672,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "ProperlyIncludesIntBeginsIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7580,6 +7708,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "ProperlyIncludesIntEndsIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7615,6 +7744,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "NotProperlyIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7650,6 +7780,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "ProperlyIncludesRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7685,6 +7816,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "NotProperlyIncludesRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7720,6 +7852,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -7794,6 +7927,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "ProperlyIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7874,6 +8008,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "NotProperlyIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7954,6 +8089,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "PosInfEndProperlyIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -7991,6 +8127,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "PosInfEndNotProperlyIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -8030,6 +8167,7 @@ module.exports['ProperlyIncludes'] = {
          }, {
             "name" : "UnknownEndMayProperlyIncludeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludes",
                "operand" : [ {
@@ -8073,40 +8211,40 @@ module.exports['ProperlyIncludes'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IncludesIntIvl = interval[1, 4] included in interval[1, 5]
-define NotIncludesIntIvl = interval[1, 4] included in interval(1, 5]
-define IncludesRealIvl = interval[2.34, 2.56] included in interval[1.234, 3.456]
-define NotIncludesRealIvl = interval[1.23, 2.56] included in interval[1.234, 3.456]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define IncludesDateIvl = interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in DateIvl
-define NotIncludesDateIvl = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0)] included in DateIvl
-define IncludesImpreciseDateIvl = interval[DateTime(2012, 4), DateTime(2012, 6)] included in DateIvl
-define NotIncludesImpreciseDateIvl = interval[DateTime(2012, 4), DateTime(2012, 9)] included in DateIvl
-define MayIncludeImpreciseDateIvl = interval[DateTime(2012), DateTime(2012)] included in DateIvl
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseIncludesDateIvl = interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
-define ImpreciseNotIncludesDateIvl = interval[DateTime(2012, 2, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
-define ImpreciseMayIncludeDateIvl = interval[DateTime(2012, 3, 15, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
-define NegInfBegIncludedInIntIvl = interval[null, 5] included in interval[null, 100]
-define NegInfBegNotIncludedInIntIvl = interval[null, 5] included in interval[-100, 100]
-define UnknownBegIncludedInIntIvl = interval(null, 5] included in interval[null, 100]
-define UnknownBegMayBeIncludedInIntIvl = interval(null, 5] included in interval[-100, 100]
-define UnknownBegNotIncludedInIntIvl = interval(null, 5] included in interval[-100, 0]
-define PosInfEndIncludedInIntIvl = interval[0, null] included in interval[-100, null]
-define PosInfEndNotIncludedInIntIvl = interval[0, null] included in interval[-100, 100]
-define UnknownEndIncludedInIntIvl = interval[0, null) included in interval[-100, null]
-define UnknownEndMayBeIncludedInIntIvl = interval[0, null) included in interval[-100, 100]
-define UnknownEndNotIncludedInIntIvl = interval[0, null) included in interval[100, 200]
-define NegInfBegIncludedInDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in interval[null, DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define NegInfBegNotIncludedInDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownBegIncludedInDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in interval[null, DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownBegMayBeIncludedInDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotIncludedInDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
-define PosInfEndIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
-define PosInfEndNotIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownEndIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
-define UnknownEndMayBeIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownEndNotIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) included in interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
+define IncludesIntIvl: Interval[1, 4] included in Interval[1, 5]
+define NotIncludesIntIvl: Interval[1, 4] included in Interval(1, 5]
+define IncludesRealIvl: Interval[2.34, 2.56] included in Interval[1.234, 3.456]
+define NotIncludesRealIvl: Interval[1.23, 2.56] included in Interval[1.234, 3.456]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define IncludesDateIvl: Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in DateIvl
+define NotIncludesDateIvl: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0)] included in DateIvl
+define IncludesImpreciseDateIvl: Interval[DateTime(2012, 4), DateTime(2012, 6)] included in DateIvl
+define NotIncludesImpreciseDateIvl: Interval[DateTime(2012, 4), DateTime(2012, 9)] included in DateIvl
+define MayIncludeImpreciseDateIvl: Interval[DateTime(2012), DateTime(2012)] included in DateIvl
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseIncludesDateIvl: Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
+define ImpreciseNotIncludesDateIvl: Interval[DateTime(2012, 2, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
+define ImpreciseMayIncludeDateIvl: Interval[DateTime(2012, 3, 15, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
+define NegInfBegIncludedInIntIvl: Interval[null, 5] included in Interval[null, 100]
+define NegInfBegNotIncludedInIntIvl: Interval[null, 5] included in Interval[-100, 100]
+define UnknownBegIncludedInIntIvl: Interval(null, 5] included in Interval[null, 100]
+define UnknownBegMayBeIncludedInIntIvl: Interval(null, 5] included in Interval[-100, 100]
+define UnknownBegNotIncludedInIntIvl: Interval(null, 5] included in Interval[-100, 0]
+define PosInfEndIncludedInIntIvl: Interval[0, null] included in Interval[-100, null]
+define PosInfEndNotIncludedInIntIvl: Interval[0, null] included in Interval[-100, 100]
+define UnknownEndIncludedInIntIvl: Interval[0, null) included in Interval[-100, null]
+define UnknownEndMayBeIncludedInIntIvl: Interval[0, null) included in Interval[-100, 100]
+define UnknownEndNotIncludedInIntIvl: Interval[0, null) included in Interval[100, 200]
+define NegInfBegIncludedInDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[null, DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define NegInfBegNotIncludedInDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define UnknownBegIncludedInDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[null, DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define UnknownBegMayBeIncludedInDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotIncludedInDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
+define PosInfEndIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
+define PosInfEndNotIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define UnknownEndIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
+define UnknownEndMayBeIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define UnknownEndNotIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) included in Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
 ###
 
 module.exports['IncludedIn'] = {
@@ -8143,6 +8281,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "IncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8178,6 +8317,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NotIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8213,6 +8353,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "IncludesRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8248,6 +8389,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NotIncludesRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8283,6 +8425,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -8357,6 +8500,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "IncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8437,6 +8581,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NotIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8517,6 +8662,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "IncludesImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8557,6 +8703,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NotIncludesImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8597,6 +8744,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "MayIncludeImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8629,6 +8777,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -8663,6 +8812,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "ImpreciseIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8743,6 +8893,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "ImpreciseNotIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8823,6 +8974,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "ImpreciseMayIncludeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8903,6 +9055,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NegInfBegIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8942,6 +9095,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NegInfBegNotIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -8982,6 +9136,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownBegIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9021,6 +9176,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownBegMayBeIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9061,6 +9217,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownBegNotIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9101,6 +9258,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "PosInfEndIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9143,6 +9301,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "PosInfEndNotIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9183,6 +9342,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownEndIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9225,6 +9385,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownEndMayBeIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9265,6 +9426,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownEndNotIncludedInIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9302,6 +9464,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NegInfBegIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9397,6 +9560,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "NegInfBegNotIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9518,6 +9682,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownBegIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9613,6 +9778,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownBegMayBeIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9734,6 +9900,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownBegNotIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9855,6 +10022,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "PosInfEndIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -9950,6 +10118,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "PosInfEndNotIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -10071,6 +10240,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownEndIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -10166,6 +10336,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownEndMayBeIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -10287,6 +10458,7 @@ module.exports['IncludedIn'] = {
          }, {
             "name" : "UnknownEndNotIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "IncludedIn",
                "operand" : [ {
@@ -10414,18 +10586,18 @@ module.exports['IncludedIn'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ProperlyIncludesIntIvl = interval[2, 4] properly included in interval[1, 5]
-define ProperlyIncludesIntBeginsIvl = interval[1, 4] properly included in interval[1, 5]
-define ProperlyIncludesIntEndsIvl = interval[2, 5] properly included in interval[1, 5]
-define NotProperlyIncludesIntIvl = interval[1, 5] properly included in interval[1, 5]
-define ProperlyIncludesRealIvl = interval[2.34, 2.56] properly included in interval[1.234, 3.456]
-define NotProperlyIncludesRealIvl = interval[1.23, 2.56] properly included in interval[1.23, 2.56]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define ProperlyIncludesDateIvl = interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) properly included in DateIvl
-define NotProperlyIncludesDateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0)) properly included in DateIvl
-define PosInfEndProperlyIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] properly included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
-define PosInfEndNotProperlyIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] properly included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownEndMayBeProperlyIncludedInDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) properly included in interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define ProperlyIncludesIntIvl: Interval[2, 4] properly included in Interval[1, 5]
+define ProperlyIncludesIntBeginsIvl: Interval[1, 4] properly included in Interval[1, 5]
+define ProperlyIncludesIntEndsIvl: Interval[2, 5] properly included in Interval[1, 5]
+define NotProperlyIncludesIntIvl: Interval[1, 5] properly included in Interval[1, 5]
+define ProperlyIncludesRealIvl: Interval[2.34, 2.56] properly included in Interval[1.234, 3.456]
+define NotProperlyIncludesRealIvl: Interval[1.23, 2.56] properly included in Interval[1.23, 2.56]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define ProperlyIncludesDateIvl: Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) properly included in DateIvl
+define NotProperlyIncludesDateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0)) properly included in DateIvl
+define PosInfEndProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
+define PosInfEndNotProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define UnknownEndMayBeProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
 ###
 
 module.exports['ProperlyIncludedIn'] = {
@@ -10462,6 +10634,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "ProperlyIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -10497,6 +10670,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "ProperlyIncludesIntBeginsIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -10532,6 +10706,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "ProperlyIncludesIntEndsIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -10567,6 +10742,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "NotProperlyIncludesIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -10602,6 +10778,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "ProperlyIncludesRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -10637,6 +10814,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "NotProperlyIncludesRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -10672,6 +10850,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -10746,6 +10925,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "ProperlyIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -10826,6 +11006,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "NotProperlyIncludesDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -10906,6 +11087,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "PosInfEndProperlyIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -11001,6 +11183,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "PosInfEndNotProperlyIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -11122,6 +11305,7 @@ module.exports['ProperlyIncludedIn'] = {
          }, {
             "name" : "UnknownEndMayBeProperlyIncludedInDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "ProperIncludedIn",
                "operand" : [ {
@@ -11249,34 +11433,34 @@ module.exports['ProperlyIncludedIn'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define AfterIntIvl = interval[5, 10] after interval[2, 4]
-define NotAfterIntIvl = interval[5, 10] after interval[2, 5]
-define AfterRealIvl = interval[1.234, 2.345] after interval[0.0, 1.23]
-define NotAfterRealIvl = interval[1.234, 2.345] after interval[0.0, 1.234]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define AfterDateIvl = DateIvl after interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0))
-define NotAfterDateIvl = DateIvl after interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
-define AfterImpreciseDateIvl = DateIvl after interval[DateTime(2012, 1), DateTime(2012, 2)]
-define NotAfterImpreciseDateIvl = DateIvl after interval[DateTime(2012, 1), DateTime(2012, 3)]
-define MayBeAfterImpreciseDateIvl = DateIvl after interval[DateTime(2012), DateTime(2012)]
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseAfterDateIvl = ImpDateIvl after interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0))
-define ImpreciseNotAfterDateIvl = ImpDateIvl after interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0))
-define ImpreciseMayBeAfterDateIvl = ImpDateIvl after interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 15, 0, 0, 0, 0))
-define NegInfBegNotAfterIntIvl = interval[null, 100] after interval[-100, 0]
-define UnknownBegMayBeAfterIntIvl = interval(null, 100] after interval[-100, 0]
-define UnknownBegNotAfterIntIvl = interval(null, 5] after interval[0, 100]
-define PosInfEndAfterIntIvl = interval[0, null] after interval[-100, -20]
-define PosInfEndNotAfterIntIvl = interval[0, null] after interval[-100, 0]
-define UnknownEndAfterIntIvl = interval[0, null) after interval[-100, -20]
-define UnknownEndNotAfterIntIvl = interval[0, null) after interval[-100, 0]
-define NegInfBegNotAfterDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define UnknownBegMayBeAfterDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotAfterDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define PosInfEndAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define PosInfEndNotAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownEndAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define UnknownEndNotAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) after interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
+define AfterIntIvl: Interval[5, 10] after Interval[2, 4]
+define NotAfterIntIvl: Interval[5, 10] after Interval[2, 5]
+define AfterRealIvl: Interval[1.234, 2.345] after Interval[0.0, 1.23]
+define NotAfterRealIvl: Interval[1.234, 2.345] after Interval[0.0, 1.234]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define AfterDateIvl: DateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0))
+define NotAfterDateIvl: DateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define AfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define NotAfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayBeAfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012), DateTime(2012)]
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseAfterDateIvl: ImpDateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0))
+define ImpreciseNotAfterDateIvl: ImpDateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0))
+define ImpreciseMayBeAfterDateIvl: ImpDateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 15, 0, 0, 0, 0))
+define NegInfBegNotAfterIntIvl: Interval[null, 100] after Interval[-100, 0]
+define UnknownBegMayBeAfterIntIvl: Interval(null, 100] after Interval[-100, 0]
+define UnknownBegNotAfterIntIvl: Interval(null, 5] after Interval[0, 100]
+define PosInfEndAfterIntIvl: Interval[0, null] after Interval[-100, -20]
+define PosInfEndNotAfterIntIvl: Interval[0, null] after Interval[-100, 0]
+define UnknownEndAfterIntIvl: Interval[0, null) after Interval[-100, -20]
+define UnknownEndNotAfterIntIvl: Interval[0, null) after Interval[-100, 0]
+define NegInfBegNotAfterDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define UnknownBegMayBeAfterDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotAfterDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define PosInfEndAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define PosInfEndNotAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define UnknownEndAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define UnknownEndNotAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) after Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
 ###
 
 module.exports['After'] = {
@@ -11313,6 +11497,7 @@ module.exports['After'] = {
          }, {
             "name" : "AfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11348,6 +11533,7 @@ module.exports['After'] = {
          }, {
             "name" : "NotAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11383,6 +11569,7 @@ module.exports['After'] = {
          }, {
             "name" : "AfterRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11418,6 +11605,7 @@ module.exports['After'] = {
          }, {
             "name" : "NotAfterRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11453,6 +11641,7 @@ module.exports['After'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -11527,6 +11716,7 @@ module.exports['After'] = {
          }, {
             "name" : "AfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11607,6 +11797,7 @@ module.exports['After'] = {
          }, {
             "name" : "NotAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11687,6 +11878,7 @@ module.exports['After'] = {
          }, {
             "name" : "AfterImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11727,6 +11919,7 @@ module.exports['After'] = {
          }, {
             "name" : "NotAfterImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11767,6 +11960,7 @@ module.exports['After'] = {
          }, {
             "name" : "MayBeAfterImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11799,6 +11993,7 @@ module.exports['After'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -11833,6 +12028,7 @@ module.exports['After'] = {
          }, {
             "name" : "ImpreciseAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11913,6 +12109,7 @@ module.exports['After'] = {
          }, {
             "name" : "ImpreciseNotAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -11993,6 +12190,7 @@ module.exports['After'] = {
          }, {
             "name" : "ImpreciseMayBeAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12073,6 +12271,7 @@ module.exports['After'] = {
          }, {
             "name" : "NegInfBegNotAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12113,6 +12312,7 @@ module.exports['After'] = {
          }, {
             "name" : "UnknownBegMayBeAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12153,6 +12353,7 @@ module.exports['After'] = {
          }, {
             "name" : "UnknownBegNotAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12190,6 +12391,7 @@ module.exports['After'] = {
          }, {
             "name" : "PosInfEndAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12233,6 +12435,7 @@ module.exports['After'] = {
          }, {
             "name" : "PosInfEndNotAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12273,6 +12476,7 @@ module.exports['After'] = {
          }, {
             "name" : "UnknownEndAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12316,6 +12520,7 @@ module.exports['After'] = {
          }, {
             "name" : "UnknownEndNotAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12356,6 +12561,7 @@ module.exports['After'] = {
          }, {
             "name" : "NegInfBegNotAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12477,6 +12683,7 @@ module.exports['After'] = {
          }, {
             "name" : "UnknownBegMayBeAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12598,6 +12805,7 @@ module.exports['After'] = {
          }, {
             "name" : "UnknownBegNotAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12719,6 +12927,7 @@ module.exports['After'] = {
          }, {
             "name" : "PosInfEndAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12840,6 +13049,7 @@ module.exports['After'] = {
          }, {
             "name" : "PosInfEndNotAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -12961,6 +13171,7 @@ module.exports['After'] = {
          }, {
             "name" : "UnknownEndAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -13082,6 +13293,7 @@ module.exports['After'] = {
          }, {
             "name" : "UnknownEndNotAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "After",
                "operand" : [ {
@@ -13209,34 +13421,34 @@ module.exports['After'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define BeforeIntIvl = interval[2, 4] before interval[5, 10]
-define NotBeforeIntIvl = interval[2, 5] before interval[5, 10]
-define BeforeRealIvl = interval[0.0, 1.23] before interval[1.234, 2.345]
-define NotBeforeRealIvl = interval[1.234, 2.345] before interval[0.0, 1.234]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define BeforeDateIvl = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)) before DateIvl
-define NotBeforeDateIvl = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)] before DateIvl
-define BeforeImpreciseDateIvl = DateIvl before interval[DateTime(2012, 9), DateTime(2012, 12)]
-define NotBeforeImpreciseDateIvl = DateIvl before interval[DateTime(2012, 8), DateTime(2012, 12)]
-define MayBeBeforeImpreciseDateIvl = DateIvl before interval[DateTime(2012), DateTime(2012)]
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseBeforeDateIvl = ImpDateIvl before interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0))
-define ImpreciseNotBeforeDateIvl = ImpDateIvl before interval[DateTime(2012, 8, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0))
-define ImpreciseMayBeBeforeDateIvl = ImpDateIvl before interval[DateTime(2012, 8, 15, 0, 0, 0, 0), DateTime(2012, 12, 15, 0, 0, 0, 0))
-define NegInfBegBeforeIntIvl = interval[null, 100] before interval[101, 200]
-define NegInfBegNotBeforeIntIvl = interval[null, 100] before interval[100, 200]
-define UnknownBegBeforeIntIvl = interval(null, 100] before interval[101, 200]
-define UnknownBegNotBeforeIntIvl = interval(null, 5] before interval[0, 100]
-define PosInfEndNotBeforeIntIvl = interval[0, null] before interval[1000, 2000]
-define UnknownEndMayBeBeforeIntIvl = interval[0, null) before interval[1000, 2000]
-define UnknownEndNotBeforeIntIvl = interval[0, null) before interval[-100, 0]
-define NegInfBegBeforeDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) before interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
-define NegInfBegNotBeforeDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define UnknownBegBeforeDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) before interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotBeforeDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define PosInfEndNotBeforeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownEndMayBeBeforeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) before interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
-define UnknownEndNotBeforeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define BeforeIntIvl: Interval[2, 4] before Interval[5, 10]
+define NotBeforeIntIvl: Interval[2, 5] before Interval[5, 10]
+define BeforeRealIvl: Interval[0.0, 1.23] before Interval[1.234, 2.345]
+define NotBeforeRealIvl: Interval[1.234, 2.345] before Interval[0.0, 1.234]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define BeforeDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)) before DateIvl
+define NotBeforeDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)] before DateIvl
+define BeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012, 9), DateTime(2012, 12)]
+define NotBeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012, 8), DateTime(2012, 12)]
+define MayBeBeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012), DateTime(2012)]
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseBeforeDateIvl: ImpDateIvl before Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0))
+define ImpreciseNotBeforeDateIvl: ImpDateIvl before Interval[DateTime(2012, 8, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0))
+define ImpreciseMayBeBeforeDateIvl: ImpDateIvl before Interval[DateTime(2012, 8, 15, 0, 0, 0, 0), DateTime(2012, 12, 15, 0, 0, 0, 0))
+define NegInfBegBeforeIntIvl: Interval[null, 100] before Interval[101, 200]
+define NegInfBegNotBeforeIntIvl: Interval[null, 100] before Interval[100, 200]
+define UnknownBegBeforeIntIvl: Interval(null, 100] before Interval[101, 200]
+define UnknownBegNotBeforeIntIvl: Interval(null, 5] before Interval[0, 100]
+define PosInfEndNotBeforeIntIvl: Interval[0, null] before Interval[1000, 2000]
+define UnknownEndMayBeBeforeIntIvl: Interval[0, null) before Interval[1000, 2000]
+define UnknownEndNotBeforeIntIvl: Interval[0, null) before Interval[-100, 0]
+define NegInfBegBeforeDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) before Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
+define NegInfBegNotBeforeDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define UnknownBegBeforeDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) before Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotBeforeDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define PosInfEndNotBeforeDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define UnknownEndMayBeBeforeDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) before Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
+define UnknownEndNotBeforeDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 ###
 
 module.exports['Before'] = {
@@ -13273,6 +13485,7 @@ module.exports['Before'] = {
          }, {
             "name" : "BeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13308,6 +13521,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NotBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13343,6 +13557,7 @@ module.exports['Before'] = {
          }, {
             "name" : "BeforeRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13378,6 +13593,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NotBeforeRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13413,6 +13629,7 @@ module.exports['Before'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -13487,6 +13704,7 @@ module.exports['Before'] = {
          }, {
             "name" : "BeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13567,6 +13785,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NotBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13647,6 +13866,7 @@ module.exports['Before'] = {
          }, {
             "name" : "BeforeImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13687,6 +13907,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NotBeforeImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13727,6 +13948,7 @@ module.exports['Before'] = {
          }, {
             "name" : "MayBeBeforeImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13759,6 +13981,7 @@ module.exports['Before'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -13793,6 +14016,7 @@ module.exports['Before'] = {
          }, {
             "name" : "ImpreciseBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13873,6 +14097,7 @@ module.exports['Before'] = {
          }, {
             "name" : "ImpreciseNotBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -13953,6 +14178,7 @@ module.exports['Before'] = {
          }, {
             "name" : "ImpreciseMayBeBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14033,6 +14259,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NegInfBegBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14070,6 +14297,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NegInfBegNotBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14107,6 +14335,7 @@ module.exports['Before'] = {
          }, {
             "name" : "UnknownBegBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14144,6 +14373,7 @@ module.exports['Before'] = {
          }, {
             "name" : "UnknownBegNotBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14181,6 +14411,7 @@ module.exports['Before'] = {
          }, {
             "name" : "PosInfEndNotBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14218,6 +14449,7 @@ module.exports['Before'] = {
          }, {
             "name" : "UnknownEndMayBeBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14255,6 +14487,7 @@ module.exports['Before'] = {
          }, {
             "name" : "UnknownEndNotBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14295,6 +14528,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NegInfBegBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14416,6 +14650,7 @@ module.exports['Before'] = {
          }, {
             "name" : "NegInfBegNotBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14537,6 +14772,7 @@ module.exports['Before'] = {
          }, {
             "name" : "UnknownBegBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14658,6 +14894,7 @@ module.exports['Before'] = {
          }, {
             "name" : "UnknownBegNotBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14779,6 +15016,7 @@ module.exports['Before'] = {
          }, {
             "name" : "PosInfEndNotBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -14900,6 +15138,7 @@ module.exports['Before'] = {
          }, {
             "name" : "UnknownEndMayBeBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -15021,6 +15260,7 @@ module.exports['Before'] = {
          }, {
             "name" : "UnknownEndNotBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Before",
                "operand" : [ {
@@ -15148,51 +15388,51 @@ module.exports['Before'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define MeetsAfterIntIvl = interval[11, 15] meets interval[5, 10]
-define MeetsBeforeIntIvl = interval[1, 4] meets interval[5, 10]
-define NotMeetsIntIvl = interval[1, 2] meets interval[5, 10]
-define MeetsAfterRealIvl = interval[1.50000001, 2.5] meets interval[0.5, 1.5]
-define MeetsBeforeRealIvl = interval[0.5, 1.5] meets interval[1.50000001, 2.5]
-define NotMeetsRealIvl = interval[0.0, 1.0] meets interval[1.1, 2.0]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define MeetsAfterDateIvl = interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)) meets DateIvl
-define MeetsBeforeDateIvl = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)) meets DateIvl
-define NotMeetsDateIvl = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 0, 0, 0, 0)) meets DateIvl
-define MayMeetAfterImpreciseDateIvl = DateIvl meets interval[DateTime(2012, 1), DateTime(2012, 2)]
-define MayMeetBeforeImpreciseDateIvl = DateIvl meets interval[DateTime(2012, 9), DateTime(2012, 12)]
-define NotMeetsImpreciseDateIvl = DateIvl meets interval[DateTime(2012, 1), DateTime(2012, 12)]
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseMayMeetAfterDateIvl = ImpDateIvl meets interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
-define ImpreciseMayMeetBeforeDateIvl = ImpDateIvl meets interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
-define ImpreciseNotMeetsDateIvl = ImpDateIvl meets interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999))
-define NegInfBegMeetsBeforeIntIvl = interval[null, 100] meets interval[101, 200]
-define NegInfBegNotMeetsIntIvl = interval[null, 100] meets interval[100, 200]
-define IntIvlNotMeetsNegInfBeg = interval[100, 200] meets interval[null, 400]
-define UnknownBegMeetsBeforeIntIvl = interval(null, 100] meets interval[101, 200]
-define UnknownBegMayMeetAfterIntIvl = interval(null, 100] meets interval[0, 50]
-define UnknownBegNotMeetsIntIvl = interval(null, 5] meets interval[0, 100]
-define IntIvlMayMeetBeforeUnknownBeg = interval[0, 100] meets interval(null, 400)
-define PosInfEndMeetsAfterIntIvl = interval[100, null] meets interval[0, 99]
-define PosInfEndNotMeetsIntIvl = interval[0, null] meets interval[1000, 2000]
-define IntIvlNotMeetsPosInfEnd = interval[100, 200] meets interval[0, null]
-define UnknownEndMeetsAfterIntIvl = interval[100, null) meets interval[0, 99]
-define UnknownEndMayMeetBeforeIntIvl = interval[0, null) meets interval[50, 100]
-define UnknownEndNotMeetsIntIvl = interval[0, null) meets interval[0, 100]
-define IntIvlMayMeetAfterUnknownEnd = interval[0, 100] meets interval[-100, null)
-define NegInfBegMeetsBeforeDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
-define NegInfBegNotMeetsDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define DateIvlNotMeetsNegInfBeg = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownBegMeetsBeforeDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
-define UnknownBegMayMeetAfterDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotMeetsDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define DateIvlMayMeetBeforeUnknownBeg = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define PosInfEndMeetsAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define PosInfEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define DateIvlNotMeetsPosInfEnd = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)] meets interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
-define UnknownEndMeetsAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets interval[DateTime(2010, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownEndMayMeetBeforeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
-define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
+define MeetsAfterIntIvl: Interval[11, 15] meets Interval[5, 10]
+define MeetsBeforeIntIvl: Interval[1, 4] meets Interval[5, 10]
+define NotMeetsIntIvl: Interval[1, 2] meets Interval[5, 10]
+define MeetsAfterRealIvl: Interval[1.50000001, 2.5] meets Interval[0.5, 1.5]
+define MeetsBeforeRealIvl: Interval[0.5, 1.5] meets Interval[1.50000001, 2.5]
+define NotMeetsRealIvl: Interval[0.0, 1.0] meets Interval[1.1, 2.0]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define MeetsAfterDateIvl: Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)) meets DateIvl
+define MeetsBeforeDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)) meets DateIvl
+define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 0, 0, 0, 0)) meets DateIvl
+define MayMeetAfterImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetBeforeImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 9), DateTime(2012, 12)]
+define NotMeetsImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
+define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
+define ImpreciseNotMeetsDateIvl: ImpDateIvl meets Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999))
+define NegInfBegMeetsBeforeIntIvl: Interval[null, 100] meets Interval[101, 200]
+define NegInfBegNotMeetsIntIvl: Interval[null, 100] meets Interval[100, 200]
+define IntIvlNotMeetsNegInfBeg: Interval[100, 200] meets Interval[null, 400]
+define UnknownBegMeetsBeforeIntIvl: Interval(null, 100] meets Interval[101, 200]
+define UnknownBegMayMeetAfterIntIvl: Interval(null, 100] meets Interval[0, 50]
+define UnknownBegNotMeetsIntIvl: Interval(null, 5] meets Interval[0, 100]
+define IntIvlMayMeetBeforeUnknownBeg: Interval[0, 100] meets Interval(null, 400)
+define PosInfEndMeetsAfterIntIvl: Interval[100, null] meets Interval[0, 99]
+define PosInfEndNotMeetsIntIvl: Interval[0, null] meets Interval[1000, 2000]
+define IntIvlNotMeetsPosInfEnd: Interval[100, 200] meets Interval[0, null]
+define UnknownEndMeetsAfterIntIvl: Interval[100, null) meets Interval[0, 99]
+define UnknownEndMayMeetBeforeIntIvl: Interval[0, null) meets Interval[50, 100]
+define UnknownEndNotMeetsIntIvl: Interval[0, null) meets Interval[0, 100]
+define IntIvlMayMeetAfterUnknownEnd: Interval[0, 100] meets Interval[-100, null)
+define NegInfBegMeetsBeforeDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
+define NegInfBegNotMeetsDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define DateIvlNotMeetsNegInfBeg: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownBegMeetsBeforeDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
+define UnknownBegMayMeetAfterDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotMeetsDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define DateIvlMayMeetBeforeUnknownBeg: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define PosInfEndMeetsAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define PosInfEndNotMeetsDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define DateIvlNotMeetsPosInfEnd: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)] meets Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
+define UnknownEndMeetsAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets Interval[DateTime(2010, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownEndMayMeetBeforeDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
+define UnknownEndNotMeetsDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateIvlMayMeetAfterUnknownEnd: Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
 module.exports['Meets'] = {
@@ -15229,6 +15469,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "MeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15264,6 +15505,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "MeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15299,6 +15541,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "NotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15334,6 +15577,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "MeetsAfterRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15369,6 +15613,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "MeetsBeforeRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15404,6 +15649,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "NotMeetsRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15439,6 +15685,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -15513,6 +15760,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "MeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15593,6 +15841,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "MeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15673,6 +15922,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "NotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15753,6 +16003,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "MayMeetAfterImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15793,6 +16044,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "MayMeetBeforeImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15833,6 +16085,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "NotMeetsImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15873,6 +16126,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -15907,6 +16161,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "ImpreciseMayMeetAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -15987,6 +16242,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "ImpreciseMayMeetBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16067,6 +16323,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "ImpreciseNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16147,6 +16404,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "NegInfBegMeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16184,6 +16442,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "NegInfBegNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16221,6 +16480,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "IntIvlNotMeetsNegInfBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16258,6 +16518,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownBegMeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16295,6 +16556,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownBegMayMeetAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16332,6 +16594,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownBegNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16369,6 +16632,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "IntIvlMayMeetBeforeUnknownBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16406,6 +16670,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16443,6 +16708,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16480,6 +16746,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16517,6 +16784,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16554,6 +16822,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16591,6 +16860,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16628,6 +16898,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16668,6 +16939,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16789,6 +17061,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "NegInfBegNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -16910,6 +17183,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "DateIvlNotMeetsNegInfBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17031,6 +17305,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownBegMeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17152,6 +17427,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownBegMayMeetAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17273,6 +17549,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownBegNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17394,6 +17671,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "DateIvlMayMeetBeforeUnknownBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17515,6 +17793,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17636,6 +17915,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17757,6 +18037,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17878,6 +18159,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -17999,6 +18281,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -18120,6 +18403,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -18241,6 +18525,7 @@ module.exports['Meets'] = {
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Meets",
                "operand" : [ {
@@ -18368,51 +18653,51 @@ module.exports['Meets'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define MeetsAfterIntIvl = interval[11, 15] meets after interval[5, 10]
-define MeetsBeforeIntIvl = interval[1, 4] meets after interval[5, 10]
-define NotMeetsIntIvl = interval[1, 2] meets after interval[5, 10]
-define MeetsAfterRealIvl = interval[1.50000001, 2.5] meets after interval[0.5, 1.5]
-define MeetsBeforeRealIvl = interval[0.5, 1.5] meets after interval[1.50000001, 2.5]
-define NotMeetsRealIvl = interval[0.0, 1.0] meets after interval[1.1, 2.0]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define MeetsAfterDateIvl = interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)) meets after DateIvl
-define MeetsBeforeDateIvl = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)) meets after DateIvl
-define NotMeetsDateIvl = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 0, 0, 0, 0)) meets after DateIvl
-define MayMeetAfterImpreciseDateIvl = DateIvl meets after interval[DateTime(2012, 1), DateTime(2012, 2)]
-define MayMeetBeforeImpreciseDateIvl = DateIvl meets after interval[DateTime(2012, 9), DateTime(2012, 12)]
-define NotMeetsImpreciseDateIvl = DateIvl meets after interval[DateTime(2012, 1), DateTime(2012, 12)]
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseMayMeetAfterDateIvl = ImpDateIvl meets after interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
-define ImpreciseMayMeetBeforeDateIvl = ImpDateIvl meets after interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
-define ImpreciseNotMeetsDateIvl = ImpDateIvl meets after interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999))
-define NegInfBegMeetsBeforeIntIvl = interval[null, 100] meets after interval[101, 200]
-define NegInfBegNotMeetsIntIvl = interval[null, 100] meets after interval[100, 200]
-define IntIvlNotMeetsNegInfBeg = interval[100, 200] meets after interval[null, 400]
-define UnknownBegMeetsBeforeIntIvl = interval(null, 100] meets after interval[101, 200]
-define UnknownBegMayMeetAfterIntIvl = interval(null, 100] meets after interval[0, 50]
-define UnknownBegNotMeetsIntIvl = interval(null, 5] meets after interval[0, 100]
-define IntIvlMayMeetBeforeUnknownBeg = interval[0, 100] meets after interval(null, 400)
-define PosInfEndMeetsAfterIntIvl = interval[100, null] meets after interval[0, 99]
-define PosInfEndNotMeetsIntIvl = interval[0, null] meets after interval[1000, 2000]
-define IntIvlNotMeetsPosInfEnd = interval[100, 200] meets after interval[0, null]
-define UnknownEndMeetsAfterIntIvl = interval[100, null) meets after interval[0, 99]
-define UnknownEndMayMeetBeforeIntIvl = interval[0, null) meets after interval[50, 100]
-define UnknownEndNotMeetsIntIvl = interval[0, null) meets after interval[0, 100]
-define IntIvlMayMeetAfterUnknownEnd = interval[0, 100] meets after interval[-100, null)
-define NegInfBegMeetsBeforeDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
-define NegInfBegNotMeetsDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define DateIvlNotMeetsNegInfBeg = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets after interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownBegMeetsBeforeDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
-define UnknownBegMayMeetAfterDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotMeetsDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define DateIvlMayMeetBeforeUnknownBeg = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets after interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define PosInfEndMeetsAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define PosInfEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define DateIvlNotMeetsPosInfEnd = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)] meets after interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
-define UnknownEndMeetsAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets after interval[DateTime(2010, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownEndMayMeetBeforeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets after interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
-define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets after interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets after interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
+define MeetsAfterIntIvl: Interval[11, 15] meets after Interval[5, 10]
+define MeetsBeforeIntIvl: Interval[1, 4] meets after Interval[5, 10]
+define NotMeetsIntIvl: Interval[1, 2] meets after Interval[5, 10]
+define MeetsAfterRealIvl: Interval[1.50000001, 2.5] meets after Interval[0.5, 1.5]
+define MeetsBeforeRealIvl: Interval[0.5, 1.5] meets after Interval[1.50000001, 2.5]
+define NotMeetsRealIvl: Interval[0.0, 1.0] meets after Interval[1.1, 2.0]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define MeetsAfterDateIvl: Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)) meets after DateIvl
+define MeetsBeforeDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)) meets after DateIvl
+define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 0, 0, 0, 0)) meets after DateIvl
+define MayMeetAfterImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetBeforeImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 9), DateTime(2012, 12)]
+define NotMeetsImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
+define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets after Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
+define ImpreciseNotMeetsDateIvl: ImpDateIvl meets after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999))
+define NegInfBegMeetsBeforeIntIvl: Interval[null, 100] meets after Interval[101, 200]
+define NegInfBegNotMeetsIntIvl: Interval[null, 100] meets after Interval[100, 200]
+define IntIvlNotMeetsNegInfBeg: Interval[100, 200] meets after Interval[null, 400]
+define UnknownBegMeetsBeforeIntIvl: Interval(null, 100] meets after Interval[101, 200]
+define UnknownBegMayMeetAfterIntIvl: Interval(null, 100] meets after Interval[0, 50]
+define UnknownBegNotMeetsIntIvl: Interval(null, 5] meets after Interval[0, 100]
+define IntIvlMayMeetBeforeUnknownBeg: Interval[0, 100] meets after Interval(null, 400)
+define PosInfEndMeetsAfterIntIvl: Interval[100, null] meets after Interval[0, 99]
+define PosInfEndNotMeetsIntIvl: Interval[0, null] meets after Interval[1000, 2000]
+define IntIvlNotMeetsPosInfEnd: Interval[100, 200] meets after Interval[0, null]
+define UnknownEndMeetsAfterIntIvl: Interval[100, null) meets after Interval[0, 99]
+define UnknownEndMayMeetBeforeIntIvl: Interval[0, null) meets after Interval[50, 100]
+define UnknownEndNotMeetsIntIvl: Interval[0, null) meets after Interval[0, 100]
+define IntIvlMayMeetAfterUnknownEnd: Interval[0, 100] meets after Interval[-100, null)
+define NegInfBegMeetsBeforeDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
+define NegInfBegNotMeetsDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define DateIvlNotMeetsNegInfBeg: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets after Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownBegMeetsBeforeDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
+define UnknownBegMayMeetAfterDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotMeetsDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define DateIvlMayMeetBeforeUnknownBeg: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets after Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define PosInfEndMeetsAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define PosInfEndNotMeetsDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define DateIvlNotMeetsPosInfEnd: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)] meets after Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
+define UnknownEndMeetsAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets after Interval[DateTime(2010, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownEndMayMeetBeforeDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets after Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
+define UnknownEndNotMeetsDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets after Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateIvlMayMeetAfterUnknownEnd: Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets after Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
 module.exports['MeetsAfter'] = {
@@ -18449,6 +18734,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "MeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18484,6 +18770,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "MeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18519,6 +18806,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "NotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18554,6 +18842,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "MeetsAfterRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18589,6 +18878,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "MeetsBeforeRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18624,6 +18914,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "NotMeetsRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18659,6 +18950,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -18733,6 +19025,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "MeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18813,6 +19106,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "MeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18893,6 +19187,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "NotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -18973,6 +19268,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "MayMeetAfterImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19013,6 +19309,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "MayMeetBeforeImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19053,6 +19350,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "NotMeetsImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19093,6 +19391,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -19127,6 +19426,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "ImpreciseMayMeetAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19207,6 +19507,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "ImpreciseMayMeetBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19287,6 +19588,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "ImpreciseNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19367,6 +19669,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "NegInfBegMeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19404,6 +19707,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "NegInfBegNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19441,6 +19745,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "IntIvlNotMeetsNegInfBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19478,6 +19783,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownBegMeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19515,6 +19821,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownBegMayMeetAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19552,6 +19859,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownBegNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19589,6 +19897,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "IntIvlMayMeetBeforeUnknownBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19626,6 +19935,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19663,6 +19973,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19700,6 +20011,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19737,6 +20049,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19774,6 +20087,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19811,6 +20125,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19848,6 +20163,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -19888,6 +20204,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20009,6 +20326,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "NegInfBegNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20130,6 +20448,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "DateIvlNotMeetsNegInfBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20251,6 +20570,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownBegMeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20372,6 +20692,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownBegMayMeetAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20493,6 +20814,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownBegNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20614,6 +20936,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "DateIvlMayMeetBeforeUnknownBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20735,6 +21058,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20856,6 +21180,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -20977,6 +21302,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -21098,6 +21424,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -21219,6 +21546,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -21340,6 +21668,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -21461,6 +21790,7 @@ module.exports['MeetsAfter'] = {
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsAfter",
                "operand" : [ {
@@ -21588,51 +21918,51 @@ module.exports['MeetsAfter'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define MeetsAfterIntIvl = interval[11, 15] meets before interval[5, 10]
-define MeetsBeforeIntIvl = interval[1, 4] meets before interval[5, 10]
-define NotMeetsIntIvl = interval[1, 2] meets before interval[5, 10]
-define MeetsAfterRealIvl = interval[1.50000001, 2.5] meets before interval[0.5, 1.5]
-define MeetsBeforeRealIvl = interval[0.5, 1.5] meets before interval[1.50000001, 2.5]
-define NotMeetsRealIvl = interval[0.0, 1.0] meets before interval[1.1, 2.0]
-define DateIvl = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define MeetsAfterDateIvl = interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)) meets before DateIvl
-define MeetsBeforeDateIvl = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)) meets before DateIvl
-define NotMeetsDateIvl = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 0, 0, 0, 0)) meets before DateIvl
-define MayMeetAfterImpreciseDateIvl = DateIvl meets before interval[DateTime(2012, 1), DateTime(2012, 2)]
-define MayMeetBeforeImpreciseDateIvl = DateIvl meets before interval[DateTime(2012, 9), DateTime(2012, 12)]
-define NotMeetsImpreciseDateIvl = DateIvl meets before interval[DateTime(2012, 1), DateTime(2012, 12)]
-define ImpDateIvl = interval[DateTime(2012, 3), DateTime(2012, 8)]
-define ImpreciseMayMeetAfterDateIvl = ImpDateIvl meets before interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
-define ImpreciseMayMeetBeforeDateIvl = ImpDateIvl meets before interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
-define ImpreciseNotMeetsDateIvl = ImpDateIvl meets before interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999))
-define NegInfBegMeetsBeforeIntIvl = interval[null, 100] meets before interval[101, 200]
-define NegInfBegNotMeetsIntIvl = interval[null, 100] meets before interval[100, 200]
-define IntIvlNotMeetsNegInfBeg = interval[100, 200] meets before interval[null, 400]
-define UnknownBegMeetsBeforeIntIvl = interval(null, 100] meets before interval[101, 200]
-define UnknownBegMayMeetAfterIntIvl = interval(null, 100] meets before interval[0, 50]
-define UnknownBegNotMeetsIntIvl = interval(null, 5] meets before interval[0, 100]
-define IntIvlMayMeetBeforeUnknownBeg = interval[0, 100] meets before interval(null, 400)
-define PosInfEndMeetsAfterIntIvl = interval[100, null] meets before interval[0, 99]
-define PosInfEndNotMeetsIntIvl = interval[0, null] meets before interval[1000, 2000]
-define IntIvlNotMeetsPosInfEnd = interval[100, 200] meets before interval[0, null]
-define UnknownEndMeetsAfterIntIvl = interval[100, null) meets before interval[0, 99]
-define UnknownEndMayMeetBeforeIntIvl = interval[0, null) meets before interval[50, 100]
-define UnknownEndNotMeetsIntIvl = interval[0, null) meets before interval[0, 100]
-define IntIvlMayMeetAfterUnknownEnd = interval[0, 100] meets before interval[-100, null)
-define NegInfBegMeetsBeforeDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
-define NegInfBegNotMeetsDateIvl = interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define DateIvlNotMeetsNegInfBeg = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets before interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownBegMeetsBeforeDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
-define UnknownBegMayMeetAfterDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotMeetsDateIvl = interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define DateIvlMayMeetBeforeUnknownBeg = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets before interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define PosInfEndMeetsAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define PosInfEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define DateIvlNotMeetsPosInfEnd = interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)] meets before interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
-define UnknownEndMeetsAfterDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets before interval[DateTime(2010, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownEndMayMeetBeforeDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets before interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
-define UnknownEndNotMeetsDateIvl = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets before interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateIvlMayMeetAfterUnknownEnd = interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets before interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
+define MeetsAfterIntIvl: Interval[11, 15] meets before Interval[5, 10]
+define MeetsBeforeIntIvl: Interval[1, 4] meets before Interval[5, 10]
+define NotMeetsIntIvl: Interval[1, 2] meets before Interval[5, 10]
+define MeetsAfterRealIvl: Interval[1.50000001, 2.5] meets before Interval[0.5, 1.5]
+define MeetsBeforeRealIvl: Interval[0.5, 1.5] meets before Interval[1.50000001, 2.5]
+define NotMeetsRealIvl: Interval[0.0, 1.0] meets before Interval[1.1, 2.0]
+define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define MeetsAfterDateIvl: Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)) meets before DateIvl
+define MeetsBeforeDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)) meets before DateIvl
+define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 0, 0, 0, 0)) meets before DateIvl
+define MayMeetAfterImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetBeforeImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 9), DateTime(2012, 12)]
+define NotMeetsImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
+define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets before Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
+define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets before Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
+define ImpreciseNotMeetsDateIvl: ImpDateIvl meets before Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999))
+define NegInfBegMeetsBeforeIntIvl: Interval[null, 100] meets before Interval[101, 200]
+define NegInfBegNotMeetsIntIvl: Interval[null, 100] meets before Interval[100, 200]
+define IntIvlNotMeetsNegInfBeg: Interval[100, 200] meets before Interval[null, 400]
+define UnknownBegMeetsBeforeIntIvl: Interval(null, 100] meets before Interval[101, 200]
+define UnknownBegMayMeetAfterIntIvl: Interval(null, 100] meets before Interval[0, 50]
+define UnknownBegNotMeetsIntIvl: Interval(null, 5] meets before Interval[0, 100]
+define IntIvlMayMeetBeforeUnknownBeg: Interval[0, 100] meets before Interval(null, 400)
+define PosInfEndMeetsAfterIntIvl: Interval[100, null] meets before Interval[0, 99]
+define PosInfEndNotMeetsIntIvl: Interval[0, null] meets before Interval[1000, 2000]
+define IntIvlNotMeetsPosInfEnd: Interval[100, 200] meets before Interval[0, null]
+define UnknownEndMeetsAfterIntIvl: Interval[100, null) meets before Interval[0, 99]
+define UnknownEndMayMeetBeforeIntIvl: Interval[0, null) meets before Interval[50, 100]
+define UnknownEndNotMeetsIntIvl: Interval[0, null) meets before Interval[0, 100]
+define IntIvlMayMeetAfterUnknownEnd: Interval[0, 100] meets before Interval[-100, null)
+define NegInfBegMeetsBeforeDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
+define NegInfBegNotMeetsDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define DateIvlNotMeetsNegInfBeg: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets before Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownBegMeetsBeforeDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2030, 1, 1, 0, 0, 0, 0)]
+define UnknownBegMayMeetAfterDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotMeetsDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) meets before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define DateIvlMayMeetBeforeUnknownBeg: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2010, 1, 1, 0, 0, 0, 0)] meets before Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define PosInfEndMeetsAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define PosInfEndNotMeetsDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] meets before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define DateIvlNotMeetsPosInfEnd: Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)] meets before Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
+define UnknownEndMeetsAfterDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets before Interval[DateTime(2010, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownEndMayMeetBeforeDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets before Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)]
+define UnknownEndNotMeetsDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) meets before Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateIvlMayMeetAfterUnknownEnd: Interval[DateTime(2020, 1, 1, 0, 0, 0, 0), DateTime(2040, 1, 1, 0, 0, 0, 0)] meets before Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null)
 ###
 
 module.exports['MeetsBefore'] = {
@@ -21669,6 +21999,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "MeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -21704,6 +22035,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "MeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -21739,6 +22071,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "NotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -21774,6 +22107,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "MeetsAfterRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -21809,6 +22143,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "MeetsBeforeRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -21844,6 +22179,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "NotMeetsRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -21879,6 +22215,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "DateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -21953,6 +22290,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "MeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22033,6 +22371,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "MeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22113,6 +22452,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "NotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22193,6 +22533,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "MayMeetAfterImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22233,6 +22574,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "MayMeetBeforeImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22273,6 +22615,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "NotMeetsImpreciseDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22313,6 +22656,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "ImpDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -22347,6 +22691,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "ImpreciseMayMeetAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22427,6 +22772,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "ImpreciseMayMeetBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22507,6 +22853,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "ImpreciseNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22587,6 +22934,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "NegInfBegMeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22624,6 +22972,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "NegInfBegNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22661,6 +23010,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "IntIvlNotMeetsNegInfBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22698,6 +23048,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownBegMeetsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22735,6 +23086,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownBegMayMeetAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22772,6 +23124,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownBegNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22809,6 +23162,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "IntIvlMayMeetBeforeUnknownBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22846,6 +23200,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "PosInfEndMeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22883,6 +23238,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "PosInfEndNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22920,6 +23276,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "IntIvlNotMeetsPosInfEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22957,6 +23314,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownEndMeetsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -22994,6 +23352,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownEndMayMeetBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23031,6 +23390,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownEndNotMeetsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23068,6 +23428,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "IntIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23108,6 +23469,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "NegInfBegMeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23229,6 +23591,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "NegInfBegNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23350,6 +23713,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "DateIvlNotMeetsNegInfBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23471,6 +23835,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownBegMeetsBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23592,6 +23957,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownBegMayMeetAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23713,6 +24079,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownBegNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23834,6 +24201,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "DateIvlMayMeetBeforeUnknownBeg",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -23955,6 +24323,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "PosInfEndMeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -24076,6 +24445,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "PosInfEndNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -24197,6 +24567,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "DateIvlNotMeetsPosInfEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -24318,6 +24689,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownEndMeetsAfterDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -24439,6 +24811,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownEndMayMeetBeforeDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -24560,6 +24933,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "UnknownEndNotMeetsDateIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -24681,6 +25055,7 @@ module.exports['MeetsBefore'] = {
          }, {
             "name" : "DateIvlMayMeetAfterUnknownEnd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "MeetsBefore",
                "operand" : [ {
@@ -24808,14 +25183,14 @@ module.exports['MeetsBefore'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define OverlapsBeforeIntIvl = interval[1, 5] overlaps interval[2, 7]
-define OverlapsAfterIntIvl = interval[3, 8] overlaps interval[1, 6]
-define OverlapsBoundaryIntIvl = interval[1, 5] overlaps interval[5, 10]
-define NoOverlapsIntIvl = interval[1,5) overlaps interval[5, 10]
-define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps interval[1.345, 1.678]
-define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps interval[1.234, 1.567]
-define OverlapsBoundaryRealIvl = interval[1.0, 1.234] overlaps interval[1.234, 2.0]
-define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps interval[1.23456789, 2.0]
+define OverlapsBeforeIntIvl: Interval[1, 5] overlaps Interval[2, 7]
+define OverlapsAfterIntIvl: Interval[3, 8] overlaps Interval[1, 6]
+define OverlapsBoundaryIntIvl: Interval[1, 5] overlaps Interval[5, 10]
+define NoOverlapsIntIvl: Interval[1,5) overlaps Interval[5, 10]
+define OverlapsBeforeRealIvl: Interval[1.234, 1.567] overlaps Interval[1.345, 1.678]
+define OverlapsAfterRealIvl: Interval[1.345, 1.678] overlaps Interval[1.234, 1.567]
+define OverlapsBoundaryRealIvl: Interval[1.0, 1.234] overlaps Interval[1.234, 2.0]
+define NoOverlapsRealIvl: Interval[1.0, 1.23456789) overlaps Interval[1.23456789, 2.0]
 ###
 
 module.exports['Overlaps'] = {
@@ -24852,6 +25227,7 @@ module.exports['Overlaps'] = {
          }, {
             "name" : "OverlapsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -24887,6 +25263,7 @@ module.exports['Overlaps'] = {
          }, {
             "name" : "OverlapsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -24922,6 +25299,7 @@ module.exports['Overlaps'] = {
          }, {
             "name" : "OverlapsBoundaryIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -24957,6 +25335,7 @@ module.exports['Overlaps'] = {
          }, {
             "name" : "NoOverlapsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -24992,6 +25371,7 @@ module.exports['Overlaps'] = {
          }, {
             "name" : "OverlapsBeforeRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25027,6 +25407,7 @@ module.exports['Overlaps'] = {
          }, {
             "name" : "OverlapsAfterRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25062,6 +25443,7 @@ module.exports['Overlaps'] = {
          }, {
             "name" : "OverlapsBoundaryRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25097,6 +25479,7 @@ module.exports['Overlaps'] = {
          }, {
             "name" : "NoOverlapsRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25138,21 +25521,21 @@ module.exports['Overlaps'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ivlA = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define ivlB = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define ivlC = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define ivlD = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
-define ivlE = interval[DateTime(2013), DateTime(2015)]
-define ivlF = interval[DateTime(2014), DateTime(2016)]
-define ivlG = interval[DateTime(2016), DateTime(2017)]
-define OverlapsBefore = ivlA overlaps ivlB
-define OverlapsAfter = ivlB overlaps ivlA
-define OverlapsContained = ivlB overlaps ivlC
-define OverlapsContains = ivlC overlaps ivlB
-define ImpreciseOverlap = ivlD overlaps ivlE
-define NoOverlap = ivlC overlaps ivlD
-define NoImpreciseOverlap = ivlE overlaps ivlG
-define UnknownOverlap = ivlF overlaps ivlG
+define ivlA: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define ivlB: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define ivlC: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define ivlD: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+define ivlE: Interval[DateTime(2013), DateTime(2015)]
+define ivlF: Interval[DateTime(2014), DateTime(2016)]
+define ivlG: Interval[DateTime(2016), DateTime(2017)]
+define OverlapsBefore: ivlA overlaps ivlB
+define OverlapsAfter: ivlB overlaps ivlA
+define OverlapsContained: ivlB overlaps ivlC
+define OverlapsContains: ivlC overlaps ivlB
+define ImpreciseOverlap: ivlD overlaps ivlE
+define NoOverlap: ivlC overlaps ivlD
+define NoImpreciseOverlap: ivlE overlaps ivlG
+define UnknownOverlap: ivlF overlaps ivlG
 ###
 
 module.exports['OverlapsDateTime'] = {
@@ -25189,6 +25572,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "ivlA",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -25263,6 +25647,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "ivlB",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -25337,6 +25722,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "ivlC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -25411,6 +25797,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "ivlD",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -25485,6 +25872,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "ivlE",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -25511,6 +25899,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "ivlF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -25537,6 +25926,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "ivlG",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -25563,6 +25953,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "OverlapsBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25576,6 +25967,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "OverlapsAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25589,6 +25981,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "OverlapsContained",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25602,6 +25995,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "OverlapsContains",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25615,6 +26009,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "ImpreciseOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25628,6 +26023,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "NoOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25641,6 +26037,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "NoImpreciseOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25654,6 +26051,7 @@ module.exports['OverlapsDateTime'] = {
          }, {
             "name" : "UnknownOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Overlaps",
                "operand" : [ {
@@ -25673,14 +26071,14 @@ module.exports['OverlapsDateTime'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define OverlapsBeforeIntIvl = interval[1, 5] overlaps after interval[2, 7]
-define OverlapsAfterIntIvl = interval[3, 8] overlaps after interval[1, 6]
-define OverlapsBoundaryIntIvl = interval[5, 10] overlaps after interval[1, 5]
-define NoOverlapsIntIvl = interval[1,5) overlaps after interval[5, 10]
-define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps after interval[1.345, 1.678]
-define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps after interval[1.234, 1.567]
-define OverlapsBoundaryRealIvl = interval[1.234, 2.0] overlaps after interval[1.0, 1.234]
-define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps after interval[1.23456789, 2.0]
+define OverlapsBeforeIntIvl: Interval[1, 5] overlaps after Interval[2, 7]
+define OverlapsAfterIntIvl: Interval[3, 8] overlaps after Interval[1, 6]
+define OverlapsBoundaryIntIvl: Interval[5, 10] overlaps after Interval[1, 5]
+define NoOverlapsIntIvl: Interval[1,5) overlaps after Interval[5, 10]
+define OverlapsBeforeRealIvl: Interval[1.234, 1.567] overlaps after Interval[1.345, 1.678]
+define OverlapsAfterRealIvl: Interval[1.345, 1.678] overlaps after Interval[1.234, 1.567]
+define OverlapsBoundaryRealIvl: Interval[1.234, 2.0] overlaps after Interval[1.0, 1.234]
+define NoOverlapsRealIvl: Interval[1.0, 1.23456789) overlaps after Interval[1.23456789, 2.0]
 ###
 
 module.exports['OverlapsAfter'] = {
@@ -25717,6 +26115,7 @@ module.exports['OverlapsAfter'] = {
          }, {
             "name" : "OverlapsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -25752,6 +26151,7 @@ module.exports['OverlapsAfter'] = {
          }, {
             "name" : "OverlapsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -25787,6 +26187,7 @@ module.exports['OverlapsAfter'] = {
          }, {
             "name" : "OverlapsBoundaryIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -25822,6 +26223,7 @@ module.exports['OverlapsAfter'] = {
          }, {
             "name" : "NoOverlapsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -25857,6 +26259,7 @@ module.exports['OverlapsAfter'] = {
          }, {
             "name" : "OverlapsBeforeRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -25892,6 +26295,7 @@ module.exports['OverlapsAfter'] = {
          }, {
             "name" : "OverlapsAfterRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -25927,6 +26331,7 @@ module.exports['OverlapsAfter'] = {
          }, {
             "name" : "OverlapsBoundaryRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -25962,6 +26367,7 @@ module.exports['OverlapsAfter'] = {
          }, {
             "name" : "NoOverlapsRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26003,22 +26409,22 @@ module.exports['OverlapsAfter'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ivlA = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define ivlB = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define ivlC = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define ivlD = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
-define ivlE = interval[DateTime(2013), DateTime(2015)]
-define ivlF = interval[DateTime(2014), DateTime(2016)]
-define ivlG = interval[DateTime(2016), DateTime(2017)]
-define OverlapsBefore = ivlA overlaps after ivlB
-define OverlapsAfter = ivlB overlaps after ivlA
-define OverlapsContained = ivlB overlaps after ivlC
-define OverlapsContains = ivlC overlaps after ivlB
-define ImpreciseOverlapBefore = ivlE overlaps after ivlF
-define ImpreciseOverlapAfter = ivlF overlaps after ivlE
-define NoOverlap = ivlC overlaps after ivlD
-define NoImpreciseOverlap = ivlE overlaps after ivlG
-define UnknownOverlap = ivlG overlaps after ivlF
+define ivlA: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define ivlB: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define ivlC: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define ivlD: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+define ivlE: Interval[DateTime(2013), DateTime(2015)]
+define ivlF: Interval[DateTime(2014), DateTime(2016)]
+define ivlG: Interval[DateTime(2016), DateTime(2017)]
+define OverlapsBefore: ivlA overlaps after ivlB
+define OverlapsAfter: ivlB overlaps after ivlA
+define OverlapsContained: ivlB overlaps after ivlC
+define OverlapsContains: ivlC overlaps after ivlB
+define ImpreciseOverlapBefore: ivlE overlaps after ivlF
+define ImpreciseOverlapAfter: ivlF overlaps after ivlE
+define NoOverlap: ivlC overlaps after ivlD
+define NoImpreciseOverlap: ivlE overlaps after ivlG
+define UnknownOverlap: ivlG overlaps after ivlF
 ###
 
 module.exports['OverlapsAfterDateTime'] = {
@@ -26055,6 +26461,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ivlA",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -26129,6 +26536,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ivlB",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -26203,6 +26611,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ivlC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -26277,6 +26686,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ivlD",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -26351,6 +26761,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ivlE",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -26377,6 +26788,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ivlF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -26403,6 +26815,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ivlG",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -26429,6 +26842,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "OverlapsBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26442,6 +26856,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "OverlapsAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26455,6 +26870,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "OverlapsContained",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26468,6 +26884,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "OverlapsContains",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26481,6 +26898,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ImpreciseOverlapBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26494,6 +26912,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "ImpreciseOverlapAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26507,6 +26926,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "NoOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26520,6 +26940,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "NoImpreciseOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26533,6 +26954,7 @@ module.exports['OverlapsAfterDateTime'] = {
          }, {
             "name" : "UnknownOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsAfter",
                "operand" : [ {
@@ -26552,14 +26974,14 @@ module.exports['OverlapsAfterDateTime'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define OverlapsBeforeIntIvl = interval[1, 5] overlaps before interval[2, 7]
-define OverlapsAfterIntIvl = interval[3, 8] overlaps before interval[1, 6]
-define OverlapsBoundaryIntIvl = interval[1, 5] overlaps before interval[5, 10]
-define NoOverlapsIntIvl = interval[1,5) overlaps before interval[5, 10]
-define OverlapsBeforeRealIvl = interval[1.234, 1.567] overlaps before interval[1.345, 1.678]
-define OverlapsAfterRealIvl = interval[1.345, 1.678] overlaps before interval[1.234, 1.567]
-define OverlapsBoundaryRealIvl = interval[1.0, 1.234] overlaps before interval[1.234, 2.0]
-define NoOverlapsRealIvl = interval[1.0, 1.23456789) overlaps before interval[1.23456789, 2.0]
+define OverlapsBeforeIntIvl: Interval[1, 5] overlaps before Interval[2, 7]
+define OverlapsAfterIntIvl: Interval[3, 8] overlaps before Interval[1, 6]
+define OverlapsBoundaryIntIvl: Interval[1, 5] overlaps before Interval[5, 10]
+define NoOverlapsIntIvl: Interval[1,5) overlaps before Interval[5, 10]
+define OverlapsBeforeRealIvl: Interval[1.234, 1.567] overlaps before Interval[1.345, 1.678]
+define OverlapsAfterRealIvl: Interval[1.345, 1.678] overlaps before Interval[1.234, 1.567]
+define OverlapsBoundaryRealIvl: Interval[1.0, 1.234] overlaps before Interval[1.234, 2.0]
+define NoOverlapsRealIvl: Interval[1.0, 1.23456789) overlaps before Interval[1.23456789, 2.0]
 ###
 
 module.exports['OverlapsBefore'] = {
@@ -26596,6 +27018,7 @@ module.exports['OverlapsBefore'] = {
          }, {
             "name" : "OverlapsBeforeIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -26631,6 +27054,7 @@ module.exports['OverlapsBefore'] = {
          }, {
             "name" : "OverlapsAfterIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -26666,6 +27090,7 @@ module.exports['OverlapsBefore'] = {
          }, {
             "name" : "OverlapsBoundaryIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -26701,6 +27126,7 @@ module.exports['OverlapsBefore'] = {
          }, {
             "name" : "NoOverlapsIntIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -26736,6 +27162,7 @@ module.exports['OverlapsBefore'] = {
          }, {
             "name" : "OverlapsBeforeRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -26771,6 +27198,7 @@ module.exports['OverlapsBefore'] = {
          }, {
             "name" : "OverlapsAfterRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -26806,6 +27234,7 @@ module.exports['OverlapsBefore'] = {
          }, {
             "name" : "OverlapsBoundaryRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -26841,6 +27270,7 @@ module.exports['OverlapsBefore'] = {
          }, {
             "name" : "NoOverlapsRealIvl",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -26882,22 +27312,22 @@ module.exports['OverlapsBefore'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ivlA = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define ivlB = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
-define ivlC = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define ivlD = interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
-define ivlE = interval[DateTime(2013), DateTime(2015)]
-define ivlF = interval[DateTime(2014), DateTime(2016)]
-define ivlG = interval[DateTime(2016), DateTime(2017)]
-define OverlapsBefore = ivlA overlaps before ivlB
-define OverlapsAfter = ivlB overlaps before ivlA
-define OverlapsContained = ivlB overlaps before ivlC
-define OverlapsContains = ivlC overlaps before ivlB
-define ImpreciseOverlapBefore = ivlE overlaps before ivlF
-define ImpreciseOverlapAfter = ivlF overlaps before ivlE
-define NoOverlap = ivlC overlaps before ivlD
-define NoImpreciseOverlap = ivlE overlaps before ivlG
-define UnknownOverlap = ivlF overlaps before ivlG
+define ivlA: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define ivlB: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
+define ivlC: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define ivlD: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+define ivlE: Interval[DateTime(2013), DateTime(2015)]
+define ivlF: Interval[DateTime(2014), DateTime(2016)]
+define ivlG: Interval[DateTime(2016), DateTime(2017)]
+define OverlapsBefore: ivlA overlaps before ivlB
+define OverlapsAfter: ivlB overlaps before ivlA
+define OverlapsContained: ivlB overlaps before ivlC
+define OverlapsContains: ivlC overlaps before ivlB
+define ImpreciseOverlapBefore: ivlE overlaps before ivlF
+define ImpreciseOverlapAfter: ivlF overlaps before ivlE
+define NoOverlap: ivlC overlaps before ivlD
+define NoImpreciseOverlap: ivlE overlaps before ivlG
+define UnknownOverlap: ivlF overlaps before ivlG
 ###
 
 module.exports['OverlapsBeforeDateTime'] = {
@@ -26934,6 +27364,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ivlA",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -27008,6 +27439,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ivlB",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -27082,6 +27514,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ivlC",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -27156,6 +27589,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ivlD",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -27230,6 +27664,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ivlE",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -27256,6 +27691,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ivlF",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -27282,6 +27718,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ivlG",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -27308,6 +27745,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "OverlapsBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27321,6 +27759,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "OverlapsAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27334,6 +27773,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "OverlapsContained",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27347,6 +27787,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "OverlapsContains",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27360,6 +27801,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ImpreciseOverlapBefore",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27373,6 +27815,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "ImpreciseOverlapAfter",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27386,6 +27829,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "NoOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27399,6 +27843,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "NoImpreciseOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27412,6 +27857,7 @@ module.exports['OverlapsBeforeDateTime'] = {
          }, {
             "name" : "UnknownOverlap",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "OverlapsBefore",
                "operand" : [ {
@@ -27431,14 +27877,14 @@ module.exports['OverlapsBeforeDateTime'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IntWidth = width of interval[-2, 5]
-define IntOpenWidth = width of interval(-2, 5)
-define IntWidthThreeToMax = width of interval[3, null]
-define IntWidthMinToThree = width of interval[null, 3]
-define IntWidthThreeToUnknown = width of interval[3, null)
-define IntWidthUnknownToThree = width of interval(null, 3]
-define RealWidth = width of interval[1.23, 4.56]
-define RealOpenWidth = width of interval(1.23, 4.56)
+define IntWidth: width of Interval[-2, 5]
+define IntOpenWidth: width of Interval(-2, 5)
+define IntWidthThreeToMax: width of Interval[3, null]
+define IntWidthMinToThree: width of Interval[null, 3]
+define IntWidthThreeToUnknown: width of Interval[3, null)
+define IntWidthUnknownToThree: width of Interval(null, 3]
+define RealWidth: width of Interval[1.23, 4.56]
+define RealOpenWidth: width of Interval(1.23, 4.56)
 ###
 
 module.exports['Width'] = {
@@ -27475,6 +27921,7 @@ module.exports['Width'] = {
          }, {
             "name" : "IntWidth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Width",
                "operand" : {
@@ -27499,6 +27946,7 @@ module.exports['Width'] = {
          }, {
             "name" : "IntOpenWidth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Width",
                "operand" : {
@@ -27523,6 +27971,7 @@ module.exports['Width'] = {
          }, {
             "name" : "IntWidthThreeToMax",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Width",
                "operand" : {
@@ -27546,6 +27995,7 @@ module.exports['Width'] = {
          }, {
             "name" : "IntWidthMinToThree",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Width",
                "operand" : {
@@ -27569,6 +28019,7 @@ module.exports['Width'] = {
          }, {
             "name" : "IntWidthThreeToUnknown",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Width",
                "operand" : {
@@ -27592,6 +28043,7 @@ module.exports['Width'] = {
          }, {
             "name" : "IntWidthUnknownToThree",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Width",
                "operand" : {
@@ -27615,6 +28067,7 @@ module.exports['Width'] = {
          }, {
             "name" : "RealWidth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Width",
                "operand" : {
@@ -27636,6 +28089,7 @@ module.exports['Width'] = {
          }, {
             "name" : "RealOpenWidth",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Width",
                "operand" : {
@@ -27663,7 +28117,7 @@ module.exports['Width'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Foo = start of interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
+define Foo: start of Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
 ###
 
 module.exports['Start'] = {
@@ -27700,6 +28154,7 @@ module.exports['Start'] = {
          }, {
             "name" : "Foo",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Start",
                "operand" : {
@@ -27751,18 +28206,18 @@ module.exports['Start'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IntFullInterval = interval[0,10]
-define IntClosedUnionClosed = interval[0,5] union interval[5,10]
-define IntClosedUnionOpen = interval[0,5] union interval[5,10)
-define IntOpenUnionOpen = interval(0,5] union interval[5,10)
-define IntOpenUnionClosed = interval(0,5] union interval[5,10]
-define IntSameAsUnion = interval[0,10] union interval[0,10]
-define IntBeforeUnion = interval[0,4] union interval[6,10]
-define IntMeetsUnion = interval[0,5] union interval[5,10]
-define IntOverlapsUnion = interval[0,7] union interval[3,10]
-define IntBeginsUnion = interval[0,5] union interval[0,10]
-define IntDuringUnion = interval[3,5] union interval[0,10]
-define IntEndsUnion = interval[5,10] union interval[0,10]
+define IntFullInterval: Interval[0,10]
+define IntClosedUnionClosed: Interval[0,5] union Interval[5,10]
+define IntClosedUnionOpen: Interval[0,5] union Interval[5,10)
+define IntOpenUnionOpen: Interval(0,5] union Interval[5,10)
+define IntOpenUnionClosed: Interval(0,5] union Interval[5,10]
+define IntSameAsUnion: Interval[0,10] union Interval[0,10]
+define IntBeforeUnion: Interval[0,4] union Interval[6,10]
+define IntMeetsUnion: Interval[0,5] union Interval[5,10]
+define IntOverlapsUnion: Interval[0,7] union Interval[3,10]
+define IntBeginsUnion: Interval[0,5] union Interval[0,10]
+define IntDuringUnion: Interval[3,5] union Interval[0,10]
+define IntEndsUnion: Interval[5,10] union Interval[0,10]
 ###
 
 module.exports['IntegerIntervalUnion'] = {
@@ -27799,6 +28254,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntFullInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -27817,6 +28273,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntClosedUnionClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -27852,6 +28309,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntClosedUnionOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -27887,6 +28345,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntOpenUnionOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -27922,6 +28381,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntOpenUnionClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -27957,6 +28417,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntSameAsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -27992,6 +28453,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntBeforeUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28027,6 +28489,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntMeetsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28062,6 +28525,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntOverlapsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28097,6 +28561,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntBeginsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28132,6 +28597,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntDuringUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28167,6 +28633,7 @@ module.exports['IntegerIntervalUnion'] = {
          }, {
             "name" : "IntEndsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28208,18 +28675,18 @@ module.exports['IntegerIntervalUnion'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define DateTimeFullInterval = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeClosedUnionClosed = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeClosedUnionOpen = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define DateTimeOpenUnionOpen = interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define DateTimeOpenUnionClosed = interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeSameAsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeBeforeUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 7, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeMeetsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeOverlapsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeBeginsUnion = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeDuringUnion = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeEndsUnion = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] union interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeFullInterval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeClosedUnionClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeClosedUnionOpen: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define DateTimeOpenUnionOpen: Interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define DateTimeOpenUnionClosed: Interval(DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeSameAsUnion: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeforeUnion: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 7, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeMeetsUnion: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeOverlapsUnion: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeginsUnion: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeDuringUnion: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeEndsUnion: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] union Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 ###
 
 module.exports['DateTimeIntervalUnion'] = {
@@ -28256,6 +28723,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeFullInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -28330,6 +28798,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeClosedUnionClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28477,6 +28946,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeClosedUnionOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28624,6 +29094,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeOpenUnionOpen",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28771,6 +29242,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeOpenUnionClosed",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -28918,6 +29390,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeSameAsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -29065,6 +29538,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeBeforeUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -29212,6 +29686,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeMeetsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -29359,6 +29834,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeOverlapsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -29506,6 +29982,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeBeginsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -29653,6 +30130,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeDuringUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -29800,6 +30278,7 @@ module.exports['DateTimeIntervalUnion'] = {
          }, {
             "name" : "DateTimeEndsUnion",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Union",
                "operand" : [ {
@@ -29953,15 +30432,15 @@ module.exports['DateTimeIntervalUnion'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IntFullInterval = interval[0,10]
-define IntHalfInterval = interval[0,5)
-define IntSameAsExcept = interval[0,10] except interval[0,10]
-define IntBeforeExcept = interval[0,4] except interval[6,10]
-define IntMeetsExcept = interval[0,5] except interval[5,10]
-define IntOverlapsExcept = interval[0,7] except interval[5,10]
-define IntBeginsExcept = interval[0,5] except interval[0,10]
-define IntDuringExcept = interval[3,5] except interval[0,10]
-define IntEndsExcept = interval[5,10] except interval[0,10]
+define IntFullInterval: Interval[0,10]
+define IntHalfInterval: Interval[0,5)
+define IntSameAsExcept: Interval[0,10] except Interval[0,10]
+define IntBeforeExcept: Interval[0,4] except Interval[6,10]
+define IntMeetsExcept: Interval[0,5] except Interval[5,10]
+define IntOverlapsExcept: Interval[0,7] except Interval[5,10]
+define IntBeginsExcept: Interval[0,5] except Interval[0,10]
+define IntDuringExcept: Interval[3,5] except Interval[0,10]
+define IntEndsExcept: Interval[5,10] except Interval[0,10]
 ###
 
 module.exports['IntegerIntervalExcept'] = {
@@ -29998,6 +30477,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntFullInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -30016,6 +30496,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntHalfInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -30034,6 +30515,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntSameAsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30069,6 +30551,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntBeforeExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30104,6 +30587,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntMeetsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30139,6 +30623,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntOverlapsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30174,6 +30659,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntBeginsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30209,6 +30695,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntDuringExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30244,6 +30731,7 @@ module.exports['IntegerIntervalExcept'] = {
          }, {
             "name" : "IntEndsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30285,15 +30773,15 @@ module.exports['IntegerIntervalExcept'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define DateTimeFullInterval = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeHalfInterval = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
-define DateTimeSameAsExcept = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] except interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeBeforeExcept = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0)] except interval[DateTime(2012, 7, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeMeetsExcept = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] except interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeOverlapsExcept = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)] except interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeBeginsExcept = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] except interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeDuringExcept = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] except interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeEndsExcept = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] except interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeFullInterval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeHalfInterval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define DateTimeSameAsExcept: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] except Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeforeExcept: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0)] except Interval[DateTime(2012, 7, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeMeetsExcept: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] except Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeOverlapsExcept: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)] except Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeginsExcept: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] except Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeDuringExcept: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] except Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeEndsExcept: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] except Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 ###
 
 module.exports['DateTimeIntervalExcept'] = {
@@ -30330,6 +30818,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeFullInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -30404,6 +30893,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeHalfInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : false,
@@ -30478,6 +30968,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeSameAsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30625,6 +31116,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeBeforeExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30772,6 +31264,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeMeetsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -30919,6 +31412,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeOverlapsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -31066,6 +31560,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeBeginsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -31213,6 +31708,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeDuringExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -31360,6 +31856,7 @@ module.exports['DateTimeIntervalExcept'] = {
          }, {
             "name" : "DateTimeEndsExcept",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Except",
                "operand" : [ {
@@ -31513,19 +32010,19 @@ module.exports['DateTimeIntervalExcept'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define IntFullInterval = interval[0,10]
-define IntMeetsInterval = interval[5,5]
-define IntOverlapsInterval = interval[5,7]
-define IntBeginsInterval = interval[0,5]
-define IntDuringInterval = interval[3,5]
-define IntEndsInterval = interval[5,10]
-define IntSameAsIntersect = interval[0,10] intersect interval[0,10]
-define IntBeforeIntersect = interval[0,4] intersect interval[6,10]
-define IntMeetsIntersect = interval[0,5] intersect interval[5,10]
-define IntOverlapsIntersect = interval[0,7] intersect interval[5,10]
-define IntBeginsIntersect = interval[0,5] intersect interval[0,10]
-define IntDuringIntersect = interval[3,5] intersect interval[0,10]
-define IntEndsIntersect = interval[5,10] intersect interval[0,10]
+define IntFullInterval: Interval[0,10]
+define IntMeetsInterval: Interval[5,5]
+define IntOverlapsInterval: Interval[5,7]
+define IntBeginsInterval: Interval[0,5]
+define IntDuringInterval: Interval[3,5]
+define IntEndsInterval: Interval[5,10]
+define IntSameAsIntersect: Interval[0,10] intersect Interval[0,10]
+define IntBeforeIntersect: Interval[0,4] intersect Interval[6,10]
+define IntMeetsIntersect: Interval[0,5] intersect Interval[5,10]
+define IntOverlapsIntersect: Interval[0,7] intersect Interval[5,10]
+define IntBeginsIntersect: Interval[0,5] intersect Interval[0,10]
+define IntDuringIntersect: Interval[3,5] intersect Interval[0,10]
+define IntEndsIntersect: Interval[5,10] intersect Interval[0,10]
 ###
 
 module.exports['IntegerIntervalIntersect'] = {
@@ -31562,6 +32059,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntFullInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -31580,6 +32078,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntMeetsInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -31598,6 +32097,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntOverlapsInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -31616,6 +32116,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntBeginsInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -31634,6 +32135,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntDuringInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -31652,6 +32154,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntEndsInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -31670,6 +32173,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntSameAsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -31705,6 +32209,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntBeforeIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -31740,6 +32245,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntMeetsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -31775,6 +32281,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntOverlapsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -31810,6 +32317,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntBeginsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -31845,6 +32353,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntDuringIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -31880,6 +32389,7 @@ module.exports['IntegerIntervalIntersect'] = {
          }, {
             "name" : "IntEndsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -31921,19 +32431,19 @@ module.exports['IntegerIntervalIntersect'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define DateTimeFullInterval = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeMeetsInterval = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
-define DateTimeOverlapsInterval = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)]
-define DateTimeBeginsInterval = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
-define DateTimeDuringInterval = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)]
-define DateTimeEndsInterval = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeSameAsIntersect = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] intersect interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeBeforeIntersect = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0)] intersect interval[DateTime(2012, 7, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeMeetsIntersect = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] intersect interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeOverlapsIntersect = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)] intersect interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeBeginsIntersect = interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] intersect interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeDuringIntersect = interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] intersect interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
-define DateTimeEndsIntersect = interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] intersect interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeFullInterval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeMeetsInterval: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define DateTimeOverlapsInterval: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)]
+define DateTimeBeginsInterval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define DateTimeDuringInterval: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)]
+define DateTimeEndsInterval: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeSameAsIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeforeIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 7, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeMeetsIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeOverlapsIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 7, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeBeginsIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeDuringIntersect: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define DateTimeEndsIntersect: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 ###
 
 module.exports['DateTimeIntervalIntersect'] = {
@@ -31970,6 +32480,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeFullInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -32044,6 +32555,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeMeetsInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -32118,6 +32630,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeOverlapsInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -32192,6 +32705,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeBeginsInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -32266,6 +32780,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeDuringInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -32340,6 +32855,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeEndsInterval",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "lowClosed" : true,
                "highClosed" : true,
@@ -32414,6 +32930,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeSameAsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -32561,6 +33078,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeBeforeIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -32708,6 +33226,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeMeetsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -32855,6 +33374,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeOverlapsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -33002,6 +33522,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeBeginsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -33149,6 +33670,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeDuringIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {
@@ -33296,6 +33818,7 @@ module.exports['DateTimeIntervalIntersect'] = {
          }, {
             "name" : "DateTimeEndsIntersect",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "type" : "Intersect",
                "operand" : [ {

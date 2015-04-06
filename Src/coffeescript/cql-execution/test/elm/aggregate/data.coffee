@@ -10,9 +10,9 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define not_null= Count({1,2,3,4,5})
-define has_null = Count({1,null,null,null,2})
-define empty = Count({})
+define not_null: Count({1,2,3,4,5})
+define has_null: Count({1,null,null,null,2})
+define empty: Count({})
 ###
 
 module.exports['Count'] = {
@@ -49,6 +49,7 @@ module.exports['Count'] = {
          }, {
             "name" : "not_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Count",
                "type" : "FunctionRef",
@@ -80,6 +81,7 @@ module.exports['Count'] = {
          }, {
             "name" : "has_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Count",
                "type" : "FunctionRef",
@@ -117,6 +119,7 @@ module.exports['Count'] = {
          }, {
             "name" : "empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Count",
                "type" : "FunctionRef",
@@ -133,9 +136,9 @@ module.exports['Count'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define not_null= Sum({1,2,3,4,5})
-define has_null = Sum({1,null,null,null,2})
-define empty = Sum(list<Integer>{})
+define not_null: Sum({1,2,3,4,5})
+define has_null: Sum({1,null,null,null,2})
+define empty: Sum(List<Integer>{})
 ###
 
 module.exports['Sum'] = {
@@ -172,6 +175,7 @@ module.exports['Sum'] = {
          }, {
             "name" : "not_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Sum",
                "type" : "FunctionRef",
@@ -203,6 +207,7 @@ module.exports['Sum'] = {
          }, {
             "name" : "has_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Sum",
                "type" : "FunctionRef",
@@ -240,6 +245,7 @@ module.exports['Sum'] = {
          }, {
             "name" : "empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Sum",
                "type" : "FunctionRef",
@@ -256,9 +262,9 @@ module.exports['Sum'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define not_null= Min({1,2,3,4,5,0})
-define has_null = Min({1,null,-1,null,2})
-define empty = Min({})
+define not_null: Min({1,2,3,4,5,0})
+define has_null: Min({1,null,-1,null,2})
+define empty: Min({})
 ###
 
 module.exports['Min'] = {
@@ -295,6 +301,7 @@ module.exports['Min'] = {
          }, {
             "name" : "not_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Min",
                "type" : "FunctionRef",
@@ -330,6 +337,7 @@ module.exports['Min'] = {
          }, {
             "name" : "has_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Min",
                "type" : "FunctionRef",
@@ -368,6 +376,7 @@ module.exports['Min'] = {
          }, {
             "name" : "empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Min",
                "type" : "FunctionRef",
@@ -384,9 +393,9 @@ module.exports['Min'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define not_null= Max({10,1,2,3,4,5})
-define has_null = Max({1,null,null,2})
-define empty = Max({})
+define not_null: Max({10,1,2,3,4,5})
+define has_null: Max({1,null,null,2})
+define empty: Max({})
 ###
 
 module.exports['Max'] = {
@@ -423,6 +432,7 @@ module.exports['Max'] = {
          }, {
             "name" : "not_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Max",
                "type" : "FunctionRef",
@@ -458,6 +468,7 @@ module.exports['Max'] = {
          }, {
             "name" : "has_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Max",
                "type" : "FunctionRef",
@@ -489,6 +500,7 @@ module.exports['Max'] = {
          }, {
             "name" : "empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Max",
                "type" : "FunctionRef",
@@ -505,9 +517,9 @@ module.exports['Max'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define not_null= Avg({1,2,3,4,5})
-define has_null = Avg({1,null,null,2})
-define empty = Avg(list<Integer>{})
+define not_null: Avg({1,2,3,4,5})
+define has_null: Avg({1,null,null,2})
+define empty: Avg(List<Integer>{})
 ###
 
 module.exports['Avg'] = {
@@ -544,73 +556,127 @@ module.exports['Avg'] = {
          }, {
             "name" : "not_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Avg",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          }, {
             "name" : "has_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Avg",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "asType" : "{urn:hl7-org:elm:r1}Integer",
-                     "type" : "As",
-                     "operand" : {
-                        "type" : "Null"
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "asType" : "{urn:hl7-org:elm:r1}Integer",
+                           "type" : "As",
+                           "operand" : {
+                              "type" : "Null"
+                           }
+                        }, {
+                           "asType" : "{urn:hl7-org:elm:r1}Integer",
+                           "type" : "As",
+                           "operand" : {
+                              "type" : "Null"
+                           }
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        } ]
                      }
-                  }, {
-                     "asType" : "{urn:hl7-org:elm:r1}Integer",
-                     "type" : "As",
-                     "operand" : {
-                        "type" : "Null"
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
                      }
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Avg",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List"
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List"
+                     }
+                  } ],
+                  "return" : {
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          } ]
@@ -622,13 +688,13 @@ module.exports['Avg'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define odd= Median({5,1,2,3,4})
-define even= Median({5,1,2,3,4,6})
+define odd: Median({5,1,2,3,4})
+define even: Median({5,1,2,3,4,6})
 
-define empty = Median({})
-define has_null = Median({1,null,null,2})
-define dup_vals_even = Median({3,1,2,2,2,3,4,5})
-define dup_vals_odd =  Median({3,1,2,2,2,3,4,5,6})
+define empty: Median({})
+define has_null: Median({1,null,null,2})
+define dup_vals_even: Median({3,1,2,2,2,3,4,5})
+define dup_vals_odd:  Median({3,1,2,2,2,3,4,5,6})
 ###
 
 module.exports['Median'] = {
@@ -665,6 +731,7 @@ module.exports['Median'] = {
          }, {
             "name" : "odd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Median",
                "type" : "FunctionRef",
@@ -696,6 +763,7 @@ module.exports['Median'] = {
          }, {
             "name" : "even",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Median",
                "type" : "FunctionRef",
@@ -731,6 +799,7 @@ module.exports['Median'] = {
          }, {
             "name" : "empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Median",
                "type" : "FunctionRef",
@@ -741,6 +810,7 @@ module.exports['Median'] = {
          }, {
             "name" : "has_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Median",
                "type" : "FunctionRef",
@@ -772,6 +842,7 @@ module.exports['Median'] = {
          }, {
             "name" : "dup_vals_even",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Median",
                "type" : "FunctionRef",
@@ -815,6 +886,7 @@ module.exports['Median'] = {
          }, {
             "name" : "dup_vals_odd",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Median",
                "type" : "FunctionRef",
@@ -868,11 +940,11 @@ module.exports['Median'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define not_null= Mode({1,2,2,2,3,4,5})
-define has_null = Mode({1,null,null,2,2})
-define empty = Mode({})
+define not_null: Mode({1,2,2,2,3,4,5})
+define has_null: Mode({1,null,null,2,2})
+define empty: Mode({})
 
-define bi_modal= Mode({1,2,2,2,3,3,3,4,5})
+define bi_modal: Mode({1,2,2,2,3,3,3,4,5})
 ###
 
 module.exports['Mode'] = {
@@ -909,6 +981,7 @@ module.exports['Mode'] = {
          }, {
             "name" : "not_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Mode",
                "type" : "FunctionRef",
@@ -948,6 +1021,7 @@ module.exports['Mode'] = {
          }, {
             "name" : "has_null",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Mode",
                "type" : "FunctionRef",
@@ -983,6 +1057,7 @@ module.exports['Mode'] = {
          }, {
             "name" : "empty",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Mode",
                "type" : "FunctionRef",
@@ -993,6 +1068,7 @@ module.exports['Mode'] = {
          }, {
             "name" : "bi_modal",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Mode",
                "type" : "FunctionRef",
@@ -1046,7 +1122,7 @@ module.exports['Mode'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define v = Variance({1,2,3,4,5})
+define v: Variance({1,2,3,4,5})
 ###
 
 module.exports['Variance'] = {
@@ -1083,6 +1159,7 @@ module.exports['Variance'] = {
          }, {
             "name" : "v",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "Variance",
                "type" : "FunctionRef",
@@ -1137,7 +1214,7 @@ module.exports['Variance'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define v = PopulationVariance({1.0,2.0,3.0,4.0,5.0})
+define v: PopulationVariance({1.0,2.0,3.0,4.0,5.0})
 ###
 
 module.exports['PopulationVariance'] = {
@@ -1174,6 +1251,7 @@ module.exports['PopulationVariance'] = {
          }, {
             "name" : "v",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "PopulationVariance",
                "type" : "FunctionRef",
@@ -1211,7 +1289,7 @@ module.exports['PopulationVariance'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define std = StdDev({1,2,3,4,5})
+define std: StdDev({1,2,3,4,5})
 ###
 
 module.exports['StdDev'] = {
@@ -1248,6 +1326,7 @@ module.exports['StdDev'] = {
          }, {
             "name" : "std",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "StdDev",
                "type" : "FunctionRef",
@@ -1302,7 +1381,7 @@ module.exports['StdDev'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define dev = PopulationStdDev({1,2,3,4,5})
+define dev: PopulationStdDev({1,2,3,4,5})
 ###
 
 module.exports['PopulationStdDev'] = {
@@ -1339,6 +1418,7 @@ module.exports['PopulationStdDev'] = {
          }, {
             "name" : "dev",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "PopulationStdDev",
                "type" : "FunctionRef",
@@ -1393,11 +1473,11 @@ module.exports['PopulationStdDev'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define at = AllTrue({true,true,true,true})
-define atwn = AllTrue({true,true,null,null,true,true})
+define at: AllTrue({true,true,true,true})
+define atwn: AllTrue({true,true,null,null,true,true})
 
-define atf = AllTrue({true,true,true,false})
-define atfwn = AllTrue({true,true,null,null,true,false})
+define atf: AllTrue({true,true,true,false})
+define atfwn: AllTrue({true,true,null,null,true,false})
 ###
 
 module.exports['AllTrue'] = {
@@ -1434,6 +1514,7 @@ module.exports['AllTrue'] = {
          }, {
             "name" : "at",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "AllTrue",
                "type" : "FunctionRef",
@@ -1461,6 +1542,7 @@ module.exports['AllTrue'] = {
          }, {
             "name" : "atwn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "AllTrue",
                "type" : "FunctionRef",
@@ -1500,6 +1582,7 @@ module.exports['AllTrue'] = {
          }, {
             "name" : "atf",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "AllTrue",
                "type" : "FunctionRef",
@@ -1527,6 +1610,7 @@ module.exports['AllTrue'] = {
          }, {
             "name" : "atfwn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "AllTrue",
                "type" : "FunctionRef",
@@ -1572,11 +1656,11 @@ module.exports['AllTrue'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define at = AnyTrue({true,false,false,true})
-define atwn = AnyTrue({true,false,null,null,false,true})
+define at: AnyTrue({true,false,false,true})
+define atwn: AnyTrue({true,false,null,null,false,true})
 
-define atf = AnyTrue({false,false,false,false})
-define atfwn = AnyTrue({false,false,null,null,false,false})
+define atf: AnyTrue({false,false,false,false})
+define atfwn: AnyTrue({false,false,null,null,false,false})
 ###
 
 module.exports['AnyTrue'] = {
@@ -1613,6 +1697,7 @@ module.exports['AnyTrue'] = {
          }, {
             "name" : "at",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "AnyTrue",
                "type" : "FunctionRef",
@@ -1640,6 +1725,7 @@ module.exports['AnyTrue'] = {
          }, {
             "name" : "atwn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "AnyTrue",
                "type" : "FunctionRef",
@@ -1679,6 +1765,7 @@ module.exports['AnyTrue'] = {
          }, {
             "name" : "atf",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "AnyTrue",
                "type" : "FunctionRef",
@@ -1706,6 +1793,7 @@ module.exports['AnyTrue'] = {
          }, {
             "name" : "atfwn",
             "context" : "Patient",
+            "accessLevel" : "Public",
             "expression" : {
                "name" : "AnyTrue",
                "type" : "FunctionRef",
