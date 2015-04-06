@@ -123,8 +123,9 @@ module.exports['ExpressionRef'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define function foo (a Integer, b Integer)
-{ return a + b }
+define function foo (a Integer, b Integer) :
+  a + b
+
 define testValue: foo(1,2)
 ###
 
