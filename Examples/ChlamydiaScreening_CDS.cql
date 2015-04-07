@@ -2,7 +2,7 @@ library CMS153_CDS version '2'
 
 using QUICK
 
-codesystem "LOINC": '2.16.840.1.113883.6.1'
+codesystem "SNOMED": 'http://snomed.info/sct'
 
 valueset "Female Administrative Sex": '2.16.840.1.113883.3.560.100.2'
 valueset "Other Female Reproductive Conditions": '2.16.840.1.113883.3.464.1003.111.12.1006'
@@ -40,15 +40,14 @@ define SexuallyActive:
 	or exists ([DiagnosticOrder: "Lab Tests for Sexually Transmitted Infections"])
 
 define NoScreening:
-    not exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during Interval[Today() - 1 years, Today()] and R.result is not null)
-    and not exists ([ProcedureRequest: "Chlamydia Screening"] P where P.timingDateTime same day or after Today())
+  not exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during Interval[Today() - 1 years, Today()] and R.result is not null)
+  and not exists ([ProcedureRequest: "Chlamydia Screening"] P where P.timingDateTime same day or after Today())
 	and not exists ([Observation: "Reason for not performing Chlamydia Screening"])
 
 define NeedScreening: InDemographic and SexuallyActive and NoScreening
 
 define ChlamydiaScreeningRequest: ProcedureRequest {
-  type: Code '31777-6' from "LOINC" display 'Chlamydia trachomatis Ag [Presence] in Unspecified specimen'
+  type: Code '442487003' from "SNOMED" display 'Screening for Chlamydia trachomatis (procedure)',
   status: 'proposed'
   // values for other elements of the request...
 }
-

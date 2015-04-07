@@ -4,7 +4,7 @@ using QUICK
 
 include CMS153_Common version '2' called Common
 
-codesystem "LOINC": '2.16.840.1.113883.6.1'
+codesystem "SNOMED": 'http://snomed.info/sct'
 
 valueset "Reason for not performing Chlamydia Screening": 'TBD'
 
@@ -25,8 +25,7 @@ define "No Screening":
 define "Need Screening": "In Demographic" and "Sexually Active" and "No Screening"
 
 define ChlamydiaScreeningRequest: ProcedureRequest {
-  type: Code '31777-6' from "LOINC" display 'Chlamydia trachomatis Ag [Presence] in Unspecified specimen'
+  type: Code '442487003' from "SNOMED" display 'Screening for Chlamydia trachomatis (procedure)',
   status: 'proposed'
   // values for other elements of the request...
 }
-
