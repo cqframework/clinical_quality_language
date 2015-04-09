@@ -17,7 +17,9 @@ import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
 
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -25,8 +27,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.cqframework.cql.cql2elm.CqlTranslator.fromFile;
 
 public class CqlTranslator {
     public static enum Options { EnableDateRangeOptimization, EnableAnnotations }
@@ -105,7 +105,7 @@ public class CqlTranslator {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
-        errors = new ArrayList<CqlTranslatorException>();
+        errors = new ArrayList<>();
         parser.addErrorListener(new CqlErrorListener());
         ParseTree tree = parser.logic();
 
@@ -151,6 +151,18 @@ public class CqlTranslator {
         return writer.getBuffer().toString();
     }
 
+    private static void loadModelInfo(File modelInfoXML) {
+        final ModelInfo modelInfo = JAXB.unmarshal(modelInfoXML, ModelInfo.class);
+        final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
+        final ModelInfoProvider modelProvider = new ModelInfoProvider() {
+            @Override
+            public ModelInfo load() {
+                return modelInfo;
+            }
+        };
+        ModelInfoLoader.registerModelInfoProvider(modelId, modelProvider);
+    }
+
     private static enum Format { XML, JSON, COFFEE }
 
     private static void writeELM(File inFile, PrintWriter pw, Format format, boolean dateRangeOptimizations, boolean annotations) throws IOException {
@@ -193,6 +205,7 @@ public class CqlTranslator {
     public static void main(String[] args) throws IOException, InterruptedException {
         OptionParser parser = new OptionParser();
         OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required();
+        OptionSpec<File> model = parser.accepts("model").withRequiredArg().ofType(File.class);
         OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class);
         OptionSpec<String> format = parser.accepts("format").withRequiredArg().ofType(String.class);
         OptionSpec optimization = parser.accepts("date-range-optimization");
@@ -206,6 +219,14 @@ public class CqlTranslator {
         if (options.has(stdout)) {
             pw = new PrintWriter(new OutputStreamWriter(System.out, "UTF-8"));
         } else {
+            if (options.has(model)) {
+                final File modelFile = options.valueOf(model);
+                if (! modelFile.exists() || modelFile.isDirectory()) {
+                    throw new IllegalArgumentException("model must be a valid file!");
+                }
+                loadModelInfo(modelFile);
+            }
+
             File outfile;
             if (! options.has(output) || output.value(options).isDirectory()) {
                 // Use input filename with ".xml", ".json", or ".coffee" extension
