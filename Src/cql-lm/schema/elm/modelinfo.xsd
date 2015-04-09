@@ -71,12 +71,12 @@
 						<xs:documentation>The name attribute specifies the name of the type within the data model. This corresponds to the name of the class within the class model, or the name of the type in the case of an xsd. In FHIR, this corresponds to the name of the resource.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="identifier" type="xs:string" use="required">
+				<xs:attribute name="identifier" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The identifier attribute specifies a unique name for the class that may be independent of the name. In FHIR, this corresponds to the profile identifier.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="label" type="xs:string" use="required">
+				<xs:attribute name="label" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The label attribute specifies the name of the class as it is referenced from CQL. This is a user-friendly identifier for the class that can be used within CQL as an alternative way to reference the class.</xs:documentation>
 					</xs:annotation>

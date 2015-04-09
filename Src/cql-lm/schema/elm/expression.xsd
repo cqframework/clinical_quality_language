@@ -2060,7 +2060,9 @@ If the source is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Property operator returns the value of the property on source specified by the path attribute.
 			
-If the path attribute contains qualifiers, each qualifier is traversed to obtain the actual value.
+If the result of evaluating source is null, the result is null.
+			
+If the path attribute contains qualifiers or indexers, each qualifier or indexer is traversed to obtain the actual value. If the object of the property access at any point in traversing the path is null, the result is null.
 
 If a scope is specified, the name is used to resolve the scope in which the path will be resolved. Scopes can be named by operators such as Filter and ForEach.
 
