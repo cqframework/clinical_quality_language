@@ -28,6 +28,7 @@ public class Main {
         OptionSpec<File> schemaOpt = parser.accepts("schema").withRequiredArg().ofType(File.class).required();
         OptionSpec<String> modelOpt = parser.accepts("model").withRequiredArg().ofType(String.class).required();
         OptionSpec<File> outputOpt = parser.accepts("output").withRequiredArg().ofType(File.class);
+        OptionSpec<String> normalizePrefixOpt = parser.accepts("normalize-prefix").withRequiredArg().ofType(String.class);
         OptionSpec<String> stRestrictionsOpt = parser.accepts("simpletype-restrictions-policy").withRequiredArg().ofType(String.class);
 
         OptionSet options = parser.parse(args);
@@ -44,6 +45,9 @@ public class Main {
         if (options.has(stRestrictionsOpt)) {
             importerOptions.setSimpleTypeRestrictionPolicy(
                     ModelImporterOptions.SimpleTypeRestrictionPolicy.valueOf(stRestrictionsOpt.value(options).toUpperCase()));
+        }
+        if (options.has(normalizePrefixOpt)) {
+            importerOptions.setNormalizePrefix(normalizePrefixOpt.value(options));
         }
 
         ModelInfo modelInfo = ModelImporter.fromXsd(schema, modelName, importerOptions);

@@ -110,11 +110,11 @@ public class ModelImporter {
                 .withTargetQualifier(new QName(modelName.toLowerCase()))
                 .withUrl(schema.getTargetNamespace())
                 .withTypeInfo(dataTypes.values().stream()
-                        .map(ModelImporter::toTypeInfo)
+                        .map(this::toTypeInfo)
                         .collect(Collectors.toList()));
     }
 
-    private static TypeInfo toTypeInfo(DataType dataType) {
+    private TypeInfo toTypeInfo(DataType dataType) {
         if (dataType == null) {
             throw new IllegalArgumentException("dataType is null");
         }
@@ -134,7 +134,7 @@ public class ModelImporter {
         }
     }
 
-    private static SimpleTypeInfo toSimpleTypeInfo(SimpleType dataType) {
+    private SimpleTypeInfo toSimpleTypeInfo(SimpleType dataType) {
         SimpleTypeInfo result = new SimpleTypeInfo();
         result.setName(dataType.getName());
         if (dataType.getBaseType() != null) {
@@ -144,11 +144,14 @@ public class ModelImporter {
         return result;
     }
 
-    private static ClassInfo toClassInfo(ClassType dataType) {
+    private ClassInfo toClassInfo(ClassType dataType) {
         ClassInfo result = new ClassInfo();
         result.setName(dataType.getName());
         if (dataType.getBaseType() != null) {
             result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
+        }
+        if (options.getNormalizePrefix() != null && dataType.getName().startsWith(modelName + "." + options.getNormalizePrefix())) {
+            result.setLabel(dataType.getName().substring(modelName.length() + options.getNormalizePrefix().length() + 1));
         }
 
         for (ClassTypeElement element : dataType.getElements()) {
@@ -160,19 +163,19 @@ public class ModelImporter {
         return result;
     }
 
-    private static IntervalTypeInfo toIntervalTypeInfo(IntervalType dataType) {
+    private IntervalTypeInfo toIntervalTypeInfo(IntervalType dataType) {
         IntervalTypeInfo result = new IntervalTypeInfo();
         result.setPointType(toTypeSpecifier(dataType.getPointType()));
         return result;
     }
 
-    private static ListTypeInfo toListTypeInfo(ListType dataType) {
+    private ListTypeInfo toListTypeInfo(ListType dataType) {
         ListTypeInfo result = new ListTypeInfo();
         result.setElementType(toTypeSpecifier(dataType.getElementType()));
         return result;
     }
 
-    private static TupleTypeInfo toTupleTypeInfo(TupleType dataType) {
+    private TupleTypeInfo toTupleTypeInfo(TupleType dataType) {
         TupleTypeInfo result = new TupleTypeInfo();
         if (dataType.getBaseType() != null) {
             result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
@@ -187,7 +190,7 @@ public class ModelImporter {
         return result;
     }
 
-    private static String toTypeSpecifier(DataType dataType) {
+    private String toTypeSpecifier(DataType dataType) {
         if (dataType == null) {
             throw new IllegalArgumentException("dataType is null");
         }
@@ -207,35 +210,35 @@ public class ModelImporter {
         }
     }
 
-    private static String toSimpleTypeSpecifier(SimpleType dataType) {
+    private String toSimpleTypeSpecifier(SimpleType dataType) {
         return dataType.getName();
     }
 
-    private static String toClassTypeSpecifier(ClassType dataType) {
+    private String toClassTypeSpecifier(ClassType dataType) {
         return dataType.getName();
     }
 
-    private static String toIntervalTypeSpecifier(IntervalType dataType) {
+    private String toIntervalTypeSpecifier(IntervalType dataType) {
         return String.format("interval<%s>", toTypeSpecifier(dataType.getPointType()));
     }
 
-    private static String toListTypeSpecifier(ListType dataType) {
+    private String toListTypeSpecifier(ListType dataType) {
         return String.format("list<%s>", toTypeSpecifier(dataType.getElementType()));
     }
 
-    private static String getTypeName(QName schemaTypeName, Map<String, String> namespaces) {
+    private String getTypeName(QName schemaTypeName, Map<String, String> namespaces) {
         if (schemaTypeName == null) {
             throw new IllegalArgumentException("schemaTypeName is null");
         }
         String modelName = namespaces.get(schemaTypeName.getNamespaceURI());
         if (modelName == null) {
             modelName = schemaTypeName.getPrefix(); // Doesn't always work, but should be okay for a fallback position...
-            if (modelName != null) {
+            if (modelName != null && ! modelName.isEmpty()) {
                 namespaces.put(schemaTypeName.getNamespaceURI(), modelName);
             }
         }
 
-        if (modelName != null) {
+        if (modelName != null && ! modelName.isEmpty()) {
             return modelName + '.' + schemaTypeName.getLocalPart().replace('-', '_');
         }
 
