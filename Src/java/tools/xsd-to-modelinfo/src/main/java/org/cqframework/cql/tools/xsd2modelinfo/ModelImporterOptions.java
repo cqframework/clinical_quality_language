@@ -1,5 +1,9 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
+import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ModelImporterOptions {
     public static enum SimpleTypeRestrictionPolicy { USE_BASETYPE, EXTEND_BASETYPE, IGNORE }
 
@@ -24,10 +28,20 @@ public class ModelImporterOptions {
      * prefixes its types with "POCD_MT000040."  This would require CQL authors to include the prefix in retrieve
      * statements (e.g., [POCD_MT000040.Procedure]).
      *
-     * By setting normalizePrefix to the prefix string (e.g., POCD_MT000040.), the modelinfo will indicate a label
+     * By setting normalizePrefix to the prefix string (e.g., CDA.POCD_MT000040.), the modelinfo will indicate a label
      * for each class to allow CQL authors to reference it without the prefix (e.g., [Procedure]).
+     *
+     * NOTE: The passed in prefix must also include the model name prefix (e.g., if the model name is "CDA" and the CDA
+     * schema adds a prefix "POCD_MT000040" to type names, then normalizePrefix should be "CDA.POCD_MT000040."
      */
     private String normalizePrefix = null;
+
+    /**
+     * The typeMap allows XSD types to be fully replaced by CQL System types.  This is for cases where you want to map
+     * a specific data model type directly to a CQL type.  The definition of the original data model type will be
+     * discarded and all references will be to the CQL System type.
+     */
+    private final Map<QName, String> typeMap = new HashMap<>();
 
     public SimpleTypeRestrictionPolicy getSimpleTypeRestrictionPolicy() {
         return simpleTypeRestrictionPolicy;
@@ -43,5 +57,9 @@ public class ModelImporterOptions {
 
     public void setNormalizePrefix(String normalizePrefix) {
         this.normalizePrefix = normalizePrefix;
+    }
+
+    public Map<QName, String> getTypeMap() {
+        return typeMap;
     }
 }

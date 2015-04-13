@@ -150,8 +150,8 @@ public class ModelImporter {
         if (dataType.getBaseType() != null) {
             result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
         }
-        if (options.getNormalizePrefix() != null && dataType.getName().startsWith(modelName + "." + options.getNormalizePrefix())) {
-            result.setLabel(dataType.getName().substring(modelName.length() + options.getNormalizePrefix().length() + 1));
+        if (options.getNormalizePrefix() != null && dataType.getName().startsWith(options.getNormalizePrefix())) {
+            result.setLabel(dataType.getName().substring(options.getNormalizePrefix().length()));
         }
 
         for (ClassTypeElement element : dataType.getElements()) {
@@ -230,6 +230,7 @@ public class ModelImporter {
         if (schemaTypeName == null) {
             throw new IllegalArgumentException("schemaTypeName is null");
         }
+
         String modelName = namespaces.get(schemaTypeName.getNamespaceURI());
         if (modelName == null) {
             modelName = schemaTypeName.getPrefix(); // Doesn't always work, but should be okay for a fallback position...
@@ -246,7 +247,10 @@ public class ModelImporter {
     }
 
     private DataType resolveType(QName schemaTypeName) {
-        if (SYSTEM_TYPE_MAP.containsKey(schemaTypeName)) {
+        if (options.getTypeMap().containsKey(schemaTypeName)) {
+            return SYSTEM_CATALOG.get(options.getTypeMap().get(schemaTypeName));
+        }
+        else if (SYSTEM_TYPE_MAP.containsKey(schemaTypeName)) {
             return SYSTEM_TYPE_MAP.get(schemaTypeName);
         }
 
@@ -280,6 +284,9 @@ public class ModelImporter {
     private DataType resolveSimpleType(XmlSchemaSimpleType simpleType) {
         if (simpleType.isAnonymous()) {
             return null;
+        }
+        else if (options.getTypeMap().containsKey(simpleType.getQName())) {
+            return SYSTEM_CATALOG.get(options.getTypeMap().get(simpleType.getQName()));
         }
         else if (SYSTEM_TYPE_MAP.containsKey(simpleType.getQName())) {
             return SYSTEM_TYPE_MAP.get(simpleType.getQName());
@@ -321,6 +328,9 @@ public class ModelImporter {
     private DataType resolveComplexType(XmlSchemaComplexType complexType) {
         if (complexType.isAnonymous()) {
             return null;
+        }
+        else if (options.getTypeMap().containsKey(complexType.getQName())) {
+            return SYSTEM_CATALOG.get(options.getTypeMap().get(complexType.getQName()));
         }
         else if (SYSTEM_TYPE_MAP.containsKey(complexType.getQName())) {
             return SYSTEM_TYPE_MAP.get(complexType.getQName());
