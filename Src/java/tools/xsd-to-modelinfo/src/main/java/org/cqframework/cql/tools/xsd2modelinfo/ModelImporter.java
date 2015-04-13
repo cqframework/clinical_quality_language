@@ -80,34 +80,35 @@ public class ModelImporter {
     }
 
     private final XmlSchema schema;
-    private final String modelName;
     private final ModelImporterOptions options;
     private final Map<String, DataType> dataTypes;
     private final Map<String, String> namespaces;
 
-    private ModelImporter(XmlSchema schema, String modelName, ModelImporterOptions options) {
+    private ModelImporter(XmlSchema schema, ModelImporterOptions options) {
         this.schema = schema;
-        this.modelName = modelName;
         this.options = options != null ? options : new ModelImporterOptions();
         this.dataTypes = new HashMap<>();
         this.namespaces = new HashMap<>();
     }
 
-    public static ModelInfo fromXsd(XmlSchema schema, String modelName, ModelImporterOptions options) {
-        ModelImporter importer = new ModelImporter(schema, modelName, options);
+    public static ModelInfo fromXsd(XmlSchema schema, ModelImporterOptions options) {
+        ModelImporter importer = new ModelImporter(schema, options);
         return importer.importXsd();
     }
 
     public ModelInfo importXsd() {
-        namespaces.put(schema.getTargetNamespace(), modelName);
+        if (options.getModel() == null || options.getModel().isEmpty()) {
+            throw new IllegalArgumentException("Model name is required.");
+        }
+        namespaces.put(schema.getTargetNamespace(), options.getModel());
 
         for (XmlSchemaType schemaType : schema.getSchemaTypes().values()) {
             resolveType(schemaType);
         }
 
         return new ModelInfo()
-                .withName(modelName)
-                .withTargetQualifier(new QName(modelName.toLowerCase()))
+                .withName(options.getModel())
+                .withTargetQualifier(new QName(options.getModel().toLowerCase()))
                 .withUrl(schema.getTargetNamespace())
                 .withTypeInfo(dataTypes.values().stream()
                         .map(this::toTypeInfo)

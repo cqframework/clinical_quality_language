@@ -27,12 +27,13 @@ public class Main {
     public static void main(String[] args) throws IOException, JAXBException {
         OptionParser parser = new OptionParser();
         OptionSpec<File> schemaOpt = parser.accepts("schema").withRequiredArg().ofType(File.class).required();
-        OptionSpec<String> modelOpt = parser.accepts("model").withRequiredArg().ofType(String.class).required();
+        OptionSpec<String> modelOpt = parser.accepts("model").withRequiredArg().ofType(String.class);
         OptionSpec<File> outputOpt = parser.accepts("output").withRequiredArg().ofType(File.class);
         OptionSpec<String> normalizePrefixOpt = parser.accepts("normalize-prefix").withRequiredArg().ofType(String.class);
         OptionSpec<String> typeMapOpt = parser.accepts("type-map").withRequiredArg().ofType(String.class);
         OptionSpec<ModelImporterOptions.SimpleTypeRestrictionPolicy> stRestrictionsOpt =
-                parser.accepts("simpletype-restrictions-policy").withRequiredArg().ofType(ModelImporterOptions.SimpleTypeRestrictionPolicy.class);
+                parser.accepts("simpletype-restriction-policy").withRequiredArg().ofType(ModelImporterOptions.SimpleTypeRestrictionPolicy.class);
+        OptionSpec<File> optionsFileOpt = parser.accepts("options-file").withRequiredArg().ofType(File.class);
 
         OptionSet options = parser.parse(args);
 
@@ -42,9 +43,10 @@ public class Main {
         schemaCol.setBaseUri(schemaFile.getParent());
         XmlSchema schema = schemaCol.read(new StreamSource(is));
 
-        String modelName = modelOpt.value(options);
-
         ModelImporterOptions importerOptions = new ModelImporterOptions();
+        if (options.has(modelOpt)) {
+            importerOptions.setModel(modelOpt.value(options));
+        }
         if (options.has(stRestrictionsOpt)) {
             importerOptions.setSimpleTypeRestrictionPolicy(stRestrictionsOpt.value(options));
         }
@@ -61,8 +63,11 @@ public class Main {
                 importerOptions.getTypeMap().put(QName.valueOf(kv[0].trim()), kv[1].trim());
             }
         }
+        if (options.has(optionsFileOpt)) {
+            importerOptions.loadProperties(optionsFileOpt.value(options));
+        }
 
-        ModelInfo modelInfo = ModelImporter.fromXsd(schema, modelName, importerOptions);
+        ModelInfo modelInfo = ModelImporter.fromXsd(schema, importerOptions);
 
         JAXBContext jc = JAXBContext.newInstance(ModelInfo.class);
         Marshaller marshaller = jc.createMarshaller();
