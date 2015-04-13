@@ -79,14 +79,18 @@ public class ModelImporter {
         return map;
     }
 
-    public static ModelInfo fromXsd(XmlSchema schema, String modelName) {
+    public static ModelInfo fromXsd(XmlSchema schema, String modelName, ModelImporterOptions options) {
         ModelInfo result = new ModelInfo();
 
         result.setName(modelName);
         result.setTargetQualifier(new QName(modelName.toLowerCase()));
         result.setUrl(schema.getTargetNamespace());
 
-        Collection<DataType> dataTypes = getDatatypesFromXsd(schema, modelName);
+        if (options == null) {
+            options = new ModelImporterOptions();
+        }
+
+        Collection<DataType> dataTypes = getDatatypesFromXsd(schema, modelName, options);
 
         for (DataType dataType : dataTypes) {
             result.getTypeInfo().add(toTypeInfo(dataType));
@@ -208,7 +212,7 @@ public class ModelImporter {
         throw new IllegalArgumentException("Tuple types cannot be used in type specifiers.");
     }
 
-    private static Collection<DataType> getDatatypesFromXsd(XmlSchema schema, String modelName) {
+    private static Collection<DataType> getDatatypesFromXsd(XmlSchema schema, String modelName, ModelImporterOptions options) {
         Map<QName, XmlSchemaType> schemaTypes = schema.getSchemaTypes();
         Map<String, DataType> dataTypes = new HashMap<>();
         Map<String, String> namespaces = new HashMap<>();
@@ -216,7 +220,7 @@ public class ModelImporter {
         namespaces.put(schema.getTargetNamespace(), modelName);
 
         for (XmlSchemaType schemaType : schemaTypes.values()) {
-            resolveType(schema, schemaType, namespaces, dataTypes);
+            resolveType(schema, schemaType, namespaces, dataTypes, options);
         }
 
         return dataTypes.values();
@@ -241,7 +245,7 @@ public class ModelImporter {
         return schemaTypeName.getLocalPart();
     }
 
-    private static DataType resolveType(XmlSchema schema, QName schemaTypeName, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
+    private static DataType resolveType(XmlSchema schema, QName schemaTypeName, Map<String, String> namespaces, Map<String, DataType> dataTypes, ModelImporterOptions options) {
         if (SYSTEM_TYPE_MAP.containsKey(schemaTypeName)) {
             return SYSTEM_TYPE_MAP.get(schemaTypeName);
         }
@@ -258,22 +262,22 @@ public class ModelImporter {
             return resultType;
         }
         else {
-            return resolveType(schema, schemaType, namespaces, dataTypes);
+            return resolveType(schema, schemaType, namespaces, dataTypes, options);
         }
     }
 
-    private static DataType resolveType(XmlSchema schema, XmlSchemaType schemaType, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
+    private static DataType resolveType(XmlSchema schema, XmlSchemaType schemaType, Map<String, String> namespaces, Map<String, DataType> dataTypes, ModelImporterOptions options) {
         if (schemaType instanceof XmlSchemaSimpleType) {
-            return resolveSimpleType(schema, (XmlSchemaSimpleType)schemaType, namespaces, dataTypes);
+            return resolveSimpleType(schema, (XmlSchemaSimpleType)schemaType, namespaces, dataTypes, options);
         }
         else if (schemaType instanceof XmlSchemaComplexType) {
-            return resolveComplexType(schema, (XmlSchemaComplexType)schemaType, namespaces, dataTypes);
+            return resolveComplexType(schema, (XmlSchemaComplexType)schemaType, namespaces, dataTypes, options);
         }
 
         return null;
     }
 
-    private static DataType resolveSimpleType(XmlSchema schema, XmlSchemaSimpleType simpleType, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
+    private static DataType resolveSimpleType(XmlSchema schema, XmlSchemaSimpleType simpleType, Map<String, String> namespaces, Map<String, DataType> dataTypes, ModelImporterOptions options) {
         if (simpleType.isAnonymous()) {
             return null;
         }
@@ -284,26 +288,37 @@ public class ModelImporter {
         String typeName = getTypeName(simpleType.getQName(), namespaces);
         DataType resultType = dataTypes.get(typeName);
         if (resultType == null) {
-            resultType = new SimpleType(typeName);
-            dataTypes.put(typeName, resultType);
+            DataType baseType = null;
+            if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
+                XmlSchemaSimpleTypeRestriction restriction = (XmlSchemaSimpleTypeRestriction)simpleType.getContent();
+                QName baseSchemaTypeName = restriction.getBaseTypeName();
+                if (baseSchemaTypeName != null) {
+                    baseType = resolveType(schema, baseSchemaTypeName, namespaces, dataTypes, options);
+                }
+            }
 
-            // TODO: Should we worry about this, or should we just use conversions wherever we need them...
-//            if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
-//                XmlSchemaSimpleTypeRestriction restriction = (XmlSchemaSimpleTypeRestriction)simpleType.getContent();
-//                QName baseSchemaTypeName = restriction.getBaseTypeName();
-//                if (baseSchemaTypeName != null) {
-//                    DataType baseType = resolveType(schema, baseSchemaTypeName, namespaces, dataTypes);
-//                    if (baseType != null) {
-//                        resultType.setBaseType(baseType);
-//                    }
-//                }
-//            }
+            switch (options.getSimpleTypeRestrictionPolicy()) {
+                case IGNORE:
+                    resultType = new SimpleType(typeName);
+                    dataTypes.put(typeName, resultType);
+                    break;
+                case EXTEND_BASETYPE:
+                    resultType = new SimpleType(typeName, baseType);
+                    dataTypes.put(typeName, resultType);
+                    break;
+                case USE_BASETYPE:
+                default:
+                    resultType = baseType;
+                    break;
+            }
+
+
         }
 
         return resultType;
     }
 
-    private static DataType resolveComplexType(XmlSchema schema, XmlSchemaComplexType complexType, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
+    private static DataType resolveComplexType(XmlSchema schema, XmlSchemaComplexType complexType, Map<String, String> namespaces, Map<String, DataType> dataTypes, ModelImporterOptions options) {
         if (complexType.isAnonymous()) {
             return null;
         }
@@ -320,7 +335,7 @@ public class ModelImporter {
             QName baseSchemaTypeName = complexType.getBaseSchemaTypeName();
             if (baseSchemaTypeName != null) {
                 XmlSchemaType baseSchemaType = schema.getTypeByName(baseSchemaTypeName);
-                baseType = resolveType(schema, baseSchemaType, namespaces, dataTypes);
+                baseType = resolveType(schema, baseSchemaType, namespaces, dataTypes, options);
             }
 
             // Create and register the type
@@ -351,12 +366,12 @@ public class ModelImporter {
             }
 
             for (XmlSchemaAttributeOrGroupRef attribute : attributeContent) {
-                resolveClassTypeElements(schema, attribute, namespaces, dataTypes, elements);
+                resolveClassTypeElements(schema, attribute, namespaces, dataTypes, elements, options);
             }
 
             XmlSchemaParticle particle = particleContent;
             if (particle instanceof XmlSchemaElement) {
-                ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)particle, namespaces, dataTypes);
+                ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)particle, namespaces, dataTypes, options);
                 if (element != null) {
                     elements.add(element);
                 }
@@ -365,7 +380,7 @@ public class ModelImporter {
                 XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
                 for (XmlSchemaSequenceMember member : sequence.getItems()) {
                     if (member instanceof XmlSchemaElement) {
-                        ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)member, namespaces, dataTypes);
+                        ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)member, namespaces, dataTypes, options);
                         if (element != null) {
                             elements.add(element);
                         }
@@ -376,7 +391,7 @@ public class ModelImporter {
                 XmlSchemaChoice choice = (XmlSchemaChoice)particle;
                 for (XmlSchemaChoiceMember member : choice.getItems()) {
                     if (member instanceof XmlSchemaElement) {
-                        ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)member, namespaces, dataTypes);
+                        ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaElement)member, namespaces, dataTypes, options);
                         if (element != null) {
                             elements.add(element);
                         }
@@ -391,7 +406,7 @@ public class ModelImporter {
         return resultType;
     }
 
-    private static ClassTypeElement resolveClassTypeElement(XmlSchema schema, XmlSchemaElement element, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
+    private static ClassTypeElement resolveClassTypeElement(XmlSchema schema, XmlSchemaElement element, Map<String, String> namespaces, Map<String, DataType> dataTypes, ModelImporterOptions options) {
         boolean isList = element.getMaxOccurs() > 1;
 
         if (element.isRef()) {
@@ -401,12 +416,12 @@ public class ModelImporter {
         DataType elementType = null;
         XmlSchemaType schemaType = element.getSchemaType();
         if (schemaType != null) {
-            elementType = resolveType(schema, schemaType, namespaces, dataTypes);
+            elementType = resolveType(schema, schemaType, namespaces, dataTypes, options);
         }
         else {
             QName schemaTypeName = element.getSchemaTypeName();
             if (schemaTypeName != null) {
-                elementType = resolveType(schema, schemaTypeName, namespaces, dataTypes);
+                elementType = resolveType(schema, schemaTypeName, namespaces, dataTypes, options);
             }
         }
 
@@ -422,7 +437,7 @@ public class ModelImporter {
         return new ClassTypeElement(element.getName(), elementType);
     }
 
-    private static ClassTypeElement resolveClassTypeElement(XmlSchema schema, XmlSchemaAttribute attribute, Map<String, String> namespaces, Map<String, DataType> dataTypes) {
+    private static ClassTypeElement resolveClassTypeElement(XmlSchema schema, XmlSchemaAttribute attribute, Map<String, String> namespaces, Map<String, DataType> dataTypes, ModelImporterOptions options) {
         if (attribute.isRef()) {
             attribute = attribute.getRef().getTarget();
         }
@@ -430,12 +445,12 @@ public class ModelImporter {
         DataType elementType = null;
         XmlSchemaType schemaType = attribute.getSchemaType();
         if (schemaType != null) {
-            elementType = resolveType(schema, schemaType, namespaces, dataTypes);
+            elementType = resolveType(schema, schemaType, namespaces, dataTypes, options);
         }
         else {
             QName schemaTypeName = attribute.getSchemaTypeName();
             if (schemaTypeName != null) {
-                elementType = resolveType(schema, schemaTypeName, namespaces, dataTypes);
+                elementType = resolveType(schema, schemaTypeName, namespaces, dataTypes, options);
             }
         }
 
@@ -447,31 +462,31 @@ public class ModelImporter {
         return new ClassTypeElement(attribute.getName(), elementType);
     }
 
-    private static void resolveClassTypeElements(XmlSchema schema, XmlSchemaAttributeOrGroupRef attribute, Map<String, String> namespaces, Map<String, DataType> dataTypes, List<ClassTypeElement> elements) {
+    private static void resolveClassTypeElements(XmlSchema schema, XmlSchemaAttributeOrGroupRef attribute, Map<String, String> namespaces, Map<String, DataType> dataTypes, List<ClassTypeElement> elements, ModelImporterOptions options) {
         if (attribute instanceof XmlSchemaAttribute) {
-            ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaAttribute)attribute, namespaces, dataTypes);
+            ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaAttribute)attribute, namespaces, dataTypes, options);
             if (element != null) {
                 elements.add(element);
             }
         }
         else if (attribute instanceof XmlSchemaAttributeGroupRef) {
-            resolveClassTypeElements(schema, ((XmlSchemaAttributeGroupRef)attribute).getRef().getTarget(), namespaces, dataTypes, elements);
+            resolveClassTypeElements(schema, ((XmlSchemaAttributeGroupRef)attribute).getRef().getTarget(), namespaces, dataTypes, elements, options);
         }
     }
 
-    private static void resolveClassTypeElements(XmlSchema schema, XmlSchemaAttributeGroup attributeGroup, Map<String, String> namespaces, Map<String, DataType> dataTypes, List<ClassTypeElement> elements) {
+    private static void resolveClassTypeElements(XmlSchema schema, XmlSchemaAttributeGroup attributeGroup, Map<String, String> namespaces, Map<String, DataType> dataTypes, List<ClassTypeElement> elements, ModelImporterOptions options) {
         for (XmlSchemaAttributeGroupMember member : attributeGroup.getAttributes()) {
             if (member instanceof XmlSchemaAttribute) {
-                ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaAttribute)member, namespaces, dataTypes);
+                ClassTypeElement element = resolveClassTypeElement(schema, (XmlSchemaAttribute)member, namespaces, dataTypes, options);
                 if (element != null) {
                     elements.add(element);
                 }
             }
             else if (member instanceof XmlSchemaAttributeGroupRef) {
-                resolveClassTypeElements(schema, ((XmlSchemaAttributeGroupRef)member).getRef().getTarget(), namespaces, dataTypes, elements);
+                resolveClassTypeElements(schema, ((XmlSchemaAttributeGroupRef)member).getRef().getTarget(), namespaces, dataTypes, elements, options);
             }
             else if (member instanceof XmlSchemaAttributeGroup) {
-                resolveClassTypeElements(schema, (XmlSchemaAttributeGroup)member, namespaces, dataTypes, elements);
+                resolveClassTypeElements(schema, (XmlSchemaAttributeGroup)member, namespaces, dataTypes, elements, options);
             }
         }
     }

@@ -1,5 +1,8 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import joptsimple.OptionSpec;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.cqframework.cql.elm.tracking.DataType;
@@ -21,21 +24,48 @@ import java.util.Map;
  */
 public class Main {
     public static void main(String[] args) throws IOException, JAXBException {
-        String inputFilePath = args[0];
-        File f = new File(inputFilePath);
-        InputStream is = new FileInputStream(f);
+        OptionParser parser = new OptionParser();
+        OptionSpec<File> schemaOpt = parser.accepts("schema").withRequiredArg().ofType(File.class).required();
+        OptionSpec<String> modelOpt = parser.accepts("model").withRequiredArg().ofType(String.class).required();
+        OptionSpec<File> outputOpt = parser.accepts("output").withRequiredArg().ofType(File.class);
+        OptionSpec<String> stRestrictionsOpt = parser.accepts("simpletype-restrictions-policy").withRequiredArg().ofType(String.class);
+
+        OptionSet options = parser.parse(args);
+
+        File schemaFile = schemaOpt.value(options);
+        InputStream is = new FileInputStream(schemaFile);
         XmlSchemaCollection schemaCol = new XmlSchemaCollection();
-        schemaCol.setBaseUri(f.getParent());
+        schemaCol.setBaseUri(schemaFile.getParent());
         XmlSchema schema = schemaCol.read(new StreamSource(is));
-        String modelName = args.length > 1 ? args[1] : "QUICK";
-        ModelInfo modelInfo = ModelImporter.fromXsd(schema, modelName);
+
+        String modelName = modelOpt.value(options);
+
+        ModelImporterOptions importerOptions = new ModelImporterOptions();
+        if (options.has(stRestrictionsOpt)) {
+            importerOptions.setSimpleTypeRestrictionPolicy(
+                    ModelImporterOptions.SimpleTypeRestrictionPolicy.valueOf(stRestrictionsOpt.value(options).toUpperCase()));
+        }
+
+        ModelInfo modelInfo = ModelImporter.fromXsd(schema, modelName, importerOptions);
 
         JAXBContext jc = JAXBContext.newInstance(ModelInfo.class);
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        File outputFile = new File(f.getParent(), String.format("%s-modelinfo.xml", modelInfo.getTargetQualifier().getLocalPart()));
-        OutputStream os = new FileOutputStream(outputFile, false);
+        File outputfile;
+        if (! options.has(outputOpt) || outputOpt.value(options).isDirectory()) {
+            // construct output filename using modelinfo
+            String name = String.format("%s-modelinfo.xml", modelInfo.getTargetQualifier().getLocalPart());
+            String basePath = options.has(outputOpt) ? outputOpt.value(options).getAbsolutePath() : schemaFile.getParent();
+            outputfile = new File(basePath + File.separator + name);
+        } else {
+            outputfile = outputOpt.value(options);
+        }
+        if (outputfile.equals(schemaFile)) {
+            throw new IllegalArgumentException("input schema file and output file must be different!");
+        }
+
+        OutputStream os = new FileOutputStream(outputfile, false);
         try {
             OutputStreamWriter writer = new OutputStreamWriter(os);
             marshaller.marshal(new ObjectFactory().createModelInfo(modelInfo), writer);

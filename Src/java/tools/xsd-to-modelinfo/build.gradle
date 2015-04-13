@@ -16,6 +16,7 @@ repositories {
 
 dependencies {
     compile project(':elm')
+    compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
     compile group: 'org.apache.ws.xmlschema', name: 'xmlschema-core', version: '2.2.0'
     compile group: 'org.apache.ws.xmlschema', name: 'xmlschema-walker', version: '2.2.0'
     testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
