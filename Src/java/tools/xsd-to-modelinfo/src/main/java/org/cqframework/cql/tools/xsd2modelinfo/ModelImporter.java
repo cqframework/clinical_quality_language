@@ -4,63 +4,15 @@ import org.apache.ws.commons.schema.*;
 import org.cqframework.cql.elm.tracking.*;
 import org.hl7.elm_modelinfo.r1.*;
 
-import static org.apache.ws.commons.schema.constants.Constants.*;
-
 import javax.xml.bind.JAXB;
 import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ModelImporter {
     private static final Map<String, DataType> SYSTEM_CATALOG = getSystemCatalog();
-    private static final Map<QName, DataType> SYSTEM_TYPE_MAP = new HashMap<QName, DataType>(){{
-        put(XSD_ANY,                SYSTEM_CATALOG.get("System.Any"));
-        put(XSD_ANYSIMPLETYPE,      SYSTEM_CATALOG.get("System.Any"));
-        put(XSD_ANYTYPE,            SYSTEM_CATALOG.get("System.Any"));
-        put(XSD_ANYURI,             SYSTEM_CATALOG.get("System.String"));
-//      put(XSD_BASE64,             SYSTEM_CATALOG.get("System.String"));
-        put(XSD_BOOLEAN,            SYSTEM_CATALOG.get("System.Boolean"));
-        put(XSD_BYTE,               SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_DATE,               SYSTEM_CATALOG.get("System.DateTime"));
-        put(XSD_DATETIME,           SYSTEM_CATALOG.get("System.DateTime"));
-//      put(XSD_DAY,                SYSTEM_CATALOG.get("System.DateTime"));
-        put(XSD_DECIMAL,            SYSTEM_CATALOG.get("System.Decimal"));
-        put(XSD_DOUBLE,             SYSTEM_CATALOG.get("System.Boolean"));
-        put(XSD_DURATION,           SYSTEM_CATALOG.get("System.Quantity"));
-        put(XSD_ENTITIES,           SYSTEM_CATALOG.get("list<System.String>"));
-        put(XSD_ENTITY,             SYSTEM_CATALOG.get("System.String"));
-        put(XSD_FLOAT,              SYSTEM_CATALOG.get("System.Decimal"));
-//      put(XSD_HEXBIN,             SYSTEM_CATALOG.get("System.String"));
-        put(XSD_ID,                 SYSTEM_CATALOG.get("System.String"));
-        put(XSD_IDREF,              SYSTEM_CATALOG.get("System.String"));
-        put(XSD_IDREFS,             SYSTEM_CATALOG.get("list<System.String>"));
-        put(XSD_INT,                SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_INTEGER,            SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_LANGUAGE,           SYSTEM_CATALOG.get("System.String"));
-        put(XSD_LONG,               SYSTEM_CATALOG.get("System.Integer"));
-//      put(XSD_MONTH,              SYSTEM_CATALOG.get("System.DateTime"));
-//      put(XSD_MONTHDAY,           SYSTEM_CATALOG.get("System.DateTime"));
-        put(XSD_NAME,               SYSTEM_CATALOG.get("System.String"));
-        put(XSD_NCNAME,             SYSTEM_CATALOG.get("System.String"));
-        put(XSD_NEGATIVEINTEGER,    SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_NMTOKEN,            SYSTEM_CATALOG.get("System.String"));
-        put(XSD_NMTOKENS,           SYSTEM_CATALOG.get("list<System.String>"));
-        put(XSD_NONNEGATIVEINTEGER, SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_NONPOSITIVEINTEGER, SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_NORMALIZEDSTRING,   SYSTEM_CATALOG.get("System.String"));
-        put(XSD_POSITIVEINTEGER,    SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_QNAME,              SYSTEM_CATALOG.get("System.String"));
-        put(XSD_SHORT,              SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_STRING,             SYSTEM_CATALOG.get("System.String"));
-        put(XSD_TIME,               SYSTEM_CATALOG.get("System.Time"));
-        put(XSD_TOKEN,              SYSTEM_CATALOG.get("System.String"));
-        put(XSD_UNSIGNEDBYTE,       SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_UNSIGNEDINT,        SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_UNSIGNEDLONG,       SYSTEM_CATALOG.get("System.Integer"));
-        put(XSD_UNSIGNEDSHORT,      SYSTEM_CATALOG.get("System.Integer"));
-//      put(XSD_YEAR,               SYSTEM_CATALOG.get("System.DateTime"));
-//      put(XSD_YEARMONTH,          SYSTEM_CATALOG.get("System.DateTime"));
-    }};
     private static Map<String, DataType> getSystemCatalog() {
         ModelInfo systemModelInfo = JAXB.unmarshal(
                 ModelImporter.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"),
@@ -86,9 +38,23 @@ public class ModelImporter {
 
     private ModelImporter(XmlSchema schema, ModelImporterOptions options) {
         this.schema = schema;
-        this.options = options != null ? options : new ModelImporterOptions();
         this.dataTypes = new HashMap<>();
         this.namespaces = new HashMap<>();
+
+        // Load default options first
+        ModelImporterOptions tmpOptions;
+        try (InputStream defaultPropertiesIS = getClass().getResourceAsStream("default_options.properties")) {
+            tmpOptions = ModelImporterOptions.loadFromProperties(defaultPropertiesIS);
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not load default properties", e);
+        }
+
+        // If options were passed in, apply them on top of the default options
+        if (options != null) {
+            tmpOptions.applyProperties(options.exportProperties());
+        }
+
+        this.options = tmpOptions;
     }
 
     public static ModelInfo fromXsd(XmlSchema schema, ModelImporterOptions options) {
@@ -251,9 +217,6 @@ public class ModelImporter {
         if (options.getTypeMap().containsKey(schemaTypeName)) {
             return SYSTEM_CATALOG.get(options.getTypeMap().get(schemaTypeName));
         }
-        else if (SYSTEM_TYPE_MAP.containsKey(schemaTypeName)) {
-            return SYSTEM_TYPE_MAP.get(schemaTypeName);
-        }
 
         XmlSchemaType schemaType = schema.getTypeByName(schemaTypeName);
         if (schemaType == null) {
@@ -288,9 +251,6 @@ public class ModelImporter {
         }
         else if (options.getTypeMap().containsKey(simpleType.getQName())) {
             return SYSTEM_CATALOG.get(options.getTypeMap().get(simpleType.getQName()));
-        }
-        else if (SYSTEM_TYPE_MAP.containsKey(simpleType.getQName())) {
-            return SYSTEM_TYPE_MAP.get(simpleType.getQName());
         }
 
         String typeName = getTypeName(simpleType.getQName(), namespaces);
@@ -332,9 +292,6 @@ public class ModelImporter {
         }
         else if (options.getTypeMap().containsKey(complexType.getQName())) {
             return SYSTEM_CATALOG.get(options.getTypeMap().get(complexType.getQName()));
-        }
-        else if (SYSTEM_TYPE_MAP.containsKey(complexType.getQName())) {
-            return SYSTEM_TYPE_MAP.get(complexType.getQName());
         }
 
         String typeName = getTypeName(complexType.getQName(), namespaces);

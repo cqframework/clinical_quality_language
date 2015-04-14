@@ -5,20 +5,15 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.cqframework.cql.elm.tracking.DataType;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Generates a ModelInfo.xml for the input xsd.
@@ -43,7 +38,14 @@ public class Main {
         schemaCol.setBaseUri(schemaFile.getParent());
         XmlSchema schema = schemaCol.read(new StreamSource(is));
 
-        ModelImporterOptions importerOptions = new ModelImporterOptions();
+        ModelImporterOptions importerOptions;
+        if (options.has(optionsFileOpt)) {
+            importerOptions = ModelImporterOptions.loadFromProperties(optionsFileOpt.value(options));
+        }
+        else {
+            importerOptions = new ModelImporterOptions();
+        }
+
         if (options.has(modelOpt)) {
             importerOptions.setModel(modelOpt.value(options));
         }
@@ -62,9 +64,6 @@ public class Main {
                 }
                 importerOptions.getTypeMap().put(QName.valueOf(kv[0].trim()), kv[1].trim());
             }
-        }
-        if (options.has(optionsFileOpt)) {
-            importerOptions.loadProperties(optionsFileOpt.value(options));
         }
 
         ModelInfo modelInfo = ModelImporter.fromXsd(schema, importerOptions);

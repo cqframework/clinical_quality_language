@@ -4,6 +4,7 @@ import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -14,7 +15,7 @@ public class ModelImporterOptions {
     /**
      * The name of the data model.  This will be used in the "using" statement of CQL.
      */
-    private String model;
+    private String model = null;
 
     /**
      * XSD allows simple types to be restricted by certain constraints (e.g. string patterns, numerical ranges, etc).
@@ -30,7 +31,7 @@ public class ModelImporterOptions {
      * behavior.</li>
      * </ul>
      */
-    private SimpleTypeRestrictionPolicy simpleTypeRestrictionPolicy = SimpleTypeRestrictionPolicy.USE_BASETYPE;
+    private SimpleTypeRestrictionPolicy simpleTypeRestrictionPolicy = null;
 
     /**
      * Some HL7 standards prefix all of their type names with an ID of the standard.  For example, the CDA R2 schema
@@ -66,7 +67,7 @@ public class ModelImporterOptions {
     }
 
     public SimpleTypeRestrictionPolicy getSimpleTypeRestrictionPolicy() {
-        return simpleTypeRestrictionPolicy;
+        return simpleTypeRestrictionPolicy != null ? simpleTypeRestrictionPolicy : SimpleTypeRestrictionPolicy.USE_BASETYPE;
     }
 
     public void setSimpleTypeRestrictionPolicy(SimpleTypeRestrictionPolicy simpleTypeRestrictionPolicy) {
@@ -95,12 +96,7 @@ public class ModelImporterOptions {
         return typeMap;
     }
 
-    public void loadProperties(File propertiesFile) throws IOException {
-        Properties properties = new Properties();
-        try (FileInputStream is = new FileInputStream(propertiesFile)) {
-            properties.load(is);
-        }
-
+    public void applyProperties(Properties properties) {
         String model = properties.getProperty("model");
         if (model != null && !model.isEmpty()) {
             setModel(model);
@@ -124,9 +120,38 @@ public class ModelImporterOptions {
         }
     }
 
-    public static ModelImporterOptions loadFromProperties(File propertiesFile) throws IOException {
+    public Properties exportProperties() {
+        Properties properties = new Properties();
+        if (model != null) {
+            properties.setProperty("model", model);
+        }
+        if (normalizePrefix != null) {
+            properties.setProperty("normalize-prefix", normalizePrefix);
+        }
+        if (simpleTypeRestrictionPolicy != null) {
+            properties.setProperty("simpletype-restriction-policy", simpleTypeRestrictionPolicy.name());
+        }
+        if (! typeMap.isEmpty()) {
+            for (QName key : typeMap.keySet()) {
+                properties.setProperty(String.format("type-map.%s", key.toString()), typeMap.get(key));
+            }
+        }
+
+        return properties;
+    }
+
+    public static ModelImporterOptions loadFromProperties(InputStream propertiesIS) throws IOException {
+        Properties properties = new Properties();
+        properties.load(propertiesIS);
+
         ModelImporterOptions options = new ModelImporterOptions();
-        options.loadProperties(propertiesFile);
+        options.applyProperties(properties);
         return options;
+    }
+
+    public static ModelImporterOptions loadFromProperties(File propertiesFile) throws IOException {
+        try (FileInputStream is = new FileInputStream(propertiesFile)) {
+            return ModelImporterOptions.loadFromProperties(is);
+        }
     }
 }
