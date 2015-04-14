@@ -122,9 +122,13 @@ public class ModelImporter {
         }
 
         for (ClassTypeElement element : dataType.getElements()) {
-            result.getElement().add(new ClassInfoElement()
+            ClassInfoElement cie = new ClassInfoElement()
                     .withName(element.getName())
-                    .withType(toTypeSpecifier(element.getType())));
+                    .withType(toTypeSpecifier(element.getType()));
+            if (element.isProhibited()) {
+                cie.setProhibited(true);
+            }
+            result.getElement().add(cie);
         }
 
         return result;
@@ -430,7 +434,7 @@ public class ModelImporter {
             //throw new IllegalStateException(String.format("Unable to resolve type %s of attribute %s.", attribute.getSchemaTypeName(), attribute.getName()));
         }
 
-        return new ClassTypeElement(attribute.getName(), elementType);
+        return new ClassTypeElement(attribute.getName(), elementType, attribute.getUse() == XmlSchemaUse.PROHIBITED);
     }
 
     private void resolveClassTypeElements(XmlSchemaAttributeOrGroupRef attribute, List<ClassTypeElement> elements) {
