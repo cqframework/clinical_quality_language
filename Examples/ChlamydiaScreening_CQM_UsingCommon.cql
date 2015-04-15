@@ -24,4 +24,4 @@ define "In Denominator":
     true
 
 define "In Numerator":
-    exists (Common."Results Present For Chlamydia Screening" S where S.diagnosticDateTime during "Measurement Period")
+    exists (Common."Results Present For Chlamydia Screening" S where S.issued during "Measurement Period")

@@ -1,3 +1,9 @@
+parameter AnyParameter Any
+
+define AnyExpression: null
+
+define AnyTest: AnyParameter = 1
+
 define Add: Add(5, 5)
 
 define test1: 2 in Interval[1, 5]
@@ -15,3 +21,4 @@ define NegInfBegContainsDate: DateTime(1900, 1, 1, 0, 0, 0, 0) in Interval[null,
 //define InvalidCall: Base.Base.Base.Call()
 
 //define function Factorial(X Integer) { return if X = 1 then 1 else X * Factorial(X - 1) }
+

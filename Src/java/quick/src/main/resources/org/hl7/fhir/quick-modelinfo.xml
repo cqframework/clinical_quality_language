@@ -373,9 +373,6 @@
         <ns4:element name="type" type="System.String"/>
         <ns4:element name="value" type="QUICK.base64Binary"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ProcedureRequestStatus" baseType="QUICK.Element">
-        <ns4:element name="value" type="QUICK.ProcedureRequestStatus_list"/>
-    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Resource">
         <ns4:element name="id" type="QUICK.id"/>
         <ns4:element name="meta" type="QUICK.Resource.Meta"/>
@@ -2260,7 +2257,6 @@
         <ns4:element name="reason" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="refusalReason" type="list&lt;System.Concept&gt;"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="QUICK.ProcedureRequestStatus_list"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DataElement" baseType="QUICK.DomainResource">
         <ns4:element name="identifier" type="QUICK.Identifier"/>
         <ns4:element name="version" type="System.String"/>
@@ -2381,7 +2377,7 @@
         <ns4:element name="indication" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="encounter" type="QUICK.Reference"/>
         <ns4:element name="performer" type="QUICK.Reference"/>
-        <ns4:element name="status" type="QUICK.ProcedureRequestStatus"/>
+        <ns4:element name="status" type="System.String"/>
         <ns4:element name="mode" type="QUICK.ProcedureRequestMode"/>
         <ns4:element name="notes" type="list&lt;System.String&gt;"/>
         <ns4:element name="orderedOn" type="System.DateTime"/>

@@ -49,7 +49,7 @@ define InDenominator:
 	InInitialPopulation
 
 define InNumerator:
-	exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during MeasurementPeriod and R.result is not null)
+	exists ([DiagnosticReport: "Chlamydia Screening"] R where R.issued during MeasurementPeriod and R.result is not null)
 
 define InNumerator:
 	InDenominator and exists ([DiagnosticReport: "Chlamydia Screening"] R where R.diagnosticDateTime during MeasurementPeriod and R.result is not null)
