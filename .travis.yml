@@ -9,3 +9,6 @@ script:
 branches:
   only:
     - master
+
+notifications:
+  slack: hl7-cql:kmUdP2WczGxC8N4XQ9ew7cd2
