@@ -25,7 +25,6 @@ public class Main {
         OptionSpec<String> modelOpt = parser.accepts("model").withRequiredArg().ofType(String.class);
         OptionSpec<File> outputOpt = parser.accepts("output").withRequiredArg().ofType(File.class);
         OptionSpec<String> normalizePrefixOpt = parser.accepts("normalize-prefix").withRequiredArg().ofType(String.class);
-        OptionSpec<String> typeMapOpt = parser.accepts("type-map").withRequiredArg().ofType(String.class);
         OptionSpec<ModelImporterOptions.SimpleTypeRestrictionPolicy> stRestrictionsOpt =
                 parser.accepts("simpletype-restriction-policy").withRequiredArg().ofType(ModelImporterOptions.SimpleTypeRestrictionPolicy.class);
         OptionSpec<File> optionsFileOpt = parser.accepts("options-file").withRequiredArg().ofType(File.class);
@@ -54,16 +53,6 @@ public class Main {
         }
         if (options.has(normalizePrefixOpt)) {
             importerOptions.setNormalizePrefix(normalizePrefixOpt.value(options));
-        }
-        if (options.has(typeMapOpt)) {
-            String[] mappings = typeMapOpt.value(options).split(",");
-            for (String mapping : mappings) {
-                String[] kv = mapping.split("=");
-                if (kv.length != 2) {
-                    throw new IllegalArgumentException("type-map must be of format: {ns1}key1=type1,{ns2}key2=type2,...");
-                }
-                importerOptions.getTypeMap().put(QName.valueOf(kv[0].trim()), kv[1].trim());
-            }
         }
 
         ModelInfo modelInfo = ModelImporter.fromXsd(schema, importerOptions);

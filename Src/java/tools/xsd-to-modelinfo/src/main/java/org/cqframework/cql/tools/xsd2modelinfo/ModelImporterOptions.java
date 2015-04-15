@@ -5,12 +5,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ModelImporterOptions {
     public static enum SimpleTypeRestrictionPolicy {USE_BASETYPE, EXTEND_BASETYPE, IGNORE}
+    private static Pattern RETYPE_PATTERN = Pattern.compile("\\s*retype\\.(.+)\\s*");
+    private static Pattern EXTEND_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\s*");
+    private static Pattern EXTEND_EL_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\[([^\\]]+)\\]\\s*");
 
     /**
      * The name of the data model.  This will be used in the "using" statement of CQL.
@@ -47,11 +54,11 @@ public class ModelImporterOptions {
     private String normalizePrefix = null;
 
     /**
-     * The typeMap allows XSD types to be fully replaced by CQL System types.  This is for cases where you want to map
-     * a specific data model type directly to a CQL type.  The definition of the original data model type will be
-     * discarded and all references will be to the CQL System type.
+     * The typeMap is used to hold mappings from XSD types to CQL System types.  This allows XSD types to be "retyped"
+     * to CQL System Types or to "extend" CQL System types.  For extensions, the original type's elements can also be
+     * mapped to the elements of the CQL System type (so there are not duplicate concepts w/ different names).
      */
-    private final Map<QName, String> typeMap = new HashMap<>();
+    private final Map<QName, ModelImporterMapperValue> typeMap = new HashMap<>();
 
     public String getModel() {
         return model;
@@ -92,7 +99,7 @@ public class ModelImporterOptions {
         return this;
     }
 
-    public Map<QName, String> getTypeMap() {
+    public Map<QName, ModelImporterMapperValue> getTypeMap() {
         return typeMap;
     }
 
@@ -112,10 +119,29 @@ public class ModelImporterOptions {
             setSimpleTypeRestrictionPolicy(SimpleTypeRestrictionPolicy.valueOf(simpleTypeRestrictionPolicy));
         }
 
-        // Have to iterate properties to find the type-map properties
-        for (String p : properties.stringPropertyNames()) {
-            if (p.startsWith("type-map.")) {
-                typeMap.put(QName.valueOf(p.substring(9)), properties.getProperty(p));
+        // Iterate the properties (sorting to ensure class extensions come before element mappings)
+        for (String p : properties.stringPropertyNames().stream().sorted().collect(Collectors.toList())) {
+            Matcher matcher = RETYPE_PATTERN.matcher(p);
+            if (matcher.matches()) {
+                typeMap.put(QName.valueOf(matcher.group(1)), ModelImporterMapperValue.newRetype(properties.getProperty(p)));
+                continue;
+            }
+
+            matcher = EXTEND_PATTERN.matcher(p);
+            if (matcher.matches()) {
+                typeMap.put(QName.valueOf(matcher.group(1)), ModelImporterMapperValue.newExtend(properties.getProperty(p)));
+                continue;
+            }
+
+            matcher = EXTEND_EL_PATTERN.matcher(p);
+            if (matcher.matches()) {
+                ModelImporterMapperValue value = typeMap.get(QName.valueOf(matcher.group(1)));
+                if (value == null) {
+                    throw new IllegalArgumentException(String.format("Class element mapping declared before class mapping: %s", p));
+                } else if (value.getRelationship() == ModelImporterMapperValue.Relationship.RETYPE) {
+                    throw new IllegalArgumentException(String.format("Cannot map class elements for retyped classes: %s", p));
+                }
+                value.addClassElementMapping(matcher.group(2), properties.getProperty(p));
             }
         }
     }
@@ -133,7 +159,17 @@ public class ModelImporterOptions {
         }
         if (! typeMap.isEmpty()) {
             for (QName key : typeMap.keySet()) {
-                properties.setProperty(String.format("type-map.%s", key.toString()), typeMap.get(key));
+                ModelImporterMapperValue value = typeMap.get(key);
+                if (value.getRelationship() == ModelImporterMapperValue.Relationship.RETYPE) {
+                    properties.setProperty(String.format("retype.%s", key.toString()), value.getTargetSystemClass());
+                } else if (value.getRelationship() == ModelImporterMapperValue.Relationship.EXTEND) {
+                    properties.setProperty(String.format("extend.%s", key.toString()), value.getTargetSystemClass());
+                    for (String el : value.getTargetClassElementMap().keySet()) {
+                        String elValue = value.getTargetClassElementMap().get(el);
+                        properties.setProperty(String.format("extend.%s[%s]", key.toString(), el), elValue);
+                    }
+                }
+
             }
         }
 

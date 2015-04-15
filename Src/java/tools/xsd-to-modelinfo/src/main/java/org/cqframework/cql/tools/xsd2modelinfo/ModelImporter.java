@@ -218,8 +218,13 @@ public class ModelImporter {
     }
 
     private DataType resolveType(QName schemaTypeName) {
-        if (options.getTypeMap().containsKey(schemaTypeName)) {
-            return SYSTEM_CATALOG.get(options.getTypeMap().get(schemaTypeName));
+        if (schemaTypeName == null) {
+            return null;
+        }
+
+        ModelImporterMapperValue mapping = options.getTypeMap().get(schemaTypeName);
+        if (mapping != null && mapping.getRelationship() == ModelImporterMapperValue.Relationship.RETYPE) {
+            return SYSTEM_CATALOG.get(mapping.getTargetSystemClass());
         }
 
         XmlSchemaType schemaType = schema.getTypeByName(schemaTypeName);
@@ -227,7 +232,12 @@ public class ModelImporter {
             String typeName = getTypeName(schemaTypeName, namespaces);
             DataType resultType = dataTypes.get(typeName);
             if (resultType == null) {
-                resultType = new SimpleType(typeName);
+                if (mapping != null && mapping.getRelationship() == ModelImporterMapperValue.Relationship.EXTEND) {
+                    resultType = new SimpleType(typeName, SYSTEM_CATALOG.get(mapping.getTargetSystemClass()));
+                } else {
+                    resultType = new SimpleType(typeName);
+                }
+
                 dataTypes.put(typeName, resultType);
             }
 
@@ -253,38 +263,42 @@ public class ModelImporter {
         if (simpleType.isAnonymous()) {
             return null;
         }
-        else if (options.getTypeMap().containsKey(simpleType.getQName())) {
-            return SYSTEM_CATALOG.get(options.getTypeMap().get(simpleType.getQName()));
+
+        ModelImporterMapperValue mapping = options.getTypeMap().get(simpleType.getQName());
+        if (mapping != null && mapping.getRelationship() == ModelImporterMapperValue.Relationship.RETYPE) {
+            return SYSTEM_CATALOG.get(mapping.getTargetSystemClass());
         }
 
         String typeName = getTypeName(simpleType.getQName(), namespaces);
         DataType resultType = dataTypes.get(typeName);
         if (resultType == null) {
             DataType baseType = null;
-            if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
-                XmlSchemaSimpleTypeRestriction restriction = (XmlSchemaSimpleTypeRestriction)simpleType.getContent();
-                QName baseSchemaTypeName = restriction.getBaseTypeName();
-                if (baseSchemaTypeName != null) {
-                    baseType = resolveType(baseSchemaTypeName);
+            boolean retypeToBase = false;
+
+            if (mapping != null && mapping.getRelationship() == ModelImporterMapperValue.Relationship.EXTEND) {
+                baseType = SYSTEM_CATALOG.get(mapping.getTargetSystemClass());
+            }
+            else if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
+                baseType = resolveType(((XmlSchemaSimpleTypeRestriction) simpleType.getContent()).getBaseTypeName());
+                switch (options.getSimpleTypeRestrictionPolicy()) {
+                    case EXTEND_BASETYPE:
+                        break;
+                    case IGNORE:
+                        baseType = null;
+                        break;
+                    case USE_BASETYPE:
+                    default:
+                        retypeToBase = true;
                 }
             }
 
-            switch (options.getSimpleTypeRestrictionPolicy()) {
-                case IGNORE:
-                    resultType = new SimpleType(typeName);
-                    dataTypes.put(typeName, resultType);
-                    break;
-                case EXTEND_BASETYPE:
-                    resultType = new SimpleType(typeName, baseType);
-                    dataTypes.put(typeName, resultType);
-                    break;
-                case USE_BASETYPE:
-                default:
-                    resultType = baseType;
-                    break;
+            if (retypeToBase) {
+                resultType = baseType;
             }
-
-
+            else {
+                resultType = new SimpleType(typeName, baseType);
+                dataTypes.put(typeName, resultType);
+            }
         }
 
         return resultType;
@@ -294,8 +308,10 @@ public class ModelImporter {
         if (complexType.isAnonymous()) {
             return null;
         }
-        else if (options.getTypeMap().containsKey(complexType.getQName())) {
-            return SYSTEM_CATALOG.get(options.getTypeMap().get(complexType.getQName()));
+
+        ModelImporterMapperValue mapping = options.getTypeMap().get(complexType.getQName());
+        if (mapping != null && mapping.getRelationship() == ModelImporterMapperValue.Relationship.RETYPE) {
+            return SYSTEM_CATALOG.get(mapping.getTargetSystemClass());
         }
 
         String typeName = getTypeName(complexType.getQName(), namespaces);
@@ -304,10 +320,10 @@ public class ModelImporter {
 
             // Resolve the base type, if any
             DataType baseType = null;
-            QName baseSchemaTypeName = complexType.getBaseSchemaTypeName();
-            if (baseSchemaTypeName != null) {
-                XmlSchemaType baseSchemaType = schema.getTypeByName(baseSchemaTypeName);
-                baseType = resolveType(baseSchemaType);
+            if (mapping != null && mapping.getRelationship() == ModelImporterMapperValue.Relationship.EXTEND) {
+                baseType = SYSTEM_CATALOG.get(mapping.getTargetSystemClass());
+            } else if (complexType.getBaseSchemaTypeName() != null) {
+                baseType = resolveType(schema.getTypeByName(complexType.getBaseSchemaTypeName()));
             }
 
             // Create and register the type
@@ -374,6 +390,15 @@ public class ModelImporter {
                 }
             }
 
+            // TODO: Map elements to basetype if this or one of its parents is a configured extension of a CQL basetype.
+            // This could get complicated...
+
+            // Filter out elements already in the base class
+            if (baseType instanceof ClassType) {
+                ClassType cBase = (ClassType) baseType;
+                elements.removeAll(cBase.getAllElements());
+            }
+
             classType.addElements(elements);
             resultType = classType;
         }
@@ -409,7 +434,9 @@ public class ModelImporter {
             elementType = new ListType(elementType);
         }
 
-        return new ClassTypeElement(element.getName(), elementType);
+        boolean isProhibited = element.getMinOccurs() == 0L && element.getMaxOccurs() == 0L;
+
+        return new ClassTypeElement(element.getName(), elementType, isProhibited);
     }
 
     private ClassTypeElement resolveClassTypeElement(XmlSchemaAttribute attribute) {
