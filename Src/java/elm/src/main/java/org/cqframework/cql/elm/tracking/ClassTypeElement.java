@@ -3,8 +3,9 @@ package org.cqframework.cql.elm.tracking;
 public class ClassTypeElement {
     private String name;
     private DataType type;
+    private boolean prohibited;
 
-    public ClassTypeElement(String name, DataType type) {
+    public ClassTypeElement(String name, DataType type, boolean prohibited) {
         if (name == null || name.equals("")) {
             throw new IllegalArgumentException("name");
         }
@@ -15,6 +16,11 @@ public class ClassTypeElement {
 
         this.name = name;
         this.type = type;
+        this.prohibited = prohibited;
+    }
+
+    public ClassTypeElement(String name, DataType type) {
+        this(name, type, false);
     }
 
     public String getName() {
@@ -25,19 +31,30 @@ public class ClassTypeElement {
         return this.type;
     }
 
-    @Override
-    public int hashCode() {
-        return (17 * this.name.hashCode()) + (33 * this.type.hashCode());
+    public boolean isProhibited() {
+        return prohibited;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ClassTypeElement) {
-            ClassTypeElement that = (ClassTypeElement)o;
-            return this.name.equals(that.name) && this.type.equals(that.type);
-        }
+        if (this == o) return true;
+        if (!(o instanceof ClassTypeElement)) return false;
 
-        return false;
+        ClassTypeElement that = (ClassTypeElement) o;
+
+        if (prohibited != that.prohibited) return false;
+        if (!name.equals(that.name)) return false;
+        if (!type.equals(that.type)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + (prohibited ? 1 : 0);
+        return result;
     }
 
     public boolean isSubTypeOf(ClassTypeElement that) {
@@ -50,6 +67,6 @@ public class ClassTypeElement {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", this.name, this.type.toString());
+        return String.format("%s:%s%s", this.name, this.type.toString(), this.prohibited ? " (prohibited)" : "");
     }
 }

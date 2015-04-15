@@ -80,8 +80,27 @@ public class ClassType extends DataType implements NamedType {
     private List<ClassTypeElement> elements = new ArrayList<ClassTypeElement>();
     private List<ClassTypeElement> sortedElements = null;
 
-    public Iterable<ClassTypeElement> getElements() {
+    public List<ClassTypeElement> getElements() {
         return elements;
+    }
+
+    public List<ClassTypeElement> getAllElements() {
+        LinkedHashMap<String, ClassTypeElement> elementMap = new LinkedHashMap<>();
+
+        // Get the baseClass elements into a map by name
+        if (getBaseType() instanceof ClassType) {
+            List<ClassTypeElement> baseElements = ((ClassType) getBaseType()).getAllElements();
+            for (ClassTypeElement el : baseElements) {
+                elementMap.put(el.getName(), el);
+            }
+        }
+
+        // Add this class's elements, overwriting baseClass definitions where applicable
+        for (ClassTypeElement el : elements) {
+            elementMap.put(el.getName(), el);
+        }
+
+        return new ArrayList<>(elementMap.values());
     }
 
     public void addElement(ClassTypeElement element)
