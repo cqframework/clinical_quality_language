@@ -371,7 +371,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("cqf-condition"));
+        assertThat(request.getTemplateId(), is("condition-qicore-qicore-condition"));
     }
 
     @Test
@@ -391,7 +391,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("cqf-condition"));
+        assertThat(request.getTemplateId(), is("condition-qicore-qicore-condition"));
     }
 
     @Test
@@ -411,7 +411,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("cqf-condition"));
+        assertThat(request.getTemplateId(), is("condition-qicore-qicore-condition"));
     }
 
     @Test
@@ -800,7 +800,7 @@ public class Cql2ElmVisitorTest {
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("cqf-encounter"));
+        assertThat(request.getTemplateId(), is("encounter-qicore-qicore-encounter"));
 
         return query;
     }
@@ -814,7 +814,7 @@ public class Cql2ElmVisitorTest {
             "parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))\n" +
             "define st : [Encounter: \"Inpatient\"] E\n" +
             "    with [Condition: \"Acute Pharyngitis\"] P\n" +
-            "        such that Interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period\n" +
+            "        such that Interval[P.onsetDateTime, P.abatementDate] overlaps after E.period\n" +
             "    where duration in days of E.period >= 120\n" +
             "    return Tuple { id: E.id, lengthOfStay: duration in days of E.period }\n" +
             "    sort by lengthOfStay desc";
@@ -834,7 +834,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("cqf-encounter"));
+        assertThat(request.getTemplateId(), is("encounter-qicore-qicore-encounter"));
 
         // Then check the with statement
         assertThat(query.getRelationship(), hasSize(1));
@@ -851,7 +851,7 @@ public class Cql2ElmVisitorTest {
         assertThat(withRequest.getDateRange(), is(nullValue()));
         assertThat(withRequest.getScope(), is(nullValue()));
         assertThat(withRequest.getIdProperty(), is(nullValue()));
-        assertThat(withRequest.getTemplateId(), is("cqf-condition"));
+        assertThat(withRequest.getTemplateId(), is("condition-qicore-qicore-condition"));
         OverlapsAfter withWhere = (OverlapsAfter) relationship.getSuchThat();
         assertThat(withWhere.getOperand(), hasSize(2));
         Interval overlapsLHS = (Interval) withWhere.getOperand().get(0);
@@ -863,7 +863,7 @@ public class Cql2ElmVisitorTest {
         assertThat(overlapsLHS.isHighClosed(), is(true));
         Property overlapsLHSHigh = (Property) overlapsLHS.getHigh();
         assertThat(overlapsLHSHigh.getScope(), is("P"));
-        assertThat(overlapsLHSHigh.getPath(), is("abatementDateTime"));
+        assertThat(overlapsLHSHigh.getPath(), is("abatementDate"));
         assertThat(overlapsLHSHigh.getSource(), is(nullValue()));
         Property overlapsRHS = (Property) withWhere.getOperand().get(1);
         assertThat(overlapsRHS.getScope(), is("E"));
@@ -952,7 +952,7 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
-        assertThat(request.getTemplateId(), is("cqf-encounter"));
+        assertThat(request.getTemplateId(), is("encounter-qicore-qicore-encounter"));
 
         // Then check the define
         assertThat(query.getDefine(), hasSize(1));

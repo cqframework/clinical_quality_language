@@ -49,28 +49,28 @@ public class CMS146ElmTest {
         Collection<Retrieve> expectedCR = Arrays.asList(
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
-                        .withTemplateId("cqf-condition")
+                        .withTemplateId("condition-qicore-qicore-condition")
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
-                        .withTemplateId("cqf-condition")
+                        .withTemplateId("condition-qicore-qicore-condition")
                         .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("MedicationPrescription"))
-                        .withTemplateId("cqf-medicationprescription")
+                        .withTemplateId("medicationprescription-qicore-qicore-medicationprescription")
                         .withCodeProperty("medication.code")
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Encounter"))
-                        .withTemplateId("cqf-encounter")
+                        .withTemplateId("encounter-qicore-qicore-encounter")
                         .withCodeProperty("type")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))
-                        .withTemplateId("cqf-observation")
-                        .withCodeProperty("name")
+                        .withTemplateId("observation-qicore-qicore-observation")
+                        .withCodeProperty("code")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
 

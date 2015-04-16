@@ -193,7 +193,7 @@
                "type" : "Union",
                "operand" : [ {
                   "dataType" : "{http://hl7.org/fhir}Condition",
-                  "templateId" : "cqf-condition",
+                  "templateId" : "condition-qicore-qicore-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
@@ -202,7 +202,7 @@
                   }
                }, {
                   "dataType" : "{http://hl7.org/fhir}Condition",
-                  "templateId" : "cqf-condition",
+                  "templateId" : "condition-qicore-qicore-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
@@ -217,7 +217,7 @@
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
-               "templateId" : "cqf-medicationprescription",
+               "templateId" : "medicationprescription-qicore-qicore-medicationprescription",
                "codeProperty" : "medication.code",
                "type" : "Retrieve",
                "codes" : {
@@ -235,7 +235,7 @@
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "codeProperty" : "type",
                      "type" : "Retrieve",
                      "codes" : {
@@ -263,7 +263,7 @@
                            "type" : "Property"
                         },
                         "high" : {
-                           "path" : "abatementDateTime",
+                           "path" : "abatementDate",
                            "scope" : "P",
                            "type" : "Property"
                         }
@@ -361,7 +361,7 @@
                            "type" : "Property"
                         },
                         "high" : {
-                           "path" : "abatementDateTime",
+                           "path" : "abatementDate",
                            "scope" : "P",
                            "type" : "Property"
                         }
@@ -482,8 +482,8 @@
                      "alias" : "R",
                      "expression" : {
                         "dataType" : "{http://hl7.org/fhir}Observation",
-                        "templateId" : "cqf-observation",
-                        "codeProperty" : "name",
+                        "templateId" : "observation-qicore-qicore-observation",
+                        "codeProperty" : "code",
                         "type" : "Retrieve",
                         "codes" : {
                            "name" : "Group A Streptococcus Test",
@@ -522,3 +522,4 @@
       }
    }
 }
+
