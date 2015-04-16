@@ -2,7 +2,7 @@
 <ns4:modelInfo name="QUICK" url="http://hl7.org/fhir" targetQualifier="quick" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Composition.Event" baseType="QUICK.BackboneElement">
         <ns4:element name="code" type="list&lt;System.Concept&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="detail" type="list&lt;QUICK.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Patient.Link" baseType="QUICK.BackboneElement">
@@ -53,7 +53,7 @@
         <ns4:element name="type" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
         <ns4:element name="managingOrganization" type="QUICK.Reference"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="condition" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="referralRequest" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="careManager" type="QUICK.Reference"/>
@@ -80,7 +80,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.HealthcareService.NotAvailable" baseType="QUICK.BackboneElement">
         <ns4:element name="description" type="System.String"/>
-        <ns4:element name="during" type="QUICK.Period"/>
+        <ns4:element name="during" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ProcedureRequest.BodySite" baseType="QUICK.BackboneElement">
         <ns4:element name="siteCodeableConcept" type="System.Concept"/>
@@ -90,7 +90,7 @@
         <ns4:element name="type" type="System.Concept"/>
         <ns4:element name="outcome" type="System.Concept"/>
         <ns4:element name="onsetAge" type="QUICK.Age"/>
-        <ns4:element name="onsetRange" type="QUICK.Range"/>
+        <ns4:element name="onsetRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="onsetString" type="System.String"/>
         <ns4:element name="note" type="System.String"/>
     </ns4:typeInfo>
@@ -137,11 +137,11 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.RiskAssessment.Prediction" baseType="QUICK.BackboneElement">
         <ns4:element name="outcome" type="System.Concept"/>
         <ns4:element name="probabilityDecimal" type="System.Decimal"/>
-        <ns4:element name="probabilityRange" type="QUICK.Range"/>
+        <ns4:element name="probabilityRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="probabilityCodeableConcept" type="System.Concept"/>
         <ns4:element name="relativeRisk" type="System.Decimal"/>
-        <ns4:element name="whenPeriod" type="QUICK.Period"/>
-        <ns4:element name="whenRange" type="QUICK.Range"/>
+        <ns4:element name="whenPeriod" type="interval&lt;System.DateTime&gt;"/>
+        <ns4:element name="whenRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="rationale" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.base64Binary" baseType="QUICK.Element">
@@ -194,7 +194,7 @@
         <ns4:element name="collector" type="QUICK.Reference"/>
         <ns4:element name="comment" type="list&lt;System.String&gt;"/>
         <ns4:element name="collectedDateTime" type="System.DateTime"/>
-        <ns4:element name="collectedPeriod" type="QUICK.Period"/>
+        <ns4:element name="collectedPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="quantity" type="System.Quantity"/>
         <ns4:element name="method" type="System.Concept"/>
         <ns4:element name="bodySiteCodeableConcept" type="System.Concept"/>
@@ -217,7 +217,7 @@
         <ns4:element name="type" type="QUICK.NamingSystemIdentifierType"/>
         <ns4:element name="value" type="System.String"/>
         <ns4:element name="preferred" type="System.Boolean"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.RelatedPerson" baseType="QUICK.DomainResource">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
@@ -228,7 +228,7 @@
         <ns4:element name="gender" type="QUICK.AdministrativeGender"/>
         <ns4:element name="address" type="QUICK.Address"/>
         <ns4:element name="photo" type="list&lt;QUICK.Attachment&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Encounter" baseType="QUICK.DomainResource">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
@@ -241,7 +241,7 @@
         <ns4:element name="incomingReferralRequest" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="participant" type="list&lt;QUICK.Encounter.Participant&gt;"/>
         <ns4:element name="fulfills" type="QUICK.Reference"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="length" type="QUICK.Duration"/>
         <ns4:element name="reason" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="indication" type="list&lt;QUICK.Reference&gt;"/>
@@ -258,14 +258,14 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationDispense.DosageInstruction" baseType="QUICK.BackboneElement">
         <ns4:element name="additionalInstructions" type="System.Concept"/>
         <ns4:element name="scheduleDateTime" type="System.DateTime"/>
-        <ns4:element name="schedulePeriod" type="QUICK.Period"/>
+        <ns4:element name="schedulePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="scheduleTiming" type="QUICK.Timing"/>
         <ns4:element name="asNeededBoolean" type="System.Boolean"/>
         <ns4:element name="asNeededCodeableConcept" type="System.Concept"/>
         <ns4:element name="site" type="System.Concept"/>
         <ns4:element name="route" type="System.Concept"/>
         <ns4:element name="method" type="System.Concept"/>
-        <ns4:element name="doseRange" type="QUICK.Range"/>
+        <ns4:element name="doseRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="doseQuantity" type="System.Quantity"/>
         <ns4:element name="rate" type="QUICK.Ratio"/>
         <ns4:element name="maxDosePerPeriod" type="QUICK.Ratio"/>
@@ -341,7 +341,7 @@
         <ns4:element name="low" type="System.Quantity"/>
         <ns4:element name="high" type="System.Quantity"/>
         <ns4:element name="meaning" type="System.Concept"/>
-        <ns4:element name="age" type="QUICK.Range"/>
+        <ns4:element name="age" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="text" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DeviceUseRequestStatus" baseType="QUICK.Element">
@@ -416,8 +416,8 @@
         <ns4:element name="valueCodeableConcept" type="System.Concept"/>
         <ns4:element name="valueCoding" type="System.Code"/>
         <ns4:element name="valueQuantity" type="System.Quantity"/>
-        <ns4:element name="valueRange" type="QUICK.Range"/>
-        <ns4:element name="valuePeriod" type="QUICK.Period"/>
+        <ns4:element name="valueRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="valuePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="valueRatio" type="QUICK.Ratio"/>
         <ns4:element name="valueReference" type="QUICK.Reference"/>
         <ns4:element name="valueSampledData" type="QUICK.SampledData"/>
@@ -748,7 +748,7 @@
         <ns4:element name="description" type="System.String"/>
         <ns4:element name="serviceRequested" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="supportingInformation" type="list&lt;QUICK.Reference&gt;"/>
-        <ns4:element name="fulfillmentTime" type="QUICK.Period"/>
+        <ns4:element name="fulfillmentTime" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ClinicalBaseGender" baseType="QUICK.Element">
         <ns4:element name="value" type="System.String"/>
@@ -760,7 +760,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Contract.Term" baseType="QUICK.BackboneElement">
         <ns4:element name="identifier" type="QUICK.Identifier"/>
         <ns4:element name="issued" type="System.DateTime"/>
-        <ns4:element name="applies" type="QUICK.Period"/>
+        <ns4:element name="applies" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="type" type="System.Concept"/>
         <ns4:element name="subType" type="System.Concept"/>
         <ns4:element name="subject" type="QUICK.Reference"/>
@@ -837,7 +837,7 @@
         <ns4:element name="managingOrganization" type="QUICK.Reference"/>
         <ns4:element name="role" type="System.Concept"/>
         <ns4:element name="specialty" type="list&lt;System.Concept&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="location" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="healthcareService" type="list&lt;QUICK.Reference&gt;"/>
     </ns4:typeInfo>
@@ -999,7 +999,7 @@
         <ns4:element name="address" type="QUICK.Address"/>
         <ns4:element name="gender" type="QUICK.AdministrativeGender"/>
         <ns4:element name="organization" type="QUICK.Reference"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Person.Link" baseType="QUICK.BackboneElement">
         <ns4:element name="target" type="QUICK.Reference"/>
@@ -1099,7 +1099,7 @@
         <ns4:element name="ruleset" type="System.Code"/>
         <ns4:element name="originalRuleset" type="System.Code"/>
         <ns4:element name="created" type="System.DateTime"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="organization" type="QUICK.Reference"/>
         <ns4:element name="requestProvider" type="QUICK.Reference"/>
         <ns4:element name="requestOrganization" type="QUICK.Reference"/>
@@ -1128,7 +1128,7 @@
         <ns4:element name="given" type="list&lt;System.String&gt;"/>
         <ns4:element name="prefix" type="list&lt;System.String&gt;"/>
         <ns4:element name="suffix" type="list&lt;System.String&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.CommunicationRequest" baseType="QUICK.DomainResource">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
@@ -1291,7 +1291,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Provenance" baseType="QUICK.DomainResource">
         <ns4:element name="target" type="list&lt;QUICK.Reference&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="recorded" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Concept"/>
         <ns4:element name="location" type="QUICK.Reference"/>
@@ -1354,14 +1354,14 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Encounter.Location" baseType="QUICK.BackboneElement">
         <ns4:element name="location" type="QUICK.Reference"/>
         <ns4:element name="status" type="QUICK.EncounterLocationStatus"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Identifier" baseType="QUICK.Element">
         <ns4:element name="use" type="QUICK.IdentifierUse"/>
         <ns4:element name="type" type="System.Concept"/>
         <ns4:element name="system" type="System.String"/>
         <ns4:element name="value" type="System.String"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="assigner" type="QUICK.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.NameUse" baseType="QUICK.Element">
@@ -1449,7 +1449,7 @@
         <ns4:element name="indication" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="performer" type="list&lt;QUICK.Procedure.Performer&gt;"/>
         <ns4:element name="performedDateTime" type="System.DateTime"/>
-        <ns4:element name="performedPeriod" type="QUICK.Period"/>
+        <ns4:element name="performedPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="encounter" type="QUICK.Reference"/>
         <ns4:element name="location" type="QUICK.Reference"/>
         <ns4:element name="outcome" type="System.Concept"/>
@@ -1491,18 +1491,18 @@
         <ns4:element name="valueQuantity" type="System.Quantity"/>
         <ns4:element name="valueCodeableConcept" type="System.Concept"/>
         <ns4:element name="valueString" type="System.String"/>
-        <ns4:element name="valueRange" type="QUICK.Range"/>
+        <ns4:element name="valueRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="valueRatio" type="QUICK.Ratio"/>
         <ns4:element name="valueSampledData" type="QUICK.SampledData"/>
         <ns4:element name="valueAttachment" type="QUICK.Attachment"/>
         <ns4:element name="valueTime" type="System.Time"/>
         <ns4:element name="valueDateTime" type="System.DateTime"/>
-        <ns4:element name="valuePeriod" type="QUICK.Period"/>
+        <ns4:element name="valuePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="dataAbsentReason" type="System.Concept"/>
         <ns4:element name="interpretation" type="System.Concept"/>
         <ns4:element name="comments" type="System.String"/>
         <ns4:element name="appliesDateTime" type="System.DateTime"/>
-        <ns4:element name="appliesPeriod" type="QUICK.Period"/>
+        <ns4:element name="appliesPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="issued" type="System.DateTime"/>
         <ns4:element name="status" type="QUICK.ObservationStatus"/>
         <ns4:element name="reliability" type="QUICK.ObservationReliability"/>
@@ -1588,10 +1588,6 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MessageEvent" baseType="QUICK.Element">
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Period" baseType="QUICK.Element">
-        <ns4:element name="start" type="System.DateTime"/>
-        <ns4:element name="end" type="System.DateTime"/>
-    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ValueSet.Expansion" baseType="QUICK.BackboneElement">
         <ns4:element name="identifier" type="System.String"/>
         <ns4:element name="timestamp" type="System.DateTime"/>
@@ -1612,7 +1608,7 @@
         <ns4:element name="system" type="QUICK.ContactPointSystem"/>
         <ns4:element name="value" type="System.String"/>
         <ns4:element name="use" type="QUICK.ContactPointUse"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.NamingSystem.Contact" baseType="QUICK.BackboneElement">
         <ns4:element name="name" type="System.String"/>
@@ -1620,7 +1616,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Encounter.StatusHistory" baseType="QUICK.BackboneElement">
         <ns4:element name="status" type="QUICK.EncounterState"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.StructureDefinitionType" baseType="QUICK.Element">
         <ns4:element name="value" type="System.String"/>
@@ -1631,7 +1627,7 @@
         <ns4:element name="text" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Timing.Repeat" baseType="QUICK.Element">
-        <ns4:element name="bounds" type="QUICK.Period"/>
+        <ns4:element name="bounds" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="count" type="System.Integer"/>
         <ns4:element name="duration" type="System.Decimal"/>
         <ns4:element name="durationUnits" type="QUICK.UnitsOfTime"/>
@@ -1695,8 +1691,8 @@
         <ns4:element name="defaultValueCodeableConcept" type="System.Concept"/>
         <ns4:element name="defaultValueCoding" type="System.Code"/>
         <ns4:element name="defaultValueQuantity" type="System.Quantity"/>
-        <ns4:element name="defaultValueRange" type="QUICK.Range"/>
-        <ns4:element name="defaultValuePeriod" type="QUICK.Period"/>
+        <ns4:element name="defaultValueRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="defaultValuePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="defaultValueRatio" type="QUICK.Ratio"/>
         <ns4:element name="defaultValueReference" type="QUICK.Reference"/>
         <ns4:element name="defaultValueSampledData" type="QUICK.SampledData"/>
@@ -1728,8 +1724,8 @@
         <ns4:element name="fixedCodeableConcept" type="System.Concept"/>
         <ns4:element name="fixedCoding" type="System.Code"/>
         <ns4:element name="fixedQuantity" type="System.Quantity"/>
-        <ns4:element name="fixedRange" type="QUICK.Range"/>
-        <ns4:element name="fixedPeriod" type="QUICK.Period"/>
+        <ns4:element name="fixedRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="fixedPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="fixedRatio" type="QUICK.Ratio"/>
         <ns4:element name="fixedReference" type="QUICK.Reference"/>
         <ns4:element name="fixedSampledData" type="QUICK.SampledData"/>
@@ -1760,8 +1756,8 @@
         <ns4:element name="patternCodeableConcept" type="System.Concept"/>
         <ns4:element name="patternCoding" type="System.Code"/>
         <ns4:element name="patternQuantity" type="System.Quantity"/>
-        <ns4:element name="patternRange" type="QUICK.Range"/>
-        <ns4:element name="patternPeriod" type="QUICK.Period"/>
+        <ns4:element name="patternRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="patternPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="patternRatio" type="QUICK.Ratio"/>
         <ns4:element name="patternReference" type="QUICK.Reference"/>
         <ns4:element name="patternSampledData" type="QUICK.SampledData"/>
@@ -1792,8 +1788,8 @@
         <ns4:element name="exampleCodeableConcept" type="System.Concept"/>
         <ns4:element name="exampleCoding" type="System.Code"/>
         <ns4:element name="exampleQuantity" type="System.Quantity"/>
-        <ns4:element name="exampleRange" type="QUICK.Range"/>
-        <ns4:element name="examplePeriod" type="QUICK.Period"/>
+        <ns4:element name="exampleRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="examplePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="exampleRatio" type="QUICK.Ratio"/>
         <ns4:element name="exampleReference" type="QUICK.Reference"/>
         <ns4:element name="exampleSampledData" type="QUICK.SampledData"/>
@@ -1887,7 +1883,7 @@
         <ns4:element name="item" type="list&lt;QUICK.ProcessRequest.Item&gt;"/>
         <ns4:element name="include" type="list&lt;System.String&gt;"/>
         <ns4:element name="exclude" type="list&lt;System.String&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ActionList" baseType="QUICK.Element">
         <ns4:element name="value" type="System.String"/>
@@ -1940,14 +1936,14 @@
         <ns4:element name="severity" type="System.Concept"/>
         <ns4:element name="onsetDateTime" type="System.DateTime"/>
         <ns4:element name="onsetAge" type="QUICK.Age"/>
-        <ns4:element name="onsetPeriod" type="QUICK.Period"/>
-        <ns4:element name="onsetRange" type="QUICK.Range"/>
+        <ns4:element name="onsetPeriod" type="interval&lt;System.DateTime&gt;"/>
+        <ns4:element name="onsetRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="onsetString" type="System.String"/>
         <ns4:element name="abatementDate" type="System.DateTime"/>
         <ns4:element name="abatementAge" type="QUICK.Age"/>
         <ns4:element name="abatementBoolean" type="System.Boolean"/>
-        <ns4:element name="abatementPeriod" type="QUICK.Period"/>
-        <ns4:element name="abatementRange" type="QUICK.Range"/>
+        <ns4:element name="abatementPeriod" type="interval&lt;System.DateTime&gt;"/>
+        <ns4:element name="abatementRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="abatementString" type="System.String"/>
         <ns4:element name="stage" type="QUICK.Condition.Stage"/>
         <ns4:element name="evidence" type="list&lt;QUICK.Condition.Evidence&gt;"/>
@@ -1959,7 +1955,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Contract" baseType="QUICK.DomainResource">
         <ns4:element name="identifier" type="QUICK.Identifier"/>
         <ns4:element name="issued" type="System.DateTime"/>
-        <ns4:element name="applies" type="QUICK.Period"/>
+        <ns4:element name="applies" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="subject" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="authority" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="domain" type="list&lt;QUICK.Reference&gt;"/>
@@ -2018,15 +2014,15 @@
         <ns4:element name="name" type="System.String"/>
         <ns4:element name="relationship" type="System.Concept"/>
         <ns4:element name="gender" type="QUICK.AdministrativeGender"/>
-        <ns4:element name="bornPeriod" type="QUICK.Period"/>
+        <ns4:element name="bornPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="bornDate" type="System.DateTime"/>
         <ns4:element name="bornString" type="System.String"/>
         <ns4:element name="ageAge" type="QUICK.Age"/>
-        <ns4:element name="ageRange" type="QUICK.Range"/>
+        <ns4:element name="ageRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="ageString" type="System.String"/>
         <ns4:element name="deceasedBoolean" type="System.Boolean"/>
         <ns4:element name="deceasedAge" type="QUICK.Age"/>
-        <ns4:element name="deceasedRange" type="QUICK.Range"/>
+        <ns4:element name="deceasedRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="deceasedDate" type="System.DateTime"/>
         <ns4:element name="deceasedString" type="System.String"/>
         <ns4:element name="note" type="System.String"/>
@@ -2061,8 +2057,8 @@
         <ns4:element name="valueCodeableConcept" type="System.Concept"/>
         <ns4:element name="valueCoding" type="System.Code"/>
         <ns4:element name="valueQuantity" type="System.Quantity"/>
-        <ns4:element name="valueRange" type="QUICK.Range"/>
-        <ns4:element name="valuePeriod" type="QUICK.Period"/>
+        <ns4:element name="valueRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="valuePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="valueRatio" type="QUICK.Ratio"/>
         <ns4:element name="valueReference" type="QUICK.Reference"/>
         <ns4:element name="valueSampledData" type="QUICK.SampledData"/>
@@ -2109,8 +2105,8 @@
         <ns4:element name="whoCodeableConcept" type="System.Concept"/>
         <ns4:element name="whoCoding" type="System.Code"/>
         <ns4:element name="whoQuantity" type="System.Quantity"/>
-        <ns4:element name="whoRange" type="QUICK.Range"/>
-        <ns4:element name="whoPeriod" type="QUICK.Period"/>
+        <ns4:element name="whoRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="whoPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="whoRatio" type="QUICK.Ratio"/>
         <ns4:element name="whoReference" type="QUICK.Reference"/>
         <ns4:element name="whoSampledData" type="QUICK.SampledData"/>
@@ -2168,7 +2164,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Practitioner.Qualification" baseType="QUICK.BackboneElement">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="code" type="System.Concept"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="issuer" type="QUICK.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.OperationParameterUse" baseType="QUICK.Element">
@@ -2179,7 +2175,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Encounter.Participant" baseType="QUICK.BackboneElement">
         <ns4:element name="type" type="list&lt;System.Concept&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="individual" type="QUICK.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Bundle.Search" baseType="QUICK.BackboneElement">
@@ -2197,7 +2193,7 @@
         <ns4:element name="reasonForUseCodeableConcept" type="System.Concept"/>
         <ns4:element name="reasonForUseReference" type="QUICK.Reference"/>
         <ns4:element name="effectiveDateTime" type="System.DateTime"/>
-        <ns4:element name="effectivePeriod" type="QUICK.Period"/>
+        <ns4:element name="effectivePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="note" type="System.String"/>
         <ns4:element name="medication" type="QUICK.Reference"/>
         <ns4:element name="dosage" type="list&lt;QUICK.MedicationStatement.Dosage&gt;"/>
@@ -2502,7 +2498,7 @@
         <ns4:element name="reasonNotGiven" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="reasonGiven" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="effectiveTimeDateTime" type="System.DateTime"/>
-        <ns4:element name="effectiveTimePeriod" type="QUICK.Period"/>
+        <ns4:element name="effectiveTimePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="medication" type="QUICK.Reference"/>
         <ns4:element name="device" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="note" type="System.String"/>
@@ -2531,7 +2527,7 @@
         <ns4:element name="recordedOn" type="System.DateTime"/>
         <ns4:element name="subject" type="QUICK.Reference"/>
         <ns4:element name="timingTiming" type="QUICK.Timing"/>
-        <ns4:element name="timingPeriod" type="QUICK.Period"/>
+        <ns4:element name="timingPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="timingDateTime" type="System.DateTime"/>
         <ns4:element name="priority" type="QUICK.DeviceUseRequestPriority"/>
     </ns4:typeInfo>
@@ -2545,7 +2541,7 @@
         <ns4:element name="statusReason" type="System.Concept"/>
         <ns4:element name="prohibited" type="System.Boolean"/>
         <ns4:element name="scheduledTiming" type="QUICK.Timing"/>
-        <ns4:element name="scheduledPeriod" type="QUICK.Period"/>
+        <ns4:element name="scheduledPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="scheduledString" type="System.String"/>
         <ns4:element name="location" type="QUICK.Reference"/>
         <ns4:element name="performer" type="list&lt;QUICK.Reference&gt;"/>
@@ -2605,8 +2601,8 @@
         <ns4:element name="valueSetCodeableConcept" type="System.Concept"/>
         <ns4:element name="valueSetCoding" type="System.Code"/>
         <ns4:element name="valueSetQuantity" type="System.Quantity"/>
-        <ns4:element name="valueSetRange" type="QUICK.Range"/>
-        <ns4:element name="valueSetPeriod" type="QUICK.Period"/>
+        <ns4:element name="valueSetRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="valueSetPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="valueSetRatio" type="QUICK.Ratio"/>
         <ns4:element name="valueSetReference" type="QUICK.Reference"/>
         <ns4:element name="valueSetSampledData" type="QUICK.SampledData"/>
@@ -2753,8 +2749,8 @@
         <ns4:element name="valueCodeableConcept" type="System.Concept"/>
         <ns4:element name="valueCoding" type="System.Code"/>
         <ns4:element name="valueQuantity" type="System.Quantity"/>
-        <ns4:element name="valueRange" type="QUICK.Range"/>
-        <ns4:element name="valuePeriod" type="QUICK.Period"/>
+        <ns4:element name="valueRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:element name="valuePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="valueRatio" type="QUICK.Ratio"/>
         <ns4:element name="valueReference" type="QUICK.Reference"/>
         <ns4:element name="valueSampledData" type="QUICK.SampledData"/>
@@ -2788,7 +2784,7 @@
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="category" type="System.Concept"/>
         <ns4:element name="status" type="QUICK.FlagStatus"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
         <ns4:element name="author" type="QUICK.Reference"/>
         <ns4:element name="code" type="System.Concept"/>
@@ -2886,14 +2882,14 @@
         <ns4:element name="text" type="System.String"/>
         <ns4:element name="additionalInstructions" type="System.Concept"/>
         <ns4:element name="scheduledDateTime" type="System.DateTime"/>
-        <ns4:element name="scheduledPeriod" type="QUICK.Period"/>
+        <ns4:element name="scheduledPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="scheduledTiming" type="QUICK.Timing"/>
         <ns4:element name="asNeededBoolean" type="System.Boolean"/>
         <ns4:element name="asNeededCodeableConcept" type="System.Concept"/>
         <ns4:element name="site" type="System.Concept"/>
         <ns4:element name="route" type="System.Concept"/>
         <ns4:element name="method" type="System.Concept"/>
-        <ns4:element name="doseRange" type="QUICK.Range"/>
+        <ns4:element name="doseRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="doseQuantity" type="System.Quantity"/>
         <ns4:element name="rate" type="QUICK.Ratio"/>
         <ns4:element name="maxDosePerPeriod" type="QUICK.Ratio"/>
@@ -2907,7 +2903,7 @@
         <ns4:element name="valueCodeableConcept" type="System.Concept"/>
         <ns4:element name="valueBoolean" type="System.Boolean"/>
         <ns4:element name="valueQuantity" type="System.Quantity"/>
-        <ns4:element name="valueRange" type="QUICK.Range"/>
+        <ns4:element name="valueRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="exclude" type="System.Boolean"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ParticipantStatus" baseType="QUICK.Element">
@@ -2920,7 +2916,7 @@
         <ns4:element name="bodySite" type="list&lt;QUICK.ProcedureRequest.BodySite&gt;"/>
         <ns4:element name="indication" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="timingDateTime" type="System.DateTime"/>
-        <ns4:element name="timingPeriod" type="QUICK.Period"/>
+        <ns4:element name="timingPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="timingTiming" type="QUICK.Timing"/>
         <ns4:element name="encounter" type="QUICK.Reference"/>
         <ns4:element name="performer" type="QUICK.Reference"/>
@@ -2972,10 +2968,6 @@
         <ns4:element name="date" type="System.DateTime"/>
         <ns4:element name="item" type="QUICK.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Range" baseType="QUICK.Element">
-        <ns4:element name="low" type="System.Quantity"/>
-        <ns4:element name="high" type="System.Quantity"/>
-    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.EncounterState" baseType="QUICK.Element">
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
@@ -3025,12 +3017,12 @@
         <ns4:element name="state" type="System.String"/>
         <ns4:element name="postalCode" type="System.String"/>
         <ns4:element name="country" type="System.String"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DeviceUseStatement" baseType="QUICK.DomainResource">
         <ns4:element name="bodySiteCodeableConcept" type="System.Concept"/>
         <ns4:element name="bodySiteReference" type="QUICK.Reference"/>
-        <ns4:element name="whenUsed" type="QUICK.Period"/>
+        <ns4:element name="whenUsed" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="device" type="QUICK.Reference"/>
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="indication" type="list&lt;System.Concept&gt;"/>
@@ -3038,7 +3030,7 @@
         <ns4:element name="recordedOn" type="System.DateTime"/>
         <ns4:element name="subject" type="QUICK.Reference"/>
         <ns4:element name="timingTiming" type="QUICK.Timing"/>
-        <ns4:element name="timingPeriod" type="QUICK.Period"/>
+        <ns4:element name="timingPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="timingDateTime" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Count" baseType="System.Quantity">
@@ -3064,7 +3056,7 @@
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="patient" type="QUICK.Reference"/>
         <ns4:element name="status" type="QUICK.CarePlanStatus"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="author" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="modified" type="System.DateTime"/>
         <ns4:element name="category" type="list&lt;System.Concept&gt;"/>
@@ -3341,7 +3333,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.MedicationPrescription.Dispense" baseType="QUICK.BackboneElement">
         <ns4:element name="medication" type="QUICK.Reference"/>
-        <ns4:element name="validityPeriod" type="QUICK.Period"/>
+        <ns4:element name="validityPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="numberOfRepeatsAllowed" type="System.Integer"/>
         <ns4:element name="quantity" type="System.Quantity"/>
         <ns4:element name="expectedSupplyDuration" type="QUICK.Duration"/>
@@ -3409,7 +3401,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DocumentReference.Context" baseType="QUICK.BackboneElement">
         <ns4:element name="event" type="list&lt;System.Concept&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="facilityType" type="System.Concept"/>
         <ns4:element name="practiceSetting" type="System.Concept"/>
         <ns4:element name="sourcePatientInfo" type="QUICK.Reference"/>
@@ -3453,7 +3445,7 @@
         <ns4:element name="quantity" type="System.Quantity"/>
         <ns4:element name="suppliedItem" type="QUICK.Reference"/>
         <ns4:element name="supplier" type="QUICK.Reference"/>
-        <ns4:element name="whenPrepared" type="QUICK.Period"/>
+        <ns4:element name="whenPrepared" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="whenHandedOver" type="System.DateTime"/>
         <ns4:element name="destination" type="QUICK.Reference"/>
         <ns4:element name="receiver" type="list&lt;QUICK.Reference&gt;"/>
@@ -3461,7 +3453,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Coverage" baseType="QUICK.DomainResource">
         <ns4:element name="issuer" type="QUICK.Reference"/>
         <ns4:element name="bin" type="QUICK.Identifier"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="type" type="System.Code"/>
         <ns4:element name="subscriberId" type="QUICK.Identifier"/>
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
@@ -3507,7 +3499,7 @@
         <ns4:element name="requestDetail" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="serviceCategory" type="System.Concept"/>
         <ns4:element name="diagnosticDateTime" type="System.DateTime"/>
-        <ns4:element name="diagnosticPeriod" type="QUICK.Period"/>
+        <ns4:element name="diagnosticPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="specimen" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="result" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="imagingStudy" type="list&lt;QUICK.Reference&gt;"/>
@@ -3518,7 +3510,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.EpisodeOfCare.StatusHistory" baseType="QUICK.BackboneElement">
         <ns4:element name="status" type="QUICK.EpisodeOfCareStatus"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.SubscriptionStatus" baseType="QUICK.Element">
         <ns4:element name="value" type="System.String"/>
@@ -3526,7 +3518,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.EpisodeOfCare.CareTeam" baseType="QUICK.BackboneElement">
         <ns4:element name="member" type="QUICK.Reference"/>
         <ns4:element name="role" type="list&lt;System.Concept&gt;"/>
-        <ns4:element name="period" type="QUICK.Period"/>
+        <ns4:element name="period" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.CarePlan.Participant" baseType="QUICK.BackboneElement">
         <ns4:element name="role" type="System.Concept"/>
@@ -3536,7 +3528,7 @@
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="type" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="actor" type="QUICK.Reference"/>
-        <ns4:element name="planningHorizon" type="QUICK.Period"/>
+        <ns4:element name="planningHorizon" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="comment" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Location" baseType="QUICK.DomainResource">
