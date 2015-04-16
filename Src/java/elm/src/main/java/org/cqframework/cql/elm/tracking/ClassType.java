@@ -160,27 +160,31 @@ public class ClassType extends DataType implements NamedType {
         return tupleType;
     }
 
-    private TupleType buildTupleType() {
-        List<TupleTypeElement> tupleElements = new ArrayList<>();
-        DataType currentType = this;
-        while (currentType != null) {
-            if (currentType instanceof ClassType) {
-                ClassType classType = (ClassType)currentType;
-                for (ClassTypeElement element : classType.getElements()) {
-                    TupleTypeElement tupleElement = new TupleTypeElement(element.getName(), element.getType());
-                    tupleElements.add(tupleElement);
-                }
-            }
-
-            currentType = currentType.getBaseType();
+    private void addTupleElements(ClassType classType, LinkedHashMap<String, TupleTypeElement> elements) {
+        // Add base elements first
+        DataType baseType = classType.getBaseType();
+        if (baseType instanceof ClassType) {
+            addTupleElements((ClassType)baseType, elements);
         }
 
-        return new TupleType(tupleElements);
+        for (ClassTypeElement element : classType.getElements()) {
+            if (!element.isProhibited()) {
+                TupleTypeElement tupleElement = new TupleTypeElement(element.getName(), element.getType());
+                elements.put(tupleElement.getName(), tupleElement);
+            }
+        }
+    }
+
+    private TupleType buildTupleType() {
+        LinkedHashMap<String, TupleTypeElement> tupleElements = new LinkedHashMap<>();
+
+        addTupleElements(this, tupleElements);
+
+        return new TupleType(tupleElements.values());
     }
 
     @Override
     public boolean isCompatibleWith(DataType other) {
-        // TODO: Class types are compatible with tuple types...
         if (other instanceof TupleType) {
             TupleType tupleType = (TupleType)other;
             return getTupleType().equals(tupleType);

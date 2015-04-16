@@ -10,6 +10,7 @@ define DecimalChoiceReference: ChoiceParameter = 123.0 // invalid, syntax error
 
 // Allows natural use of elements like Observation.value, which are defined as union types in the model
 // Should we support as a first-class type in CQL, or just an aspect of the model info and translator reference implementation?
+// Decision: Because the solution doesn't provide much beyond what is already provided by the Any-valued elements, we are holding off on this.
 
 // Prohibited attributes
 // Define a prohibited attribute on instance type elements.

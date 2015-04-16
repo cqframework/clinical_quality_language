@@ -3298,6 +3298,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 ClassType classType = (ClassType)currentType;
                 for (ClassTypeElement e : classType.getElements()) {
                     if (e.getName().equals(identifier)) {
+                        if (e.isProhibited()) {
+                            throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
+                        }
+
                         return e.getType();
                     }
                 }
