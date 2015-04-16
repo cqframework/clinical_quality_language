@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="QuestionnaireAnswers" type="QuestionnaireAnswers">
     <xs:annotation>
@@ -69,14 +69,14 @@
               <xs:documentation>Person who received the answers to the questions in the QuestionnaireAnswers and recorded them in the system.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="authored" minOccurs="1" maxOccurs="1" type="dateTime">
+          <xs:element name="authored" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
               <xs:documentation>The date and/or time that this version of the questionnaire answers was authored.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="source" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>The person who answered the questions about the subject. Only used when this is not the subject him/herself.</xs:documentation>
+              <xs:documentation>The person who answered the questions about the subject.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="encounter" minOccurs="0" maxOccurs="1" type="Reference">
@@ -148,7 +148,7 @@
           </xs:element>
           <xs:element name="text" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Text of the question as it is shown to the user.</xs:documentation>
+              <xs:documentation>The actual question as shown to the user to prompt them for an answer.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="answer" type="QuestionnaireAnswers.Answer" minOccurs="0" maxOccurs="unbounded">
@@ -174,7 +174,7 @@
         <xs:sequence>
           <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>Single-valued answer to the question.</xs:documentation>
+              <xs:documentation>The answer (or one of the answers) provided by the respondant to the question.</xs:documentation>
             </xs:annotation>
             <xs:element name="valueBoolean" type="boolean"/>
             <xs:element name="valueDecimal" type="decimal"/>
@@ -184,6 +184,7 @@
             <xs:element name="valueInstant" type="instant"/>
             <xs:element name="valueTime" type="time"/>
             <xs:element name="valueString" type="string"/>
+            <xs:element name="valueUri" type="uri"/>
             <xs:element name="valueAttachment" type="Attachment"/>
             <xs:element name="valueCoding" type="Coding"/>
             <xs:element name="valueQuantity" type="Quantity"/>
@@ -195,7 +196,7 @@
   </xs:complexType>
   <xs:simpleType name="QuestionnaireAnswersStatus-list">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="in progress">
+      <xs:enumeration value="in-progress">
         <xs:annotation>
           <xs:documentation>This QuestionnaireAnswers has been partially filled out with answers, but changes or additions are still expected to be made to it.</xs:documentation>
         </xs:annotation>

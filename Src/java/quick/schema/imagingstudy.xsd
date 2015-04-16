@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="ImagingStudy" type="ImagingStudy">
     <xs:annotation>
@@ -46,12 +46,12 @@
         <xs:sequence>
           <xs:element name="started" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
-              <xs:documentation>Date and Time the study started.</xs:documentation>
+              <xs:documentation>Date and Time the study started. Timezone Offset From UTC.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subject" minOccurs="1" maxOccurs="1" type="Reference">
+          <xs:element name="patient" minOccurs="1" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>Who the images are of.</xs:documentation>
+              <xs:documentation>The patient imaged in the study.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="uid" minOccurs="1" maxOccurs="1" type="oid">
@@ -91,15 +91,15 @@
           </xs:element>
           <xs:element name="url" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>WADO-RS URI where Study is available.</xs:documentation>
+              <xs:documentation>WADO-RS resource where Study is available.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="numberOfSeries" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="numberOfSeries" minOccurs="1" maxOccurs="1" type="unsignedInt">
             <xs:annotation>
               <xs:documentation>Number of Series in Study.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="numberOfInstances" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="numberOfInstances" minOccurs="1" maxOccurs="1" type="unsignedInt">
             <xs:annotation>
               <xs:documentation>Number of SOP Instances in Study.</xs:documentation>
            </xs:annotation>
@@ -121,7 +121,7 @@
           </xs:element>
           <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Institution-generated description or classification of the Study (component) performed.</xs:documentation>
+              <xs:documentation>Institution-generated description or classification of the Study performed.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="series" type="ImagingStudy.Series" minOccurs="0" maxOccurs="unbounded">
@@ -140,7 +140,7 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="number" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="number" minOccurs="0" maxOccurs="1" type="unsignedInt">
             <xs:annotation>
               <xs:documentation>The Numeric identifier of this series in the study.</xs:documentation>
            </xs:annotation>
@@ -160,9 +160,9 @@
               <xs:documentation>A description of the series.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="numberOfInstances" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="numberOfInstances" minOccurs="1" maxOccurs="1" type="unsignedInt">
             <xs:annotation>
-              <xs:documentation>Sequence that contains attributes from the.</xs:documentation>
+              <xs:documentation>Number of SOP Instances in Series.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="availability" minOccurs="0" maxOccurs="1" type="InstanceAvailability">
@@ -172,7 +172,7 @@
           </xs:element>
           <xs:element name="url" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>WADO-RS URI where Series is available.</xs:documentation>
+              <xs:documentation>WADO-RS resource where the Series is available.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="bodySite" minOccurs="0" maxOccurs="1" type="Coding">
@@ -180,14 +180,19 @@
               <xs:documentation>Body part examined. See  DICOM Part 16 Annex L for the mapping from DICOM to Snomed.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="laterality" minOccurs="0" maxOccurs="1" type="Coding">
+            <xs:annotation>
+              <xs:documentation>Laterality if bodySite is paired anatomic structure and laterality is not pre-coordinated in bodySite code, map from (0020, 0060).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="dateTime" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
-              <xs:documentation>When the series started.</xs:documentation>
+              <xs:documentation>The date and time when the series was started.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="instance" type="ImagingStudy.Instance" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>A single image taken from a patient.</xs:documentation>
+              <xs:documentation>A single SOP Instance within the series, e.g., an image, or presentation state.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -201,7 +206,7 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="number" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="number" minOccurs="0" maxOccurs="1" type="unsignedInt">
             <xs:annotation>
               <xs:documentation>The number of this image in the series.</xs:documentation>
            </xs:annotation>
@@ -218,22 +223,17 @@
           </xs:element>
           <xs:element name="type" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Type of instance (image etc) (0004,1430).</xs:documentation>
+              <xs:documentation>A human-friendly SOP Class name.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="title" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Description (0070,0080 | 0040,A043 &gt; 0008,0104 | 0042,0010 | 0008,0008).</xs:documentation>
+              <xs:documentation>The description of the instance.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="url" minOccurs="0" maxOccurs="1" type="uri">
+          <xs:element name="content" minOccurs="0" maxOccurs="unbounded" type="Attachment">
             <xs:annotation>
-              <xs:documentation>WADO-RS url where image is available.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="attachment" minOccurs="0" maxOccurs="1" type="Reference">
-            <xs:annotation>
-              <xs:documentation>A FHIR resource with content for this instance.</xs:documentation>
+              <xs:documentation>Content of the instance or a rendering thereof (e.g., a JPEG of an image, or an XML of a structured report). May be represented by inline encoding, or by a URL reference to a WADO-RS service that makes the instance available. Multiple content attachments may be used for alternate representations of the instance.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

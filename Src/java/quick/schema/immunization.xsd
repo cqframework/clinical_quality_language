@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Immunization" type="Immunization">
     <xs:annotation>
@@ -46,7 +46,7 @@
         <xs:sequence>
           <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
-              <xs:documentation>A unique identifier assigned to this adverse reaction record.</xs:documentation>
+              <xs:documentation>A unique identifier assigned to this immunization record.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="date" minOccurs="1" maxOccurs="1" type="dateTime">
@@ -59,14 +59,14 @@
               <xs:documentation>Vaccine that was administered or was to be administered.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subject" minOccurs="1" maxOccurs="1" type="Reference">
+          <xs:element name="patient" minOccurs="1" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>The patient to whom the vaccine was to be administered.</xs:documentation>
+              <xs:documentation>The patient who either received or did not receive the immunization.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="refusedIndicator" minOccurs="1" maxOccurs="1" type="boolean">
+          <xs:element name="wasNotGiven" minOccurs="1" maxOccurs="1" type="boolean">
             <xs:annotation>
-              <xs:documentation>Indicates if the vaccination was refused.</xs:documentation>
+              <xs:documentation>Indicates if the vaccination was or was not given.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="reported" minOccurs="1" maxOccurs="1" type="boolean">
@@ -82,6 +82,11 @@
           <xs:element name="requester" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>Clinician who ordered the vaccination.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="encounter" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The visit or admission or other contact between patient and health care provider the immunization was performed as part of.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="manufacturer" minOccurs="0" maxOccurs="1" type="Reference">
@@ -121,7 +126,7 @@
           </xs:element>
           <xs:element name="explanation" type="Immunization.Explanation" minOccurs="0" maxOccurs="1">
             <xs:annotation>
-              <xs:documentation>Reasons why a vaccine was administered or refused.</xs:documentation>
+              <xs:documentation>Reasons why a vaccine was or was not administered.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="reaction" type="Immunization.Reaction" minOccurs="0" maxOccurs="unbounded">
@@ -150,9 +155,9 @@
               <xs:documentation>Reasons why a vaccine was administered.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="refusalReason" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+          <xs:element name="reasonNotGiven" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>Refusal or exemption reasons.</xs:documentation>
+              <xs:documentation>Reason why a vaccine was not administered.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -192,7 +197,7 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="doseSequence" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="doseSequence" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>Nominal position in a series.</xs:documentation>
            </xs:annotation>
@@ -212,7 +217,7 @@
               <xs:documentation>One possible path to achieve presumed immunity against a disease - within the context of an authority.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="seriesDoses" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="seriesDoses" minOccurs="0" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>The recommended number of doses to achieve immunity.</xs:documentation>
            </xs:annotation>

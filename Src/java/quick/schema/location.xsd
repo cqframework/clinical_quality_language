@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Location" type="Location">
     <xs:annotation>
@@ -59,6 +59,11 @@
               <xs:documentation>Description of the Location, which helps in finding or referencing the place.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="mode" minOccurs="0" maxOccurs="1" type="LocationMode">
+            <xs:annotation>
+              <xs:documentation>Indicates whether a resource instance represents a specific location or a class of locations.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="type" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>Indicates the type of function performed at the location.</xs:documentation>
@@ -81,7 +86,7 @@
           </xs:element>
           <xs:element name="position" type="Location.Position" minOccurs="0" maxOccurs="1">
             <xs:annotation>
-              <xs:documentation>The absolute geographic location of the Location, expressed in a KML compatible manner (see notes below for KML).</xs:documentation>
+              <xs:documentation>The absolute geographic location of the Location, expressed in with the WGS84 datum (This is the same co-ordinate system used in KML).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="managingOrganization" minOccurs="0" maxOccurs="1" type="Reference">
@@ -89,19 +94,14 @@
               <xs:documentation>The organization that is responsible for the provisioning and upkeep of the location.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="status" minOccurs="0" maxOccurs="1" type="LocationStatus">
-            <xs:annotation>
-              <xs:documentation>active | suspended | inactive.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
           <xs:element name="partOf" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>Another Location which this Location is physically part of.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="mode" minOccurs="0" maxOccurs="1" type="LocationMode">
+          <xs:element name="status" minOccurs="0" maxOccurs="1" type="LocationStatus">
             <xs:annotation>
-              <xs:documentation>Indicates whether a resource instance represents a specific location or a class of locations.</xs:documentation>
+              <xs:documentation>active | suspended | inactive.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -168,12 +168,12 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="instance">
         <xs:annotation>
-          <xs:documentation>The Location resource represents a specific instance of a Location.</xs:documentation>
+          <xs:documentation>The Location resource represents a specific instance of a Location (e.g. Operating Theatre 1A).</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="kind">
         <xs:annotation>
-          <xs:documentation>The Location represents a class of Locations.</xs:documentation>
+          <xs:documentation>The Location represents a class of Locations (e.g. Any Operating Theatre). Although this class of locations could be constrained within a specific boundary (such as organization, or parent location, address etc).</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
     </xs:restriction>

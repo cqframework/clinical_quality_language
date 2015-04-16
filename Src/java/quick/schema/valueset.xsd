@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="ValueSet" type="ValueSet">
     <xs:annotation>
@@ -44,14 +44,19 @@
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="uri">
+          <xs:element name="url" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>The identifier that is used to identify this value set when it is referenced in a specification, model, design or an instance (should be globally unique OID, UUID, or URI).</xs:documentation>
+              <xs:documentation>An absolute uri that is used to identify this value set when it is referenced in a specification, model, design or an instance (should be globally unique URI, and an be urn:uuid: or urn:oid:).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation>Formal identifier that is used to identify this value set when it is represented in other formats, or referenced in a specification, model, design or an instance.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>The identifier that is used to identify this version of the value set when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the profile author manually and the value should be a timestamp.</xs:documentation>
+              <xs:documentation>Used to identify this version of the value set when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the profile author manually and the value should be a timestamp.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
@@ -59,9 +64,9 @@
               <xs:documentation>A free text natural language name describing the value set.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="purpose" minOccurs="0" maxOccurs="1" type="string">
+          <xs:element name="useContext" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>This should describe &quot;the semantic space&quot; to be included in the value set. This can also describe the approach taken to build the value set.</xs:documentation>
+              <xs:documentation>The content was developed with a focus and intent of supporting the contexts that are listed. These terms may be used to assist with indexing and searching of value set definitions.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="immutable" minOccurs="0" maxOccurs="1" type="boolean">
@@ -74,22 +79,27 @@
               <xs:documentation>The name of the individual or organization that published the value set.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+          <xs:element name="contact" type="ValueSet.Contact" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>Contacts of the publisher to assist a user in finding and communicating with the publisher.</xs:documentation>
+              <xs:documentation>Contacts to assist a user in finding and communicating with the publisher.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>A free text natural language description of the use of the value set - reason for definition, conditions of use, etc. The description may include a list of expected usages for the value set.</xs:documentation>
+              <xs:documentation>A free text natural language description of the use of the value set - reason for definition, &quot;the semantic space&quot; to be included in the value set, conditions of use, etc. The description may include a list of expected usages for the value set and can also describe the approach taken to build the value set.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="requirements" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Explains why this value set is needed and why it's been constrained as it has.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="copyright" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>A copyright statement relating to the value set and/or its contents. These are generally legal restrictions on the use and publishing of the value set.</xs:documentation>
+              <xs:documentation>A copyright statement relating to the value set and/or its contents. Copyright statements are generally legal restrictions on the use and publishing of the value set.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ValueSetStatus">
+          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ConformanceResourceStatus">
             <xs:annotation>
               <xs:documentation>The status of the value set.</xs:documentation>
            </xs:annotation>
@@ -109,14 +119,14 @@
               <xs:documentation>The date that the value set status was last changed.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="stableDate" minOccurs="0" maxOccurs="1" type="date">
+          <xs:element name="lockedDate" minOccurs="0" maxOccurs="1" type="date">
             <xs:annotation>
-              <xs:documentation>If a Stability Date is expanded by evaluating the Content Logical Definition using the current version of all referenced code system(s) and value sets as of the Stability Date.</xs:documentation>
+              <xs:documentation>If a Locked Date is defined, then the Content Logical Definition must be evaluated using the current version of all referenced code system(s) and value sets as of the Locked Date.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="define" type="ValueSet.Define" minOccurs="0" maxOccurs="1">
             <xs:annotation>
-              <xs:documentation>When value set defines its own codes.</xs:documentation>
+              <xs:documentation>A definition of an code system, inlined into the value set.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="compose" type="ValueSet.Compose" minOccurs="0" maxOccurs="1">
@@ -133,6 +143,27 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="ValueSet.Contact">
+    <xs:annotation>
+      <xs:documentation>A value set specifies a set of codes drawn from one or more code systems.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The name of an individual to contact regarding the value set.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+            <xs:annotation>
+              <xs:documentation>Contact details for individual (if a name was provided) or the publisher.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="ValueSet.Define">
     <xs:annotation>
       <xs:documentation>A value set specifies a set of codes drawn from one or more code systems.</xs:documentation>
@@ -142,7 +173,7 @@
         <xs:sequence>
           <xs:element name="system" minOccurs="1" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>URI to identify the code system.</xs:documentation>
+              <xs:documentation>An absolute URI that is used to reference this code system, including in [Coding]{datatypes.html#Coding}.system.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
@@ -240,7 +271,7 @@
         <xs:sequence>
           <xs:element name="import" minOccurs="0" maxOccurs="unbounded" type="uri">
             <xs:annotation>
-              <xs:documentation>Includes the contents of the referenced value set as a part of the contents of this value set.</xs:documentation>
+              <xs:documentation>Includes the contents of the referenced value set as a part of the contents of this value set. This is an absolute URI that is a reference to ValueSet.uri.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="include" type="ValueSet.Include" minOccurs="0" maxOccurs="unbounded">
@@ -266,7 +297,7 @@
         <xs:sequence>
           <xs:element name="system" minOccurs="1" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>The code system from which the selected codes come from.</xs:documentation>
+              <xs:documentation>An absolute URI which is the code system from which the selected codes come from.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
@@ -347,7 +378,7 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="uri">
             <xs:annotation>
               <xs:documentation>An identifier that uniquely identifies this expansion of the valueset. Systems may re-use the same identifier as long as the expansion and the definition remain the same, but are not required to do so.</xs:documentation>
            </xs:annotation>
@@ -357,11 +388,43 @@
               <xs:documentation>The time at which the expansion was produced by the expanding system.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="parameter" type="ValueSet.Parameter" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>A Parameter that controlled the expansion process. These paameters may be used by users of expanded value sets to check whether the expansion is suitable for a particular purpose, or to pick the correct expansion.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="contains" type="ValueSet.Contains" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>The codes that are contained in the value set expansion.</xs:documentation>
            </xs:annotation>
           </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ValueSet.Parameter">
+    <xs:annotation>
+      <xs:documentation>A value set specifies a set of codes drawn from one or more code systems.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The name of the parameter.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:choice minOccurs="0" maxOccurs="1" >
+            <xs:annotation>
+              <xs:documentation>The value of the parameter.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="valueString" type="string"/>
+            <xs:element name="valueBoolean" type="boolean"/>
+            <xs:element name="valueInteger" type="integer"/>
+            <xs:element name="valueDecimal" type="decimal"/>
+            <xs:element name="valueUri" type="uri"/>
+            <xs:element name="valueCode" type="code"/>
+          </xs:choice>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -375,7 +438,7 @@
         <xs:sequence>
           <xs:element name="system" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>The system in which the code for this item in the expansion is defined.</xs:documentation>
+              <xs:documentation>An absolute URI which is the code system in which the code for this item in the expansion is defined.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="abstract" minOccurs="0" maxOccurs="1" type="boolean">
@@ -404,6 +467,51 @@
            </xs:annotation>
           </xs:element>
         </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="FilterOperator-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="=">
+        <xs:annotation>
+          <xs:documentation>The specified property of the code equals the provided value.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="is-a">
+        <xs:annotation>
+          <xs:documentation>Includes all concept ids that have a transitive is-a relationship with the concept Id provided as the value, including the provided concept itself.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="is-not-a">
+        <xs:annotation>
+          <xs:documentation>The specified property of the code does not have an is-a relationship with the provided value.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="regex">
+        <xs:annotation>
+          <xs:documentation>The specified property of the code  matches the regex specified in the provided value.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="in">
+        <xs:annotation>
+          <xs:documentation>The specified property of the code is in the set of codes or concepts specified in the provided value (comma separated list).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="not-in">
+        <xs:annotation>
+          <xs:documentation>The specified property of the code is not in the set of codes or concepts specified in the provided value (comma separated list).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="FilterOperator">
+    <xs:annotation>
+      <xs:documentation>The kind of operation to perform as a part of a property based filter</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="FilterOperator-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

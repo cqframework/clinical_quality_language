@@ -27,18 +27,18 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Patient" type="Patient">
     <xs:annotation>
-      <xs:documentation>Demographics and other administrative information about a person or animal receiving care or other health-related services.</xs:documentation>
+      <xs:documentation>Demographics and other administrative information about an individual or animal receiving care or other health-related services.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="Patient">
     <xs:annotation>
-      <xs:documentation>Demographics and other administrative information about a person or animal receiving care or other health-related services.</xs:documentation>
+      <xs:documentation>Demographics and other administrative information about an individual or animal receiving care or other health-related services.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -46,7 +46,7 @@
         <xs:sequence>
           <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
-              <xs:documentation>An identifier that applies to this person as a patient.</xs:documentation>
+              <xs:documentation>An identifier for this patient.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="name" minOccurs="0" maxOccurs="unbounded" type="HumanName">
@@ -64,9 +64,9 @@
               <xs:documentation>Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="birthDate" minOccurs="0" maxOccurs="1" type="dateTime">
+          <xs:element name="birthDate" minOccurs="0" maxOccurs="1" type="date">
             <xs:annotation>
-              <xs:documentation>The date and time of birth for the individual.</xs:documentation>
+              <xs:documentation>The date of birth for the individual.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:choice minOccurs="0" maxOccurs="1" >
@@ -95,7 +95,7 @@
           </xs:choice>
           <xs:element name="photo" minOccurs="0" maxOccurs="unbounded" type="Attachment">
             <xs:annotation>
-              <xs:documentation>Image of the person.</xs:documentation>
+              <xs:documentation>Image of the patient.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="contact" type="Patient.Contact" minOccurs="0" maxOccurs="unbounded">
@@ -108,7 +108,7 @@
               <xs:documentation>This element has a value if the patient is an animal.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="communication" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+          <xs:element name="communication" type="Patient.Communication" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>Languages which may be used to communicate with the patient about his or her health.</xs:documentation>
            </xs:annotation>
@@ -125,7 +125,7 @@
           </xs:element>
           <xs:element name="link" type="Patient.Link" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>Link to another patient resource that concerns the same actual person.</xs:documentation>
+              <xs:documentation>Link to another patient resource that concerns the same actual patient.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="active" minOccurs="0" maxOccurs="1" type="boolean">
@@ -139,7 +139,7 @@
   </xs:complexType>
   <xs:complexType name="Patient.Contact">
     <xs:annotation>
-      <xs:documentation>Demographics and other administrative information about a person or animal receiving care or other health-related services.</xs:documentation>
+      <xs:documentation>Demographics and other administrative information about an individual or animal receiving care or other health-related services.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
@@ -151,7 +151,7 @@
           </xs:element>
           <xs:element name="name" minOccurs="0" maxOccurs="1" type="HumanName">
             <xs:annotation>
-              <xs:documentation>A name associated with the person.</xs:documentation>
+              <xs:documentation>A name associated with the contact person.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
@@ -166,7 +166,7 @@
           </xs:element>
           <xs:element name="gender" minOccurs="0" maxOccurs="1" type="AdministrativeGender">
             <xs:annotation>
-              <xs:documentation>Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes.</xs:documentation>
+              <xs:documentation>Administrative Gender - the gender that the contact person is considered to have for administration and record keeping purposes.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="organization" minOccurs="0" maxOccurs="1" type="Reference">
@@ -176,7 +176,7 @@
           </xs:element>
           <xs:element name="period" minOccurs="0" maxOccurs="1" type="Period">
             <xs:annotation>
-              <xs:documentation>The period during which this person or organisation is valid to be contacted relating to this patient.</xs:documentation>
+              <xs:documentation>The period during which this contact person or organization is valid to be contacted relating to this patient.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -185,14 +185,14 @@
   </xs:complexType>
   <xs:complexType name="Patient.Animal">
     <xs:annotation>
-      <xs:documentation>Demographics and other administrative information about a person or animal receiving care or other health-related services.</xs:documentation>
+      <xs:documentation>Demographics and other administrative information about an individual or animal receiving care or other health-related services.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
           <xs:element name="species" minOccurs="1" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>Identifies the high level categorization of the kind of animal.</xs:documentation>
+              <xs:documentation>Identifies the high level taxonomic categorization of the kind of animal.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="breed" minOccurs="0" maxOccurs="1" type="CodeableConcept">
@@ -209,9 +209,30 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="Patient.Communication">
+    <xs:annotation>
+      <xs:documentation>Demographics and other administrative information about an individual or animal receiving care or other health-related services.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="language" minOccurs="1" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>The ISO-639-1 alpha 2 code in lower case for the language, optionally followed by a hyphen and the ISO-3166-1 alpha 2 code for the region in upper case. E.g. &quot;en&quot; for English, or &quot;en-US&quot; for American English versus &quot;en-EN&quot; for England English.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="preferred" minOccurs="0" maxOccurs="1" type="boolean">
+            <xs:annotation>
+              <xs:documentation>Indicates whether or not the Patient prefers this language (over other languages he masters up a certain level).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="Patient.Link">
     <xs:annotation>
-      <xs:documentation>Demographics and other administrative information about a person or animal receiving care or other health-related services.</xs:documentation>
+      <xs:documentation>Demographics and other administrative information about an individual or animal receiving care or other health-related services.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">

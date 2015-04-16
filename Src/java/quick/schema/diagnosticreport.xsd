@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="DiagnosticReport" type="DiagnosticReport">
     <xs:annotation>
@@ -69,7 +69,12 @@
               <xs:documentation>The diagnostic service that is responsible for issuing the report.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+          <xs:element name="encounter" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The link to the health care event (encounter) when the order was made.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
               <xs:documentation>The local ID assigned to the report by the order filler, usually by the Information System of the diagnostic service provider.</xs:documentation>
            </xs:annotation>
@@ -93,7 +98,7 @@
           </xs:choice>
           <xs:element name="specimen" minOccurs="0" maxOccurs="unbounded" type="Reference">
             <xs:annotation>
-              <xs:documentation>Details about the specimens on which this Disagnostic report is based.</xs:documentation>
+              <xs:documentation>Details about the specimens on which this diagnostic report is based.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="result" minOccurs="0" maxOccurs="unbounded" type="Reference">
@@ -173,11 +178,6 @@
           <xs:documentation>The report has been modified subsequent to being Final, and is complete and verified by an authorized person.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="amended">
-        <xs:annotation>
-          <xs:documentation>The report has been modified subsequent to being Final, and is complete and verified by an authorized person, and data has been changed.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
       <xs:enumeration value="appended">
         <xs:annotation>
           <xs:documentation>The report has been modified subsequent to being Final, and is complete and verified by an authorized person. New content has been added, but existing content hasn't changed.</xs:documentation>
@@ -188,7 +188,7 @@
           <xs:documentation>The report is unavailable because the measurement was not started or not completed (also sometimes called &quot;aborted&quot;).</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="entered in error">
+      <xs:enumeration value="entered-in-error">
         <xs:annotation>
           <xs:documentation>The report has been withdrawn following previous Final release.</xs:documentation>
         </xs:annotation>

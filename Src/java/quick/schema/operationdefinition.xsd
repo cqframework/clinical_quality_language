@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="OperationDefinition" type="OperationDefinition">
     <xs:annotation>
@@ -44,9 +44,9 @@
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="uri">
+          <xs:element name="url" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>The identifier that is used to identify this operation definition when it is referenced in a specification, model, design or an instance (should be globally unique OID, UUID, or URI).</xs:documentation>
+              <xs:documentation>An absolute url that is used to identify this operation definition when it is referenced in a specification, model, design or an instance (should be globally unique uri).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
@@ -54,19 +54,19 @@
               <xs:documentation>The identifier that is used to identify this version of the profile when it is referenced in a specification, model, design or instance. This is an arbitrary value managed by the profile author manually and the value should be a timestamp.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="title" minOccurs="1" maxOccurs="1" type="string">
+          <xs:element name="name" minOccurs="1" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>A free text natural language name identifying the Profile.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="publisher" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Details of the individual or organization who accepts responsibility for publishing the profile.</xs:documentation>
+              <xs:documentation>The name of the individual or organization that published the operation definition.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+          <xs:element name="contact" type="OperationDefinition.Contact" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>Contact details to assist a user in finding and communicating with the publisher.</xs:documentation>
+              <xs:documentation>Contacts to assist a user in finding and communicating with the publisher.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
@@ -74,12 +74,12 @@
               <xs:documentation>A free text natural language description of the profile and its use.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="code" minOccurs="0" maxOccurs="unbounded" type="Coding">
+          <xs:element name="requirements" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>A set of terms from external terminologies that may be used to assist with indexing and searching of templates.</xs:documentation>
+              <xs:documentation>Explains why this operation definition is needed and why it's been constrained as it has.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ResourceProfileStatus">
+          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ConformanceResourceStatus">
             <xs:annotation>
               <xs:documentation>The status of the profile.</xs:documentation>
            </xs:annotation>
@@ -99,7 +99,12 @@
               <xs:documentation>Whether this is operation or named query.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="name" minOccurs="1" maxOccurs="1" type="code">
+          <xs:element name="idempotent" minOccurs="0" maxOccurs="1" type="boolean">
+            <xs:annotation>
+              <xs:documentation>Operations that are idempotent (see [HTTP specification definition of idempotent](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)) may be invoked by performing an HTTP GET operation instead of a POST.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="code" minOccurs="1" maxOccurs="1" type="code">
             <xs:annotation>
               <xs:documentation>The name used to invoke the operation.</xs:documentation>
            </xs:annotation>
@@ -131,7 +136,28 @@
           </xs:element>
           <xs:element name="parameter" type="OperationDefinition.Parameter" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>Parameters for the operation/query.</xs:documentation>
+              <xs:documentation>The parameters for the operation/query.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="OperationDefinition.Contact">
+    <xs:annotation>
+      <xs:documentation>A formal computable definition of an operation (on the RESTful interface) or a named query (using the search interaction).</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The name of an individual to contact regarding the operation definition.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+            <xs:annotation>
+              <xs:documentation>Contact details for individual (if a name was provided) or the publisher.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -170,7 +196,53 @@
               <xs:documentation>Describes the meaning or use of this parameter.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="type" minOccurs="1" maxOccurs="1" type="Coding">
+          <xs:element name="type" minOccurs="0" maxOccurs="1" type="code">
+            <xs:annotation>
+              <xs:documentation>The type for this parameter.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="profile" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>A profile the specifies the rules that this parameter must conform to.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="part" type="OperationDefinition.Part" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>The parts of a Tuple Parameter.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="OperationDefinition.Part">
+    <xs:annotation>
+      <xs:documentation>A formal computable definition of an operation (on the RESTful interface) or a named query (using the search interaction).</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="1" maxOccurs="1" type="code">
+            <xs:annotation>
+              <xs:documentation>The name of used to identify the parameter.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="min" minOccurs="1" maxOccurs="1" type="unsignedInt">
+            <xs:annotation>
+              <xs:documentation>The minimum number of times this parameter SHALL appear in the request or response.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="max" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The maximum number of times this element is permitted to appear in the request or response.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="documentation" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Describes the meaning or use of this parameter.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="type" minOccurs="1" maxOccurs="1" type="code">
             <xs:annotation>
               <xs:documentation>The type for this parameter.</xs:documentation>
            </xs:annotation>

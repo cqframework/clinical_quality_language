@@ -27,56 +27,51 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
-  <xs:element name="Eligibility" type="Eligibility">
+  <xs:element name="BodySite" type="BodySite">
     <xs:annotation>
-      <xs:documentation>This resource provides the insurance eligibility details from the insurer regarding a specified coverage and optionally some class of service.</xs:documentation>
+      <xs:documentation>Record details about the anatomical location of a specimen or body part.  This resource may be used when a coded concept does not provide the necessary detail needed for the use case.</xs:documentation>
     </xs:annotation>
   </xs:element>
-  <xs:complexType name="Eligibility">
+  <xs:complexType name="BodySite">
     <xs:annotation>
-      <xs:documentation>This resource provides the insurance eligibility details from the insurer regarding a specified coverage and optionally some class of service.</xs:documentation>
+      <xs:documentation>Record details about the anatomical location of a specimen or body part.  This resource may be used when a coded concept does not provide the necessary detail needed for the use case.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="identifier" minOccurs="1" maxOccurs="unbounded" type="Identifier">
+          <xs:element name="patient" minOccurs="1" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>The Response Business Identifier.</xs:documentation>
+              <xs:documentation>The person to which the body site belongs.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="ruleset" minOccurs="0" maxOccurs="1" type="Coding">
+          <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
-              <xs:documentation>The version of the style of resource contents. This should be mapped to the allowable profiles for this and supporting resources.</xs:documentation>
+              <xs:documentation>Identifier for this instance of the anatomical location.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="originalRuleset" minOccurs="0" maxOccurs="1" type="Coding">
+          <xs:element name="code" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>The style (standard) and version of the original material which was converted into this resource.</xs:documentation>
+              <xs:documentation>Named anatomical location - ideally would be coded where possible.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="date" minOccurs="0" maxOccurs="1" type="date">
+          <xs:element name="modifier" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>The date when this resource was created.</xs:documentation>
+              <xs:documentation>Modifier to refine the anatomical location.  These include modifiers for laterality, relative location, directionality, number, and plane.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="target" minOccurs="0" maxOccurs="1" type="Reference">
+          <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>The Insurer who is target  of the request.</xs:documentation>
+              <xs:documentation>Description of anatomical location.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="provider" minOccurs="0" maxOccurs="1" type="Reference">
+          <xs:element name="image" minOccurs="0" maxOccurs="unbounded" type="Attachment">
             <xs:annotation>
-              <xs:documentation>The practitioner who is responsible for the services rendered to the patient.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="organization" minOccurs="0" maxOccurs="1" type="Reference">
-            <xs:annotation>
-              <xs:documentation>The organization which is responsible for the services rendered to the patient.</xs:documentation>
+              <xs:documentation>Image or images used to identify a location.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

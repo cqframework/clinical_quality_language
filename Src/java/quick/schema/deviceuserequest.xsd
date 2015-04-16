@@ -27,36 +27,33 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="DeviceUseRequest" type="DeviceUseRequest">
     <xs:annotation>
-      <xs:documentation>Represents a request for the use of a device.</xs:documentation>
+      <xs:documentation>Represents a request for a patient to employ a medical device. The device may be an implantable device, or an external assistive device, such as a walker.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="DeviceUseRequest">
     <xs:annotation>
-      <xs:documentation>Represents a request for the use of a device.</xs:documentation>
+      <xs:documentation>Represents a request for a patient to employ a medical device. The device may be an implantable device, or an external assistive device, such as a walker.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="bodySite" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>Body site where the device is to be used.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
+              <xs:documentation>Indicates the site on the subject's body where the device should be used ( i.e. the target site).</xs:documentation>
+            </xs:annotation>
+            <xs:element name="bodySiteCodeableConcept" type="CodeableConcept"/>
+            <xs:element name="bodySiteReference" type="Reference"/>
+          </xs:choice>
           <xs:element name="status" minOccurs="0" maxOccurs="1" type="DeviceUseRequestStatus">
             <xs:annotation>
               <xs:documentation>The status of the request.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="mode" minOccurs="0" maxOccurs="1" type="DeviceUseRequestMode">
-            <xs:annotation>
-              <xs:documentation>The mode of the request.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="device" minOccurs="1" maxOccurs="1" type="Reference">
@@ -121,38 +118,18 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:simpleType name="DeviceUseRequestMode-list">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="planned">
-        <xs:annotation>
-          <xs:documentation>planned.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="proposed">
-        <xs:annotation>
-          <xs:documentation>proposed.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="ordered">
-        <xs:annotation>
-          <xs:documentation>ordered.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:complexType name="DeviceUseRequestMode">
-    <xs:annotation>
-      <xs:documentation>Codes representing whether the request is planned, proposed, or ordered</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="Element">
-        <xs:attribute name="value" type="DeviceUseRequestMode-list" use="optional"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
   <xs:simpleType name="DeviceUseRequestStatus-list">
     <xs:restriction base="xs:string">
+      <xs:enumeration value="proposed">
+        <xs:annotation>
+          <xs:documentation>The request has been proposed.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="planned">
+        <xs:annotation>
+          <xs:documentation>The request has been planned.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
       <xs:enumeration value="requested">
         <xs:annotation>
           <xs:documentation>The request has been placed.</xs:documentation>
@@ -168,14 +145,9 @@
           <xs:documentation>The receiving system has accepted the request but work has not yet commenced.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="in progress">
+      <xs:enumeration value="in-progress">
         <xs:annotation>
           <xs:documentation>The work to fulfill the order is happening.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="review">
-        <xs:annotation>
-          <xs:documentation>The work is complete, and the outcomes are being reviewed for approval.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="completed">
@@ -193,7 +165,7 @@
           <xs:documentation>The receiving system has declined to fulfill the request.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="failed">
+      <xs:enumeration value="aborted">
         <xs:annotation>
           <xs:documentation>The request was attempted, but due to some procedural error, it could not be completed.</xs:documentation>
         </xs:annotation>

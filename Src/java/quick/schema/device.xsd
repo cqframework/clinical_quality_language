@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Device" type="Device">
     <xs:annotation>
@@ -46,12 +46,17 @@
         <xs:sequence>
           <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
-              <xs:documentation>Identifiers assigned to this device by various organizations. The most likely organizations to assign identifiers are the manufacturer and the owner, though regulatory agencies may also assign an identifier. The identifiers identify the particular device, not the kind of device.</xs:documentation>
+              <xs:documentation>Unique instance identifiers assigned to a device by organizations like manufacturers or owners .   If the identifier identifies the type of device, Device.type should be used.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="type" minOccurs="1" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A kind of this device.</xs:documentation>
+              <xs:documentation>Code or identifier to identify a kind of device.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="status" minOccurs="0" maxOccurs="1" type="DeviceStatus">
+            <xs:annotation>
+              <xs:documentation>Status of the Device availability.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="manufacturer" minOccurs="0" maxOccurs="1" type="string">
@@ -69,14 +74,19 @@
               <xs:documentation>The version of the device, if the device has multiple releases under the same model, or if the device is software or carries firmware.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="expiry" minOccurs="0" maxOccurs="1" type="date">
+          <xs:element name="manufactureDate" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
-              <xs:documentation>Date of expiry of this device (if applicable).</xs:documentation>
+              <xs:documentation>The Date and time when the device was manufactured.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="expiry" minOccurs="0" maxOccurs="1" type="dateTime">
+            <xs:annotation>
+              <xs:documentation>The date and time beyond which this device is no longer valid or should not be used (if applicable).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="udi" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>FDA Mandated Unique Device Identifier. Use the human readable information (the content that the user sees, which is sometimes different to the exact syntax represented in the barcode)  - see http://www.fda.gov/MedicalDevices/DeviceRegulationandGuidance/UniqueDeviceIdentification/default.htm.</xs:documentation>
+              <xs:documentation>United States Food and Drug Administration mandated Unique Device Identifier (UDI). Use the human readable information (the content that the user sees, which is sometimes different to the exact syntax represented in the barcode)  - see http://www.fda.gov/MedicalDevices/DeviceRegulationandGuidance/UniqueDeviceIdentification/default.htm.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="lotNumber" minOccurs="0" maxOccurs="1" type="string">
@@ -110,6 +120,36 @@
            </xs:annotation>
           </xs:element>
         </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="DeviceStatus-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="available">
+        <xs:annotation>
+          <xs:documentation>The Device is available for use.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="not-available">
+        <xs:annotation>
+          <xs:documentation>The Device is no longer available for use ( e.g lost, expired, damaged).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="entered-in-error">
+        <xs:annotation>
+          <xs:documentation>The Device was entered in error and voided.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="DeviceStatus">
+    <xs:annotation>
+      <xs:documentation>The availability status of the device</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="DeviceStatus-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

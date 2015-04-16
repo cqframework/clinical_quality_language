@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Condition" type="Condition">
     <xs:annotation>
@@ -49,7 +49,7 @@
               <xs:documentation>This records identifiers associated with this condition that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subject" minOccurs="1" maxOccurs="1" type="Reference">
+          <xs:element name="patient" minOccurs="1" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>Indicates the patient who the condition record is associated with.</xs:documentation>
            </xs:annotation>
@@ -79,14 +79,9 @@
               <xs:documentation>A category assigned to the condition. E.g. complaint | symptom | finding | diagnosis.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ConditionStatus">
+          <xs:element name="clinicalStatus" minOccurs="1" maxOccurs="1" type="ConditionClinicalStatus">
             <xs:annotation>
               <xs:documentation>The clinical status of the condition.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="certainty" minOccurs="0" maxOccurs="1" type="CodeableConcept">
-            <xs:annotation>
-              <xs:documentation>The degree of confidence that this condition is correct.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="severity" minOccurs="0" maxOccurs="1" type="CodeableConcept">
@@ -100,6 +95,9 @@
             </xs:annotation>
             <xs:element name="onsetDateTime" type="dateTime"/>
             <xs:element name="onsetAge" type="Age"/>
+            <xs:element name="onsetPeriod" type="Period"/>
+            <xs:element name="onsetRange" type="Range"/>
+            <xs:element name="onsetString" type="string"/>
           </xs:choice>
           <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
@@ -108,6 +106,9 @@
             <xs:element name="abatementDate" type="date"/>
             <xs:element name="abatementAge" type="Age"/>
             <xs:element name="abatementBoolean" type="boolean"/>
+            <xs:element name="abatementPeriod" type="Period"/>
+            <xs:element name="abatementRange" type="Range"/>
+            <xs:element name="abatementString" type="string"/>
           </xs:choice>
           <xs:element name="stage" type="Condition.Stage" minOccurs="0" maxOccurs="1">
             <xs:annotation>
@@ -192,16 +193,13 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="code" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
               <xs:documentation>Code that identifies the structural location.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="detail" minOccurs="0" maxOccurs="1" type="string">
-            <xs:annotation>
-              <xs:documentation>Detailed anatomical location information.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
+            </xs:annotation>
+            <xs:element name="siteCodeableConcept" type="CodeableConcept"/>
+            <xs:element name="siteReference" type="Reference"/>
+          </xs:choice>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -213,7 +211,7 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="codeableConcept" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+          <xs:element name="code" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>Code that identifies the target of this relationship. The code takes the place of a detailed instance target.</xs:documentation>
            </xs:annotation>
@@ -234,7 +232,7 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="codeableConcept" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+          <xs:element name="code" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>Code that identifies the target of this relationship. The code takes the place of a detailed instance target.</xs:documentation>
            </xs:annotation>
@@ -248,7 +246,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:simpleType name="ConditionStatus-list">
+  <xs:simpleType name="ConditionClinicalStatus-list">
     <xs:restriction base="xs:string">
       <xs:enumeration value="provisional">
         <xs:annotation>
@@ -270,16 +268,26 @@
           <xs:documentation>This condition has been ruled out by diagnostic and clinical evidence.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
+      <xs:enumeration value="entered-in-error">
+        <xs:annotation>
+          <xs:documentation>The statement was entered in error and Is not valid.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="unknown">
+        <xs:annotation>
+          <xs:documentation>The condition status is unknown.  Note that &quot;unknown&quot; is a value of last resort and every attempt should be made to provide a meaningful value other than &quot;unknown&quot;.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
-  <xs:complexType name="ConditionStatus">
+  <xs:complexType name="ConditionClinicalStatus">
     <xs:annotation>
       <xs:documentation>The clinical status of the Condition or diagnosis</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Element">
-        <xs:attribute name="value" type="ConditionStatus-list" use="optional"/>
+        <xs:attribute name="value" type="ConditionClinicalStatus-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

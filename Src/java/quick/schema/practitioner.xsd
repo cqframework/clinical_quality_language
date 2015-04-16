@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Practitioner" type="Practitioner">
     <xs:annotation>
@@ -69,9 +69,9 @@
               <xs:documentation>Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="birthDate" minOccurs="0" maxOccurs="1" type="dateTime">
+          <xs:element name="birthDate" minOccurs="0" maxOccurs="1" type="date">
             <xs:annotation>
-              <xs:documentation>The date and time of birth for the practitioner.</xs:documentation>
+              <xs:documentation>The date of birth for the practitioner.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="photo" minOccurs="0" maxOccurs="unbounded" type="Attachment">
@@ -79,12 +79,38 @@
               <xs:documentation>Image of the person.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="organization" minOccurs="0" maxOccurs="1" type="Reference">
+          <xs:element name="practitionerRole" type="Practitioner.PractitionerRole" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>The organization that the practitioner represents.</xs:documentation>
+              <xs:documentation>The list of Roles/Organizations that the Practitioner is associated with.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="role" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+          <xs:element name="qualification" type="Practitioner.Qualification" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>Qualifications obtained by training and certification.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="communication" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>A language the practitioner is able to use in patient communication.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Practitioner.PractitionerRole">
+    <xs:annotation>
+      <xs:documentation>A person who is directly or indirectly involved in the provisioning of healthcare.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="managingOrganization" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The Organization where the Practitioner performs the roles associated.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="role" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>Roles which this practitioner is authorized to perform for the organization.</xs:documentation>
            </xs:annotation>
@@ -104,14 +130,9 @@
               <xs:documentation>The location(s) at which this practitioner provides care.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="qualification" type="Practitioner.Qualification" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="healthcareService" minOccurs="0" maxOccurs="unbounded" type="Reference">
             <xs:annotation>
-              <xs:documentation>Qualifications obtained by training and certification.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="communication" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
-            <xs:annotation>
-              <xs:documentation>A language the practitioner is able to use in patient communication.</xs:documentation>
+              <xs:documentation>The list of healthcare services that this worker provides for this role's Organization/Location(s).</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
