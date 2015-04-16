@@ -394,3 +394,4 @@ define IntervalWithinUsingUCUM: A starts within 3 'd' of B
 
 //define IntervalWithin: IntervalA occurs within 3 days of IntervalB
 //define IntervalExpression: IntervalA starts same day or after start of IntervalB - 3 days and IntervalA ends same day or before end of IntervalB + 3 days
+
