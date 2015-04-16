@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="ConceptMap" type="ConceptMap">
     <xs:annotation>
@@ -44,9 +44,14 @@
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="string">
+          <xs:element name="url" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>The identifier that is used to identify this concept map when it is referenced in a specification, model, design or an instance (should be globally unique OID, UUID, or URI).</xs:documentation>
+              <xs:documentation>An absolute uri that is used to identify this concept map when it is referenced in a specification, model, design or an instance (should be globally unique URI, and an be urn:uuid: or urn:oid:).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation>Formal identifier that is used to identify this concept map when it is represented in other formats, or referenced in a specification, model, design or an instance.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
@@ -59,14 +64,19 @@
               <xs:documentation>A free text natural language name describing the concept map.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="useContext" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>The content was developed with a focus and intent of supporting the contexts that are listed. These terms may be used to assist with indexing and searching of concept maps.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="publisher" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>The name of the individual or organization that published the concept map.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+          <xs:element name="contact" type="ConceptMap.Contact" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>Contacts of the publisher to assist a user in finding and communicating with the publisher.</xs:documentation>
+              <xs:documentation>Contacts to assist a user in finding and communicating with the publisher.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
@@ -74,12 +84,17 @@
               <xs:documentation>A free text natural language description of the use of the concept map - reason for definition, conditions of use, etc.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="requirements" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Explains why this concept map is needed and why it's been constrained as it has.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="copyright" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>A copyright statement relating to the concept map and/or its contents.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ValueSetStatus">
+          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ConformanceResourceStatus">
             <xs:annotation>
               <xs:documentation>The status of the concept map.</xs:documentation>
            </xs:annotation>
@@ -117,6 +132,27 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="ConceptMap.Contact">
+    <xs:annotation>
+      <xs:documentation>A statement of relationships from one set of concepts to one or more other concepts - either code systems or data elements, or classes in class models.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The name of an individual to contact regarding the concept map.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+            <xs:annotation>
+              <xs:documentation>Contact details for individual (if a name was provided) or the publisher.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:complexType name="ConceptMap.Element">
     <xs:annotation>
       <xs:documentation>A statement of relationships from one set of concepts to one or more other concepts - either code systems or data elements, or classes in class models.</xs:documentation>
@@ -126,7 +162,7 @@
         <xs:sequence>
           <xs:element name="codeSystem" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>Code System (if the source is a value value set that crosses more than one code system).</xs:documentation>
+              <xs:documentation>An absolute URI that identifies the Code System (if the source is a value value set that crosses more than one code system).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="code" minOccurs="0" maxOccurs="1" type="code">
@@ -162,7 +198,7 @@
           </xs:element>
           <xs:element name="codeSystem" minOccurs="1" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>The code system of the dependency code (if the source/dependency is a value set that cross code systems).</xs:documentation>
+              <xs:documentation>An absolute URI that identifies the code system of the dependency code (if the source/dependency is a value set that cross code systems).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="code" minOccurs="1" maxOccurs="1" type="string">
@@ -183,7 +219,7 @@
         <xs:sequence>
           <xs:element name="codeSystem" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>The code system of the target code (if the target is a value set that cross code systems).</xs:documentation>
+              <xs:documentation>An absolute URI that identifies the code system of the target code (if the target is a value set that cross code systems).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="code" minOccurs="0" maxOccurs="1" type="code">
@@ -212,14 +248,14 @@
   </xs:complexType>
   <xs:simpleType name="ConceptMapEquivalence-list">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="equal">
-        <xs:annotation>
-          <xs:documentation>The definitions of the concepts are exactly the same (i.e. only grammatical differences) and structural implications of meaning are identifical or irrelevant (i.e. intensionally identical).</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
       <xs:enumeration value="equivalent">
         <xs:annotation>
           <xs:documentation>The definitions of the concepts mean the same thing (including when structural implications of meaning are considered) (i.e. extensionally identical).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="equal">
+        <xs:annotation>
+          <xs:documentation>The definitions of the concepts are exactly the same (i.e. only grammatical differences) and structural implications of meaning are identifical or irrelevant (i.e. intensionally identical).</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="wider">
@@ -244,7 +280,7 @@
       </xs:enumeration>
       <xs:enumeration value="inexact">
         <xs:annotation>
-          <xs:documentation>The target mapping overlaps with the source concept, but both source and target cover additional meaning. The sense in which the mapping is narrower SHALL be described in the comments in this case, and applications should be careful when atempting to use these mappings operationally.</xs:documentation>
+          <xs:documentation>The target mapping overlaps with the source concept, but both source and target cover additional meaning, or the definitions are imprecise and it is uncertain whether they have the same boundaries to their meaning. The sense in which the mapping is narrower SHALL be described in the comments in this case, and applications should be careful when atempting to use these mappings operationally.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="unmatched">

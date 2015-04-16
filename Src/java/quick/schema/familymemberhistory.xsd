@@ -27,18 +27,18 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
-  <xs:element name="FamilyHistory" type="FamilyHistory">
+  <xs:element name="FamilyMemberHistory" type="FamilyMemberHistory">
     <xs:annotation>
-      <xs:documentation>Significant health events and conditions for people related to the subject relevant in the context of care for the subject.</xs:documentation>
+      <xs:documentation>Significant health events and conditions for a person related to the patient relevant in the context of care for the patient.</xs:documentation>
     </xs:annotation>
   </xs:element>
-  <xs:complexType name="FamilyHistory">
+  <xs:complexType name="FamilyMemberHistory">
     <xs:annotation>
-      <xs:documentation>Significant health events and conditions for people related to the subject relevant in the context of care for the subject.</xs:documentation>
+      <xs:documentation>Significant health events and conditions for a person related to the patient relevant in the context of care for the patient.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -46,7 +46,7 @@
         <xs:sequence>
           <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
-              <xs:documentation>This records identifiers associated with this family history record that are defined by business processes and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).</xs:documentation>
+              <xs:documentation>This records identifiers associated with this family member history record that are defined by business processes and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="patient" minOccurs="1" maxOccurs="1" type="Reference">
@@ -56,30 +56,9 @@
           </xs:element>
           <xs:element name="date" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
-              <xs:documentation>The date (and possibly time) when the family history was taken.</xs:documentation>
+              <xs:documentation>The date (and possibly time) when the family member history was taken.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="note" minOccurs="0" maxOccurs="1" type="string">
-            <xs:annotation>
-              <xs:documentation>Conveys information about family history not specific to individual relations.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="relation" type="FamilyHistory.Relation" minOccurs="0" maxOccurs="unbounded">
-            <xs:annotation>
-              <xs:documentation>The related person. Each FamilyHistory resource contains the entire family history for a single person.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="FamilyHistory.Relation">
-    <xs:annotation>
-      <xs:documentation>Significant health events and conditions for people related to the subject relevant in the context of care for the subject.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="BackboneElement">
-        <xs:sequence>
           <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>This will either be a name or a description.  E.g. &quot;Aunt Susan&quot;, &quot;my cousin with the red hair&quot;.</xs:documentation>
@@ -88,6 +67,11 @@
           <xs:element name="relationship" minOccurs="1" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>The type of relationship this person has to the patient (father, mother, brother etc.).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="gender" minOccurs="0" maxOccurs="1" type="AdministrativeGender">
+            <xs:annotation>
+              <xs:documentation>Administrative Gender - the gender that the relative is considered to have for administration and record keeping purposes.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:choice minOccurs="0" maxOccurs="1" >
@@ -100,7 +84,7 @@
           </xs:choice>
           <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>The actual or approximate age of the relative at the time the family history is recorded.</xs:documentation>
+              <xs:documentation>The actual or approximate age of the relative at the time the family member history is recorded.</xs:documentation>
             </xs:annotation>
             <xs:element name="ageAge" type="Age"/>
             <xs:element name="ageRange" type="Range"/>
@@ -108,7 +92,7 @@
           </xs:choice>
           <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>If this resource is indicating that the related person is deceased, then an indicator of whether the person is deceased (yes) or not (no) or the age or age range or description of age at death - can be indicated here. If the reason for death is known, then it can be indicated in the outcome code of the condition - in this case the deceased property should still be set.</xs:documentation>
+              <xs:documentation>The actual or approximate age of the relative at the time the family member history is recorded.</xs:documentation>
             </xs:annotation>
             <xs:element name="deceasedBoolean" type="boolean"/>
             <xs:element name="deceasedAge" type="Age"/>
@@ -121,7 +105,7 @@
               <xs:documentation>This property allows a non condition-specific note to the made about the related person. Ideally, the note would be in the condition property, but this is not always possible.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="condition" type="FamilyHistory.Condition" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="condition" type="FamilyMemberHistory.Condition" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>The significant Conditions (or condition) that the family member had. This is a repeating section to allow a system to represent more than one condition per resource, though there is nothing stopping multiple resources - one per condition.</xs:documentation>
            </xs:annotation>
@@ -130,9 +114,9 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="FamilyHistory.Condition">
+  <xs:complexType name="FamilyMemberHistory.Condition">
     <xs:annotation>
-      <xs:documentation>Significant health events and conditions for people related to the subject relevant in the context of care for the subject.</xs:documentation>
+      <xs:documentation>Significant health events and conditions for a person related to the patient relevant in the context of care for the patient.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">

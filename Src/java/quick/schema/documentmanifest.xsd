@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="DocumentManifest" type="DocumentManifest">
     <xs:annotation>
@@ -44,17 +44,17 @@
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="masterIdentifier" minOccurs="1" maxOccurs="1" type="Identifier">
+          <xs:element name="masterIdentifier" minOccurs="0" maxOccurs="1" type="Identifier">
             <xs:annotation>
               <xs:documentation>A single identifier that uniquely identifies this manifest. Principally used to refer to the manifest in non-FHIR contexts.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
-              <xs:documentation>Other identifiers associated with the document, including version independent, source record and workflow related identifiers.</xs:documentation>
+              <xs:documentation>Other identifiers associated with the document manifest, including version independent  identifiers.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subject" minOccurs="1" maxOccurs="unbounded" type="Reference">
+          <xs:element name="subject" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>Who or what the set of documents is about. The documents can be about a person, (patient or healthcare practitioner), a device (i.e. machine) or even a group of subjects (such as a document about a herd of farm animals, or a set of patients that share a common exposure). If the documents cross more than one subject, then more than one subject is allowed here (unusual use case).</xs:documentation>
            </xs:annotation>
@@ -89,24 +89,58 @@
               <xs:documentation>The status of this document manifest.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="supercedes" minOccurs="0" maxOccurs="1" type="Reference">
-            <xs:annotation>
-              <xs:documentation>Whether this document manifest replaces another.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
           <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>Human-readable description of the source document. This is sometimes known as the &quot;title&quot;.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="confidentiality" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+          <xs:element name="content" type="DocumentManifest.Content" minOccurs="1" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>A code specifying the level of confidentiality of this set of Documents.</xs:documentation>
+              <xs:documentation>The manifest list.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="content" minOccurs="1" maxOccurs="unbounded" type="Reference">
+          <xs:element name="related" type="DocumentManifest.Related" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>The list of resources that describe the parts of this document reference. Usually, these would be document references, but direct references to binary attachments and images are also allowed.</xs:documentation>
+              <xs:documentation>Related identifiers or resources associated with the DocumentManifest.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentManifest.Content">
+    <xs:annotation>
+      <xs:documentation>A manifest that defines a set of documents.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:choice minOccurs="1" maxOccurs="1" >
+            <xs:annotation>
+              <xs:documentation>The list of DocumentReference or Media Resources, or Attachment that consist of the parts of this document manifest. Usually, these would be document references, but direct references to Media or Attachments are also allowed.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="pAttachment" type="Attachment"/>
+            <xs:element name="pReference" type="Reference"/>
+          </xs:choice>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentManifest.Related">
+    <xs:annotation>
+      <xs:documentation>A manifest that defines a set of documents.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation>Related identifier to this DocumentManifest. If both id and ref are present they shall refer to the same thing.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="ref" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>Related Resource to this DocumentManifest. If both id and ref are present they shall refer to the same thing.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

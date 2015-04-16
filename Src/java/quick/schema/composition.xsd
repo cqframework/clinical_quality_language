@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Composition" type="Composition">
     <xs:annotation>
@@ -74,7 +74,7 @@
               <xs:documentation>The workflow/clinical status of this composition. The status is a marker for the clinical standing of the document.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="confidentiality" minOccurs="1" maxOccurs="1" type="Coding">
+          <xs:element name="confidentiality" minOccurs="0" maxOccurs="1" type="code">
             <xs:annotation>
               <xs:documentation>The code specifying the level of confidentiality of the Composition.</xs:documentation>
            </xs:annotation>
@@ -187,14 +187,14 @@
               <xs:documentation>A code identifying the kind of content contained within the section. This must be consistent with the section title.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="content" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The content (narrative and data entries) associated with the section.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="section" type="Composition.Section" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>A nested sub-section within this section.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="content" minOccurs="0" maxOccurs="1" type="Reference">
-            <xs:annotation>
-              <xs:documentation>The content (narrative and data) associated with the section.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

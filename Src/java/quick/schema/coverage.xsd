@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Coverage" type="Coverage">
     <xs:annotation>
@@ -49,6 +49,11 @@
               <xs:documentation>The program or plan underwriter or payor.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="bin" minOccurs="0" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation>Business Identification Number (BIN number) used to identify the routing  of eclaims if the insurer themselves don't have a BIN number for all of their business.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="period" minOccurs="0" maxOccurs="1" type="Period">
             <xs:annotation>
               <xs:documentation>Time period during which the coverage is in force. A missing start date indicates the start date isn't known, a missing end date means the coverage is continuing to be in force.</xs:documentation>
@@ -59,9 +64,14 @@
               <xs:documentation>The type of coverage: social program, medical plan, accident coverage (workers compensation, auto), group health.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+          <xs:element name="subscriberId" minOccurs="0" maxOccurs="1" type="Identifier">
             <xs:annotation>
-              <xs:documentation>The main (and possibly only) identifier for the coverage - often referred to as a Subscriber Id, Certificate number or Personal Health Number or Case ID.</xs:documentation>
+              <xs:documentation>The id issued to the subscriber.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
+            <xs:annotation>
+              <xs:documentation>The main (and possibly only) identifier for the coverage - often referred to as a Member Id, Subscriber Id, Certificate number or Personal Health Number or Case ID.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="group" minOccurs="0" maxOccurs="1" type="string">
@@ -74,17 +84,17 @@
               <xs:documentation>Identifies a style or collective of coverage issues by the underwriter, for example may be used to identify a class of coverage or employer group. May also be referred to as a Policy or Group ID.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subplan" minOccurs="0" maxOccurs="1" type="string">
+          <xs:element name="subPlan" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>Identifies a sub-style or sub-collective of coverage issues by the underwriter, for example may be used to identify a specific employer group within a class of employers. May be referred to as a Section or Division ID.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="dependent" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="dependent" minOccurs="0" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A unique identifier for a dependent under the coverage.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="sequence" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="sequence" minOccurs="0" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>An optional counter for a particular instance of the identified coverage which increments upon each renewal.</xs:documentation>
            </xs:annotation>

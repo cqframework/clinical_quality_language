@@ -27,18 +27,18 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Subscription" type="Subscription">
     <xs:annotation>
-      <xs:documentation>Todo.</xs:documentation>
+      <xs:documentation>The subscription resource is used to define a push based subscription from a server to another system. Once a subscription is registered with the server, the server checks every resource that is created or updated, and if the resource matches the given criteria, it sends a message on the defined &quot;channel&quot; so that another system is able to take an appropriate action.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="Subscription">
     <xs:annotation>
-      <xs:documentation>Todo.</xs:documentation>
+      <xs:documentation>The subscription resource is used to define a push based subscription from a server to another system. Once a subscription is registered with the server, the server checks every resource that is created or updated, and if the resource matches the given criteria, it sends a message on the defined &quot;channel&quot; so that another system is able to take an appropriate action.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -46,42 +46,42 @@
         <xs:sequence>
           <xs:element name="criteria" minOccurs="1" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>The rules that the server should use to determine when to generate notifications for this subscription.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="contact" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>Contact details for a human to contact about the subscription. The primary use of this for system administrator troubleshooting.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="reason" minOccurs="1" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>A description of why this subscription is defined.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="status" minOccurs="1" maxOccurs="1" type="SubscriptionStatus">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>The status of the subscription, which marks the server state for managing the subscription.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="error" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>A record of the last error that occurred when the server processed a notification.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="channel" type="Subscription.Channel" minOccurs="1" maxOccurs="1">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>Details where to send notifications when resources are received that meet the criteria.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="end" minOccurs="0" maxOccurs="1" type="instant">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>The time for the server to turn the subscription off.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="tag" type="Subscription.Tag" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="tag" minOccurs="0" maxOccurs="unbounded" type="Coding">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>A tag to add to any resource that matches the criteria, after the subscription is processed.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -90,55 +90,29 @@
   </xs:complexType>
   <xs:complexType name="Subscription.Channel">
     <xs:annotation>
-      <xs:documentation>Todo.</xs:documentation>
+      <xs:documentation>The subscription resource is used to define a push based subscription from a server to another system. Once a subscription is registered with the server, the server checks every resource that is created or updated, and if the resource matches the given criteria, it sends a message on the defined &quot;channel&quot; so that another system is able to take an appropriate action.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
           <xs:element name="type" minOccurs="1" maxOccurs="1" type="SubscriptionChannelType">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>The type of channel to send notififcations on.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="url" minOccurs="0" maxOccurs="1" type="uri">
+          <xs:element name="endpoint" minOccurs="0" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>The uri that describes tha actual end point to send messages to.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="payload" minOccurs="1" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>ToDo.</xs:documentation>
+              <xs:documentation>The mime type to send the payload in - either application/xml+fhir, or application/json+fhir. If the mime type is blank, then there is no payload in the notification, just a notification.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="header" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Usage depends on the channel type.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="Subscription.Tag">
-    <xs:annotation>
-      <xs:documentation>Todo.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="BackboneElement">
-        <xs:sequence>
-          <xs:element name="term" minOccurs="1" maxOccurs="1" type="uri">
-            <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="scheme" minOccurs="1" maxOccurs="1" type="uri">
-            <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
-            <xs:annotation>
-              <xs:documentation>Todo.</xs:documentation>
+              <xs:documentation>Additional headers / information to send as part of the notification.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

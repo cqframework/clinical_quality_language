@@ -27,18 +27,18 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Procedure" type="Procedure">
     <xs:annotation>
-      <xs:documentation>An action that is performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
+      <xs:documentation>An action that is or was performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="Procedure">
     <xs:annotation>
-      <xs:documentation>An action that is performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
+      <xs:documentation>An action that is or was performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -54,12 +54,22 @@
               <xs:documentation>The person on whom the procedure was performed.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="status" minOccurs="1" maxOccurs="1" type="ProcedureStatus">
+            <xs:annotation>
+              <xs:documentation>A code specifying the state of the procedure record. Generally this will be in-progress or completed state.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="category" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>A code that classifies the procedure for searching, sorting and display purposes.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="type" minOccurs="1" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>The specific procedure that is performed. Use text if the exact nature of the procedure can't be coded.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="bodySite" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+          <xs:element name="bodySite" type="Procedure.BodySite" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>Detailed and structured anatomical location information. Multiple locations are allowed - e.g. multiple punch biopsies of a lesion.</xs:documentation>
            </xs:annotation>
@@ -74,19 +84,26 @@
               <xs:documentation>Limited to 'real' people rather than equipment.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="date" minOccurs="0" maxOccurs="1" type="Period">
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>The dates over which the procedure was performed. Allows a period to support complex procedures that span more than one date, and also allows for the length of the procedure to be captured.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
+              <xs:documentation>The date(time)/period over which the procedure was performed. Allows a period to support complex procedures that span more than one date, and also allows for the length of the procedure to be captured.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="performedDateTime" type="dateTime"/>
+            <xs:element name="performedPeriod" type="Period"/>
+          </xs:choice>
           <xs:element name="encounter" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>The encounter during which the procedure was performed.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="outcome" minOccurs="0" maxOccurs="1" type="string">
+          <xs:element name="location" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>What was the outcome of the procedure - did it resolve reasons why the procedure was performed?.</xs:documentation>
+              <xs:documentation>The location where the procedure actually happened.  e.g. a newborn at home, a tracheostomy at a restaurant.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="outcome" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>What was the outcome of the procedure - did it resolve reasons why the procedure was performed?</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="report" minOccurs="0" maxOccurs="unbounded" type="Reference">
@@ -99,7 +116,7 @@
               <xs:documentation>Any complications that occurred during the procedure, or in the immediate post-operative period. These are generally tracked separately from the notes, which typically will describe the procedure itself rather than any 'post procedure' issues.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="followUp" minOccurs="0" maxOccurs="1" type="string">
+          <xs:element name="followUp" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>If the procedure required specific follow up - e.g. removal of sutures. The followup may be represented as a simple note, or potentially could be more complex in which case the CarePlan resource can be used.</xs:documentation>
            </xs:annotation>
@@ -114,13 +131,41 @@
               <xs:documentation>Any other notes about the procedure - e.g. the operative notes.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="device" type="Procedure.Device" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>A device change during the procedure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="used" minOccurs="0" maxOccurs="unbounded" type="Reference">
+            <xs:annotation>
+              <xs:documentation>Identifies medications, devices and other substance used as part of the procedure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Procedure.BodySite">
+    <xs:annotation>
+      <xs:documentation>An action that is or was performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:choice minOccurs="1" maxOccurs="1" >
+            <xs:annotation>
+              <xs:documentation>Detailed and structured anatomical location information. Multiple locations are allowed - e.g. multiple punch biopsies of a lesion.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="siteCodeableConcept" type="CodeableConcept"/>
+            <xs:element name="siteReference" type="Reference"/>
+          </xs:choice>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="Procedure.Performer">
     <xs:annotation>
-      <xs:documentation>An action that is performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
+      <xs:documentation>An action that is or was performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
@@ -141,7 +186,7 @@
   </xs:complexType>
   <xs:complexType name="Procedure.RelatedItem">
     <xs:annotation>
-      <xs:documentation>An action that is performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
+      <xs:documentation>An action that is or was performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
@@ -154,6 +199,27 @@
           <xs:element name="target" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>The related item - e.g. a procedure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Procedure.Device">
+    <xs:annotation>
+      <xs:documentation>An action that is or was performed on a patient. This can be a physical 'thing' like an operation, or less invasive like counseling or hypnotherapy.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="action" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>The kind of change that happened to the device during the procedure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="manipulated" minOccurs="1" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The device that was manipulated (changed) during the procedure.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -182,6 +248,41 @@
     <xs:complexContent>
       <xs:extension base="Element">
         <xs:attribute name="value" type="ProcedureRelationshipType-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="ProcedureStatus-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="in-progress">
+        <xs:annotation>
+          <xs:documentation>The procedure is still occurring.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="aborted">
+        <xs:annotation>
+          <xs:documentation>The procedure was terminated without completing successfully.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="completed">
+        <xs:annotation>
+          <xs:documentation>All actions involved in the procedure have taken place.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="entered-in-error">
+        <xs:annotation>
+          <xs:documentation>The statement was entered in error and Is not valid.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ProcedureStatus">
+    <xs:annotation>
+      <xs:documentation>A code specifying the state of the procedure record</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="ProcedureStatus-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

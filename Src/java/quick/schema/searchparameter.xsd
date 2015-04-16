@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="SearchParameter" type="SearchParameter">
     <xs:annotation>
@@ -46,7 +46,7 @@
         <xs:sequence>
           <xs:element name="url" minOccurs="1" maxOccurs="1" type="uri">
             <xs:annotation>
-              <xs:documentation>The URL at which this search parameter is (or will be) published, and which is used to reference this profile in conformance statements.</xs:documentation>
+              <xs:documentation>An absolute URL at which this search parameter is (or will be) published, and which is used to reference this profile in conformance statements.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="name" minOccurs="1" maxOccurs="1" type="string">
@@ -56,17 +56,32 @@
           </xs:element>
           <xs:element name="publisher" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Details of the individual or organization who accepts responsibility for publishing the search parameter.</xs:documentation>
+              <xs:documentation>The name of the individual or organization that published the search parameter.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+          <xs:element name="contact" type="SearchParameter.Contact" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>Contact details to assist a user in finding and communicating with the publisher.</xs:documentation>
+              <xs:documentation>Contacts to assist a user in finding and communicating with the publisher.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="requirements" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>The Scope and Usage that this search parameter was created to meet.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="status" minOccurs="0" maxOccurs="1" type="ConformanceResourceStatus">
+            <xs:annotation>
+              <xs:documentation>The status of this search parameter definition.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="experimental" minOccurs="0" maxOccurs="1" type="boolean">
+            <xs:annotation>
+              <xs:documentation>A flag to indicate that this search parameter definition is authored for testing purposes (or education/evaluation/marketing), and is not intended to be used for genuine usage.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="date" minOccurs="0" maxOccurs="1" type="dateTime">
+            <xs:annotation>
+              <xs:documentation>The date  (and optionally time) when the search parameter definition was published.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="base" minOccurs="1" maxOccurs="1" type="code">
@@ -92,6 +107,27 @@
           <xs:element name="target" minOccurs="0" maxOccurs="unbounded" type="code">
             <xs:annotation>
               <xs:documentation>Types of resource (if a resource is referenced).</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SearchParameter.Contact">
+    <xs:annotation>
+      <xs:documentation>A Search Parameter that defines a named search item that can be used to search/filter on a resource.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The name of an individual to contact regarding the search parameter.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+            <xs:annotation>
+              <xs:documentation>Contact details for individual (if a name was provided) or the publisher.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

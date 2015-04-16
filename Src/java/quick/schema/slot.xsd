@@ -27,18 +27,18 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Slot" type="Slot">
     <xs:annotation>
-      <xs:documentation>(informative) A slot of time on a schedule that may be available for booking appointments.</xs:documentation>
+      <xs:documentation>A slot of time on a schedule that may be available for booking appointments.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="Slot">
     <xs:annotation>
-      <xs:documentation>(informative) A slot of time on a schedule that may be available for booking appointments.</xs:documentation>
+      <xs:documentation>A slot of time on a schedule that may be available for booking appointments.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -54,9 +54,9 @@
               <xs:documentation>The type of appointments that can be booked into this slot (ideally this would be an identifiable service - which is at a location, rather than the location itself). If provided then this overrides the value provided on the availability resource.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="availability" minOccurs="1" maxOccurs="1" type="Reference">
+          <xs:element name="schedule" minOccurs="1" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>The availability resource that this slot defines an interval of status information.</xs:documentation>
+              <xs:documentation>The schedule resource that this slot defines an interval of status information.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="freeBusyType" minOccurs="1" maxOccurs="1" type="SlotStatus">
@@ -82,11 +82,6 @@
           <xs:element name="comment" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>Comments on the slot to describe any extended information. Such as custom constraints on the slot.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="lastModified" minOccurs="0" maxOccurs="1" type="dateTime">
-            <xs:annotation>
-              <xs:documentation>When this slot was created, or last revised.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -119,7 +114,7 @@
   </xs:simpleType>
   <xs:complexType name="SlotStatus">
     <xs:annotation>
-      <xs:documentation>The free/busy status of an appointment</xs:documentation>
+      <xs:documentation>The free/busy status of a slot</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>

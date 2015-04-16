@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="OperationOutcome" type="OperationOutcome">
     <xs:annotation>
@@ -65,14 +65,14 @@
               <xs:documentation>Indicates whether the issue indicates a variation from successful processing.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="type" minOccurs="0" maxOccurs="1" type="Coding">
+          <xs:element name="code" minOccurs="1" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A code indicating the type of error, warning or information message.</xs:documentation>
+              <xs:documentation>Describes the type of the issue.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="details" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Additional description of the issue.</xs:documentation>
+              <xs:documentation>Additional diagnostic information about the issue.  Typically, this may be a description of how a value is erroneous, or a stck dump to help trace the issue.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="location" minOccurs="0" maxOccurs="unbounded" type="string">

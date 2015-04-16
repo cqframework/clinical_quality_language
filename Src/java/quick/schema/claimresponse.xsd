@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="ClaimResponse" type="ClaimResponse">
     <xs:annotation>
@@ -44,7 +44,7 @@
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="identifier" minOccurs="1" maxOccurs="unbounded" type="Identifier">
+          <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
               <xs:documentation>The Response Business Identifier.</xs:documentation>
            </xs:annotation>
@@ -52,11 +52,6 @@
           <xs:element name="request" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>Original request resource referrence.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="requestIdentifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
-            <xs:annotation>
-              <xs:documentation>Original request Business Identifer.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="ruleset" minOccurs="0" maxOccurs="1" type="Coding">
@@ -69,7 +64,7 @@
               <xs:documentation>The style (standard) and version of the original material which was converted into this resource.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="date" minOccurs="0" maxOccurs="1" type="date">
+          <xs:element name="created" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
               <xs:documentation>The date when the enclosed suite of services were performed or completed.</xs:documentation>
            </xs:annotation>
@@ -109,7 +104,7 @@
               <xs:documentation>The first tier service adjudications for submitted services.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="additem" type="ClaimResponse.Additem" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="addItem" type="ClaimResponse.AddItem" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>The first tier service adjudications for payor added services.</xs:documentation>
            </xs:annotation>
@@ -174,6 +169,11 @@
               <xs:documentation>Note text.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="coverage" type="ClaimResponse.Coverage" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>Financial instrument by which payment information for health care.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -185,12 +185,12 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequenceLinkId" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="sequenceLinkId" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A service line number.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="noteNumber" minOccurs="0" maxOccurs="unbounded" type="integer">
+          <xs:element name="noteNumber" minOccurs="0" maxOccurs="unbounded" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A list of note references to the notes provided below.</xs:documentation>
            </xs:annotation>
@@ -242,7 +242,7 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequenceLinkId" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="sequenceLinkId" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A service line number.</xs:documentation>
            </xs:annotation>
@@ -252,7 +252,7 @@
               <xs:documentation>The adjudications results.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subdetail" type="ClaimResponse.Subdetail" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="subDetail" type="ClaimResponse.SubDetail" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>The third tier service adjudications for submitted services.</xs:documentation>
            </xs:annotation>
@@ -287,14 +287,14 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="ClaimResponse.Subdetail">
+  <xs:complexType name="ClaimResponse.SubDetail">
     <xs:annotation>
       <xs:documentation>This resource provides the adjudication details from the processing of a Claim resource.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequenceLinkId" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="sequenceLinkId" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A service line number.</xs:documentation>
            </xs:annotation>
@@ -334,14 +334,14 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="ClaimResponse.Additem">
+  <xs:complexType name="ClaimResponse.AddItem">
     <xs:annotation>
       <xs:documentation>This resource provides the adjudication details from the processing of a Claim resource.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequenceLinkId" minOccurs="0" maxOccurs="unbounded" type="integer">
+          <xs:element name="sequenceLinkId" minOccurs="0" maxOccurs="unbounded" type="positiveInt">
             <xs:annotation>
               <xs:documentation>List of input service items which this service line is intended to replace.</xs:documentation>
            </xs:annotation>
@@ -356,7 +356,7 @@
               <xs:documentation>The fee charged for the professional service or product..</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="noteNumberLinkId" minOccurs="0" maxOccurs="unbounded" type="integer">
+          <xs:element name="noteNumberLinkId" minOccurs="0" maxOccurs="unbounded" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A list of note references to the notes provided below.</xs:documentation>
            </xs:annotation>
@@ -460,17 +460,17 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequenceLinkId" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="sequenceLinkId" minOccurs="0" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>The sequence number of the line item submitted which contains the error. This value is ommitted when the error is elsewhere.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="detailSequenceLinkId" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="detailSequenceLinkId" minOccurs="0" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>The sequence number of the addition within the line item submitted which contains the error. This value is ommitted when the error is not related to an Addition.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subdetailSequenceLinkId" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="subdetailSequenceLinkId" minOccurs="0" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>The sequence number of the addition within the line item submitted which contains the error. This value is ommitted when the error is not related to an Addition.</xs:documentation>
            </xs:annotation>
@@ -491,7 +491,7 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="number" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="number" minOccurs="0" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>An integer associated with each note which may be referred to from each service line item.</xs:documentation>
            </xs:annotation>
@@ -504,6 +504,57 @@
           <xs:element name="text" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>The note text.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ClaimResponse.Coverage">
+    <xs:annotation>
+      <xs:documentation>This resource provides the adjudication details from the processing of a Claim resource.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="positiveInt">
+            <xs:annotation>
+              <xs:documentation>A service line item.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="focal" minOccurs="1" maxOccurs="1" type="boolean">
+            <xs:annotation>
+              <xs:documentation>The instance number of the Coverage which is the focus for adjudication. The Coverage against which the claim is to be adjudicated.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="coverage" minOccurs="1" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>Reference to the program or plan identification, underwriter or payor.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="businessArrangement" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>The contract number of a business agreement which describes the terms and conditions.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="relationship" minOccurs="1" maxOccurs="1" type="Coding">
+            <xs:annotation>
+              <xs:documentation>The relationship of the patient to the subscriber.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="preAuthRef" minOccurs="0" maxOccurs="unbounded" type="string">
+            <xs:annotation>
+              <xs:documentation>A list of references from the Insurer to which these services pertain.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="claimResponse" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The Coverages adjudication details.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="originalRuleset" minOccurs="0" maxOccurs="1" type="Coding">
+            <xs:annotation>
+              <xs:documentation>The style (standard) and version of the original material which was converted into this resource.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

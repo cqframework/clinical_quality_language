@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="OrderResponse" type="OrderResponse">
     <xs:annotation>
@@ -71,7 +71,7 @@
             <xs:element name="authorityCodeableConcept" type="CodeableConcept"/>
             <xs:element name="authorityReference" type="Reference"/>
           </xs:choice>
-          <xs:element name="code" minOccurs="1" maxOccurs="1" type="OrderOutcomeStatus">
+          <xs:element name="orderStatus" minOccurs="1" maxOccurs="1" type="OrderStatus">
             <xs:annotation>
               <xs:documentation>What this response says about the status of the original order.</xs:documentation>
            </xs:annotation>
@@ -90,7 +90,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:simpleType name="OrderOutcomeStatus-list">
+  <xs:simpleType name="OrderStatus-list">
     <xs:restriction base="xs:string">
       <xs:enumeration value="pending">
         <xs:annotation>
@@ -132,21 +132,21 @@
           <xs:documentation>Processing the order was stopped because of some workflow/business logic reason.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="complete">
+      <xs:enumeration value="completed">
         <xs:annotation>
           <xs:documentation>The order has been completed.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
-  <xs:complexType name="OrderOutcomeStatus">
+  <xs:complexType name="OrderStatus">
     <xs:annotation>
       <xs:documentation>The status of the response to an order</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Element">
-        <xs:attribute name="value" type="OrderOutcomeStatus-list" use="optional"/>
+        <xs:attribute name="value" type="OrderStatus-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

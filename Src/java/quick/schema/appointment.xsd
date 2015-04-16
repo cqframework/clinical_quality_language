@@ -27,18 +27,18 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Appointment" type="Appointment">
     <xs:annotation>
-      <xs:documentation>A scheduled healthcare event for a patient and/or practitioner(s) where a service may take place at a specific date/time.</xs:documentation>
+      <xs:documentation>A booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. This may result in one or more Encounter(s).</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="Appointment">
     <xs:annotation>
-      <xs:documentation>A scheduled healthcare event for a patient and/or practitioner(s) where a service may take place at a specific date/time.</xs:documentation>
+      <xs:documentation>A booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. This may result in one or more Encounter(s).</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -49,24 +49,24 @@
               <xs:documentation>This records identifiers associated with this appointment concern that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="priority" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="status" minOccurs="1" maxOccurs="1" type="AppointmentStatus">
             <xs:annotation>
-              <xs:documentation>The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority) (Need to change back to CodeableConcept).</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="status" minOccurs="0" maxOccurs="1" type="code">
-            <xs:annotation>
-              <xs:documentation>Each of the participants has their own participation status which indicates their involvement in the process, however this status indicates the shared status.</xs:documentation>
+              <xs:documentation>The overall status of the Appointment. Each of the participants has their own participation status which indicates their involvement in the process, however this status indicates the shared status.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="type" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>The type of appointments that is being booked (ideally this would be an identifiable service - which is at a location, rather than the location itself).</xs:documentation>
+              <xs:documentation>The type of appointment that is being booked (This may also be associated with participants for location, and/or a HealthcareService).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="reason" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>The reason that this appointment is being scheduled, this is more clinical than administrative.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="priority" minOccurs="0" maxOccurs="1" type="unsignedInt">
+            <xs:annotation>
+              <xs:documentation>The priority of the appointment. Can be used to make informed decisions if needing to re-prioritize appointments. (The iCal Standard specifies 0 as undefined, 1 as highest, 9 as lowest priority).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
@@ -89,11 +89,6 @@
               <xs:documentation>The slot that this appointment is filling. If provided then the schedule will not be provided as slots are not recursive, and the start/end values MUST be the same as from the slot.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="location" minOccurs="0" maxOccurs="1" type="Reference">
-            <xs:annotation>
-              <xs:documentation>The primary location that this appointment is to take place.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
           <xs:element name="comment" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
               <xs:documentation>Additional comments about the appointment.</xs:documentation>
@@ -109,23 +104,13 @@
               <xs:documentation>List of participants involved in the appointment.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="lastModifiedBy" minOccurs="0" maxOccurs="1" type="Reference">
-            <xs:annotation>
-              <xs:documentation>Who recorded the appointment.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="lastModified" minOccurs="0" maxOccurs="1" type="dateTime">
-            <xs:annotation>
-              <xs:documentation>Date when the appointment was recorded.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:complexType name="Appointment.Participant">
     <xs:annotation>
-      <xs:documentation>A scheduled healthcare event for a patient and/or practitioner(s) where a service may take place at a specific date/time.</xs:documentation>
+      <xs:documentation>A booking of a healthcare event among patient(s), practitioner(s), related person(s) and/or device(s) for a specific date/time. This may result in one or more Encounter(s).</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
@@ -137,7 +122,7 @@
           </xs:element>
           <xs:element name="actor" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>A Person of device that is participating in the appointment, usually Practitioner, Patient, RelatedPerson or Device.</xs:documentation>
+              <xs:documentation>A Person, Location/HealthcareService or Device that is participating in the appointment.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="required" minOccurs="0" maxOccurs="1" type="ParticipantRequired">
@@ -168,7 +153,7 @@
       </xs:enumeration>
       <xs:enumeration value="information-only">
         <xs:annotation>
-          <xs:documentation>The participant is not required to attend the appointment (appointment is about them, not for them).</xs:documentation>
+          <xs:documentation>The participant is excluded from the appointment, and may not be informed of the appointment taking place. (appointment is about them, not for them - such as 2 doctors discussing results about a patient's test).</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
     </xs:restriction>
@@ -181,6 +166,51 @@
     <xs:complexContent>
       <xs:extension base="Element">
         <xs:attribute name="value" type="ParticipantRequired-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="AppointmentStatus-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="pending">
+        <xs:annotation>
+          <xs:documentation>Some or all of the participant(s) have not finalized their acceptance of the appointment request.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="booked">
+        <xs:annotation>
+          <xs:documentation>All participant(s) have been considered and the appointment is confirmed to go ahead at the date/times specified.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="arrived">
+        <xs:annotation>
+          <xs:documentation>Some of the patients have arrived.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="fulfilled">
+        <xs:annotation>
+          <xs:documentation>This appointment has completed and may have resulted in an encounter.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="cancelled">
+        <xs:annotation>
+          <xs:documentation>The appointment has been cancelled.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="noshow">
+        <xs:annotation>
+          <xs:documentation>Some or all of the participant(s) have not/did not appear for the appointment (usually the patient).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="AppointmentStatus">
+    <xs:annotation>
+      <xs:documentation>The free/busy status of an appointment</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="AppointmentStatus-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -199,16 +229,6 @@
       <xs:enumeration value="tentative">
         <xs:annotation>
           <xs:documentation>The participant has  tentatively accepted the appointment. This could be automatically created by a system and requires further processing before it can be accepted. There is no commitment that attendance will occur.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="in-process">
-        <xs:annotation>
-          <xs:documentation>The participant has started the appointment.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="completed">
-        <xs:annotation>
-          <xs:documentation>The participant's involvement in the appointment has been completed.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="needs-action">

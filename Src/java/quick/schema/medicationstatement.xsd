@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="MedicationStatement" type="MedicationStatement">
     <xs:annotation>
@@ -54,6 +54,21 @@
               <xs:documentation>The person or animal who is /was taking the medication.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="informationSource" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>The person who provided the information about the taking of this medication.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="dateAsserted" minOccurs="0" maxOccurs="1" type="dateTime">
+            <xs:annotation>
+              <xs:documentation>The date when the medication statement was asserted by the information source.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="status" minOccurs="1" maxOccurs="1" type="MedicationStatementStatus">
+            <xs:annotation>
+              <xs:documentation>A code specifying the state of the statement.  Generally this will be in-progress or completed state.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="wasNotGiven" minOccurs="0" maxOccurs="1" type="boolean">
             <xs:annotation>
               <xs:documentation>Set this to true if the record is saying that the medication was NOT taken.</xs:documentation>
@@ -64,19 +79,28 @@
               <xs:documentation>A code indicating why the medication was not taken.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="whenGiven" minOccurs="0" maxOccurs="1" type="Period">
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>The interval of time during which it is being asserted that the patient was taking the medication.</xs:documentation>
+              <xs:documentation>A reason for why the medication is being/was taken.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="reasonForUseCodeableConcept" type="CodeableConcept"/>
+            <xs:element name="reasonForUseReference" type="Reference"/>
+          </xs:choice>
+          <xs:choice minOccurs="0" maxOccurs="1" >
+            <xs:annotation>
+              <xs:documentation>The interval of time during which it is being asserted that the patient was taking the medication (or was not taking, when the 'wasNotGiven' attribute is true).</xs:documentation>
+            </xs:annotation>
+            <xs:element name="effectiveDateTime" type="dateTime"/>
+            <xs:element name="effectivePeriod" type="Period"/>
+          </xs:choice>
+          <xs:element name="note" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Provides extra information about the medication statement that is not conveyed by the other attributes.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="medication" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication from a known list of medications.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="device" minOccurs="0" maxOccurs="unbounded" type="Reference">
-            <xs:annotation>
-              <xs:documentation>An identifier or a link to a resource that identifies a device used in administering the medication to the patient.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="dosage" type="MedicationStatement.Dosage" minOccurs="0" maxOccurs="unbounded">
@@ -95,6 +119,11 @@
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
+          <xs:element name="text" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Free text dosage instructions can be used for cases where the instructions are too complex to code. When coded instructions are present, the free text instructions may still be present for display to humans taking or administering the medication.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="schedule" minOccurs="0" maxOccurs="1" type="Timing">
             <xs:annotation>
               <xs:documentation>The timing schedule for giving the medication to the patient.  The Schedule data type allows many different expressions, for example.  &quot;Every  8 hours&quot;; &quot;Three times a day&quot;; &quot;1/2 an hour before breakfast for 10 days from 23-Dec 2011:&quot;;  &quot;15 Oct 2013, 17 Oct 2013 and 1 Nov 2013&quot;.</xs:documentation>
@@ -119,9 +148,7 @@
           </xs:element>
           <xs:element name="method" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.
-
-Terminologies used often pre-coordinate this term with the route and or form of administration.</xs:documentation>
+              <xs:documentation>A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.Terminologies used often pre-coordinate this term with the route and or form of administration.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="quantity" minOccurs="0" maxOccurs="1" type="Quantity">
@@ -140,6 +167,36 @@ Terminologies used often pre-coordinate this term with the route and or form of 
            </xs:annotation>
           </xs:element>
         </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="MedicationStatementStatus-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="in-progress">
+        <xs:annotation>
+          <xs:documentation>The medication is still being taken.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="completed">
+        <xs:annotation>
+          <xs:documentation>All actions that are implied by the statement have occurred.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="entered-in-error">
+        <xs:annotation>
+          <xs:documentation>The statement was entered in error and therefore nullified.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="MedicationStatementStatus">
+    <xs:annotation>
+      <xs:documentation>A set of codes indicating the current status of a MedicationStatement</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="MedicationStatementStatus-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

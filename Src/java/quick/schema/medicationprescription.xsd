@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="MedicationPrescription" type="MedicationPrescription">
     <xs:annotation>
@@ -81,9 +81,14 @@
             <xs:element name="reasonCodeableConcept" type="CodeableConcept"/>
             <xs:element name="reasonReference" type="Reference"/>
           </xs:choice>
+          <xs:element name="note" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation>Extra information about the prescription that could not be conveyed by the other attributes.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="medication" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>Identifies the medication being administered. This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication from a known list of medications.</xs:documentation>
+              <xs:documentation>Identifies the medication being administered. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="dosageInstruction" type="MedicationPrescription.DosageInstruction" minOccurs="0" maxOccurs="unbounded">
@@ -114,7 +119,7 @@
         <xs:sequence>
           <xs:element name="text" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Free text dosage instructions for cases where the instructions are too complex to code.</xs:documentation>
+              <xs:documentation>Free text dosage instructions can be used for cases where the instructions are too complex to code. When coded instructions are present, the free text instructions may still be present for display to humans taking or administering the medication.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="additionalInstructions" minOccurs="0" maxOccurs="1" type="CodeableConcept">
@@ -149,16 +154,16 @@
           </xs:element>
           <xs:element name="method" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.
-
-Terminologies used often pre-coordinate this term with the route and or form of administration.</xs:documentation>
+              <xs:documentation>A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.Terminologies used often pre-coordinate this term with the route and or form of administration.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="doseQuantity" minOccurs="0" maxOccurs="1" type="Quantity">
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
               <xs:documentation>The amount of therapeutic or other substance given at one administration event.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
+            </xs:annotation>
+            <xs:element name="doseRange" type="Range"/>
+            <xs:element name="doseQuantity" type="Quantity"/>
+          </xs:choice>
           <xs:element name="rate" minOccurs="0" maxOccurs="1" type="Ratio">
             <xs:annotation>
               <xs:documentation>Identifies the speed with which the substance is introduced into the subject. Typically the rate for an infusion. 200ml in 2 hours.</xs:documentation>
@@ -182,31 +187,27 @@ Terminologies used often pre-coordinate this term with the route and or form of 
         <xs:sequence>
           <xs:element name="medication" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>Identifies the medication that is to be dispensed.  This may be a more specifically defined than the medicationPrescription.medication . This is either a link to a resource representing the details of the medication or a simple attribute carrying a code that identifies the medication from a known list of medications.</xs:documentation>
+              <xs:documentation>Identifies the medication being administered. This is a link to a resource that represents the medication which may be the details of the medication or simply an attribute carrying a code that identifies the medication from a known list of medications.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="validityPeriod" minOccurs="0" maxOccurs="1" type="Period">
             <xs:annotation>
-              <xs:documentation>Design Comments: This indicates the validity period of a prescription (stale dating the Prescription) 
-It reflects the prescriber perspective for the validity of the prescription. Dispenses must not be made against the prescription outside of this period. The lower-bound of the Dispensing Window signifies the earliest date that the prescription can be filled for the first time. If an upper-bound is not specified then the Prescription is open-ended or will default to a stale-date based on regulations. 
-Rationale: Indicates when the Prescription becomes valid, and when it ceases to be a dispensable Prescription.</xs:documentation>
+              <xs:documentation>Design Comments: This indicates the validity period of a prescription (stale dating the Prescription) It reflects the prescriber perspective for the validity of the prescription. Dispenses must not be made against the prescription outside of this period. The lower-bound of the Dispensing Window signifies the earliest date that the prescription can be filled for the first time. If an upper-bound is not specified then the Prescription is open-ended or will default to a stale-date based on regulations. Rationale: Indicates when the Prescription becomes valid, and when it ceases to be a dispensable Prescription.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="numberOfRepeatsAllowed" minOccurs="0" maxOccurs="1" type="integer">
+          <xs:element name="numberOfRepeatsAllowed" minOccurs="0" maxOccurs="1" type="positiveInt">
             <xs:annotation>
-              <xs:documentation>An integer indicating the number of repeats of the Dispense. 
-UsageNotes: For example, the number of times the prescribed quantity is to be supplied including the initial standard fill.</xs:documentation>
+              <xs:documentation>An integer indicating the number of repeats of the Dispense. UsageNotes: For example, the number of times the prescribed quantity is to be supplied including the initial standard fill.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="quantity" minOccurs="0" maxOccurs="1" type="Quantity">
             <xs:annotation>
-              <xs:documentation>The amount that is to be dispensed.</xs:documentation>
+              <xs:documentation>The amount that is to be dispensed for one fill.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="expectedSupplyDuration" minOccurs="0" maxOccurs="1" type="Duration">
             <xs:annotation>
-              <xs:documentation>Identifies the period time over which the supplied product is expected to be used, or the length of time the dispense is expected to last. 
-In some situations, this attribute may be used instead of quantity to identify the amount supplied by how long it is expected to last, rather than the physical quantity issued, e.g. 90 days supply of medication (based on an ordered dosage) When possible, it is always better to specify quantity, as this tends to be more precise. expectedSupplyDuration will always be an estimate that can be influenced by external factors.</xs:documentation>
+              <xs:documentation>Identifies the period time over which the supplied product is expected to be used, or the length of time the dispense is expected to last. In some situations, this attribute may be used instead of quantity to identify the amount supplied by how long it is expected to last, rather than the physical quantity issued, e.g. 90 days supply of medication (based on an ordered dosage) When possible, it is always better to specify quantity, as this tends to be more precise. expectedSupplyDuration will always be an estimate that can be influenced by external factors.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -241,7 +242,7 @@ In some situations, this attribute may be used instead of quantity to identify t
           <xs:documentation>The prescription is 'actionable', but not all actions that are implied by it have occurred yet.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="on hold">
+      <xs:enumeration value="on-hold">
         <xs:annotation>
           <xs:documentation>Actions implied by the prescription have been temporarily halted, but are expected to continue later.  May also be called &quot;suspended&quot;.</xs:documentation>
         </xs:annotation>
@@ -251,7 +252,7 @@ In some situations, this attribute may be used instead of quantity to identify t
           <xs:documentation>All actions that are implied by the prescription have occurred (this will rarely be made explicit).</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="entered in error">
+      <xs:enumeration value="entered-in-error">
         <xs:annotation>
           <xs:documentation>The prescription was entered in error and therefore nullified.</xs:documentation>
         </xs:annotation>
@@ -264,6 +265,11 @@ In some situations, this attribute may be used instead of quantity to identify t
       <xs:enumeration value="superceded">
         <xs:annotation>
           <xs:documentation>The prescription was replaced by a newer one, which encompasses all the information in the previous one.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="draft">
+        <xs:annotation>
+          <xs:documentation>The prescription is not yet 'actionable', i.e. it is a work in progress, required sign-off, need to be run through decision support.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
     </xs:restriction>

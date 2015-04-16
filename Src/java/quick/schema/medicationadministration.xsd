@@ -27,22 +27,18 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="MedicationAdministration" type="MedicationAdministration">
     <xs:annotation>
-      <xs:documentation>Describes the event of a patient being given a dose of a medication.  This may be as simple as swallowing a tablet or it may be a long running infusion.
-
-Related resources tie this event to the authorizing prescription, and the specific encounter between patient and health care practitioner.</xs:documentation>
+      <xs:documentation>Describes the event of a patient consuming or otherwise being administered a medication.  This may be as simple as swallowing a tablet or it may be a long running infusion.Related resources tie this event to the authorizing prescription, and the specific encounter between patient and health care practitioner.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="MedicationAdministration">
     <xs:annotation>
-      <xs:documentation>Describes the event of a patient being given a dose of a medication.  This may be as simple as swallowing a tablet or it may be a long running infusion.
-
-Related resources tie this event to the authorizing prescription, and the specific encounter between patient and health care practitioner.</xs:documentation>
+      <xs:documentation>Describes the event of a patient consuming or otherwise being administered a medication.  This may be as simple as swallowing a tablet or it may be a long running infusion.Related resources tie this event to the authorizing prescription, and the specific encounter between patient and health care practitioner.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -63,7 +59,7 @@ Related resources tie this event to the authorizing prescription, and the specif
               <xs:documentation>The person or animal to whom the medication was given.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="practitioner" minOccurs="1" maxOccurs="1" type="Reference">
+          <xs:element name="practitioner" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>The individual who was responsible for giving the medication to the patient.</xs:documentation>
            </xs:annotation>
@@ -73,7 +69,7 @@ Related resources tie this event to the authorizing prescription, and the specif
               <xs:documentation>The visit or admission the or other contact between patient and health care provider the medication administration was performed as part of.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="prescription" minOccurs="1" maxOccurs="1" type="Reference">
+          <xs:element name="prescription" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>The original request, instruction or authority to perform the administration.</xs:documentation>
            </xs:annotation>
@@ -88,9 +84,14 @@ Related resources tie this event to the authorizing prescription, and the specif
               <xs:documentation>A code indicating why the administration was not performed.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="reasonGiven" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
+            <xs:annotation>
+              <xs:documentation>A code indicating why the medication was given.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:choice minOccurs="1" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>An interval of time during which the administration took place.  For many administrations, such as swallowing a tablet the lower and upper values of the interval will be the same.</xs:documentation>
+              <xs:documentation>An interval of time during which the administration took place (or did not take place, when the 'notGiven' attribute is true).  For many administrations, such as swallowing a tablet the use of dateTime is more appropriate.</xs:documentation>
             </xs:annotation>
             <xs:element name="effectiveTimeDateTime" type="dateTime"/>
             <xs:element name="effectiveTimePeriod" type="Period"/>
@@ -105,9 +106,14 @@ Related resources tie this event to the authorizing prescription, and the specif
               <xs:documentation>The device used in administering the medication to the patient.  E.g. a particular infusion pump.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="dosage" type="MedicationAdministration.Dosage" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="note" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Provides details of how much of the medication was administered.</xs:documentation>
+              <xs:documentation>Extra information about the medication administration that is not conveyed by the other attributes.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="dosage" type="MedicationAdministration.Dosage" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>Indicates how the medication is/was used by the patient.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -116,27 +122,16 @@ Related resources tie this event to the authorizing prescription, and the specif
   </xs:complexType>
   <xs:complexType name="MedicationAdministration.Dosage">
     <xs:annotation>
-      <xs:documentation>Describes the event of a patient being given a dose of a medication.  This may be as simple as swallowing a tablet or it may be a long running infusion.
-
-Related resources tie this event to the authorizing prescription, and the specific encounter between patient and health care practitioner.</xs:documentation>
+      <xs:documentation>Describes the event of a patient consuming or otherwise being administered a medication.  This may be as simple as swallowing a tablet or it may be a long running infusion.Related resources tie this event to the authorizing prescription, and the specific encounter between patient and health care practitioner.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:choice minOccurs="0" maxOccurs="1" >
+          <xs:element name="text" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>The timing schedule for giving the medication to the patient.  This may be a single time point (using dateTime) or it may be a start and end dateTime (Period).</xs:documentation>
-            </xs:annotation>
-            <xs:element name="timingDateTime" type="dateTime"/>
-            <xs:element name="timingPeriod" type="Period"/>
-          </xs:choice>
-          <xs:choice minOccurs="0" maxOccurs="1" >
-            <xs:annotation>
-              <xs:documentation>If set to true or if specified as a CodeableConcept, indicates that the medication is only taken when needed within the specified schedule rather than at every scheduled dose.  If a CodeableConcept is present, it indicates the pre-condition for taking the Medication.</xs:documentation>
-            </xs:annotation>
-            <xs:element name="asNeededBoolean" type="boolean"/>
-            <xs:element name="asNeededCodeableConcept" type="CodeableConcept"/>
-          </xs:choice>
+              <xs:documentation>Free text dosage instructions can be used for cases where the instructions are too complex to code. When coded instructions are present, the free text instructions may still be present for display to humans taking or administering the medication.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="site" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
               <xs:documentation>A coded specification of the anatomic site where the medication first entered the body.  E.g. &quot;left arm&quot;.</xs:documentation>
@@ -149,9 +144,7 @@ Related resources tie this event to the authorizing prescription, and the specif
           </xs:element>
           <xs:element name="method" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A coded value indicating the method by which the medication was introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.
-
-Terminologies used often pre-coordinate this term with the route and or form of administration.</xs:documentation>
+              <xs:documentation>A coded value indicating the method by which the medication was introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.Terminologies used often pre-coordinate this term with the route and or form of administration.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="quantity" minOccurs="0" maxOccurs="1" type="Quantity">
@@ -164,23 +157,18 @@ Terminologies used often pre-coordinate this term with the route and or form of 
               <xs:documentation>Identifies the speed with which the medication was introduced into the patient. Typically the rate for an infusion e.g. 200ml in 2 hours.  May also expressed as a rate per unit of time such as 100ml per hour - the duration is then not specified, or is specified in the quantity.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="maxDosePerPeriod" minOccurs="0" maxOccurs="1" type="Ratio">
-            <xs:annotation>
-              <xs:documentation>The maximum total quantity of a therapeutic substance that was administered to the patient over the specified period of time. E.g. 1000mg in 24 hours.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
   <xs:simpleType name="MedicationAdministrationStatus-list">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="in progress">
+      <xs:enumeration value="in-progress">
         <xs:annotation>
           <xs:documentation>The administration has started but has not yet completed.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="on hold">
+      <xs:enumeration value="on-hold">
         <xs:annotation>
           <xs:documentation>Actions implied by the administration have been temporarily halted, but are expected to continue later. May also be called &quot;suspended&quot;.</xs:documentation>
         </xs:annotation>
@@ -190,7 +178,7 @@ Terminologies used often pre-coordinate this term with the route and or form of 
           <xs:documentation>All actions that are implied by the administration have occurred.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
-      <xs:enumeration value="entered in error">
+      <xs:enumeration value="entered-in-error">
         <xs:annotation>
           <xs:documentation>The administration was entered in error and therefore nullified.</xs:documentation>
         </xs:annotation>

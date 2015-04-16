@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Specimen" type="Specimen">
     <xs:annotation>
@@ -51,17 +51,17 @@
           </xs:element>
           <xs:element name="type" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>Kind of material that forms the specimen.</xs:documentation>
+              <xs:documentation>The kind of material that forms the specimen.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="source" type="Specimen.Source" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="parent" minOccurs="0" maxOccurs="unbounded" type="Reference">
             <xs:annotation>
-              <xs:documentation>Parent specimen from which the focal specimen was a component.</xs:documentation>
+              <xs:documentation>Reference to the parent (source) specimen which is used when the specimen was either derived from or a component of a another specimen.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="subject" minOccurs="1" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>Where the specimen came from. This may be the patient(s) or from the environment or  a device.</xs:documentation>
+              <xs:documentation>Where the specimen came from. This may be from the patient(s) or from the environment or a device.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="accessionIdentifier" minOccurs="0" maxOccurs="1" type="Identifier">
@@ -87,27 +87,6 @@
           <xs:element name="container" type="Specimen.Container" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>The container holding the specimen.  The recursive nature of containers; i.e. blood in tube in tray in rack is not addressed here.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="Specimen.Source">
-    <xs:annotation>
-      <xs:documentation>Sample for analysis.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="BackboneElement">
-        <xs:sequence>
-          <xs:element name="relationship" minOccurs="1" maxOccurs="1" type="HierarchicalRelationshipType">
-            <xs:annotation>
-              <xs:documentation>Whether this relationship is to a parent or to a child.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="target" minOccurs="0" maxOccurs="unbounded" type="Reference">
-            <xs:annotation>
-              <xs:documentation>The specimen resource that is the target of this relationship.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -148,11 +127,13 @@
               <xs:documentation>A coded value specifying the technique that is used to perform the procedure.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="sourceSite" minOccurs="0" maxOccurs="1" type="CodeableConcept">
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>Anatomical location from which the specimen should be collected (if subject is a patient). This element is not used for environmental specimens.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
+              <xs:documentation>Anatomical location from which the specimen was collected (if subject is a patient). This is the target site.  This element is not used for environmental specimens.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="bodySiteCodeableConcept" type="CodeableConcept"/>
+            <xs:element name="bodySiteReference" type="Reference"/>
+          </xs:choice>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -223,31 +204,6 @@
             <xs:element name="additiveReference" type="Reference"/>
           </xs:choice>
         </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:simpleType name="HierarchicalRelationshipType-list">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="parent">
-        <xs:annotation>
-          <xs:documentation>The target resource is the parent of the focal specimen resource.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="child">
-        <xs:annotation>
-          <xs:documentation>The target resource is the child of the focal specimen resource.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:complexType name="HierarchicalRelationshipType">
-    <xs:annotation>
-      <xs:documentation>Type indicating if this is a parent or child relationship</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="Element">
-        <xs:attribute name="value" type="HierarchicalRelationshipType-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

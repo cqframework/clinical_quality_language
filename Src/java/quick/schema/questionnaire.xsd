@@ -27,9 +27,9 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Questionnaire" type="Questionnaire">
     <xs:annotation>
@@ -61,12 +61,17 @@
           </xs:element>
           <xs:element name="date" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
-              <xs:documentation>The date that this version of the questionnaire was authored.</xs:documentation>
+              <xs:documentation>The date that this questionnaire was last changed.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="publisher" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Organization responsible for developing and maintaining the questionnaire.</xs:documentation>
+              <xs:documentation>Organization or person responsible for developing and maintaining the questionnaire.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="telecom" minOccurs="0" maxOccurs="unbounded" type="ContactPoint">
+            <xs:annotation>
+              <xs:documentation>Contact details to assist a user in finding and communicating with the publisher.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="group" type="Questionnaire.Group" minOccurs="1" maxOccurs="1">
@@ -87,7 +92,7 @@
         <xs:sequence>
           <xs:element name="linkId" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>A identifier that is unique within the questionnaire allowing linkage to the equivalent group in a QuestionnaireAnswers resource.</xs:documentation>
+              <xs:documentation>An identifier that is unique within the questionnaire allowing linkage to the equivalent group in a QuestionnaireAnswers resource.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="title" minOccurs="0" maxOccurs="1" type="string">
@@ -143,12 +148,12 @@
           </xs:element>
           <xs:element name="concept" minOccurs="0" maxOccurs="unbounded" type="Coding">
             <xs:annotation>
-              <xs:documentation>Identifies a how this group of questions is known in a particular terminology such as LOINC.</xs:documentation>
+              <xs:documentation>Identifies a how this question is known in a particular terminology such as LOINC.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="text" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Text of the question as it is shown to the user.</xs:documentation>
+              <xs:documentation>The actual question as shown to the user to prompt them for an answer.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="type" minOccurs="0" maxOccurs="1" type="AnswerFormat">
@@ -158,12 +163,12 @@
           </xs:element>
           <xs:element name="required" minOccurs="0" maxOccurs="1" type="boolean">
             <xs:annotation>
-              <xs:documentation>If true, indicates that the group must be present and have required questions within it answered.  If false, the group may be skipped when answering the questionnaire.</xs:documentation>
+              <xs:documentation>If true, indicates that the question must be answered and have required groups within it also present.  If false, the question and any contained groups may be skipped when answering the questionnaire.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="repeats" minOccurs="0" maxOccurs="1" type="boolean">
             <xs:annotation>
-              <xs:documentation>Whether the group may occur multiple times in the instance, containing multiple sets of answers.</xs:documentation>
+              <xs:documentation>If true, the question may have more than one answer.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="options" minOccurs="0" maxOccurs="1" type="Reference">
@@ -225,6 +230,11 @@
       <xs:enumeration value="text">
         <xs:annotation>
           <xs:documentation>Answer is a long (potentially multi-paragram) free-text entry.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="url">
+        <xs:annotation>
+          <xs:documentation>Answer is a url (website, FTP site, etc.).</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="choice">

@@ -27,16 +27,16 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
-  <xs:element name="SecurityEvent" type="SecurityEvent">
+  <xs:element name="AuditEvent" type="AuditEvent">
     <xs:annotation>
       <xs:documentation>A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.</xs:documentation>
     </xs:annotation>
   </xs:element>
-  <xs:complexType name="SecurityEvent">
+  <xs:complexType name="AuditEvent">
     <xs:annotation>
       <xs:documentation>A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
@@ -44,22 +44,22 @@
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="event" type="SecurityEvent.Event" minOccurs="1" maxOccurs="1">
+          <xs:element name="event" type="AuditEvent.Event" minOccurs="1" maxOccurs="1">
             <xs:annotation>
               <xs:documentation>Identifies the name, action type, time, and disposition of the audited event.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="participant" type="SecurityEvent.Participant" minOccurs="1" maxOccurs="unbounded">
+          <xs:element name="participant" type="AuditEvent.Participant" minOccurs="1" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>A person, a hardware device or software process.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="source" type="SecurityEvent.Source" minOccurs="1" maxOccurs="1">
+          <xs:element name="source" type="AuditEvent.Source" minOccurs="1" maxOccurs="1">
             <xs:annotation>
               <xs:documentation>Application systems and processes.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="object" type="SecurityEvent.Object" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="object" type="AuditEvent.Object" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>Specific instances of data or objects that have been accessed.</xs:documentation>
            </xs:annotation>
@@ -68,7 +68,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="SecurityEvent.Event">
+  <xs:complexType name="AuditEvent.Event">
     <xs:annotation>
       <xs:documentation>A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.</xs:documentation>
     </xs:annotation>
@@ -85,7 +85,7 @@
               <xs:documentation>Identifier for the category of event.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="action" minOccurs="0" maxOccurs="1" type="SecurityEventAction">
+          <xs:element name="action" minOccurs="0" maxOccurs="1" type="AuditEventAction">
             <xs:annotation>
               <xs:documentation>Indicator for type of action performed during the event that generated the audit.</xs:documentation>
            </xs:annotation>
@@ -95,7 +95,7 @@
               <xs:documentation>The time when the event occurred on the source.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="outcome" minOccurs="0" maxOccurs="1" type="SecurityEventOutcome">
+          <xs:element name="outcome" minOccurs="0" maxOccurs="1" type="AuditEventOutcome">
             <xs:annotation>
               <xs:documentation>Indicates whether the event succeeded or failed.</xs:documentation>
            </xs:annotation>
@@ -105,11 +105,16 @@
               <xs:documentation>A free text description of the outcome of the event.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="purposeOfEvent" minOccurs="0" maxOccurs="unbounded" type="Coding">
+            <xs:annotation>
+              <xs:documentation>The purposeOfUse (reason) that was used during the event being recorded.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="SecurityEvent.Participant">
+  <xs:complexType name="AuditEvent.Participant">
     <xs:annotation>
       <xs:documentation>A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.</xs:documentation>
     </xs:annotation>
@@ -146,21 +151,36 @@
               <xs:documentation>Indicator that the user is or is not the requestor, or initiator, for the event being audited.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="location" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>Where the event occurred.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="policy" minOccurs="0" maxOccurs="unbounded" type="uri">
+            <xs:annotation>
+              <xs:documentation>The policy or plan that authorized the activity being recorded. Typically, a single activity may have multiple applicable policies, such as patient consent, guarantor funding, etc. The policy would also indicate the security token used.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
           <xs:element name="media" minOccurs="0" maxOccurs="1" type="Coding">
             <xs:annotation>
               <xs:documentation>Type of media involved. Used when the event is about exporting/importing onto media.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="network" type="SecurityEvent.Network" minOccurs="0" maxOccurs="1">
+          <xs:element name="network" type="AuditEvent.Network" minOccurs="0" maxOccurs="1">
             <xs:annotation>
               <xs:documentation>Logical network location for application activity, if the activity has a network location.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="purposeOfUse" minOccurs="0" maxOccurs="unbounded" type="Coding">
+            <xs:annotation>
+              <xs:documentation>The purposeOfUse (reason) specific to this participant that was used during the event being recorded.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="SecurityEvent.Network">
+  <xs:complexType name="AuditEvent.Network">
     <xs:annotation>
       <xs:documentation>A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.</xs:documentation>
     </xs:annotation>
@@ -172,7 +192,7 @@
               <xs:documentation>An identifier for the network access point of the user device for the audit event.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="type" minOccurs="0" maxOccurs="1" type="SecurityEventParticipantNetworkType">
+          <xs:element name="type" minOccurs="0" maxOccurs="1" type="AuditEventParticipantNetworkType">
             <xs:annotation>
               <xs:documentation>An identifier for the type of network access point that originated the audit event.</xs:documentation>
            </xs:annotation>
@@ -181,7 +201,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="SecurityEvent.Source">
+  <xs:complexType name="AuditEvent.Source">
     <xs:annotation>
       <xs:documentation>A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.</xs:documentation>
     </xs:annotation>
@@ -207,7 +227,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="SecurityEvent.Object">
+  <xs:complexType name="AuditEvent.Object">
     <xs:annotation>
       <xs:documentation>A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.</xs:documentation>
     </xs:annotation>
@@ -224,17 +244,17 @@
               <xs:documentation>Identifies a specific instance of the participant object. The reference should always be version specific.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="type" minOccurs="0" maxOccurs="1" type="SecurityEventObjectType">
+          <xs:element name="type" minOccurs="0" maxOccurs="1" type="AuditEventObjectType">
             <xs:annotation>
-              <xs:documentation>Object type being audited.</xs:documentation>
+              <xs:documentation>The type of the object that was involved in this audit event.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="role" minOccurs="0" maxOccurs="1" type="SecurityEventObjectRole">
+          <xs:element name="role" minOccurs="0" maxOccurs="1" type="AuditEventObjectRole">
             <xs:annotation>
               <xs:documentation>Code representing the functional application role of Participant Object being audited.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="lifecycle" minOccurs="0" maxOccurs="1" type="SecurityEventObjectLifecycle">
+          <xs:element name="lifecycle" minOccurs="0" maxOccurs="1" type="AuditEventObjectLifecycle">
             <xs:annotation>
               <xs:documentation>Identifier for the data life-cycle stage for the participant object.</xs:documentation>
            </xs:annotation>
@@ -259,7 +279,7 @@
               <xs:documentation>The actual query for a query-type participant object.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="detail" type="SecurityEvent.Detail" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="detail" type="AuditEvent.Detail" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>Additional Information about the Object.</xs:documentation>
            </xs:annotation>
@@ -268,7 +288,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="SecurityEvent.Detail">
+  <xs:complexType name="AuditEvent.Detail">
     <xs:annotation>
       <xs:documentation>A record of an event made for purposes of maintaining a security log. Typical uses include detection of intrusion attempts and monitoring for inappropriate usage.</xs:documentation>
     </xs:annotation>
@@ -289,7 +309,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:simpleType name="SecurityEventObjectRole-list">
+  <xs:simpleType name="AuditEventObjectRole-list">
     <xs:restriction base="xs:string">
       <xs:enumeration value="1">
         <xs:annotation>
@@ -308,7 +328,7 @@
       </xs:enumeration>
       <xs:enumeration value="4">
         <xs:annotation>
-          <xs:documentation>A logical object related to the event.  (Deprecated).</xs:documentation>
+          <xs:documentation>A logical object related to a health record event.  This is any healthcare  specific resource (object) not restricted to FHIR defined Resources.</xs:documentation>
         </xs:annotation>
       </xs:enumeration>
       <xs:enumeration value="5">
@@ -413,93 +433,18 @@
       </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
-  <xs:complexType name="SecurityEventObjectRole">
+  <xs:complexType name="AuditEventObjectRole">
     <xs:annotation>
-      <xs:documentation>Code representing the functional application role of Participant Object being audited</xs:documentation>
+      <xs:documentation>Code representing the role the Object played in the event</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Element">
-        <xs:attribute name="value" type="SecurityEventObjectRole-list" use="optional"/>
+        <xs:attribute name="value" type="AuditEventObjectRole-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:simpleType name="SecurityEventObjectType-list">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="1">
-        <xs:annotation>
-          <xs:documentation>Person.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="2">
-        <xs:annotation>
-          <xs:documentation>System Object.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="3">
-        <xs:annotation>
-          <xs:documentation>Organization.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="4">
-        <xs:annotation>
-          <xs:documentation>Other.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:complexType name="SecurityEventObjectType">
-    <xs:annotation>
-      <xs:documentation>Code for the participant object type being audited</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="Element">
-        <xs:attribute name="value" type="SecurityEventObjectType-list" use="optional"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:simpleType name="SecurityEventAction-list">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="C">
-        <xs:annotation>
-          <xs:documentation>Create a new database object, such as Placing an Order.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="R">
-        <xs:annotation>
-          <xs:documentation>Display or print data, such as a Doctor Census.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="U">
-        <xs:annotation>
-          <xs:documentation>Update data, such as Revise Patient Information.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="D">
-        <xs:annotation>
-          <xs:documentation>Delete items, such as a doctor master file record.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="E">
-        <xs:annotation>
-          <xs:documentation>Perform a system or application function such as log-on, program execution or use of an object's method, or perform a query/search operation.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:complexType name="SecurityEventAction">
-    <xs:annotation>
-      <xs:documentation>Indicator for type of action performed during the event that generated the audit.</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="Element">
-        <xs:attribute name="value" type="SecurityEventAction-list" use="optional"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:simpleType name="SecurityEventObjectLifecycle-list">
+  <xs:simpleType name="AuditEventObjectLifecycle-list">
     <xs:restriction base="xs:string">
       <xs:enumeration value="1">
         <xs:annotation>
@@ -578,18 +523,128 @@
       </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
-  <xs:complexType name="SecurityEventObjectLifecycle">
+  <xs:complexType name="AuditEventObjectLifecycle">
     <xs:annotation>
-      <xs:documentation>Identifier for the data life-cycle stage for the participant object</xs:documentation>
+      <xs:documentation>Identifier for the data life-cycle stage for the object</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Element">
-        <xs:attribute name="value" type="SecurityEventObjectLifecycle-list" use="optional"/>
+        <xs:attribute name="value" type="AuditEventObjectLifecycle-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:simpleType name="SecurityEventParticipantNetworkType-list">
+  <xs:simpleType name="AuditEventAction-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="C">
+        <xs:annotation>
+          <xs:documentation>Create a new database object, such as Placing an Order.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="R">
+        <xs:annotation>
+          <xs:documentation>Display or print data, such as a Doctor Census.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="U">
+        <xs:annotation>
+          <xs:documentation>Update data, such as Revise Patient Information.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="D">
+        <xs:annotation>
+          <xs:documentation>Delete items, such as a doctor master file record.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="E">
+        <xs:annotation>
+          <xs:documentation>Perform a system or application function such as log-on, program execution or use of an object's method, or perform a query/search operation.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="AuditEventAction">
+    <xs:annotation>
+      <xs:documentation>Indicator for type of action performed during the event that generated the audit.</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="AuditEventAction-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="AuditEventObjectType-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="1">
+        <xs:annotation>
+          <xs:documentation>Person.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="2">
+        <xs:annotation>
+          <xs:documentation>System Object.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="3">
+        <xs:annotation>
+          <xs:documentation>Organization.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="4">
+        <xs:annotation>
+          <xs:documentation>Other.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="AuditEventObjectType">
+    <xs:annotation>
+      <xs:documentation>Code for the object type involved audited</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="AuditEventObjectType-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="AuditEventOutcome-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="0">
+        <xs:annotation>
+          <xs:documentation>The operation completed successfully (whether with warnings or not).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="4">
+        <xs:annotation>
+          <xs:documentation>The action was not successful due to some kind of catered for error (often equivalent to an HTTP 400 response).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="8">
+        <xs:annotation>
+          <xs:documentation>The action was not successful due to some kind of unexpected error (often equivalent to an HTTP 500 response).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="12">
+        <xs:annotation>
+          <xs:documentation>An error of such magnitude occurred that the system is not longer available for use (i.e. the system died).</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="AuditEventOutcome">
+    <xs:annotation>
+      <xs:documentation>Indicates whether the event succeeded or failed</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="AuditEventOutcome-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="AuditEventParticipantNetworkType-list">
     <xs:restriction base="xs:string">
       <xs:enumeration value="1">
         <xs:annotation>
@@ -618,49 +673,14 @@
       </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
-  <xs:complexType name="SecurityEventParticipantNetworkType">
+  <xs:complexType name="AuditEventParticipantNetworkType">
     <xs:annotation>
-      <xs:documentation>The type of network access point that originated the audit event</xs:documentation>
+      <xs:documentation>The type of network access point of this participant in the audit event</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Element">
-        <xs:attribute name="value" type="SecurityEventParticipantNetworkType-list" use="optional"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:simpleType name="SecurityEventOutcome-list">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="0">
-        <xs:annotation>
-          <xs:documentation>The operation completed successfully (whether with warnings or not).</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="4">
-        <xs:annotation>
-          <xs:documentation>The action was not successful due to some kind of catered for error (often equivalent to an HTTP 400 response).</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="8">
-        <xs:annotation>
-          <xs:documentation>The action was not successful due to some kind of unexpected error (often equivalent to an HTTP 500 response).</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="12">
-        <xs:annotation>
-          <xs:documentation>An error of such magnitude occurred that the system is not longer available for use (i.e. the system died).</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:complexType name="SecurityEventOutcome">
-    <xs:annotation>
-      <xs:documentation>Indicates whether the event succeeded or failed</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="Element">
-        <xs:attribute name="value" type="SecurityEventOutcome-list" use="optional"/>
+        <xs:attribute name="value" type="AuditEventParticipantNetworkType-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

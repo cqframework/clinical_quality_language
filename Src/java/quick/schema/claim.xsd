@@ -27,16 +27,16 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Sat, Nov 22, 2014 01:27+0000 for FHIR v0.3.0 
+  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="0.3.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
-  <xs:element name="OralHealthClaim" type="OralHealthClaim">
+  <xs:element name="Claim" type="Claim">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
     </xs:annotation>
   </xs:element>
-  <xs:complexType name="OralHealthClaim">
+  <xs:complexType name="Claim">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
       <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
@@ -44,7 +44,12 @@
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
-          <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
+          <xs:element name="type" minOccurs="1" maxOccurs="1" type="ClaimType">
+            <xs:annotation>
+              <xs:documentation>The category of claim this is.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
               <xs:documentation>The business identifier for the instance: invoice number, claim number, pre-determination or pre-authorization number.</xs:documentation>
            </xs:annotation>
@@ -59,7 +64,7 @@
               <xs:documentation>The version of the specification from which the original instance was created.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="date" minOccurs="0" maxOccurs="1" type="date">
+          <xs:element name="created" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
               <xs:documentation>The date when the enclosed suite of services were performed or completed.</xs:documentation>
            </xs:annotation>
@@ -104,9 +109,19 @@
               <xs:documentation>Facility where the services were provided.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="payee" type="OralHealthClaim.Payee" minOccurs="0" maxOccurs="1">
+          <xs:element name="prescription" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>Theparty to be reimbused for the services.</xs:documentation>
+              <xs:documentation>Prescription to support the dispensing of Pharmacy or Vision products.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="originalPrescription" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation>Original prescription to support the dispensing of pharmacy services, medications or products.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="payee" type="Claim.Payee" minOccurs="0" maxOccurs="1">
+            <xs:annotation>
+              <xs:documentation>The party to be reimbursed for the services.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="referral" minOccurs="0" maxOccurs="1" type="Reference">
@@ -114,7 +129,7 @@
               <xs:documentation>The referral resource which lists the date, practitioner, reason and other supporting information.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="diagnosis" type="OralHealthClaim.Diagnosis" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="diagnosis" type="Claim.Diagnosis" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>Ordered list of patient diagnosis for which care is sought.</xs:documentation>
            </xs:annotation>
@@ -129,7 +144,7 @@
               <xs:documentation>Patient Resource.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="coverage" type="OralHealthClaim.Coverage" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="coverage" type="Claim.Coverage" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>Financial instrument by which payment information for health care.</xs:documentation>
            </xs:annotation>
@@ -146,7 +161,7 @@
           </xs:element>
           <xs:element name="accident" minOccurs="0" maxOccurs="1" type="date">
             <xs:annotation>
-              <xs:documentation>Date of an accident which these services are addessing.</xs:documentation>
+              <xs:documentation>Date of an accident which these services are addressing.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="accidentType" minOccurs="0" maxOccurs="1" type="Coding">
@@ -159,17 +174,7 @@
               <xs:documentation>A list of intervention and exception codes which may influence the adjudication of the claim.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="missingteeth" type="OralHealthClaim.Missingteeth" minOccurs="0" maxOccurs="unbounded">
-            <xs:annotation>
-              <xs:documentation>A list of teeth which would be expected but are not found due to having been previously  extracted or for other reasons.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="orthoPlan" type="OralHealthClaim.OrthoPlan" minOccurs="0" maxOccurs="1">
-            <xs:annotation>
-              <xs:documentation>The highlevel detail sof an Orthodonic Treatment Plan.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="item" type="OralHealthClaim.Item" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="item" type="Claim.Item" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>First tier of goods and services.</xs:documentation>
            </xs:annotation>
@@ -179,11 +184,16 @@
               <xs:documentation>Code to indicate that Xrays, images, emails, documents, models or attachments are being sent in support of this submission.</xs:documentation>
            </xs:annotation>
           </xs:element>
+          <xs:element name="missingTeeth" type="Claim.MissingTeeth" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>A list of teeth which would be expected but are not found due to having been previously  extracted or for other reasons.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="OralHealthClaim.Payee">
+  <xs:complexType name="Claim.Payee">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
     </xs:annotation>
@@ -214,16 +224,16 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="OralHealthClaim.Diagnosis">
+  <xs:complexType name="Claim.Diagnosis">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
-              <xs:documentation>Sequence of diagnosis.</xs:documentation>
+              <xs:documentation>Sequence of diagnosis which serves to order and provide a link.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="diagnosis" minOccurs="1" maxOccurs="1" type="Coding">
@@ -235,21 +245,21 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="OralHealthClaim.Coverage">
+  <xs:complexType name="Claim.Coverage">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A service line item.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="focal" minOccurs="1" maxOccurs="1" type="boolean">
             <xs:annotation>
-              <xs:documentation>The instance number of the Coverage which is the focus for adjudication, that is the Coverage to which the claim is to be adjudicated against.</xs:documentation>
+              <xs:documentation>The instance number of the Coverage which is the focus for adjudication. The Coverage against which the claim is to be adjudicated.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="coverage" minOccurs="1" maxOccurs="1" type="Reference">
@@ -259,7 +269,7 @@
           </xs:element>
           <xs:element name="businessArrangement" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>The contract number of a business agrement which describes the terms and conditions.</xs:documentation>
+              <xs:documentation>The contract number of a business agreement which describes the terms and conditions.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="relationship" minOccurs="1" maxOccurs="1" type="Coding">
@@ -267,7 +277,7 @@
               <xs:documentation>The relationship of the patient to the subscriber.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="preauthref" minOccurs="0" maxOccurs="unbounded" type="string">
+          <xs:element name="preAuthRef" minOccurs="0" maxOccurs="unbounded" type="string">
             <xs:annotation>
               <xs:documentation>A list of references from the Insurer to which these services pertain.</xs:documentation>
            </xs:annotation>
@@ -286,86 +296,14 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="OralHealthClaim.Missingteeth">
+  <xs:complexType name="Claim.Item">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="tooth" minOccurs="1" maxOccurs="1" type="Coding">
-            <xs:annotation>
-              <xs:documentation>The code identifying which tooth is missing.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="reason" minOccurs="0" maxOccurs="1" type="Coding">
-            <xs:annotation>
-              <xs:documentation>Missing reason may be: E-extraction, O-other.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="extractiondate" minOccurs="0" maxOccurs="1" type="date">
-            <xs:annotation>
-              <xs:documentation>The date of the extraction either known from records or patient reported estimate.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="OralHealthClaim.OrthoPlan">
-    <xs:annotation>
-      <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="BackboneElement">
-        <xs:sequence>
-          <xs:element name="start" minOccurs="0" maxOccurs="1" type="date">
-            <xs:annotation>
-              <xs:documentation>The intended start date for service.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="examFee" minOccurs="0" maxOccurs="1" type="Money">
-            <xs:annotation>
-              <xs:documentation>The estimated first examination fee.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="diagnosticFee" minOccurs="0" maxOccurs="1" type="Money">
-            <xs:annotation>
-              <xs:documentation>The estimated diagnostic fee.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="initialPayment" minOccurs="0" maxOccurs="1" type="Money">
-            <xs:annotation>
-              <xs:documentation>The estimated initial payment.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="durationMonths" minOccurs="0" maxOccurs="1" type="integer">
-            <xs:annotation>
-              <xs:documentation>The estimated treatment duration in months.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="paymentCount" minOccurs="0" maxOccurs="1" type="integer">
-            <xs:annotation>
-              <xs:documentation>The anticipated number of payments.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="periodicPayment" minOccurs="0" maxOccurs="1" type="Money">
-            <xs:annotation>
-              <xs:documentation>The anticipated payment amount.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="OralHealthClaim.Item">
-    <xs:annotation>
-      <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="BackboneElement">
-        <xs:sequence>
-          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A service line number.</xs:documentation>
            </xs:annotation>
@@ -378,6 +316,11 @@
           <xs:element name="provider" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
               <xs:documentation>The practitioner who is responsible for the services rendered to the patient.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="diagnosisLinkId" minOccurs="0" maxOccurs="unbounded" type="positiveInt">
+            <xs:annotation>
+              <xs:documentation>Diagnosis applicable for this service or product line.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="service" minOccurs="1" maxOccurs="1" type="Coding">
@@ -412,7 +355,7 @@
           </xs:element>
           <xs:element name="net" minOccurs="0" maxOccurs="1" type="Money">
             <xs:annotation>
-              <xs:documentation>The quantity times the unit price for an addtional service or product or charge. For example, the formula: unit Quantity * unit Price (Cost per Point) * factor Number  * points = net Amount. Quantity, factor and points are assumed to be 1 if not supplied.</xs:documentation>
+              <xs:documentation>The quantity times the unit price for an addittional service or product or charge. For example, the formula: unit Quantity * unit Price (Cost per Point) * factor Number  * points = net Amount. Quantity, factor and points are assumed to be 1 if not supplied.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="udi" minOccurs="0" maxOccurs="1" type="Coding">
@@ -425,7 +368,7 @@
               <xs:documentation>Physical service site on the patient (limb, tooth, etc).</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subsite" minOccurs="0" maxOccurs="unbounded" type="Coding">
+          <xs:element name="subSite" minOccurs="0" maxOccurs="unbounded" type="Coding">
             <xs:annotation>
               <xs:documentation>A region or surface of the site, eg. limb region or tooth surface(s).</xs:documentation>
            </xs:annotation>
@@ -435,12 +378,12 @@
               <xs:documentation>Item typification or modifiers codes, eg for Oral whether the treatment is cosmetic or associated with TMJ, or an appliance was lost or stolen.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="detail" type="OralHealthClaim.Detail" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="detail" type="Claim.Detail" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>Second tier of goods and services.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="prosthesis" type="OralHealthClaim.Prosthesis" minOccurs="0" maxOccurs="1">
+          <xs:element name="prosthesis" type="Claim.Prosthesis" minOccurs="0" maxOccurs="1">
             <xs:annotation>
               <xs:documentation>The materials and placement date of prior fixed prosthesis.</xs:documentation>
            </xs:annotation>
@@ -449,14 +392,14 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="OralHealthClaim.Detail">
+  <xs:complexType name="Claim.Detail">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A service line number.</xs:documentation>
            </xs:annotation>
@@ -493,7 +436,7 @@
           </xs:element>
           <xs:element name="net" minOccurs="0" maxOccurs="1" type="Money">
             <xs:annotation>
-              <xs:documentation>The quantity times the unit price for an addtional service or product or charge. For example, the formula: unit Quantity * unit Price (Cost per Point) * factor Number  * points = net Amount. Quantity, factor and points are assumed to be 1 if not supplied.</xs:documentation>
+              <xs:documentation>The quantity times the unit price for an addittional service or product or charge. For example, the formula: unit Quantity * unit Price (Cost per Point) * factor Number  * points = net Amount. Quantity, factor and points are assumed to be 1 if not supplied.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="udi" minOccurs="0" maxOccurs="1" type="Coding">
@@ -501,7 +444,7 @@
               <xs:documentation>List of Unique Device Identifiers associated with this line item.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="subDetail" type="OralHealthClaim.SubDetail" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="subDetail" type="Claim.SubDetail" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
               <xs:documentation>Third tier of goods and services.</xs:documentation>
            </xs:annotation>
@@ -510,14 +453,14 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="OralHealthClaim.SubDetail">
+  <xs:complexType name="Claim.SubDetail">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
-          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="integer">
+          <xs:element name="sequence" minOccurs="1" maxOccurs="1" type="positiveInt">
             <xs:annotation>
               <xs:documentation>A service line number.</xs:documentation>
            </xs:annotation>
@@ -529,7 +472,7 @@
           </xs:element>
           <xs:element name="service" minOccurs="1" maxOccurs="1" type="Coding">
             <xs:annotation>
-              <xs:documentation>The fee for an addtional service or product or charge.</xs:documentation>
+              <xs:documentation>The fee for an addittional service or product or charge.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="quantity" minOccurs="0" maxOccurs="1" type="Quantity">
@@ -539,7 +482,7 @@
           </xs:element>
           <xs:element name="unitPrice" minOccurs="0" maxOccurs="1" type="Money">
             <xs:annotation>
-              <xs:documentation>The fee for an addtional service or product or charge.</xs:documentation>
+              <xs:documentation>The fee for an addittional service or product or charge.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="factor" minOccurs="0" maxOccurs="1" type="decimal">
@@ -554,7 +497,7 @@
           </xs:element>
           <xs:element name="net" minOccurs="0" maxOccurs="1" type="Money">
             <xs:annotation>
-              <xs:documentation>The quantity times the unit price for an addtional service or product or charge. For example, the formula: unit Quantity * unit Price (Cost per Point) * factor Number  * points = net Amount. Quantity, factor and points are assumed to be 1 if not supplied.</xs:documentation>
+              <xs:documentation>The quantity times the unit price for an addittional service or product or charge. For example, the formula: unit Quantity * unit Price (Cost per Point) * factor Number  * points = net Amount. Quantity, factor and points are assumed to be 1 if not supplied.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="udi" minOccurs="0" maxOccurs="1" type="Coding">
@@ -566,7 +509,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="OralHealthClaim.Prosthesis">
+  <xs:complexType name="Claim.Prosthesis">
     <xs:annotation>
       <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
     </xs:annotation>
@@ -575,7 +518,7 @@
         <xs:sequence>
           <xs:element name="initial" minOccurs="0" maxOccurs="1" type="boolean">
             <xs:annotation>
-              <xs:documentation>Is this the initial placement of a fixed prosthesis?.</xs:documentation>
+              <xs:documentation>Indicates whether this is the initial placement of a fixed prosthesis.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="priorDate" minOccurs="0" maxOccurs="1" type="date">
@@ -589,6 +532,72 @@
            </xs:annotation>
           </xs:element>
         </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Claim.MissingTeeth">
+    <xs:annotation>
+      <xs:documentation>A provider issued list of services and products provided, or to be provided, to a patient which is provided to an insurer for payment recovery.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="tooth" minOccurs="1" maxOccurs="1" type="Coding">
+            <xs:annotation>
+              <xs:documentation>The code identifying which tooth is missing.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="reason" minOccurs="0" maxOccurs="1" type="Coding">
+            <xs:annotation>
+              <xs:documentation>Missing reason may be: E-extraction, O-other.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="extractionDate" minOccurs="0" maxOccurs="1" type="date">
+            <xs:annotation>
+              <xs:documentation>The date of the extraction either known from records or patient reported estimate.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="ClaimType-list">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="institutional">
+        <xs:annotation>
+          <xs:documentation>A claim for Institution based, typically in-patient, goods and services.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="oral">
+        <xs:annotation>
+          <xs:documentation>A claim for Oral Health (Dentist, Denturist, Hygienist) goods and services.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="pharmacy">
+        <xs:annotation>
+          <xs:documentation>A claim for Pharmacy based goods and services.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="professional">
+        <xs:annotation>
+          <xs:documentation>A claim for Professional, typically out-patient, goods and services.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="vision">
+        <xs:annotation>
+          <xs:documentation>A claim for Vision (Opthamologist, Optometrist and Optician) goods and services.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ClaimType">
+    <xs:annotation>
+      <xs:documentation>The type or discipline-style of the claim</xs:documentation>
+      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="ClaimType-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
