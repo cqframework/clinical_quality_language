@@ -361,34 +361,7 @@ public class ModelImporter {
             }
 
             XmlSchemaParticle particle = particleContent;
-            if (particle instanceof XmlSchemaElement) {
-                ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement)particle);
-                if (element != null) {
-                    elements.add(element);
-                }
-            }
-            else if (particle instanceof XmlSchemaSequence) {
-                XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
-                for (XmlSchemaSequenceMember member : sequence.getItems()) {
-                    if (member instanceof XmlSchemaElement) {
-                        ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement)member);
-                        if (element != null) {
-                            elements.add(element);
-                        }
-                    }
-                }
-            }
-            else if (particle instanceof XmlSchemaChoice) {
-                XmlSchemaChoice choice = (XmlSchemaChoice)particle;
-                for (XmlSchemaChoiceMember member : choice.getItems()) {
-                    if (member instanceof XmlSchemaElement) {
-                        ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement)member);
-                        if (element != null) {
-                            elements.add(element);
-                        }
-                    }
-                }
-            }
+            resolveClassTypeElements(particle, elements);
 
             // TODO: Map elements to basetype if this or one of its parents is a configured extension of a CQL basetype.
             // This could get complicated...
@@ -404,6 +377,46 @@ public class ModelImporter {
         }
 
         return resultType;
+    }
+
+    private void resolveClassTypeElements(XmlSchemaParticle particle, List<ClassTypeElement> elements) {
+        if (particle instanceof XmlSchemaElement) {
+            ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement)particle);
+            if (element != null) {
+                elements.add(element);
+            }
+        }
+        else if (particle instanceof XmlSchemaSequence) {
+            XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
+            for (XmlSchemaSequenceMember member : sequence.getItems()) {
+                if (member instanceof XmlSchemaParticle) {
+                    resolveClassTypeElements((XmlSchemaParticle) member, elements);
+                }
+            }
+        }
+        else if (particle instanceof XmlSchemaAll) {
+            XmlSchemaAll all = (XmlSchemaAll)particle;
+            for (XmlSchemaAllMember member : all.getItems()) {
+                if (member instanceof XmlSchemaParticle) {
+                    resolveClassTypeElements((XmlSchemaParticle) member, elements);
+                }
+            }
+        }
+        else if (particle instanceof XmlSchemaChoice) {
+            XmlSchemaChoice choice = (XmlSchemaChoice)particle;
+            for (XmlSchemaChoiceMember member : choice.getItems()) {
+                if (member instanceof XmlSchemaElement) {
+                    ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement)member);
+                    if (element != null) {
+                        elements.add(element);
+                    }
+                }
+            }
+        }
+        else if (particle instanceof XmlSchemaGroupRef) {
+            XmlSchemaGroupRef ref = (XmlSchemaGroupRef)particle;
+            resolveClassTypeElements(ref.getParticle(), elements);
+        }
     }
 
     private ClassTypeElement resolveClassTypeElement(XmlSchemaElement element) {
