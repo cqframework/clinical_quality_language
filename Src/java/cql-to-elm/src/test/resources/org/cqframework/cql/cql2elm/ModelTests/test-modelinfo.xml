@@ -706,12 +706,6 @@
         <ns4:element name="searchInclude" type="list&lt;System.String&gt;"/>
         <ns4:element name="searchParam" type="list&lt;Test.Conformance.SearchParam&gt;"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.Bundle.Deleted" baseType="Test.BackboneElement">
-        <ns4:element name="type" type="Test.code"/>
-        <ns4:element name="id" type="Test.id"/>
-        <ns4:element name="versionId" type="Test.id"/>
-        <ns4:element name="instant" type="System.DateTime"/>
-    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.DiagnosticOrderStatus" baseType="Test.Element">
         <ns4:element name="value" type="Test.DiagnosticOrderStatus_list"/>
     </ns4:typeInfo>
@@ -1881,7 +1875,6 @@
         <ns4:element name="status" type="Test.BundleEntryStatus"/>
         <ns4:element name="search" type="System.Uri"/>
         <ns4:element name="score" type="System.Decimal"/>
-        <ns4:element name="deleted" type="Test.Bundle.Deleted"/>
         <ns4:element name="resource" type="Test.ResourceContainer"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Test.FamilyHistory" baseType="Test.DomainResource" retrievable="true" label="FamilyHistory" identifier="cqf-familyhistory">

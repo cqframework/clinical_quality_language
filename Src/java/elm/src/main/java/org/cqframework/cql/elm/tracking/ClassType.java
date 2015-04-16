@@ -79,21 +79,36 @@ public class ClassType extends DataType implements NamedType {
 
     private List<ClassTypeElement> elements = new ArrayList<ClassTypeElement>();
     private List<ClassTypeElement> sortedElements = null;
+    private LinkedHashMap<String, ClassTypeElement> baseElementMap = null;
 
     public List<ClassTypeElement> getElements() {
         return elements;
     }
 
-    public List<ClassTypeElement> getAllElements() {
-        LinkedHashMap<String, ClassTypeElement> elementMap = new LinkedHashMap<>();
-
-        // Get the baseClass elements into a map by name
-        if (getBaseType() instanceof ClassType) {
-            List<ClassTypeElement> baseElements = ((ClassType) getBaseType()).getAllElements();
-            for (ClassTypeElement el : baseElements) {
-                elementMap.put(el.getName(), el);
+    private LinkedHashMap<String, ClassTypeElement> getBaseElementMap() {
+        if (baseElementMap == null) {
+            baseElementMap = new LinkedHashMap<>();
+            if (getBaseType() instanceof ClassType) {
+                ((ClassType)getBaseType()).gatherElements(baseElementMap);
             }
         }
+
+        return baseElementMap;
+    }
+
+    private void gatherElements(LinkedHashMap<String, ClassTypeElement> elementMap) {
+        if (getBaseType() instanceof ClassType) {
+            ((ClassType)getBaseType()).gatherElements(elementMap);
+        }
+
+        for (ClassTypeElement element : elements) {
+            elementMap.put(element.getName(), element);
+        }
+    }
+
+    public List<ClassTypeElement> getAllElements() {
+        // Get the baseClass elements into a map by name
+        LinkedHashMap<String, ClassTypeElement> elementMap = new LinkedHashMap<>(getBaseElementMap());
 
         // Add this class's elements, overwriting baseClass definitions where applicable
         for (ClassTypeElement el : elements) {
@@ -103,15 +118,34 @@ public class ClassType extends DataType implements NamedType {
         return new ArrayList<>(elementMap.values());
     }
 
+    private void internalAddElement(ClassTypeElement element) {
+        ClassTypeElement existingElement = getBaseElementMap().get(element.getName());
+        if (existingElement != null) {
+            // Ensure that the type of the redeclared element is a subtype or cardinality restriction of the parent element
+            if (!(element.getType().isSubTypeOf(existingElement.getType())
+                    || (existingElement.getType() instanceof ListType
+                        && element.getType().isSubTypeOf(((ListType)existingElement.getType()).getElementType())))) {
+                throw new IllegalArgumentException(String.format("Element %s in type %s cannot be declared because it " +
+                        "is of type %s. Redeclared types must be a subtype or element type of the parent element type %s.",
+                        element.getName(), getName(), element.getType(), existingElement.getType()));
+            }
+        }
+
+        this.elements.add(element);
+    }
+
     public void addElement(ClassTypeElement element)
     {
-        this.elements.add(element);
+        internalAddElement(element);
         sortedElements = null;
         tupleType = null;
     }
 
     public void addElements(Collection<ClassTypeElement> elements) {
-        this.elements.addAll(elements);
+        for (ClassTypeElement element : elements) {
+            internalAddElement(element);
+        }
+
         sortedElements = null;
         tupleType = null;
     }
