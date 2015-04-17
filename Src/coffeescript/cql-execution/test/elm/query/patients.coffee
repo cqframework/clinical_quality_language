@@ -10,7 +10,7 @@ module.exports.p1 = {
   "entry": [
     { "resource":{
           "resourceType" : "Patient",
-          "meta" :{ "profile" : ["cqf-patient"]},
+          "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
           "id" : "3",
           "identifier": [{ "value": "3" }],
           "name": {"given":["Bob"], "family": ["Jones"]},
@@ -21,7 +21,7 @@ module.exports.p1 = {
     { "resource": {
           "resourceType" : "Encounter",
           "id" : "http://cqframework.org/3/1",
-          "meta" :{ "profile" : ["cqf-encounter"]},
+          "meta" :{ "profile" : ["encounter-qicore-qicore-encounter"]},
           "identifier": [{ "value": "http://cqframework.org/3/1", "system": "http://cqframework.org" }],
           "class": "outpatient",
           "type": [{"coding":[{ "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Encounter for \"check-up\" (procedure)" }]}],
@@ -31,7 +31,7 @@ module.exports.p1 = {
     {"resource": {
           "resourceType" : "Condition",
           "id" : "http://cqframework.org/3/2",
-          "meta" :{ "profile" : ["cqf-condition"]},
+          "meta" :{ "profile" : ["condition-qicore-qicore-condition"]},
           "identifier": [{ "value": "http://cqframework.org/3/2", "system": "http://cqframework.org" }],
           "code": {"coding":[{ "code": "1532007", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Viral pharyngitis (disorder)" }]},
           "onsetDateTime": "1982-03-12",
@@ -42,7 +42,7 @@ module.exports.p1 = {
     {"resource":{
           "resourceType" : "Encounter",
           "id" : "http://cqframework.org/3/3",
-          "meta" :{ "profile" : ["cqf-encounter"]},
+          "meta" :{ "profile" : ["encounter-qicore-qicore-encounter"]},
           "identifier": [{ "value": "http://cqframework.org/3/3", "system": "http://cqframework.org" }],
           "class": "outpatient" ,
           "type": [{"coding" : [{ "code": "406547006", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Urgent follow-up (procedure)" }]}],
@@ -52,7 +52,7 @@ module.exports.p1 = {
       "resource":{
           "resourceType" : "Condition",
           "id" : "http://cqframework.org/3/4",
-          "meta" :{ "profile" : ["cqf-condition"]},
+          "meta" :{ "profile" : ["condition-qicore-qicore-condition"]},
           "identifier": [{ "value": "http://cqframework.org/3/4", "system": "http://cqframework.org" }],
           "code": {"coding":[{ "code": "109962001", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Diffuse non-Hodgkin's lymphoma (disorder)" }]},
           "onsetDateTime": "2010-10-24",
@@ -62,7 +62,7 @@ module.exports.p1 = {
     { "resource": {
           "resourceType" : "Encounter",
           "id" : "http://cqframework.org/3/5",
-          "meta" :{ "profile" : ["cqf-encounter"]},
+          "meta" :{ "profile" : ["encounter-qicore-qicore-encounter"]},
           "identifier": [{ "value": "http://cqframework.org/3/5", "system": "http://cqframework.org" }],
           "class": "outpatient",
           "type": [{"coding" :[{ "code": "185349003", "system": "2.16.840.1.113883.6.96", "version": "2013-09", "display": "Encounter for \"check-up\" (procedure)" }]}],

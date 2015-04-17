@@ -44,7 +44,7 @@ module.exports['List'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -170,7 +170,7 @@ module.exports['Exists'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -252,7 +252,7 @@ module.exports['Equal'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -662,7 +662,7 @@ module.exports['NotEqual'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -1092,7 +1092,7 @@ module.exports['Union'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -1432,7 +1432,7 @@ module.exports['Except'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -1922,7 +1922,7 @@ module.exports['Intersect'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -2495,7 +2495,7 @@ module.exports['IndexOf'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -2753,7 +2753,7 @@ module.exports['Indexer'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -2952,7 +2952,7 @@ module.exports['In'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -3265,7 +3265,7 @@ module.exports['Contains'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -3581,7 +3581,7 @@ module.exports['Includes'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -4101,7 +4101,7 @@ module.exports['IncludedIn'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -4617,7 +4617,7 @@ module.exports['ProperIncludes'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -5149,7 +5149,7 @@ module.exports['ProperIncludedIn'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -5670,7 +5670,7 @@ module.exports['Expand'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -5838,7 +5838,7 @@ module.exports['Distinct'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -6005,7 +6005,7 @@ module.exports['First'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -6269,7 +6269,7 @@ module.exports['Last'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -6531,7 +6531,7 @@ module.exports['Length'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }

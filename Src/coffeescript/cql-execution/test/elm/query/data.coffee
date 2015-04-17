@@ -96,7 +96,7 @@ module.exports['DateRangeOptimizedQuery'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -110,7 +110,7 @@ module.exports['DateRangeOptimizedQuery'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "dateProperty" : "period",
                      "type" : "Retrieve",
                      "dateRange" : {
@@ -131,7 +131,7 @@ module.exports['DateRangeOptimizedQuery'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "codeProperty" : "type",
                      "dateProperty" : "period",
                      "type" : "Retrieve",
@@ -157,7 +157,7 @@ module.exports['DateRangeOptimizedQuery'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "codeProperty" : "type",
                      "dateProperty" : "period",
                      "type" : "Retrieve",
@@ -266,7 +266,7 @@ module.exports['IncludesQuery'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -280,7 +280,7 @@ module.exports['IncludesQuery'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "codeProperty" : "type",
                      "type" : "Retrieve",
                      "codes" : {
@@ -325,9 +325,6 @@ define msQuery: from [Encounter] E, [Condition] C return {E: E, C:C}
 ###
 Translation Error(s):
 [5:22, 7:44] type
-[10:52, 10:86] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
-[10:8, 10:86] Could not determine signature for invocation of operator System.And.
-[10:1, 10:86] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
 [9:23, 10:86] type
 ###
 module.exports['MultiSourceQuery'] = {
@@ -402,7 +399,7 @@ module.exports['MultiSourceQuery'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -430,14 +427,14 @@ module.exports['MultiSourceQuery'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                }, {
                   "alias" : "C",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Condition",
-                     "templateId" : "cqf-condition",
+                     "templateId" : "condition-qicore-qicore-condition",
                      "type" : "Retrieve"
                   }
                } ],
@@ -483,21 +480,6 @@ define withOutQuery2:  [Encounter] E
 without [Condition] C such that C.id = 'http://cqframework.org/3/2'
 ###
 
-###
-Translation Error(s):
-[5:30, 5:64] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
-[5:1, 5:64] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[4:20, 5:64] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
-[8:30, 8:62] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
-[8:1, 8:62] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[7:21, 8:62] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
-[11:33, 11:66] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
-[11:1, 11:66] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[10:23, 11:66] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
-[14:33, 14:67] Could not resolve call to operator Equal with signature (QUICK.id,System.String).
-[14:1, 14:67] Expected an expression of type 'System.Boolean', but found an expression of type '<unknown>'.
-[13:24, 14:67] org.hl7.elm.r1.Null cannot be cast to org.hl7.elm.r1.RelationshipClause
-###
 module.exports['QueryRelationship'] = {
    "library" : {
       "identifier" : {
@@ -525,7 +507,7 @@ module.exports['QueryRelationship'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -534,28 +516,144 @@ module.exports['QueryRelationship'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "With",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Condition",
+                     "templateId" : "condition-qicore-qicore-condition",
+                     "type" : "Retrieve"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "http://cqframework.org/3/2",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "withQuery2",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "With",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Condition",
+                     "templateId" : "condition-qicore-qicore-condition",
+                     "type" : "Retrieve"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "http://cqframework.org/3",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "withOutQuery",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "Without",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Condition",
+                     "templateId" : "condition-qicore-qicore-condition",
+                     "type" : "Retrieve"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "http://cqframework.org/3/",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          }, {
             "name" : "withOutQuery2",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "Without",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Condition",
+                     "templateId" : "condition-qicore-qicore-condition",
+                     "type" : "Retrieve"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "value" : "http://cqframework.org/3/2",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
             }
          } ]
       }
@@ -598,7 +696,7 @@ module.exports['QueryDefine'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -612,7 +710,7 @@ module.exports['QueryDefine'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -682,7 +780,7 @@ module.exports['Tuple'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -696,7 +794,7 @@ module.exports['Tuple'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -774,7 +872,7 @@ module.exports['Sorting'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -788,7 +886,7 @@ module.exports['Sorting'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -814,7 +912,7 @@ module.exports['Sorting'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -846,7 +944,7 @@ module.exports['Sorting'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -885,7 +983,7 @@ module.exports['Sorting'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -911,7 +1009,7 @@ module.exports['Sorting'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -943,7 +1041,7 @@ module.exports['Sorting'] = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "type" : "Retrieve"
                   }
                } ],
@@ -1403,7 +1501,7 @@ module.exports['Distinct'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }

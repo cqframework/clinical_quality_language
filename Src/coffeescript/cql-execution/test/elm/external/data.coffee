@@ -64,7 +64,7 @@ module.exports['Retrieve'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -74,7 +74,7 @@ module.exports['Retrieve'] = {
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}Condition",
-               "templateId" : "cqf-condition",
+               "templateId" : "condition-qicore-qicore-condition",
                "type" : "Retrieve"
             }
          }, {
@@ -83,7 +83,7 @@ module.exports['Retrieve'] = {
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}Encounter",
-               "templateId" : "cqf-encounter",
+               "templateId" : "encounter-qicore-qicore-encounter",
                "type" : "Retrieve"
             }
          }, {
@@ -92,7 +92,7 @@ module.exports['Retrieve'] = {
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}Condition",
-               "templateId" : "cqf-condition",
+               "templateId" : "condition-qicore-qicore-condition",
                "codeProperty" : "code",
                "type" : "Retrieve",
                "codes" : {
@@ -106,7 +106,7 @@ module.exports['Retrieve'] = {
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}Encounter",
-               "templateId" : "cqf-encounter",
+               "templateId" : "encounter-qicore-qicore-encounter",
                "codeProperty" : "type",
                "type" : "Retrieve",
                "codes" : {
@@ -120,7 +120,7 @@ module.exports['Retrieve'] = {
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}Encounter",
-               "templateId" : "cqf-encounter",
+               "templateId" : "encounter-qicore-qicore-encounter",
                "codeProperty" : "type",
                "type" : "Retrieve",
                "codes" : {
@@ -134,7 +134,7 @@ module.exports['Retrieve'] = {
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}Condition",
-               "templateId" : "cqf-condition",
+               "templateId" : "condition-qicore-qicore-condition",
                "codeProperty" : "code",
                "type" : "Retrieve",
                "codes" : {
@@ -148,7 +148,7 @@ module.exports['Retrieve'] = {
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}Encounter",
-               "templateId" : "cqf-encounter",
+               "templateId" : "encounter-qicore-qicore-encounter",
                "codeProperty" : "class",
                "type" : "Retrieve",
                "codes" : {

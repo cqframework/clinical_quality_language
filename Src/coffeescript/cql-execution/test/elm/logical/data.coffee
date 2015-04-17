@@ -48,7 +48,7 @@ module.exports['And'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -255,7 +255,7 @@ module.exports['Or'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -462,7 +462,7 @@ module.exports['XOr'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -663,7 +663,7 @@ module.exports['Not'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }

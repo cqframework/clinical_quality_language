@@ -13,7 +13,7 @@ psource = new cql.PatientSource [ {
     "entry" : [{
         "resource": {
         "id" : "1",
-        "meta" :{ "profile" : ["cqf-patient"]},
+        "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
         "resourceType" : "Patient",
         "identifier": [{ "value": "1" }],
         "name": {"given":["John"], "family": ["Smith"]},
@@ -32,7 +32,7 @@ psource = new cql.PatientSource [ {
     "entry" : [{
         "resource": {
         "id" : "2",
-        "meta" :{ "profile" : ["cqf-patient"]},
+        "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
         "resourceType" : "Patient",
         "identifier": [{ "value": "2" }],
         "name": {"given":["Sally"], "family": ["Smith"]},

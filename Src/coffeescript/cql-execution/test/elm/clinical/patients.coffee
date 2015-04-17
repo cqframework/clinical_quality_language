@@ -10,7 +10,7 @@ module.exports.p1 = {
   "entry" : [{
         "resource": {
         "id" : "1",
-        "meta" :{ "profile" : ["cqf-patient"]},
+        "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
         "resourceType" : "Patient",
         "identifier": [{ "value": "1" }],
         "name": {"given":["John"], "family": ["Smith"]},
@@ -32,7 +32,7 @@ module.exports.p2 = {
   "entry" : [
       "resource": {
       "resourceType" : "Patient",
-      "meta" :{ "profile" : ["cqf-patient"]},
+      "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
       "id" : "2",
       "identifier": [{ "value": "2" }],
       "name": {"given":["Sally"], "family": ["Smith"]},

@@ -43,7 +43,7 @@ class Patient
       @records[r.profile].push new Record(r)
 
   findRecords: (profile) ->
-    if profile is 'cqf-patient' then [@] else @records[profile] ? []
+    if profile is 'patient-qicore-qicore-patient' then [@] else @records[profile] ? []
 
 
 
@@ -55,7 +55,7 @@ FHIR.Patient::records = ->
   @_records
 
 FHIR.Patient::findRecords = (profile) ->
-  if profile is 'cqf-patient' then [@] else @_bundle?.findRecords(profile) ? []
+  if profile is 'patient-qicore-qicore-patient' then [@] else @_bundle?.findRecords(profile) ? []
 
 
 FHIR.Bundle::findRecords = (profile) ->
@@ -131,7 +131,7 @@ class PatientSource
   nextPatient: ->
     @current = @patients.shift()
     @current_bundle = if @current then new FHIR.Bundle(@current)
-    @current_patient = @current_bundle?.findRecord("cqf-patient")
+    @current_patient = @current_bundle?.findRecord("patient-qicore-qicore-patient")
 
 
 module.exports.Patient = Patient

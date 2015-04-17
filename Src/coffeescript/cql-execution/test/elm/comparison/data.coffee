@@ -50,7 +50,7 @@ module.exports['Equal'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -650,7 +650,7 @@ module.exports['NotEqual'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -1275,7 +1275,7 @@ module.exports['Less'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -1368,7 +1368,7 @@ module.exports['LessOrEqual'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -1461,7 +1461,7 @@ module.exports['Greater'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -1554,7 +1554,7 @@ module.exports['GreaterOrEqual'] = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }

@@ -125,7 +125,7 @@ module.exports = {
                "type" : "SingletonFrom",
                "operand" : {
                   "dataType" : "{http://hl7.org/fhir}Patient",
-                  "templateId" : "cqf-patient",
+                  "templateId" : "patient-qicore-qicore-patient",
                   "type" : "Retrieve"
                }
             }
@@ -193,7 +193,7 @@ module.exports = {
                "type" : "Union",
                "operand" : [ {
                   "dataType" : "{http://hl7.org/fhir}Condition",
-                  "templateId" : "cqf-condition",
+                  "templateId" : "condition-qicore-qicore-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
@@ -202,7 +202,7 @@ module.exports = {
                   }
                }, {
                   "dataType" : "{http://hl7.org/fhir}Condition",
-                  "templateId" : "cqf-condition",
+                  "templateId" : "condition-qicore-qicore-condition",
                   "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
@@ -217,7 +217,7 @@ module.exports = {
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
-               "templateId" : "cqf-medicationprescription",
+               "templateId" : "medicationprescription-qicore-qicore-medicationprescription",
                "codeProperty" : "medication.code",
                "type" : "Retrieve",
                "codes" : {
@@ -235,7 +235,7 @@ module.exports = {
                   "alias" : "E",
                   "expression" : {
                      "dataType" : "{http://hl7.org/fhir}Encounter",
-                     "templateId" : "cqf-encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
                      "codeProperty" : "type",
                      "type" : "Retrieve",
                      "codes" : {
@@ -482,7 +482,7 @@ module.exports = {
                      "alias" : "R",
                      "expression" : {
                         "dataType" : "{http://hl7.org/fhir}DiagnosticReport",
-                        "templateId" : "cqf-diagnosticreport",
+                        "templateId" : "diagnosticreport-qicore-qicore-diagnosticreport",
                         "codeProperty" : "name",
                         "type" : "Retrieve",
                         "codes" : {
@@ -522,4 +522,3 @@ module.exports = {
       }
    }
 }
-

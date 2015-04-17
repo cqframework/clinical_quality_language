@@ -8,7 +8,7 @@ describe 'Retrieve', ->
   @beforeEach ->
     setup @, data, [ p1 ], vsets
 
-  it 'should find observations', ->
+  it 'should find conditions', ->
     c = @conditions.exec(@ctx)
     c.should.have.length(2)
     c[0].id().should.equal 'http://cqframework.org/3/2'
