@@ -1,5 +1,6 @@
 cql-execution.iml
 src/main/resources/org/cqframework/cql/execution/javascript/cql*.js
+src/main/resources/org/cqframework/cql/execution/javascript/cql*.js.map
 src/main/resources/org/cqframework/cql/execution/javascript/datatypes
 src/main/resources/org/cqframework/cql/execution/javascript/example
 src/main/resources/org/cqframework/cql/execution/javascript/elm

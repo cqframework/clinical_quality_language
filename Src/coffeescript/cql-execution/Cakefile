@@ -3,7 +3,7 @@ fs = require 'fs'
 {spawn, exec} = require 'child_process'
 
 build = (src, dest, watch = false) ->
-  args = ['-c', '-o', dest, src]
+  args = ['-c', '-m', '-o', dest, src]
   if watch then args.unshift '-w'
 
   coffee = spawn 'coffee', args
