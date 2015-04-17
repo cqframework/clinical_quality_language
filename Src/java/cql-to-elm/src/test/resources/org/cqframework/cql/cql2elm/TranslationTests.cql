@@ -13,7 +13,7 @@ define InDemographic:
     AgeInYears() >= 18
         and Patient.gender in "Female Administrative Sex"
 
-define MedianAny: Median({ null, null, null })
+define MedianAny: Median(List<Integer>{ null, null, null })
 define MedianInt: Median({ 1, 2, 3 })
 
 define ListsOfLists: List<List<Any>>{{'a','b','c'},{1,2,3}}
