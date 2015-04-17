@@ -3,7 +3,7 @@
           "resourceType": "Condition",
           "id": "$ID$",
           "meta": {
-            "profile": ["cqf-condition"]
+            "profile": ["condition-qicore-qicore-condition"]
           },
           "identifier": [
             {

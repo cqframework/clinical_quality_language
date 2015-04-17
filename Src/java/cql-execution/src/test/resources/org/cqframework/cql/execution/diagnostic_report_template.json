@@ -3,8 +3,8 @@
           "resourceType": "DiagnosticReport",
           "id": "$ID$",
           "meta": {
-            "lastUpdated": "$DATETIME$"
-            "profile": ["cqf-diagnosticreport"]
+            "lastUpdated": "$DATETIME$",
+            "profile": ["diagnosticreport-qicore-qicore-diagnosticreport"]
           },
           "text": {
             "status": "generated",

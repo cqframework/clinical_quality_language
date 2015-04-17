@@ -3,7 +3,7 @@
           "resourceType": "Encounter",
           "id": "$ID$",
           "meta": {
-            "profile": ["cqf-encounter"]
+            "profile": ["encounter-qicore-qicore-encounter"]
           },
           "identifier": [
             {

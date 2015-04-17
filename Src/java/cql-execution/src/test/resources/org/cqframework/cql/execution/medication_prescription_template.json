@@ -3,7 +3,7 @@
             "resourceType": "MedicationPrescription",
             "id": "$ID$",
             "meta": {
-              "profile": ["cqf-medicationprescription"]
+              "profile": ["medicationprescription-qicore-qicore-medicationprescription"]
             },
             "identifier": [
               {

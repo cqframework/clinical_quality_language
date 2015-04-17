@@ -9,7 +9,7 @@
     "entry" : [
         {   "resource": {
             "id" : "$PATIENT$",
-            "meta" :{ "profile" : ["cqf-patient"] },
+            "meta" :{ "profile" : ["patient-qicore-qicore-patient"] },
             "resourceType" : "Patient",
             "identifier": [{ "value": "$PATIENT$" }],
             "name": [{"given":["$GIVEN$"], "family": ["$FAMILY$"]}],
