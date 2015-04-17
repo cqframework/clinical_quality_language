@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
-   <identifier id="CMS153_CDS" version="2"/>
+   <identifier id="ChlamydiaScreening_CDS" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
@@ -73,72 +73,72 @@
                                     <operand xsi:type="Or">
                                        <operand xsi:type="Or">
                                           <operand xsi:type="Exists">
-                                             <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                             <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                                 <codes name="Other Female Reproductive Conditions" xsi:type="ValueSetRef"/>
                                              </operand>
                                           </operand>
                                           <operand xsi:type="Exists">
-                                             <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                             <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                                 <codes name="Genital Herpes" xsi:type="ValueSetRef"/>
                                              </operand>
                                           </operand>
                                        </operand>
                                        <operand xsi:type="Exists">
-                                          <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                          <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                              <codes name="Genococcal Infections and Venereal Diseases" xsi:type="ValueSetRef"/>
                                           </operand>
                                        </operand>
                                     </operand>
                                     <operand xsi:type="Exists">
-                                       <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                       <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                           <codes name="Inflammatory Diseases of Female Reproductive Organs" xsi:type="ValueSetRef"/>
                                        </operand>
                                     </operand>
                                  </operand>
                                  <operand xsi:type="Exists">
-                                    <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                    <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                        <codes name="Chlamydia" xsi:type="ValueSetRef"/>
                                     </operand>
                                  </operand>
                               </operand>
                               <operand xsi:type="Exists">
-                                 <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                                 <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                     <codes name="HIV" xsi:type="ValueSetRef"/>
                                  </operand>
                               </operand>
                            </operand>
                            <operand xsi:type="Exists">
-                              <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                              <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                  <codes name="Syphilis" xsi:type="ValueSetRef"/>
                               </operand>
                            </operand>
                         </operand>
                         <operand xsi:type="Exists">
-                           <operand dataType="quick:Condition" templateId="cqf-condition" codeProperty="code" xsi:type="Retrieve">
+                           <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                               <codes name="Complications of Pregnancy, Childbirth and the Puerperium" xsi:type="ValueSetRef"/>
                            </operand>
                         </operand>
                      </operand>
                      <operand xsi:type="Exists">
-                        <operand dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                        <operand dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                            <codes name="Pregnancy Test" xsi:type="ValueSetRef"/>
                         </operand>
                      </operand>
                   </operand>
                   <operand xsi:type="Exists">
-                     <operand dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                     <operand dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                         <codes name="Pap Test" xsi:type="ValueSetRef"/>
                      </operand>
                   </operand>
                </operand>
                <operand xsi:type="Exists">
-                  <operand dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                  <operand dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                      <codes name="Lab Tests During Pregnancy" xsi:type="ValueSetRef"/>
                   </operand>
                </operand>
             </operand>
             <operand xsi:type="Exists">
-               <operand dataType="quick:DiagnosticOrder" templateId="cqf-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+               <operand dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                   <codes name="Lab Tests for Sexually Transmitted Infections" xsi:type="ValueSetRef"/>
                </operand>
             </operand>
@@ -151,7 +151,7 @@
                   <operand xsi:type="Exists">
                      <operand xsi:type="Query">
                         <source alias="R">
-                           <expression dataType="quick:DiagnosticReport" templateId="cqf-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
+                           <expression dataType="quick:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
                               <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
                            </expression>
                         </source>
@@ -179,7 +179,7 @@
                   <operand xsi:type="Exists">
                      <operand xsi:type="Query">
                         <source alias="P">
-                           <expression dataType="quick:ProcedureRequest" templateId="cqf-procedurerequest" codeProperty="type" xsi:type="Retrieve">
+                           <expression dataType="quick:ProcedureRequest" templateId="procedurerequest-qicore-qicore-procedurerequest" codeProperty="type" xsi:type="Retrieve">
                               <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
                            </expression>
                         </source>
@@ -193,7 +193,7 @@
             </operand>
             <operand xsi:type="Not">
                <operand xsi:type="Exists">
-                  <operand dataType="quick:Observation" templateId="cqf-observation" codeProperty="name" xsi:type="Retrieve">
+                  <operand dataType="quick:Observation" templateId="observation-qicore-qicore-observation" codeProperty="code" xsi:type="Retrieve">
                      <codes name="Reason for not performing Chlamydia Screening" xsi:type="ValueSetRef"/>
                   </operand>
                </operand>

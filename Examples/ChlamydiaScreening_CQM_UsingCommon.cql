@@ -1,8 +1,8 @@
-library CMS153_CQM version '2'
+library ChlamydiaScreening_CQM_UsingCommon version '2'
 
 using QUICK
 
-include CMS153_Common version '2' called Common
+include ChlamydiaScreening_Common version '2' called Common
 
 parameter "Measurement Period" default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
@@ -14,8 +14,8 @@ define "In Demographic":
         and Patient.gender in Common."Female Administrative Sex"
 
 define "Sexually Active":
-    exists(Common."Conditions Indicating Sexual Activity" C where Interval[C.onsetDateTime, C.abatementDateTime] overlaps "Measurement Period")
-        or exists(Common."Laboratory Tests Indicating Sexual Activity" O where Last(O.event E where E.status = "completed" sort by E.date).date during "Measurement Period")
+    exists(Common."Conditions Indicating Sexual Activity" C where Interval[C.onsetDateTime, C.abatementDate] overlaps "Measurement Period")
+        or exists(Common."Laboratory Tests Indicating Sexual Activity" O where Last(O.event E where E.status = 'completed' sort by E.dateTime).dateTime during "Measurement Period")
 
 define "In Initial Population":
     "In Demographic" and "Sexually Active"

@@ -1,4 +1,4 @@
-library CMS153_CDS version '2'
+library ChlamydiaScreening_CDS version '2'
 
 using QUICK
 

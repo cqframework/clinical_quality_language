@@ -214,6 +214,7 @@ public class CqlTranslator {
 
         OptionSet options = parser.parse(args);
         File infile = input.value(options);
+        LibrarySourceLoader.registerProvider(new DefaultLibrarySourceProvider(infile.getParent()));
         Format outputFormat = options.has(format) ? Format.valueOf(format.value(options).toUpperCase()) : Format.XML;
         PrintWriter pw;
         if (options.has(stdout)) {

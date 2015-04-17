@@ -457,9 +457,6 @@
         <ns4:element name="qualification" type="list&lt;QUICK.Practitioner.Qualification&gt;"/>
         <ns4:element name="communication" type="list&lt;System.Concept&gt;"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ProcedureRequestStatus" baseType="QUICK.Element">
-        <ns4:element name="value" type="System.String"/>
-    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Resource" baseType="System.Any">
         <ns4:element name="id" type="System.String"/>
         <ns4:element name="meta" type="QUICK.Meta"/>
@@ -889,9 +886,6 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.SearchParameter.Contact" baseType="QUICK.BackboneElement">
         <ns4:element name="name" type="System.String"/>
         <ns4:element name="telecom" type="list&lt;QUICK.ContactPoint&gt;"/>
-    </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DiagnosticOrderStatus" baseType="QUICK.Element">
-        <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.BundleType" baseType="QUICK.Element">
         <ns4:element name="value" type="System.String"/>
@@ -1542,7 +1536,7 @@
         <ns4:element name="clinicalNotes" type="System.String"/>
         <ns4:element name="supportingInformation" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="specimen" type="list&lt;QUICK.Reference&gt;"/>
-        <ns4:element name="status" type="QUICK.DiagnosticOrderStatus"/>
+        <ns4:element name="status" type="System.String"/>
         <ns4:element name="priority" type="QUICK.DiagnosticOrderPriority"/>
         <ns4:element name="event" type="list&lt;QUICK.DiagnosticOrder.Event&gt;"/>
         <ns4:element name="item" type="list&lt;QUICK.DiagnosticOrder.Item&gt;"/>
@@ -2265,7 +2259,7 @@
         <ns4:element name="value" type="System.Decimal"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DiagnosticOrder.Event" baseType="QUICK.BackboneElement">
-        <ns4:element name="status" type="QUICK.DiagnosticOrderStatus"/>
+        <ns4:element name="status" type="System.String"/>
         <ns4:element name="description" type="System.Concept"/>
         <ns4:element name="dateTime" type="System.DateTime"/>
         <ns4:element name="actor" type="QUICK.Reference"/>
@@ -2949,7 +2943,7 @@
         <ns4:element name="timingTiming" type="QUICK.Timing"/>
         <ns4:element name="encounter" type="QUICK.Reference"/>
         <ns4:element name="performer" type="QUICK.Reference"/>
-        <ns4:element name="status" type="QUICK.ProcedureRequestStatus"/>
+        <ns4:element name="status" type="System.String"/>
         <ns4:element name="notes" type="list&lt;System.String&gt;"/>
         <ns4:element name="asNeededBoolean" type="System.Boolean"/>
         <ns4:element name="asNeededCodeableConcept" type="System.Concept"/>
@@ -3464,7 +3458,7 @@
         <ns4:element name="specimen" type="list&lt;QUICK.Reference&gt;"/>
         <ns4:element name="bodySiteCodeableConcept" type="System.Concept"/>
         <ns4:element name="bodySiteReference" type="QUICK.Reference"/>
-        <ns4:element name="status" type="QUICK.DiagnosticOrderStatus"/>
+        <ns4:element name="status" type="System.String"/>
         <ns4:element name="event" type="list&lt;QUICK.DiagnosticOrder.Event&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DigitalMediaType" baseType="QUICK.Element">

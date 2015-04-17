@@ -1,8 +1,8 @@
-library CMS153_CDS version '2'
+library ChlamydiaScreening_CDS_UsingCommon version '2'
 
 using QUICK
 
-include CMS153_Common version '2' called Common
+include ChlamydiaScreening_Common version '2' called Common
 
 codesystem "SNOMED": 'http://snomed.info/sct'
 

@@ -424,10 +424,13 @@ unit
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
     // Include here any keyword that should not be a reserved word
-    | 'display'
-    | 'version'
     | 'Code'
     | 'Concept'
+    | 'date'
+    | 'display'
+    | 'time'
+    | 'timezone'
+    | 'version'
     ;
 
 /*

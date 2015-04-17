@@ -754,7 +754,7 @@ The Multiply operator is defined for the Integer, Decimal and Quantity types.</x
 		<xs:annotation>
 			<xs:documentation>The Divide operator performs numeric division of its arguments. Note that the result type of Divide is Decimal, even if its arguments are of type Integer. For integer division, use the truncated divide operator.
 			
-For division operations involving quantities, the input quantities must be of the same dimension (not necessarily the same units), and the resulting quantity will have the appropriate unit.
+For division operations involving quantities, the input quantities must be in compatible dimensions (not necessarily the same units), and the resulting quantity will have the appropriate unit.
 
 If either argument is null, the result is null.
 
@@ -1308,7 +1308,9 @@ For comparisons involving date/time or time values with imprecision, note that t
 	<!-- NotEqual (already defined) -->
 	<xs:complexType name="Width">
 		<xs:annotation>
-			<xs:documentation>The Width operator returns the width of an interval. The result of this operator is equivalent to invoking: End(i) - Start(i).
+			<xs:documentation>The Width operator returns the width of an interval. The result of this operator is equivalent to invoking: End(i) - Start(i) + point-size.
+			
+Note that this operator is not defined for intervals of type DateTime and Time.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>

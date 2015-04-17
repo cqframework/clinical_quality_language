@@ -50,4 +50,26 @@ public class QueryContext {
     public boolean isSingular() {
         return isSingularValue;
     }
+
+    private boolean inSourceClauseValue;
+    public void enterSourceClause() {
+        inSourceClauseValue = true;
+    }
+
+    public void exitSourceClause() {
+        inSourceClauseValue = false;
+    }
+
+    public boolean inSourceClause() {
+        return inSourceClauseValue;
+    }
+
+    private boolean referencesPatientContextValue;
+    public boolean referencesPatientContext() {
+        return referencesPatientContextValue;
+    }
+
+    public void referencePatientContext() {
+        referencesPatientContextValue = true;
+    }
 }

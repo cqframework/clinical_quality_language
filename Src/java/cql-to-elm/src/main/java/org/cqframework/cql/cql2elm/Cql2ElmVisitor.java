@@ -47,6 +47,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final ConversionMap conversionMap = new ConversionMap();
     private final Stack<String> expressionDefinitions = new Stack<>();
     private final Stack<QueryContext> queries = new Stack<>();
+    private final Stack<String> expressionContext = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final Stack<Narrative> narratives = new Stack<>();
     private FunctionDef currentFunctionDef = null;
@@ -444,6 +445,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
         currentContext = parseString(ctx.identifier());
 
+        if (!(currentContext.equals("Patient") || currentContext.equals("Population"))) {
+            throw new IllegalArgumentException(String.format("Unknown context %s.", currentContext));
+        }
+
         // If this is the first time a context definition is encountered, output a patient definition:
         // define Patient = element of [<Patient model type>]
         if (!implicitPatientCreated) {
@@ -479,6 +484,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ExpressionDef def = translatedLibrary.resolveExpressionRef(identifier);
         if (def == null) {
             pushExpressionDefinition(identifier);
+            pushExpressionContext(currentContext);
             try {
                 def = of.createExpressionDef()
                         .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
@@ -490,6 +496,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
             finally {
                 popExpressionDefinition();
+                popExpressionContext();
             }
         }
 
@@ -1483,7 +1490,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 Expression result = of.createExpressionRef()
                         .withLibraryName(libraryName)
                         .withName(memberIdentifier);
-                result.setResultType(element.getResultType());
+                result.setResultType(getExpressionDefResultType((ExpressionDef)element));
                 return result;
             }
 
@@ -1601,7 +1608,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (element instanceof ExpressionDef) {
             ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
-            expressionRef.setResultType(element.getResultType());
+            expressionRef.setResultType(getExpressionDefResultType((ExpressionDef)element));
             return expressionRef;
         }
 
@@ -2535,70 +2542,96 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
-        List<AliasedQuerySource> sources = (List<AliasedQuerySource>) visit(ctx.sourceClause());
-        queryContext.addQuerySources(sources);
         queries.push(queryContext);
         try {
 
-            List<DefineClause> dfcx = ctx.defineClause() != null ? (List<DefineClause>) visit(ctx.defineClause()) : null;
-            if (dfcx != null) {
-                queryContext.addDefineClauses(dfcx);
+            List<AliasedQuerySource> sources;
+            queryContext.enterSourceClause();
+            try {
+                sources = (List<AliasedQuerySource>)visit(ctx.sourceClause());
+            }
+            finally {
+                queryContext.exitSourceClause();
             }
 
-            List<RelationshipClause> qicx = new ArrayList<>();
-            if (ctx.queryInclusionClause() != null) {
-                for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
-                    qicx.add((RelationshipClause) visit(queryInclusionClauseContext));
+            queryContext.addQuerySources(sources);
+
+            // If we are evaluating a population-level query whose source ranges over any patient-context expressions,
+            // then references to patient context expressions within the iteration clauses of the query can be accessed
+            // at the patient, rather than the population, context.
+            boolean expressionContextPushed = false;
+            if (inPopulationContext() && queryContext.referencesPatientContext()) {
+                pushExpressionContext("Patient");
+                expressionContextPushed = true;
+            }
+            try {
+
+                List<DefineClause> dfcx = ctx.defineClause() != null ? (List<DefineClause>) visit(ctx.defineClause()) : null;
+                if (dfcx != null) {
+                    queryContext.addDefineClauses(dfcx);
+                }
+
+                List<RelationshipClause> qicx = new ArrayList<>();
+                if (ctx.queryInclusionClause() != null) {
+                    for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
+                        qicx.add((RelationshipClause) visit(queryInclusionClauseContext));
+                    }
+                }
+
+                Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
+                if (dateRangeOptimization && where != null) {
+                    for (AliasedQuerySource aqs : sources) {
+                        where = optimizeDateRangeInQuery(where, aqs);
+                    }
+                }
+
+                ReturnClause ret = ctx.returnClause() != null ? (ReturnClause) visit(ctx.returnClause()) : null;
+                if ((ret == null) && (sources.size() > 1)) {
+                    ret = of.createReturnClause()
+                            .withDistinct(true);
+
+                    Tuple returnExpression = of.createTuple();
+                    TupleType returnType = new TupleType();
+                    for (AliasedQuerySource aqs : sources) {
+                        TupleElement element =
+                                of.createTupleElement()
+                                        .withName(aqs.getAlias())
+                                        .withValue(of.createAliasRef().withName(aqs.getAlias()));
+                        element.setResultType(element.getValue().getResultType());
+                        returnType.addElement(new TupleTypeElement(element.getName(), element.getResultType()));
+                        returnExpression.getElement().add(element);
+                    }
+
+                    returnExpression.setResultType(queryContext.isSingular() ? returnType : new ListType(returnType));
+                    ret.setExpression(returnExpression);
+                    ret.setResultType(returnExpression.getResultType());
+                }
+
+                SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
+
+                Query query = of.createQuery()
+                        .withSource(sources)
+                        .withDefine(dfcx)
+                        .withRelationship(qicx)
+                        .withWhere(where)
+                        .withReturn(ret)
+                        .withSort(sort);
+
+                if (ret == null) {
+                    query.setResultType(sources.get(0).getResultType());
+                }
+                else {
+                    query.setResultType(ret.getResultType());
+                }
+
+                return query;
+            }
+            finally {
+                if (expressionContextPushed) {
+                    popExpressionContext();
                 }
             }
 
-            Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
-            if (dateRangeOptimization && where != null) {
-                for (AliasedQuerySource aqs : sources) {
-                    where = optimizeDateRangeInQuery(where, aqs);
-                }
-            }
-
-            ReturnClause ret = ctx.returnClause() != null ? (ReturnClause) visit(ctx.returnClause()) : null;
-            if ((ret == null) && (sources.size() > 1)) {
-                ret = of.createReturnClause()
-                        .withDistinct(true);
-
-                Tuple returnExpression = of.createTuple();
-                TupleType returnType = new TupleType();
-                for (AliasedQuerySource aqs : sources) {
-                    TupleElement element =
-                            of.createTupleElement()
-                                    .withName(aqs.getAlias())
-                                    .withValue(of.createAliasRef().withName(aqs.getAlias()));
-                    element.setResultType(element.getValue().getResultType());
-                    returnType.addElement(new TupleTypeElement(element.getName(), element.getResultType()));
-                    returnExpression.getElement().add(element);
-                }
-
-                returnExpression.setResultType(queryContext.isSingular() ? returnType : new ListType(returnType));
-                ret.setExpression(returnExpression);
-                ret.setResultType(returnExpression.getResultType());
-            }
-
-            SortClause sort = ctx.sortClause() != null ? (SortClause) visit(ctx.sortClause()) : null;
-
-            Query query = of.createQuery()
-                    .withSource(sources)
-                    .withDefine(dfcx)
-                    .withRelationship(qicx)
-                    .withWhere(where)
-                    .withReturn(ret)
-                    .withSort(sort);
-
-            if (ret == null) {
-                query.setResultType(sources.get(0).getResultType());
-            }
-            else {
-                query.setResultType(ret.getResultType());
-            }
-
-            return query;
         } finally {
             queries.pop();
         }
@@ -3715,6 +3748,66 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private void popExpressionDefinition() {
         expressionDefinitions.pop();
+    }
+
+    private DataType getExpressionDefResultType(ExpressionDef expressionDef) {
+        // If the current expression context is the same as the expression def context, return the expression def result type.
+        if (currentExpressionContext().equals(expressionDef.getContext())) {
+            return expressionDef.getResultType();
+        }
+
+        // If the current expression context is patient, a reference to a population context expression will indicate a full
+        // evaluation of the population context expression, and the result type is the same.
+        if (inPatientContext()) {
+            return expressionDef.getResultType();
+        }
+
+        // If the current expression context is population, a reference to a patient context expression will need to be
+        // performed for every patient in the population, so the result type is promoted to a list (if it is not already).
+        if (inPopulationContext()) {
+            // If we are in the source clause of a query, indicate that the source references patient context
+            if (!queries.empty() && queries.peek().inSourceClause()) {
+                queries.peek().referencePatientContext();
+            }
+
+            DataType resultType = expressionDef.getResultType();
+            if (!(resultType instanceof ListType)) {
+                return new ListType(resultType);
+            }
+            else {
+                return resultType;
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Invalid context reference from %s context to %s context.", currentExpressionContext(), expressionDef.getContext()));
+    }
+
+    private void pushExpressionContext(String context) {
+        expressionContext.push(context);
+    }
+
+    private void popExpressionContext() {
+        if (expressionContext.empty()) {
+            throw new IllegalStateException("Expression context stack is empty.");
+        }
+
+        expressionContext.pop();
+    }
+
+    private String currentExpressionContext() {
+        if (expressionContext.empty()) {
+            throw new IllegalStateException("Expression context stack is empty.");
+        }
+
+        return expressionContext.peek();
+    }
+
+    private boolean inPatientContext() {
+        return currentExpressionContext().equals("Patient");
+    }
+
+    private boolean inPopulationContext() {
+        return currentExpressionContext().equals("Population");
     }
 
     private void addToLibrary(IncludeDef includeDef) {

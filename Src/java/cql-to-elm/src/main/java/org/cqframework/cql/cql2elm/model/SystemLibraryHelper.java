@@ -134,7 +134,6 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Divide", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
-        system.add(new Operator("Divide", new Signature(systemModel.getDecimal(), systemModel.getQuantity()), systemModel.getQuantity()));
         system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Floor", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
@@ -366,23 +365,36 @@ public class SystemLibraryHelper {
         system.add(new Operator("AllTrue", new Signature(new ListType(systemModel.getBoolean())), systemModel.getBoolean()));
         system.add(new Operator("AnyTrue", new Signature(new ListType(systemModel.getBoolean())), systemModel.getBoolean()));
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("Avg", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         // Count<T>(list<T>) : Integer
         system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
-        // Max<T>(list<T>) : T
-        system.add(new GenericOperator("Max", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
-        // Min<T>(list<T>) : T
-        system.add(new GenericOperator("Min", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
-        // Median<T>(list<T>) : T
-        system.add(new GenericOperator("Median", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getDateTime())), systemModel.getDateTime()));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getTime())), systemModel.getTime()));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getDateTime())), systemModel.getDateTime()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getTime())), systemModel.getTime()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
+        system.add(new Operator("Median", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("Median", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         // Mode<T>(list<T>) : T
         system.add(new GenericOperator("Mode", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         system.add(new Operator("PopulationStdDev", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("PopulationStdDev", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Variance", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("Variance", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
 
         // Clinical
         // ToConcept(Code)
