@@ -126,7 +126,7 @@
                <source alias="X">
                   <expression name="MeasureObservation" xsi:type="ExpressionRef"/>
                </source>
-               <return>
+               <return distinct="false">
                   <expression name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
                      <operand name="X" xsi:type="AliasRef"/>
                   </expression>
