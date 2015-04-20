@@ -125,9 +125,7 @@ public class ClassType extends DataType implements NamedType {
             if (!(element.getType().isSubTypeOf(existingElement.getType())
                     || (existingElement.getType() instanceof ListType
                         && element.getType().isSubTypeOf(((ListType)existingElement.getType()).getElementType())))) {
-                throw new IllegalArgumentException(String.format("Element %s in type %s cannot be declared because it " +
-                        "is of type %s. Redeclared types must be a subtype or element type of the parent element type %s.",
-                        element.getName(), getName(), element.getType(), existingElement.getType()));
+                throw new InvalidRedeclarationException(this, existingElement, element);
             }
         }
 

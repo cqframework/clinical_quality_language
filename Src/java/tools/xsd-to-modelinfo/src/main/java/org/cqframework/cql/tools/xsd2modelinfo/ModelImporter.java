@@ -372,11 +372,56 @@ public class ModelImporter {
                 elements.removeAll(cBase.getAllElements());
             }
 
-            classType.addElements(elements);
+            for (ClassTypeElement element : elements) {
+                try {
+                    classType.addElement(element);
+                } catch (InvalidRedeclarationException e) {
+                    switch (options.getElementRedeclarationPolicy()) {
+                        case FAIL_INVALID_REDECLARATIONS:
+                            System.err.println("Redeclaration failed.  Either fix the XSD or choose a different element-redeclaration-policy.");
+                            throw e;
+                        case DISCARD_INVALID_REDECLARATIONS:
+                            System.err.printf("%s. Discarding element redeclaration.\n", e.getMessage());
+                            break;
+                        case RENAME_INVALID_REDECLARATIONS:
+                        default:
+                            String tName = getTypeName(element.getType());
+                            StringBuilder name = new StringBuilder(element.getName()).append(Character.toUpperCase(tName.charAt(0)));
+                            if (tName.length() > 1) {
+                                name.append(tName.substring(1));
+                            }
+                            System.err.printf("%s. Renaming element to %s.\n", e.getMessage(), name.toString());
+                            classType.addElement(new ClassTypeElement(name.toString(), element.getType(), element.isProhibited()));
+                    }
+                }
+            }
             resultType = classType;
         }
 
         return resultType;
+    }
+
+    private String getTypeName(DataType type) {
+        String typeName;
+        if (type instanceof ClassType) {
+            typeName = ((ClassType) type).getSimpleName();
+        } else if (type instanceof SimpleType) {
+            typeName = ((SimpleType) type).getSimpleName();
+        } else if (type instanceof ListType) {
+            DataType elementType = ((ListType) type).getElementType();
+            typeName = getTypeName(elementType) + "List";
+        } else if (type instanceof IntervalType) {
+            DataType pointType = ((IntervalType) type).getPointType();
+            typeName = getTypeName(pointType) + "Interval";
+        } else if (type instanceof TupleType) {
+            typeName = "Tuple";
+        } else if (type instanceof TypeParameter) {
+            typeName = "Parameter";
+        } else {
+            typeName = "Type";
+        }
+
+        return typeName;
     }
 
     private void resolveClassTypeElements(XmlSchemaParticle particle, List<ClassTypeElement> elements) {

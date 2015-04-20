@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class ModelImporterOptions {
     public static enum SimpleTypeRestrictionPolicy {USE_BASETYPE, EXTEND_BASETYPE, IGNORE}
+    public static enum ElementRedeclarationPolicy {DISCARD_INVALID_REDECLARATIONS, RENAME_INVALID_REDECLARATIONS, FAIL_INVALID_REDECLARATIONS }
     private static Pattern RETYPE_PATTERN = Pattern.compile("\\s*retype\\.(.+)\\s*");
     private static Pattern EXTEND_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\s*");
     private static Pattern EXTEND_EL_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\[([^\\]]+)\\]\\s*");
@@ -39,6 +40,22 @@ public class ModelImporterOptions {
      * </ul>
      */
     private SimpleTypeRestrictionPolicy simpleTypeRestrictionPolicy = null;
+
+    /**
+     * XSD allows restrictions and extensions to redeclare elements with different types and/or cardinalities.  In CQL,
+     * redeclared element types must be a subtype of the original type, and redeclared cardinalities must be narrower
+     * than the origin cardinality.  If xsd-to-modelinfo detects an invalid element declaration, it will behave
+     * according to one of these policies:
+     * <ul>
+     * <li><b>RENAME_INVALID_REDECLARATIONS</b>: Rename the element so it is a new element and does not clash with the
+     * basetype element.  The element will be renamed by appending the redeclared type to the name using CamelCase
+     * (e.g., if element "foo" is redeclared to type "bar", and this is invalid, it will be renamed "fooBar").</li>
+     * <li><b>DISCARD_INVALID_REDECLARATIONS</b>: Discard the redeclaration, falling back to the originally declared
+     * element type and cardinality.</li>
+     * <li><b>FAIL_INVALID_REDECLARATIONS</b>: Throw an exception. This is the default behavior.</li>
+     * </ul>
+     */
+    private ElementRedeclarationPolicy elementRedeclarationPolicy = null;
 
     /**
      * Some HL7 standards prefix all of their type names with an ID of the standard.  For example, the CDA R2 schema
@@ -86,6 +103,19 @@ public class ModelImporterOptions {
         return this;
     }
 
+    public ElementRedeclarationPolicy getElementRedeclarationPolicy() {
+        return elementRedeclarationPolicy != null ? elementRedeclarationPolicy : ElementRedeclarationPolicy.FAIL_INVALID_REDECLARATIONS;
+    }
+
+    public void setElementRedeclarationPolicy(ElementRedeclarationPolicy elementRedeclarationPolicy) {
+        this.elementRedeclarationPolicy = elementRedeclarationPolicy;
+    }
+
+    public ModelImporterOptions withElementRedeclarationPolicy(ElementRedeclarationPolicy elementRedeclarationPolicy) {
+        this.elementRedeclarationPolicy = elementRedeclarationPolicy;
+        return this;
+    }
+
     public String getNormalizePrefix() {
         return normalizePrefix;
     }
@@ -117,6 +147,11 @@ public class ModelImporterOptions {
         String simpleTypeRestrictionPolicy = properties.getProperty("simpletype-restriction-policy");
         if (simpleTypeRestrictionPolicy != null && !simpleTypeRestrictionPolicy.isEmpty()) {
             setSimpleTypeRestrictionPolicy(SimpleTypeRestrictionPolicy.valueOf(simpleTypeRestrictionPolicy));
+        }
+
+        String elementRedeclarationPolicy = properties.getProperty("element-redeclaration-policy");
+        if (elementRedeclarationPolicy != null && !elementRedeclarationPolicy.isEmpty()) {
+            setElementRedeclarationPolicy(ElementRedeclarationPolicy.valueOf(elementRedeclarationPolicy));
         }
 
         // Iterate the properties (sorting to ensure class extensions come before element mappings)
@@ -156,6 +191,9 @@ public class ModelImporterOptions {
         }
         if (simpleTypeRestrictionPolicy != null) {
             properties.setProperty("simpletype-restriction-policy", simpleTypeRestrictionPolicy.name());
+        }
+        if (elementRedeclarationPolicy != null) {
+            properties.setProperty("element-redeclaration-policy", elementRedeclarationPolicy.name());
         }
         if (! typeMap.isEmpty()) {
             for (QName key : typeMap.keySet()) {
