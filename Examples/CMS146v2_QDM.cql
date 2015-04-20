@@ -26,10 +26,9 @@ define Pharyngitis:
 define Antibiotics:
     ["Medication, Order": "Antibiotic Medications"]
 
-define function isRelated(P DiagnosisActive, E EncounterPerformed) {
-    return Interval[P."start datetime", P."stop datetime"] includes Interval[E."start datetime", E."stop datetime"]
-    or P."start datetime" in Interval[E."start datetime", E."stop datetime"]
-}
+define function isRelated(P DiagnosisActive, E EncounterPerformed) :
+    Interval[P."start datetime", P."stop datetime"] includes Interval[E."start datetime", E."stop datetime"]
+      or P."start datetime" in Interval[E."start datetime", E."stop datetime"]
 
 define MeasurementPeriodEncounters:
     ["Encounter, Performed": "Ambulatory/ED Visit"] E

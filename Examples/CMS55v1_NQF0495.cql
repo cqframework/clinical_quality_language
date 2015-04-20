@@ -49,6 +49,8 @@ using QUICK
 valueset "Inpatient": '2.16.840.1.113883.3.666.5.307'
 valueset "Emergency Department Visit": '2.16.840.1.113883.3.117.1.7.1.293'
 
+parameter MeasurementPeriod default Interval[@2014-01-01T00:00:00.0, @2015-01-01T00:00:00.0)
+
 context Patient
 
 define InpatientEncounters:
@@ -62,9 +64,9 @@ define EDEncounters:
 
 define MeasureObservation:
 	EDEncounters E
-		where E.facilityLocationArrivalDateTime is not null
-			and E.facilityLocationDepartureDateTime is not null
-		return minutes between E.facilityLocationArrivalDateTime and E.facilityLocationDepartureDateTime
+		where start of E.period is not null
+			and end of E.period is not null
+		return duration in minutes of E.period
 
 context Population
 

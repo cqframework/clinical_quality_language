@@ -14,11 +14,11 @@ parameter "Measurement Period" default Interval[@2014-01-01T00:00:00.0, @2015-01
 define "Long-Term Residential Facility Encounters":
     ["Encounter, Performed": "Care Services in Long-Term Residential Facility"] E
         // By always specifying the attribute involved, filtering is explicit, rather than implicit in the model
-        with ["Diagnosis, Active": "Heart Failure"] D such that D."period" overlaps before E."period"
-        where E."period" during "Measurement Period"
+        with ["Diagnosis, Active": "Heart Failure"] D
+          such that Interval[D."start datetime", D."stop datetime"] overlaps before Interval[E."start datetime", E."stop datetime"]
+        where Interval[E."start datetime", E."stop datetime"] during "Measurement Period"
 
 define "Relevant Encounters":
     "Long-Term Residential Facility Encounters"
-        union "..."
-        union "..."
-
+//        union "..."
+//        union "..."

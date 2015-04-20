@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:cql-annotations:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:cql-annotations:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<xs:element name="ENTER_NAME_OF_ROOT_ELEMENT_HERE">
-		<xs:annotation>
-			<xs:documentation>Comment describing your root element</xs:documentation>
-		</xs:annotation>
-	</xs:element>
-</xs:schema>

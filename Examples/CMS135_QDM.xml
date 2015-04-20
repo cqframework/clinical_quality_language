@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="CMS135_QDM"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_1_2"/>
+   </usings>
+   <parameters>
+      <def name="Measurement Period" accessLevel="Public">
+         <default lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low xsi:type="DateTime">
+               <year valueType="Integer" value="2014" xsi:type="Literal"/>
+               <month valueType="Integer" value="1" xsi:type="Literal"/>
+               <day valueType="Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="Integer" value="0" xsi:type="Literal"/>
+               <second valueType="Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="Integer" value="0" xsi:type="Literal"/>
+            </low>
+            <high xsi:type="DateTime">
+               <year valueType="Integer" value="2015" xsi:type="Literal"/>
+               <month valueType="Integer" value="1" xsi:type="Literal"/>
+               <day valueType="Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="Integer" value="0" xsi:type="Literal"/>
+               <second valueType="Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="Integer" value="0" xsi:type="Literal"/>
+            </high>
+         </default>
+      </def>
+   </parameters>
+   <valueSets>
+      <def name="Care Services in Long-Term Residential Facility" id="..." accessLevel="Public"/>
+      <def name="Heart Failure" id="..." accessLevel="Public"/>
+   </valueSets>
+   <statements>
+      <def name="Long-Term Residential Facility Encounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression xmlns:ns0="urn:healthit-gov:qdm:v4_1_2" dataType="ns0:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Care Services in Long-Term Residential Facility" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <relationship alias="D" xsi:type="With">
+               <expression xmlns:ns1="urn:healthit-gov:qdm:v4_1_2" dataType="ns1:DiagnosisActive" templateId="DiagnosisActive" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Heart Failure" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat xsi:type="OverlapsBefore">
+                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <low path="start datetime" scope="D" xsi:type="Property"/>
+                     <high path="stop datetime" scope="D" xsi:type="Property"/>
+                  </operand>
+                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <low path="start datetime" scope="E" xsi:type="Property"/>
+                     <high path="stop datetime" scope="E" xsi:type="Property"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <where xsi:type="IncludedIn">
+               <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                  <low path="start datetime" scope="E" xsi:type="Property"/>
+                  <high path="stop datetime" scope="E" xsi:type="Property"/>
+               </operand>
+               <operand name="Measurement Period" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def name="Relevant Encounters" context="Patient" accessLevel="Public">
+         <expression name="Long-Term Residential Facility Encounters" xsi:type="ExpressionRef"/>
+      </def>
+   </statements>
+</library>
+
+

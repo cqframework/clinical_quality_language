@@ -69,11 +69,13 @@ Supplemental Data Elements
 
 using QUICK
 
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+
 context Patient
 
 define InDemographic:
     AgeInMonthsAt(start of MeasurementPeriod) >= 3
-        and AgeInYearsAt(start of MeasurementPeriod) <= 18 years
+        and AgeInYearsAt(start of MeasurementPeriod) <= 18
 
 define ValidEncounters:
 	[Encounter: "Office Visit"]
@@ -91,8 +93,8 @@ define URIDiagnosis:
 
 define ValidDiagnosis:
 	URIDiagnosis U
-		where exists (EncountersDuringMeasurementPeriod E where U.onsetDate during E.period)
-			or exists (ValidEncounters E where Interval[U.onsetDate, U.abatementDate] includes E.period)
+		where exists (EncountersDuringMeasurementPeriod E where U.onsetDateTime during E.period)
+			or exists (ValidEncounters E where Interval[U.onsetDateTime, U.abatementDate] includes E.period)
 
 define InitialPopulation:
 	ValidDiagnosis V
@@ -102,7 +104,7 @@ define Denominator:
 	true
 
 define Numerator:
-	ValidDiagnosis V where not exists ([MedicationPrescription: "Antibiotic Medications"] M where M.dateWritten starts 3 days or less after start of V.period)
+	ValidDiagnosis V where not exists ([MedicationPrescription: "Antibiotic Medications"] M where M.dateWritten occurs 3 days or less after V.onsetDateTime)
 
 context Population
 

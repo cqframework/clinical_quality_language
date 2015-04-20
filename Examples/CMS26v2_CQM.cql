@@ -33,6 +33,7 @@ using QUICK
 valueset "Asthma": '2.16.840.1.113883.3.117.1.7.1.271'
 valueset "Asthma Management Plan": '2.16.840.1.113883.3.117.1.7.1.131'
 valueset "Home Discharge Disposition": 'TBD'
+valueset "Doctor": 'TBD'
 
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
@@ -51,13 +52,13 @@ define "Asthma Encounters":
 define "Asthma Encounters with Plan":
   "Asthma Encounters" E
     with [CommunicationRequest] C
-      such that C.encounter.id = E.id
-        and C.reason in "Asthma Management Plan"
-        and C.sender.role = 'doctor'
-        and C.recipient.id = C.subject.id
+      such that (C.encounter as Encounter).id = E.id
+        and exists ((C.reason) R where R in "Asthma Management Plan")
+        and exists (((C.sender as Practitioner).practitionerRole) R where R.role in "Doctor")
+        and (C.recipient as Patient).id = (C.subject as Patient).id
 
 define "In Initial Patient Population":
-    "In Demographic" and exists (AsthmaEncounters)
+    "In Demographic" and exists ("Asthma Encounters")
 
 context Population
 

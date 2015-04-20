@@ -66,7 +66,7 @@ define MeasurementPeriodEncounters:
 define PharyngitisEncounters:
     MeasurementPeriodEncounters E
         with Pharyngitis P such that
-            Interval[P.onsetDateTime, P.abatementDateTime] includes E.period
+            Interval[P.onsetDateTime, P.abatementDate] includes E.period
             or P.onsetDateTime in E.period
         with Antibiotics A such that A.dateWritten 3 days or less after start of E.period
 
@@ -77,7 +77,7 @@ define PharyngitisWithPriorAntibiotics:
 define ExcludedEncounters:
     PharyngitisEncounters E
         with PharyngitisWithPriorAntibiotics P such that
-            Interval[P.onsetDateTime, P.abatementDateTime] includes E.period
+            Interval[P.onsetDateTime, P.abatementDate] includes E.period
             or P.onsetDateTime in E.period
 
 define StrepTestEncounters:

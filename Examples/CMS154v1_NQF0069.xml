@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="CMS154" version="1"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
+      <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+   </usings>
+   <parameters>
+      <def name="MeasurementPeriod" accessLevel="Public">
+         <default lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low name="DateTime" xsi:type="FunctionRef">
+               <operand valueType="Integer" value="2013" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            </low>
+            <high name="DateTime" xsi:type="FunctionRef">
+               <operand valueType="Integer" value="2014" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="1" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            </high>
+         </default>
+      </def>
+   </parameters>
+   <statements>
+      <def name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def name="InDemographic" context="Patient" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand xsi:type="GreaterOrEqual">
+               <operand precision="Month" xsi:type="CalculateAgeAt">
+                  <operand path="birthDate" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="Integer" value="3" xsi:type="Literal"/>
+            </operand>
+            <operand xsi:type="LessOrEqual">
+               <operand precision="Year" xsi:type="CalculateAgeAt">
+                  <operand path="birthDate" xsi:type="Property">
+                     <source name="Patient" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand xsi:type="Start">
+                     <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand valueType="Integer" value="18" xsi:type="Literal"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="ValidEncounters" context="Patient" accessLevel="Public">
+         <expression xsi:type="Union">
+            <operand xsi:type="Union">
+               <operand xsi:type="Union">
+                  <operand xsi:type="Union">
+                     <operand xsi:type="Union">
+                        <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                           <codes name="Office Visit" xsi:type="IdentifierRef"/>
+                        </operand>
+                        <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                           <codes name="Emergency Department Visit" xsi:type="IdentifierRef"/>
+                        </operand>
+                     </operand>
+                     <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                        <codes name="Preventive Care- Initial Office Visit, 0 to 17" xsi:type="IdentifierRef"/>
+                     </operand>
+                  </operand>
+                  <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                     <codes name="Preventive Care - Established Office Visit, 0 to 17" xsi:type="IdentifierRef"/>
+                  </operand>
+               </operand>
+               <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                  <codes name="Hospital Observation Care - Initial" xsi:type="IdentifierRef"/>
+               </operand>
+            </operand>
+            <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+               <codes name="Face-to-Face Interaction" xsi:type="IdentifierRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="EncountersDuringMeasurementPeriod" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression name="ValidEncounters" xsi:type="ExpressionRef"/>
+            </source>
+            <where xsi:type="IncludedIn">
+               <operand path="period" scope="E" xsi:type="Property"/>
+               <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def name="URIDiagnosis" context="Patient" accessLevel="Public">
+         <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+            <codes name="Upper Respiratory Infection" xsi:type="IdentifierRef"/>
+         </expression>
+      </def>
+      <def name="ValidDiagnosis" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="U">
+               <expression name="URIDiagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <where xsi:type="Or">
+               <operand xsi:type="Exists">
+                  <operand xsi:type="Query">
+                     <source alias="E">
+                        <expression name="EncountersDuringMeasurementPeriod" xsi:type="ExpressionRef"/>
+                     </source>
+                     <where xsi:type="In">
+                        <operand path="onsetDateTime" scope="U" xsi:type="Property"/>
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </where>
+                  </operand>
+               </operand>
+               <operand xsi:type="Exists">
+                  <operand xsi:type="Query">
+                     <source alias="E">
+                        <expression name="ValidEncounters" xsi:type="ExpressionRef"/>
+                     </source>
+                     <where xsi:type="Includes">
+                        <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <low path="onsetDateTime" scope="U" xsi:type="Property"/>
+                           <high path="abatementDate" scope="U" xsi:type="Property"/>
+                        </operand>
+                        <operand path="period" scope="E" xsi:type="Property"/>
+                     </where>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="InitialPopulation" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="V">
+               <expression name="ValidDiagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <where name="InDemographic" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def name="Denominator" context="Patient" accessLevel="Public">
+         <expression valueType="Boolean" value="true" xsi:type="Literal"/>
+      </def>
+      <def name="Numerator" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="V">
+               <expression name="ValidDiagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="Exists">
+                  <operand xsi:type="Query">
+                     <source alias="M">
+                        <expression dataType="quick:MedicationPrescription" templateId="medicationprescription-qicore-qicore-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                           <codes name="Antibiotic Medications" xsi:type="IdentifierRef"/>
+                        </expression>
+                     </source>
+                     <where xsi:type="In">
+                        <operand precision="Day" xsi:type="DurationBetween">
+                           <operand path="dateWritten" scope="M" xsi:type="Property"/>
+                           <operand path="onsetDateTime" scope="V" xsi:type="Property"/>
+                        </operand>
+                        <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                           <low xsi:type="Negate">
+                              <operand valueType="Integer" value="3" xsi:type="Literal"/>
+                           </low>
+                           <high valueType="Integer" value="0" xsi:type="Literal"/>
+                        </operand>
+                     </where>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="MeasureScore" context="Population" accessLevel="Public">
+         <expression xsi:type="Multiply">
+            <operand xsi:type="Divide">
+               <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+                  <operand name="Count" xsi:type="FunctionRef">
+                     <operand name="Numerator" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+               <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+                  <operand name="Count" xsi:type="FunctionRef">
+                     <operand name="Denominator" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+            </operand>
+            <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+               <operand valueType="Integer" value="100" xsi:type="Literal"/>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+
