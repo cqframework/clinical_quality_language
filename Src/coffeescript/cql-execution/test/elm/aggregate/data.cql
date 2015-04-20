@@ -11,12 +11,12 @@ define empty: Sum(List<Integer>{})
 // @Test: Min
 define not_null: Min({1,2,3,4,5,0})
 define has_null: Min({1,null,-1,null,2})
-define empty: Min({})
+define empty: Min(List<Integer>{})
 
 // @Test: Max
 define not_null: Max({10,1,2,3,4,5})
 define has_null: Max({1,null,null,2})
-define empty: Max({})
+define empty: Max(List<Integer>{})
 
 // @Test: Avg
 define not_null: Avg({1,2,3,4,5})
@@ -27,7 +27,7 @@ define empty: Avg(List<Integer>{})
 define odd: Median({5,1,2,3,4})
 define even: Median({5,1,2,3,4,6})
 
-define empty: Median({})
+define empty: Median(List<Integer>{})
 define has_null: Median({1,null,null,2})
 define dup_vals_even: Median({3,1,2,2,2,3,4,5})
 define dup_vals_odd:  Median({3,1,2,2,2,3,4,5,6})

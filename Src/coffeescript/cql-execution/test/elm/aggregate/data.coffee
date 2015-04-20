@@ -264,7 +264,7 @@ using QUICK
 context Patient
 define not_null: Min({1,2,3,4,5,0})
 define has_null: Min({1,null,-1,null,2})
-define empty: Min({})
+define empty: Min(List<Integer>{})
 ###
 
 module.exports['Min'] = {
@@ -395,7 +395,7 @@ using QUICK
 context Patient
 define not_null: Max({10,1,2,3,4,5})
 define has_null: Max({1,null,null,2})
-define empty: Max({})
+define empty: Max(List<Integer>{})
 ###
 
 module.exports['Max'] = {
@@ -590,6 +590,7 @@ module.exports['Avg'] = {
                      }
                   } ],
                   "return" : {
+                     "distinct" : false,
                      "expression" : {
                         "name" : "ToDecimal",
                         "libraryName" : "System",
@@ -639,6 +640,7 @@ module.exports['Avg'] = {
                      }
                   } ],
                   "return" : {
+                     "distinct" : false,
                      "expression" : {
                         "name" : "ToDecimal",
                         "libraryName" : "System",
@@ -667,6 +669,7 @@ module.exports['Avg'] = {
                      }
                   } ],
                   "return" : {
+                     "distinct" : false,
                      "expression" : {
                         "name" : "ToDecimal",
                         "libraryName" : "System",
@@ -691,7 +694,7 @@ context Patient
 define odd: Median({5,1,2,3,4})
 define even: Median({5,1,2,3,4,6})
 
-define empty: Median({})
+define empty: Median(List<Integer>{})
 define has_null: Median({1,null,null,2})
 define dup_vals_even: Median({3,1,2,2,2,3,4,5})
 define dup_vals_odd:  Median({3,1,2,2,2,3,4,5,6})
@@ -736,28 +739,46 @@ module.exports['Median'] = {
                "name" : "Median",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "4",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "distinct" : false,
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          }, {
@@ -768,32 +789,50 @@ module.exports['Median'] = {
                "name" : "Median",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "6",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "6",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "distinct" : false,
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          }, {
@@ -804,7 +843,25 @@ module.exports['Median'] = {
                "name" : "Median",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List"
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List"
+                     }
+                  } ],
+                  "return" : {
+                     "distinct" : false,
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          }, {
@@ -815,28 +872,46 @@ module.exports['Median'] = {
                "name" : "Median",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "asType" : "{urn:hl7-org:elm:r1}Integer",
-                     "type" : "As",
-                     "operand" : {
-                        "type" : "Null"
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "asType" : "{urn:hl7-org:elm:r1}Integer",
+                           "type" : "As",
+                           "operand" : {
+                              "type" : "Null"
+                           }
+                        }, {
+                           "asType" : "{urn:hl7-org:elm:r1}Integer",
+                           "type" : "As",
+                           "operand" : {
+                              "type" : "Null"
+                           }
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        } ]
                      }
-                  }, {
-                     "asType" : "{urn:hl7-org:elm:r1}Integer",
-                     "type" : "As",
-                     "operand" : {
-                        "type" : "Null"
+                  } ],
+                  "return" : {
+                     "distinct" : false,
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
                      }
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -847,40 +922,58 @@ module.exports['Median'] = {
                "name" : "Median",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "distinct" : false,
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          }, {
@@ -891,44 +984,62 @@ module.exports['Median'] = {
                "name" : "Median",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "type" : "List",
-                  "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "3",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "4",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "5",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "6",
-                     "type" : "Literal"
-                  } ]
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "4",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "value" : "6",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "distinct" : false,
+                     "expression" : {
+                        "name" : "ToDecimal",
+                        "libraryName" : "System",
+                        "type" : "FunctionRef",
+                        "operand" : [ {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        } ]
+                     }
+                  }
                } ]
             }
          } ]
@@ -1193,6 +1304,7 @@ module.exports['Variance'] = {
                      }
                   } ],
                   "return" : {
+                     "distinct" : false,
                      "expression" : {
                         "name" : "ToDecimal",
                         "libraryName" : "System",
@@ -1360,6 +1472,7 @@ module.exports['StdDev'] = {
                      }
                   } ],
                   "return" : {
+                     "distinct" : false,
                      "expression" : {
                         "name" : "ToDecimal",
                         "libraryName" : "System",
@@ -1452,6 +1565,7 @@ module.exports['PopulationStdDev'] = {
                      }
                   } ],
                   "return" : {
+                     "distinct" : false,
                      "expression" : {
                         "name" : "ToDecimal",
                         "libraryName" : "System",

@@ -3436,6 +3436,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withExpression(expression)
                         .withResultType(fromType))
                 .withReturn((ReturnClause) of.createReturnClause()
+                        .withDistinct(false)
                         .withExpression(convertExpression((AliasRef) of.createAliasRef()
                                         .withName("X")
                                         .withResultType(fromType.getElementType()),
