@@ -3101,11 +3101,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
         currentFunctionDef = fun;
+        pushExpressionContext(currentContext);
         try {
             fun.setExpression(parseExpression(ctx.functionBody()));
         }
         finally {
             currentFunctionDef = null;
+            popExpressionContext();
         }
 
         fun.setContext(currentContext);
