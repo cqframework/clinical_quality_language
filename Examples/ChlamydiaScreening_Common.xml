@@ -25,7 +25,7 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand dataType="quick:Patient" templateId="cqf-patient" xsi:type="Retrieve"/>
+            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="Conditions Indicating Sexual Activity" context="Patient" accessLevel="Public">
