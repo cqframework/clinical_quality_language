@@ -24,12 +24,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
+
+import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class CqlTranslator {
     public static enum Options { EnableDateRangeOptimization, EnableAnnotations }
+    private static enum Format { XML, JSON, COFFEE }
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
     private Object visitResult = null;
@@ -154,18 +157,11 @@ public class CqlTranslator {
     private static void loadModelInfo(File modelInfoXML) {
         final ModelInfo modelInfo = JAXB.unmarshal(modelInfoXML, ModelInfo.class);
         final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
-        final ModelInfoProvider modelProvider = new ModelInfoProvider() {
-            @Override
-            public ModelInfo load() {
-                return modelInfo;
-            }
-        };
+        final ModelInfoProvider modelProvider = () -> modelInfo;
         ModelInfoLoader.registerModelInfoProvider(modelId, modelProvider);
     }
 
-    private static enum Format { XML, JSON, COFFEE }
-
-    private static void writeELM(File inFile, PrintWriter pw, Format format, boolean dateRangeOptimizations, boolean annotations) throws IOException {
+    private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations, boolean annotations) throws IOException {
         ArrayList<Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
             options.add(Options.EnableDateRangeOptimization);
@@ -173,7 +169,13 @@ public class CqlTranslator {
         if (annotations) {
             options.add(Options.EnableAnnotations);
         }
-        CqlTranslator translator = fromFile(inFile, options.toArray(new Options[options.size()]));
+
+        System.err.println("================================================================================");
+        System.err.printf("TRANSLATE %s%n", inPath);
+
+        LibrarySourceLoader.registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
+        CqlTranslator translator = fromFile(inPath.toFile(), options.toArray(new Options[options.size()]));
+        LibrarySourceLoader.clearProviders();
 
         if (translator.getErrors().size() > 0) {
             System.err.println("Translation failed due to errors:");
@@ -184,22 +186,24 @@ public class CqlTranslator {
                 System.err.printf("%s %s%n", lines, error.getMessage());
             }
         } else {
-            switch (format) {
-                case COFFEE:
-                    pw.print("module.exports = ");
-                    pw.println(translator.toJson());
-                    break;
-                case JSON:
-                    pw.println(translator.toJson());
-                    break;
-                case XML:
-                default:
-                    pw.println(translator.toXml());
+            try (PrintWriter pw = new PrintWriter(outPath.toFile(), "UTF-8")) {
+                switch (format) {
+                    case COFFEE:
+                        pw.print("module.exports = ");
+                        pw.println(translator.toJson());
+                        break;
+                    case JSON:
+                        pw.println(translator.toJson());
+                        break;
+                    case XML:
+                    default:
+                        pw.println(translator.toXml());
+                }
+                pw.println();
             }
         }
 
-        pw.println();
-        pw.close();
+        System.err.println();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -207,31 +211,45 @@ public class CqlTranslator {
         OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required();
         OptionSpec<File> model = parser.accepts("model").withRequiredArg().ofType(File.class);
         OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class);
-        OptionSpec<String> format = parser.accepts("format").withRequiredArg().ofType(String.class);
+        OptionSpec<Format> format = parser.accepts("format").withRequiredArg().ofType(Format.class).defaultsTo(Format.XML);
         OptionSpec optimization = parser.accepts("date-range-optimization");
         OptionSpec annotations = parser.accepts("annotations");
-        OptionSpec stdout = parser.accepts("stdout");
 
         OptionSet options = parser.parse(args);
-        File infile = input.value(options);
-        LibrarySourceLoader.registerProvider(new DefaultLibrarySourceProvider(infile.getParent()));
-        Format outputFormat = options.has(format) ? Format.valueOf(format.value(options).toUpperCase()) : Format.XML;
-        PrintWriter pw;
-        if (options.has(stdout)) {
-            pw = new PrintWriter(new OutputStreamWriter(System.out, "UTF-8"));
-        } else {
-            if (options.has(model)) {
-                final File modelFile = options.valueOf(model);
-                if (! modelFile.exists() || modelFile.isDirectory()) {
-                    throw new IllegalArgumentException("model must be a valid file!");
-                }
-                loadModelInfo(modelFile);
+
+        final Path source = input.value(options).toPath();
+        final Path destination = output.value(options) != null ? output.value(options).toPath() : source.toFile().isDirectory() ? source : source.getParent();
+        final Format outputFormat = format.value(options);
+
+        Map<Path, Path> inOutMap = new HashMap<>();
+        if (source.toFile().isDirectory()) {
+            if (destination.toFile().exists() && ! destination.toFile().isDirectory()) {
+                throw new IllegalArgumentException("Output must be a valid folder if input is a folder!");
             }
 
-            File outfile;
-            if (! options.has(output) || output.value(options).isDirectory()) {
+            Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    if (file.toFile().getName().endsWith(".cql") || file.toFile().getName().endsWith(".CQL")) {
+                        Path destinationFolder = destination.resolve(source.relativize(file.getParent()));
+                        if (! destinationFolder.toFile().exists() && ! destinationFolder.toFile().mkdirs()) {
+                            System.err.printf("Problem creating %s%n", destinationFolder);
+                        }
+                        inOutMap.put(file, destinationFolder);
+                    }
+                    return CONTINUE;
+                }
+            });
+        } else {
+            inOutMap.put(source, destination);
+        }
+
+        for (Map.Entry<Path, Path> inOut : inOutMap.entrySet()) {
+            Path in = inOut.getKey();
+            Path out = inOut.getValue();
+            if (out.toFile().isDirectory()) {
                 // Use input filename with ".xml", ".json", or ".coffee" extension
-                String name = infile.getName();
+                String name = in.toFile().getName();
                 if (name.lastIndexOf('.') != -1) {
                     name = name.substring(0, name.lastIndexOf('.'));
                 }
@@ -248,17 +266,22 @@ public class CqlTranslator {
                         break;
 
                 }
-                String basePath = options.has(output) ? output.value(options).getAbsolutePath() : infile.getParent();
-                outfile = new File(basePath + File.separator + name);
-            } else {
-                outfile = output.value(options);
+                out = out.resolve(name);
             }
-            if (outfile.equals(infile)) {
+
+            if (out.equals(in)) {
                 throw new IllegalArgumentException("input and output file must be different!");
             }
-            pw = new PrintWriter(outfile, "UTF-8");
-        }
 
-        writeELM(infile, pw, outputFormat, options.has(optimization), options.has(annotations));
+            if (options.has(model)) {
+                final File modelFile = options.valueOf(model);
+                if (! modelFile.exists() || modelFile.isDirectory()) {
+                    throw new IllegalArgumentException("model must be a valid file!");
+                }
+                loadModelInfo(modelFile);
+            }
+
+            writeELM(in, out, outputFormat, options.has(optimization), options.has(annotations));
+        }
     }
 }
