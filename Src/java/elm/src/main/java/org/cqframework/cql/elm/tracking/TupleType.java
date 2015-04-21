@@ -137,7 +137,11 @@ public class TupleType extends DataType {
 
     @Override
     public boolean isCompatibleWith(DataType other) {
-        // TODO: Class types are compatible with tuple types...
+        if (other instanceof ClassType) {
+            ClassType classType = (ClassType)other;
+            return this.equals(classType.getTupleType());
+        }
+
         return false;
     }
 

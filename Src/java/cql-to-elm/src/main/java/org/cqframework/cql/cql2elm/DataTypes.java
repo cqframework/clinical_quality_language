@@ -13,6 +13,15 @@ public class DataTypes {
         }
     }
 
+    public static void verifyCast(DataType targetType, DataType sourceType) {
+        if (!subTypeOf(targetType, sourceType)) {
+            throw new IllegalArgumentException(String.format("Expression of type '%s' cannot be cast as a value of type '%s'.",
+                    sourceType != null ? sourceType.toString() : "<unknown>",
+                    targetType != null ? targetType.toString() : "<unknown>"
+            ));
+        }
+    }
+
     public static boolean equal(DataType a, DataType b) {
         return a != null && b != null && a.equals(b);
     }

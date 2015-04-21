@@ -184,7 +184,7 @@ public class ClassType extends DataType implements NamedType {
     }
 
     private TupleType tupleType;
-    private TupleType getTupleType() {
+    public TupleType getTupleType() {
         if (tupleType == null) {
             tupleType = buildTupleType();
         }

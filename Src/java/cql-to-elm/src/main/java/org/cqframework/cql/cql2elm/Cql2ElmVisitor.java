@@ -1712,7 +1712,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withOperand(parseExpression(ctx.expression()))
                 .withAsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()))
                 .withStrict(false);
-        as.setResultType(as.getAsTypeSpecifier().getResultType());
+        DataType targetType = as.getAsTypeSpecifier().getResultType();
+        DataTypes.verifyCast(targetType, as.getOperand().getResultType());
+        as.setResultType(targetType);
         return as;
     }
 
@@ -1722,7 +1724,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withOperand(parseExpression(ctx.expression()))
                 .withAsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()))
                 .withStrict(true);
-        as.setResultType(as.getAsTypeSpecifier().getResultType());
+        DataType targetType = as.getAsTypeSpecifier().getResultType();
+        DataTypes.verifyCast(targetType, as.getOperand().getResultType());
+        as.setResultType(targetType);
         return as;
     }
 

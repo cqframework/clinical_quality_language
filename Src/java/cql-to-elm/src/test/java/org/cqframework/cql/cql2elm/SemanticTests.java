@@ -124,13 +124,22 @@ public class SemanticTests {
         runSemanticTest("CodeAndConceptTest.cql");
     }
 
+    @Test
+    public void testInvalidCastExpression() throws IOException {
+        runSemanticTest("OperatorTests/InvalidCastExpression.cql", 1);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
+        runSemanticTest(testFileName, 0);
+    }
+
+    private void runSemanticTest(String testFileName, int expectedErrors) throws IOException {
         File translationTestFile = new File(Cql2ElmVisitorTest.class.getResource(testFileName).getFile());
         CqlTranslator translator = CqlTranslator.fromFile(translationTestFile);
         for (CqlTranslatorException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
         }
-        assertThat(translator.getErrors().size(), is(0));
+        assertThat(translator.getErrors().size(), is(expectedErrors));
     }
 }

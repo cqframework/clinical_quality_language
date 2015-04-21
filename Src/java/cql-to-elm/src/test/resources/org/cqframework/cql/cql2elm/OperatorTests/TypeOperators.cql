@@ -30,3 +30,4 @@ define MaximumInteger: maximum Integer
 define MaximumDecimal: maximum Decimal
 define MaximumDateTime: maximum DateTime
 define MaximumTime: maximum Time
+
