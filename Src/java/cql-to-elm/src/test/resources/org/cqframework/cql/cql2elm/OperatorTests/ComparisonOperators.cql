@@ -4,6 +4,7 @@ define DateTimeBetweenExpression: DateTime(2014, 1, 1) between DateTime(2014, 1,
 define TimeBetweenExpression: Time(10, 0, 0, 0) between Time(11, 0, 0, 0) and Time(12, 0, 0, 0)
 define StringBetweenExpression: 'Beta' between 'Alpha' and 'Omega'
 define QuantityBetweenExpression: 4'g/cm3' between 3'g/cm3' and 5'g/cm3'
+//define IntervalBetweenExpression: Interval[DateTime(2014, 2, 1), DateTime(2015, 3, 1)) between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
 
 define IntegerEqual: 1 = 1
 define RealEqual: 1.0 = 1.0
