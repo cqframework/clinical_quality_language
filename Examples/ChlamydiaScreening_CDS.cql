@@ -51,3 +51,4 @@ define ChlamydiaScreeningRequest: ProcedureRequest {
   status: 'proposed'
   // values for other elements of the request...
 }
+

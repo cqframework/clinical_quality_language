@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
 	<Folder FolderName="XML Files" ExtStr="xml;cml;math;rdf;smil;svg;wml">
+		<File FilePath="C:\Users\Bryn\Documents\Src\SS\CQL\Examples\ChlamydiaScreening_CDS.xml" HomeFolder="Yes"/>
 		<File FilePath="C:\Users\Bryn\Documents\Src\SS\CQL\Examples\ChlamydiaScreening_ELM.xml" HomeFolder="Yes"/>
 		<File FilePath="C:\Users\Bryn\Documents\Src\SS\CQL\Examples\ChlamydiaScreening_R21.hqmf.xml" HomeFolder="Yes"/>
 		<File FilePath="C:\Users\Bryn\Documents\Src\SS\CQL\Examples\ExampleELMLibrary.xml" HomeFolder="Yes"/>
@@ -17,6 +18,7 @@
 		<File FilePath="elm\expression.xsd" HomeFolder="Yes"/>
 		<File FilePath="elm\library.xsd" HomeFolder="Yes"/>
 		<File FilePath="elm\modelinfo.xsd" HomeFolder="Yes"/>
+		<File FilePath="elm\types.xsd" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="Entities" ExtStr="ent"/>
 </Project>

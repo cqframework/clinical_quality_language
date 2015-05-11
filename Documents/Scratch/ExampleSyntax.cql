@@ -56,6 +56,56 @@ define InpatientEncounters: [Encounter, Performance: "Inpatient"]
 
 // Declaration Examples
 
+// Library definition
+library ChlamydiaScreening_CQM version '2'
+
+// Data model reference
+using QUICK
+
+// Include Common library
+include ChlamydiaScreening_Common version '2' as Common
+
+// Define additional value sets for use within this artifact
+valueset "Reason for not performing Chlamydia Screening": 'TBD'
+
+// Establish patient context
+context Patient
+
+// Simple Example
+
+[Encounter: "Inpatient"] E
+
+// Filter Example
+
+[Encounter: "Inpatient"] E
+    where duration in days of E.effectiveTime >= 120
+
+// Shaping Example
+
+// Select elements to be returned
+[Encounter: "Inpatient"] E
+    return Tuple { id: E.id, effectiveTime: E.effectiveTime, serviceType: E.serviceType }
+
+// Compute values for returned elements
+[Encounter: "Inpatient"] E
+    return Tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime }
+
+// Extract values
+[Encounter: "Inpatient"] E
+    return duration in days of E.effectiveTime
+
+// Sorting Examples
+
+[Encounter: "Inpatient"] E
+    sort by effectiveTime
+
+[Encounter: "Inpatient"] E
+    return Tuple { id: E.id, lengthOfStay: duration in days of E.effectiveTime }
+    sort by lengthOfStay desc
+
+
+
+
 define "Severities": ValueSet('http://hl7.fhir.org/vs/condition-severity')
 
 { Coding { code: 'fatal',  }, Coding { 'severe' }, Coding { 'moderate' }, Coding { 'mild' } }
@@ -515,8 +565,10 @@ define SortedEncounters:
 
 // With
 define TargetEncounters:
-	[Encounter, Performance: "Ambulatory/ED Visit"] E
-		with [Condition: "Acute Pharyngitis"] P where P.effectiveTime overlaps after E.PerformanceAtTime
+
+	[Encounter: "Ambulatory/ED Visit"] E
+		with [Condition: "Acute Pharyngitis"] P 
+            such that P.effectiveTime overlaps after E.performedAtTime
 
 define TargetEncounters:
 	[Encounter, Performance: "Ambulatory/ED Visit"] E
@@ -563,14 +615,15 @@ define EncountersAndConditions:
 ObservationResults R return R.result
 
 define UnionedEncounters:
-	[Encounter, Performance: "Ambulatory/ED Visit"]
-		union [Encounter, Performance: "Inpatient"]
 
-	[Encounter, Performance: "Ambulatory/ED Visit"]
-		intersect [Encounter, Performance: "Inpatient"]
+	[Encounter: "Ambulatory/ED Visit"]
+		union [Encounter: "Inpatient"]
 
-	[Encounter, Performance: "Ambulatory/ED Visit"]
-		except [Encounter, Performance: "Inpatient"]
+	[Encounter: "Ambulatory/ED Visit"]
+		intersect [Encounter: "Inpatient"]
+
+	[Encounter: "Ambulatory/ED Visit"]
+		except [Encounter: "Inpatient"]
 
 // retrieve
 // filter
@@ -606,14 +659,16 @@ define EncountersAndConditions:
 
 
 // Function definition
-define function CumulativeDuration(Intervals list<interval<Timestamp>>)
+
+define function CumulativeDuration(intervals: List<Interval<DateTime>>)
 {
-	return Sum((collapse Intervals) X return duration in days of X)
+	return Sum((collapse intervals) X return duration in days of X)
 }
 
-define Encounters: [Encounter, Performance: "Inpatient Visit"]
+define Encounters: [Encounter: "Inpatient Visit"]
 
 define CMD: CumulativeDuration(Encounters E return E.effectiveTime)
+
 
 define CombinedValueSet: "Ambulatory/ED Visit" union "Inpatient Visit"
 
@@ -646,17 +701,24 @@ define A: Sum(result from [ObservationResult])
 define A: Sum([ObservationResult] X return X.result)
 define A: Sum({ 1, 2, 3, 4, 5 })
 
+Count([Encounter])
+
+Sum({ 1, 2, 3, 4, 5 })
+
+Avg([Observation] R return R.result)
+
+
 define Encounters:
-	[Encounter, Performance, during MeasurementPeriod]
+	[Encounter] E where E.effectiveTime during MeasurementPeriod
 
 define EncountersWithDates:
-	Encounters X return tuple { encounter: X, effectiveDate: date of X.effectiveTime }
+	Encounters X return Tuple { encounter: X, effectiveDate: date of X.effectiveTime }
 
 define Dates:
 	distinct (EncountersWithDates X return X.effectiveDate)
 
 define NumberOfEncountersPerDate:
-	Dates D return tuple { encounterDate: D, number: Count(EncountersWithDates E where E.effectiveDate = D) }
+	Dates D return Tuple { encounterDate: D, number: Count(EncountersWithDates E where E.effectiveDate = D) }
 
 using QUICK
 

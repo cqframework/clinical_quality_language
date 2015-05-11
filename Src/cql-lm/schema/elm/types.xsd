@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm-types:r1" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xml="http://www.w3.org/XML/1998/namespace" targetNamespace="urn:hl7-org:elm-types:r1" elementFormDefault="qualified">
+	<xs:complexType name="Any" abstract="true"/>
+	<xs:simpleType name="Boolean">
+		<xs:restriction base="xs:boolean"/>
+	</xs:simpleType>
+	<xs:complexType name="Code">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="code" type="String" use="required"/>
+				<xs:attribute name="display" type="String" use="optional"/>
+				<xs:attribute name="system" type="String" use="optional"/>
+				<xs:attribute name="version" type="String" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Concept">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:sequence>
+					<xs:element name="codes" type="Code" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="display" type="String" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="DateTime">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="Decimal">
+		<xs:restriction base="xs:decimal"/>
+	</xs:simpleType>
+	<xs:simpleType name="Integer">
+		<xs:restriction base="xs:int"/>
+	</xs:simpleType>
+	<xs:complexType name="Quantity">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="Decimal"/>
+				<xs:attribute name="unit" type="String"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="String">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="Time">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+</xs:schema>

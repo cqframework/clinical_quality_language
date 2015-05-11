@@ -1,24 +1,61 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{DE7CAF8B-65CB-4BB1-8418-4AF72C1A3843}"
 	ProjectSection(SolutionItems) = preProject
 		ChlamydiaScreening_CDS.cql = ChlamydiaScreening_CDS.cql
+		ChlamydiaScreening_CDS.xml = ChlamydiaScreening_CDS.xml
 		ChlamydiaScreening_CDS_UsingCommon.cql = ChlamydiaScreening_CDS_UsingCommon.cql
+		ChlamydiaScreening_CDS_UsingCommon.xml = ChlamydiaScreening_CDS_UsingCommon.xml
 		ChlamydiaScreening_Common.cql = ChlamydiaScreening_Common.cql
+		ChlamydiaScreening_Common.xml = ChlamydiaScreening_Common.xml
 		ChlamydiaScreening_CQM.cql = ChlamydiaScreening_CQM.cql
+		ChlamydiaScreening_CQM.xml = ChlamydiaScreening_CQM.xml
 		ChlamydiaScreening_CQM_UsingCommon.cql = ChlamydiaScreening_CQM_UsingCommon.cql
+		ChlamydiaScreening_CQM_UsingCommon.xml = ChlamydiaScreening_CQM_UsingCommon.xml
+		ChlamydiaScreening_ELM.xml = ChlamydiaScreening_ELM.xml
 		ChlamydiaScreening_FHIR.cql = ChlamydiaScreening_FHIR.cql
-		ClauseTesting.cql = ClauseTesting.cql
+		ChlamydiaScreening_R21.hqmf.xml = ChlamydiaScreening_R21.hqmf.xml
+		CMS135_QDM.cql = CMS135_QDM.cql
+		CMS135_QDM.xml = CMS135_QDM.xml
 		CMS146v2_CQM.cql = CMS146v2_CQM.cql
+		CMS146v2_CQM.xml = CMS146v2_CQM.xml
+		CMS146v2_CQM_ELM.xml = CMS146v2_CQM_ELM.xml
+		CMS146v2_QDM.cql = CMS146v2_QDM.cql
+		CMS146v2_QDM.xml = CMS146v2_QDM.xml
+		CMS146v2_QDM_ELM.xml = CMS146v2_QDM_ELM.xml
+		CMS146v2_QDM_MS.cql = CMS146v2_QDM_MS.cql
+		CMS146v2_QDM_MS.xml = CMS146v2_QDM_MS.xml
+		CMS146v2_QDM_MS_ELM.xml = CMS146v2_QDM_MS_ELM.xml
 		CMS154v1_NQF0069.cql = CMS154v1_NQF0069.cql
+		CMS154v1_NQF0069.xml = CMS154v1_NQF0069.xml
 		CMS179v2_CQM.cql = CMS179v2_CQM.cql
+		CMS179v2_CQM.xml = CMS179v2_CQM.xml
+		CMS26v2_CQM.cql = CMS26v2_CQM.cql
+		CMS26v2_CQM.xml = CMS26v2_CQM.xml
 		CMS55v1_NQF0495.cql = CMS55v1_NQF0495.cql
-		ExampleSyntax.cql = ExampleSyntax.cql
-		QUICK-FHIR-Examples.cql = QUICK-FHIR-Examples.cql
-		ScratchPad.cql = ScratchPad.cql
+		CMS55v1_NQF0495.xml = CMS55v1_NQF0495.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scratch", "Scratch", "{F75AD073-BCF7-471F-9AD1-A3908F382A1E}"
+	ProjectSection(SolutionItems) = preProject
+		..\Documents\Scratch\2zc_VTE3.cql = ..\Documents\Scratch\2zc_VTE3.cql
+		..\Documents\Scratch\AlternateSyntax.cql = ..\Documents\Scratch\AlternateSyntax.cql
+		..\Documents\Scratch\ChlamydiaScreening_FHIR.cql = ..\Documents\Scratch\ChlamydiaScreening_FHIR.cql
+		..\Documents\Scratch\ClauseTesting.cql = ..\Documents\Scratch\ClauseTesting.cql
+		..\Documents\Scratch\Common.cql = ..\Documents\Scratch\Common.cql
+		..\Documents\Scratch\ExampleSyntax.cql = ..\Documents\Scratch\ExampleSyntax.cql
+		..\Documents\Scratch\PropertyTest.cql = ..\Documents\Scratch\PropertyTest.cql
+		..\Documents\Scratch\PropertyTest_ELM.xml = ..\Documents\Scratch\PropertyTest_ELM.xml
+		..\Documents\Scratch\QUICK-FHIR-Examples.cql = ..\Documents\Scratch\QUICK-FHIR-Examples.cql
+		..\Documents\Scratch\RandomExamples.cql = ..\Documents\Scratch\RandomExamples.cql
+		..\Documents\Scratch\ScratchPad.cql = ..\Documents\Scratch\ScratchPad.cql
+		..\Documents\Scratch\Scratchpad2.cql = ..\Documents\Scratch\Scratchpad2.cql
+		..\Documents\Scratch\Scratchpad3.cql = ..\Documents\Scratch\Scratchpad3.cql
+		..\Documents\Scratch\Test.cql = ..\Documents\Scratch\Test.cql
+		..\Documents\Scratch\Test_ELM.xml = ..\Documents\Scratch\Test_ELM.xml
 	EndProjectSection
 EndProject
 Global
