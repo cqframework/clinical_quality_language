@@ -161,7 +161,7 @@ public class CqlTranslator {
         ModelInfoLoader.registerModelInfoProvider(modelId, modelProvider);
     }
 
-    private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations, boolean annotations) throws IOException {
+    private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations, boolean annotations, boolean verifyOnly) throws IOException {
         ArrayList<Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
             options.add(Options.EnableDateRangeOptimization);
@@ -185,7 +185,7 @@ public class CqlTranslator {
                         tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
                 System.err.printf("%s %s%n", lines, error.getMessage());
             }
-        } else {
+        } else if (! verifyOnly) {
             try (PrintWriter pw = new PrintWriter(outPath.toFile(), "UTF-8")) {
                 switch (format) {
                     case COFFEE:
@@ -212,6 +212,7 @@ public class CqlTranslator {
         OptionSpec<File> model = parser.accepts("model").withRequiredArg().ofType(File.class);
         OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class);
         OptionSpec<Format> format = parser.accepts("format").withRequiredArg().ofType(Format.class).defaultsTo(Format.XML);
+        OptionSpec verify = parser.accepts("verify");
         OptionSpec optimization = parser.accepts("date-range-optimization");
         OptionSpec annotations = parser.accepts("annotations");
 
@@ -281,7 +282,7 @@ public class CqlTranslator {
                 loadModelInfo(modelFile);
             }
 
-            writeELM(in, out, outputFormat, options.has(optimization), options.has(annotations));
+            writeELM(in, out, outputFormat, options.has(optimization), options.has(annotations), options.has(verify));
         }
     }
 }
