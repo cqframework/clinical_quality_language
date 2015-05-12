@@ -26,7 +26,7 @@ module.exports['ExpressionDef'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -49,7 +49,7 @@ module.exports['ExpressionDef'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}String",
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
                "value" : "Bar",
                "type" : "Literal"
             }
@@ -79,7 +79,7 @@ module.exports['ExpressionRef'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -102,7 +102,7 @@ module.exports['ExpressionRef'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "42",
                "type" : "Literal"
             }
@@ -142,7 +142,7 @@ module.exports['FunctionDefinitions'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -178,13 +178,13 @@ module.exports['FunctionDefinitions'] = {
             "operand" : [ {
                "name" : "a",
                "operandTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm:r1}Integer",
+                  "name" : "{urn:hl7-org:elm-types:r1}Integer",
                   "type" : "NamedTypeSpecifier"
                }
             }, {
                "name" : "b",
                "operandTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm:r1}Integer",
+                  "name" : "{urn:hl7-org:elm-types:r1}Integer",
                   "type" : "NamedTypeSpecifier"
                }
             } ]
@@ -196,11 +196,11 @@ module.exports['FunctionDefinitions'] = {
                "name" : "foo",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]

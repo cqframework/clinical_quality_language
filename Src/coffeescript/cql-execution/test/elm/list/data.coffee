@@ -30,7 +30,7 @@ module.exports['List'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -55,11 +55,11 @@ module.exports['List'] = {
             "expression" : {
                "type" : "Add",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -71,15 +71,15 @@ module.exports['List'] = {
             "expression" : {
                "type" : "List",
                "element" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "9",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "8",
                   "type" : "Literal"
                } ]
@@ -91,15 +91,15 @@ module.exports['List'] = {
             "expression" : {
                "type" : "List",
                "element" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "a",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "bee",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "see",
                   "type" : "Literal"
                } ]
@@ -111,11 +111,11 @@ module.exports['List'] = {
             "expression" : {
                "type" : "List",
                "element" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "two",
                   "type" : "Literal"
                }, {
@@ -156,7 +156,7 @@ module.exports['Exists'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -193,15 +193,15 @@ module.exports['Exists'] = {
                "operand" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -238,7 +238,7 @@ module.exports['Equal'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -265,30 +265,30 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -303,26 +303,26 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -337,30 +337,30 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -375,22 +375,22 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "hello",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "world",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "hello",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "world",
                      "type" : "Literal"
                   } ]
@@ -405,22 +405,22 @@ module.exports['Equal'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "hello",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "world",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "foo",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "bar",
                      "type" : "Literal"
                   } ]
@@ -439,7 +439,7 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -450,7 +450,7 @@ module.exports['Equal'] = {
                            "element" : [ {
                               "name" : "c",
                               "value" : {
-                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                 "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                  "value" : "1",
                                  "type" : "Literal"
                               }
@@ -462,14 +462,14 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "x",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "y",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "z",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -482,7 +482,7 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -493,7 +493,7 @@ module.exports['Equal'] = {
                            "element" : [ {
                               "name" : "c",
                               "value" : {
-                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                 "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                  "value" : "1",
                                  "type" : "Literal"
                               }
@@ -505,14 +505,14 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "x",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "y",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "z",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -533,7 +533,7 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -544,7 +544,7 @@ module.exports['Equal'] = {
                            "element" : [ {
                               "name" : "c",
                               "value" : {
-                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                 "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                  "value" : "1",
                                  "type" : "Literal"
                               }
@@ -556,14 +556,14 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "x",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "y",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "z",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -576,7 +576,7 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -589,7 +589,7 @@ module.exports['Equal'] = {
                               "value" : {
                                  "type" : "Negate",
                                  "operand" : {
-                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                    "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                     "value" : "1",
                                     "type" : "Literal"
                                  }
@@ -602,14 +602,14 @@ module.exports['Equal'] = {
                      "element" : [ {
                         "name" : "x",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "y",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "z",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -648,7 +648,7 @@ module.exports['NotEqual'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -677,30 +677,30 @@ module.exports['NotEqual'] = {
                   "operand" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
@@ -718,26 +718,26 @@ module.exports['NotEqual'] = {
                   "operand" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      } ]
@@ -755,30 +755,30 @@ module.exports['NotEqual'] = {
                   "operand" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -796,22 +796,22 @@ module.exports['NotEqual'] = {
                   "operand" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "hello",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "world",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "hello",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "world",
                         "type" : "Literal"
                      } ]
@@ -829,22 +829,22 @@ module.exports['NotEqual'] = {
                   "operand" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "hello",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "world",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "foo",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "bar",
                         "type" : "Literal"
                      } ]
@@ -866,7 +866,7 @@ module.exports['NotEqual'] = {
                         "element" : [ {
                            "name" : "a",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }
@@ -877,7 +877,7 @@ module.exports['NotEqual'] = {
                               "element" : [ {
                                  "name" : "c",
                                  "value" : {
-                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                    "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                     "value" : "1",
                                     "type" : "Literal"
                                  }
@@ -889,14 +889,14 @@ module.exports['NotEqual'] = {
                         "element" : [ {
                            "name" : "x",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}String",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}String",
                               "value" : "y",
                               "type" : "Literal"
                            }
                         }, {
                            "name" : "z",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "2",
                               "type" : "Literal"
                            }
@@ -909,7 +909,7 @@ module.exports['NotEqual'] = {
                         "element" : [ {
                            "name" : "a",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }
@@ -920,7 +920,7 @@ module.exports['NotEqual'] = {
                               "element" : [ {
                                  "name" : "c",
                                  "value" : {
-                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                    "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                     "value" : "1",
                                     "type" : "Literal"
                                  }
@@ -932,14 +932,14 @@ module.exports['NotEqual'] = {
                         "element" : [ {
                            "name" : "x",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}String",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}String",
                               "value" : "y",
                               "type" : "Literal"
                            }
                         }, {
                            "name" : "z",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "2",
                               "type" : "Literal"
                            }
@@ -963,7 +963,7 @@ module.exports['NotEqual'] = {
                         "element" : [ {
                            "name" : "a",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }
@@ -974,7 +974,7 @@ module.exports['NotEqual'] = {
                               "element" : [ {
                                  "name" : "c",
                                  "value" : {
-                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                    "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                     "value" : "1",
                                     "type" : "Literal"
                                  }
@@ -986,14 +986,14 @@ module.exports['NotEqual'] = {
                         "element" : [ {
                            "name" : "x",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}String",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}String",
                               "value" : "y",
                               "type" : "Literal"
                            }
                         }, {
                            "name" : "z",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "2",
                               "type" : "Literal"
                            }
@@ -1006,7 +1006,7 @@ module.exports['NotEqual'] = {
                         "element" : [ {
                            "name" : "a",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }
@@ -1019,7 +1019,7 @@ module.exports['NotEqual'] = {
                                  "value" : {
                                     "type" : "Negate",
                                     "operand" : {
-                                       "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                       "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                        "value" : "1",
                                        "type" : "Literal"
                                     }
@@ -1032,14 +1032,14 @@ module.exports['NotEqual'] = {
                         "element" : [ {
                            "name" : "x",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}String",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}String",
                               "value" : "y",
                               "type" : "Literal"
                            }
                         }, {
                            "name" : "z",
                            "value" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "2",
                               "type" : "Literal"
                            }
@@ -1078,7 +1078,7 @@ module.exports['Union'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1105,46 +1105,46 @@ module.exports['Union'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -1159,34 +1159,34 @@ module.exports['Union'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1201,22 +1201,22 @@ module.exports['Union'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1237,30 +1237,30 @@ module.exports['Union'] = {
                         "operand" : [ {
                            "type" : "List",
                            "element" : [ {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "1",
                               "type" : "Literal"
                            }, {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "2",
                               "type" : "Literal"
                            }, {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "3",
                               "type" : "Literal"
                            } ]
                         }, {
                            "type" : "List",
                            "element" : [ {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "4",
                               "type" : "Literal"
                            }, {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "5",
                               "type" : "Literal"
                            }, {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "6",
                               "type" : "Literal"
                            } ]
@@ -1268,15 +1268,15 @@ module.exports['Union'] = {
                      }, {
                         "type" : "List",
                         "element" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "7",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "8",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "9",
                            "type" : "Literal"
                         } ]
@@ -1284,15 +1284,15 @@ module.exports['Union'] = {
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "10",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "11",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -1300,15 +1300,15 @@ module.exports['Union'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "14",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
                   } ]
@@ -1328,22 +1328,22 @@ module.exports['Union'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -1358,15 +1358,15 @@ module.exports['Union'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -1378,7 +1378,7 @@ module.exports['Union'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -1418,7 +1418,7 @@ module.exports['Except'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1445,34 +1445,34 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -1487,34 +1487,34 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1529,34 +1529,34 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -1571,46 +1571,46 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -1625,46 +1625,46 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1679,23 +1679,23 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1714,23 +1714,23 @@ module.exports['Except'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1749,7 +1749,7 @@ module.exports['Except'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -1759,7 +1759,7 @@ module.exports['Except'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -1769,7 +1769,7 @@ module.exports['Except'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -1782,7 +1782,7 @@ module.exports['Except'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -1799,23 +1799,23 @@ module.exports['Except'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1827,7 +1827,7 @@ module.exports['Except'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -1847,30 +1847,30 @@ module.exports['Except'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -1908,7 +1908,7 @@ module.exports['Intersect'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1935,30 +1935,30 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -1973,34 +1973,34 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   } ]
@@ -2015,74 +2015,74 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "12",
                      "type" : "Literal"
                   } ]
@@ -2097,46 +2097,46 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -2155,46 +2155,46 @@ module.exports['Intersect'] = {
                      "operand" : [ {
                         "type" : "List",
                         "element" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "4",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "5",
                            "type" : "Literal"
                         } ]
                      }, {
                         "type" : "List",
                         "element" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "4",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "5",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "6",
                            "type" : "Literal"
                         } ]
@@ -2202,23 +2202,23 @@ module.exports['Intersect'] = {
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      } ]
@@ -2226,23 +2226,23 @@ module.exports['Intersect'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "7",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   } ]
@@ -2261,14 +2261,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -2278,14 +2278,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2295,14 +2295,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2315,14 +2315,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -2332,14 +2332,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2349,14 +2349,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -2366,14 +2366,14 @@ module.exports['Intersect'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "5",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "e",
                            "type" : "Literal"
                         }
@@ -2395,22 +2395,22 @@ module.exports['Intersect'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -2425,15 +2425,15 @@ module.exports['Intersect'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -2445,7 +2445,7 @@ module.exports['Intersect'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -2481,7 +2481,7 @@ module.exports['IndexOf'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -2509,24 +2509,24 @@ module.exports['IndexOf'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "b",
                   "type" : "Literal"
                } ]
@@ -2545,7 +2545,7 @@ module.exports['IndexOf'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
@@ -2555,7 +2555,7 @@ module.exports['IndexOf'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
@@ -2565,7 +2565,7 @@ module.exports['IndexOf'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -2576,7 +2576,7 @@ module.exports['IndexOf'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }
@@ -2593,36 +2593,36 @@ module.exports['IndexOf'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "e",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "d",
                   "type" : "Literal"
                } ]
@@ -2637,20 +2637,20 @@ module.exports['IndexOf'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "d",
                   "type" : "Literal"
                } ]
@@ -2670,12 +2670,12 @@ module.exports['IndexOf'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}String",
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "a",
                   "type" : "Literal"
                } ]
@@ -2690,20 +2690,20 @@ module.exports['IndexOf'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   } ]
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}String",
+                  "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -2739,7 +2739,7 @@ module.exports['Indexer'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -2766,24 +2766,24 @@ module.exports['Indexer'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -2797,24 +2797,24 @@ module.exports['Indexer'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                } ]
@@ -2828,24 +2828,24 @@ module.exports['Indexer'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "100",
                   "type" : "Literal"
                } ]
@@ -2865,12 +2865,12 @@ module.exports['Indexer'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}String",
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                } ]
@@ -2884,24 +2884,24 @@ module.exports['Indexer'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "d",
                      "type" : "Literal"
                   } ]
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -2938,7 +2938,7 @@ module.exports['In'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -2963,21 +2963,21 @@ module.exports['In'] = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -2990,21 +2990,21 @@ module.exports['In'] = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -3021,14 +3021,14 @@ module.exports['In'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "b",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      }
@@ -3040,14 +3040,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3057,14 +3057,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3074,14 +3074,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3100,14 +3100,14 @@ module.exports['In'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "b",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      }
@@ -3119,14 +3119,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3136,14 +3136,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3153,14 +3153,14 @@ module.exports['In'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3175,7 +3175,7 @@ module.exports['In'] = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -3183,15 +3183,15 @@ module.exports['In'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -3204,7 +3204,7 @@ module.exports['In'] = {
             "expression" : {
                "type" : "In",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
@@ -3215,7 +3215,7 @@ module.exports['In'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -3251,7 +3251,7 @@ module.exports['Contains'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -3278,20 +3278,20 @@ module.exports['Contains'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -3305,20 +3305,20 @@ module.exports['Contains'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -3336,14 +3336,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3353,14 +3353,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3370,14 +3370,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3388,14 +3388,14 @@ module.exports['Contains'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "b",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      }
@@ -3415,14 +3415,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3432,14 +3432,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3449,14 +3449,14 @@ module.exports['Contains'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3467,14 +3467,14 @@ module.exports['Contains'] = {
                   "element" : [ {
                      "name" : "a",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "b",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      }
@@ -3496,12 +3496,12 @@ module.exports['Contains'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                } ]
@@ -3515,20 +3515,20 @@ module.exports['Contains'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -3567,7 +3567,7 @@ module.exports['Includes'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -3594,38 +3594,38 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -3640,38 +3640,38 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -3686,46 +3686,46 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -3740,38 +3740,38 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -3790,14 +3790,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3807,14 +3807,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3824,14 +3824,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3844,14 +3844,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3861,14 +3861,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3889,14 +3889,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3906,14 +3906,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3923,14 +3923,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3943,14 +3943,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -3960,14 +3960,14 @@ module.exports['Includes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -3984,28 +3984,28 @@ module.exports['Includes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -4026,30 +4026,30 @@ module.exports['Includes'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4087,7 +4087,7 @@ module.exports['IncludedIn'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -4114,38 +4114,38 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4160,38 +4160,38 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4206,46 +4206,46 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4260,38 +4260,38 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4310,14 +4310,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4327,14 +4327,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4347,14 +4347,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4364,14 +4364,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4381,14 +4381,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4409,14 +4409,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4426,14 +4426,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4446,14 +4446,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4463,14 +4463,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4480,14 +4480,14 @@ module.exports['IncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4504,23 +4504,23 @@ module.exports['IncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4532,7 +4532,7 @@ module.exports['IncludedIn'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -4549,23 +4549,23 @@ module.exports['IncludedIn'] = {
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4603,7 +4603,7 @@ module.exports['ProperIncludes'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -4630,42 +4630,42 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4680,42 +4680,42 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -4730,46 +4730,46 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -4784,42 +4784,42 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
@@ -4838,14 +4838,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4855,14 +4855,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4872,14 +4872,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4892,14 +4892,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4909,14 +4909,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4937,14 +4937,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4954,14 +4954,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -4971,14 +4971,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -4991,14 +4991,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5008,14 +5008,14 @@ module.exports['ProperIncludes'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5032,28 +5032,28 @@ module.exports['ProperIncludes'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Integer",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -5074,30 +5074,30 @@ module.exports['ProperIncludes'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -5135,7 +5135,7 @@ module.exports['ProperIncludedIn'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -5162,38 +5162,38 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -5208,38 +5208,38 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -5254,46 +5254,46 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -5308,38 +5308,38 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   } ]
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -5358,14 +5358,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5375,14 +5375,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5395,14 +5395,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5412,14 +5412,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5429,14 +5429,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5457,14 +5457,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5474,14 +5474,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5494,14 +5494,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5511,14 +5511,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "d",
                            "type" : "Literal"
                         }
@@ -5528,14 +5528,14 @@ module.exports['ProperIncludedIn'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}String",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
                            "value" : "c",
                            "type" : "Literal"
                         }
@@ -5552,23 +5552,23 @@ module.exports['ProperIncludedIn'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -5580,7 +5580,7 @@ module.exports['ProperIncludedIn'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -5601,30 +5601,30 @@ module.exports['ProperIncludedIn'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -5656,7 +5656,7 @@ module.exports['Expand'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -5685,90 +5685,90 @@ module.exports['Expand'] = {
                   "element" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "8",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "8",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      } ]
@@ -5791,7 +5791,7 @@ module.exports['Expand'] = {
                      "elementType" : {
                         "type" : "ListTypeSpecifier",
                         "elementType" : {
-                           "name" : "{urn:hl7-org:elm:r1}Integer",
+                           "name" : "{urn:hl7-org:elm-types:r1}Integer",
                            "type" : "NamedTypeSpecifier"
                         }
                      }
@@ -5824,7 +5824,7 @@ module.exports['Distinct'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -5851,79 +5851,79 @@ module.exports['Distinct'] = {
                "operand" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   } ]
@@ -5938,23 +5938,23 @@ module.exports['Distinct'] = {
                "operand" : {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -5991,7 +5991,7 @@ module.exports['First'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -6019,19 +6019,19 @@ module.exports['First'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -6047,15 +6047,15 @@ module.exports['First'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   } ]
@@ -6073,30 +6073,30 @@ module.exports['First'] = {
                   "element" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "a",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "b",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "d",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "e",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "f",
                         "type" : "Literal"
                      } ]
@@ -6117,21 +6117,21 @@ module.exports['First'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -6141,21 +6141,21 @@ module.exports['First'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "24",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "25",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "26",
                            "type" : "Literal"
                         }
@@ -6173,19 +6173,19 @@ module.exports['First'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -6218,7 +6218,7 @@ module.exports['First'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -6255,7 +6255,7 @@ module.exports['Last'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -6283,19 +6283,19 @@ module.exports['Last'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -6311,15 +6311,15 @@ module.exports['Last'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "a",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "b",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "c",
                      "type" : "Literal"
                   } ]
@@ -6337,30 +6337,30 @@ module.exports['Last'] = {
                   "element" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "a",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "b",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "c",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "d",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "e",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "f",
                         "type" : "Literal"
                      } ]
@@ -6381,21 +6381,21 @@ module.exports['Last'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -6405,21 +6405,21 @@ module.exports['Last'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "24",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "25",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "26",
                            "type" : "Literal"
                         }
@@ -6437,19 +6437,19 @@ module.exports['Last'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -6482,7 +6482,7 @@ module.exports['Last'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -6517,7 +6517,7 @@ module.exports['Length'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -6545,23 +6545,23 @@ module.exports['Length'] = {
                "operand" : [ {
                   "type" : "List",
                   "element" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "6",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "8",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -6579,60 +6579,60 @@ module.exports['Length'] = {
                   "element" : [ {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "5",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "6",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "7",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "8",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "9",
                         "type" : "Literal"
                      } ]
                   }, {
                      "type" : "List",
                      "element" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "10",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "11",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
                      } ]
@@ -6653,21 +6653,21 @@ module.exports['Length'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "3",
                            "type" : "Literal"
                         }
@@ -6677,21 +6677,21 @@ module.exports['Length'] = {
                      "element" : [ {
                         "name" : "a",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "24",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "b",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "25",
                            "type" : "Literal"
                         }
                      }, {
                         "name" : "c",
                         "value" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "26",
                            "type" : "Literal"
                         }
@@ -6726,7 +6726,7 @@ module.exports['Length'] = {
                   "asTypeSpecifier" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }

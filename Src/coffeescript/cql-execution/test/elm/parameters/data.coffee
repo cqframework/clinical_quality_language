@@ -32,7 +32,7 @@ module.exports['ParameterDef'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -43,7 +43,7 @@ module.exports['ParameterDef'] = {
             "name" : "MeasureYear",
             "accessLevel" : "Public",
             "default" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "2012",
                "type" : "Literal"
             }
@@ -51,7 +51,7 @@ module.exports['ParameterDef'] = {
             "name" : "IntParameter",
             "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
-               "name" : "{urn:hl7-org:elm:r1}Integer",
+               "name" : "{urn:hl7-org:elm-types:r1}Integer",
                "type" : "NamedTypeSpecifier"
             }
          }, {
@@ -60,7 +60,7 @@ module.exports['ParameterDef'] = {
             "parameterTypeSpecifier" : {
                "type" : "ListTypeSpecifier",
                "elementType" : {
-                  "name" : "{urn:hl7-org:elm:r1}String",
+                  "name" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "NamedTypeSpecifier"
                }
             }
@@ -72,19 +72,19 @@ module.exports['ParameterDef'] = {
                "element" : [ {
                   "name" : "a",
                   "type" : {
-                     "name" : "{urn:hl7-org:elm:r1}Integer",
+                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "name" : "b",
                   "type" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "name" : "c",
                   "type" : {
-                     "name" : "{urn:hl7-org:elm:r1}Boolean",
+                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
@@ -92,7 +92,7 @@ module.exports['ParameterDef'] = {
                   "type" : {
                      "type" : "ListTypeSpecifier",
                      "elementType" : {
-                        "name" : "{urn:hl7-org:elm:r1}Integer",
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
                         "type" : "NamedTypeSpecifier"
                      }
                   }
@@ -103,13 +103,13 @@ module.exports['ParameterDef'] = {
                      "element" : [ {
                         "name" : "f",
                         "type" : {
-                           "name" : "{urn:hl7-org:elm:r1}String",
+                           "name" : "{urn:hl7-org:elm-types:r1}String",
                            "type" : "NamedTypeSpecifier"
                         }
                      }, {
                         "name" : "g",
                         "type" : {
-                           "name" : "{urn:hl7-org:elm:r1}Boolean",
+                           "name" : "{urn:hl7-org:elm-types:r1}Boolean",
                            "type" : "NamedTypeSpecifier"
                         }
                      } ]
@@ -142,7 +142,7 @@ module.exports['ParameterRef'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -153,7 +153,7 @@ module.exports['ParameterRef'] = {
             "name" : "FooP",
             "accessLevel" : "Public",
             "default" : {
-               "valueType" : "{urn:hl7-org:elm:r1}String",
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
                "value" : "Bar",
                "type" : "Literal"
             }

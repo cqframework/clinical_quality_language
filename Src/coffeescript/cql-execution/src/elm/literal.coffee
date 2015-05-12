@@ -3,10 +3,10 @@
 module.exports.Literal = class Literal extends Expression
   @from: (json) ->
     switch(json.valueType)
-      when "{urn:hl7-org:elm:r1}Boolean" then new BooleanLiteral(json)
-      when "{urn:hl7-org:elm:r1}Integer" then new IntegerLiteral(json)
-      when "{urn:hl7-org:elm:r1}Decimal" then new DecimalLiteral(json)
-      when "{urn:hl7-org:elm:r1}String" then new StringLiteral(json)
+      when "{urn:hl7-org:elm-types:r1}Boolean" then new BooleanLiteral(json)
+      when "{urn:hl7-org:elm-types:r1}Integer" then new IntegerLiteral(json)
+      when "{urn:hl7-org:elm-types:r1}Decimal" then new DecimalLiteral(json)
+      when "{urn:hl7-org:elm-types:r1}String" then new StringLiteral(json)
       else new Literal(json)
 
   constructor: (json) ->

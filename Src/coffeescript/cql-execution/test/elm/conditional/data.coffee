@@ -27,7 +27,7 @@ module.exports['If'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -38,7 +38,7 @@ module.exports['If'] = {
             "name" : "var",
             "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
-               "name" : "{urn:hl7-org:elm:r1}Boolean",
+               "name" : "{urn:hl7-org:elm-types:r1}Boolean",
                "type" : "NamedTypeSpecifier"
             }
          } ]
@@ -66,12 +66,12 @@ module.exports['If'] = {
                   "type" : "ParameterRef"
                },
                "then" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "true return",
                   "type" : "Literal"
                },
                "else" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "false return",
                   "type" : "Literal"
                }
@@ -118,7 +118,7 @@ module.exports['Case'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -129,21 +129,21 @@ module.exports['Case'] = {
             "name" : "var",
             "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
-               "name" : "{urn:hl7-org:elm:r1}Integer",
+               "name" : "{urn:hl7-org:elm-types:r1}Integer",
                "type" : "NamedTypeSpecifier"
             }
          }, {
             "name" : "X",
             "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
-               "name" : "{urn:hl7-org:elm:r1}Integer",
+               "name" : "{urn:hl7-org:elm-types:r1}Integer",
                "type" : "NamedTypeSpecifier"
             }
          }, {
             "name" : "Y",
             "accessLevel" : "Public",
             "parameterTypeSpecifier" : {
-               "name" : "{urn:hl7-org:elm:r1}Integer",
+               "name" : "{urn:hl7-org:elm-types:r1}Integer",
                "type" : "NamedTypeSpecifier"
             }
          } ]
@@ -172,29 +172,29 @@ module.exports['Case'] = {
                },
                "caseItem" : [ {
                   "when" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   },
                   "then" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "one",
                      "type" : "Literal"
                   }
                }, {
                   "when" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   },
                   "then" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "two",
                      "type" : "Literal"
                   }
                } ],
                "else" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "?",
                   "type" : "Literal"
                }
@@ -217,7 +217,7 @@ module.exports['Case'] = {
                      } ]
                   },
                   "then" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "X > Y",
                      "type" : "Literal"
                   }
@@ -233,13 +233,13 @@ module.exports['Case'] = {
                      } ]
                   },
                   "then" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}String",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "X < Y",
                      "type" : "Literal"
                   }
                } ],
                "else" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "X == Y",
                   "type" : "Literal"
                }

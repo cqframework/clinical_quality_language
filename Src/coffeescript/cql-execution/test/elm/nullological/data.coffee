@@ -26,7 +26,7 @@ module.exports['Nil'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -81,7 +81,7 @@ module.exports['IsNull'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -111,7 +111,7 @@ module.exports['IsNull'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "1",
                "type" : "Literal"
             }
@@ -146,7 +146,7 @@ module.exports['IsNull'] = {
                "name" : "IsNull",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "",
                   "type" : "Literal"
                } ]
@@ -190,7 +190,7 @@ module.exports['Coalesce'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -222,7 +222,7 @@ module.exports['Coalesce'] = {
                      "type" : "Null"
                   },
                   "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
@@ -232,11 +232,11 @@ module.exports['Coalesce'] = {
                      "type" : "Null"
                   },
                   "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Hello",
                   "type" : "Literal"
                }, {
@@ -246,11 +246,11 @@ module.exports['Coalesce'] = {
                      "type" : "Null"
                   },
                   "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "World",
                   "type" : "Literal"
                } ]
@@ -263,7 +263,7 @@ module.exports['Coalesce'] = {
                "name" : "Coalesce",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Foo",
                   "type" : "Literal"
                }, {
@@ -273,7 +273,7 @@ module.exports['Coalesce'] = {
                      "type" : "Null"
                   },
                   "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
@@ -283,11 +283,11 @@ module.exports['Coalesce'] = {
                      "type" : "Null"
                   },
                   "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Bar",
                   "type" : "Literal"
                } ]
@@ -306,7 +306,7 @@ module.exports['Coalesce'] = {
                      "type" : "Null"
                   },
                   "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
@@ -316,7 +316,7 @@ module.exports['Coalesce'] = {
                      "type" : "Null"
                   },
                   "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
@@ -326,7 +326,7 @@ module.exports['Coalesce'] = {
                      "type" : "Null"
                   },
                   "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm:r1}String",
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "NamedTypeSpecifier"
                   }
                } ]

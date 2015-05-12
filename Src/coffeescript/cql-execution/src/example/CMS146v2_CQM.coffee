@@ -11,7 +11,7 @@ module.exports = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -21,75 +21,11 @@ module.exports = {
          "def" : [ {
             "name" : "MeasurementPeriod",
             "accessLevel" : "Public",
-            "default" : {
-               "lowClosed" : true,
-               "highClosed" : false,
-               "type" : "Interval",
-               "low" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
-               },
-               "high" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "2014",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  } ]
+            "parameterTypeSpecifier" : {
+               "type" : "IntervalTypeSpecifier",
+               "pointType" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "NamedTypeSpecifier"
                }
             }
          } ]
@@ -155,7 +91,7 @@ module.exports = {
                         }
                      } ]
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -179,7 +115,7 @@ module.exports = {
                         }
                      } ]
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "18",
                      "type" : "Literal"
                   } ]
@@ -226,7 +162,7 @@ module.exports = {
                }
             }
          }, {
-            "name" : "TargetEncounters",
+            "name" : "MeasurementPeriodEncounters",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
@@ -244,6 +180,38 @@ module.exports = {
                      }
                   }
                } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "And",
+                  "operand" : [ {
+                     "name" : "InDemographic",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "type" : "IncludedIn",
+                     "operand" : [ {
+                        "path" : "period",
+                        "scope" : "E",
+                        "type" : "Property"
+                     }, {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "PharyngitisEncounters",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "MeasurementPeriodEncounters",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
                "relationship" : [ {
                   "alias" : "P",
                   "type" : "With",
@@ -252,25 +220,39 @@ module.exports = {
                      "type" : "ExpressionRef"
                   },
                   "suchThat" : {
-                     "type" : "OverlapsAfter",
+                     "type" : "Or",
                      "operand" : [ {
-                        "lowClosed" : true,
-                        "highClosed" : true,
-                        "type" : "Interval",
-                        "low" : {
+                        "type" : "Includes",
+                        "operand" : [ {
+                           "lowClosed" : true,
+                           "highClosed" : true,
+                           "type" : "Interval",
+                           "low" : {
+                              "path" : "onsetDateTime",
+                              "scope" : "P",
+                              "type" : "Property"
+                           },
+                           "high" : {
+                              "path" : "abatementDate",
+                              "scope" : "P",
+                              "type" : "Property"
+                           }
+                        }, {
+                           "path" : "period",
+                           "scope" : "E",
+                           "type" : "Property"
+                        } ]
+                     }, {
+                        "type" : "In",
+                        "operand" : [ {
                            "path" : "onsetDateTime",
                            "scope" : "P",
                            "type" : "Property"
-                        },
-                        "high" : {
-                           "path" : "abatementDateTime",
-                           "scope" : "P",
+                        }, {
+                           "path" : "period",
+                           "scope" : "E",
                            "type" : "Property"
-                        }
-                     }, {
-                        "path" : "period",
-                        "scope" : "E",
-                        "type" : "Property"
+                        } ]
                      } ]
                   }
                }, {
@@ -304,33 +286,22 @@ module.exports = {
                         "low" : {
                            "type" : "Negate",
                            "operand" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "3",
                               "type" : "Literal"
                            }
                         },
                         "high" : {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "0",
                            "type" : "Literal"
                         }
                      } ]
                   }
-               } ],
-               "where" : {
-                  "type" : "IncludedIn",
-                  "operand" : [ {
-                     "path" : "period",
-                     "scope" : "E",
-                     "type" : "Property"
-                  }, {
-                     "name" : "MeasurementPeriod",
-                     "type" : "ParameterRef"
-                  } ]
-               }
+               } ]
             }
          }, {
-            "name" : "TargetDiagnoses",
+            "name" : "PharyngitisWithPriorAntibiotics",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
@@ -343,182 +314,237 @@ module.exports = {
                   }
                } ],
                "relationship" : [ {
-                  "alias" : "E",
+                  "alias" : "A",
                   "type" : "With",
                   "expression" : {
-                     "name" : "TargetEncounters",
+                     "name" : "Antibiotics",
                      "type" : "ExpressionRef"
                   },
                   "suchThat" : {
-                     "type" : "OverlapsAfter",
+                     "type" : "In",
                      "operand" : [ {
-                        "lowClosed" : true,
-                        "highClosed" : true,
-                        "type" : "Interval",
-                        "low" : {
+                        "precision" : "Day",
+                        "type" : "DurationBetween",
+                        "operand" : [ {
+                           "path" : "dateWritten",
+                           "scope" : "A",
+                           "type" : "Property"
+                        }, {
                            "path" : "onsetDateTime",
                            "scope" : "P",
                            "type" : "Property"
+                        } ]
+                     }, {
+                        "lowClosed" : false,
+                        "highClosed" : true,
+                        "type" : "Interval",
+                        "low" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "0",
+                           "type" : "Literal"
                         },
                         "high" : {
-                           "path" : "abatementDateTime",
-                           "scope" : "P",
-                           "type" : "Property"
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "30",
+                           "type" : "Literal"
                         }
-                     }, {
-                        "path" : "period",
-                        "scope" : "E",
-                        "type" : "Property"
                      } ]
                   }
                } ]
             }
          }, {
-            "name" : "HasPriorAntibiotics",
+            "name" : "ExcludedEncounters",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Exists",
-               "operand" : {
-                  "type" : "Query",
-                  "source" : [ {
-                     "alias" : "A",
-                     "expression" : {
-                        "name" : "Antibiotics",
-                        "type" : "ExpressionRef"
-                     }
-                  } ],
-                  "relationship" : [ {
-                     "alias" : "D",
-                     "type" : "With",
-                     "expression" : {
-                        "name" : "TargetDiagnoses",
-                        "type" : "ExpressionRef"
-                     },
-                     "suchThat" : {
-                        "type" : "In",
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "PharyngitisEncounters",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "P",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "PharyngitisWithPriorAntibiotics",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "Or",
+                     "operand" : [ {
+                        "type" : "Includes",
                         "operand" : [ {
-                           "precision" : "Day",
-                           "type" : "DurationBetween",
-                           "operand" : [ {
-                              "path" : "dateWritten",
-                              "scope" : "A",
-                              "type" : "Property"
-                           }, {
-                              "path" : "onsetDateTime",
-                              "scope" : "D",
-                              "type" : "Property"
-                           } ]
-                        }, {
-                           "lowClosed" : false,
+                           "lowClosed" : true,
                            "highClosed" : true,
                            "type" : "Interval",
                            "low" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                              "value" : "0",
-                              "type" : "Literal"
+                              "path" : "onsetDateTime",
+                              "scope" : "P",
+                              "type" : "Property"
                            },
                            "high" : {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
-                              "value" : "30",
-                              "type" : "Literal"
+                              "path" : "abatementDate",
+                              "scope" : "P",
+                              "type" : "Property"
                            }
+                        }, {
+                           "path" : "period",
+                           "scope" : "E",
+                           "type" : "Property"
                         } ]
-                     }
-                  } ]
-               }
-            }
-         }, {
-            "name" : "HasTargetEncounter",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "type" : "Exists",
-               "operand" : {
-                  "name" : "TargetEncounters",
-                  "type" : "ExpressionRef"
-               }
-            }
-         }, {
-            "name" : "InInitialPopulation",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "type" : "And",
-               "operand" : [ {
-                  "name" : "InDemographic",
-                  "type" : "ExpressionRef"
-               }, {
-                  "name" : "HasTargetEncounter",
-                  "type" : "ExpressionRef"
+                     }, {
+                        "type" : "In",
+                        "operand" : [ {
+                           "path" : "onsetDateTime",
+                           "scope" : "P",
+                           "type" : "Property"
+                        }, {
+                           "path" : "period",
+                           "scope" : "E",
+                           "type" : "Property"
+                        } ]
+                     } ]
+                  }
                } ]
             }
          }, {
-            "name" : "InDenominator",
+            "name" : "StrepTestEncounters",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Boolean",
-               "value" : "true",
-               "type" : "Literal"
-            }
-         }, {
-            "name" : "InDenominatorExclusions",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "name" : "HasPriorAntibiotics",
-               "type" : "ExpressionRef"
-            }
-         }, {
-            "name" : "InNumerator",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "type" : "Exists",
-               "operand" : {
-                  "type" : "Query",
-                  "source" : [ {
-                     "alias" : "R",
-                     "expression" : {
-                        "dataType" : "{http://hl7.org/fhir}DiagnosticReport",
-                        "templateId" : "diagnosticreport-qicore-qicore-diagnosticreport",
-                        "codeProperty" : "name",
-                        "type" : "Retrieve",
-                        "codes" : {
-                           "name" : "Group A Streptococcus Test",
-                           "type" : "ValueSetRef"
-                        }
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "PharyngitisEncounters",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "T",
+                  "type" : "With",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}DiagnosticReport",
+                     "templateId" : "diagnosticreport-qicore-qicore-diagnosticreport",
+                     "codeProperty" : "name",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Group A Streptococcus Test",
+                        "type" : "ValueSetRef"
                      }
-                  } ],
-                  "relationship" : [ ],
-                  "where" : {
+                  },
+                  "suchThat" : {
                      "type" : "And",
                      "operand" : [ {
-                        "type" : "In",
-                        "operand" : [ {
-                           "path" : "issued",
-                           "scope" : "R",
-                           "type" : "Property"
-                        }, {
-                           "name" : "MeasurementPeriod",
-                           "type" : "ParameterRef"
-                        } ]
-                     }, {
                         "type" : "Not",
                         "operand" : {
                            "type" : "IsNull",
                            "operand" : {
                               "path" : "result",
-                              "scope" : "R",
+                              "scope" : "T",
                               "type" : "Property"
                            }
                         }
+                     }, {
+                        "type" : "In",
+                        "operand" : [ {
+                           "path" : "issued",
+                           "scope" : "T",
+                           "type" : "Property"
+                        }, {
+                           "lowClosed" : true,
+                           "highClosed" : true,
+                           "type" : "Interval",
+                           "low" : {
+                              "type" : "Subtract",
+                              "operand" : [ {
+                                 "type" : "Start",
+                                 "operand" : {
+                                    "path" : "period",
+                                    "scope" : "E",
+                                    "type" : "Property"
+                                 }
+                              }, {
+                                 "value" : 3,
+                                 "unit" : "days",
+                                 "type" : "Quantity"
+                              } ]
+                           },
+                           "high" : {
+                              "type" : "Add",
+                              "operand" : [ {
+                                 "type" : "End",
+                                 "operand" : {
+                                    "path" : "period",
+                                    "scope" : "E",
+                                    "type" : "Property"
+                                 }
+                              }, {
+                                 "value" : 3,
+                                 "unit" : "days",
+                                 "type" : "Quantity"
+                              } ]
+                           }
+                        } ]
                      } ]
                   }
-               }
+               } ]
+            }
+         }, {
+            "name" : "IPPCount",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Count",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "PharyngitisEncounters",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "DenominatorCount",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "IPPCount",
+               "type" : "ExpressionRef"
+            }
+         }, {
+            "name" : "DenominatorExclusionsCount",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Count",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "ExcludedEncounters",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NumeratorCount",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Count",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "Except",
+                  "operand" : [ {
+                     "name" : "StrepTestEncounters",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "ExcludedEncounters",
+                     "type" : "ExpressionRef"
+                  } ]
+               } ]
             }
          } ]
       }
    }
 }
+

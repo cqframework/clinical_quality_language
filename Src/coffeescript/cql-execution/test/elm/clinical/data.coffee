@@ -31,7 +31,7 @@ module.exports['ValueSetDef'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -77,7 +77,7 @@ module.exports['ValueSetRef'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -146,7 +146,7 @@ module.exports['InValueSet'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -183,7 +183,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "F",
                   "type" : "Literal"
                },
@@ -198,7 +198,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "F",
                   "type" : "Literal"
                },
@@ -213,12 +213,12 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "classType" : "{urn:hl7-org:elm-types:r1}Code",
                   "type" : "Instance",
                   "element" : [ {
                      "name" : "code",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "F",
                         "type" : "Literal"
                      }
@@ -235,19 +235,19 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "classType" : "{urn:hl7-org:elm-types:r1}Code",
                   "type" : "Instance",
                   "element" : [ {
                      "name" : "code",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "F",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "system",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "2.16.840.1.113883.18.2",
                         "type" : "Literal"
                      }
@@ -264,26 +264,26 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "classType" : "{urn:hl7-org:elm-types:r1}Code",
                   "type" : "Instance",
                   "element" : [ {
                      "name" : "code",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "F",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "system",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "2.16.840.1.113883.18.2",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "version",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "HL7V2.5",
                         "type" : "Literal"
                      }
@@ -300,7 +300,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "M",
                   "type" : "Literal"
                },
@@ -315,7 +315,7 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "M",
                   "type" : "Literal"
                },
@@ -330,12 +330,12 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "classType" : "{urn:hl7-org:elm-types:r1}Code",
                   "type" : "Instance",
                   "element" : [ {
                      "name" : "code",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "M",
                         "type" : "Literal"
                      }
@@ -352,19 +352,19 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "classType" : "{urn:hl7-org:elm-types:r1}Code",
                   "type" : "Instance",
                   "element" : [ {
                      "name" : "code",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "F",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "system",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "3.16.840.1.113883.18.2",
                         "type" : "Literal"
                      }
@@ -381,26 +381,26 @@ module.exports['InValueSet'] = {
             "expression" : {
                "type" : "InValueSet",
                "code" : {
-                  "classType" : "{urn:hl7-org:elm:r1}Code",
+                  "classType" : "{urn:hl7-org:elm-types:r1}Code",
                   "type" : "Instance",
                   "element" : [ {
                      "name" : "code",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "F",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "system",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "2.16.840.1.113883.18.2",
                         "type" : "Literal"
                      }
                   }, {
                      "name" : "version",
                      "value" : {
-                        "valueType" : "{urn:hl7-org:elm:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
                         "value" : "HL7V2.6",
                         "type" : "Literal"
                      }
@@ -436,7 +436,7 @@ module.exports['Patient Property In ValueSet'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -509,7 +509,7 @@ module.exports['CalculateAge'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -650,7 +650,7 @@ module.exports['CalculateAgeAt'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -686,7 +686,7 @@ module.exports['CalculateAgeAt'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
                   } ]
@@ -710,15 +710,15 @@ module.exports['CalculateAgeAt'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1981",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "16",
                      "type" : "Literal"
                   } ]
@@ -742,7 +742,7 @@ module.exports['CalculateAgeAt'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1975",
                      "type" : "Literal"
                   } ]

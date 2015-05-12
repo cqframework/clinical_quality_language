@@ -34,7 +34,7 @@ module.exports['And'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -59,11 +59,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -75,11 +75,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -91,11 +91,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -109,11 +109,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -125,11 +125,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -141,11 +141,11 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -159,13 +159,13 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -179,13 +179,13 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -197,13 +197,13 @@ module.exports['And'] = {
             "expression" : {
                "type" : "And",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -241,7 +241,7 @@ module.exports['Or'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -266,11 +266,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -282,11 +282,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -298,11 +298,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -316,11 +316,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -332,11 +332,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -348,11 +348,11 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -366,13 +366,13 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -386,13 +386,13 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -404,13 +404,13 @@ module.exports['Or'] = {
             "expression" : {
                "type" : "Or",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -448,7 +448,7 @@ module.exports['XOr'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -473,11 +473,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -489,11 +489,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -505,11 +505,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -523,11 +523,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -539,11 +539,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -555,11 +555,11 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -573,13 +573,13 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -593,13 +593,13 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                } ]
@@ -611,13 +611,13 @@ module.exports['XOr'] = {
             "expression" : {
                "type" : "Xor",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                } ]
@@ -649,7 +649,7 @@ module.exports['Not'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -674,7 +674,7 @@ module.exports['Not'] = {
             "expression" : {
                "type" : "Not",
                "operand" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
                }
@@ -686,7 +686,7 @@ module.exports['Not'] = {
             "expression" : {
                "type" : "Not",
                "operand" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
                }
@@ -698,7 +698,7 @@ module.exports['Not'] = {
             "expression" : {
                "type" : "Not",
                "operand" : {
-                  "asType" : "{urn:hl7-org:elm:r1}Boolean",
+                  "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"

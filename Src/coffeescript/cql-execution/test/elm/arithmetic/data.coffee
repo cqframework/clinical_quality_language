@@ -30,7 +30,7 @@ module.exports['Add'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -53,7 +53,7 @@ module.exports['Add'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "10",
                "type" : "Literal"
             }
@@ -62,7 +62,7 @@ module.exports['Add'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "11",
                "type" : "Literal"
             }
@@ -73,11 +73,11 @@ module.exports['Add'] = {
             "expression" : {
                "type" : "Add",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -105,51 +105,51 @@ module.exports['Add'] = {
                                     "operand" : [ {
                                        "type" : "Add",
                                        "operand" : [ {
-                                          "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                          "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                           "value" : "1",
                                           "type" : "Literal"
                                        }, {
-                                          "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                          "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                           "value" : "2",
                                           "type" : "Literal"
                                        } ]
                                     }, {
-                                       "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                       "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                        "value" : "3",
                                        "type" : "Literal"
                                     } ]
                                  }, {
-                                    "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                    "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                     "value" : "4",
                                     "type" : "Literal"
                                  } ]
                               }, {
-                                 "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                                 "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                                  "value" : "5",
                                  "type" : "Literal"
                               } ]
                            }, {
-                              "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                               "value" : "6",
                               "type" : "Literal"
                            } ]
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "7",
                            "type" : "Literal"
                         } ]
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "8",
                         "type" : "Literal"
                      } ]
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "9",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                } ]
@@ -197,7 +197,7 @@ module.exports['Subtract'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -220,7 +220,7 @@ module.exports['Subtract'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "10",
                "type" : "Literal"
             }
@@ -229,7 +229,7 @@ module.exports['Subtract'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "11",
                "type" : "Literal"
             }
@@ -240,11 +240,11 @@ module.exports['Subtract'] = {
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -260,21 +260,21 @@ module.exports['Subtract'] = {
                   "operand" : [ {
                      "type" : "Subtract",
                      "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "100",
                         "type" : "Literal"
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "50",
                         "type" : "Literal"
                      } ]
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                } ]
@@ -322,7 +322,7 @@ module.exports['Multiply'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -345,7 +345,7 @@ module.exports['Multiply'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "10",
                "type" : "Literal"
             }
@@ -354,7 +354,7 @@ module.exports['Multiply'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "11",
                "type" : "Literal"
             }
@@ -365,11 +365,11 @@ module.exports['Multiply'] = {
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -387,26 +387,26 @@ module.exports['Multiply'] = {
                      "operand" : [ {
                         "type" : "Multiply",
                         "operand" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "2",
                            "type" : "Literal"
                         } ]
                      }, {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
                } ]
@@ -455,7 +455,7 @@ module.exports['Divide'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -478,7 +478,7 @@ module.exports['Divide'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "100",
                "type" : "Literal"
             }
@@ -487,7 +487,7 @@ module.exports['Divide'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "4",
                "type" : "Literal"
             }
@@ -502,7 +502,7 @@ module.exports['Divide'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -511,7 +511,7 @@ module.exports['Divide'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
                   } ]
@@ -528,7 +528,7 @@ module.exports['Divide'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -537,7 +537,7 @@ module.exports['Divide'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -558,7 +558,7 @@ module.exports['Divide'] = {
                         "libraryName" : "System",
                         "type" : "FunctionRef",
                         "operand" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1000",
                            "type" : "Literal"
                         } ]
@@ -567,7 +567,7 @@ module.exports['Divide'] = {
                         "libraryName" : "System",
                         "type" : "FunctionRef",
                         "operand" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "4",
                            "type" : "Literal"
                         } ]
@@ -577,7 +577,7 @@ module.exports['Divide'] = {
                      "libraryName" : "System",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "10",
                         "type" : "Literal"
                      } ]
@@ -587,7 +587,7 @@ module.exports['Divide'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
                   } ]
@@ -642,7 +642,7 @@ module.exports['Negate'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -667,7 +667,7 @@ module.exports['Negate'] = {
             "expression" : {
                "type" : "Negate",
                "operand" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                }
@@ -698,7 +698,7 @@ module.exports['MathPrecedence'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -729,17 +729,17 @@ module.exports['MathPrecedence'] = {
                   "operand" : [ {
                      "type" : "Add",
                      "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
                         "type" : "Literal"
                      }, {
                         "type" : "Multiply",
                         "operand" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "5",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "10",
                            "type" : "Literal"
                         } ]
@@ -752,7 +752,7 @@ module.exports['MathPrecedence'] = {
                      "libraryName" : "System",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
                      } ]
@@ -761,7 +761,7 @@ module.exports['MathPrecedence'] = {
                      "libraryName" : "System",
                      "type" : "FunctionRef",
                      "operand" : [ {
-                        "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
                      } ]
@@ -783,22 +783,22 @@ module.exports['MathPrecedence'] = {
                      "operand" : [ {
                         "type" : "Add",
                         "operand" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "5",
                            "type" : "Literal"
                         } ]
                      }, {
                         "type" : "Subtract",
                         "operand" : [ {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "10",
                            "type" : "Literal"
                         }, {
-                           "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "15",
                            "type" : "Literal"
                         } ]
@@ -809,7 +809,7 @@ module.exports['MathPrecedence'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
                   } ]
@@ -840,7 +840,7 @@ module.exports['Power'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -865,11 +865,11 @@ module.exports['Power'] = {
             "expression" : {
                "type" : "Power",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "4",
                   "type" : "Literal"
                } ]
@@ -900,7 +900,7 @@ module.exports['TruncatedDivide'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -926,11 +926,11 @@ module.exports['TruncatedDivide'] = {
                "name" : "TruncatedDivide",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                } ]
@@ -943,11 +943,11 @@ module.exports['TruncatedDivide'] = {
                "name" : "TruncatedDivide",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "9",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                } ]
@@ -977,7 +977,7 @@ module.exports['Modulo'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1003,11 +1003,11 @@ module.exports['Modulo'] = {
                "name" : "Modulo",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "3",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                } ]
@@ -1038,7 +1038,7 @@ module.exports['Ceiling'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1064,7 +1064,7 @@ module.exports['Ceiling'] = {
                "name" : "Ceiling",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "10.1",
                   "type" : "Literal"
                } ]
@@ -1081,7 +1081,7 @@ module.exports['Ceiling'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -1113,7 +1113,7 @@ module.exports['Floor'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1139,7 +1139,7 @@ module.exports['Floor'] = {
                "name" : "Floor",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "10.1",
                   "type" : "Literal"
                } ]
@@ -1156,7 +1156,7 @@ module.exports['Floor'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -1188,7 +1188,7 @@ module.exports['Truncate'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1214,7 +1214,7 @@ module.exports['Truncate'] = {
                "name" : "Truncate",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "10.1",
                   "type" : "Literal"
                } ]
@@ -1231,7 +1231,7 @@ module.exports['Truncate'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -1264,7 +1264,7 @@ module.exports['Abs'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1290,7 +1290,7 @@ module.exports['Abs'] = {
                "name" : "Abs",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
                } ]
@@ -1305,7 +1305,7 @@ module.exports['Abs'] = {
                "operand" : [ {
                   "type" : "Negate",
                   "operand" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   }
@@ -1319,7 +1319,7 @@ module.exports['Abs'] = {
                "name" : "Abs",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
                } ]
@@ -1352,7 +1352,7 @@ module.exports['Round'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1378,7 +1378,7 @@ module.exports['Round'] = {
                "name" : "Round",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "4.56",
                   "type" : "Literal"
                } ]
@@ -1391,11 +1391,11 @@ module.exports['Round'] = {
                "name" : "Round",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "4.56",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                } ]
@@ -1408,7 +1408,7 @@ module.exports['Round'] = {
                "name" : "Round",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "4.49",
                   "type" : "Literal"
                } ]
@@ -1421,11 +1421,11 @@ module.exports['Round'] = {
                "name" : "Round",
                "type" : "FunctionRef",
                "operand" : [ {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "4.43",
                   "type" : "Literal"
                }, {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
                } ]
@@ -1455,7 +1455,7 @@ module.exports['Ln'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1485,7 +1485,7 @@ module.exports['Ln'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
                   } ]
@@ -1516,7 +1516,7 @@ module.exports['Log'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1546,7 +1546,7 @@ module.exports['Log'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
                   } ]
@@ -1555,7 +1555,7 @@ module.exports['Log'] = {
                   "libraryName" : "System",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10000",
                      "type" : "Literal"
                   } ]
@@ -1597,7 +1597,7 @@ module.exports['Successor'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1622,7 +1622,7 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                }
@@ -1634,7 +1634,7 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "2.2",
                   "type" : "Literal"
                }
@@ -1646,7 +1646,7 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2147483647",
                   "type" : "Literal"
                }
@@ -1661,7 +1661,7 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   } ]
@@ -1677,11 +1677,11 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   } ]
@@ -1697,15 +1697,15 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   } ]
@@ -1721,19 +1721,19 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1749,23 +1749,23 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1781,27 +1781,27 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1817,31 +1817,31 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -1857,31 +1857,31 @@ module.exports['Successor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "9999",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "12",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "31",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "23",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "59",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "59",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "999",
                      "type" : "Literal"
                   } ]
@@ -1923,7 +1923,7 @@ module.exports['Predecessor'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -1948,7 +1948,7 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
                }
@@ -1960,7 +1960,7 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "2.2",
                   "type" : "Literal"
                }
@@ -1974,7 +1974,7 @@ module.exports['Predecessor'] = {
                "operand" : {
                   "type" : "Negate",
                   "operand" : {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2147483648",
                      "type" : "Literal"
                   }
@@ -1990,7 +1990,7 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   } ]
@@ -2006,11 +2006,11 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   } ]
@@ -2026,15 +2026,15 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   } ]
@@ -2050,19 +2050,19 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2078,23 +2078,23 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2110,27 +2110,27 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2146,31 +2146,31 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]
@@ -2186,31 +2186,31 @@ module.exports['Predecessor'] = {
                   "name" : "DateTime",
                   "type" : "FunctionRef",
                   "operand" : [ {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1900",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   }, {
-                     "valueType" : "{urn:hl7-org:elm:r1}Integer",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
                   } ]

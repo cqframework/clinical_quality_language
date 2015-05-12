@@ -30,7 +30,7 @@ module.exports['Literal'] = {
       "usings" : {
          "def" : [ {
             "localIdentifier" : "System",
-            "uri" : "urn:hl7-org:elm:r1"
+            "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
@@ -53,7 +53,7 @@ module.exports['Literal'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                "value" : "true",
                "type" : "Literal"
             }
@@ -62,7 +62,7 @@ module.exports['Literal'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Boolean",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                "value" : "false",
                "type" : "Literal"
             }
@@ -71,7 +71,7 @@ module.exports['Literal'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Integer",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "1",
                "type" : "Literal"
             }
@@ -80,7 +80,7 @@ module.exports['Literal'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}Decimal",
+               "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                "value" : "0.1",
                "type" : "Literal"
             }
@@ -89,7 +89,7 @@ module.exports['Literal'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "valueType" : "{urn:hl7-org:elm:r1}String",
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
                "value" : "true",
                "type" : "Literal"
             }
