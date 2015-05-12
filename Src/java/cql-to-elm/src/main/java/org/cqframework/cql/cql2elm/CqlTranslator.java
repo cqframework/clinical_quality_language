@@ -32,7 +32,7 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class CqlTranslator {
     public static enum Options { EnableDateRangeOptimization, EnableAnnotations }
-    private static enum Format { XML, JSON, COFFEE }
+    public static enum Format { XML, JSON, COFFEE }
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
     private Object visitResult = null;
