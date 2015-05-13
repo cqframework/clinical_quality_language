@@ -23,7 +23,9 @@ public class TestTypes {
             XmlSchemaCollection schemaCol = new XmlSchemaCollection();
             schemaCol.setBaseUri(f.getPath());
             XmlSchema schema = schemaCol.read(new StreamSource(is));
-            ModelInfo modelInfo = ModelImporter.fromXsd(schema, new ModelImporterOptions().withModel("QUICK"));
+            ModelInfo modelInfo = ModelImporter.fromXsd(schema, new ModelImporterOptions()
+                    .withModel("QUICK")
+                    .withElementRedeclarationPolicy(ModelImporterOptions.ElementRedeclarationPolicy.RENAME_INVALID_REDECLARATIONS));
 
             assertThat(modelInfo.getName(), is("QUICK"));
         }

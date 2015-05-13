@@ -1,27 +1,10 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin:'application'
-apply plugin: 'maven'
-apply plugin: 'eclipse'
-
-group = 'org.cqframework'
-version = '0.1'
-sourceCompatibility = '1.8'
+apply plugin: 'application'
 
 mainClassName = 'org.cqframework.cql.Main'
 run.args = ["${projectDir}/../../../Examples/ChlamydiaScreening_CQM.cql"]
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compile group: 'org.antlr', name: 'antlr4', version: '4.3'
-    testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
-}
-
-test {
-    useTestNG()
 }
 
 ext.antlr = [

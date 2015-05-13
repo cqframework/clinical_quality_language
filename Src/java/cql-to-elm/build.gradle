@@ -1,38 +1,16 @@
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'findbugs'
-apply plugin: 'pmd'
-apply plugin: 'idea'
-apply plugin:'application'
-apply plugin: 'maven'
-apply plugin: 'eclipse'
-
-group = 'org.cqframework'
-version = '0.1'
-sourceCompatibility = '1.8'
+apply plugin: 'application'
 
 mainClassName = 'org.cqframework.cql.cql2elm.CqlTranslator'
 run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql", "--stdout"]
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compile project(':cql')
     compile project(':elm')
-    compile project(':qdm')
-    compile project(':quick')
     compile group: 'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4.1'
     compile group: 'com.fasterxml.jackson.core', name:'jackson-databind', version:'2.4.1'
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
-    testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
-    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
-    testCompile group: 'uk.co.datumedge', name: 'hamcrest-json', version: '0.2'
-    pmd(
-            'net.sourceforge.pmd:pmd-core:5.2.1',
-            'net.sourceforge.pmd:pmd-java:5.2.1'
-    )
+    runtime project(':quick')
+    runtime project(':qdm')
 }
 
 task generateTestData (dependsOn: 'testClasses', type: JavaExec) {
@@ -45,31 +23,4 @@ task watchTestData (dependsOn: 'testClasses', type: JavaExec) {
     main = 'org.cqframework.cql.cql2elm.utilities.CoffeeScriptTestDataGenerator'
     classpath = sourceSets.test.runtimeClasspath
     args = ["-r", "-w", "-i", "${projectDir}/../../coffeescript/cql-execution/test/elm"]
-}
-
-findbugs {
-    toolVersion = "3.0.0"
-}
-
-pmd {
-    toolVersion = "5.2.1"
-    ruleSetFiles = files("${projectDir}/../custom-pmd-ruleset.xml")
-    ruleSets = []
-}
-
-jacoco {
-    toolVersion = "0.7.0.201403182114"
-}
-
-tasks.withType(FindBugs) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
-
-check.dependsOn(jacocoTestReport)
-
-test {
-    useTestNG()
 }

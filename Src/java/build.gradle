@@ -1,5 +1,75 @@
-apply plugin: 'idea'
-apply plugin: 'maven'
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    group = 'org.cqframework'
+    version = '0.1'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
+        testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+        testCompile group: 'uk.co.datumedge', name: 'hamcrest-json', version: '0.2'
+    }
+
+    test {
+        useTestNG()
+    }
+
+    jacoco {
+        toolVersion = "0.7.4.201502262128"
+    }
+
+    check.dependsOn(jacocoTestReport)
+
+    /*
+       Turn on static code analysis by passing 'sca' as a system property:
+       e.g., gradle -Dsca build
+
+       Or add it to your user gradle.properties file (${HOME}/.gradle/gradle.properties):
+       systemProp.sca=true
+     */
+    if (System.getProperty('sca') != null) {
+        apply plugin: 'pmd'
+
+        dependencies {
+            pmd(
+                    'net.sourceforge.pmd:pmd-core:5.3.1',
+                    'net.sourceforge.pmd:pmd-java:5.3.1'
+            )
+        }
+
+        pmd {
+            consoleOutput = true
+            toolVersion = "5.3.1"
+            ruleSetFiles = files("${rootProject.projectDir}/custom-pmd-ruleset.xml")
+            ruleSets = []
+        }
+
+        apply plugin: 'findbugs'
+
+        findbugs {
+            toolVersion = "3.0.1"
+        }
+
+        tasks.withType(FindBugs) {
+            reports {
+                xml.enabled = false
+                html.enabled = true
+            }
+        }
+    }
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
