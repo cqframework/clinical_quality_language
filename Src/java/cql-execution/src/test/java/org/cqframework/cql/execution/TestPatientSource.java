@@ -8,7 +8,6 @@ import static org.testng.Assert.fail;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Random;
@@ -20,12 +19,11 @@ import org.mozilla.javascript.json.JsonParser;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestPatientSource implements PatientSource 
 {
-    public static final int maxPatients = 5;
+    public static final int MAX_PATIENTS = 5;
 
     private int id = 1;
     private Random random = new Random(0l);
@@ -40,16 +38,11 @@ public class TestPatientSource implements PatientSource
         parser = new JsonParser(context, scope);
     }
 
-    public String currentPatient()
-    {
-        return currentPatient;
-    }
-
     public String nextPatient()
     {
         this.id++;
 
-        if(id > maxPatients) {
+        if(id > MAX_PATIENTS) {
             currentPatient = null;
         } else {
             currentPatient = generatePatient();
@@ -61,7 +54,9 @@ public class TestPatientSource implements PatientSource
     @Override
     public NativeObject shift()
     {
-        if(currentPatient == null) return null;
+        if(currentPatient == null) {
+            return null;
+        }
 
         NativeObject obj = null;
 
@@ -307,7 +302,7 @@ public class TestPatientSource implements PatientSource
             fail(e.getLocalizedMessage());
         }
         assertThat(results, is (notNullValue()));
-        assertThat(results.results.size(), is (TestPatientSource.maxPatients));
+        assertThat(results.results.size(), is (TestPatientSource.MAX_PATIENTS));
         // TODO check attributes, records, dates, etc.
     }
 }

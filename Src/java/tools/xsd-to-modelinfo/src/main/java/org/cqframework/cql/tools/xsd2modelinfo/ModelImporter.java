@@ -381,7 +381,7 @@ public class ModelImporter {
                             System.err.println("Redeclaration failed.  Either fix the XSD or choose a different element-redeclaration-policy.");
                             throw e;
                         case DISCARD_INVALID_REDECLARATIONS:
-                            System.err.printf("%s. Discarding element redeclaration.\n", e.getMessage());
+                            System.err.printf("%s. Discarding element redeclaration.%n", e.getMessage());
                             break;
                         case RENAME_INVALID_REDECLARATIONS:
                         default:
@@ -390,7 +390,7 @@ public class ModelImporter {
                             if (tName.length() > 1) {
                                 name.append(tName.substring(1));
                             }
-                            System.err.printf("%s. Renaming element to %s.\n", e.getMessage(), name.toString());
+                            System.err.printf("%s. Renaming element to %s.%n", e.getMessage(), name.toString());
                             classType.addElement(new ClassTypeElement(name.toString(), element.getType(), element.isProhibited()));
                     }
                 }

@@ -198,8 +198,10 @@ public class CoffeeScriptTestDataGenerator {
             fileToCoffee(inputPath);
             if (watcher != null) {
                 Path dir = inputPath.getParent();
-                WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
-                watchKeys.put(key, dir);
+                if (dir != null) {
+                    WatchKey key = dir.register(watcher, StandardWatchEventKinds.ENTRY_MODIFY);
+                    watchKeys.put(key, dir);
+                }
             }
         }
 

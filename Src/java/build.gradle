@@ -60,6 +60,7 @@ subprojects {
 
         findbugs {
             toolVersion = "3.0.1"
+            excludeFilter = file("${rootProject.projectDir}/findbugs-exclude-filter.xml")
         }
 
         tasks.withType(FindBugs) {

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -14,11 +13,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ModelImporterOptions {
-    public static enum SimpleTypeRestrictionPolicy {USE_BASETYPE, EXTEND_BASETYPE, IGNORE}
-    public static enum ElementRedeclarationPolicy {DISCARD_INVALID_REDECLARATIONS, RENAME_INVALID_REDECLARATIONS, FAIL_INVALID_REDECLARATIONS }
-    private static Pattern RETYPE_PATTERN = Pattern.compile("\\s*retype\\.(.+)\\s*");
-    private static Pattern EXTEND_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\s*");
-    private static Pattern EXTEND_EL_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\[([^\\]]+)\\]\\s*");
+    public enum SimpleTypeRestrictionPolicy {USE_BASETYPE, EXTEND_BASETYPE, IGNORE}
+    public enum ElementRedeclarationPolicy {DISCARD_INVALID_REDECLARATIONS, RENAME_INVALID_REDECLARATIONS, FAIL_INVALID_REDECLARATIONS }
+    private static final Pattern RETYPE_PATTERN = Pattern.compile("\\s*retype\\.(.+)\\s*");
+    private static final Pattern EXTEND_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\s*");
+    private static final Pattern EXTEND_EL_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\[([^\\]]+)\\]\\s*");
 
     /**
      * The name of the data model.  This will be used in the "using" statement of CQL.
@@ -196,8 +195,9 @@ public class ModelImporterOptions {
             properties.setProperty("element-redeclaration-policy", elementRedeclarationPolicy.name());
         }
         if (! typeMap.isEmpty()) {
-            for (QName key : typeMap.keySet()) {
-                ModelImporterMapperValue value = typeMap.get(key);
+            for (Map.Entry<QName, ModelImporterMapperValue> entry : typeMap.entrySet()) {
+                QName key = entry.getKey();
+                ModelImporterMapperValue value = entry.getValue();
                 if (value.getRelationship() == ModelImporterMapperValue.Relationship.RETYPE) {
                     properties.setProperty(String.format("retype.%s", key.toString()), value.getTargetSystemClass());
                 } else if (value.getRelationship() == ModelImporterMapperValue.Relationship.EXTEND) {

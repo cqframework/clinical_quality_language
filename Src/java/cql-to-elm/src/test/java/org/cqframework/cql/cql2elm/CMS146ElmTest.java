@@ -122,7 +122,7 @@ public class CMS146ElmTest {
     @Test(enabled=false)
     public void testTrackBacks() {
         for (Retrieve dc : translator.toRetrieves()) {
-            int expectedNumbers[] = {0, 0, 0, 0};
+            int expectedNumbers[] = new int[4];
             switch (((ValueSetRef) dc.getCodes()).getName()) {
                 case "Acute Pharyngitis":
                     expectedNumbers = new int[] {19, 6, 19, 37};
@@ -155,7 +155,7 @@ public class CMS146ElmTest {
         }
 
         for (ValueSetDef vs : library.getValueSets().getDef()) {
-            int expectedNumbers[] = {0, 0, 0, 0};
+            int expectedNumbers[] = new int[4];
             switch (vs.getId()) {
                 case "2.16.840.1.113883.3.464.1003.102.12.1011":
                     expectedNumbers = new int[] {7, 1, 7, 83};
@@ -187,7 +187,7 @@ public class CMS146ElmTest {
         }
 
         for (ExpressionDef ls : library.getStatements().getDef()) {
-            int expectedNumbers[] = {0, 0, 0, 0};
+            int expectedNumbers[] = new int[4];
             switch (ls.getName()) {
                 case "InDemographic":
                     expectedNumbers = new int[] {15, 1, 16, 85};

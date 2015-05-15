@@ -8,6 +8,11 @@
       This ruleset checks stuff we care about
   </description>
 
+  <exclude-pattern>.*/org/cqframework/cql/gen/.*</exclude-pattern>
+  <exclude-pattern>.*/org/hl7/.*</exclude-pattern>
+  <exclude-pattern>.*/gov/healthit/qdm/v4_1_2/.*</exclude-pattern>
+  <exclude-pattern>.*/org/w3/_1999/xhtml/.*</exclude-pattern>
+
   <rule ref="rulesets/java/basic.xml"/>
 
   <rule ref="rulesets/java/braces.xml"/>
@@ -23,6 +28,8 @@
     <exclude name="LongVariable"/>
     <exclude name="ShortMethodName"/>
     <exclude name="ShortClassName"/>
+    <exclude name="AbstractNaming"/>
+    <exclude name="AvoidFieldNameMatchingTypeName"/>
   </rule>
 
   <rule ref="rulesets/java/unnecessary.xml">

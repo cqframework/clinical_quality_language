@@ -5,7 +5,7 @@ public abstract class DataType {
         this(null);
     }
     public DataType(DataType baseType) {
-        this.baseType = baseType == null ? DataType.any : baseType;
+        this.baseType = baseType == null ? DataType.ANY : baseType;
     }
 
     private DataType baseType;
@@ -49,5 +49,5 @@ public abstract class DataType {
 
     public abstract DataType instantiate(InstantiationContext context);
 
-    public static final SimpleType any = new SimpleType("System.Any");
+    public static final SimpleType ANY = new SimpleType("System.Any");
 }

@@ -39,16 +39,30 @@ public class TrackBack {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         TrackBack trackBack = (TrackBack) o;
 
-        if (endChar != trackBack.endChar) return false;
-        if (endLine != trackBack.endLine) return false;
-        if (startChar != trackBack.startChar) return false;
-        if (startLine != trackBack.startLine) return false;
-        if (!library.equals(trackBack.library)) return false;
+        if (endChar != trackBack.endChar) {
+            return false;
+        }
+        if (endLine != trackBack.endLine) {
+            return false;
+        }
+        if (startChar != trackBack.startChar) {
+            return false;
+        }
+        if (startLine != trackBack.startLine) {
+            return false;
+        }
+        if (!library.equals(trackBack.library)) {
+            return false;
+        }
 
         return true;
     }
