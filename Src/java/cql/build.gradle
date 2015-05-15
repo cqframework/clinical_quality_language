@@ -1,37 +1,26 @@
 apply plugin: 'application'
+apply plugin: 'antlr'
 
 mainClassName = 'org.cqframework.cql.Main'
 run.args = ["${projectDir}/../../../Examples/ChlamydiaScreening_CQM.cql"]
 
 dependencies {
-    compile group: 'org.antlr', name: 'antlr4', version: '4.3'
+    antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
 }
 
 ext.antlr = [
-    package: 'org.cqframework.cql.gen',
-    srcDir:  '../../grammar',
-    destDir: 'src/generated/java'
+        package: 'org.cqframework.cql.gen',
+        destination: 'src/generated/java'
 ]
 
-// Loosely based on https://github.com/ae6rt/gradle-antlr4-template
-task antlrTool(type: JavaExec) {
-    description = 'Generates Java sources from ANTLR4 grammars.'
+sourceSets.main.antlr.srcDirs = ['../../grammar']
+sourceSets.main.java.srcDirs += antlr.destination
 
-    mkdir(antlr.destDir)
-    inputs.dir file(antlr.srcDir)
-    outputs.dir file(antlr.destDir)
-
-    def grammars = fileTree(antlr.srcDir).include('**/*.g4')
-
-    main = 'org.antlr.v4.Tool'
-    classpath = configurations.compile
-    def pkg = antlr.package.replaceAll("\\.", "/")
-    args = ["-o", "${antlr.destDir}/${pkg}", "-visitor", "-package", antlr.package, grammars.files].flatten()
+generateGrammarSource {
+    arguments = ['-visitor', '-package', antlr.package]
+    outputDirectory = file("${antlr.destination}/${antlr.package.replaceAll("\\.", "/")}")
 }
 
-compileJava.dependsOn antlrTool
-sourceSets.main.java.srcDirs += antlr.destDir
-
 clean {
-    delete antlr.destDir
+    delete antlr.destination
 }
