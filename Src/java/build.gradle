@@ -114,7 +114,7 @@ configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm']}) {
             */
         }
     }
-    
+
     compileJava.dependsOn generateSources
     sourceSets.main.java.srcDirs += xjc.destDir
 
@@ -227,7 +227,7 @@ configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm']}
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
+    gradleVersion = '2.4'
 }
 
 idea {

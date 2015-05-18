@@ -4,7 +4,8 @@ jdk: oraclejdk8
 
 script:
   - export TERM=dumb
-  - gradle -b ./Src/java/build.gradle check
+  - ./Src/java/gradlew --version
+  - ./Src/java/gradlew --no-daemon -b ./Src/java/build.gradle check
 
 branches:
   only:
