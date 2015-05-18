@@ -21,9 +21,9 @@ configurations {
 }
 
 dependencies {
-    coffeescript group: 'coffee-script', name: 'coffee-script', version: '1.8.0', ext: 'js'
+    coffeescript group: 'coffee-script', name: 'coffee-script', version: '1.9.2', ext: 'js'
     compile project(':cql-to-elm')
-    compile group: 'org.mozilla', name: 'rhino', version: '1.7R4'
+    compile group: 'org.mozilla', name: 'rhino', version: '1.7.6'
     testCompile group: 'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4.1'
     testCompile group: 'com.fasterxml.jackson.core', name:'jackson-databind', version:'2.4.1'
 }
