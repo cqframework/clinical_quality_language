@@ -72,6 +72,49 @@ subprojects {
     }
 }
 
+configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm']}) {
+    configurations {
+        xjc
+    }
+
+    dependencies {
+        xjc group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.2.11'
+        xjc group: 'com.sun.xml.bind', name: 'jaxb-xjc', version: '2.2.11'
+        xjc group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.11'
+        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-ant', version: '0.9.4'
+        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.9.4'
+        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-fluent-api', version: '3.0'
+        compile group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.9.4'
+    }
+
+    ext.xjc = [
+            destDir: "${projectDir}/src/generated/java",
+            args: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString'
+    ]
+
+    task generateSources << {
+        file(xjc.destDir).mkdirs()
+
+        ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
+
+        /* The above sets up the task, but the real work of the task should be specified in the subproject using
+           generateSources.doLast.  For example:
+               generateSources.doLast {
+                   ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/path/to/file.xsd") {
+                       arg(line: xjc.args)
+                   }
+               }
+        */
+    }
+
+    compileJava.dependsOn generateSources
+    sourceSets.main.java.srcDirs += xjc.destDir
+
+    clean {
+        delete xjc.destDir
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }

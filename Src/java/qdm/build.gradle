@@ -1,34 +1,7 @@
-configurations {
-    xjc
-}
+// Most build configuration comes from the cql-all parent build!
 
-dependencies {
-    xjc group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.2.11'
-    xjc group: 'com.sun.xml.bind', name: 'jaxb-xjc', version: '2.2.11'
-    xjc group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.11'
-    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-ant', version: '0.9.4'
-    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.9.4'
-    xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-fluent-api', version: '3.0'
-    compile group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.9.4'
-}
-
-ext.xjc = [
-    schema:  "${projectDir}/schema/qdm.xsd",
-    destDir: 'src/generated/java'
-]
-
-task generateSources << {
-    file(xjc.destDir).mkdirs()
-
-    ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
-    ant.xjc(destdir: xjc.destDir, schema: xjc.schema) {
-        arg(line: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString')
+generateSources.doLast {
+    ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/schema/qdm.xsd") {
+        arg(line: xjc.args)
     }
-}
-
-compileJava.dependsOn generateSources
-sourceSets.main.java.srcDirs += xjc.destDir
-
-clean {
-    delete xjc.destDir
 }
