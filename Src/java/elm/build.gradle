@@ -5,16 +5,20 @@ dependencies {
     runtime group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 }
 
-generateSources.doLast {
-    ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/library.xsd") {
-        arg(line: "${xjc.args} -npa -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable")
-    }
+generateSources {
+    inputs.dir "${projectDir}/../../cql-lm/schema"
 
-    ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/modelinfo.xsd") {
-        arg(line: "${xjc.args} -npa")
-    }
+    doLast {
+        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/library.xsd") {
+            arg(line: "${xjc.args} -npa -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable")
+        }
 
-    ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/cqlannotations.xsd") {
-        arg(line: "${xjc.args} -npa")
+        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/modelinfo.xsd") {
+            arg(line: "${xjc.args} -npa")
+        }
+
+        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/cqlannotations.xsd") {
+            arg(line: "${xjc.args} -npa")
+        }
     }
 }

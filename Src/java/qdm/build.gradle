@@ -1,7 +1,11 @@
 // Most build configuration comes from the cql-all parent build!
 
-generateSources.doLast {
-    ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/schema/qdm.xsd") {
-        arg(line: xjc.args)
+generateSources{
+    inputs.dir "${projectDir}/schema"
+
+    doLast {
+        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/schema/qdm.xsd") {
+            arg(line: xjc.args)
+        }
     }
 }

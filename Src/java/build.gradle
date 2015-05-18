@@ -96,21 +96,25 @@ configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm']}) {
             args: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString'
     ]
 
-    task generateSources << {
-        file(xjc.destDir).mkdirs()
+    task generateSources {
+        outputs.dir xjc.destDir
 
-        ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
+        doLast {
+            file(xjc.destDir).mkdirs()
 
-        /* The above sets up the task, but the real work of the task should be specified in the subproject using
-           generateSources.doLast.  For example:
-               generateSources.doLast {
-                   ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/path/to/file.xsd") {
-                       arg(line: xjc.args)
+            ant.taskdef(name: 'xjc', classname: 'org.jvnet.jaxb2_commons.xjc.XJC2Task', classpath: configurations.xjc.asPath)
+
+            /* The above sets up the task, but the real work of the task should be specified in the subproject using
+               generateSources.doLast.  For example:
+                   generateSources.doLast {
+                       ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/path/to/file.xsd") {
+                           arg(line: xjc.args)
+                       }
                    }
-               }
-        */
+            */
+        }
     }
-
+    
     compileJava.dependsOn generateSources
     sourceSets.main.java.srcDirs += xjc.destDir
 
@@ -171,7 +175,7 @@ configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm']}
                 repository(url: "file://${buildDir}/build/repo")
                 snapshotRepository(url: "file://${buildDir}/build/ssRepo")
                 */
-                
+
                 repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                     authentication(userName: project.hasProperty("ossrhUsername") ? ossrhUsername : "", password: project.hasProperty("ossrhPassword") ? ossrhPassword : "")
                 }
