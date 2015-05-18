@@ -133,6 +133,9 @@ idea {
 
         def grammar = new org.gradle.plugins.ide.idea.model.Path('file://$PROJECT_DIR$/grammar.iml', 'file://$PROJECT_DIR$/grammar.iml', '$PROJECT_DIR$/grammar.iml')
         if ((project.modulePaths.findAll { p -> p.url == grammar.url }).empty) project.modulePaths.add(grammar)
+
+        def cqllm = new org.gradle.plugins.ide.idea.model.Path('file://$PROJECT_DIR$/cql-lm.iml', 'file://$PROJECT_DIR$/cql-lm.iml', '$PROJECT_DIR$/cql-lm.iml')
+        if ((project.modulePaths.findAll { p -> p.url == cqllm.url }).empty) project.modulePaths.add(cqllm)
       }
     }
   }
