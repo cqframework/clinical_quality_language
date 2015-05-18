@@ -171,10 +171,7 @@ configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm']}
                 repository(url: "file://${buildDir}/build/repo")
                 snapshotRepository(url: "file://${buildDir}/build/ssRepo")
                 */
-
-                println project.hasProperty("ossrhUsername") ? ossrhUsername : "NOPE"
-                println project.hasProperty("ossrhPassword") ? ossrhPassword : "NOPE"
-
+                
                 repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                     authentication(userName: project.hasProperty("ossrhUsername") ? ossrhUsername : "", password: project.hasProperty("ossrhPassword") ? ossrhPassword : "")
                 }
