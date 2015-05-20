@@ -65,6 +65,6 @@ public class JavascriptEngineTest {
 
 //		Engine.dump();
 
-        assertThat(Engine.getLastResults().results, hasSize (TestPatientSource.maxPatients));
+        assertThat(Engine.getLastResults().results, hasSize (TestPatientSource.MAX_PATIENTS));
     }
 }

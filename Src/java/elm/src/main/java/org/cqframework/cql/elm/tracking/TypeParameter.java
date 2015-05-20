@@ -1,7 +1,5 @@
 package org.cqframework.cql.elm.tracking;
 
-import java.util.Map;
-
 public class TypeParameter extends DataType {
     public TypeParameter(String identifier) {
         if (identifier == null || identifier.equals("")) {

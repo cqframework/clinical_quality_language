@@ -11,7 +11,6 @@ import org.hl7.elm_modelinfo.r1.ObjectFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 
@@ -81,7 +80,7 @@ public class Main {
 
         OutputStream os = new FileOutputStream(outputfile, false);
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(os);
+            OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
             marshaller.marshal(new ObjectFactory().createModelInfo(modelInfo), writer);
         }
         finally {

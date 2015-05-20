@@ -37,14 +37,24 @@ public class ClassTypeElement {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ClassTypeElement)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ClassTypeElement)) {
+            return false;
+        }
 
         ClassTypeElement that = (ClassTypeElement) o;
 
-        if (prohibited != that.prohibited) return false;
-        if (!name.equals(that.name)) return false;
-        if (!type.equals(that.type)) return false;
+        if (prohibited != that.prohibited) {
+            return false;
+        }
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        if (!type.equals(that.type)) {
+            return false;
+        }
 
         return true;
     }

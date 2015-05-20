@@ -14,7 +14,7 @@ import static org.testng.Assert.fail;
 public class EngineTest {
 
     @Test
-    public void testEngineWithFile_Age() {
+    public void testEngineWithAgeFile() {
         // Configure the engine with test data
         Engine.setPatientSource(new TestPatientSource());
 
@@ -33,14 +33,14 @@ public class EngineTest {
         try {
             JsonNode node = mapper.readTree((String)results.results.get(0));
             JsonNode patientResults = node.get("patientResults");
-            assertThat ( patientResults.size(), is (TestPatientSource.maxPatients));
+            assertThat ( patientResults.size(), is (TestPatientSource.MAX_PATIENTS));
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
     }
 
     @Test(enabled=false)
-    public void testEngineWithFile_CMS146() {
+    public void testEngineWithCMS146File() {
         // Configure the engine with test data
         Engine.setPatientSource(new TestPatientSource());
         Engine.setCodeService(new TestCodeService());
@@ -60,7 +60,7 @@ public class EngineTest {
         try {
             JsonNode node = mapper.readTree((String)results.results.get(0));
             JsonNode patientResults = node.get("patientResults");
-            assertThat ( patientResults.size(), is (TestPatientSource.maxPatients));
+            assertThat ( patientResults.size(), is (TestPatientSource.MAX_PATIENTS));
         } catch (Exception e) {
             fail(e.getLocalizedMessage());
         }
@@ -99,6 +99,6 @@ public class EngineTest {
             fail(e.getLocalizedMessage());
         }
         assertThat(results, is (notNullValue()));
-        assertThat(results.results.size(), is (TestPatientSource.maxPatients));
+        assertThat(results.results.size(), is (TestPatientSource.MAX_PATIENTS));
     }
 }

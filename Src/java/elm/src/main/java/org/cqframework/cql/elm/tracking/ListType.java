@@ -1,7 +1,5 @@
 package org.cqframework.cql.elm.tracking;
 
-import java.util.Map;
-
 public class ListType extends DataType {
     private DataType elementType;
 

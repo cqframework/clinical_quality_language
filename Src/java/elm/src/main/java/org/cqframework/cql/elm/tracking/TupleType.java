@@ -36,17 +36,11 @@ public class TupleType extends DataType {
     private List<TupleTypeElement> getSortedElements() {
         if (sortedElements == null) {
             sortedElements = new ArrayList<>(elements);
-            Collections.sort(sortedElements, TupleTypeElementComparator);
+            Collections.sort(sortedElements, (left, right) -> left.getName().compareTo(right.getName()));
         }
 
         return sortedElements;
     }
-
-    private static Comparator<TupleTypeElement> TupleTypeElementComparator = new Comparator<TupleTypeElement>() {
-        public int compare(TupleTypeElement left, TupleTypeElement right) {
-            return left.getName().compareTo(right.getName());
-        }
-    };
 
     @Override
     public int hashCode() {

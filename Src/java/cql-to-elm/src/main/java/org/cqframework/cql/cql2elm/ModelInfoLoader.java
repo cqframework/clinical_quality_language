@@ -13,7 +13,6 @@ public class ModelInfoLoader {
     static {
         registerModelInfoProvider(new VersionedIdentifier().withId("System").withVersion("1"), new SystemModelInfoProvider());
         registerModelInfoProvider(new VersionedIdentifier().withId("QUICK").withVersion("1"), new QuickModelInfoProvider());
-        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("1"), new QdmModelInfoProvider());
     }
 
     public static ModelInfoProvider getModelInfoProvider(VersionedIdentifier modelIdentifier) {

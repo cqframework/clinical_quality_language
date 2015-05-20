@@ -27,14 +27,18 @@ public class ValueSet {
     
     public boolean hasCode(String code) {
         for(Code c : codes) {
-            if(c.code.equals(code)) return true;
+            if(c.code.equals(code)) {
+                return true;
+            }
         }
         return false;
     }
     
     public boolean hasCode(String code, String system) {
         for(Code c : codes) {
-            if(c.code.equals(code) && c.system.equals(system)) return true;
+            if(c.code.equals(code) && c.system.equals(system)) {
+                return true;
+            }
         }
         return false;
     }
@@ -50,7 +54,9 @@ public class ValueSet {
     @Override
     public boolean equals(Object object)
     {
-        if(! (object instanceof ValueSet) ) return false;
+        if(! (object instanceof ValueSet) ) {
+            return false;
+        }
         ValueSet that = (ValueSet) object;
         return this.oid.equals(that.oid) && this.version.equals(that.version);
     }

@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.Date.*;
-
 public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
@@ -1083,24 +1081,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         resolveUnaryCall("System", operatorName, result);
         return result;
-    }
-
-    private DateTimePrecision fromUCUMUnits(String ucumUnit) {
-        if (ucumUnit == null) {
-            throw new IllegalArgumentException("ucumUnit is null");
-        }
-
-        switch (ucumUnit.toLowerCase()) {
-            case "a": return DateTimePrecision.YEAR;
-            case "mo": return DateTimePrecision.MONTH;
-            case "d": return DateTimePrecision.DAY;
-            case "h": return DateTimePrecision.HOUR;
-            case "min": return DateTimePrecision.MINUTE;
-            case "s": return DateTimePrecision.SECOND;
-            case "ms": return DateTimePrecision.MILLISECOND;
-            default:
-                throw new IllegalArgumentException(String.format("Could not determine date/time precision for UCUM unit specifier: %s", ucumUnit));
-        }
     }
 
     private DateTimePrecision parseDateTimePrecision(String dateTimePrecision) {
@@ -3540,11 +3520,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private DataType ensureCompatibleTypes(DataType first, DataType second) {
-        if (first.equals(DataType.any)) {
+        if (first.equals(DataType.ANY)) {
             return second;
         }
 
-        if (second.equals(DataType.any)) {
+        if (second.equals(DataType.ANY)) {
             return first;
         }
 

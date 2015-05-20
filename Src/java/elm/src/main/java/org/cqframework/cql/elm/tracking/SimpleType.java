@@ -61,7 +61,7 @@ public class SimpleType extends DataType implements NamedType {
     @Override
     public boolean isCompatibleWith(DataType other) {
         // The system type "Any" can be implicitly cast to any other type.
-        return this.equals(DataType.any);
+        return this.equals(DataType.ANY);
     }
 
     @Override

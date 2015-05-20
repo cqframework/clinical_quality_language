@@ -17,7 +17,9 @@ public class Code {
     @Override
     public boolean equals(Object object)
     {
-        if(! (object instanceof Code) ) return false;
+        if(! (object instanceof Code) ) {
+            return false;
+        }
         Code that = (Code) object;
         return this.code.equals(that.code) && this.system.equals(that.system) && this.version.equals(that.version);
     }

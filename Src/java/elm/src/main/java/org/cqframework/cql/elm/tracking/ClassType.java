@@ -120,13 +120,19 @@ public class ClassType extends DataType implements NamedType {
 
     private void internalAddElement(ClassTypeElement element) {
         ClassTypeElement existingElement = getBaseElementMap().get(element.getName());
-        if (existingElement != null) {
-            // Ensure that the type of the redeclared element is a subtype or cardinality restriction of the parent element
-            if (!(element.getType().isSubTypeOf(existingElement.getType())
-                    || (existingElement.getType() instanceof ListType
-                        && element.getType().isSubTypeOf(((ListType)existingElement.getType()).getElementType())))) {
-                throw new InvalidRedeclarationException(this, existingElement, element);
-            }
+        if (
+            existingElement != null
+            && (
+                !(
+                    element.getType().isSubTypeOf(existingElement.getType())
+                    || (
+                        existingElement.getType() instanceof ListType
+                        && element.getType().isSubTypeOf(((ListType)existingElement.getType()).getElementType())
+                    )
+                )
+            )
+        ) {
+            throw new InvalidRedeclarationException(this, existingElement, element);
         }
 
         this.elements.add(element);
@@ -151,17 +157,11 @@ public class ClassType extends DataType implements NamedType {
     private List<ClassTypeElement> getSortedElements() {
         if (sortedElements == null) {
             sortedElements = new ArrayList<>(elements);
-            Collections.sort(sortedElements, ClassTypeElementComparator);
+            Collections.sort(sortedElements, (left, right) -> left.getName().compareTo(right.getName()));
         }
 
         return sortedElements;
     }
-
-    private static Comparator<ClassTypeElement> ClassTypeElementComparator = new Comparator<ClassTypeElement>() {
-        public int compare(ClassTypeElement left, ClassTypeElement right) {
-            return left.getName().compareTo(right.getName());
-        }
-    };
 
     @Override
     public int hashCode() {

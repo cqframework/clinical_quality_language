@@ -19,7 +19,7 @@ public interface PatientSource
      * This is necessary so that the PatientSource can correctly create,
      * scope, and return NativeObjects with the shift method.
      */
-    public void initialize(Context context, Scriptable scope);
+    void initialize(Context context, Scriptable scope);
 
     /**
      * Returns the next patient as NativeObject JSON.
@@ -32,10 +32,10 @@ public interface PatientSource
      *
      * @return The next patient as NativeObject JSON.
      */
-    public NativeObject shift();
+    NativeObject shift();
 
     /**
      * Reset the PatientSource to start at the first Patient.
      */
-    public void reset();
+    void reset();
 }

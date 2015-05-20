@@ -1,12 +1,10 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
-import org.hl7.elm.r1.Mode;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class ModelImporterMapperValue {
-    public static enum Relationship { RETYPE, EXTEND }
+    public enum Relationship { RETYPE, EXTEND }
 
     private final String targetSystemClass;
     private final Relationship relationship;
