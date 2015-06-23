@@ -28,6 +28,12 @@ module.exports.Library = class Library
       ctx.nextPatient()
     r
 
+  execWithoutPatients: (ctx) ->
+    r = {}
+    for key,expr of @expressions
+      r[key] = expr.exec(ctx)
+    r
+
 # These requires are at the end of the file because having them first in the
 # file creates errors due to the order that the libraries are loaded.
 { ExpressionDef, FunctionDef, ParameterDef, ValueSetDef } = require './expressions'

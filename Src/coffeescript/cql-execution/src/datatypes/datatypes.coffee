@@ -1,12 +1,10 @@
-expressionModules = [
-  'logic',
-  'clinical',
-  'uncertainty'
-  'datetime',
-  'interval'
-]
+logic = require './logic'
+clinical = require './clinical'
+uncertainty = require './uncertainty'
+datetime = require './datetime'
+interval = require './interval'
 
-for name in expressionModules
-  imported = require "./#{name}"
-  for element in Object.keys(imported)
-    module.exports[element] = imported[element]
+libs = [logic, clinical, uncertainty, datetime, interval]
+for lib in libs
+  for element in Object.keys(lib)
+    module.exports[element] = lib[element]
