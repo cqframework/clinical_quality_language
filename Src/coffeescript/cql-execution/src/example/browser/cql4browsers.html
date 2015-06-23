@@ -1,14 +1,18 @@
 <html>
   <head>
-  	<script src="cql4browsers.js"></script>
-  	<script>
-	  function exec() {
-	  	 f = document.getElementById('form');
-	  	 eval('elm = ' + f.elm.value)
-	  	 eval('params = ' + f.parameters.value)
-	     f.results.value = JSON.stringify(executeSimpleELM(elm, params), null, 2)
-	  }
-  	</script>
+    <script src="cql4browsers.js"></script>
+    <script>
+      function exec() {
+        f = document.getElementById('form');
+        eval('elm = ' + f.elm.value)
+        if (f.parameters.value.trim()) {
+          eval('params = ' + f.parameters.value)
+        } else {
+          params = {}
+        }
+        f.results.value = JSON.stringify(executeSimpleELM(elm, params), null, 2)
+      }
+    </script>
   </head>
   <body>
     <form id="form">
