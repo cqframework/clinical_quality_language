@@ -1,8 +1,8 @@
 { Library, Context, PatientSource, CodeService } =  require '../lib/cql'
 
-module.exports = (test, data, patients=[], valuesets={}, parameters={}) ->
+module.exports = (test, data, patients=[], valuesets={}, parameters={}, repository=null) ->
   try
-    test.lib = new Library(data[test.test.parent.title])
+    test.lib = new Library(data[test.test.parent.title],repository)
     psource = new PatientSource(patients)
     cservice = new CodeService(valuesets)
     test.ctx = new Context(test.lib, psource, cservice, parameters)

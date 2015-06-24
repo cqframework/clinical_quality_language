@@ -1,5 +1,5 @@
 module.exports.Library = class Library
-  constructor: (json) ->
+  constructor: (json, repository) ->
     @parameters = {}
     for param in json.library.parameters?.def ? []
       @parameters[param.name] = new ParameterDef(param)
@@ -9,9 +9,12 @@ module.exports.Library = class Library
     @expressions = {}
     for expr in json.library.statements?.def ? []
       @expressions[expr.name] = if expr.type == "FunctionDef"  then new FunctionDef(expr) else new ExpressionDef(expr)
+    @includes = {}
+    for expr in json.library.includes?.def ? []
+      if repository then @includes[expr.localIdentifier] =  repository.resolve(expr.path,expr.version) 
 
   get: (identifier) ->
-    @expressions[identifier]
+    @expressions[identifier] || @includes[identifier]
 
   getValueSet: (identifier) ->
     @valuesets[identifier]

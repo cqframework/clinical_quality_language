@@ -7,7 +7,6 @@ module.exports.ExpressionDef = class ExpressionDef extends Expression
     @name = json.name
     @context = json.context
     @expression = build json.expression
-
   exec: (ctx) ->
     value = @expression?.exec(ctx)
     ctx.rootContext().set @name,value
@@ -17,9 +16,10 @@ module.exports.ExpressionRef = class ExpressionRef extends Expression
   constructor: (json) ->
     super
     @name = json.name
-
+    @library = json.libraryName
   exec: (ctx) ->
-    value = ctx.get(@name)
+    value = if @library then ctx.get(@library)?.get(@name) else ctx.get(@name)
+    ctx = if @library then ctx.getLibraryContext(@library) else ctx
     if value instanceof Expression
       value = value.exec(ctx)
     value
@@ -30,7 +30,6 @@ module.exports.FunctionDef = class FunctionDef extends Expression
     @name = json.name
     @expression = build json.expression
     @parameters = json.parameter
-
   exec: (ctx) ->
     @
 
@@ -38,11 +37,11 @@ module.exports.FunctionRef = class FunctionRef extends Expression
   constructor: (json) ->
     super
     @name = json.name
-
+    @library = json.libraryName
   exec: (ctx) ->
-    functionDef = ctx.get(@name)
+    functionDef = if @library then ctx.get(@library)?.get(@name) else ctx.get(@name)
     args = @execArgs(ctx)
-    child_ctx = ctx.childContext()
+    child_ctx = if @library then ctx.getLibraryContext(@library)?.childContext() else ctx.childContext()
     if args.length != functionDef.parameters.length
       throw new Error("incorrect number of arguments supplied")
     for p, i in functionDef.parameters
@@ -53,12 +52,12 @@ module.exports.IdentifierRef = class IdentifierRef extends Expression
   constructor: (json) ->
     super
     @name = json.name
-
+    @library = json.libraryName
   exec: (ctx) ->
     # TODO: Technically, the ELM Translator should never output one of these
     # but this code is needed since it does, as a work-around to get queries
     # to work properly when sorting by a field in a tuple
-    val = ctx.get(@name)
+    val = if @library then ctx.get(@library)?.get(@name) else ctx.get(@name)
 
     if not val?
       parts = @name.split(".")

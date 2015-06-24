@@ -7,6 +7,7 @@ module.exports.Context = class Context
 
   constructor: (@parent, @_patientSource = null, @_codeService = null, @_parameters = {}) ->
     @context_values = {}
+    @library_context = {}
 
   @property "parameters" ,
     get: -> @_parameters || @parent?.parameters
@@ -39,7 +40,13 @@ module.exports.Context = class Context
     ctx = new Context(@)
     ctx.context_values = context_values
     ctx
-
+  
+  getLibraryContext: (library) ->
+    if (@parent instanceof Library)  
+      new Context(@get(library),@patientSource,@codeService,@parameters)
+    else 
+      @parent?.getLibraryContext(library)
+  
   getParameter: (name) ->
     @parent?.getParameter(name)
 
