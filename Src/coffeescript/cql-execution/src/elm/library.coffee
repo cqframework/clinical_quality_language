@@ -22,22 +22,6 @@ module.exports.Library = class Library
   getParameter: (name) ->
     @parameters[name]
 
-  # exec: (ctx) ->
-  #   Results r = new Results()
-  #   while p = ctx.currentPatient()
-  #     patient_ctx = ctx.childContext()
-  #     for key,expr of @expressions when expr.context is "Patient"
-  #       r.recordPatientResult(patient_ctx.currentPatient().id(), key, expr.exec(patient_ctx))
-  #     ctx.nextPatient()
-  #   r
-
-
-  execWithoutPatients: (ctx) ->
-    r = {}
-    for key,expr of @expressions
-      r[key] = expr.exec(ctx)
-    r
-
 # These requires are at the end of the file because having them first in the
 # file creates errors due to the order that the libraries are loaded.
 { ExpressionDef, FunctionDef, ParameterDef, ValueSetDef } = require './expressions'

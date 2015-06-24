@@ -163,6 +163,13 @@ context Patient
 
 define InDemographic:
 AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
+<<<<<<< HEAD
+=======
+
+define X : InDemographic
+
+define function Z() : true
+>>>>>>> ugly first attempt at using included libraries
 ###
 
 module.exports['CommonLib'] = {
@@ -310,6 +317,12 @@ parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014
 context Patient
 
 define ID: common.InDemographic
+<<<<<<< HEAD
+=======
+
+
+define Test2 : if common.InDemographic then true else false
+>>>>>>> ugly first attempt at using included libraries
 ###
 
 module.exports['Using CommonLib'] = {
@@ -403,6 +416,7 @@ module.exports['Using CommonLib'] = {
                "libraryName" : "common",
                "type" : "ExpressionRef"
             }
+
          } ]
       }
    }

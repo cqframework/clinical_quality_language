@@ -8,4 +8,3 @@ define InDemographic:
 AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
 
-

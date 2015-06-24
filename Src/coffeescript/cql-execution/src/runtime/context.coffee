@@ -39,6 +39,7 @@ module.exports.Context = class Context
   
   getLibraryContext: (library) ->
     @parent?.getLibraryContext(library)
+
   
   getParameter: (name) ->
     @parent?.getParameter(name)

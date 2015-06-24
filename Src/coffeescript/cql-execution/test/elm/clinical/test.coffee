@@ -86,26 +86,34 @@ describe 'CalculateAge', ->
   @beforeEach ->
     setup @, data, [ p1 ]
     # Note, tests are inexact (otherwise test needs to repeat exact logic we're testing)
-    @highYears = new Date().getFullYear() - 1980
-    @lowYears = @highYears - 1
+    # p1 birth date is 1980-06-17T06:15
+    @bday = new Date("1980-06-17T06:15")
+    # need to make sure that the tests are done using same timezone offsets otherwise it will error
+    
+    @bday = new Date(@bday - (-(@bday.getTimezoneOffset()) * 60 * 1000))
+    @today = new Date()
+    # this is getting the possible number of months in years with the addtion of an offset
+    # to get the correct number of months
+    @full_months = ((@today.getFullYear() - 1980) * 12) + (@today.getMonth() - 5)
+    @timediff = @today - @bday # diff in milliseconds
 
   it 'should execute age in years', ->
-    @years.exec(@ctx).should.be.within @lowYears, @highYears
+    @years.exec(@ctx).should.equal @full_months // 12
 
   it 'should execute age in months', ->
-    @months.exec(@ctx).should.be.within @lowYears * 12, @highYears * 12
+    @months.exec(@ctx).should.equal @full_months
 
   it 'should execute age in days', ->
-    @days.exec(@ctx).should.be.within @lowYears * 372, @highYears * 372
+    @days.exec(@ctx).should.equal @timediff // 1000 // 60 // 60 // 24
 
   it 'should execute age in hours', ->
-    @hours.exec(@ctx).should.be.within @lowYears * 8928, @highYears * 8928
+    @hours.exec(@ctx).should.equal @timediff // 1000 // 60 // 60 
 
   it 'should execute age in minutes', ->
-    @minutes.exec(@ctx).should.be.within @lowYears * 535680, @highYears * 535680
+    @minutes.exec(@ctx).should.equal @timediff // 1000 // 60 
 
   it 'should execute age in seconds', ->
-    @seconds.exec(@ctx).should.be.within @lowYears * 32140800, @highYears * 32140800
+    @seconds.exec(@ctx).should.equal @timediff // 1000 
 
 describe 'CalculateAgeAt', ->
   @beforeEach ->

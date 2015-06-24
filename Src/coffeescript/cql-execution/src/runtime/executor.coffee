@@ -17,7 +17,7 @@ module.exports.Executor = class Executor
   exec_expression: (expression, patientSource) ->
     Results r = new Results()
     expr = @library.expressions[expression]
-    while p = patientSource.currentPatient()
+    while expr && p = patientSource.currentPatient()
       patient_ctx = new PatientContext(@library,p,@codeService,@parameters)
       r.recordPatientResult(patient_ctx.patient.id(), expression, expr.exec(patient_ctx))
       patientSource.nextPatient()
