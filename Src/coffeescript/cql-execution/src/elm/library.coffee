@@ -21,7 +21,6 @@ module.exports.Library = class Library
 
   getParameter: (name) ->
     @parameters[name]
-
 # These requires are at the end of the file because having them first in the
 # file creates errors due to the order that the libraries are loaded.
 { ExpressionDef, FunctionDef, ParameterDef, ValueSetDef } = require './expressions'
