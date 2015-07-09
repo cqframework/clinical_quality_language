@@ -1,5 +1,5 @@
 module.exports.Library = class Library
-  constructor: (json, repository) ->
+  constructor: (json, libraryManager) ->
     @parameters = {}
     for param in json.library.parameters?.def ? []
       @parameters[param.name] = new ParameterDef(param)
@@ -11,7 +11,7 @@ module.exports.Library = class Library
       @expressions[expr.name] = if expr.type == "FunctionDef"  then new FunctionDef(expr) else new ExpressionDef(expr)
     @includes = {}
     for expr in json.library.includes?.def ? []
-      if repository then @includes[expr.localIdentifier] =  repository.resolve(expr.path,expr.version) 
+      if libraryManager then @includes[expr.localIdentifier] =  libraryManager.resolve(expr.path,expr.version) 
 
   get: (identifier) ->
     @expressions[identifier] || @includes[identifier]
@@ -22,14 +22,15 @@ module.exports.Library = class Library
   getParameter: (name) ->
     @parameters[name]
 
-  exec: (ctx) ->
-    Results r = new Results()
-    while p = ctx.currentPatient()
-      patient_ctx = ctx.childContext()
-      for key,expr of @expressions when expr.context is "Patient"
-        r.recordPatientResult(patient_ctx.currentPatient().id(), key, expr.exec(patient_ctx))
-      ctx.nextPatient()
-    r
+  # exec: (ctx) ->
+  #   Results r = new Results()
+  #   while p = ctx.currentPatient()
+  #     patient_ctx = ctx.childContext()
+  #     for key,expr of @expressions when expr.context is "Patient"
+  #       r.recordPatientResult(patient_ctx.currentPatient().id(), key, expr.exec(patient_ctx))
+  #     ctx.nextPatient()
+  #   r
+
 
   execWithoutPatients: (ctx) ->
     r = {}

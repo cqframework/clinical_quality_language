@@ -8,7 +8,7 @@ data = require './data'
 describe 'In Age Demographic', ->
   @beforeEach ->
     setup @, data, [ p1, p2 ]
-    @results = @lib.exec(@ctx)
+    @results = @executor.withLibrary(@lib).exec_patient_context(@patientSource)
 
   it 'should have correct patient results', ->
     @results.patientResults['1'].InDemographic.should.equal false
@@ -27,6 +27,6 @@ describe 'Using CommonLib', ->
     @lib.includes.should.not.be.empty
 
   it "should be able to execute expression from included library", ->
-    @results = @lib.exec(@ctx)
+    @results = @executor.withLibrary(@lib).exec_patient_context(@patientSource)
     @results.patientResults['1'].ID.should.equal false
     @results.patientResults['2'].ID.should.equal true

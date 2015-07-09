@@ -16,9 +16,7 @@ context Patient
 define InDemographic:
 AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
-define X : InDemographic
 
-define function Z() : true
 
 
 
@@ -31,4 +29,3 @@ context Patient
 define ID: common.InDemographic
 
 
-define Test2 : if common.InDemographic then true else false

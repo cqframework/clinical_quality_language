@@ -75,11 +75,11 @@ describe 'Patient Property In ValueSet', ->
     setup @, data, [], vsets
 
   it 'should find that John is not female', ->
-    @ctx = @ctx.withPatients new PatientSource([ p1 ])
+    @ctx.patient =  new PatientSource([ p1 ]).currentPatient()
     @isFemale.exec(@ctx).should.be.false
 
   it 'should find that Sally is female', ->
-    @ctx = @ctx.withPatients new PatientSource([ p2 ])
+    @ctx.patient =  new PatientSource([ p2 ]).currentPatient()
     @isFemale.exec(@ctx).should.be.true
 
 describe 'CalculateAge', ->

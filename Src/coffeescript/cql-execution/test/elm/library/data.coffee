@@ -163,10 +163,6 @@ context Patient
 
 define InDemographic:
 AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
-
-define X : InDemographic
-
-define function Z() : true
 ###
 
 module.exports['CommonLib'] = {
@@ -300,25 +296,6 @@ module.exports['CommonLib'] = {
                   } ]
                } ]
             }
-         }, {
-            "name" : "X",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "name" : "InDemographic",
-               "type" : "ExpressionRef"
-            }
-         }, {
-            "name" : "Z",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "type" : "FunctionDef",
-            "expression" : {
-               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
-               "value" : "true",
-               "type" : "Literal"
-            },
-            "operand" : [ ]
          } ]
       }
    }
@@ -333,9 +310,6 @@ parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014
 context Patient
 
 define ID: common.InDemographic
-
-
-define Test2 : if common.InDemographic then true else false
 ###
 
 module.exports['Using CommonLib'] = {
@@ -428,28 +402,6 @@ module.exports['Using CommonLib'] = {
                "name" : "InDemographic",
                "libraryName" : "common",
                "type" : "ExpressionRef"
-            }
-         }, {
-            "name" : "Test2",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "type" : "If",
-               "condition" : {
-                  "name" : "InDemographic",
-                  "libraryName" : "common",
-                  "type" : "ExpressionRef"
-               },
-               "then" : {
-                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
-                  "value" : "true",
-                  "type" : "Literal"
-               },
-               "else" : {
-                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
-                  "value" : "false",
-                  "type" : "Literal"
-               }
             }
          } ]
       }
