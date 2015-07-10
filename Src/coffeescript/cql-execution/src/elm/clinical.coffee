@@ -49,6 +49,7 @@ module.exports.Quantity = class Quantity extends Expression
     @
 
 calculateAge = (date1, date2, precision) ->
+  if date1.getTime() - date2.getTime() > 0 then return 0
   value = if precision is "Year"
     monthsDiff(date1,date2) / 12
   else if  precision is "Month" 
