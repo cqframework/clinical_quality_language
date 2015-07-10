@@ -49,17 +49,41 @@ module.exports.Quantity = class Quantity extends Expression
     @
 
 calculateAge = (date1, date2, precision) ->
-  ageInMS = date2.getTime() - date1.getTime()
-  # Not quite precise (leap years, months, etc) but close enough for now
-  divisor = switch (precision)
-    when 'Year' then 1000 * 60 * 60 * 24 * 365
-    when 'Month' then (1000 * 60 * 60 * 24 * 365) / 12
-    when 'Day' then 1000 * 60 * 60 * 24
-    when 'Hour' then 1000 * 60 * 60
-    when 'Minute' then 1000 * 60
-    when 'Second' then 1000
-    else 1
-  Math.floor(ageInMS / divisor)
+  if date1.getTime() - date2.getTime() > 0 then return 0
+  value = if precision is "Year"
+    monthsDiff(date1,date2) / 12
+  else if  precision is "Month" 
+    monthsDiff(date1,date2)
+  else
+    ageInMS = date2.getTime() - date1.getTime()
+    divisor = switch (precision)
+      when 'Day' then 1000 * 60 * 60 * 24
+      when 'Hour' then 1000 * 60 * 60
+      when 'Minute' then 1000 * 60
+      when 'Second' then 1000
+      else 1
+    ageInMS / divisor
+  Math.floor(value)
+
+monthsDiff = (date1, date2) ->
+  [high,low] = if date1.getTime() > date2.getTime() then [date1,date2] else [date2,date1]
+  #Rough approximation not taking day into account yet.  This may be +1 month
+  months = ((high.getFullYear() - low.getFullYear()) * 12) + (high.getMonth() - low.getMonth())
+  return 0 if months is 0
+  
+  date3 = new Date(low.getTime())
+  #add the number of months to the low date clone to bring it up to the current month and year
+  # note however that this may push the date into the next month.  If the low date was in a month
+  # with 31 days and the high date is in a month with less then 31 days this will cause the date to
+  #be pushed forward into the next month.
+  date3.setMonth(low.getMonth() + months)
+  # If the months are equal and the adjusted dated is greater than the high date we havn't 
+  # reached the actual turn over day so remove a month from the count
+  if date3.getMonth() == high.getMonth() && (date3.getDate() - high.getDate() > 0)
+    months--
+
+  months
+
 
 module.exports.CalculateAge = class CalculateAge extends Expression
   constructor: (json) ->
