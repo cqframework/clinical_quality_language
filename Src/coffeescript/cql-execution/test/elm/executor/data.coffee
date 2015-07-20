@@ -16,9 +16,14 @@ context Patient
 define Age:
   AgeInYearsAt(start of MeasurementPeriod)
 
+define InDemographic:
+  AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18  
+
 context Population
 
 define age_sum: Sum(Age)
+
+define DEMO: Count(InDemographic w where w is true )
 ###
 
 module.exports['Age'] = {
@@ -120,6 +125,62 @@ module.exports['Age'] = {
                } ]
             }
          }, {
+            "name" : "InDemographic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "GreaterOrEqual",
+                  "operand" : [ {
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
+                     "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
+                        "type" : "Start",
+                        "operand" : {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        }
+                     } ]
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "Less",
+                  "operand" : [ {
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
+                     "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
+                        "type" : "Start",
+                        "operand" : {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        }
+                     } ]
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "18",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
             "name" : "age_sum",
             "context" : "Population",
             "accessLevel" : "Public",
@@ -129,6 +190,32 @@ module.exports['Age'] = {
                "operand" : [ {
                   "name" : "Age",
                   "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "DEMO",
+            "context" : "Population",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Count",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "w",
+                     "expression" : {
+                        "name" : "InDemographic",
+                        "type" : "ExpressionRef"
+                     }
+                  } ],
+                  "relationship" : [ ],
+                  "where" : {
+                     "type" : "IsTrue",
+                     "operand" : {
+                        "name" : "w",
+                        "type" : "AliasRef"
+                     }
+                  }
                } ]
             }
          } ]

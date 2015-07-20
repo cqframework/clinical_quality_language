@@ -1,5 +1,5 @@
 { Library } = require '../elm/library'
-
+{ Exception } = require '../datatypes/exception'
 Function::property = (prop, desc) ->
   Object.defineProperty @prototype, prop, desc
 
@@ -74,10 +74,10 @@ module.exports.PopulationContext = class PopulationContext extends Context
   rootContext:  -> @
 
   findRecords: (template) ->
-    throw new Excepetion("Retreives are not currently supported in Population Context")
+    throw new Exception("Retreives are not currently supported in Population Context")
 
   getLibraryContext: (library) ->
-     throw new Excepetion("Library expressions are not currently supported in Population Context")
+     throw new Exception("Library expressions are not currently supported in Population Context")
   
   get: (identifier) ->
     #First check to see if the identifier is a population context expression that has already been cached
