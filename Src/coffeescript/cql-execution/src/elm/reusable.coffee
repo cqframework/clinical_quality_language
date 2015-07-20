@@ -18,8 +18,8 @@ module.exports.ExpressionRef = class ExpressionRef extends Expression
     @name = json.name
     @library = json.libraryName
   exec: (ctx) ->
-    value = if @library then ctx.get(@library)?.get(@name) else ctx.get(@name)
     ctx = if @library then ctx.getLibraryContext(@library) else ctx
+    value = ctx.get(@name)
     if value instanceof Expression
       value = value.exec(ctx)
     value
