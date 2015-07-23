@@ -16,6 +16,9 @@ context Patient
 define InDemographic:
 AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
+define function foo (a Integer, b Integer) :
+  a + b
+
 
 // @Test: Using CommonLib
 include COM called common
@@ -24,5 +27,8 @@ parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014
 context Patient
 
 define ID: common.InDemographic
+
+define L : Length(Patient.name.given)
+define FuncTest : common.foo(2, 5)
 
 

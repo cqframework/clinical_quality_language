@@ -29,7 +29,7 @@ module.exports.FunctionDef = class FunctionDef extends Expression
     super
     @name = json.name
     @expression = build json.expression
-    @parameters = json.parameter
+    @parameters = json.operand
   exec: (ctx) ->
     @
 
@@ -48,6 +48,13 @@ module.exports.FunctionRef = class FunctionRef extends Expression
       child_ctx.set(p.name,args[i])
     functionDef.expression.exec(child_ctx)
 
+module.exports.OperandRef = class OperandRef extends Expression
+  constructor: (json) ->
+    @name = json.name
+  exec: (ctx) ->
+    ctx.get(@name) 
+
+     
 module.exports.IdentifierRef = class IdentifierRef extends Expression
   constructor: (json) ->
     super

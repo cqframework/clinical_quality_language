@@ -11,6 +11,9 @@ define InDemographic:
 
 context Population
 
-define age_sum: Sum(Age)
+define AgeSum: Sum(Age)
 
 define DEMO: Count(InDemographic w where w is true )
+
+define AgeSumRef : AgeSum
+

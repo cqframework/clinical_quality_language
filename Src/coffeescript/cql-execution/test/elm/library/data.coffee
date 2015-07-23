@@ -163,6 +163,9 @@ context Patient
 
 define InDemographic:
 AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
+
+define function foo (a Integer, b Integer) :
+  a + b
 ###
 
 module.exports['CommonLib'] = {
@@ -296,6 +299,34 @@ module.exports['CommonLib'] = {
                   } ]
                } ]
             }
+         }, {
+            "name" : "foo",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "type" : "FunctionDef",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "a",
+                  "type" : "OperandRef"
+               }, {
+                  "name" : "b",
+                  "type" : "OperandRef"
+               } ]
+            },
+            "operand" : [ {
+               "name" : "a",
+               "operandTypeSpecifier" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }, {
+               "name" : "b",
+               "operandTypeSpecifier" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "type" : "NamedTypeSpecifier"
+               }
+            } ]
          } ]
       }
    }
@@ -310,8 +341,16 @@ parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014
 context Patient
 
 define ID: common.InDemographic
+
+define L : Length(Patient.name.given)
+define FuncTest : common.foo(2, 5)
 ###
 
+###
+Translation Error(s):
+[10:19, 10:36] Member given not found for type list<QUICK.HumanName>.
+[10:12, 10:37] Could not determine signature for invocation of operator Length.
+###
 module.exports['Using CommonLib'] = {
    "library" : {
       "identifier" : {
@@ -402,6 +441,31 @@ module.exports['Using CommonLib'] = {
                "name" : "InDemographic",
                "libraryName" : "common",
                "type" : "ExpressionRef"
+            }
+         }, {
+            "name" : "L",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "FuncTest",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "foo",
+               "libraryName" : "common",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "5",
+                  "type" : "Literal"
+               } ]
             }
          } ]
       }

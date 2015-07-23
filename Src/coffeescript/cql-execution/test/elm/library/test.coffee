@@ -30,3 +30,5 @@ describe 'Using CommonLib', ->
     @results = @executor.withLibrary(@lib).exec_patient_context(@patientSource)
     @results.patientResults['1'].ID.should.equal false
     @results.patientResults['2'].ID.should.equal true
+    @results.patientResults['2'].FuncTest.should.equal 7
+    @results.patientResults['1'].FuncTest.should.equal 7

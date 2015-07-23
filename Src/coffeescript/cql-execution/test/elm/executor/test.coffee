@@ -15,4 +15,9 @@ describe 'Age', ->
     @results.patientResults['2'].Age.should.equal 5
 
   it 'should have the correct population results', ->
-    @results.populationResults.age_sum.should.equal 37
+    @results.populationResults.AgeSum.should.equal 37
+
+  it 'should be able to reference other population context expressions', ->
+    @results.populationResults.AgeSumRef.should.equal 37
+
+        

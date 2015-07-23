@@ -21,9 +21,11 @@ define InDemographic:
 
 context Population
 
-define age_sum: Sum(Age)
+define AgeSum: Sum(Age)
 
 define DEMO: Count(InDemographic w where w is true )
+
+define AgeSumRef : AgeSum
 ###
 
 module.exports['Age'] = {
@@ -181,7 +183,7 @@ module.exports['Age'] = {
                } ]
             }
          }, {
-            "name" : "age_sum",
+            "name" : "AgeSum",
             "context" : "Population",
             "accessLevel" : "Public",
             "expression" : {
@@ -217,6 +219,14 @@ module.exports['Age'] = {
                      }
                   }
                } ]
+            }
+         }, {
+            "name" : "AgeSumRef",
+            "context" : "Population",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "AgeSum",
+               "type" : "ExpressionRef"
             }
          } ]
       }
