@@ -1140,7 +1140,7 @@
         <ns4:element name="payload" type="list&lt;QUICK.CommunicationRequest.Payload&gt;"/>
         <ns4:element name="medium" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="requester" type="System.Any"/>
-        <ns4:element name="status" type="QUICK.CommunicationRequestStatus"/>
+        <ns4:element name="status" type="System.Code"/>
         <ns4:element name="encounter" type="System.Any"/>
         <ns4:element name="scheduledTime" type="System.DateTime"/>
         <ns4:element name="reason" type="list&lt;System.Concept&gt;"/>
@@ -1864,7 +1864,7 @@
         <ns4:element name="udi" type="System.Code"/>
         <ns4:element name="subDetail" type="list&lt;QUICK.Claim.SubDetail&gt;"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.RiskAssessment" baseType="QUICK.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.RiskAssessment" baseType="QUICK.DomainResource" retrievable="true">
         <ns4:element name="subject" type="System.Any"/>
         <ns4:element name="date" type="System.DateTime"/>
         <ns4:element name="condition" type="System.Any"/>
