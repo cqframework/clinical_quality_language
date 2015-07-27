@@ -6,7 +6,8 @@ import joptsimple.OptionSpec;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.cqframework.cql.elm.tracking.TrackBack;
-
+import org.cqframework.cql.cql2elm.LibrarySourceLoader;
+import org.cqframework.cql.cql2elm.DefaultLibrarySourceProvider;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,7 +72,8 @@ public class CoffeeScriptTestDataGenerator {
     private static void writeSnippetsToCoffeeFile(Map<String,StringBuilder> snippets, Path file) throws IOException {
         // Write to a temp file and then move, else the coffee compiler can get confused if it's watching the file
         File tempFile = new File(file.toFile().getAbsolutePath() + ".tmp");
-
+        LibrarySourceLoader.registerProvider(new DefaultLibrarySourceProvider(file.getParent()));
+        
         PrintWriter pw = new PrintWriter(tempFile, "UTF-8");
         pw.println("###");
         pw.println("   WARNING: This is a GENERATED file.  Do not manually edit!");
@@ -115,7 +117,7 @@ public class CoffeeScriptTestDataGenerator {
             pw.println();
         }
         pw.close();
-
+        LibrarySourceLoader.clearProviders();
         Files.move(tempFile.toPath(), file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
         System.out.println("Generated " + file.toAbsolutePath().normalize());
     }

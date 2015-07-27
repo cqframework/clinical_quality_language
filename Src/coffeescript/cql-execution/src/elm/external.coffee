@@ -12,7 +12,7 @@ module.exports.Retrieve = class Retrieve extends Expression
     @dateRange = build json.dateRange
 
   exec: (ctx) ->
-    records = ctx.currentPatient()?.findRecords(@templateId)
+    records = ctx.findRecords(@templateId)
     if @codes
       valueset = @codes.exec(ctx)
       records = (r for r in records when valueset.hasCode(r.getCode(@codeProperty)))

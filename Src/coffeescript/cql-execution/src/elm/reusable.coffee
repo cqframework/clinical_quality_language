@@ -7,7 +7,6 @@ module.exports.ExpressionDef = class ExpressionDef extends Expression
     @name = json.name
     @context = json.context
     @expression = build json.expression
-
   exec: (ctx) ->
     value = @expression?.exec(ctx)
     ctx.rootContext().set @name,value
@@ -17,8 +16,9 @@ module.exports.ExpressionRef = class ExpressionRef extends Expression
   constructor: (json) ->
     super
     @name = json.name
-
+    @library = json.libraryName
   exec: (ctx) ->
+    ctx = if @library then ctx.getLibraryContext(@library) else ctx
     value = ctx.get(@name)
     if value instanceof Expression
       value = value.exec(ctx)
@@ -29,8 +29,7 @@ module.exports.FunctionDef = class FunctionDef extends Expression
     super
     @name = json.name
     @expression = build json.expression
-    @parameters = json.parameter
-
+    @parameters = json.operand
   exec: (ctx) ->
     @
 
@@ -38,27 +37,34 @@ module.exports.FunctionRef = class FunctionRef extends Expression
   constructor: (json) ->
     super
     @name = json.name
-
+    @library = json.libraryName
   exec: (ctx) ->
-    functionDef = ctx.get(@name)
+    functionDef = if @library then ctx.get(@library)?.get(@name) else ctx.get(@name)
     args = @execArgs(ctx)
-    child_ctx = ctx.childContext()
+    child_ctx = if @library then ctx.getLibraryContext(@library)?.childContext() else ctx.childContext()
     if args.length != functionDef.parameters.length
       throw new Error("incorrect number of arguments supplied")
     for p, i in functionDef.parameters
       child_ctx.set(p.name,args[i])
     functionDef.expression.exec(child_ctx)
 
+module.exports.OperandRef = class OperandRef extends Expression
+  constructor: (json) ->
+    @name = json.name
+  exec: (ctx) ->
+    ctx.get(@name) 
+
+     
 module.exports.IdentifierRef = class IdentifierRef extends Expression
   constructor: (json) ->
     super
     @name = json.name
-
+    @library = json.libraryName
   exec: (ctx) ->
     # TODO: Technically, the ELM Translator should never output one of these
     # but this code is needed since it does, as a work-around to get queries
     # to work properly when sorting by a field in a tuple
-    val = ctx.get(@name)
+    val = if @library then ctx.get(@library)?.get(@name) else ctx.get(@name)
 
     if not val?
       parts = @name.split(".")
