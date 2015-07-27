@@ -84,11 +84,11 @@ Ideally, a `PatientSource` should provide the pre-filtered set of patients, base
 In order for the CQL execution framework to determine if a code is in a valueset, it must be able to resolve the valueset to a list of codes.  Valueset resolution always occurs through a `CodeService` class, allowing the actual backend implementation to be replaced with another implementation.
 In the current reference implementation, the CodeService is loaded with a static JSON map of valuesets and codes, usually from a flat file.  In an ideal implementation, the CodeService should access a local database of valuesets or an API to a valueset service.
 
-### Context
 
-The `Context` provides acces to all of the run-time data and services that might be needed during CQL execution.  In addition to providing access to `PatientSource` and `CodeService` implementations, the `Context` stores and retrieves the values of named expressions and parameters.
+### Executor
 
-Instances of `Context` classes may be nested in parent/child relationships, allowing stored values to be scoped when necessary.
+THe CQL exection framework provides and basic Executor class for executing a cql document over a PatinetSource.  An instance of the Executor class provides a wrapping element around a Library instance, a CodeService instance (if required) and a  set of CQL imput parameters.  Once configured an Executor class can be used multiple time to execute over an arbitary number of PatientSource instances.
+
 
 ## Executing CQL Libraries
 
@@ -110,13 +110,15 @@ parameters = {
     new cql.DateTime(2014, 1, 1, 0, 0, 0, 0), true, false)
 }
 
-ctx = new cql.Context(lib, patientSource, codeService, parameters)
-result = lib.exec(ctx)
+executor = new cql.Executor(lib,codeService, parameters)
+result = executor.exec(patientSource)
 ```
 
-The first line imports the CQL execution framework library, while the next three lines import the measure JSON ELM, patient data, and valueset data.  The next three lines then construct the CQL `Library`, `PatientSource`, and `CodeService` using the imported data.  The `parameters` definition overrides the `"MeasurementPeriod"` parameter with an interval representing the entire year of 2013.  Finally, the last two lines construct the execution `Context` and execute the library with the context.
+The first line imports the CQL execution framework library, while the next three lines import the measure JSON ELM, patient data, and valueset data.  The next three lines then construct the CQL `Library`, `PatientSource`, and `CodeService` using the imported data.  The `parameters` definition overrides the `"MeasurementPeriod"` parameter with an interval representing the entire year of 2013.  Finally, the last two lines construct an Exector object that will execute the cql document against the supplied PatientSource.
 
 The result of the execution is a CQL `Results` object containing a list of patients and their calculated values for each named expression in the `Patient` context.  If the library contained a `Population` context, the calculated value of named expressions for the `Population` will be included in the `Results` as well.
+
+Besides the exec(patient_source) method, the Executor class contains a couple of additional convenvance methods for execution cql documents against Patient Sources.  The first would method ,exec_patient_context(patient_source), will execute only the expressions defoined in the CQL libraries Patient Context. Any statments declared in the Population context will be ignored.  The other method, exec_expression(patient_source) executes a single expression in he CQL documents PatientContext , along with any expressions that are called internally to the expression to be executed.
 
 ## Current Status
 
