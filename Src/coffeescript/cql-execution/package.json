@@ -2,11 +2,28 @@
   "name": "cql-execution",
   "version": "0.0.1",
   "description": "An execution framework for the Clinical Quality Language (CQL)",
+  "keywords" : ["CQL","HL7", "MITRE", "CQM"],
+  "bugs" : {"url" : "https://github.com/cqframework/clinical_quality_language/issues"},
+  "contributors" :[
+  {"name" : "Chris Moesel",
+   "email" : "cmoesel@mitre.org"},
+  {"name" : "Rob Dingwell",
+   "email" : "bobd@mitre.org"},
+  {"name" : "Jason Walonoski",
+   "email" : "jwalonoski@mitre.org"}],
+  "repository" :
+  { "type" : "git"
+  , "url" : "https://github.com/cqframework/clinical_quality_language.git"
+  },
   "devDependencies": {
     "coffee-script": "^1.8.0",
     "mocha": "^1.21.5",
     "should": "^4.0.4"
   },
+  "main" : "lib/cql",
+  "directories" : {
+      "lib" : "lib"
+    },
   "scripts": {
     "prepublish": "cake build",
     "test": "cake test"
