@@ -450,25 +450,37 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // If this is the first time a context definition is encountered, output a patient definition:
         // define Patient = element of [<Patient model type>]
         if (!implicitPatientCreated) {
-            String patientTypeName = getModel().getModelInfo().getPatientClassName();
-            if (patientTypeName == null || patientTypeName.equals("")) {
-                throw new IllegalArgumentException("Model definition does not contain enough information to construct a patient context.");
+            if (hasUsings()) {
+                String patientTypeName = getModel().getModelInfo().getPatientClassName();
+                if (patientTypeName == null || patientTypeName.equals("")) {
+                    throw new IllegalArgumentException("Model definition does not contain enough information to construct a patient context.");
+                }
+                DataType patientType = resolveTypeName(patientTypeName);
+                Retrieve patientRetrieve = of.createRetrieve().withDataType(dataTypeToQName(patientType));
+                patientRetrieve.setResultType(new ListType(patientType));
+                String patientClassIdentifier = getModel().getModelInfo().getPatientClassIdentifier();
+                if (patientClassIdentifier != null) {
+                    patientRetrieve.setTemplateId(patientClassIdentifier);
+                }
+
+                ExpressionDef patientExpressionDef = of.createExpressionDef()
+                        .withName("Patient")
+                        .withContext(currentContext)
+                        .withExpression(of.createSingletonFrom().withOperand(patientRetrieve));
+                patientExpressionDef.getExpression().setResultType(patientType);
+                patientExpressionDef.setResultType(patientType);
+                addToLibrary(patientExpressionDef);
             }
-            DataType patientType = resolveTypeName(patientTypeName);
-            Retrieve patientRetrieve = of.createRetrieve().withDataType(dataTypeToQName(patientType));
-            patientRetrieve.setResultType(new ListType(patientType));
-            String patientClassIdentifier = getModel().getModelInfo().getPatientClassIdentifier();
-            if (patientClassIdentifier != null) {
-                patientRetrieve.setTemplateId(patientClassIdentifier);
+            else {
+                ExpressionDef patientExpressionDef = of.createExpressionDef()
+                        .withName("Patient")
+                        .withContext(currentContext)
+                        .withExpression(of.createNull());
+                patientExpressionDef.getExpression().setResultType(resolveTypeName("System", "Any"));
+                patientExpressionDef.setResultType(patientExpressionDef.getExpression().getResultType());
+                addToLibrary(patientExpressionDef);
             }
 
-            ExpressionDef patientExpressionDef = of.createExpressionDef()
-                    .withName("Patient")
-                    .withContext(currentContext)
-                    .withExpression(of.createSingletonFrom().withOperand(patientRetrieve));
-            patientExpressionDef.getExpression().setResultType(patientType);
-            patientExpressionDef.setResultType(patientType);
-            addToLibrary(patientExpressionDef);
             implicitPatientCreated = true;
             return currentContext;
         }
@@ -3128,6 +3140,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return model;
+    }
+
+    private boolean hasUsings() {
+        for (Model model : models.values()) {
+            if (!model.getModelInfo().getName().equals("System")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private String getDefaultModelName() {
