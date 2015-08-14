@@ -6362,7 +6362,7 @@
     }
     lib = new cql.Library(elm);
     patientSource = new cql.PatientSource([]);
-    executor = new cql.Executor(lib, null, null);
+    executor = new cql.Executor(lib, null, parameters);
     return executor.exec(patientSource);
   };
 
