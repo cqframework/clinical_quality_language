@@ -1,5 +1,9 @@
 module.exports.Library = class Library
   constructor: (json, libraryManager) ->
+    @source = json
+    @usings = []
+    for u in json.library.usings?.def ? []
+      @usings.push {"name" : u.localIdentifier, "version" : u.version} if u.localIdentifier != "System"
     @parameters = {}
     for param in json.library.parameters?.def ? []
       @parameters[param.name] = new ParameterDef(param)

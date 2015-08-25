@@ -22,6 +22,10 @@ describe 'Using CommonLib', ->
   @beforeEach ->
     setup @, data, [ p1, p2 ], {}, {}, new Repository(data)
     
+  it "should have using models defined", ->
+    @lib.usings.should.not.be.empty
+    @lib.usings.length.should.equal 1
+    @lib.usings[0].name.should.equal "QUICK" 
 
   it 'Should have included a library', ->
     @lib.includes.should.not.be.empty
