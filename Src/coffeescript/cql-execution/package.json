@@ -1,6 +1,6 @@
 {
   "name": "cql-execution",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An execution framework for the Clinical Quality Language (CQL)",
   "devDependencies": {
     "coffee-script": "^1.8.0",
