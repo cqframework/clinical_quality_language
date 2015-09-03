@@ -101,7 +101,9 @@ describe 'CalculateAge', ->
     @years.exec(@ctx).should.equal @full_months // 12
 
   it 'should execute age in months', ->
-    @months.exec(@ctx).should.equal @full_months
+    # what is returned will depend on whether the day in the current month has 
+    # made it to the 17th day of the month as declared in the birthday
+    [@full_months, @full_months-1].indexOf(@months.exec(@ctx)).should.not.equal -1 
 
   it 'should execute age in days', ->
     @days.exec(@ctx).should.equal @timediff // 1000 // 60 // 60 // 24

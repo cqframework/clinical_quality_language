@@ -113,9 +113,14 @@ module.exports.Start = class Start extends Expression
     super
 
   exec: (ctx) ->
-    @arg.exec(ctx).low
+    @arg.exec(ctx)?.low
 
-module.exports.End = class End extends UnimplementedExpression
+module.exports.End = class End  extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    @arg.exec(ctx)?.high
 
 # TODO: Spec has "Begins" defined, but shouldn't it be "Starts"?
 module.exports.Starts = class Starts extends UnimplementedExpression
