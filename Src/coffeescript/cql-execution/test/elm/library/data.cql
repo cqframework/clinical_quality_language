@@ -21,6 +21,7 @@ define function foo (a Integer, b Integer) :
 
 
 // @Test: Using CommonLib
+using QUICK
 include COM called common
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 
