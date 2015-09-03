@@ -7,6 +7,7 @@ conditional = require './conditional',
 datetime = require './datetime',
 declaration = require './declaration',
 external = require './external',
+instance = require './instance',
 interval = require './interval',
 list = require './list',
 literal = require './literal',
@@ -21,7 +22,7 @@ type = require './type',
 overloaded = require './overloaded'
 
 libs = [expression, aggregate, arithmetic, clinical, comparison, conditional, datetime, declaration,
-        external, interval, list, literal, logical, nullological, parameters, query, reusable,
+        external, instance, interval, list, literal, logical, nullological, parameters, query, reusable,
         string, structured, type, overloaded]
 for lib in libs
   for element in Object.keys(lib)
