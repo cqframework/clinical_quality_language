@@ -738,6 +738,13 @@ describe 'Start', ->
   it 'should execute as the start of the interval', ->
     @foo.exec(@ctx).should.eql new DateTime(2012, 1, 1)
 
+describe 'End', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute as the end of the interval', ->
+    @foo.exec(@ctx).should.eql new DateTime(2013, 1, 1)
+
 describe 'IntegerIntervalUnion', ->
   @beforeEach ->
     setup @, data

@@ -498,6 +498,9 @@ define RealOpenWidth: width of Interval(1.23, 4.56)
 // @Test: Start
 define Foo: start of Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
 
+// @Test: End
+define Foo: end of Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)]
+
 // @Test: IntegerIntervalUnion
 define IntFullInterval: Interval[0,10]
 define IntClosedUnionClosed: Interval[0,5] union Interval[5,10]

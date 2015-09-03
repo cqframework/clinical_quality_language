@@ -232,7 +232,7 @@ module.exports.DateTime = class DateTime
       new Date(y, mo, d, h, mi, s, ms)
 
   _pad: (num) ->
-    String("0" + x).slice(-2);
+    String("0" + num).slice(-2);
 
   # TODO: Needs unit tests!
   toString: () ->
