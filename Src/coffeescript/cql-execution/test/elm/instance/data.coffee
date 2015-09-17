@@ -20,16 +20,9 @@ define Med : Medication {
   isBrand: false
 }
 
-define C : Crap {}
-
 define val: Quantity.value
 ###
 
-###
-Translation Error(s):
-[14:17, 14:17] no viable alternative at input '}'
-[14:12, 14:18] A named type is required in this context.
-###
 module.exports['Instance'] = {
    "library" : {
       "identifier" : {
@@ -111,13 +104,6 @@ module.exports['Instance'] = {
                      "type" : "Literal"
                   }
                } ]
-            }
-         }, {
-            "name" : "C",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "type" : "Null"
             }
          }, {
             "name" : "val",

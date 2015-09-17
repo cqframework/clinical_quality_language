@@ -7,7 +7,7 @@ module.exports.DateTime = class DateTime
   @parse: (string) ->
     match = regex = /(\d{4})(-(\d{2}))?(-(\d{2}))?(T((\d{2})(\:(\d{2})(\:(\d{2})(\.(\d+))?)?)?)?(([+-])(\d{2})(\:?(\d{2}))?)?)?/.exec string
 
-    if match[0] is string
+    if match?[0] is string
       args = [match[1], match[3], match[5], match[8], match[10], match[12], match[14]]
       # fix up milliseconds by padding zeros and/or truncating (5 --> 500, 50 --> 500, 54321 --> 543, etc.)
       if args[6]? then args[6] = (args[6] + "00").substring(0, 3)
