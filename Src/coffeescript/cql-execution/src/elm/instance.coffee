@@ -1,6 +1,6 @@
 { Expression } = require './expression'
 { build } = require './builder'
-
+{Quantity} = require('./quantity')
 class Element 
   constructor: (json) ->
     @name = json.name
@@ -19,4 +19,4 @@ module.exports.Instance = class Instance extends Expression
     obj = {}
     for el in @element
       obj[el.name] = el.exec(ctx)
-    obj
+    if @classType is "{urn:hl7-org:elm-types:r1}Quantity" then new Quantity(obj) else obj

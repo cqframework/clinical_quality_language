@@ -135,6 +135,11 @@ module.exports.doAfter = (a, b, precision) ->
 module.exports.doBefore = (a, b, precision) ->
   a.before b, precision
 
+module.exports.doAddition = (a,b) ->
+
+module.exports.doSubtraction = (a,b) ->
+
+
 module.exports.DurationBetween = class DurationBetween extends Expression
   constructor: (json) ->
     super

@@ -349,3 +349,42 @@ describe 'Predecessor', ->
       e.constructor.name.should.equal "OverFlowException"
       a = true
      a.should.equal true
+
+describe 'Quantity', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should be able to perform Quantity Addition", -> 
+    aqq = @add_q_q.exec(@ctx)
+    aqq.value.should.equal 20
+    aqq.unit.should.equal 'days'
+    adq = @add_d_q.exec(@ctx)
+    adq.constructor.name.should.equal "DateTime"
+    adq.year.should.equal 2000
+    adq.month.should.equal 1
+    adq.day.should.equal 11
+
+
+  it "should be able to perform Quantity Subtraction", -> 
+    sqq = @sub_q_q.exec(@ctx)
+    sqq.value.should.equal 0
+    sqq.unit.should.equal 'days'
+    sdq = @sub_d_q.exec(@ctx)
+    sdq.constructor.name.should.equal "DateTime"
+    sdq.year.should.equal 1999
+    sdq.month.should.equal 12
+    sdq.day.should.equal 22
+ 
+  it "should be able to perform Quantity Division", -> 
+
+  it "should be able to perform Quantity Multiplication", -> 
+
+  it "should be able to perform Quantity Absolution", -> 
+    q = @abs.exec(@ctx)
+    q.value.should.equal 10
+    q.unit.should.equal 'days'
+
+  it "should be able to perform Quantity Negation", -> 
+    q = @neg.exec(@ctx)
+    q.value.should.equal -10
+    q.unit.should.equal 'days'

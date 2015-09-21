@@ -5,15 +5,15 @@ module.exports.Uncertainty = class Uncertainty
     if obj instanceof Uncertainty then obj else new Uncertainty(obj)
 
   constructor: (@low = null, @high) ->
-    gt = (a, b) -> if a.constructor.name is 'DateTime' then a.after b else a > b
+    gt = (a, b) -> if a.constructor.name in ['DateTime','Quantity'] then a.after b else a > b
     if typeof @high is 'undefined' then @high = @low
     if @low? and @high? and gt(@low, @high) then [@low, @high] = [@high, @low]
 
   isPoint: () ->
     # Note: Can't use normal equality, as that fails for Javascript dates
     # TODO: Fix after we don't need to support Javascript date uncertainties anymore
-    lte = (a, b) -> if a.constructor.name is 'DateTime' then a.sameOrBefore b else a <= b
-    gte = (a, b) -> if a.constructor.name is 'DateTime' then a.sameOrAfter b else a >= b
+    lte = (a, b) -> if a.constructor.name in ['DateTime','Quantity'] then a.sameOrBefore b else a <= b
+    gte = (a, b) -> if a.constructor.name in ['DateTime','Quantity']then a.sameOrAfter b else a >= b
     @low? and @high? and lte(@low, @high) and gte(@low, @high)
 
   equals: (other) ->

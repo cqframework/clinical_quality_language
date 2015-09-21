@@ -2,6 +2,7 @@
 { FunctionRef } = require './reusable'
 { typeIsArray , allTrue, anyTrue} = require '../util/util'
 MathUtil = require '../util/math'
+Quantity = require('./quantity')
 
 module.exports.Add = class Add extends Expression
   constructor: (json) ->
@@ -9,7 +10,14 @@ module.exports.Add = class Add extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx)
-    if (args.some (x) -> not x?) then null else args.reduce (x,y) -> x + y
+    if (args?.some (x) -> not x?) 
+      null 
+    else 
+      args?.reduce (x,y) -> 
+        if x.constructor.name == 'Quantity'  or x.constructor.name == 'DateTime' 
+          Quantity.doAddition(x,y)
+        else
+          x + y
 
 module.exports.Subtract = class Subtract extends Expression
   constructor: (json) ->
@@ -17,7 +25,14 @@ module.exports.Subtract = class Subtract extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx)
-    if (args.some (x) -> not x?) then null else args.reduce (x,y) -> x - y
+    if (args.some (x) -> not x?) 
+      null 
+    else 
+      args.reduce (x,y) -> 
+        if x.constructor.name == 'Quantity' or x.constructor.name == 'DateTime' 
+          Quantity.doSubtraction(x,y)
+        else
+          x - y
 
 module.exports.Multiply = class Multiply extends Expression
   constructor: (json) ->
@@ -25,15 +40,29 @@ module.exports.Multiply = class Multiply extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx)
-    if (args.some (x) -> not x?) then null else args.reduce (x,y) -> x * y
+    if (args?.some (x) -> not x?) 
+      null 
+    else 
+      args?.reduce (x,y) -> 
+        if x.constructor.name == 'Quantity' or y.constructor.name == 'Quantity'
+          Quantity.doMutiplication(x,y)
+        else
+          x * y
 
 module.exports.Divide = class Divide extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    args = @execArgs(ctx)
-    if (args.some (x) -> not x?) then null else args.reduce (x,y) -> x / y
+   args = @execArgs(ctx)
+   if (args?.some (x) -> not x?) 
+    null 
+   else 
+    args?.reduce (x,y) -> 
+      if x.constructor.name == 'Quantity' 
+        Quantity.doDivision(x,y)
+      else
+        x / y
 
 module.exports.TruncatedDivide = class TruncatedDivide extends  Expression
   constructor: (json) ->
@@ -133,7 +162,11 @@ module.exports.Abs = class Abs extends  Expression
     super
 
   exec: (ctx) ->
-    Math.abs @execArgs(ctx)
+    args = @execArgs(ctx)
+    if args?.constructor.name == 'Quantity' 
+      Quantity.createQuantity( Math.abs(args.value), args.unit)
+    else 
+      Math.abs args
 
   # TODO: Remove functionref when ELM does Floor natively
 module.exports.AbsFunctionRef = class AbsFunctionRef extends FunctionRef
@@ -153,7 +186,11 @@ module.exports.Negate = class Negate extends Expression
     super
 
   exec: (ctx) ->
-    @execArgs(ctx) * -1
+    args = @execArgs(ctx)
+    if args?.constructor.name == 'Quantity' 
+      Quantity.createQuantity(args.value * -1,args.unit)
+    else 
+      args * -1
 
 
 
