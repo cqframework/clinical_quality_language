@@ -1,4 +1,6 @@
 { Expression } = require './expression'
+{ FunctionRef } = require './reusable'
+
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
 
@@ -162,8 +164,9 @@ module.exports.doDivision = (a,b) ->
 
 module.exports.doMultiplication = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    # TODO: proper conversion of units (e.g., 5 m * 5 m = 5 m^2)
-    null
+    if a.unit == b.unit
+      new Quantity({unit: a.unit, value: a.value * b.value})
   else
     [q,d]  = if a instanceof Quantity then [a,b] else [b,a]
-    new Quantity({unit: q.unit, value: q.value * d})
+    q.value * d
+    

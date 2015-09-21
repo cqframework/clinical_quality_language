@@ -327,6 +327,7 @@ describe 'Quantity', ->
   @beforeEach ->
     setup @, data
 
+
   it "should be able to perform Quantity Addition", ->
     aqq = @add_q_q.exec(@ctx)
     aqq.value.should.equal 20
@@ -349,22 +350,8 @@ describe 'Quantity', ->
     sdq.day.should.equal 22
 
   it "should be able to perform Quantity Division", ->
-    dqd = @div_q_d.exec(@ctx)
-    dqd.constructor.name.should.equal "Quantity"
-    dqd.unit.should.equal "days"
-    dqd.value.should.equal 5
-    dqq = @div_q_q.exec(@ctx)
-    dqq.should.equal 1
 
   it "should be able to perform Quantity Multiplication", ->
-    mdq = @mul_d_q.exec(@ctx)
-    mdq.constructor.name.should.equal "Quantity"
-    mdq.unit.should.equal "days"
-    mdq.value.should.equal 20
-    mqd = @mul_q_d.exec(@ctx)
-    mqd.constructor.name.should.equal "Quantity"
-    mqd.unit.should.equal "days"
-    mqd.value.should.equal 20
 
   it "should be able to perform Quantity Absolution", ->
     q = @abs.exec(@ctx)
