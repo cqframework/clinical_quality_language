@@ -376,9 +376,17 @@ describe 'Quantity', ->
     sdq.day.should.equal 22
  
   it "should be able to perform Quantity Division", -> 
+    ddq = @div_q_d.exec(@ctx)
+    ddq.constructor.name.should.equal "Quantity"
+    ddq.unit.should.equal "days"
+    ddq.value.should.equal 5
 
   it "should be able to perform Quantity Multiplication", -> 
-
+    mdq = @mul_d_q.exec(@ctx)
+    mdq.should.equal 20
+    mqd = @mul_q_d.exec(@ctx)
+    mqd.should.equal 20
+    
   it "should be able to perform Quantity Absolution", -> 
     q = @abs.exec(@ctx)
     q.value.should.equal 10

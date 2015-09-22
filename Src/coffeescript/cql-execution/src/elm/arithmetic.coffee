@@ -45,7 +45,7 @@ module.exports.Multiply = class Multiply extends Expression
     else 
       args?.reduce (x,y) -> 
         if x.constructor.name == 'Quantity' or y.constructor.name == 'Quantity'
-          Quantity.doMutiplication(x,y)
+          Quantity.doMultiplication(x,y)
         else
           x * y
 
