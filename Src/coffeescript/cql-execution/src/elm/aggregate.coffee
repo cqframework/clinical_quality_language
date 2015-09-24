@@ -49,6 +49,7 @@ module.exports.Sum = class Sum extends AggregateExpression
       val = if filtered.length == 0 then null else filtered.reduce (x,y) -> x+y
       quantityOrValue(val, arg)
 
+
 module.exports.Min = class Min extends AggregateExpression
   constructor:(json) ->
     super
@@ -60,6 +61,7 @@ module.exports.Min = class Min extends AggregateExpression
       filtered =  numerical_sort(quantitiesOrArg(arg),"asc")
       quantityOrValue(filtered[0],arg)
 
+
 module.exports.Max = class Max extends AggregateExpression
   constructor:(json) ->
     super
@@ -70,6 +72,7 @@ module.exports.Max = class Max extends AggregateExpression
       arg = compact(arg)
       filtered =  numerical_sort(quantitiesOrArg(arg),"desc")
       quantityOrValue(filtered[0],arg)
+
 
 module.exports.Avg = class Avg extends  AggregateExpression
   constructor:(json) ->
@@ -83,6 +86,7 @@ module.exports.Avg = class Avg extends  AggregateExpression
       return null if filtered.length == 0
       sum = filtered.reduce (x,y) -> x+y
       quantityOrValue((sum / filtered.length),arg)
+
 
 module.exports.Median = class Median extends AggregateExpression
   constructor:(json) ->
@@ -101,6 +105,7 @@ module.exports.Median = class Median extends AggregateExpression
         v = (filtered[(filtered.length / 2) - 1] +
          filtered[(filtered.length / 2)]) / 2
         quantityOrValue(v,arg)
+
 
 module.exports.Mode = class Mode extends AggregateExpression
   constructor:(json) ->
