@@ -2,6 +2,27 @@
 { FunctionRef } = require './reusable'
 { typeIsArray , allTrue, anyTrue, compact, numerical_sort} = require '../util/util'
 { build } = require './builder'
+Quantity = require './quantity'
+
+quantitiesOrArg = (arr) ->
+  if arr[0]?.constructor.name == "Quantity"
+    unit = arr[0].unit
+    values = []
+    for i in arr
+      if i.constructor.name == "Quantity" && i.unit == unit 
+        values.push i.value
+      else
+        return []  
+    return compact(values) # need to make sure that there are not any null values from the quntities
+  else
+    arr
+
+
+quantityOrValue = (value, arr) ->
+  if arr?[0]?.constructor.name == "Quantity" 
+    Quantity.createQuantity(value, arr[0].unit)
+  else
+    value
 
 class AggregateExpression extends Expression
   constructor:(json) ->
@@ -36,8 +57,10 @@ module.exports.Sum = class Sum extends AggregateExpression
   exec: (ctx) ->
     arg = @source.exec(ctx)
     if typeIsArray(arg)
-      filtered =  compact(arg)
-      if filtered.length == 0 then null else filtered.reduce (x,y) -> x+y
+      arg = compact(arg)
+      filtered =  quantitiesOrArg(arg)
+      val = if filtered.length == 0 then null else filtered.reduce (x,y) -> x+y
+      quantityOrValue(val, arg)
 
 
   # TODO: Remove functionref when ELM does Sum natively
@@ -59,8 +82,9 @@ module.exports.Min = class Min extends AggregateExpression
   exec: (ctx) ->
     arg = @source.exec(ctx)
     if typeIsArray(arg)
-      filtered =  numerical_sort(compact(arg),"asc")
-      filtered[0]
+      arg = compact(arg)
+      filtered =  numerical_sort(quantitiesOrArg(arg),"asc")
+      quantityOrValue(filtered[0],arg)
 
 
 
@@ -84,8 +108,9 @@ module.exports.Max = class Max extends AggregateExpression
   exec: (ctx) ->
     arg = @source.exec(ctx)
     if typeIsArray(arg)
-      filtered =  numerical_sort(compact(arg),"desc")
-      filtered[0]
+      arg = compact(arg)
+      filtered =  numerical_sort(quantitiesOrArg(arg),"desc")
+      quantityOrValue(filtered[0],arg)
 
 
   # TODO: Remove functionref when ELM does Min natively
@@ -100,6 +125,9 @@ module.exports.MaxFunctionRef = class MaxFunctionRef extends FunctionRef
   exec: (ctx) ->
     @func.exec(ctx)
 
+doAverage = (list) ->
+  sum = filtered.reduce (x,y) -> x+y
+  sum / filtered.length
 
 module.exports.Avg = class Avg extends  AggregateExpression
   constructor:(json) ->
@@ -108,10 +136,11 @@ module.exports.Avg = class Avg extends  AggregateExpression
   exec: (ctx) ->
     arg = @source.exec(ctx)
     if typeIsArray(arg)
-      filtered = compact(arg)
+      arg = compact(arg)
+      filtered = quantitiesOrArg(arg)
       return null if filtered.length == 0
       sum = filtered.reduce (x,y) -> x+y
-      sum / filtered.length
+      quantityOrValue((sum / filtered.length),arg)
 
 
   # TODO: Remove functionref when ELM does Avg natively
@@ -133,14 +162,16 @@ module.exports.Median = class Median extends AggregateExpression
   exec: (ctx) ->
     arg = @source.exec(ctx)
     if typeIsArray(arg)
-      filtered =  numerical_sort(compact(arg),"asc")
+      arg = compact(arg)
+      filtered =  numerical_sort(quantitiesOrArg(arg,"asc"))
       if filtered.length == 0
         null
       else if (filtered.length % 2 == 1)
-        filtered[(filtered.length - 1) / 2]
+         quantityOrValue(filtered[(filtered.length - 1) / 2],arg)
       else
-        (filtered[(filtered.length / 2) - 1] +
+        v = (filtered[(filtered.length / 2) - 1] +
          filtered[(filtered.length / 2)]) / 2
+        quantityOrValue(v,arg)
 
   # TODO: Remove functionref when ELM does Median natively
 module.exports.MedianFunctionRef = class MedianFunctionRef extends FunctionRef
@@ -199,8 +230,9 @@ module.exports.StdDev = class StdDev extends AggregateExpression
   exec: (ctx) ->
     args = @source.exec(ctx)
     if typeIsArray(args)
-      val = compact(args)
-      if val.length > 0 then @calculate(val)  else null
+      args = compact(args)
+      val = quantitiesOrArg(args)
+      if val.length > 0 then quantityOrValue(@calculate(val),args)  else null
 
   calculate: (list) ->
     val = @stats(list)
