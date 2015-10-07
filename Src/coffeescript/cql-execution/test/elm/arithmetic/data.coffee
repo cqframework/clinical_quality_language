@@ -2464,15 +2464,21 @@ context Patient
 
 define days_10: 10 days
 define QL10Days: Quantity{value: 10, unit: 'days'}
+define QL10Min : Quantity{value: 10, unit: 'min' }
 define Jan1_2000: DateTime(2000, 1, 1)
 define add_q_q : days_10 + QL10Days
 define add_d_q : Jan1_2000 + days_10
 define sub_q_q : days_10 - QL10Days
 define sub_d_q : Jan1_2000 - days_10
+define add_q_q_diff : QL10Days + QL10Min 
+define sub_q_q_diff : QL10Days - QL10Min 
 define div_q_d : days_10 / 2
 define div_q_q : days_10 / QL10Days
 define mul_q_d : days_10 * 2
 define mul_d_q : 2 * QL10Days
+define mul_q_q : 2 'm' * 10 'm'
+define mul_q_q_diff : 2 'm' * 10 '/d'
+
 define neg : - days_10
 define abs : Abs(neg)
 ###
@@ -2541,6 +2547,34 @@ module.exports['Quantity'] = {
                   "value" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "days",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "QL10Min",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "classType" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "type" : "Instance",
+               "element" : [ {
+                  "name" : "value",
+                  "value" : {
+                     "name" : "ToDecimal",
+                     "libraryName" : "System",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "name" : "unit",
+                  "value" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "min",
                      "type" : "Literal"
                   }
                } ]
@@ -2623,6 +2657,34 @@ module.exports['Quantity'] = {
                } ]
             }
          }, {
+            "name" : "add_q_q_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "QL10Days",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "QL10Min",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "sub_q_q_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "QL10Days",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "QL10Min",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
             "name" : "div_q_d",
             "context" : "Patient",
             "accessLevel" : "Public",
@@ -2694,6 +2756,38 @@ module.exports['Quantity'] = {
                }, {
                   "name" : "QL10Days",
                   "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "mul_q_q",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "value" : 2,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 10,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "mul_q_q_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "value" : 2,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 10,
+                  "unit" : "/d",
+                  "type" : "Quantity"
                } ]
             }
          }, {

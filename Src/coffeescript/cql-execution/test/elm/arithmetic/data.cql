@@ -104,15 +104,21 @@ define min_date: predecessor of DateTime(0001,01,01,0,0,0,0)
 
 define days_10: 10 days
 define QL10Days: Quantity{value: 10, unit: 'days'}
+define QL10Min : Quantity{value: 10, unit: 'min' }
 define Jan1_2000: DateTime(2000, 1, 1)
 define add_q_q : days_10 + QL10Days
 define add_d_q : Jan1_2000 + days_10
 define sub_q_q : days_10 - QL10Days
 define sub_d_q : Jan1_2000 - days_10
+define add_q_q_diff : QL10Days + QL10Min
+define sub_q_q_diff : QL10Days - QL10Min
 define div_q_d : days_10 / 2
 define div_q_q : days_10 / QL10Days
 define mul_q_d : days_10 * 2
 define mul_d_q : 2 * QL10Days
+define mul_q_q : 2 'm' * 10 'm'
+define mul_q_q_diff : 2 'm' * 10 '/d'
+
 define neg : - days_10
 
 define abs : Abs(neg)

@@ -3,6 +3,7 @@
 
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
+ucum = require  'ucum.js'
 
 # Unit conversation is currently implemented on for time duration comparison operations
 # TODO: Implement unit conversation for time duration mathematical operations
@@ -23,112 +24,112 @@ module.exports.Quantity = class Quantity extends Expression
     "#{@value} '#{@unit}'"
 
   sameOrBefore: (other) ->
-    if other instanceof Quantity and other.unit == @unit
-      @value <= parseFloat other.value
-    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisDurationInMilliseconds = durationInMilliseconds(@)
-      otherDurationInMilliseconds = durationInMilliseconds(other)
-      thisDurationInMilliseconds <= otherDurationInMilliseconds
-    else null
+    if other instanceof Quantity
+      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      @value <= other_v
 
   sameOrAfter: (other) ->
-    if other instanceof Quantity and other.unit == @unit
-      @value >= parseFloat other.value
-    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisDurationInMilliseconds = durationInMilliseconds(@)
-      otherDurationInMilliseconds = durationInMilliseconds(other)
-      thisDurationInMilliseconds >= otherDurationInMilliseconds
-    else null
+    if other instanceof Quantity
+      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      @value >= other_v
 
   after: (other) ->
-    if other instanceof Quantity and other.unit == @unit
-      @value > parseFloat other.value
-    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisDurationInMilliseconds = durationInMilliseconds(@)
-      otherDurationInMilliseconds = durationInMilliseconds(other)
-      thisDurationInMilliseconds > otherDurationInMilliseconds
-    else null
+    if other instanceof Quantity
+      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      @value > other_v
 
   before: (other) ->
-    if other instanceof Quantity and other.unit == @unit
-      @value < parseFloat other.value
-    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisDurationInMilliseconds = durationInMilliseconds(@)
-      otherDurationInMilliseconds = durationInMilliseconds(other)
-      thisDurationInMilliseconds < otherDurationInMilliseconds
-    else null
+    if other instanceof Quantity
+      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      @value < other_v
 
-  equals: (other) ->
-    if other instanceof Quantity and @unit == other.unit
-      @value == parseFloat other.value
-    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisDurationInMilliseconds = durationInMilliseconds(@)
-      otherDurationInMilliseconds = durationInMilliseconds(other)
-      thisDurationInMilliseconds == otherDurationInMilliseconds
-    else null
+  dividedBy: (other) ->
+    @multiplyDivied(other,"/")
 
+  multiplyBy: (other) ->
+    @multiplyDivied(other,".") # in ucum . represents multiplication
 
+  multiplyDivied: (other, operator) ->
+    if other instanceof Quantity
+      if @unit and other.unit
+        can_val = ucum.parse(ucum_unit(@unit)) # ucum.canonicalize(@value,ucum_unit(@unit))
+        can_val.value = @value
+        other_can_value = ucum.parse(ucum_unit(other.unit)) #ucum.canonicalize(other.value,ucum_unit(other.unit))
+        other_can_value.value = other.value
+        ucum_value = ucum_multiply(can_val,[[operator,other_can_value]])
+        createQuantity(ucum_value.value, units_to_string(ucum_value.units))
+      else
+        value = if operator == "/" then @value / other.value  else @value * other.value
+        unit = @unit || other.unit
+        createQuantity(value, unit)
+    else
+      value = if operator == "/" then @value / other  else @value * other
+      createQuantity( value, @unit)
+
+time_unit_to_ucum = {'day' : 'd' , 'hour' : 'h', 'minute' : 'min' , 'second': 's' , 'millisecond' :  'ms', 'week' : 'wk', 'weeks' : 'wk' }
+
+time_unit_dateTime_mapping = {'years':'year',  'months': 'month',  'days' :'day', 'hours': 'hour' , 'minutes': 'minute', 'seconds':'seconds', 'milliseconds' : 'millisecond' }
+
+# this is used to drop the pluralization of unit fields to pass into DateTime objects for addition and subtraction operations
 clean_unit = (units) ->
-  if ucum_time_units[units] then ucum_to_cql_units[ucum_time_units[units]] else units
+  if time_unit_dateTime_mapping[units] then time_unit_dateTime_mapping[units] else units
 
-# Hash of time units and their UCUM equivalents, both case-sensitive and case-insensitive
-# See http://unitsofmeasure.org/ucum.html#para-31
-# The CQL specification says that dates are based on the Gregorian calendar
-# UCUM says that years should be Julian. As a result, CQL-based year and month identifiers will
-# be matched to the UCUM gregorian units. UCUM-based year and month identifiers will be matched
-# to the UCUM julian units.
-ucum_time_units = {'years': 'a_g', 'year': 'a_g', 'YEARS': 'a_g', 'YEAR': 'a_g', 'a_g': 'a_g'
-  , 'a': 'a_j', 'ANN': 'a_j', 'ann': 'a_j', 'A': 'a_j', 'a_j': 'a_j'
-  , 'months': 'mo_g', 'month':'mo_g', 'mo_g': 'mo_g'
-  , 'mo': 'mo_j', 'MO': 'mo_j', 'mo_j': 'mo_j'
-  , 'weeks': 'wk', 'week': 'wk', 'wk': 'wk', 'WK': 'wk'
-  , 'days': 'd', 'day':'d', 'd': 'd', 'D': 'd'
-  , 'hours': 'h', 'hour': 'h', 'h': 'h', 'H': 'h'
-  , 'minutes': 'min', 'minute': 'min', 'min': 'min', 'MIN': 'min'
-  , 'seconds':'s', 'second':'s', 's': 's', 'S': 's'
-  , 'milliseconds' : 'ms', 'millisecond' : 'ms', 'ms': 'ms', 'MS': 'ms'
-  }
+# this is used to perform any convertions of CQL date time fileds to their ucum equivalents
+ucum_unit = (unit) ->
+  # first strip off any pluraizations then attempt to perform a time unit to ucum unit mapping
+  # otherwise send back the original value
+  u = time_unit_dateTime_mapping[unit] || unit
+  time_unit_to_ucum[u] ||  u
 
-ucum_to_cql_units = {
-    'a_j':  'year'
-  , 'a_g':  'year'
-  , 'mo_j': 'month'
-  , 'mo_g': 'month'
-  , 'wk':   'week'
-  , 'd':    'day'
-  , 'h':    'hour'
-  , 'min':  'minute'
-  , 's':    'second'
-  , 'ms':   'millisecond'
-}
+#just a wrapper function to deal with possible exceptions being thrown
+convert_value = (value, from ,to ) ->
+  try
+    ucum.convert(value,ucum_unit(from),ucum_unit(to))
+  catch e
 
-get_ucum_unit = (units) ->
-  if ucum_time_units[units]
-    ucum_time_units[units]
-  else units
+# This method will take a ucum.js representation of untis and converth them to a string
+# ucum.js units are a has of unit => power values.  For instance m/h (meters per hour) in
+# ucum.js will be reprsented by the json object {m: 1, h:-1}  negative values are inverted and
+# are akin to denominator values in a fraction.  Positive values are somewhat a kin to numerator
+# values in that they preceed the inverted values.  It is possible in ucum to have multiple non inverted
+# or inverted values.  This method combines all of the non inverted values and appends them with
+# the ucum multiplication operator '.' and then appends the inverted values separated by the ucum
+# divisor '/' .
+units_to_string = (units = {}) ->
+  numer = []
+  denom = []
+  for key in Object.keys(units)
+    v = units[key]
+    pow = Math.abs v
+    str = if pow == 1 then key  else key + pow
+    if v < 0 then denom.push str else numer.push str
+  unit_string = ""
+  unit_string += numer.join(".")
+  if denom.length > 0
+    unit_string += "/" + denom.join("/")
+  if unit_string == "" then null else unit_string
 
-# The smallest common duration is the millisecond
-# Returns the VALUE of a time duration-based quantity in milliseconds
-durationInMilliseconds = (qty) ->
-  if parseFloat qty.value
-    millivalue = switch
-      when get_ucum_unit(qty.unit) == 's' then qty.value * 1000
-      when get_ucum_unit(qty.unit) == 'min' then qty.value * 60 * 1000
-      when get_ucum_unit(qty.unit) == 'h' then qty.value * 60 * 60 * 1000
-      when get_ucum_unit(qty.unit) == 'd' then qty.value * 24 * 60 * 60 * 1000
-      when get_ucum_unit(qty.unit) == 'wk' then qty.value * 7 * 24 * 60 * 60 * 1000
-      # Support for the UCUM units based on the Gregorian calendar
-      when get_ucum_unit(qty.unit) == 'mo_g' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a Gregorian mean month length of 30.436875 days
-      when get_ucum_unit(qty.unit) == 'a_g' then qty.value * 365.2425 * 24 * 60 * 60 * 1000  # Based on a Gregorian year of 365.2425 days
-      # Support for the UCUM units based on the Julian calendar
-      when get_ucum_unit(qty.unit) == 'mo_j' then qty.value * 30.4375 * 24 * 60 * 60 * 1000  # Based on a Julian mean month length of 30.4375 days
-      when get_ucum_unit(qty.unit) == 'a_j' then qty.value * 365.25 * 24 * 60 * 60 * 1000  # Based on a Julian year of 365.25 days
-      else qty.value
-    millivalue
-  else
-    null
+# this method is taken from the ucum.js library.  ucum.js does not export this
+# method so we need to replicate the behavior here in order to perform multiplication
+# and division or the ucum values.
+# t:  the ucum quantity being multiplied/divided .  This method modifies the object t that is passed in
+# ms: an array of arrays whoes format is [<operator>,<ucum quantity>] an example would be [['.', {value: 1, units: {m:2}}]]
+# this would represent multiply t by the value m^2
+ucum_multiply = (t, ms=[]) ->
+  return t if ms.length == 0
+  ret = t
+  for mterm in ms
+    sign = if mterm[0] == '.' then 1 else -1
+    b = mterm[1]
+    ret.value *= Math.pow(b.value,sign)
+    for k,v of b.units
+      ret.units[k] = ret.units[k] || 0
+      ret.units[k] = ret.units[k] + sign*v
+      if ret.units[k] == 0
+        delete ret.units[k]
+  ret
 
-module.exports.createQuantity = (value,unit) ->
+module.exports.createQuantity = createQuantity = (value,unit) ->
   new Quantity({value: value, unit: unit})
 
 module.exports.parseQuantity = (str) ->
@@ -142,31 +143,30 @@ module.exports.parseQuantity = (str) ->
 
 module.exports.doAddition = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    if a.unit == b.unit
-      new Quantity({unit: a.unit, value: a.value + b.value})
+    # we will choose the unit of a to be the unit we return
+    val = convert_value(b.value, b.unit, a.unit)
+    if val
+      new Quantity({unit: a.unit, value: a.value + val})
   else
-    a.copy().add(b.value, clean_unit(b.unit))
-
+    a.copy?().add?(b.value, clean_unit(b.unit))
 
 module.exports.doSubtraction = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    if a.unit == b.unit
-      new Quantity({unit: a.unit, value: a.value - b.value})
+    # we will choose the unit of a to be the unit we return
+    val = convert_value(b.value, b.unit, a.unit)
+    if val
+      new Quantity({unit: a.unit, value: a.value - val})
   else
-    a.copy().add(b.value * -1 , clean_unit(b.unit))
+    a.copy?().add?(b.value * -1 , clean_unit(b.unit))
+
 
 module.exports.doDivision = (a,b) ->
-  if a instanceof Quantity and b instanceof Quantity
-    if a.unit == b.unit
-      a.value / b.value
-  else
-    new Quantity({unit: a.unit, value: a.value / b})
+  if a instanceof Quantity
+    a.dividedBy(b)
 
 module.exports.doMultiplication = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    if a.unit == b.unit
-      new Quantity({unit: a.unit, value: a.value * b.value})
+    a.multiplyBy(b)
   else
     [q,d]  = if a instanceof Quantity then [a,b] else [b,a]
     q.value * d
-    
