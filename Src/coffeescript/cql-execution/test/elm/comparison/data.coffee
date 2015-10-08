@@ -1344,6 +1344,12 @@ context Patient
 define AGtB_Int: 5 < 4
 define AEqB_Int: 5 < 5
 define ALtB_Int: 5 < 6
+define AGtB_Quantity: 5 'm' < 4 'm'
+define AEqB_Quantity: 5 'm' < 5 'm'
+define ALtB_Quantity: 5 'm' < 6 'm'
+define AGtB_Quantity_diff: 5 'm' < 5 'cm'
+define AEqB_Quantity_diff: 5 'm' < 500 'cm'
+define ALtB_Quantity_diff: 5 'm' < 5 'km'
 ###
 
 module.exports['Less'] = {
@@ -1425,6 +1431,102 @@ module.exports['Less'] = {
                   "type" : "Literal"
                } ]
             }
+         }, {
+            "name" : "AGtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 6,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AGtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 500,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "km",
+                  "type" : "Quantity"
+               } ]
+            }
          } ]
       }
    }
@@ -1437,6 +1539,12 @@ context Patient
 define AGtB_Int: 5 <= 4
 define AEqB_Int: 5 <= 5
 define ALtB_Int: 5 <= 6
+define AGtB_Quantity: 5 'm' <= 4 'm'
+define AEqB_Quantity: 5 'm' <= 5 'm'
+define ALtB_Quantity: 5 'm' <= 6 'm' 
+define AGtB_Quantity_diff: 5 'm' <= 4 'm'
+define AEqB_Quantity_diff: 5 'm' <= 500 'cm'
+define ALtB_Quantity_diff: 5 'm' <= 5 'km'
 ###
 
 module.exports['LessOrEqual'] = {
@@ -1518,6 +1626,102 @@ module.exports['LessOrEqual'] = {
                   "type" : "Literal"
                } ]
             }
+         }, {
+            "name" : "AGtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 6,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AGtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 500,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "km",
+                  "type" : "Quantity"
+               } ]
+            }
          } ]
       }
    }
@@ -1530,6 +1734,12 @@ context Patient
 define AGtB_Int: 5 > 4
 define AEqB_Int: 5 > 5
 define ALtB_Int: 5 > 6
+define AGtB_Quantity: 5 'm' > 4 'm'
+define AEqB_Quantity: 5 'm' > 5 'm'
+define ALtB_Quantity: 5 'm' > 6 'm'
+define AGtB_Quantity_diff: 5 'm' > 5 'cm'
+define AEqB_Quantity_diff: 5 'm' > 500 'cm'
+define ALtB_Quantity_diff: 5 'm' > 5 'km'
 ###
 
 module.exports['Greater'] = {
@@ -1611,6 +1821,102 @@ module.exports['Greater'] = {
                   "type" : "Literal"
                } ]
             }
+         }, {
+            "name" : "AGtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 6,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AGtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 500,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "km",
+                  "type" : "Quantity"
+               } ]
+            }
          } ]
       }
    }
@@ -1623,6 +1929,12 @@ context Patient
 define AGtB_Int: 5 >= 4
 define AEqB_Int: 5 >= 5
 define ALtB_Int: 5 >= 6
+define AGtB_Quantity: 5 'm' >= 4 'm'
+define AEqB_Quantity: 5 'm' >= 5 'm'
+define ALtB_Quantity: 5 'm' >= 6 'm'
+define AGtB_Quantity_diff: 5 'm' >= 5 'cm'
+define AEqB_Quantity_diff: 5 'm' >= 500 'cm'
+define ALtB_Quantity_diff: 5 'm' >= 5 'km'
 ###
 
 module.exports['GreaterOrEqual'] = {
@@ -1702,6 +2014,102 @@ module.exports['GreaterOrEqual'] = {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "AGtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 6,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AGtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 500,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "km",
+                  "type" : "Quantity"
                } ]
             }
          } ]

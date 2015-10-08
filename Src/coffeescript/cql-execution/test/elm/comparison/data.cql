@@ -28,18 +28,43 @@ define ImpossiblyEqualDateTimes: DateTime(2000, 3, 15) != DateTime(2000, 4)
 define AGtB_Int: 5 < 4
 define AEqB_Int: 5 < 5
 define ALtB_Int: 5 < 6
+define AGtB_Quantity: 5 'm' < 4 'm'
+define AEqB_Quantity: 5 'm' < 5 'm'
+define ALtB_Quantity: 5 'm' < 6 'm'
+define AGtB_Quantity_diff: 5 'm' < 5 'cm'
+define AEqB_Quantity_diff: 5 'm' < 500 'cm'
+define ALtB_Quantity_diff: 5 'm' < 5 'km'
 
 // @Test: LessOrEqual
 define AGtB_Int: 5 <= 4
 define AEqB_Int: 5 <= 5
 define ALtB_Int: 5 <= 6
+define AGtB_Quantity: 5 'm' <= 4 'm'
+define AEqB_Quantity: 5 'm' <= 5 'm'
+define ALtB_Quantity: 5 'm' <= 6 'm' 
+define AGtB_Quantity_diff: 5 'm' <= 4 'm'
+define AEqB_Quantity_diff: 5 'm' <= 500 'cm'
+define ALtB_Quantity_diff: 5 'm' <= 5 'km'
+
 
 // @Test: Greater
 define AGtB_Int: 5 > 4
 define AEqB_Int: 5 > 5
 define ALtB_Int: 5 > 6
+define AGtB_Quantity: 5 'm' > 4 'm'
+define AEqB_Quantity: 5 'm' > 5 'm'
+define ALtB_Quantity: 5 'm' > 6 'm'
+define AGtB_Quantity_diff: 5 'm' > 5 'cm'
+define AEqB_Quantity_diff: 5 'm' > 500 'cm'
+define ALtB_Quantity_diff: 5 'm' > 5 'km'
 
 // @Test: GreaterOrEqual
 define AGtB_Int: 5 >= 4
 define AEqB_Int: 5 >= 5
 define ALtB_Int: 5 >= 6
+define AGtB_Quantity: 5 'm' >= 4 'm'
+define AEqB_Quantity: 5 'm' >= 5 'm'
+define ALtB_Quantity: 5 'm' >= 6 'm'
+define AGtB_Quantity_diff: 5 'm' >= 5 'cm'
+define AEqB_Quantity_diff: 5 'm' >= 500 'cm'
+define ALtB_Quantity_diff: 5 'm' >= 5 'km'

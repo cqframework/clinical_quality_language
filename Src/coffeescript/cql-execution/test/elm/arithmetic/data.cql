@@ -118,7 +118,6 @@ define mul_q_d : days_10 * 2
 define mul_d_q : 2 * QL10Days
 define mul_q_q : 2 'm' * 10 'm'
 define mul_q_q_diff : 2 'm' * 10 '/d'
-
 define neg : - days_10
 
 define abs : Abs(neg)
