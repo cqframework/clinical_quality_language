@@ -66,7 +66,11 @@ module.exports.Quantity = class Quantity extends Expression
       value = if operator == "/" then @value / other  else @value * other
       createQuantity( value, @unit)
 
+<<<<<<< 556abbed77f7788a089af01e65ef106ec369c2f5
 time_unit_to_ucum = {'day' : 'd' , 'hour' : 'h', 'minute' : 'min' , 'second': 's' , 'millisecond' :  'ms', 'week' : 'wk', 'weeks' : 'wk' }
+=======
+time_unit_to_ucum = {'year' : 'a', 'month' : 'mo',  'day' : 'd' , 'hour' : 'h', 'minute' : 'min' , 'second': 's' , 'millisecond' :  'ms', 'week' : 'wk', 'weeks' : 'wk' }
+>>>>>>> modified documentation added canonicalize method to quantity
 
 time_unit_dateTime_mapping = {'years':'year',  'months': 'month',  'days' :'day', 'hours': 'hour' , 'minutes': 'minute', 'seconds':'seconds', 'milliseconds' : 'millisecond' }
 
@@ -81,12 +85,22 @@ ucum_unit = (unit) ->
   u = time_unit_dateTime_mapping[unit] || unit
   time_unit_to_ucum[u] ||  u
 
+
+
+module.exports.canonicalize = (value,unit) ->
+  return {value: value} if unit == null
+  ucv = ucum.canonicalize(value, ucum_unit(unit))
+  {value: ucv.value, unit: units_to_string(ucv.units)}
+
+
+
 #just a wrapper function to deal with possible exceptions being thrown
 convert_value = (value, from ,to ) ->
   try
     ucum.convert(value,ucum_unit(from),ucum_unit(to))
   catch e
 
+module.exports.convert_value = convert_value
 # This method will take a ucum.js representation of untis and converth them to a string
 # ucum.js units are a has of unit => power values.  For instance m/h (meters per hour) in
 # ucum.js will be reprsented by the json object {m: 1, h:-1}  negative values are inverted and
@@ -109,9 +123,10 @@ units_to_string = (units = {}) ->
     unit_string += "/" + denom.join("/")
   if unit_string == "" then null else unit_string
 
-# this method is taken from the ucum.js library.  ucum.js does not export this
-# method so we need to replicate the behavior here in order to perform multiplication
-# and division or the ucum values.
+
+# this method is taken from the ucum.js library which it does not  export
+# so we need to replicate the behavior here in order to perform multiplication
+# and division of the ucum values.  
 # t:  the ucum quantity being multiplied/divided .  This method modifies the object t that is passed in
 # ms: an array of arrays whoes format is [<operator>,<ucum quantity>] an example would be [['.', {value: 1, units: {m:2}}]]
 # this would represent multiply t by the value m^2

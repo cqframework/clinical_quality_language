@@ -15,7 +15,9 @@ module.exports.Instance = class Instance extends Expression
     super
     @classType = json.classType
     @element = ( new Element(child) for child in json.element)
-
+ 
+  # TODO:  Implement switch statement for other system types such as Code and Concept
+  # 
   exec: (ctx) ->
     obj = {}
     for el in @element
