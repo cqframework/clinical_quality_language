@@ -44,9 +44,9 @@ module.exports.DateTime = class DateTime
         date.getMilliseconds())
 
   constructor: (@year=null, @month=null, @day=null, @hour=null, @minute=null, @second=null, @millisecond=null, @timezoneOffset) ->
+    # from the spec: If no timezone is specified, the timezone of the evaluation request timestamp is used.
     if not @timezoneOffset?
       @timezoneOffset = (new Date()).getTimezoneOffset() / 60 * -1
-
 
   copy: () ->
     new DateTime(@year, @month, @day, @hour, @minute, @second, @millisecond, @timezoneOffset)
@@ -67,7 +67,6 @@ module.exports.DateTime = class DateTime
     else if @year?
       @add(1,DateTime.Unit.YEAR)
 
-
   predecessor: () ->
     if @millisecond?
       @add(-1,DateTime.Unit.MILLISECOND)
@@ -85,7 +84,8 @@ module.exports.DateTime = class DateTime
       @add(-1,DateTime.Unit.YEAR)
 
   convertToTimezoneOffset: (timezoneOffset = 0) ->
-    DateTime.fromDate(@toJSDate(), timezoneOffset)
+    d = DateTime.fromDate(@toJSDate(), timezoneOffset)
+    d.reducedPrecision(@getPrecision())
 
   sameAs: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then null
@@ -208,7 +208,8 @@ module.exports.DateTime = class DateTime
     if @hour? then result = DateTime.Unit.HOUR else return result
     if @minute? then result = DateTime.Unit.MINUTE else return result
     if @second? then result = DateTime.Unit.SECOND else return result
-    if @millisecond? then result = DateTime.Unit.MILLISECOND else return result
+    if @millisecond? then result = DateTime.Unit.MILLISECOND
+    result
 
   toUncertainty: (ignoreTimezone = false) ->
     low = @toJSDate(ignoreTimezone)

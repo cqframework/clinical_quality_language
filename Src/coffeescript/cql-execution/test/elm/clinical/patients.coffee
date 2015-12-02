@@ -15,7 +15,7 @@ module.exports.p1 = {
         "identifier": [{ "value": "1" }],
         "name": {"given":["John"], "family": ["Smith"]},
         "gender": "M",
-        "birthDate" : "1980-06-17T06:15"}
+        "birthDate" : "1980-06-17"}
         }
   ]
 }
@@ -37,6 +37,6 @@ module.exports.p2 = {
       "identifier": [{ "value": "2" }],
       "name": {"given":["Sally"], "family": ["Smith"]},
       "gender": "F",
-      "birthDate" : "2007-08-02T11:47"
+      "birthDate" : "2007-08-02"
       }]
 }
