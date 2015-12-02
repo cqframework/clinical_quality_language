@@ -354,7 +354,7 @@ describe 'Quantity', ->
   @beforeEach ->
     setup @, data
 
-  it "should be able to perform Quantity Addition", -> 
+  it "should be able to perform Quantity Addition", ->
     aqq = @add_q_q.exec(@ctx)
     aqq.value.should.equal 20
     aqq.unit.should.equal 'days'
@@ -365,7 +365,7 @@ describe 'Quantity', ->
     adq.day.should.equal 11
 
 
-  it "should be able to perform Quantity Subtraction", -> 
+  it "should be able to perform Quantity Subtraction", ->
     sqq = @sub_q_q.exec(@ctx)
     sqq.value.should.equal 0
     sqq.unit.should.equal 'days'
@@ -374,25 +374,31 @@ describe 'Quantity', ->
     sdq.year.should.equal 1999
     sdq.month.should.equal 12
     sdq.day.should.equal 22
- 
-  it "should be able to perform Quantity Division", -> 
-    ddq = @div_q_d.exec(@ctx)
-    ddq.constructor.name.should.equal "Quantity"
-    ddq.unit.should.equal "days"
-    ddq.value.should.equal 5
 
-  it "should be able to perform Quantity Multiplication", -> 
+  it "should be able to perform Quantity Division", ->
+    dqd = @div_q_d.exec(@ctx)
+    dqd.constructor.name.should.equal "Quantity"
+    dqd.unit.should.equal "days"
+    dqd.value.should.equal 5
+    dqq = @div_q_q.exec(@ctx)
+    dqq.should.equal 1
+
+  it "should be able to perform Quantity Multiplication", ->
     mdq = @mul_d_q.exec(@ctx)
-    mdq.should.equal 20
+    mdq.constructor.name.should.equal "Quantity"
+    mdq.unit.should.equal "days"
+    mdq.value.should.equal 20
     mqd = @mul_q_d.exec(@ctx)
-    mqd.should.equal 20
-    
-  it "should be able to perform Quantity Absolution", -> 
+    mqd.constructor.name.should.equal "Quantity"
+    mqd.unit.should.equal "days"
+    mqd.value.should.equal 20
+
+  it "should be able to perform Quantity Absolution", ->
     q = @abs.exec(@ctx)
     q.value.should.equal 10
     q.unit.should.equal 'days'
 
-  it "should be able to perform Quantity Negation", -> 
+  it "should be able to perform Quantity Negation", ->
     q = @neg.exec(@ctx)
     q.value.should.equal -10
     q.unit.should.equal 'days'

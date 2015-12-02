@@ -9,17 +9,17 @@ quantitiesOrArg = (arr) ->
     unit = arr[0].unit
     values = []
     for i in arr
-      if i.constructor.name == "Quantity" && i.unit == unit 
+      if i.constructor.name == "Quantity" && i.unit == unit
         values.push i.value
       else
-        return []  
+        return []
     return compact(values) # need to make sure that there are not any null values from the quntities
   else
     arr
 
 
 quantityOrValue = (value, arr) ->
-  if arr?[0]?.constructor.name == "Quantity" 
+  if arr?[0]?.constructor.name == "Quantity"
     Quantity.createQuantity(value, arr[0].unit)
   else
     value
@@ -124,10 +124,6 @@ module.exports.MaxFunctionRef = class MaxFunctionRef extends FunctionRef
 
   exec: (ctx) ->
     @func.exec(ctx)
-
-doAverage = (list) ->
-  sum = filtered.reduce (x,y) -> x+y
-  sum / filtered.length
 
 module.exports.Avg = class Avg extends  AggregateExpression
   constructor:(json) ->

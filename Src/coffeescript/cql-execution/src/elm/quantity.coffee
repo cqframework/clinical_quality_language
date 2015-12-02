@@ -10,7 +10,7 @@ module.exports.Quantity = class Quantity extends Expression
     @value = json.value
 
   exec: (ctx) ->
-    @  
+    @
   sameOrBefore: (other) ->
     if other instanceof Quantity and other.unit == @unit then @value <= other.value else null
 
@@ -33,7 +33,7 @@ module.exports.createQuantity = (value,unit) ->
 
 module.exports.doAddition = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    if a.unit == b.unit 
+    if a.unit == b.unit
       new Quantity({unit: a.unit, value: a.value + b.value})
   else
     a.copy().add(b.value, clean_unit(b.unit))
@@ -41,22 +41,22 @@ module.exports.doAddition = (a,b) ->
 
 module.exports.doSubtraction = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    if a.unit == b.unit 
+    if a.unit == b.unit
       new Quantity({unit: a.unit, value: a.value - b.value})
   else
-    a.copy().add(b.value * -1 , clean_unit(b.unit))  
+    a.copy().add(b.value * -1 , clean_unit(b.unit))
 
 module.exports.doDivision = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    if a.unit == b.unit 
-      new Quantity({unit: a.unit, value: a.value / b.value})
+    if a.unit == b.unit
+      a.value / b.value
   else
     new Quantity({unit: a.unit, value: a.value / b})
 
 module.exports.doMultiplication = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    if a.unit == b.unit 
-      new Quantity({unit: a.unit, value: a.value * b.value})
+    # TODO: proper conversion of units (e.g., 5 m * 5 m = 5 m^2)
+    null
   else
     [q,d]  = if a instanceof Quantity then [a,b] else [b,a]
-    q.value * d
+    new Quantity({unit: q.unit, value: q.value * d})

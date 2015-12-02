@@ -1,7 +1,7 @@
 { Expression } = require './expression'
 { build } = require './builder'
 {Quantity} = require('./quantity')
-class Element 
+class Element
   constructor: (json) ->
     @name = json.name
     @value = build json.value
@@ -19,4 +19,5 @@ module.exports.Instance = class Instance extends Expression
     obj = {}
     for el in @element
       obj[el.name] = el.exec(ctx)
+    # TODO: Support for other classes like Code and Concept
     if @classType is "{urn:hl7-org:elm-types:r1}Quantity" then new Quantity(obj) else obj

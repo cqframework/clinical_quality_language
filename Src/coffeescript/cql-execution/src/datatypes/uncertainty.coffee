@@ -5,7 +5,7 @@ module.exports.Uncertainty = class Uncertainty
     if obj instanceof Uncertainty then obj else new Uncertainty(obj)
 
   constructor: (@low = null, @high) ->
-    gt = (a, b) -> if a.constructor.name in ['DateTime','Quantity'] then a.after b else a > b
+    gt = (a, b) -> if typeof a.after is 'function' then a.after b else a > b
     if typeof @high is 'undefined' then @high = @low
     if @low? and @high? and gt(@low, @high) then [@low, @high] = [@high, @low]
 
