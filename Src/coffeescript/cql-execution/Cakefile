@@ -62,7 +62,7 @@ task "debug-test", "run tests", ->
   console.log 'To debug, you must install and launch node-inspector:'
   console.log '1) $ npm install -g node-inspector'
   console.log '2) $ node-inspector'
-  console.log '3) Visit http://127.0.0.1:8080/debug?port=5858'
+  console.log '3) Visit http://127.0.0.1:8080/?ws=127.0.0.1:8080&port=5858'
   console.log '4) Subsequent tests may require you to reload the page in your browser'
 
   exec "NODE_ENV=test

@@ -39,14 +39,6 @@ module.exports.InValueSet = class InValueSet extends Expression
     valueset = @valueset.exec(ctx)
     if code? and valueset? then valueset.hasCode code else false
 
-module.exports.Quantity = class Quantity extends Expression
-  constructor: (json) ->
-    super
-    @unit = json.unit
-    @value = json.value
-
-  exec: (ctx) ->
-    @
 
 calculateAge = (date1, date2, precision) ->
   if date1.getTime() - date2.getTime() > 0 then return 0

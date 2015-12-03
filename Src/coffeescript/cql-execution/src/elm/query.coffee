@@ -171,7 +171,7 @@ class MultiSource
     a
 
   forEach: (ctx, func) ->
-    @records?= @expression.exec(ctx)
+    @records?= @expression.exec(ctx) || []
     for rec in @records
       rctx = new Context(ctx)
       rctx.set(@alias,rec)

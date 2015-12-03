@@ -7,7 +7,7 @@ module.exports.DateTime = class DateTime
   @parse: (string) ->
     match = regex = /(\d{4})(-(\d{2}))?(-(\d{2}))?(T((\d{2})(\:(\d{2})(\:(\d{2})(\.(\d+))?)?)?)?(([+-])(\d{2})(\:?(\d{2}))?)?)?/.exec string
 
-    if match[0] is string
+    if match?[0] is string
       args = [match[1], match[3], match[5], match[8], match[10], match[12], match[14]]
       # fix up milliseconds by padding zeros and/or truncating (5 --> 500, 50 --> 500, 54321 --> 543, etc.)
       if args[6]? then args[6] = (args[6] + "00").substring(0, 3)
@@ -44,9 +44,9 @@ module.exports.DateTime = class DateTime
         date.getMilliseconds())
 
   constructor: (@year=null, @month=null, @day=null, @hour=null, @minute=null, @second=null, @millisecond=null, @timezoneOffset) ->
+    # from the spec: If no timezone is specified, the timezone of the evaluation request timestamp is used.
     if not @timezoneOffset?
       @timezoneOffset = (new Date()).getTimezoneOffset() / 60 * -1
-
 
   copy: () ->
     new DateTime(@year, @month, @day, @hour, @minute, @second, @millisecond, @timezoneOffset)
@@ -67,7 +67,6 @@ module.exports.DateTime = class DateTime
     else if @year?
       @add(1,DateTime.Unit.YEAR)
 
-
   predecessor: () ->
     if @millisecond?
       @add(-1,DateTime.Unit.MILLISECOND)
@@ -85,7 +84,8 @@ module.exports.DateTime = class DateTime
       @add(-1,DateTime.Unit.YEAR)
 
   convertToTimezoneOffset: (timezoneOffset = 0) ->
-    DateTime.fromDate(@toJSDate(), timezoneOffset)
+    d = DateTime.fromDate(@toJSDate(), timezoneOffset)
+    d.reducedPrecision(@getPrecision())
 
   sameAs: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then null
@@ -208,7 +208,8 @@ module.exports.DateTime = class DateTime
     if @hour? then result = DateTime.Unit.HOUR else return result
     if @minute? then result = DateTime.Unit.MINUTE else return result
     if @second? then result = DateTime.Unit.SECOND else return result
-    if @millisecond? then result = DateTime.Unit.MILLISECOND else return result
+    if @millisecond? then result = DateTime.Unit.MILLISECOND
+    result
 
   toUncertainty: (ignoreTimezone = false) ->
     low = @toJSDate(ignoreTimezone)

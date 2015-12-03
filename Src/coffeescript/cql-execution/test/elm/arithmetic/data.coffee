@@ -2221,3 +2221,270 @@ module.exports['Predecessor'] = {
    }
 }
 
+### Quantity
+library TestSnippet version '1'
+using QUICK
+context Patient
+
+define days_10: 10 days
+define QL10Days: Quantity{value: 10, unit: 'days'}
+define Jan1_2000: DateTime(2000, 1, 1)
+define add_q_q : days_10 + QL10Days
+define add_d_q : Jan1_2000 + days_10
+define sub_q_q : days_10 - QL10Days
+define sub_d_q : Jan1_2000 - days_10
+define div_q_d : days_10 / 2
+define div_q_q : days_10 / QL10Days
+define mul_q_d : days_10 * 2
+define mul_d_q : 2 * QL10Days
+define neg : - days_10
+define abs : Abs(neg)
+###
+
+module.exports['Quantity'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "days_10",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "value" : 10,
+               "unit" : "days",
+               "type" : "Quantity"
+            }
+         }, {
+            "name" : "QL10Days",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "classType" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "type" : "Instance",
+               "element" : [ {
+                  "name" : "value",
+                  "value" : {
+                     "name" : "ToDecimal",
+                     "libraryName" : "System",
+                     "type" : "FunctionRef",
+                     "operand" : [ {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }, {
+                  "name" : "unit",
+                  "value" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "days",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "Jan1_2000",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "DateTime",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2000",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "add_q_q",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "days_10",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "QL10Days",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "add_d_q",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "Jan1_2000",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "days_10",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "sub_q_q",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "days_10",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "QL10Days",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "sub_d_q",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "Jan1_2000",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "days_10",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "div_q_d",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Divide",
+               "operand" : [ {
+                  "name" : "days_10",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "div_q_q",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Divide",
+               "operand" : [ {
+                  "name" : "days_10",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "QL10Days",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "mul_q_d",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "name" : "days_10",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "mul_d_q",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "name" : "ToDecimal",
+                  "libraryName" : "System",
+                  "type" : "FunctionRef",
+                  "operand" : [ {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "name" : "QL10Days",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "neg",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Negate",
+               "operand" : {
+                  "name" : "days_10",
+                  "type" : "ExpressionRef"
+               }
+            }
+         }, {
+            "name" : "abs",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Abs",
+               "type" : "FunctionRef",
+               "operand" : [ {
+                  "name" : "neg",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

@@ -1,6 +1,10 @@
 should = require 'should'
 setup = require '../../setup'
 data = require './data'
+validateQuantity = (object,expectedValue,expectedUnit) ->
+  object.constructor.name.should.equal "Quantity"
+  object.value.should.equal expectedValue
+  object.unit.should.equal expectedUnit
 
 describe 'Count', ->
   @beforeEach ->
@@ -23,6 +27,12 @@ describe 'Sum', ->
     @has_null.exec(@ctx).should.equal 3
   it 'should be able to sum empty list', ->
     @empty.exec(@ctx) == null
+  it 'should be able to sum quantity lists without nulls', ->
+    validateQuantity @not_null_q.exec(@ctx), 15, 'ml'
+  it 'should be able to sum  quantity lists with nulls', ->
+    validateQuantity @has_null_q.exec(@ctx), 3, 'ml'
+  it 'should return null for unmatched units in a list of quantiies', ->
+    @unmatched_units_q.exec(@ctx) == null
 
 describe 'Min', ->
   @beforeEach ->
@@ -34,6 +44,10 @@ describe 'Min', ->
     @has_null.exec(@ctx).should.equal -1
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
+  it 'should be able to find min in lists of quantiies without nulls', ->
+    validateQuantity @not_null_q.exec(@ctx), 0, 'ml' 
+  it 'should be able to find min in lists of quantiies with nulls', ->
+    validateQuantity @has_null_q.exec(@ctx), -1 , 'ml'
 
 describe 'Max', ->
   @beforeEach ->
@@ -45,6 +59,10 @@ describe 'Max', ->
     @has_null.exec(@ctx).should.equal 2
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
+  it 'should be able to find max in lists of quantiies without nulls', ->
+    validateQuantity @not_null_q.exec(@ctx),  10, 'ml'
+  it 'should be able to find max in lists of quantiies with nulls', ->
+    validateQuantity @has_null_q.exec(@ctx), 2, 'ml'
 
 describe 'Avg', ->
   @beforeEach ->
@@ -55,6 +73,10 @@ describe 'Avg', ->
     @has_null.exec(@ctx).should.equal 1.5
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
+  it 'should be able to find average for lists of quantiies without nulls', ->
+    validateQuantity @not_null_q.exec(@ctx), 3, 'ml'
+  it 'should be able to find average for lists of quantiies with nulls', ->
+    validateQuantity @has_null_q.exec(@ctx), 1.5 , 'ml'
 
 describe 'Median', ->
   @beforeEach ->
@@ -70,6 +92,14 @@ describe 'Median', ->
     @dup_vals_even.exec(@ctx).should.equal 2.5
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
+  it 'should be able to find median of odd numbered list', ->
+    validateQuantity @odd_q.exec(@ctx),  3 , 'ml'
+  it 'should be able to find median of even numbered list', ->
+    validateQuantity @even_q.exec(@ctx), 3.5, 'ml'
+  it 'should be able to find median of odd numbered list that contains duplicates', ->
+    validateQuantity @dup_vals_odd_q.exec(@ctx),3, 'ml'
+  it 'should be able to find median of even numbered list that contians duplicates', ->
+    validateQuantity @dup_vals_even_q.exec(@ctx), 2.5, 'ml'
 
 describe 'Mode', ->
   @beforeEach ->
@@ -88,24 +118,32 @@ describe 'PopulationVariance', ->
     setup @, data
   it 'should be able to find PopulationVariance of a list ', ->
     @v.exec(@ctx).should.equal 2.5
+  it 'should be able to find PopulationVariance of a list ', ->
+    validateQuantity @v_q.exec(@ctx), 2.5, 'ml'
 
 describe 'Variance', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Variance of a list ', ->
     @v.exec(@ctx).should.equal 2
+  it 'should be able to find Variance of a list ', ->
+    validateQuantity @v_q.exec(@ctx), 2, 'ml'
 
 describe 'StdDev', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Standard Dev of a list ', ->
     @std.exec(@ctx).should.equal 1.4142135623730951
+  it 'should be able to find Standard Dev of a list ', ->
+    validateQuantity @std_q.exec(@ctx), 1.4142135623730951, 'ml'
 
 describe 'PopulationStdDev', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Population Standard Dev of a list ', ->
     @dev.exec(@ctx).should.equal 1.5811388300841898
+  it 'should be able to find Population Standard Dev of a list ', ->
+    validateQuantity @dev_q.exec(@ctx), 1.5811388300841898, 'ml'
 
 describe 'AllTrue', ->
   @beforeEach ->

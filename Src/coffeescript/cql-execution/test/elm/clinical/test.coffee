@@ -86,12 +86,13 @@ describe 'CalculateAge', ->
   @beforeEach ->
     setup @, data, [ p1 ]
     # Note, tests are inexact (otherwise test needs to repeat exact logic we're testing)
-    # p1 birth date is 1980-06-17T06:15
-    @bday = new Date("1980-06-17T06:15")
-    # need to make sure that the tests are done using same timezone offsets otherwise it will error
-    
-    @bday = new Date(@bday - (-(@bday.getTimezoneOffset()) * 60 * 1000))
+    # p1 birth date is 1980-06-17
+    @bday = new Date(1980, 5, 17)
     @today = new Date()
+    # according to spec, dates without timezones are in *current* time offset, so need to adjust
+    offsetDiff = @today.getTimezoneOffset() - @bday.getTimezoneOffset()
+    @bday.setMinutes(@bday.getMinutes() + offsetDiff)
+
     # this is getting the possible number of months in years with the addtion of an offset
     # to get the correct number of months
     @full_months = ((@today.getFullYear() - 1980) * 12) + (@today.getMonth() - 5)
@@ -101,21 +102,24 @@ describe 'CalculateAge', ->
     @years.exec(@ctx).should.equal @full_months // 12
 
   it 'should execute age in months', ->
-    # what is returned will depend on whether the day in the current month has 
+    # what is returned will depend on whether the day in the current month has
     # made it to the 17th day of the month as declared in the birthday
-    [@full_months, @full_months-1].indexOf(@months.exec(@ctx)).should.not.equal -1 
+    [@full_months, @full_months-1].indexOf(@months.exec(@ctx)).should.not.equal -1
 
   it 'should execute age in days', ->
     @days.exec(@ctx).should.equal @timediff // 1000 // 60 // 60 // 24
 
   it 'should execute age in hours', ->
-    @hours.exec(@ctx).should.equal @timediff // 1000 // 60 // 60 
+    # a little strange since the qicore data model specified birthDate as a date (no time)
+    @hours.exec(@ctx).should.equal @timediff // 1000 // 60 // 60
 
   it 'should execute age in minutes', ->
-    @minutes.exec(@ctx).should.equal @timediff // 1000 // 60 
+    # a little strange since the qicore data model specified birthDate as a date (no time)
+    @minutes.exec(@ctx).should.equal @timediff // 1000 // 60
 
   it 'should execute age in seconds', ->
-    @seconds.exec(@ctx).should.equal @timediff // 1000 
+    # a little strange since the qicore data model specified birthDate as a date (no time)
+    @seconds.exec(@ctx).should.equal @timediff // 1000
 
 describe 'CalculateAgeAt', ->
   @beforeEach ->

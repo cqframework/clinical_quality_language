@@ -105,7 +105,7 @@ module.exports.Width = class Width extends Expression
     super
 
   exec: (ctx) ->
-    @arg.exec(ctx).width()
+    @arg.exec(ctx)?.width()
 
 # TODO: Spec has "Begin" defined, but shouldn't it be "Start"?
 module.exports.Start = class Start extends Expression
