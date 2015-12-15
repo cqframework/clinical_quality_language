@@ -187,21 +187,19 @@ module.exports['Age'] = {
             "context" : "Population",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Sum",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Sum",
+               "source" : {
                   "name" : "Age",
                   "type" : "ExpressionRef"
-               } ]
+               }
             }
          }, {
             "name" : "DEMO",
             "context" : "Population",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Count",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Count",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "w",
@@ -218,7 +216,7 @@ module.exports['Age'] = {
                         "type" : "AliasRef"
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "AgeSumRef",

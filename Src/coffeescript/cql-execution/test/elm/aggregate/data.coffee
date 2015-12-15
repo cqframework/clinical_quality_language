@@ -51,9 +51,8 @@ module.exports['Count'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Count",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Count",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -76,16 +75,15 @@ module.exports['Count'] = {
                      "value" : "5",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Count",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Count",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -114,18 +112,17 @@ module.exports['Count'] = {
                      "value" : "2",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Count",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Count",
+               "source" : {
                   "type" : "List"
-               } ]
+               }
             }
          } ]
       }
@@ -180,9 +177,8 @@ module.exports['Sum'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Sum",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Sum",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -205,16 +201,15 @@ module.exports['Sum'] = {
                      "value" : "5",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Sum",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Sum",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -243,16 +238,15 @@ module.exports['Sum'] = {
                      "value" : "2",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "not_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Sum",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Sum",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -275,16 +269,15 @@ module.exports['Sum'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Sum",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Sum",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -313,16 +306,15 @@ module.exports['Sum'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "unmatched_units_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Min",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Min",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -349,18 +341,17 @@ module.exports['Sum'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Sum",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Sum",
+               "source" : {
                   "type" : "List"
-               } ]
+               }
             }
          } ]
       }
@@ -414,9 +405,8 @@ module.exports['Min'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Min",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Min",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -443,16 +433,15 @@ module.exports['Min'] = {
                      "value" : "0",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Min",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Min",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -482,27 +471,25 @@ module.exports['Min'] = {
                      "value" : "2",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Min",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Min",
+               "source" : {
                   "type" : "List"
-               } ]
+               }
             }
          }, {
             "name" : "not_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Min",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Min",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -529,16 +516,15 @@ module.exports['Min'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Min",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Min",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -568,7 +554,7 @@ module.exports['Min'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -623,9 +609,8 @@ module.exports['Max'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Max",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Max",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -652,16 +637,15 @@ module.exports['Max'] = {
                      "value" : "5",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Max",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Max",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -684,16 +668,15 @@ module.exports['Max'] = {
                      "value" : "2",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "not_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Max",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Max",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 10,
@@ -720,16 +703,15 @@ module.exports['Max'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Max",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Max",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -752,18 +734,17 @@ module.exports['Max'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Max",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Max",
+               "source" : {
                   "type" : "List"
-               } ]
+               }
             }
          } ]
       }
@@ -817,9 +798,8 @@ module.exports['Avg'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Avg",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Avg",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -860,16 +840,15 @@ module.exports['Avg'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "has_null",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Avg",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Avg",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -910,16 +889,15 @@ module.exports['Avg'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "not_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Avg",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Avg",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -942,16 +920,15 @@ module.exports['Avg'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Avg",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Avg",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -974,16 +951,15 @@ module.exports['Avg'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Avg",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Avg",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -1003,7 +979,7 @@ module.exports['Avg'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          } ]
       }
@@ -1064,9 +1040,8 @@ module.exports['Median'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -1107,16 +1082,15 @@ module.exports['Median'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "even",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -1161,16 +1135,15 @@ module.exports['Median'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "odd_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 5,
@@ -1193,16 +1166,15 @@ module.exports['Median'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "even_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 5,
@@ -1229,16 +1201,15 @@ module.exports['Median'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -1258,16 +1229,15 @@ module.exports['Median'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "has_null",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -1308,16 +1278,15 @@ module.exports['Median'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "dup_vals_even",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -1370,16 +1339,15 @@ module.exports['Median'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "dup_vals_odd",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -1436,16 +1404,15 @@ module.exports['Median'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "has_null_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -1468,16 +1435,15 @@ module.exports['Median'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "dup_vals_even_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 3,
@@ -1512,16 +1478,15 @@ module.exports['Median'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "dup_vals_odd_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Median",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Median",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 3,
@@ -1560,7 +1525,7 @@ module.exports['Median'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -1614,9 +1579,8 @@ module.exports['Mode'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Mode",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Mode",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -1647,16 +1611,15 @@ module.exports['Mode'] = {
                      "value" : "5",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "has_null",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Mode",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Mode",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -1683,27 +1646,25 @@ module.exports['Mode'] = {
                      "value" : "2",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Mode",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Mode",
+               "source" : {
                   "type" : "List"
-               } ]
+               }
             }
          }, {
             "name" : "bi_modal",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Mode",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Mode",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -1742,7 +1703,7 @@ module.exports['Mode'] = {
                      "value" : "5",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -1793,9 +1754,8 @@ module.exports['Variance'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Variance",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Variance",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -1836,16 +1796,15 @@ module.exports['Variance'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "v_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Variance",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Variance",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -1868,7 +1827,7 @@ module.exports['Variance'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -1919,9 +1878,8 @@ module.exports['PopulationVariance'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "PopulationVariance",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "PopulationVariance",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
@@ -1944,16 +1902,15 @@ module.exports['PopulationVariance'] = {
                      "value" : "5.0",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "v_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "PopulationVariance",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "PopulationVariance",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1.0,
@@ -1976,7 +1933,7 @@ module.exports['PopulationVariance'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -2027,9 +1984,8 @@ module.exports['StdDev'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "StdDev",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "StdDev",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -2070,16 +2026,15 @@ module.exports['StdDev'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "std_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "StdDev",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "StdDev",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -2102,7 +2057,7 @@ module.exports['StdDev'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -2153,9 +2108,8 @@ module.exports['PopulationStdDev'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "PopulationStdDev",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "PopulationStdDev",
+               "source" : {
                   "type" : "Query",
                   "source" : [ {
                      "alias" : "X",
@@ -2196,16 +2150,15 @@ module.exports['PopulationStdDev'] = {
                         } ]
                      }
                   }
-               } ]
+               }
             }
          }, {
             "name" : "dev_q",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "PopulationStdDev",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "PopulationStdDev",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "value" : 1,
@@ -2228,7 +2181,7 @@ module.exports['PopulationStdDev'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -2282,9 +2235,8 @@ module.exports['AllTrue'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "AllTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "AllTrue",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2303,16 +2255,15 @@ module.exports['AllTrue'] = {
                      "value" : "true",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "atwn",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "AllTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "AllTrue",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2343,16 +2294,15 @@ module.exports['AllTrue'] = {
                      "value" : "true",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "atf",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "AllTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "AllTrue",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2371,16 +2321,15 @@ module.exports['AllTrue'] = {
                      "value" : "false",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "atfwn",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "AllTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "AllTrue",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2411,7 +2360,7 @@ module.exports['AllTrue'] = {
                      "value" : "false",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          } ]
       }
@@ -2465,9 +2414,8 @@ module.exports['AnyTrue'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "AnyTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "AnyTrue",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2486,16 +2434,15 @@ module.exports['AnyTrue'] = {
                      "value" : "true",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "atwn",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "AnyTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "AnyTrue",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2526,16 +2473,15 @@ module.exports['AnyTrue'] = {
                      "value" : "true",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "atf",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "AnyTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "AnyTrue",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2554,16 +2500,15 @@ module.exports['AnyTrue'] = {
                      "value" : "false",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "atfwn",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "AnyTrue",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "AnyTrue",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2594,7 +2539,7 @@ module.exports['AnyTrue'] = {
                      "value" : "false",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          } ]
       }

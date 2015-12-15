@@ -39,6 +39,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
     private String currentContext = "Patient"; // default context to patient
+    private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
 
     //Put them here for now, but eventually somewhere else?
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
@@ -2967,112 +2968,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
-        // Process Age-related functions
-        if (fun.getLibraryName() == null) {
-            String ageRelatedFunctionName = resolveAgeRelatedFunction(fun.getName());
-            if (ageRelatedFunctionName != null) {
-                switch (ageRelatedFunctionName) {
-                    case "CalculateAgeInYears":
-                    case "CalculateAgeInMonths":
-                    case "CalculateAgeInDays":
-                    case "CalculateAgeInHours":
-                    case "CalculateAgeInMinutes":
-                    case "CalculateAgeInSeconds":
-                    case "CalculateAgeInMilliseconds": {
-                        CalculateAge operator = of.createCalculateAge()
-                                .withPrecision(resolveAgeRelatedFunctionPrecision(ageRelatedFunctionName));
-
-                        if (fun.getOperand().size() > 0) {
-                            operator.setOperand(fun.getOperand().get(0));
-                        } else {
-                            Expression source = resolveIdentifier("Patient");
-                            Property property = of.createProperty().withSource(source).withPath(getModel().getModelInfo().getPatientBirthDatePropertyName());
-                            property.setResultType(resolveProperty(source.getResultType(), property.getPath()));
-                            operator.setOperand(property);
-                        }
-
-                        resolveUnaryCall(null, "CalculateAge", operator);
-                        return operator;
-                    }
-
-                    case "CalculateAgeInYearsAt":
-                    case "CalculateAgeInMonthsAt":
-                    case "CalculateAgeInDaysAt":
-                    case "CalculateAgeInHoursAt":
-                    case "CalculateAgeInMinutesAt":
-                    case "CalculateAgeInSecondsAt":
-                    case "CalculateAgeInMillisecondsAt": {
-                        CalculateAgeAt operator = of.createCalculateAgeAt()
-                                .withPrecision(resolveAgeRelatedFunctionPrecision(ageRelatedFunctionName));
-
-                        operator.getOperand().addAll(fun.getOperand());
-                        if (operator.getOperand().size() == 1) {
-                            Expression source = resolveIdentifier("Patient");
-                            Property property = of.createProperty().withSource(source).withPath(getModel().getModelInfo().getPatientBirthDatePropertyName());
-                            property.setResultType(resolveProperty(source.getResultType(), property.getPath()));
-                            operator.getOperand().add(0, property);
-                        }
-
-                        resolveBinaryCall(null, "CalculateAgeAt", operator);
-                        return operator;
-                    }
-                }
-            }
+        Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
+        if (systemFunction != null) {
+            return systemFunction;
         }
 
         resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun));
 
         return fun;
-    }
-
-    private String resolveAgeRelatedFunction(String functionName) {
-        switch (functionName) {
-            case "AgeInYears":
-            case "AgeInMonths":
-            case "AgeInDays":
-            case "AgeInHours":
-            case "AgeInMinutes":
-            case "AgeInSeconds":
-            case "AgeInMilliseconds":
-            case "AgeInYearsAt":
-            case "AgeInMonthsAt":
-            case "AgeInDaysAt":
-            case "AgeInHoursAt":
-            case "AgeInMinutesAt":
-            case "AgeInSecondsAt":
-            case "AgeInMillisecondsAt":
-                return "Calculate" + functionName;
-            default:
-                return null;
-        }
-    }
-
-    private DateTimePrecision resolveAgeRelatedFunctionPrecision(String functionName) {
-        switch (functionName) {
-            case "CalculateAgeInYears":
-            case "CalculateAgeInYearsAt":
-                return DateTimePrecision.YEAR;
-            case "CalculateAgeInMonths":
-            case "CalculateAgeInMonthsAt":
-                return DateTimePrecision.MONTH;
-            case "CalculateAgeInDays":
-            case "CalculateAgeInDaysAt":
-                return DateTimePrecision.DAY;
-            case "CalculateAgeInHours":
-            case "CalculateAgeInHoursAt":
-                return DateTimePrecision.HOUR;
-            case "CalculateAgeInMinutes":
-            case "CalculateAgeInMinutesAt":
-                return DateTimePrecision.MINUTE;
-            case "CalculateAgeInSeconds":
-            case "CalculateAgeInSecondsAt":
-                return DateTimePrecision.SECOND;
-            case "CalculateAgeInMilliseconds":
-            case "CalculateAgeInMillisecondsAt":
-                return DateTimePrecision.MILLISECOND;
-            default:
-                throw new IllegalArgumentException(String.format("Unknown precision '%s'.", functionName));
-        }
     }
 
     @Override
@@ -3172,7 +3075,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return modelName;
     }
 
-    private Model getModel() {
+    protected Model getModel() {
         return getModel((String)null);
     }
 
@@ -3332,7 +3235,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return result;
     }
 
-    private DataType resolveProperty(DataType sourceType, String identifier) {
+    protected DataType resolveProperty(DataType sourceType, String identifier) {
         DataType currentType = sourceType;
         while (currentType != null) {
             if (currentType instanceof ClassType) {
@@ -3463,16 +3366,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withPath("low")
                         .withResultType(fromType.getPointType()),
                         conversion.getConversion()))
-                .withLowClosedExpression((Property)of.createProperty()
+                .withLowClosedExpression((Property) of.createProperty()
                         .withSource(expression)
                         .withPath("lowClosed")
                         .withResultType(resolveTypeName("Boolean")))
-                .withHigh(convertExpression((Property)of.createProperty()
-                        .withSource(expression)
-                        .withPath("high")
-                        .withResultType(fromType.getPointType()),
+                .withHigh(convertExpression((Property) of.createProperty()
+                                .withSource(expression)
+                                .withPath("high")
+                                .withResultType(fromType.getPointType()),
                         conversion.getConversion()))
-                .withHighClosedExpression((Property)of.createProperty()
+                .withHighClosedExpression((Property) of.createProperty()
                         .withSource(expression)
                         .withPath("highClosed")
                         .withResultType(resolveTypeName("Boolean")))
@@ -3572,12 +3475,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return first;
     }
 
-    private Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
+    protected Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
         return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression));
     }
 
-    private Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression) {
+    protected Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression) {
         return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression));
+    }
+
+    protected Expression resolveAggregateCall(String libraryName, String operatorName, AggregateExpression expression) {
+        return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression));
     }
 
     private OperatorResolution resolveCall(CallContext callContext) {
