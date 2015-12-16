@@ -3283,7 +3283,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType));
     }
 
-    private Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
+    protected Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {

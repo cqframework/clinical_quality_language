@@ -1,7 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
 
+import org.cqframework.cql.cql2elm.model.invocation.RoundExpressionInvocation;
 import org.hl7.elm.r1.AggregateExpression;
+import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.CalculateAge;
 import org.hl7.elm.r1.CalculateAgeAt;
 import org.hl7.elm.r1.DateTimePrecision;
@@ -9,6 +11,8 @@ import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Property;
+import org.hl7.elm.r1.Round;
+import org.hl7.elm.r1.UnaryExpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,6 @@ public class SystemFunctionResolver {
         if (fun.getLibraryName() == null) {
             switch (fun.getName()) {
                 // Aggregate Functions
-
                 case "AllTrue":
                 case "AnyTrue":
                 case "Avg":
@@ -40,6 +43,23 @@ public class SystemFunctionResolver {
                 case "Sum":
                 case "Variance": {
                     return resolveAggregate(fun);
+                }
+
+                // ArithmeticOperators
+                case "Abs":
+                case "Ceiling":
+                case "Floor":
+                case "Ln":
+                case "Truncate": {
+                    return resolveUnary(fun);
+                }
+
+                case "Log": {
+                    return resolveBinary(fun);
+                }
+
+                case "Round": {
+                    return resolveRound(fun);
                 }
 
                 // Clinical Functions
@@ -92,25 +112,7 @@ public class SystemFunctionResolver {
         return null;
     }
 
-    // Aggregate Functions
-    private AggregateExpression resolveAggregate(FunctionRef fun) {
-        AggregateExpression operator = null;
-        try {
-            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
-            if (AggregateExpression.class.isAssignableFrom(clazz)) {
-                operator = (AggregateExpression) clazz.newInstance();
-                checkNumberOfOperands(fun, 1);
-                operator.setSource(fun.getOperand().get(0));
-                visitor.resolveAggregateCall("System", fun.getName(), operator);
-                return operator;
-            }
-        } catch (Exception e) {
-            // Do nothing but fall through
-        }
-        return operator;
-    }
-
-    // Clinical Functions
+    // Age-Related Function Support
 
     private CalculateAge resolveCalculateAge(Expression e, DateTimePrecision p) {
         CalculateAge operator = of.createCalculateAge()
@@ -158,9 +160,78 @@ public class SystemFunctionResolver {
         return property;
     }
 
+    // Round Function Support
+
+    private Round resolveRound(FunctionRef fun) {
+        if (fun.getOperand().isEmpty() || fun.getOperand().size() > 2) {
+            throw new IllegalArgumentException(
+                    String.format("Could not resolve call to system operator %s.  Expected 1 or 2 arguments.",
+                            fun.getName()));
+        }
+        Round round = of.createRound().withOperand(fun.getOperand().get(0));
+        if (fun.getOperand().size() == 2) {
+            round.setPrecision(fun.getOperand().get(1));
+        }
+        visitor.resolveCall("System", "Round", new RoundExpressionInvocation(round));
+        return round;
+    }
+
+    // General Function Support
+
+    private UnaryExpression resolveUnary(FunctionRef fun) {
+        UnaryExpression operator = null;
+        try {
+            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            if (UnaryExpression.class.isAssignableFrom(clazz)) {
+                operator = (UnaryExpression) clazz.newInstance();
+                checkNumberOfOperands(fun, 1);
+                operator.setOperand(fun.getOperand().get(0));
+                visitor.resolveUnaryCall("System", fun.getName(), operator);
+                return operator;
+            }
+        } catch (Exception e) {
+            // Do nothing but fall through
+        }
+        return operator;
+    }
+
+    private BinaryExpression resolveBinary(FunctionRef fun) {
+        BinaryExpression operator = null;
+        try {
+            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            if (BinaryExpression.class.isAssignableFrom(clazz)) {
+                operator = (BinaryExpression) clazz.newInstance();
+                checkNumberOfOperands(fun, 2);
+                operator.getOperand().addAll(fun.getOperand());
+                visitor.resolveBinaryCall("System", fun.getName(), operator);
+                return operator;
+            }
+        } catch (Exception e) {
+            // Do nothing but fall through
+        }
+        return operator;
+    }
+
+    private AggregateExpression resolveAggregate(FunctionRef fun) {
+        AggregateExpression operator = null;
+        try {
+            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            if (AggregateExpression.class.isAssignableFrom(clazz)) {
+                operator = (AggregateExpression) clazz.newInstance();
+                checkNumberOfOperands(fun, 1);
+                operator.setSource(fun.getOperand().get(0));
+                visitor.resolveAggregateCall("System", fun.getName(), operator);
+                return operator;
+            }
+        } catch (Exception e) {
+            // Do nothing but fall through
+        }
+        return operator;
+    }
+
     private void checkNumberOfOperands(FunctionRef fun, int expectedOperands) {
         if (fun.getOperand().size() != expectedOperands) {
-            throw new IllegalArgumentException(String.format("Could not resolve call to system operator %s.  Wrong number of arguments: %d.",
+            throw new IllegalArgumentException(String.format("Could not resolve call to system operator %s.  Expected %d arguments.",
                     fun.getName(), expectedOperands));
         }
     }

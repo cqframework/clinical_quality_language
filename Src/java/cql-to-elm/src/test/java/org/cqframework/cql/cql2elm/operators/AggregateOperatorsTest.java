@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import static org.cqframework.cql.cql2elm.matchers.ConvertsToDecimalFrom.convertsToDecimalFromAlias;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -250,13 +251,7 @@ public class AggregateOperatorsTest {
         String alias = aqs.getAlias();
         assertThat(q.getReturn().isDistinct(), is(false));
         assertThat(q.getReturn().getExpression(), instanceOf(FunctionRef.class));
-        FunctionRef fun = (FunctionRef) q.getReturn().getExpression();
-        assertThat(fun.getLibraryName(), is("System"));
-        assertThat(fun.getName(), is("ToDecimal"));
-        assertThat(fun.getOperand(), hasSize(1));
-        assertThat(fun.getOperand().get(0), instanceOf(AliasRef.class));
-        AliasRef aliasRef = (AliasRef) fun.getOperand().get(0);
-        assertThat(aliasRef.getName(), is(alias));
+        assertThat(q.getReturn().getExpression(), convertsToDecimalFromAlias(alias));
     }
 
     private void assertIntegerListOneToFive(Expression source) {
