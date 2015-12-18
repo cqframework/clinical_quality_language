@@ -1,7 +1,7 @@
 { typeIsArray } = require '../util/util'
 
 module.exports.Code = class Code
-  constructor: (@code, @system, @version) ->
+  constructor: (@code, @system, @version, @display) ->
 
 module.exports.ValueSet = class ValueSet
   constructor: (@oid, @version, @codes = []) ->
@@ -22,3 +22,5 @@ module.exports.ValueSet = class ValueSet
     if system? then matches = (c for c in matches when c.system is system)
     if version? then matches = (c for c in matches when c.version is version)
     return matches.length > 0
+
+# TODO: Concept (and support for constructing by literal or instance)
