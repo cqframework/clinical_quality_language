@@ -2,6 +2,9 @@ package org.cqframework.cql.cql2elm;
 
 
 import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.FirstInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.IndexOfInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.LastInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.RoundInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.ZeroOperandExpressionInvocation;
 import org.hl7.elm.r1.AggregateExpression;
@@ -11,7 +14,10 @@ import org.hl7.elm.r1.CalculateAgeAt;
 import org.hl7.elm.r1.DateTime;
 import org.hl7.elm.r1.DateTimePrecision;
 import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.First;
 import org.hl7.elm.r1.FunctionRef;
+import org.hl7.elm.r1.IndexOf;
+import org.hl7.elm.r1.Last;
 import org.hl7.elm.r1.Now;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Property;
@@ -124,6 +130,19 @@ public class SystemFunctionResolver {
                 case "Today": {
                     return resolveToday(fun);
                 }
+
+                // List Functions
+                case "IndexOf": {
+                    return resolveIndexOf(fun);
+                }
+
+                case "First": {
+                    return resolveFirst(fun);
+                }
+
+                case "Last": {
+                    return resolveLast(fun);
+                }
             }
         }
 
@@ -178,7 +197,7 @@ public class SystemFunctionResolver {
         return property;
     }
 
-    // Round Function Support
+    // Arithmetic Function Support
 
     private Round resolveRound(FunctionRef fun) {
         if (fun.getOperand().isEmpty() || fun.getOperand().size() > 2) {
@@ -215,6 +234,33 @@ public class SystemFunctionResolver {
         final Today today = of.createToday();
         visitor.resolveCall("System", "Today", new ZeroOperandExpressionInvocation(today));
         return today;
+    }
+
+    // List Function Support
+
+    private IndexOf resolveIndexOf(FunctionRef fun) {
+        checkNumberOfOperands(fun, 2);
+        final IndexOf indexOf = of.createIndexOf();
+        indexOf.setSource(fun.getOperand().get(0));
+        indexOf.setElement(fun.getOperand().get(1));
+        visitor.resolveCall("System", "IndexOf", new IndexOfInvocation(indexOf));
+        return indexOf;
+    }
+
+    private First resolveFirst(FunctionRef fun) {
+        checkNumberOfOperands(fun, 1);
+        final First first = of.createFirst();
+        first.setSource(fun.getOperand().get(0));
+        visitor.resolveCall("System", "First", new FirstInvocation(first));
+        return first;
+    }
+
+    private Last resolveLast(FunctionRef fun) {
+        checkNumberOfOperands(fun, 1);
+        final Last last = of.createLast();
+        last.setSource(fun.getOperand().get(0));
+        visitor.resolveCall("System", "Last", new LastInvocation(last));
+        return last;
     }
 
     // General Function Support

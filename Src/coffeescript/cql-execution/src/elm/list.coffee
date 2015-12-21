@@ -1,5 +1,4 @@
 { Expression, UnimplementedExpression } = require './expression'
-{ FunctionRef } = require './reusable'
 { ValueSet } = require '../datatypes/datatypes'
 { build } = require './builder'
 { typeIsArray } = require '../util/util'
@@ -66,19 +65,6 @@ module.exports.IndexOf = class IndexOf extends Expression
     (index = i; break) for itm, i in src when equals itm, el
     if index? then return index + 1 else return 0
 
-# TODO: Remove functionref when ELM does IndexOf natively
-module.exports.IndexOfFunctionRef = class IndexOfFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @indexOf = new IndexOf {
-      "type" : "IndexOf",
-      "source": json.operand[0]
-      "element": json.operand[1]
-    }
-
-  exec: (ctx) ->
-    @indexOf.exec ctx
-
 # Indexer is completely handled by overloaded#Indexer
 
 # Delegated to by overloaded#Contains and overloaded#In
@@ -130,18 +116,6 @@ module.exports.First = class First extends Expression
     src = @source.exec ctx
     if src? and typeIsArray(src) and src.length > 0 then src[0] else null
 
-# TODO: Remove functionref when ELM does First natively
-module.exports.FirstFunctionRef = class FirstFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @first = new First {
-      "type" : "First",
-      "source": json.operand[0]
-    }
-
-  exec: (ctx) ->
-    @first.exec ctx
-
 module.exports.Last = class Last extends Expression
   constructor: (json) ->
     super
@@ -150,17 +124,5 @@ module.exports.Last = class Last extends Expression
   exec: (ctx) ->
     src = @source.exec ctx
     if src? and typeIsArray(src) and src.length > 0 then src[src.length-1] else null
-
-# TODO: Remove functionref when ELM does Last natively
-module.exports.LastFunctionRef = class LastFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @last = new Last {
-      "type" : "Last",
-      "source": json.operand[0]
-    }
-
-  exec: (ctx) ->
-    @last.exec ctx
 
 # Length is completely handled by overloaded#Length

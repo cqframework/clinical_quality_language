@@ -679,9 +679,8 @@ public class Cql2ElmVisitorTest {
         assertThat(((NamedTypeSpecifier)eqLhsAs.getAsTypeSpecifier()).getName(), quickDataType("Location"));
         Property eqLhsAsSource = (Property)eqLhsAs.getOperand();
         assertThat(eqLhsAsSource.getPath(), is("location"));
-        FunctionRef eqLhsAsSourceFirst = (FunctionRef)eqLhsAsSource.getSource();
-        assertThat(eqLhsAsSourceFirst.getName(), is("First"));
-        Property eqLhsAsSourceFirstSource = (Property)eqLhsAsSourceFirst.getOperand().get(0);
+        First eqLhsAsSourceFirst = (First)eqLhsAsSource.getSource();
+        Property eqLhsAsSourceFirstSource = (Property)eqLhsAsSourceFirst.getSource();
         assertThat(eqLhsAsSourceFirstSource.getScope(), is("E"));
         assertThat(eqLhsAsSourceFirstSource.getPath(), is("location"));
 
