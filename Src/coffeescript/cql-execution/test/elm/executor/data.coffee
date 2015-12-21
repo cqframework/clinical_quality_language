@@ -56,38 +56,40 @@ module.exports['Age'] = {
                "highClosed" : false,
                "type" : "Interval",
                "low" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2013",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
-                  } ]
+                  }
                },
                "high" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2014",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          } ]

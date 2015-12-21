@@ -683,13 +683,12 @@ module.exports['CalculateAgeAt'] = {
                      "type" : "ExpressionRef"
                   }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2012",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -707,21 +706,22 @@ module.exports['CalculateAgeAt'] = {
                      "type" : "ExpressionRef"
                   }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1981",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "16",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -739,13 +739,12 @@ module.exports['CalculateAgeAt'] = {
                      "type" : "ExpressionRef"
                   }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1975",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          } ]

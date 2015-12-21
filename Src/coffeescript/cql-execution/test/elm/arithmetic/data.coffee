@@ -1641,13 +1641,12 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -1657,17 +1656,17 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -1677,21 +1676,22 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -1701,25 +1701,27 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -1729,29 +1731,32 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -1761,33 +1766,37 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -1797,37 +1806,42 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -1837,37 +1851,42 @@ module.exports['Successor'] = {
             "expression" : {
                "type" : "Successor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "9999",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "12",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "31",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "23",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "59",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "59",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "999",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          } ]
@@ -1969,13 +1988,12 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -1985,17 +2003,17 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -2005,21 +2023,22 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -2029,25 +2048,27 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -2057,29 +2078,32 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -2089,33 +2113,37 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -2125,37 +2153,42 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2015",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          }, {
@@ -2165,37 +2198,42 @@ module.exports['Predecessor'] = {
             "expression" : {
                "type" : "Predecessor",
                "operand" : {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1900",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "01",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "0",
                      "type" : "Literal"
-                  } ]
+                  }
                }
             }
          } ]
@@ -2295,21 +2333,22 @@ module.exports['Quantity'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "DateTime",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "DateTime",
+               "year" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2000",
                   "type" : "Literal"
-               }, {
+               },
+               "month" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
-               }, {
+               },
+               "day" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "add_q_q",

@@ -430,18 +430,14 @@ public class Cql2ElmVisitorTest {
         Interval ivl = (Interval) request.getDateRange();
         assertTrue(ivl.isLowClosed());
         assertFalse(ivl.isHighClosed());
-        FunctionRef ivlBegin = (FunctionRef) ivl.getLow();
-        assertThat(ivlBegin.getName(), is("DateTime"));
-        assertThat(ivlBegin.getOperand(), hasSize(3));
-        assertThat(ivlBegin.getOperand().get(0), literalFor(2013));
-        assertThat(ivlBegin.getOperand().get(1), literalFor(1));
-        assertThat(ivlBegin.getOperand().get(2), literalFor(1));
-        FunctionRef ivlEnd = (FunctionRef) ivl.getHigh();
-        assertThat(ivlEnd.getName(), is("DateTime"));
-        assertThat(ivlEnd.getOperand(), hasSize(3));
-        assertThat(ivlEnd.getOperand().get(0), literalFor(2014));
-        assertThat(ivlEnd.getOperand().get(1), literalFor(1));
-        assertThat(ivlEnd.getOperand().get(2), literalFor(1));
+        DateTime ivlBegin = (DateTime) ivl.getLow();
+        assertThat(ivlBegin.getYear(), literalFor(2013));
+        assertThat(ivlBegin.getMonth(), literalFor(1));
+        assertThat(ivlBegin.getDay(), literalFor(1));
+        DateTime ivlEnd = (DateTime) ivl.getHigh();
+        assertThat(ivlEnd.getYear(), literalFor(2014));
+        assertThat(ivlEnd.getMonth(), literalFor(1));
+        assertThat(ivlEnd.getDay(), literalFor(1));
 
         // "Where" should now be null!
         assertThat(query.getWhere(), is(nullValue()));

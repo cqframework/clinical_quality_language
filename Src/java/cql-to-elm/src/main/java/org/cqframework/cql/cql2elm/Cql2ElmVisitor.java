@@ -2515,7 +2515,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         retrieves.add(retrieve);
 
-        retrieve.setResultType(new ListType((DataType)namedType));
+        retrieve.setResultType(new ListType((DataType) namedType));
 
         return retrieve;
     }
@@ -2783,22 +2783,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         boolean isEligible = false;
-        if (targetElement instanceof Interval) {
+        if (targetElement instanceof DateTime) {
+            isEligible = true;
+        } else if (targetElement instanceof Interval) {
             Interval ivl = (Interval) targetElement;
-            isEligible = isDateFunctionRef(ivl.getLow()) && isDateFunctionRef(ivl.getHigh());
+            isEligible = (ivl.getLow() != null && ivl.getLow() instanceof DateTime) || (ivl.getHigh() != null && ivl.getHigh() instanceof DateTime);
         } else if (targetElement instanceof IntervalTypeSpecifier) {
             IntervalTypeSpecifier spec = (IntervalTypeSpecifier) targetElement;
             isEligible = isDateTimeTypeSpecifier(spec.getPointType());
-        } else if (targetElement instanceof FunctionRef) {
-            isEligible = isDateFunctionRef(targetElement);
         } else if (targetElement instanceof NamedTypeSpecifier) {
             isEligible = isDateTimeTypeSpecifier(targetElement);
         }
         return isEligible;
-    }
-
-    private boolean isDateFunctionRef(Element e) {
-        return e != null && e instanceof FunctionRef && "DateTime".equals(((FunctionRef) e).getName());
     }
 
     private boolean isDateTimeTypeSpecifier(Element e) {

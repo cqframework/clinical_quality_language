@@ -14,21 +14,6 @@ module.exports.DateTime = class DateTime extends Expression
     args = ((if @[p]? then @[p].exec(ctx)) for p in DateTime.PROPERTIES)
     new DT.DateTime(args...)
 
-# TODO: Remove functionref when ELM does DateTime natively
-module.exports.DateTimeFunctionRef = class DateTimeFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    properties = ['year', 'month', 'day', 'hour', 'minute', 'second', 'millisecond', 'timezoneOffset']
-    dateJson = {
-      "type" : "DateTime"
-    }
-    for arg, i in json.operand
-      dateJson[properties[i]] = arg
-    @datetime = new DateTime(dateJson)
-
-  exec: (ctx) ->
-    @datetime.exec(ctx)
-
 # TODO: Update to use timestamp of request, per the spec
 module.exports.Today = class Today extends Expression
   constructor: (json) ->

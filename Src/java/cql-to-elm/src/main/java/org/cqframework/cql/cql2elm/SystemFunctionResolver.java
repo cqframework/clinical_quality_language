@@ -1,11 +1,14 @@
 package org.cqframework.cql.cql2elm;
 
 
-import org.cqframework.cql.cql2elm.model.invocation.RoundExpressionInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.AbstractExpressionInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.RoundInvocation;
 import org.hl7.elm.r1.AggregateExpression;
 import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.CalculateAge;
 import org.hl7.elm.r1.CalculateAgeAt;
+import org.hl7.elm.r1.DateTime;
 import org.hl7.elm.r1.DateTimePrecision;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.FunctionRef;
@@ -15,6 +18,7 @@ import org.hl7.elm.r1.Round;
 import org.hl7.elm.r1.UnaryExpression;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SystemFunctionResolver {
@@ -60,6 +64,12 @@ public class SystemFunctionResolver {
 
                 case "Round": {
                     return resolveRound(fun);
+                }
+
+                // DateTimeOperators
+                case "DateTime": {
+                    return resolveDateTime(fun);
+
                 }
 
                 // Clinical Functions
@@ -168,12 +178,21 @@ public class SystemFunctionResolver {
                     String.format("Could not resolve call to system operator %s.  Expected 1 or 2 arguments.",
                             fun.getName()));
         }
-        Round round = of.createRound().withOperand(fun.getOperand().get(0));
+        final Round round = of.createRound().withOperand(fun.getOperand().get(0));
         if (fun.getOperand().size() == 2) {
             round.setPrecision(fun.getOperand().get(1));
         }
-        visitor.resolveCall("System", "Round", new RoundExpressionInvocation(round));
+        visitor.resolveCall("System", "Round", new RoundInvocation(round));
         return round;
+    }
+
+    // DateTime Function Support
+
+    private DateTime resolveDateTime(FunctionRef fun) {
+        final DateTime dt = of.createDateTime();
+        DateTimeInvocation.setDateTimeFieldsFromOperands(dt, fun.getOperand());
+        visitor.resolveCall("System", "DateTime", new DateTimeInvocation(dt));
+        return dt;
     }
 
     // General Function Support
