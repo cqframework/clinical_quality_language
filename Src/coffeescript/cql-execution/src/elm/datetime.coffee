@@ -22,17 +22,6 @@ module.exports.Today = class Today extends Expression
   exec: (ctx) ->
     DT.DateTime.fromDate(new Date()).getDate()
 
-# TODO: Remove functionref when ELM does Today natively
-module.exports.TodayFunctionRef = class TodayFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @today = new Today({
-      "type" : "Today"
-    })
-
-  exec: (ctx) ->
-    @today.exec(ctx)
-
 # TODO: Update to use timestamp of request, per the spec
 module.exports.Now = class Now extends Expression
   constructor: (json) ->
@@ -40,17 +29,6 @@ module.exports.Now = class Now extends Expression
 
   exec: (ctx) ->
     DT.DateTime.fromDate(new Date())
-
-# TODO: Remove functionref when ELM does Now natively
-module.exports.NowFunctionRef = class NowFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @now = new Now({
-      "type" : "Now"
-    })
-
-  exec: (ctx) ->
-    @now.exec(ctx)
 
 module.exports.DateTimeComponentFrom = class DateTimeComponentFrom extends Expression
   constructor: (json) ->

@@ -1,9 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
 
-import org.cqframework.cql.cql2elm.model.invocation.AbstractExpressionInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.RoundInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.ZeroOperandExpressionInvocation;
 import org.hl7.elm.r1.AggregateExpression;
 import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.CalculateAge;
@@ -12,13 +12,14 @@ import org.hl7.elm.r1.DateTime;
 import org.hl7.elm.r1.DateTimePrecision;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.FunctionRef;
+import org.hl7.elm.r1.Now;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Property;
 import org.hl7.elm.r1.Round;
+import org.hl7.elm.r1.Today;
 import org.hl7.elm.r1.UnaryExpression;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SystemFunctionResolver {
@@ -49,7 +50,7 @@ public class SystemFunctionResolver {
                     return resolveAggregate(fun);
                 }
 
-                // ArithmeticOperators
+                // Arithmetic Functions
                 case "Abs":
                 case "Ceiling":
                 case "Floor":
@@ -64,12 +65,6 @@ public class SystemFunctionResolver {
 
                 case "Round": {
                     return resolveRound(fun);
-                }
-
-                // DateTimeOperators
-                case "DateTime": {
-                    return resolveDateTime(fun);
-
                 }
 
                 // Clinical Functions
@@ -115,6 +110,19 @@ public class SystemFunctionResolver {
                 case "CalculateAgeInSecondsAt":
                 case "CalculateAgeInMillisecondsAt": {
                     return resolveCalculateAgeAt(fun.getOperand(), resolveAgeRelatedFunctionPrecision(fun));
+                }
+
+                // DateTime Functions
+                case "DateTime": {
+                    return resolveDateTime(fun);
+                }
+
+                case "Now": {
+                    return resolveNow(fun);
+                }
+
+                case "Today": {
+                    return resolveToday(fun);
                 }
             }
         }
@@ -193,6 +201,20 @@ public class SystemFunctionResolver {
         DateTimeInvocation.setDateTimeFieldsFromOperands(dt, fun.getOperand());
         visitor.resolveCall("System", "DateTime", new DateTimeInvocation(dt));
         return dt;
+    }
+
+    private Now resolveNow(FunctionRef fun) {
+        checkNumberOfOperands(fun, 0);
+        final Now now = of.createNow();
+        visitor.resolveCall("System", "Now", new ZeroOperandExpressionInvocation(now));
+        return now;
+    }
+
+    private Today resolveToday(FunctionRef fun) {
+        checkNumberOfOperands(fun, 0);
+        final Today today = of.createToday();
+        visitor.resolveCall("System", "Today", new ZeroOperandExpressionInvocation(today));
+        return today;
     }
 
     // General Function Support

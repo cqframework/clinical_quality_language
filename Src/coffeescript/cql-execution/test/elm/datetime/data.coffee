@@ -338,9 +338,7 @@ module.exports['Today'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Today",
-               "type" : "FunctionRef",
-               "operand" : [ ]
+               "type" : "Today"
             }
          } ]
       }
@@ -390,9 +388,7 @@ module.exports['Now'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Now",
-               "type" : "FunctionRef",
-               "operand" : [ ]
+               "type" : "Now"
             }
          } ]
       }
