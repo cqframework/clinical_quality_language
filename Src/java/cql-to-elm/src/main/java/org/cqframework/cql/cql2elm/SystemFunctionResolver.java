@@ -5,6 +5,7 @@ import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.FirstInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.IndexOfInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.LastInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.NaryExpressionInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.RoundInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.ZeroOperandExpressionInvocation;
 import org.hl7.elm.r1.AggregateExpression;
@@ -18,6 +19,7 @@ import org.hl7.elm.r1.First;
 import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.IndexOf;
 import org.hl7.elm.r1.Last;
+import org.hl7.elm.r1.NaryExpression;
 import org.hl7.elm.r1.Now;
 import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Property;
@@ -142,6 +144,11 @@ public class SystemFunctionResolver {
 
                 case "Last": {
                     return resolveLast(fun);
+                }
+
+                //Nullological Functions
+                case "Coalesce": {
+                    return resolveNary(fun);
                 }
             }
         }
@@ -291,6 +298,22 @@ public class SystemFunctionResolver {
                 checkNumberOfOperands(fun, 2);
                 operator.getOperand().addAll(fun.getOperand());
                 visitor.resolveBinaryCall("System", fun.getName(), operator);
+                return operator;
+            }
+        } catch (Exception e) {
+            // Do nothing but fall through
+        }
+        return operator;
+    }
+
+    private NaryExpression resolveNary(FunctionRef fun) {
+        NaryExpression operator = null;
+        try {
+            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            if (NaryExpression.class.isAssignableFrom(clazz)) {
+                operator = (NaryExpression) clazz.newInstance();
+                operator.getOperand().addAll(fun.getOperand());
+                visitor.resolveCall("System", fun.getName(), new NaryExpressionInvocation(operator));
                 return operator;
             }
         } catch (Exception e) {
