@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.cqframework.cql.cql2elm.matchers.ConvertsToDecimalFrom.convertsToDecimalFromAlias;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
+import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -36,13 +37,7 @@ public class AggregateOperatorsTest {
         assertThat(def, hasTypeAndResult(AllTrue.class, "System.Boolean"));
 
         AllTrue exp = (AllTrue) def.getExpression();
-        assertThat(exp.getSource(), instanceOf(List.class));
-
-        List args = (List) exp.getSource();
-        assertThat(args.getElement(), hasSize(3));
-        for (Expression arg : args.getElement()) {
-            assertThat(arg, literalFor(Boolean.TRUE));
-        }
+        assertThat(exp.getSource(), listOfLiterals(true, true, true));
     }
 
     @Test
@@ -51,13 +46,7 @@ public class AggregateOperatorsTest {
         assertThat(def, hasTypeAndResult(AnyTrue.class, "System.Boolean"));
 
         AnyTrue exp = (AnyTrue) def.getExpression();
-        assertThat(exp.getSource(), instanceOf(List.class));
-
-        List args = (List) exp.getSource();
-        assertThat(args.getElement(), hasSize(3));
-        assertThat(args.getElement().get(0), literalFor(Boolean.FALSE));
-        assertThat(args.getElement().get(1), literalFor(Boolean.TRUE));
-        assertThat(args.getElement().get(2), literalFor(Boolean.FALSE));
+        assertThat(exp.getSource(), listOfLiterals(false, true, false));
     }
 
     @Test
@@ -68,7 +57,7 @@ public class AggregateOperatorsTest {
 
         def = defs.get("DecimalAvg");
         assertThat(def, hasTypeAndResult(Avg.class, "System.Decimal"));
-        assertDecimalListOneToFour(((Avg) def.getExpression()).getSource());
+        assertThat(((Avg) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantityAvg");
         assertThat(def, hasTypeAndResult(Avg.class, "System.Quantity"));
@@ -79,18 +68,18 @@ public class AggregateOperatorsTest {
     public void testCount() {
         ExpressionDef def = defs.get("CountExpression");
         assertThat(def, hasTypeAndResult(Count.class, "System.Integer"));
-        assertIntegerListOneToFive(((Count) def.getExpression()).getSource());
+        assertThat(((Count) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
     }
 
     @Test
     public void testMax() {
         ExpressionDef def = defs.get("IntegerMax");
         assertThat(def, hasTypeAndResult(Max.class, "System.Integer"));
-        assertIntegerListOneToFive(((Max) def.getExpression()).getSource());
+        assertThat(((Max) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
 
         def = defs.get("DecimalMax");
         assertThat(def, hasTypeAndResult(Max.class, "System.Decimal"));
-        assertDecimalListOneToFour(((Max) def.getExpression()).getSource());
+        assertThat(((Max) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantityMax");
         assertThat(def, hasTypeAndResult(Max.class, "System.Quantity"));
@@ -106,18 +95,18 @@ public class AggregateOperatorsTest {
 
         def = defs.get("StringMax");
         assertThat(def, hasTypeAndResult(Max.class, "System.String"));
-        assertStringAtoE(((Max) def.getExpression()).getSource());
+        assertThat(((Max) def.getExpression()).getSource(), listOfLiterals("a", "b", "c", "d", "e"));
     }
 
     @Test
     public void testMin() {
         ExpressionDef def = defs.get("IntegerMin");
         assertThat(def, hasTypeAndResult(Min.class, "System.Integer"));
-        assertIntegerListOneToFive(((Min) def.getExpression()).getSource());
+        assertThat(((Min) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
 
         def = defs.get("DecimalMin");
         assertThat(def, hasTypeAndResult(Min.class, "System.Decimal"));
-        assertDecimalListOneToFour(((Min) def.getExpression()).getSource());
+        assertThat(((Min) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantityMin");
         assertThat(def, hasTypeAndResult(Min.class, "System.Quantity"));
@@ -133,7 +122,7 @@ public class AggregateOperatorsTest {
 
         def = defs.get("StringMin");
         assertThat(def, hasTypeAndResult(Min.class, "System.String"));
-        assertStringAtoE(((Min) def.getExpression()).getSource());
+        assertThat(((Min) def.getExpression()).getSource(), listOfLiterals("a", "b", "c", "d", "e"));
     }
 
     @Test
@@ -144,7 +133,7 @@ public class AggregateOperatorsTest {
 
         def = defs.get("DecimalMedian");
         assertThat(def, hasTypeAndResult(Median.class, "System.Decimal"));
-        assertDecimalListOneToFour(((Median) def.getExpression()).getSource());
+        assertThat(((Median) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantityMedian");
         assertThat(def, hasTypeAndResult(Median.class, "System.Quantity"));
@@ -155,11 +144,11 @@ public class AggregateOperatorsTest {
     public void testMode() {
         ExpressionDef def = defs.get("IntegerMode");
         assertThat(def, hasTypeAndResult(Mode.class, "System.Integer"));
-        assertIntegerListOneToFive(((Mode) def.getExpression()).getSource());
+        assertThat(((Mode) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
 
         def = defs.get("DecimalMode");
         assertThat(def, hasTypeAndResult(Mode.class, "System.Decimal"));
-        assertDecimalListOneToFour(((Mode) def.getExpression()).getSource());
+        assertThat(((Mode) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
     }
 
     @Test
@@ -170,7 +159,7 @@ public class AggregateOperatorsTest {
 
         def = defs.get("DecimalPopulationStdDev");
         assertThat(def, hasTypeAndResult(PopulationStdDev.class, "System.Decimal"));
-        assertDecimalListOneToFour(((PopulationStdDev) def.getExpression()).getSource());
+        assertThat(((PopulationStdDev) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantityPopulationStdDev");
         assertThat(def, hasTypeAndResult(PopulationStdDev.class, "System.Quantity"));
@@ -185,7 +174,7 @@ public class AggregateOperatorsTest {
 
         def = defs.get("DecimalPopulationVariance");
         assertThat(def, hasTypeAndResult(PopulationVariance.class, "System.Decimal"));
-        assertDecimalListOneToFour(((PopulationVariance) def.getExpression()).getSource());
+        assertThat(((PopulationVariance) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantityPopulationVariance");
         assertThat(def, hasTypeAndResult(PopulationVariance.class, "System.Quantity"));
@@ -200,7 +189,7 @@ public class AggregateOperatorsTest {
 
         def = defs.get("DecimalStdDev");
         assertThat(def, hasTypeAndResult(StdDev.class, "System.Decimal"));
-        assertDecimalListOneToFour(((StdDev) def.getExpression()).getSource());
+        assertThat(((StdDev) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantityStdDev");
         assertThat(def, hasTypeAndResult(StdDev.class, "System.Quantity"));
@@ -211,11 +200,11 @@ public class AggregateOperatorsTest {
     public void testSum() {
         ExpressionDef def = defs.get("IntegerSum");
         assertThat(def, hasTypeAndResult(Sum.class, "System.Integer"));
-        assertIntegerListOneToFive(((Sum) def.getExpression()).getSource());
+        assertThat(((Sum) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
 
         def = defs.get("DecimalSum");
         assertThat(def, hasTypeAndResult(Sum.class, "System.Decimal"));
-        assertDecimalListOneToFour(((Sum) def.getExpression()).getSource());
+        assertThat(((Sum) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantitySum");
         assertThat(def, hasTypeAndResult(Sum.class, "System.Quantity"));
@@ -230,7 +219,7 @@ public class AggregateOperatorsTest {
 
         def = defs.get("DecimalVariance");
         assertThat(def, hasTypeAndResult(Variance.class, "System.Decimal"));
-        assertDecimalListOneToFour(((Variance) def.getExpression()).getSource());
+        assertThat(((Variance) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0));
 
         def = defs.get("QuantityVariance");
         assertThat(def, hasTypeAndResult(Variance.class, "System.Quantity"));
@@ -247,33 +236,11 @@ public class AggregateOperatorsTest {
         assertThat(q.getSort(), nullValue());
         assertThat(q.getWhere(), nullValue());
         AliasedQuerySource aqs = q.getSource().get(0);
-        assertIntegerListOneToFive(aqs.getExpression());
+        assertThat(aqs.getExpression(), listOfLiterals(1, 2, 3, 4, 5));
         String alias = aqs.getAlias();
         assertThat(q.getReturn().isDistinct(), is(false));
         assertThat(q.getReturn().getExpression(), instanceOf(FunctionRef.class));
         assertThat(q.getReturn().getExpression(), convertsToDecimalFromAlias(alias));
-    }
-
-    private void assertIntegerListOneToFive(Expression source) {
-        assertThat(source, instanceOf(List.class));
-
-        List args = (List) source;
-        assertThat(args.getElement(), hasSize(5));
-        int i = 1;
-        for (Expression arg : args.getElement()) {
-            assertThat(arg, literalFor(i++));
-        }
-    }
-
-    private void assertDecimalListOneToFour(Expression source) {
-        assertThat(source, instanceOf(List.class));
-
-        List args = (List) source;
-        assertThat(args.getElement(), hasSize(4));
-        int i = 1;
-        for (Expression arg : args.getElement()) {
-            assertThat(arg, literalFor((double) i++));
-        }
     }
 
     private void assertQuantityListOneMeterToFourMeters(Expression source) {
@@ -325,17 +292,4 @@ public class AggregateOperatorsTest {
             i += 6;
         }
     }
-
-    private void assertStringAtoE(Expression source) {
-        assertThat(source, instanceOf(List.class));
-
-        List args = (List) source;
-        assertThat(args.getElement(), hasSize(5));
-        char c = 'a';
-        for (Expression arg : args.getElement()) {
-            assertThat(arg, literalFor(Character.toString(c++)));
-        }
-    }
-
-
 }
