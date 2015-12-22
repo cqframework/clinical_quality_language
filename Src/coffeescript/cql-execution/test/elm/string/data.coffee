@@ -569,28 +569,26 @@ module.exports['Length'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Hello World",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "NullString",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               } ]
+               }
             }
          } ]
       }

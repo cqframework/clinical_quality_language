@@ -150,6 +150,11 @@ public class SystemFunctionResolver {
                 case "Coalesce": {
                     return resolveNary(fun);
                 }
+
+                //Overloaded Functions
+                case "Length": {
+                    return resolveUnary(fun);
+                }
             }
         }
 

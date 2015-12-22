@@ -6526,9 +6526,8 @@ module.exports['Length'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -6551,16 +6550,15 @@ module.exports['Length'] = {
                      "value" : "10",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Lists",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "List",
@@ -6623,16 +6621,15 @@ module.exports['Length'] = {
                         "type" : "Literal"
                      } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Tuples",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "Tuple",
@@ -6683,27 +6680,25 @@ module.exports['Length'] = {
                         }
                      } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "type" : "List"
-               } ]
+               }
             }
          }, {
             "name" : "NullValue",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "strict" : false,
                   "type" : "As",
                   "operand" : {
@@ -6716,7 +6711,7 @@ module.exports['Length'] = {
                         "type" : "NamedTypeSpecifier"
                      }
                   }
-               } ]
+               }
             }
          } ]
       }

@@ -353,7 +353,6 @@ define FuncTest : common.foo(2, 5)
 ###
 Translation Error(s):
 [10:19, 10:36] Member given not found for type list<QUICK.HumanName>.
-[10:12, 10:37] Could not determine signature for invocation of operator Length.
 ###
 module.exports['Using CommonLib'] = {
    "library" : {
@@ -453,7 +452,10 @@ module.exports['Using CommonLib'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "Length",
+               "operand" : {
+                  "type" : "Null"
+               }
             }
          }, {
             "name" : "FuncTest",

@@ -6,6 +6,7 @@ import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.First;
 import org.hl7.elm.r1.IndexOf;
 import org.hl7.elm.r1.Last;
+import org.hl7.elm.r1.Length;
 import org.hl7.elm.r1.Library;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -61,6 +62,16 @@ public class ListOperatorsTest {
         Last last = (Last) def.getExpression();
         assertIntegerList(last.getSource(), 1, 2, 3);
     }
+
+    @Test
+    public void testLength() {
+        ExpressionDef def = defs.get("ListLength");
+        assertThat(def, hasTypeAndResult(Length.class, "System.Integer"));
+
+        Length length = (Length) def.getExpression();
+        assertIntegerList(length.getOperand(), 1, 2, 3, 4, 5);
+    }
+
 
     private void assertIntegerList(Expression source, Integer... ints) {
         assertThat(source, instanceOf(org.hl7.elm.r1.List.class));
