@@ -288,9 +288,8 @@ module.exports['Combine'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Combine",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Combine",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -309,16 +308,15 @@ module.exports['Combine'] = {
                      "value" : "jkl",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Separator",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Combine",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Combine",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -337,20 +335,20 @@ module.exports['Combine'] = {
                      "value" : "jkl",
                      "type" : "Literal"
                   } ]
-               }, {
+               },
+               "separator" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : ";",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "CombineNull",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Combine",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Combine",
+               "source" : {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -362,20 +360,20 @@ module.exports['Combine'] = {
                         "type" : "NamedTypeSpecifier"
                      }
                   }
-               }, {
+               },
+               "separator" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : ";",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "CombineNullItem",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Combine",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Combine",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -396,11 +394,12 @@ module.exports['Combine'] = {
                      "value" : "jkl",
                      "type" : "Literal"
                   } ]
-               }, {
+               },
+               "separator" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : ";",
                   "type" : "Literal"
-               } ]
+               }
             }
          } ]
       }
@@ -453,72 +452,72 @@ module.exports['Split'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Split",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Split",
+               "stringToSplit" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "a,b,c,,1,2,3",
                   "type" : "Literal"
-               }, {
+               },
+               "separator" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : ",",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "SeparatorNotUsed",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Split",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Split",
+               "stringToSplit" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "a,b,c,,1,2,3",
                   "type" : "Literal"
-               }, {
+               },
+               "separator" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : ";",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "SeparateNull",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Split",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Split",
+               "stringToSplit" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               }, {
+               },
+               "separator" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : ",",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "SeparateUsingNull",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Split",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Split",
+               "stringToSplit" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "a,b,c",
                   "type" : "Literal"
-               }, {
+               },
+               "separator" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               } ]
+               }
             }
          } ]
       }
@@ -641,54 +640,50 @@ module.exports['Upper'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Upper",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Upper",
+               "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "abcdefg123",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "UpperC",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Upper",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Upper",
+               "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "ABCDEFG123",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "CamelC",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Upper",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Upper",
+               "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "aBcDeFg123",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "NullString",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Upper",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Upper",
+               "operand" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               } ]
+               }
             }
          } ]
       }
@@ -741,54 +736,50 @@ module.exports['Lower'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Lower",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Lower",
+               "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "abcdefg123",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "UpperC",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Lower",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Lower",
+               "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "ABCDEFG123",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "CamelC",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Lower",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Lower",
+               "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "aBcDeFg123",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "NullString",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Lower",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Lower",
+               "operand" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               } ]
+               }
             }
          } ]
       }
@@ -972,72 +963,72 @@ module.exports['PositionOf'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "PositionOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "PositionOf",
+               "pattern" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "cde",
                   "type" : "Literal"
-               }, {
+               },
+               "string" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "abcdefg",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "notFound",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "PositionOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "PositionOf",
+               "pattern" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "fgh",
                   "type" : "Literal"
-               }, {
+               },
+               "string" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "abcdefg",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "nullPattern",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "PositionOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "PositionOf",
+               "pattern" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               }, {
+               },
+               "string" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "abcdefg",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "nullString",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "PositionOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "PositionOf",
+               "pattern" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "cde",
                   "type" : "Literal"
-               }, {
+               },
+               "string" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               } ]
+               }
             }
          } ]
       }
@@ -1094,159 +1085,163 @@ module.exports['Substring'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Substring",
+               "stringToSub" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               }, {
+               },
+               "startIndex" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "6",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "Or",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Substring",
+               "stringToSub" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               }, {
+               },
+               "startIndex" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
-               }, {
+               },
+               "length" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "ZeroLength",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Substring",
+               "stringToSub" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               }, {
+               },
+               "startIndex" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
-               }, {
+               },
+               "length" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "StartTooLow",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Substring",
+               "stringToSub" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               }, {
+               },
+               "startIndex" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "0",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "TooMuchLength",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Substring",
+               "stringToSub" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               }, {
+               },
+               "startIndex" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
-               }, {
+               },
+               "length" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "25",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "NegativeLength",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Substring",
+               "stringToSub" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               }, {
+               },
+               "startIndex" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "7",
                   "type" : "Literal"
-               }, {
+               },
+               "length" : {
                   "type" : "Negate",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
                   }
-               } ]
+               }
             }
          }, {
             "name" : "NullString",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Substring",
+               "stringToSub" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               }, {
+               },
+               "startIndex" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "5",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "NullStart",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Substring",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Substring",
+               "stringToSub" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "HelloWorld",
                   "type" : "Literal"
-               }, {
+               },
+               "startIndex" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               } ]
+               }
             }
          } ]
       }

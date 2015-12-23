@@ -1,5 +1,4 @@
 { Expression } = require './expression'
-{ FunctionRef } = require './reusable'
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
 

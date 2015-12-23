@@ -1,18 +1,11 @@
 package org.cqframework.cql.cql2elm.matchers;
 
 import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.NamedType;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.Literal;
-import org.hl7.elm.r1.ObjectFactory;
-
-import javax.xml.namespace.QName;
-import java.math.BigDecimal;
 
 public class HasTypeAndResult extends TypeSafeDiagnosingMatcher<ExpressionDef> {
     private Class expectedType;
@@ -33,14 +26,11 @@ public class HasTypeAndResult extends TypeSafeDiagnosingMatcher<ExpressionDef> {
         }
 
         DataType type = item.getResultType();
-        if (type instanceof NamedType) {
-            String name = ((NamedType) type).getName();
-            if (name == null || ! name.equals(expectedResult)) {
-                mismatchDescription.appendText("had wrong result: ").appendText(name);
-                return false;
-            }
-        } else {
-            mismatchDescription.appendText("had un-named result type");
+        if (type == null) {
+            mismatchDescription.appendText("had null result type");
+            return false;
+        } else if (!type.toString().equals(expectedResult)) {
+            mismatchDescription.appendText("had wrong result: ").appendText(type.toString());
             return false;
         }
 

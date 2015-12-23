@@ -1,17 +1,22 @@
 package org.cqframework.cql.cql2elm;
 
 
+import org.cqframework.cql.cql2elm.model.invocation.CombineInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.FirstInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.IndexOfInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.LastInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.NaryExpressionInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.PositionOfInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.RoundInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.SplitInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.SubstringInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.ZeroOperandExpressionInvocation;
 import org.hl7.elm.r1.AggregateExpression;
 import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.CalculateAge;
 import org.hl7.elm.r1.CalculateAgeAt;
+import org.hl7.elm.r1.Combine;
 import org.hl7.elm.r1.DateTime;
 import org.hl7.elm.r1.DateTimePrecision;
 import org.hl7.elm.r1.Expression;
@@ -22,8 +27,11 @@ import org.hl7.elm.r1.Last;
 import org.hl7.elm.r1.NaryExpression;
 import org.hl7.elm.r1.Now;
 import org.hl7.elm.r1.ObjectFactory;
+import org.hl7.elm.r1.PositionOf;
 import org.hl7.elm.r1.Property;
 import org.hl7.elm.r1.Round;
+import org.hl7.elm.r1.Split;
+import org.hl7.elm.r1.Substring;
 import org.hl7.elm.r1.Today;
 import org.hl7.elm.r1.UnaryExpression;
 
@@ -146,14 +154,36 @@ public class SystemFunctionResolver {
                     return resolveLast(fun);
                 }
 
-                //Nullological Functions
+                // Nullological Functions
                 case "Coalesce": {
                     return resolveNary(fun);
                 }
 
-                //Overloaded Functions
+                // Overloaded Functions
                 case "Length": {
                     return resolveUnary(fun);
+                }
+
+                // String Functions
+                case "Combine": {
+                    return resolveCombine(fun);
+                }
+
+                case "Split": {
+                    return resolveSplit(fun);
+                }
+
+                case "Upper":
+                case "Lower": {
+                    return resolveUnary(fun);
+                }
+
+                case "PositionOf": {
+                    return resolvePositionOf(fun);
+                }
+
+                case "Substring": {
+                    return resolveSubstring(fun);
                 }
             }
         }
@@ -213,9 +243,7 @@ public class SystemFunctionResolver {
 
     private Round resolveRound(FunctionRef fun) {
         if (fun.getOperand().isEmpty() || fun.getOperand().size() > 2) {
-            throw new IllegalArgumentException(
-                    String.format("Could not resolve call to system operator %s.  Expected 1 or 2 arguments.",
-                            fun.getName()));
+            throw new IllegalArgumentException("Could not resolve call to system operator Round.  Expected 1 or 2 arguments.");
         }
         final Round round = of.createRound().withOperand(fun.getOperand().get(0));
         if (fun.getOperand().size() == 2) {
@@ -273,6 +301,52 @@ public class SystemFunctionResolver {
         last.setSource(fun.getOperand().get(0));
         visitor.resolveCall("System", "Last", new LastInvocation(last));
         return last;
+    }
+
+    // String Function Support
+
+    private Combine resolveCombine(FunctionRef fun) {
+        if (fun.getOperand().isEmpty() || fun.getOperand().size() > 2) {
+            throw new IllegalArgumentException("Could not resolve call to system operator Combine.  Expected 1 or 2 arguments.");
+        }
+        final Combine combine = of.createCombine().withSource(fun.getOperand().get(0));
+        if (fun.getOperand().size() == 2) {
+            combine.setSeparator(fun.getOperand().get(1));
+        }
+        visitor.resolveCall("System", "Combine", new CombineInvocation(combine));
+        return combine;
+    }
+
+    private Split resolveSplit(FunctionRef fun) {
+        checkNumberOfOperands(fun, 2);
+        final Split split = of.createSplit()
+                .withStringToSplit(fun.getOperand().get(0))
+                .withSeparator(fun.getOperand().get(1));
+        visitor.resolveCall("System", "Split", new SplitInvocation(split));
+        return split;
+    }
+
+    private PositionOf resolvePositionOf(FunctionRef fun) {
+        checkNumberOfOperands(fun, 2);
+        final PositionOf pos = of.createPositionOf()
+                .withPattern(fun.getOperand().get(0))
+                .withString(fun.getOperand().get(1));
+        visitor.resolveCall("System", "PositionOf", new PositionOfInvocation(pos));
+        return pos;
+    }
+
+    private Substring resolveSubstring(FunctionRef fun) {
+        if (fun.getOperand().size() < 2 || fun.getOperand().size() > 3) {
+            throw new IllegalArgumentException("Could not resolve call to system operator Substring.  Expected 2 or 3 arguments.");
+        }
+        final Substring substring = of.createSubstring()
+                .withStringToSub(fun.getOperand().get(0))
+                .withStartIndex(fun.getOperand().get(1));
+        if (fun.getOperand().size() == 3) {
+            substring.setLength(fun.getOperand().get(2));
+        }
+        visitor.resolveCall("System", "Substring", new SubstringInvocation(substring));
+        return substring;
     }
 
     // General Function Support
