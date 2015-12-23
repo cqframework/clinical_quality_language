@@ -3164,7 +3164,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return pt == null ? null : (TypeSpecifier) visit(pt);
     }
 
-    private QName dataTypeToQName(DataType type) {
+    protected QName dataTypeToQName(DataType type) {
         if (type instanceof NamedType) {
             NamedType namedType = (NamedType)type;
             org.hl7.elm_modelinfo.r1.ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
@@ -3423,35 +3423,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private Expression convertExpression(Expression expression, Conversion conversion) {
-        if (conversion.isCast()) {
-            if (conversion.getFromType().isSuperTypeOf(conversion.getToType())) {
-                As castedOperand = (As)of.createAs()
-                        .withOperand(expression)
-                        .withResultType(conversion.getToType());
+        if (conversion.isCast() && conversion.getFromType().isSuperTypeOf(conversion.getToType())) {
+            As castedOperand = (As)of.createAs()
+                    .withOperand(expression)
+                    .withResultType(conversion.getToType());
 
-                if (castedOperand.getResultType() instanceof NamedType) {
-                    castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
-                }
-                else {
-                    castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
-                }
-
-                return castedOperand;
+            if (castedOperand.getResultType() instanceof NamedType) {
+                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
             }
             else {
-                Convert convertedOperand = (Convert)of.createConvert()
-                        .withOperand(expression)
-                        .withResultType(conversion.getToType());
-
-                if (convertedOperand.getResultType() instanceof NamedType) {
-                    convertedOperand.setToType(dataTypeToQName(convertedOperand.getResultType()));
-                }
-                else {
-                    convertedOperand.setToTypeSpecifier(dataTypeToTypeSpecifier(convertedOperand.getResultType()));
-                }
-
-                return convertedOperand;
+                castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
             }
+
+            return castedOperand;
         }
         else if (conversion.isListConversion()) {
             return convertListExpression(expression, conversion);
@@ -3460,12 +3444,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return convertIntervalExpression(expression, conversion);
         }
         else {
-            Operator conversionOperator = conversion.getOperator();
-            FunctionRef convertedOperand = (FunctionRef)of.createFunctionRef()
-                    .withLibraryName(conversionOperator.getLibraryName())
-                    .withName(conversionOperator.getName())
+            Convert convertedOperand = (Convert)of.createConvert()
                     .withOperand(expression)
-                    .withResultType(conversionOperator.getResultType());
+                    .withResultType(conversion.getToType());
+
+            if (convertedOperand.getResultType() instanceof NamedType) {
+                convertedOperand.setToType(dataTypeToQName(convertedOperand.getResultType()));
+            }
+            else {
+                convertedOperand.setToTypeSpecifier(dataTypeToTypeSpecifier(convertedOperand.getResultType()));
+            }
+
             return convertedOperand;
         }
     }
@@ -3786,7 +3775,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         loadConversionMap(referencedLibrary);
     }
 
-    private SystemModel getSystemModel() {
+    protected SystemModel getSystemModel() {
         return (SystemModel)getModel("System");
     }
 

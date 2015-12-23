@@ -5,8 +5,8 @@ import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.hl7.elm.r1.AliasRef;
+import org.hl7.elm.r1.Convert;
 import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.Literal;
 import org.hl7.elm.r1.ObjectFactory;
 
@@ -14,7 +14,7 @@ import javax.xml.namespace.QName;
 
 public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression> {
     private Object expectedArg;
-    private FunctionRef expectedValue;
+    private Convert expectedValue;
 
     public ConvertsToDecimalFrom(Integer i) {
         super();
@@ -26,9 +26,8 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
                 .withValueType(new QName("urn:hl7-org:elm-types:r1", "Integer"))
                 .withValue(String.valueOf(i));
 
-        expectedValue = of.createFunctionRef()
-                .withLibraryName("System")
-                .withName("ToDecimal")
+        expectedValue = of.createConvert()
+                .withToType(new QName("urn:hl7-org:elm-types:r1", "Decimal"))
                 .withOperand(integerLiteral);
     }
 
@@ -36,22 +35,21 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
         super();
 
         expectedArg = a;
-        expectedValue = new ObjectFactory().createFunctionRef()
-                .withLibraryName("System")
-                .withName("ToDecimal")
+        expectedValue = new ObjectFactory().createConvert()
+                .withToType(new QName("urn:hl7-org:elm-types:r1", "Decimal"))
                 .withOperand(a);
     }
 
     @Override
     protected boolean matchesSafely(Expression item, Description mismatchDescription) {
-        if (! (item instanceof FunctionRef)) {
+        if (! (item instanceof Convert)) {
             mismatchDescription.appendText("had wrong ELM class type: ").appendText(item.getClass().getName());
             return false;
         }
 
-        FunctionRef fun = (FunctionRef) item;
-        if (! expectedValue.equals(fun)) {
-            mismatchDescription.appendText("had wrong function reference: ").appendValue(fun);
+        Convert convert = (Convert) item;
+        if (! expectedValue.equals(convert)) {
+            mismatchDescription.appendText("had wrong conversion: ").appendValue(convert);
             return false;
         }
 
@@ -60,7 +58,7 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("FunctionRef for ToDecimal w/ value: <")
+        description.appendText("Conversion to Decimal w/ value: <")
                 .appendValue(expectedArg);
     }
 
