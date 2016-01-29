@@ -24,13 +24,15 @@ public class LibraryManager {
         }
 
         TranslatedLibrary library = LIBRARIES.get(libraryIdentifier.getId());
-        if (library == null) {
-            library = translateLibrary(libraryIdentifier, errors);
-        }
-
-        if (libraryIdentifier.getVersion() != null && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
+        
+        if (library != null 
+                && libraryIdentifier.getVersion() != null 
+                && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
             throw new IllegalArgumentException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
                     libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()));
+        } else {
+            library = translateLibrary(libraryIdentifier, errors);
+            LIBRARIES.put(libraryIdentifier.getId(), library);
         }
 
         return library;

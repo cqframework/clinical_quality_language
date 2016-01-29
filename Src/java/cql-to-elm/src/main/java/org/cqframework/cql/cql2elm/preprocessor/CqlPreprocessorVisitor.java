@@ -31,7 +31,9 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         if (ctx.versionSpecifier() != null) {
             includeDefinition.setVersion((String)visit(ctx.versionSpecifier()));
         }
-        includeDefinition.setLocalName((String)visit(ctx.localIdentifier()));
+        if (ctx.localIdentifier() != null) {
+          includeDefinition.setLocalName((String)visit(ctx.localIdentifier()));
+        }        
         libraryInfo.addIncludeDefinition(includeDefinition);
         return includeDefinition;
     }
