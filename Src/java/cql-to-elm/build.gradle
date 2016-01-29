@@ -1,7 +1,7 @@
 apply plugin: 'application'
 
 mainClassName = 'org.cqframework.cql.cql2elm.CqlTranslator'
-run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql", "--stdout"]
+run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql"]
 
 dependencies {
     compile project(':cql')
