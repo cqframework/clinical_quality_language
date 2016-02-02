@@ -2504,9 +2504,8 @@ module.exports['IndexOf'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IndexOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IndexOf",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -2525,20 +2524,20 @@ module.exports['IndexOf'] = {
                      "value" : "d",
                      "type" : "Literal"
                   } ]
-               }, {
+               },
+               "element" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "b",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "IndexOfThirdTuple",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IndexOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IndexOf",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "Tuple",
@@ -2571,7 +2570,8 @@ module.exports['IndexOf'] = {
                         }
                      } ]
                   } ]
-               }, {
+               },
+               "element" : {
                   "type" : "Tuple",
                   "element" : [ {
                      "name" : "a",
@@ -2581,16 +2581,15 @@ module.exports['IndexOf'] = {
                         "type" : "Literal"
                      }
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "MultipleMatches",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IndexOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IndexOf",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -2621,20 +2620,20 @@ module.exports['IndexOf'] = {
                      "value" : "d",
                      "type" : "Literal"
                   } ]
-               }, {
+               },
+               "element" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "d",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "ItemNotFound",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IndexOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IndexOf",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -2649,20 +2648,20 @@ module.exports['IndexOf'] = {
                      "value" : "c",
                      "type" : "Literal"
                   } ]
-               }, {
+               },
+               "element" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "d",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "NullList",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IndexOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IndexOf",
+               "source" : {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -2674,20 +2673,20 @@ module.exports['IndexOf'] = {
                         "type" : "NamedTypeSpecifier"
                      }
                   }
-               }, {
+               },
+               "element" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "a",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "NullItem",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IndexOf",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IndexOf",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -2702,13 +2701,14 @@ module.exports['IndexOf'] = {
                      "value" : "c",
                      "type" : "Literal"
                   } ]
-               }, {
+               },
+               "element" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
                   }
-               } ]
+               }
             }
          } ]
       }
@@ -6014,9 +6014,8 @@ module.exports['First'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "First",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "First",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -6035,16 +6034,15 @@ module.exports['First'] = {
                      "value" : "4",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Letters",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "First",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "First",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -6059,16 +6057,15 @@ module.exports['First'] = {
                      "value" : "c",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Lists",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "First",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "First",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "List",
@@ -6101,16 +6098,15 @@ module.exports['First'] = {
                         "type" : "Literal"
                      } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Tuples",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "First",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "First",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "Tuple",
@@ -6161,16 +6157,15 @@ module.exports['First'] = {
                         }
                      } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Unordered",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "First",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "First",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -6189,27 +6184,25 @@ module.exports['First'] = {
                      "value" : "2",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "First",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "First",
+               "source" : {
                   "type" : "List"
-               } ]
+               }
             }
          }, {
             "name" : "NullValue",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "First",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "First",
+               "source" : {
                   "strict" : false,
                   "type" : "As",
                   "operand" : {
@@ -6222,7 +6215,7 @@ module.exports['First'] = {
                         "type" : "NamedTypeSpecifier"
                      }
                   }
-               } ]
+               }
             }
          } ]
       }
@@ -6278,9 +6271,8 @@ module.exports['Last'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Last",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Last",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -6299,16 +6291,15 @@ module.exports['Last'] = {
                      "value" : "4",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Letters",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Last",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Last",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -6323,16 +6314,15 @@ module.exports['Last'] = {
                      "value" : "c",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Lists",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Last",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Last",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "List",
@@ -6365,16 +6355,15 @@ module.exports['Last'] = {
                         "type" : "Literal"
                      } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Tuples",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Last",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Last",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "Tuple",
@@ -6425,16 +6414,15 @@ module.exports['Last'] = {
                         }
                      } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Unordered",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Last",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Last",
+               "source" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -6453,27 +6441,25 @@ module.exports['Last'] = {
                      "value" : "2",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Last",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Last",
+               "source" : {
                   "type" : "List"
-               } ]
+               }
             }
          }, {
             "name" : "NullValue",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Last",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Last",
+               "source" : {
                   "strict" : false,
                   "type" : "As",
                   "operand" : {
@@ -6486,7 +6472,7 @@ module.exports['Last'] = {
                         "type" : "NamedTypeSpecifier"
                      }
                   }
-               } ]
+               }
             }
          } ]
       }
@@ -6540,9 +6526,8 @@ module.exports['Length'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "type" : "List",
                   "element" : [ {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -6565,16 +6550,15 @@ module.exports['Length'] = {
                      "value" : "10",
                      "type" : "Literal"
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Lists",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "List",
@@ -6637,16 +6621,15 @@ module.exports['Length'] = {
                         "type" : "Literal"
                      } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Tuples",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "type" : "List",
                   "element" : [ {
                      "type" : "Tuple",
@@ -6697,27 +6680,25 @@ module.exports['Length'] = {
                         }
                      } ]
                   } ]
-               } ]
+               }
             }
          }, {
             "name" : "Empty",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "type" : "List"
-               } ]
+               }
             }
          }, {
             "name" : "NullValue",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Length",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Length",
+               "operand" : {
                   "strict" : false,
                   "type" : "As",
                   "operand" : {
@@ -6730,7 +6711,7 @@ module.exports['Length'] = {
                         "type" : "NamedTypeSpecifier"
                      }
                   }
-               } ]
+               }
             }
          } ]
       }

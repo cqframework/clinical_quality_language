@@ -46,13 +46,13 @@ describe 'InValueSet', ->
   it 'should find string code in versioned value set', ->
     @stringInVersionedValueSet.exec(@ctx).should.be.true
 
-  it.skip 'should find short code in value set', ->
+  it 'should find short code in value set', ->
     @shortCode.exec(@ctx).should.be.true
 
-  it.skip 'should find medium code in value set', ->
+  it 'should find medium code in value set', ->
     @mediumCode.exec(@ctx).should.be.true
 
-  it.skip 'should find long code in value set', ->
+  it 'should find long code in value set', ->
     @longCode.exec(@ctx).should.be.true
 
   it 'should not find string code in value set', ->
@@ -61,13 +61,13 @@ describe 'InValueSet', ->
   it 'should not find string code in versioned value set', ->
     @wrongStringInVersionedValueSet.exec(@ctx).should.be.false
 
-  it.skip 'should not find short code in value set', ->
+  it 'should not find short code in value set', ->
     @wrongShortCode.exec(@ctx).should.be.false
 
-  it.skip 'should not find medium code in value set', ->
+  it 'should not find medium code in value set', ->
     @wrongMediumCode.exec(@ctx).should.be.false
 
-  it.skip 'should not find long code in value set', ->
+  it 'should not find long code in value set', ->
     @wrongLongCode.exec(@ctx).should.be.false
 
 describe 'Patient Property In ValueSet', ->

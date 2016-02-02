@@ -62,10 +62,10 @@ using QUICK
 context Patient
 define Nil: null
 define One: 1
-define NullIsNull: IsNull(null)
-define NullVarIsNull: IsNull(Nil)
-define StringIsNull: IsNull('')
-define NonNullVarIsNull: IsNull(One)
+define NullIsNull: null is null
+define NullVarIsNull: Nil is null
+define StringIsNull: '' is null
+define NonNullVarIsNull: One is null
 ###
 
 module.exports['IsNull'] = {
@@ -120,48 +120,44 @@ module.exports['IsNull'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IsNull",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IsNull",
+               "operand" : {
                   "type" : "Null"
-               } ]
+               }
             }
          }, {
             "name" : "NullVarIsNull",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IsNull",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IsNull",
+               "operand" : {
                   "name" : "Nil",
                   "type" : "ExpressionRef"
-               } ]
+               }
             }
          }, {
             "name" : "StringIsNull",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IsNull",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IsNull",
+               "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "NonNullVarIsNull",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "IsNull",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "IsNull",
+               "operand" : {
                   "name" : "One",
                   "type" : "ExpressionRef"
-               } ]
+               }
             }
          } ]
       }
@@ -213,8 +209,7 @@ module.exports['Coalesce'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Coalesce",
-               "type" : "FunctionRef",
+               "type" : "Coalesce",
                "operand" : [ {
                   "strict" : false,
                   "type" : "As",
@@ -260,8 +255,7 @@ module.exports['Coalesce'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Coalesce",
-               "type" : "FunctionRef",
+               "type" : "Coalesce",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Foo",
@@ -297,8 +291,7 @@ module.exports['Coalesce'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Coalesce",
-               "type" : "FunctionRef",
+               "type" : "Coalesce",
                "operand" : [ {
                   "strict" : false,
                   "type" : "As",

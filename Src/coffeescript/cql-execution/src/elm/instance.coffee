@@ -1,6 +1,7 @@
 { Expression } = require './expression'
 { build } = require './builder'
-{Quantity} = require('./quantity')
+{ Quantity } = require('./quantity')
+{ Code } = require('../datatypes/datatypes')
 class Element
   constructor: (json) ->
     @name = json.name
@@ -19,5 +20,8 @@ module.exports.Instance = class Instance extends Expression
     obj = {}
     for el in @element
       obj[el.name] = el.exec(ctx)
-    # TODO: Support for other classes like Code and Concept
-    if @classType is "{urn:hl7-org:elm-types:r1}Quantity" then new Quantity(obj) else obj
+    # TODO: Support for other classes like Concept
+    switch @classType
+      when "{urn:hl7-org:elm-types:r1}Quantity" then new Quantity(obj)
+      when "{urn:hl7-org:elm-types:r1}Code" then new Code(obj.code, obj.system, obj.version, obj.display)
+      else obj

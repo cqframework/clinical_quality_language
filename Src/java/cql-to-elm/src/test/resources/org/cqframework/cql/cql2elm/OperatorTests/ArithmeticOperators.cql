@@ -1,23 +1,29 @@
 define IntegerAbs: Abs(-1)
-define RealAbs: Abs(-1.0)
+define DecimalAbs: Abs(-1.0)
 define QuantityAbs: Abs(-1.0'cm')
 
 define IntegerAdd: 1 + 1
 define RealAdd: 1.0 + 1.0
 define QuantityAdd: 1'g/cm3' + 1'g/cm3'
 
-define RealCeiling: Ceiling(1.0)
+define DecimalCeiling: Ceiling(1.0)
+define IntegerCeiling: Ceiling(1)
 
 define IntegerDivide: 1 / 1
 define RealDivide: 1.0 / 1.0
 define QuantityRealDivide: 1'g/cm3' / 1.0
 define QuantityDivide: 1'g/cm3' / 1'g/cm3'
 
-define RealFloor: Floor(1.0)
+define DecimalFloor: Floor(1.0)
+define IntegerFloor: Floor(1)
 
-define RealLog: Log(1000.0, 10.0)
+define DecimalDecimalLog: Log(1000.0, 10.0)
+define DecimalIntegerLog: Log(1000.0, 10)
+define IntegerDecimalLog: Log(1000, 10.0)
+define IntegerIntegerLog: Log(1000, 10)
 
-define RealLn: Ln(1000.0)
+define DecimalLn: Ln(1000.0)
+define IntegerLn: Ln(1000)
 
 define IntegerModulo: 100 mod 10
 define RealModulo: 100.0 mod 10.0
@@ -42,8 +48,8 @@ define QuantityPredecessor: predecessor of 1'cm'
 define IntegerPower: 10^3
 define RealPower: 10.0^3.0
 
-define RealRound: Round(10.55)
-define RealRoundWithPrecision: Round(10.5555, 2)
+define DecimalRound: Round(10.55)
+define DecimalRoundWithPrecision: Round(10.5555, 2)
 
 define IntegerSubtract: 5 - 4
 define RealSubtract: 5.0 - 4.0
@@ -54,7 +60,8 @@ define RealSuccessor: successor of 1.0
 define DateTimeSuccessor: successor of DateTime(2014, 1, 1)
 define QuantitySuccessor: successor of 1'cm'
 
-define RealTruncate: Truncate(5.5)
+define DecimalTruncate: Truncate(5.5)
+define IntegerTruncate: Truncate(5)
 
 define IntegerDiv: 100 div 10
 define RealDiv: 100.0 div 10.0

@@ -1,5 +1,4 @@
 { Expression } = require './expression'
-{ FunctionRef } = require './reusable'
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
 
@@ -44,7 +43,7 @@ calculateAge = (date1, date2, precision) ->
   if date1.getTime() - date2.getTime() > 0 then return 0
   value = if precision is "Year"
     monthsDiff(date1,date2) / 12
-  else if  precision is "Month" 
+  else if  precision is "Month"
     monthsDiff(date1,date2)
   else
     ageInMS = date2.getTime() - date1.getTime()
@@ -62,14 +61,14 @@ monthsDiff = (date1, date2) ->
   #Rough approximation not taking day into account yet.  This may be +1 month
   months = ((high.getFullYear() - low.getFullYear()) * 12) + (high.getMonth() - low.getMonth())
   return 0 if months is 0
-  
+
   date3 = new Date(low.getTime())
   #add the number of months to the low date clone to bring it up to the current month and year
   # note however that this may push the date into the next month.  If the low date was in a month
   # with 31 days and the high date is in a month with less then 31 days this will cause the date to
   #be pushed forward into the next month.
   date3.setMonth(low.getMonth() + months)
-  # If the months are equal and the adjusted dated is greater than the high date we havn't 
+  # If the months are equal and the adjusted dated is greater than the high date we havn't
   # reached the actual turn over day so remove a month from the count
   if date3.getMonth() == high.getMonth() && (date3.getDate() - high.getDate() > 0)
     months--
@@ -97,11 +96,3 @@ module.exports.CalculateAgeAt = class CalculateAgeAt extends Expression
     date1 = args[0].toJSDate()
     date2 = args[1].toJSDate()
     calculateAge date1, date2, @precision
-
-# TODO: Not really defined well anywhere
-module.exports.CodeFunctionRef = class CodeFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-
-  exec: (ctx) ->
-    new Code(@execArgs(ctx)...)

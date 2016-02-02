@@ -220,77 +220,89 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "timezoneOffset" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
-                  } ]
+                  }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "timezoneOffset" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -300,77 +312,89 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "timezoneOffset" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
-                  } ]
+                  }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "201",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "timezoneOffset" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -380,77 +404,89 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "23",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "timezoneOffset" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
-                  } ]
+                  }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "16",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "timezoneOffset" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "4.0",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -460,77 +496,89 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "timezoneOffset" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "1.0",
                      "type" : "Literal"
-                  } ]
+                  }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "hour" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "13",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "minute" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "30",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "second" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "25",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "millisecond" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "200",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "timezoneOffset" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "2.0",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -540,29 +588,29 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  } ]
+                  }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          }, {
@@ -572,33 +620,34 @@ module.exports['Equal'] = {
             "expression" : {
                "type" : "Equal",
                "operand" : [ {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "day" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "15",
                      "type" : "Literal"
-                  } ]
+                  }
                }, {
-                  "name" : "DateTime",
-                  "type" : "FunctionRef",
-                  "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2000",
                      "type" : "Literal"
-                  }, {
+                  },
+                  "month" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
-                  } ]
+                  }
                } ]
             }
          } ]
@@ -837,77 +886,89 @@ module.exports['NotEqual'] = {
                "operand" : {
                   "type" : "Equal",
                   "operand" : [ {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "hour" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "13",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "minute" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "30",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "second" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "25",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "millisecond" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "200",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "timezoneOffset" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                         "value" : "1.0",
                         "type" : "Literal"
-                     } ]
+                     }
                   }, {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "hour" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "13",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "minute" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "30",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "second" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "25",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "millisecond" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "200",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "timezoneOffset" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                         "value" : "1.0",
                         "type" : "Literal"
-                     } ]
+                     }
                   } ]
                }
             }
@@ -920,77 +981,89 @@ module.exports['NotEqual'] = {
                "operand" : {
                   "type" : "Equal",
                   "operand" : [ {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "hour" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "13",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "minute" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "30",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "second" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "25",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "millisecond" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "200",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "timezoneOffset" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                         "value" : "1.0",
                         "type" : "Literal"
-                     } ]
+                     }
                   }, {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "hour" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "13",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "minute" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "30",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "second" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "25",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "millisecond" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "201",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "timezoneOffset" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                         "value" : "1.0",
                         "type" : "Literal"
-                     } ]
+                     }
                   } ]
                }
             }
@@ -1003,77 +1076,89 @@ module.exports['NotEqual'] = {
                "operand" : {
                   "type" : "Equal",
                   "operand" : [ {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "hour" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "23",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "minute" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "30",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "second" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "25",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "millisecond" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "200",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "timezoneOffset" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                         "value" : "1.0",
                         "type" : "Literal"
-                     } ]
+                     }
                   }, {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "16",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "hour" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "minute" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "30",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "second" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "25",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "millisecond" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "200",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "timezoneOffset" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                         "value" : "4.0",
                         "type" : "Literal"
-                     } ]
+                     }
                   } ]
                }
             }
@@ -1086,77 +1171,89 @@ module.exports['NotEqual'] = {
                "operand" : {
                   "type" : "Equal",
                   "operand" : [ {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "hour" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "13",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "minute" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "30",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "second" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "25",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "millisecond" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "200",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "timezoneOffset" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                         "value" : "1.0",
                         "type" : "Literal"
-                     } ]
+                     }
                   }, {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "hour" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "13",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "minute" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "30",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "second" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "25",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "millisecond" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "200",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "timezoneOffset" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                         "value" : "2.0",
                         "type" : "Literal"
-                     } ]
+                     }
                   } ]
                }
             }
@@ -1169,29 +1266,29 @@ module.exports['NotEqual'] = {
                "operand" : {
                   "type" : "Equal",
                   "operand" : [ {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     } ]
+                     }
                   }, {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     } ]
+                     }
                   } ]
                }
             }
@@ -1204,33 +1301,34 @@ module.exports['NotEqual'] = {
                "operand" : {
                   "type" : "Equal",
                   "operand" : [ {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "day" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     } ]
+                     }
                   }, {
-                     "name" : "DateTime",
-                     "type" : "FunctionRef",
-                     "operand" : [ {
+                     "type" : "DateTime",
+                     "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2000",
                         "type" : "Literal"
-                     }, {
+                     },
+                     "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
-                     } ]
+                     }
                   } ]
                }
             }
