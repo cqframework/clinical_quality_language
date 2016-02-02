@@ -1,42 +1,27 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import org.cqframework.cql.cql2elm.model.Invocation;
-import org.cqframework.cql.elm.tracking.DataType;
 import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.Expression;
 
+import java.util.List;
 
-public class BinaryExpressionInvocation implements Invocation {
+
+public class BinaryExpressionInvocation extends AbstractExpressionInvocation {
     public BinaryExpressionInvocation(BinaryExpression expression) {
-        if (expression == null) {
-            throw new IllegalArgumentException("expression is null.");
-        }
-
-        this.expression = expression;
+        super(expression);
     }
-
-    private BinaryExpression expression;
 
     @Override
     public Iterable<Expression> getOperands() {
-        return expression.getOperand();
+        return ((BinaryExpression) expression).getOperand();
     }
 
     @Override
     public void setOperands(Iterable<Expression> operands) {
-        expression.getOperand().clear();
+        List<Expression> expOperands = ((BinaryExpression) expression).getOperand();
+        expOperands.clear();
         for (Expression operand : operands) {
-            expression.getOperand().add(operand);
+            expOperands.add(operand);
         }
-    }
-
-    @Override
-    public void setResultType(DataType resultType) {
-        expression.setResultType(resultType);
-    }
-
-    @Override
-    public Expression getExpression() {
-        return expression;
     }
 }

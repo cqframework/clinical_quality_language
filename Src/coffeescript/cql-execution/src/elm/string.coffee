@@ -1,5 +1,4 @@
 { Expression } = require './expression'
-{ FunctionRef } = require './reusable'
 { build } = require './builder'
 
 module.exports.Concat = class Concat extends Expression
@@ -21,20 +20,6 @@ module.exports.Combine = class Combine extends Expression
     separator = if @separator? then @separator.exec(ctx) else ''
     if (not source? or source.some (x) -> not x?) then null else source.join(separator)
 
-# TODO: Remove functionref when ELM does Combine natively
-module.exports.CombineFunctionRef = class CombineFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    cmbJson = {
-      "type" : "Combine",
-      "source" : json.operand[0]
-    }
-    if json.operand.length > 1 then cmbJson["separator"] = json.operand[1]
-    @combine = new Combine(cmbJson)
-
-  exec: (ctx) ->
-    @combine.exec(ctx)
-
 module.exports.Split = class Split extends Expression
   constructor: (json) ->
     super
@@ -46,19 +31,6 @@ module.exports.Split = class Split extends Expression
     separator = @separator.exec(ctx)
     if not (stringToSplit? and separator?) then null else stringToSplit.split(separator)
 
-# TODO: Remove functionref when ELM does Split natively
-module.exports.SplitFunctionRef = class SplitFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @split = new Split {
-      "type" : "Split",
-      "stringToSplit" : json.operand[0],
-      "separator" : json.operand[1]
-    }
-
-  exec: (ctx) ->
-    @split.exec(ctx)
-
 # Length is completely handled by overloaded#Length
 
 module.exports.Upper = class Upper extends Expression
@@ -69,18 +41,6 @@ module.exports.Upper = class Upper extends Expression
     arg = @execArgs ctx
     if arg? then arg.toUpperCase() else null
 
-# TODO: Remove functionref when ELM does Upper natively
-module.exports.UpperFunctionRef = class UpperFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @upper = new Upper {
-      "type" : "Upper",
-      "operand" : json.operand[0]
-    }
-
-  exec: (ctx) ->
-    @upper.exec(ctx)
-
 module.exports.Lower = class Lower extends Expression
   constructor: (json) ->
     super
@@ -88,18 +48,6 @@ module.exports.Lower = class Lower extends Expression
   exec: (ctx) ->
     arg = @execArgs ctx
     if arg? then arg.toLowerCase() else null
-
-# TODO: Remove functionref when ELM does Lower natively
-module.exports.LowerFunctionRef = class LowerFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @upper = new Lower {
-      "type" : "Lower",
-      "operand" : json.operand[0]
-    }
-
-  exec: (ctx) ->
-    @upper.exec(ctx)
 
 # Indexer is completely handled by overloaded#Indexer
 
@@ -113,19 +61,6 @@ module.exports.PositionOf = class PositionOf extends Expression
     pattern = @pattern.exec(ctx)
     string = @string.exec(ctx)
     if not (pattern? and string?) then null else 1 + string.indexOf(pattern)
-
-# TODO: Remove functionref when ELM does PositionOf natively
-module.exports.PositionOfFunctionRef = class PositionOfFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @pos = new PositionOf {
-      "type" : "PositionOf",
-      "pattern" : json.operand[0],
-      "string" : json.operand[1]
-    }
-
-  exec: (ctx) ->
-    @pos.exec(ctx)
 
 module.exports.Substring = class Substring extends Expression
   constructor: (json) ->
@@ -148,18 +83,3 @@ module.exports.Substring = class Substring extends Expression
       stringToSub.substr(startIndex-1, length)
     else
       stringToSub.substr(startIndex-1)
-
-# TODO: Remove functionref when ELM does Substring natively
-module.exports.SubstringFunctionRef = class SubstringFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    subJson = {
-      "type" : "Substring",
-      "stringToSub" : json.operand[0],
-      "startIndex" : json.operand[1]
-    }
-    if json.operand.length > 2 then subJson["length"] = json.operand[2]
-    @substring = new Substring(subJson)
-
-  exec: (ctx) ->
-    @substring.exec(ctx)

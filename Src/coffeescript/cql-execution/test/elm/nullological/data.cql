@@ -4,10 +4,10 @@ define Nil: null
 // @Test: IsNull
 define Nil: null
 define One: 1
-define NullIsNull: IsNull(null)
-define NullVarIsNull: IsNull(Nil)
-define StringIsNull: IsNull('')
-define NonNullVarIsNull: IsNull(One)
+define NullIsNull: null is null
+define NullVarIsNull: Nil is null
+define StringIsNull: '' is null
+define NonNullVarIsNull: One is null
 
 // @Test: Coalesce
 define NullNullHelloNullWorld: Coalesce(null as String, null as String, 'Hello', null as String, 'World')

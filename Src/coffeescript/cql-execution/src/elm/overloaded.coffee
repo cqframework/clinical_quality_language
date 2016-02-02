@@ -1,5 +1,4 @@
 { Expression } = require './expression'
-{ FunctionRef } = require './reusable'
 { ThreeValuedLogic } = require '../datatypes/logic'
 { DateTime } = require '../datatypes/datetime'
 { Exception } = require '../datatypes/exception'
@@ -152,18 +151,6 @@ module.exports.Length = class Length extends Expression
   exec: (ctx) ->
     arg = @execArgs ctx
     if arg? then arg.length else null
-
-# TODO: Remove functionref when ELM does Length natively
-module.exports.LengthFunctionRef = class LengthFunctionRef extends FunctionRef
-  constructor: (json) ->
-    super
-    @length = new Length {
-      "type" : "Length",
-      "operand" : json.operand[0]
-    }
-
-  exec: (ctx) ->
-    @length.exec(ctx)
 
 module.exports.After = class After extends Expression
   constructor: (json) ->
