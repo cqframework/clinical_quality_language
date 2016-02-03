@@ -13,6 +13,8 @@ import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.model.*;
 import org.hl7.cql_annotations.r1.Narrative;
+import org.hl7.cql_annotations.r1.CqlToElmError;
+import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
@@ -57,6 +59,34 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private Map<String, Model> models = new HashMap<>();
     private boolean implicitPatientCreated = false;
 
+    
+    /**
+     * Save any errors while parsing in both the list of errors but also in the library
+     * itself so they can be processed easily by a remote client
+     * @param cql
+     * @return
+     */
+    public void recordParsingException(CqlTranslatorException e) {
+      errors.add(e);
+      CqlToElmError err = af.createCqlToElmError();
+      err.setMessage(e.getMessage());
+      err.setType(ErrorType.SYNTAX);
+      if (e.getLocator() != null) {
+        err.setLibrary(e.getLocator().getLibrary().getId());
+        err.setStartLine(e.getLocator().getStartLine());
+        err.setEndLine(e.getLocator().getEndLine());
+        err.setStartChar(e.getLocator().getStartChar());
+        err.setEndChar(e.getLocator().getEndChar());
+      }
+      if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
+        CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException)e.getCause();
+        err.setTargetIncludeLibraryId(incEx.getLibraryId());
+        err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
+        err.setType(ErrorType.INCLUDE);
+      }
+      library.getAnnotation().add(err);
+    }
+    
     public void enableAnnotations() {
         annotate = true;
     }
@@ -204,10 +234,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         try {
             try {
                 o = super.visit(tree);
+            } catch (CqlTranslatorIncludeException e) {
+                recordParsingException(new CqlTranslatorException(e.getMessage(), getTrackBack((ParserRuleContext) tree), e));
             } catch (CqlTranslatorException e) {
-                errors.add(e);
+                recordParsingException(e);
             } catch (Exception e) {
-                errors.add(new CqlTranslatorException(
+                recordParsingException(new CqlTranslatorException(
                         e.getMessage() == null ? "Internal translator error." : e.getMessage(),
                         tree instanceof ParserRuleContext ? getTrackBack((ParserRuleContext) tree) : null,
                         e));
