@@ -85,7 +85,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
         err.setType(ErrorType.INCLUDE);
       }
-      library.getAnnotation().add(err);
+      getOrInitializeLibrary().getAnnotation().add(err);
     }
     
     public void enableAnnotations() {
@@ -262,12 +262,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return o;
     }
 
-    @Override
-    public Object visitLogic(@NotNull cqlParser.LogicContext ctx) {
+    private Library getOrInitializeLibrary() {
+      if (library == null) {
         library = of.createLibrary()
                 .withSchemaIdentifier(of.createVersionedIdentifier()
                         .withId("urn:hl7-org:elm") // TODO: Pull this from the ELM library namespace
                         .withVersion("r1"));
+      }
+      return library;
+    }
+    
+    @Override
+    public Object visitLogic(@NotNull cqlParser.LogicContext ctx) {
+        getOrInitializeLibrary();
         translatedLibrary = new TranslatedLibrary();
 
         loadSystemLibrary();
