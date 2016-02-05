@@ -96,10 +96,18 @@ public class CqlTranslator {
     public List<CqlTranslatorException> getErrors() { return errors; }
 
     private class CqlErrorListener extends BaseErrorListener {
+        
+        Cql2ElmVisitor visitor;
+      
+        public CqlErrorListener(Cql2ElmVisitor visitor) {
+            this.visitor = visitor;
+        }
+      
         @Override
         public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
             TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
-            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
+//            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
+            visitor.recordParsingException(new CqlTranslatorException(msg, trackback, e));
         }
     }
 
@@ -109,13 +117,13 @@ public class CqlTranslator {
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
         errors = new ArrayList<>();
-        parser.addErrorListener(new CqlErrorListener());
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
+        parser.addErrorListener(new CqlErrorListener(visitor));
         ParseTree tree = parser.logic();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);
 
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         visitor.setTokenStream(tokens);
 
