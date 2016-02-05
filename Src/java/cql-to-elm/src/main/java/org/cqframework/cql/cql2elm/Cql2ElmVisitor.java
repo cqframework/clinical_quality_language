@@ -56,15 +56,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private final List<CqlTranslatorException> errors = new ArrayList<>();
-    private Map<String, Model> models = new HashMap<>();
+    private final Map<String, Model> models = new HashMap<>();
     private boolean implicitPatientCreated = false;
 
     
     /**
-     * Save any errors while parsing in both the list of errors but also in the library
+     * Record any errors while parsing in both the list of errors but also in the library
      * itself so they can be processed easily by a remote client
-     * @param cql
-     * @return
+     * @param e the exception to record
      */
     public void recordParsingException(CqlTranslatorException e) {
       errors.add(e);
@@ -72,7 +71,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
       err.setMessage(e.getMessage());
       err.setType(ErrorType.SYNTAX);
       if (e.getLocator() != null) {
-        err.setLibrary(e.getLocator().getLibrary().getId());
+        if (e.getLocator().getLibrary() != null) {
+          err.setLibrary(e.getLocator().getLibrary().getId());
+        }
         err.setStartLine(e.getLocator().getStartLine());
         err.setEndLine(e.getLocator().getEndLine());
         err.setStartChar(e.getLocator().getStartChar());
