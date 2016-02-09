@@ -152,7 +152,7 @@ public class CqlTranslator {
     }
 
     private String convertToJSON(Library library) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Library.class);
+        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class);
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty("eclipselink.media-type", "application/json");
