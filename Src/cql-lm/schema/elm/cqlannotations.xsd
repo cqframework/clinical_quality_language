@@ -22,4 +22,61 @@
 			</xs:restriction>
 		</xs:complexContent>
 	</xs:complexType>
+  <xs:simpleType name="ErrorType">
+    <xs:annotation>
+      <xs:documentation>Represents the type of CQL to ELM conversion error.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="syntax">
+        <xs:annotation>
+          <xs:documentation>Any kind of syntax error with the CQL.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="include">
+        <xs:annotation>
+          <xs:documentation>An included CQL library could not be loaded.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="semantic">
+        <xs:annotation>
+          <xs:documentation>Any kind of semantic error with the CQL.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="CqlToElmError">
+    <xs:annotation>
+      <xs:documentation>Represents CQL to ELM conversion errors</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Locator">
+        <xs:attribute name="library" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>The line number in the CQL where the error started</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="message" type="xs:string" use="required">
+          <xs:annotation>
+            <xs:documentation>A human-readable description of the error</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type" type="ErrorType" use="required">
+          <xs:annotation>
+            <xs:documentation>The character position in the line where the error
+              started</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="targetIncludeLibraryId" type="xs:string" use="optional">
+          <xs:annotation>
+            <xs:documentation>The identifier of the included library</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="targetIncludeLibraryVersionId" type="xs:string" use="optional">
+          <xs:annotation>
+            <xs:documentation>The version of the included library</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 </xs:schema>

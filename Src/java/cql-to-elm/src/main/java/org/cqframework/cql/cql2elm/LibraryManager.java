@@ -28,8 +28,8 @@ public class LibraryManager {
         if (library != null 
                 && libraryIdentifier.getVersion() != null 
                 && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
-            throw new IllegalArgumentException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
-                    libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()));
+            throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
+                    libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         } else {
             library = translateLibrary(libraryIdentifier, errors);
             LIBRARIES.put(libraryIdentifier.getId(), library);
@@ -41,8 +41,8 @@ public class LibraryManager {
     private static TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
         InputStream librarySource = LibrarySourceLoader.getLibrarySource(libraryIdentifier);
         if (librarySource == null) {
-            throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
-                    libraryIdentifier.getId(), libraryIdentifier.getVersion()));
+            throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
+                    libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         }
 
         try {
@@ -53,8 +53,8 @@ public class LibraryManager {
 
             return translator.getTranslatedLibrary();
         } catch (IOException e) {
-            throw new IllegalArgumentException(String.format("Errors occurred translating library %s, version %s.",
-                    libraryIdentifier.getId(), libraryIdentifier.getVersion()), e);
+            throw new CqlTranslatorIncludeException(String.format("Errors occurred translating library %s, version %s.",
+                    libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
     }
 
