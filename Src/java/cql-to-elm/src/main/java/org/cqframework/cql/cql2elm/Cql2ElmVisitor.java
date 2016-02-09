@@ -70,7 +70,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
       errors.add(e);
       CqlToElmError err = af.createCqlToElmError();
       err.setMessage(e.getMessage());
-      err.setType(ErrorType.SYNTAX);
+      err.setErrorType(ErrorType.SYNTAX);
       if (e.getLocator() != null) {
         if (e.getLocator().getLibrary() != null) {
           err.setLibrary(e.getLocator().getLibrary().getId());
@@ -84,7 +84,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException)e.getCause();
         err.setTargetIncludeLibraryId(incEx.getLibraryId());
         err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
-        err.setType(ErrorType.INCLUDE);
+        err.setErrorType(ErrorType.INCLUDE);
       }
       getOrInitializeLibrary().getAnnotation().add(err);
     }
