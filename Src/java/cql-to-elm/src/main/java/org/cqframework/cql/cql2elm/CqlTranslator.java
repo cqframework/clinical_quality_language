@@ -38,24 +38,26 @@ public class CqlTranslator {
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
     private List<CqlTranslatorException> errors = null;
+    private LibraryManager libraryManager = null;
 
-    public static CqlTranslator fromText(String cqlText, Options... options) {
-        return new CqlTranslator(new ANTLRInputStream(cqlText), options);
+    public static CqlTranslator fromText(String cqlText, LibraryManager libraryManager, Options... options) {
+        return new CqlTranslator(new ANTLRInputStream(cqlText), libraryManager, options);
     }
 
-    public static CqlTranslator fromStream(InputStream cqlStream, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(cqlStream), options);
+    public static CqlTranslator fromStream(InputStream cqlStream, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(cqlStream), libraryManager, options);
     }
 
-    public static CqlTranslator fromFile(String cqlFileName, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), options);
+    public static CqlTranslator fromFile(String cqlFileName, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), libraryManager, options);
     }
 
-    public static CqlTranslator fromFile(File cqlFile, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), options);
+    public static CqlTranslator fromFile(File cqlFile, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), libraryManager, options);
     }
 
-    private CqlTranslator(ANTLRInputStream is, Options... options) {
+    private CqlTranslator(ANTLRInputStream is, LibraryManager libraryManager, Options... options) {
+        this.libraryManager = libraryManager;
         translateToELM(is, options);
     }
 
@@ -117,7 +119,7 @@ public class CqlTranslator {
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
         errors = new ArrayList<>();
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryManager);
         parser.addErrorListener(new CqlErrorListener(visitor));
         ParseTree tree = parser.logic();
 
@@ -182,7 +184,8 @@ public class CqlTranslator {
         System.err.printf("TRANSLATE %s%n", inPath);
 
         LibrarySourceLoader.registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
-        CqlTranslator translator = fromFile(inPath.toFile(), options.toArray(new Options[options.size()]));
+        LibraryManager libraryManager = new LibraryManager();
+        CqlTranslator translator = fromFile(inPath.toFile(), libraryManager, options.toArray(new Options[options.size()]));
         LibrarySourceLoader.clearProviders();
 
         if (translator.getErrors().size() > 0) {

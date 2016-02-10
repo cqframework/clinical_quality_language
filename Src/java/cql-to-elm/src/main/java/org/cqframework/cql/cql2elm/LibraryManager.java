@@ -11,10 +11,14 @@ import java.util.Map;
 import java.util.Stack;
 
 public class LibraryManager {
-    private static final Map<String, TranslatedLibrary> LIBRARIES = new HashMap<String, TranslatedLibrary>();
-    private static final Stack<String> TRANSLATION_STACK = new Stack<String>();
+    private final Map<String, TranslatedLibrary> libraries;
+    private final Stack<String> translationStack;
 
-    public static TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
+    public LibraryManager() {
+        libraries = new HashMap<>();
+        translationStack = new Stack<>();
+    }
+    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -23,7 +27,7 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
-        TranslatedLibrary library = LIBRARIES.get(libraryIdentifier.getId());
+        TranslatedLibrary library = libraries.get(libraryIdentifier.getId());
         
         if (library != null 
                 && libraryIdentifier.getVersion() != null 
@@ -32,13 +36,13 @@ public class LibraryManager {
                     libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         } else {
             library = translateLibrary(libraryIdentifier, errors);
-            LIBRARIES.put(libraryIdentifier.getId(), library);
+            libraries.put(libraryIdentifier.getId(), library);
         }
 
         return library;
     }
 
-    private static TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
+    private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
         InputStream librarySource = LibrarySourceLoader.getLibrarySource(libraryIdentifier);
         if (librarySource == null) {
             throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
@@ -46,7 +50,7 @@ public class LibraryManager {
         }
 
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(librarySource);
+            CqlTranslator translator = CqlTranslator.fromStream(librarySource, this);
             if (errors != null) {
                 errors.addAll(translator.getErrors());
             }
@@ -58,24 +62,24 @@ public class LibraryManager {
         }
     }
 
-    public static void beginTranslation(String libraryName) {
+    public void beginTranslation(String libraryName) {
         if (libraryName == null || libraryName.equals("")) {
             throw new IllegalArgumentException("libraryName is null.");
         }
 
-        if (TRANSLATION_STACK.contains(libraryName)) {
+        if (translationStack.contains(libraryName)) {
             throw new IllegalArgumentException(String.format("Circular library reference %s.", libraryName));
         }
 
-        TRANSLATION_STACK.push(libraryName);
+        translationStack.push(libraryName);
     }
 
-    public static void endTranslation(String libraryName) {
+    public void endTranslation(String libraryName) {
         if (libraryName == null || libraryName.equals("")) {
             throw new IllegalArgumentException("libraryName is null.");
         }
 
-        String currentLibraryName = TRANSLATION_STACK.pop();
+        String currentLibraryName = translationStack.pop();
         if (!libraryName.equals(currentLibraryName)) {
             throw new IllegalArgumentException(String.format("Translation stack imbalance for library %s.", libraryName));
         }

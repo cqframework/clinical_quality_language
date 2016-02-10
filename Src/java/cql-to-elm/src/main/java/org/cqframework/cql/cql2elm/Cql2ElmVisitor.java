@@ -37,6 +37,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private TokenStream tokenStream;
 
+    private LibraryManager libraryManager = null;
     private LibraryInfo libraryInfo = null;
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
@@ -60,6 +61,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Map<String, Model> models = new HashMap<>();
     private boolean implicitPatientCreated = false;
 
+    public Cql2ElmVisitor(LibraryManager libraryManager) {
+      super();
+      this.libraryManager = libraryManager;
+    }
     
     /**
      * Record any errors while parsing in both the list of errors but also in the library
@@ -285,7 +290,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         Object lastResult = null;
-        LibraryManager.beginTranslation(this.libraryInfo.getLibraryName());
+        libraryManager.beginTranslation(this.libraryInfo.getLibraryName());
         try {
             // Loop through and call visit on each child (to ensure they are tracked)
             for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -296,7 +301,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return lastResult;
         }
         finally {
-            LibraryManager.endTranslation(this.libraryInfo.getLibraryName());
+            libraryManager.endTranslation(this.libraryInfo.getLibraryName());
         }
     }
 
@@ -3778,7 +3783,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withId(includeDef.getPath())
                 .withVersion(includeDef.getVersion());
 
-        TranslatedLibrary referencedLibrary = LibraryManager.resolveLibrary(libraryIdentifier, errors);
+        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, errors);
         libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
         loadConversionMap(referencedLibrary);
     }
