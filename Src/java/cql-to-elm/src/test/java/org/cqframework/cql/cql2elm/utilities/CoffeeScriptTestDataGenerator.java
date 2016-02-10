@@ -32,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
+import org.cqframework.cql.cql2elm.LibraryManager;
 
 public class CoffeeScriptTestDataGenerator {
     private static final Pattern SNIPPET_START = Pattern.compile("^\\s*\\/\\/\\s+\\@Test\\:\\s+(.*\\S)\\s*$");
@@ -93,7 +94,7 @@ public class CoffeeScriptTestDataGenerator {
             pw.println("###");
             pw.println();
             try {
-                CqlTranslator cqlt = CqlTranslator.fromText(snippet, CqlTranslator.Options.EnableDateRangeOptimization);
+                CqlTranslator cqlt = CqlTranslator.fromText(snippet, new LibraryManager(), CqlTranslator.Options.EnableDateRangeOptimization);
                 if (! cqlt.getErrors().isEmpty()) {
                     pw.println("###");
                     pw.println("Translation Error(s):");

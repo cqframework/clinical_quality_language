@@ -33,6 +33,7 @@ import org.mozilla.javascript.tools.debugger.Main;
 import org.mozilla.javascript.tools.shell.Global;
 
 import static java.nio.file.FileVisitResult.*;
+import org.cqframework.cql.cql2elm.LibraryManager;
 
 
 /**
@@ -48,6 +49,7 @@ public class Engine {
     private static CodeService codeService;
     private static Path workingArea;
     private static boolean debugJavascript = false;
+    private static LibraryManager libraryManager = new LibraryManager();
 
     /**
      * Set the PatientSource to be used by all CQL scripts.
@@ -124,7 +126,7 @@ public class Engine {
      */
     public static Results executeCql(File file) throws Exception
     {
-        CqlTranslator rosetta = CqlTranslator.fromFile(file);
+        CqlTranslator rosetta = CqlTranslator.fromFile(file, libraryManager);
         String json = "(function() { module.exports = " + rosetta.toJson() + "; }).call(this);";
         return execute(json, true);
     }
@@ -137,7 +139,7 @@ public class Engine {
      */
     public static Results executeCql(String cql) throws Exception
     {
-        CqlTranslator rosetta = CqlTranslator.fromText(cql);
+        CqlTranslator rosetta = CqlTranslator.fromText(cql, libraryManager);
         String json = rosetta.toJson();
         return execute(json,true);
     }
