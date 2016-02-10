@@ -347,6 +347,26 @@ public class ModelImporter {
                     attributeContent = extensionContent.getAttributes();
                     particleContent = extensionContent.getParticle();
                 }
+                // For complex types with simple content, create a new class type with a value element for the content
+                else if (content instanceof XmlSchemaSimpleContentRestriction) {
+                    XmlSchemaSimpleContentRestriction restrictionContent = (XmlSchemaSimpleContentRestriction)content;
+
+                    DataType valueType = resolveType(restrictionContent.getBaseTypeName());
+                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false);
+                    elements.add(valueElement);
+
+                    attributeContent = restrictionContent.getAttributes();
+                    particleContent = null;
+                }
+                else if (content instanceof XmlSchemaSimpleContentExtension) {
+                    XmlSchemaSimpleContentExtension extensionContent = (XmlSchemaSimpleContentExtension)content;
+                    attributeContent = extensionContent.getAttributes();
+                    particleContent = null;
+
+                    DataType valueType = resolveType(extensionContent.getBaseTypeName());
+                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false);
+                    elements.add(valueElement);
+                }
                 else {
                     throw new IllegalArgumentException("Unrecognized Schema Content: " + content.toString());
                 }
@@ -360,8 +380,10 @@ public class ModelImporter {
                 resolveClassTypeElements(attribute, elements);
             }
 
-            XmlSchemaParticle particle = particleContent;
-            resolveClassTypeElements(particle, elements);
+            if (particleContent != null) {
+                XmlSchemaParticle particle = particleContent;
+                resolveClassTypeElements(particle, elements);
+            }
 
             // TODO: Map elements to basetype if this or one of its parents is a configured extension of a CQL basetype.
             // This could get complicated...

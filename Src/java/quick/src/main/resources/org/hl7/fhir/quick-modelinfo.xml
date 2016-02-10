@@ -27,7 +27,7 @@
         <ns4:element name="patient" type="System.Any"/>
         <ns4:element name="reporter" type="System.Any"/>
         <ns4:element name="substance" type="System.Concept"/>
-        <ns4:element name="status" type="QUICK.AllergyIntoleranceStatus"/>
+        <ns4:element name="status" type="System.String"/>
         <ns4:element name="criticality" type="QUICK.AllergyIntoleranceCriticality"/>
         <ns4:element name="type" type="QUICK.AllergyIntoleranceType"/>
         <ns4:element name="category" type="QUICK.AllergyIntoleranceCategory"/>
@@ -1941,7 +1941,7 @@
         <ns4:element name="dateAsserted" type="System.DateTime"/>
         <ns4:element name="code" type="System.Concept"/>
         <ns4:element name="category" type="System.Concept"/>
-        <ns4:element name="clinicalStatus" type="QUICK.ConditionClinicalStatus"/>
+        <ns4:element name="clinicalStatus" type="System.String"/>
         <ns4:element name="severity" type="System.Concept"/>
         <ns4:element name="onsetDateTime" type="System.DateTime"/>
         <ns4:element name="onsetAge" type="QUICK.Age"/>
@@ -2198,7 +2198,7 @@
         <ns4:element name="patient" type="System.Any"/>
         <ns4:element name="informationSource" type="System.Any"/>
         <ns4:element name="dateAsserted" type="System.DateTime"/>
-        <ns4:element name="status" type="QUICK.MedicationStatementStatus"/>
+        <ns4:element name="status" type="System.String"/>
         <ns4:element name="wasNotGiven" type="System.Boolean"/>
         <ns4:element name="reasonNotGiven" type="list&lt;System.Concept&gt;"/>
         <ns4:element name="reasonForUseCodeableConcept" type="System.Concept"/>

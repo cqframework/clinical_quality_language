@@ -76,7 +76,7 @@ subprojects {
     }
 }
 
-configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm']}) {
+configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm', 'cql-execution']}) {
     configurations {
         xjc
     }

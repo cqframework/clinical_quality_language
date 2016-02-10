@@ -39,3 +39,13 @@ compileJava.dependsOn compileCoffee
 clean {
     delete fileTree(coffee.destDir).include('cql*.js')
 }
+
+generateSources {
+    inputs.dir "${projectDir}/../../cql-lm/schema"
+
+    doLast {
+        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/library.xsd") {
+            arg(line: "${xjc.args} -npa -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.execution.Executable")
+        }
+    }
+}

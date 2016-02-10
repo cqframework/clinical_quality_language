@@ -2594,6 +2594,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 of.createTupleElement()
                                         .withName(aqs.getAlias())
                                         .withValue(of.createAliasRef().withName(aqs.getAlias()));
+                        element.getValue().setResultType(aqs.getResultType()); // Doesn't use the fluent API to avoid casting
                         element.setResultType(element.getValue().getResultType());
                         returnType.addElement(new TupleTypeElement(element.getName(), element.getResultType()));
                         returnExpression.getElement().add(element);
