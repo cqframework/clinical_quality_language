@@ -5,7 +5,7 @@ jdk: oraclejdk8
 script:
 - export TERM=dumb
 - "./Src/java/gradlew --version"
-- "./Src/java/gradlew --no-daemon -b ./Src/java/build.gradle check"
+- "./Src/java/gradlew --no-daemon -b ./Src/java/build.gradle check -x :cql-execution:compileCoffee -x :cql-execution:test"
 branches:
   only:
   - master
