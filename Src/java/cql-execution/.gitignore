@@ -7,3 +7,4 @@ src/main/resources/org/cqframework/cql/execution/javascript/elm
 src/main/resources/org/cqframework/cql/execution/javascript/fhir
 src/main/resources/org/cqframework/cql/execution/javascript/runtime
 src/main/resources/org/cqframework/cql/execution/javascript/util
+src/generated/java
