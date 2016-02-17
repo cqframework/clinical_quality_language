@@ -183,10 +183,10 @@ public class CqlTranslator {
         System.err.println("================================================================================");
         System.err.printf("TRANSLATE %s%n", inPath);
 
-        LibrarySourceLoader.registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         LibraryManager libraryManager = new LibraryManager();
+        libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         CqlTranslator translator = fromFile(inPath.toFile(), libraryManager, options.toArray(new Options[options.size()]));
-        LibrarySourceLoader.clearProviders();
+        libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {
             System.err.println("Translation failed due to errors:");

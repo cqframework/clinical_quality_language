@@ -10,14 +10,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * Manages a set of CQL libraries. As new library references are encountered
+ * during translation, the corresponding source is obtained via
+ * librarySourceLoader, translated and cached for later use.
+ */
 public class LibraryManager {
     private final Map<String, TranslatedLibrary> libraries;
     private final Stack<String> translationStack;
+    private final DefaultLibrarySourceLoader librarySourceLoader;
 
     public LibraryManager() {
         libraries = new HashMap<>();
         translationStack = new Stack<>();
+        this.librarySourceLoader = new DefaultLibrarySourceLoader();
     }
+    
+    public LibrarySourceLoader getLibrarySourceLoader() {
+      return librarySourceLoader;
+    }
+    
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
@@ -43,7 +55,7 @@ public class LibraryManager {
     }
 
     private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
-        InputStream librarySource = LibrarySourceLoader.getLibrarySource(libraryIdentifier);
+        InputStream librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
         if (librarySource == null) {
             throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
                     libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
