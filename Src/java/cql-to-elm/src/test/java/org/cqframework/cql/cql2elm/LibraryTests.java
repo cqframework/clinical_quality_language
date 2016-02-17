@@ -12,21 +12,24 @@ import static org.hamcrest.Matchers.not;
 
 public class LibraryTests {
 
+    LibraryManager libraryManager;
+  
     @BeforeClass
     public void setup() {
-        LibrarySourceLoader.registerProvider(new TestLibrarySourceProvider());
+        libraryManager = new LibraryManager();
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
     }
 
     @AfterClass
     public void tearDown() {
-        LibrarySourceLoader.clearProviders();
+        libraryManager.getLibrarySourceLoader().clearProviders();
     }
 
     @Test
     public void testLibraryReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"), new LibraryManager());
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"), libraryManager);
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,7 +40,7 @@ public class LibraryTests {
     public void testInvalidLibraryReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/InvalidReferencingLibrary.cql"), new LibraryManager());
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/InvalidReferencingLibrary.cql"), libraryManager);
             assertThat(translator.getErrors().size(), is(not(0)));
         } catch (IOException e) {
             e.printStackTrace();
