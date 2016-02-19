@@ -9,7 +9,7 @@ import javax.xml.bind.JAXB;
  */
 public class QdmModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load() {
-        return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo.xml"),
+        return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml"),
                 ModelInfo.class);
     }
 }
