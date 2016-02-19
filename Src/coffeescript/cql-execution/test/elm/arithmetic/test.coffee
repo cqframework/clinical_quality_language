@@ -11,7 +11,7 @@ validateQuantity = (object,expectedValue,expectedUnit) ->
   if object.unit
     object.unit.should.equal expectedUnit
   else
-    (object.unit == expectedUnit).should.equal true
+    (object.unit == expectedUnit).should.equal true, "Expected "+ (object.unit) + " to equal " + (expectedUnit)
 
 
 describe 'Add', ->
@@ -361,10 +361,13 @@ describe 'Quantity', ->
 
   it "should be able to perform Quantity Division", ->
     validateQuantity @div_q_d.exec(@ctx), 5, 'days'
+    console.error(@div_q_q.exec(@ctx))
     validateQuantity @div_q_q.exec(@ctx), 1 , null
 
   it "should be able to perform Quantity Multiplication", ->
     # decilmal to quantity multiplication results in decimal value only
+    validateQuantity @mul_d_q.exec(@ctx), 20, 'days'
+    validateQuantity @mul_q_d.exec(@ctx), 20, 'days'
     validateQuantity @mul_q_q.exec(@ctx), 20, "m2"
     validateQuantity @mul_q_q_diff.exec(@ctx), 20, "m/d"
 
