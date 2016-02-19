@@ -26,8 +26,10 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
                 .withValueType(new QName("urn:hl7-org:elm-types:r1", "Integer"))
                 .withValue(String.valueOf(i));
 
+        QName expectedTypeName = new QName("urn:hl7-org:elm-types:r1", "Decimal");
         expectedValue = of.createConvert()
-                .withToType(new QName("urn:hl7-org:elm-types:r1", "Decimal"))
+                .withToType(expectedTypeName)
+                .withToTypeSpecifier(of.createNamedTypeSpecifier().withName(expectedTypeName))
                 .withOperand(integerLiteral);
     }
 
@@ -35,8 +37,11 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
         super();
 
         expectedArg = a;
-        expectedValue = new ObjectFactory().createConvert()
-                .withToType(new QName("urn:hl7-org:elm-types:r1", "Decimal"))
+        ObjectFactory of = new ObjectFactory();
+        QName expectedTypeName = new QName("urn:hl7-org:elm-types:r1", "Decimal");
+        expectedValue = of.createConvert()
+                .withToType(expectedTypeName)
+                .withToTypeSpecifier(of.createNamedTypeSpecifier().withName(expectedTypeName))
                 .withOperand(a);
     }
 
