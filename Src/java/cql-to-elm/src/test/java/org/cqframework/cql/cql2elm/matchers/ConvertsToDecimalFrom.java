@@ -26,15 +26,10 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
                 .withValueType(new QName("urn:hl7-org:elm-types:r1", "Integer"))
                 .withValue(String.valueOf(i));
 
-<<<<<<< adeeb4811d63b61ed4945063119d72d1ce2a9fa2
         QName expectedTypeName = new QName("urn:hl7-org:elm-types:r1", "Decimal");
         expectedValue = of.createConvert()
                 .withToType(expectedTypeName)
                 .withToTypeSpecifier(of.createNamedTypeSpecifier().withName(expectedTypeName))
-=======
-        expectedValue = of.createConvert()
-                .withToType(new QName("urn:hl7-org:elm-types:r1", "Decimal"))
->>>>>>> All conversions use Convert ELM operator (instead of 'ToX' functions).  Also add tests for other type operators.  NOTE: This breaks the execution engine because it doesn't currently support Convert.
                 .withOperand(integerLiteral);
     }
 
@@ -42,16 +37,11 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
         super();
 
         expectedArg = a;
-<<<<<<< adeeb4811d63b61ed4945063119d72d1ce2a9fa2
         ObjectFactory of = new ObjectFactory();
         QName expectedTypeName = new QName("urn:hl7-org:elm-types:r1", "Decimal");
         expectedValue = of.createConvert()
                 .withToType(expectedTypeName)
                 .withToTypeSpecifier(of.createNamedTypeSpecifier().withName(expectedTypeName))
-=======
-        expectedValue = new ObjectFactory().createConvert()
-                .withToType(new QName("urn:hl7-org:elm-types:r1", "Decimal"))
->>>>>>> All conversions use Convert ELM operator (instead of 'ToX' functions).  Also add tests for other type operators.  NOTE: This breaks the execution engine because it doesn't currently support Convert.
                 .withOperand(a);
     }
 
