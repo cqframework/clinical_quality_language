@@ -2203,6 +2203,7 @@ module.exports['Predecessor'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
+<<<<<<< HEAD
 define days_10: 10 days
 define QL10Days: Quantity{value: 10, unit: 'days'}
 define Jan1_2000: DateTime(2000, 1, 1)
@@ -2470,8 +2471,8 @@ define add_q_q : days_10 + QL10Days
 define add_d_q : Jan1_2000 + days_10
 define sub_q_q : days_10 - QL10Days
 define sub_d_q : Jan1_2000 - days_10
-define add_q_q_diff : QL10Days + QL10Min 
-define sub_q_q_diff : QL10Days - QL10Min 
+define add_q_q_diff : QL10Days + QL10Min
+define sub_q_q_diff : QL10Days - QL10Min
 define div_q_d : days_10 / 2
 define div_q_q : days_10 / QL10Days
 define mul_q_d : days_10 * 2
@@ -2479,6 +2480,7 @@ define mul_d_q : 2 * QL10Days
 define mul_q_q : 2 'm' * 10 'm'
 define mul_q_q_diff : 2 'm' * 10 '/d'
 define neg : - days_10
+
 define abs : Abs(neg)
 ###
 
@@ -2583,21 +2585,22 @@ module.exports['Quantity'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "DateTime",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "DateTime",
+               "year" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "2000",
                   "type" : "Literal"
-               }, {
+               },
+               "month" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
-               }, {
+               },
+               "day" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "1",
                   "type" : "Literal"
-               } ]
+               }
             }
          }, {
             "name" : "add_q_q",
@@ -2805,15 +2808,13 @@ module.exports['Quantity'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Abs",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Abs",
+               "operand" : {
                   "name" : "neg",
                   "type" : "ExpressionRef"
-               } ]
+               }
             }
          } ]
       }
    }
 }
-

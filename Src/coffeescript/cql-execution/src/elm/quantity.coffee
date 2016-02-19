@@ -66,11 +66,9 @@ module.exports.Quantity = class Quantity extends Expression
       value = if operator == "/" then @value / other  else @value * other
       createQuantity( value, @unit)
 
-<<<<<<< 556abbed77f7788a089af01e65ef106ec369c2f5
-time_unit_to_ucum = {'day' : 'd' , 'hour' : 'h', 'minute' : 'min' , 'second': 's' , 'millisecond' :  'ms', 'week' : 'wk', 'weeks' : 'wk' }
-=======
+
 time_unit_to_ucum = {'year' : 'a', 'month' : 'mo',  'day' : 'd' , 'hour' : 'h', 'minute' : 'min' , 'second': 's' , 'millisecond' :  'ms', 'week' : 'wk', 'weeks' : 'wk' }
->>>>>>> modified documentation added canonicalize method to quantity
+
 
 time_unit_dateTime_mapping = {'years':'year',  'months': 'month',  'days' :'day', 'hours': 'hour' , 'minutes': 'minute', 'seconds':'seconds', 'milliseconds' : 'millisecond' }
 
@@ -126,7 +124,7 @@ units_to_string = (units = {}) ->
 
 # this method is taken from the ucum.js library which it does not  export
 # so we need to replicate the behavior here in order to perform multiplication
-# and division of the ucum values.  
+# and division of the ucum values.
 # t:  the ucum quantity being multiplied/divided .  This method modifies the object t that is passed in
 # ms: an array of arrays whoes format is [<operator>,<ucum quantity>] an example would be [['.', {value: 1, units: {m:2}}]]
 # this would represent multiply t by the value m^2
