@@ -38,24 +38,26 @@ public class CqlTranslator {
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
     private List<CqlTranslatorException> errors = null;
+    private LibraryManager libraryManager = null;
 
-    public static CqlTranslator fromText(String cqlText, Options... options) {
-        return new CqlTranslator(new ANTLRInputStream(cqlText), options);
+    public static CqlTranslator fromText(String cqlText, LibraryManager libraryManager, Options... options) {
+        return new CqlTranslator(new ANTLRInputStream(cqlText), libraryManager, options);
     }
 
-    public static CqlTranslator fromStream(InputStream cqlStream, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(cqlStream), options);
+    public static CqlTranslator fromStream(InputStream cqlStream, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(cqlStream), libraryManager, options);
     }
 
-    public static CqlTranslator fromFile(String cqlFileName, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), options);
+    public static CqlTranslator fromFile(String cqlFileName, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), libraryManager, options);
     }
 
-    public static CqlTranslator fromFile(File cqlFile, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), options);
+    public static CqlTranslator fromFile(File cqlFile, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), libraryManager, options);
     }
 
-    private CqlTranslator(ANTLRInputStream is, Options... options) {
+    private CqlTranslator(ANTLRInputStream is, LibraryManager libraryManager, Options... options) {
+        this.libraryManager = libraryManager;
         translateToELM(is, options);
     }
 
@@ -96,10 +98,18 @@ public class CqlTranslator {
     public List<CqlTranslatorException> getErrors() { return errors; }
 
     private class CqlErrorListener extends BaseErrorListener {
+        
+        Cql2ElmVisitor visitor;
+      
+        public CqlErrorListener(Cql2ElmVisitor visitor) {
+            this.visitor = visitor;
+        }
+      
         @Override
         public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
             TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
-            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
+//            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
+            visitor.recordParsingException(new CqlTranslatorException(msg, trackback, e));
         }
     }
 
@@ -109,13 +119,13 @@ public class CqlTranslator {
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
         errors = new ArrayList<>();
-        parser.addErrorListener(new CqlErrorListener());
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryManager);
+        parser.addErrorListener(new CqlErrorListener(visitor));
         ParseTree tree = parser.logic();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);
 
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         visitor.setTokenStream(tokens);
 
@@ -144,7 +154,7 @@ public class CqlTranslator {
     }
 
     private String convertToJSON(Library library) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Library.class);
+        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class);
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty("eclipselink.media-type", "application/json");
@@ -173,9 +183,10 @@ public class CqlTranslator {
         System.err.println("================================================================================");
         System.err.printf("TRANSLATE %s%n", inPath);
 
-        LibrarySourceLoader.registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
-        CqlTranslator translator = fromFile(inPath.toFile(), options.toArray(new Options[options.size()]));
-        LibrarySourceLoader.clearProviders();
+        LibraryManager libraryManager = new LibraryManager();
+        libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
+        CqlTranslator translator = fromFile(inPath.toFile(), libraryManager, options.toArray(new Options[options.size()]));
+        libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {
             System.err.println("Translation failed due to errors:");

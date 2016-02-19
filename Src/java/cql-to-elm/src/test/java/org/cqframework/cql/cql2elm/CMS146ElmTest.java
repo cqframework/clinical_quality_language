@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.cqframework.cql.cql2elm.TestUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.*;
@@ -25,7 +24,7 @@ public class CMS146ElmTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"));
+        translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager());
         library = translator.toELM();
         of = new ObjectFactory();
     }

@@ -10,11 +10,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * Manages a set of CQL libraries. As new library references are encountered
+ * during translation, the corresponding source is obtained via
+ * librarySourceLoader, translated and cached for later use.
+ */
 public class LibraryManager {
-    private static final Map<String, TranslatedLibrary> LIBRARIES = new HashMap<String, TranslatedLibrary>();
-    private static final Stack<String> TRANSLATION_STACK = new Stack<String>();
+    private final Map<String, TranslatedLibrary> libraries;
+    private final Stack<String> translationStack;
+    private final DefaultLibrarySourceLoader librarySourceLoader;
 
-    public static TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
+    public LibraryManager() {
+        libraries = new HashMap<>();
+        translationStack = new Stack<>();
+        this.librarySourceLoader = new DefaultLibrarySourceLoader();
+    }
+    
+    public LibrarySourceLoader getLibrarySourceLoader() {
+      return librarySourceLoader;
+    }
+    
+    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -23,57 +39,59 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
-        TranslatedLibrary library = LIBRARIES.get(libraryIdentifier.getId());
-        if (library == null) {
+        TranslatedLibrary library = libraries.get(libraryIdentifier.getId());
+        
+        if (library != null 
+                && libraryIdentifier.getVersion() != null 
+                && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
+            throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
+                    libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
+        } else {
             library = translateLibrary(libraryIdentifier, errors);
-        }
-
-        if (libraryIdentifier.getVersion() != null && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
-            throw new IllegalArgumentException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
-                    libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()));
+            libraries.put(libraryIdentifier.getId(), library);
         }
 
         return library;
     }
 
-    private static TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
-        InputStream librarySource = LibrarySourceLoader.getLibrarySource(libraryIdentifier);
+    private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
+        InputStream librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
         if (librarySource == null) {
-            throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
-                    libraryIdentifier.getId(), libraryIdentifier.getVersion()));
+            throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
+                    libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         }
 
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(librarySource);
+            CqlTranslator translator = CqlTranslator.fromStream(librarySource, this);
             if (errors != null) {
                 errors.addAll(translator.getErrors());
             }
 
             return translator.getTranslatedLibrary();
         } catch (IOException e) {
-            throw new IllegalArgumentException(String.format("Errors occurred translating library %s, version %s.",
-                    libraryIdentifier.getId(), libraryIdentifier.getVersion()), e);
+            throw new CqlTranslatorIncludeException(String.format("Errors occurred translating library %s, version %s.",
+                    libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
     }
 
-    public static void beginTranslation(String libraryName) {
+    public void beginTranslation(String libraryName) {
         if (libraryName == null || libraryName.equals("")) {
             throw new IllegalArgumentException("libraryName is null.");
         }
 
-        if (TRANSLATION_STACK.contains(libraryName)) {
+        if (translationStack.contains(libraryName)) {
             throw new IllegalArgumentException(String.format("Circular library reference %s.", libraryName));
         }
 
-        TRANSLATION_STACK.push(libraryName);
+        translationStack.push(libraryName);
     }
 
-    public static void endTranslation(String libraryName) {
+    public void endTranslation(String libraryName) {
         if (libraryName == null || libraryName.equals("")) {
             throw new IllegalArgumentException("libraryName is null.");
         }
 
-        String currentLibraryName = TRANSLATION_STACK.pop();
+        String currentLibraryName = translationStack.pop();
         if (!libraryName.equals(currentLibraryName)) {
             throw new IllegalArgumentException(String.format("Translation stack imbalance for library %s.", libraryName));
         }

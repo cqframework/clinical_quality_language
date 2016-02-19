@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.cqframework.cql.cql2elm.LibraryManager;
 
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
@@ -24,7 +25,7 @@ public class DateTimeOperatorsTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        CqlTranslator translator = CqlTranslator.fromStream(DateTimeOperatorsTest.class.getResourceAsStream("../OperatorTests/DateTimeOperators.cql"));
+        CqlTranslator translator = CqlTranslator.fromStream(DateTimeOperatorsTest.class.getResourceAsStream("../OperatorTests/DateTimeOperators.cql"), new LibraryManager());
         Library library = translator.toELM();
         defs = new HashMap<>();
         for (ExpressionDef def: library.getStatements().getDef()) {

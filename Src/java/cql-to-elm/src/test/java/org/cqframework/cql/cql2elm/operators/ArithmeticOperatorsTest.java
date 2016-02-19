@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import org.cqframework.cql.cql2elm.LibraryManager;
 
 import static org.cqframework.cql.cql2elm.matchers.ConvertsToDecimalFrom.convertsToDecimalFrom;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
@@ -32,7 +33,7 @@ public class ArithmeticOperatorsTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        CqlTranslator translator = CqlTranslator.fromStream(ArithmeticOperatorsTest.class.getResourceAsStream("../OperatorTests/ArithmeticOperators.cql"));
+        CqlTranslator translator = CqlTranslator.fromStream(ArithmeticOperatorsTest.class.getResourceAsStream("../OperatorTests/ArithmeticOperators.cql"), new LibraryManager());
         Library library = translator.toELM();
         defs = new HashMap<>();
         for (ExpressionDef def: library.getStatements().getDef()) {

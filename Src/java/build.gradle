@@ -139,7 +139,7 @@ configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm', 'cql-execution
    - Repo for snapshots and releases: https://oss.sonatype.org/content/groups/public/info/cqframework/
    - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
  */
-configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm']}) {
+configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm', 'qdm']}) {
     apply plugin: 'maven'
 
     gradle.taskGraph.whenReady {taskGraph ->

@@ -26,7 +26,7 @@ public class ModelTests {
     public void testModelInfo() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"));
+            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), new LibraryManager());
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
             e.printStackTrace();

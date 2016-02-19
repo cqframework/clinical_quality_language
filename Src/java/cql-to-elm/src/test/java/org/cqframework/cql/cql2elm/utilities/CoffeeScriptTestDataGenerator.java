@@ -6,7 +6,6 @@ import joptsimple.OptionSpec;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.cqframework.cql.cql2elm.LibrarySourceLoader;
 import org.cqframework.cql.cql2elm.DefaultLibrarySourceProvider;
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,6 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
+import org.cqframework.cql.cql2elm.LibraryManager;
 
 public class CoffeeScriptTestDataGenerator {
     private static final Pattern SNIPPET_START = Pattern.compile("^\\s*\\/\\/\\s+\\@Test\\:\\s+(.*\\S)\\s*$");
@@ -72,7 +72,6 @@ public class CoffeeScriptTestDataGenerator {
     private static void writeSnippetsToCoffeeFile(Map<String,StringBuilder> snippets, Path file) throws IOException {
         // Write to a temp file and then move, else the coffee compiler can get confused if it's watching the file
         File tempFile = new File(file.toFile().getAbsolutePath() + ".tmp");
-        LibrarySourceLoader.registerProvider(new DefaultLibrarySourceProvider(file.getParent()));
         
         PrintWriter pw = new PrintWriter(tempFile, "UTF-8");
         pw.println("###");
@@ -93,7 +92,9 @@ public class CoffeeScriptTestDataGenerator {
             pw.println("###");
             pw.println();
             try {
-                CqlTranslator cqlt = CqlTranslator.fromText(snippet, CqlTranslator.Options.EnableDateRangeOptimization);
+                LibraryManager libraryManager = new LibraryManager();
+                libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(file.getParent()));
+                CqlTranslator cqlt = CqlTranslator.fromText(snippet, libraryManager, CqlTranslator.Options.EnableDateRangeOptimization);
                 if (! cqlt.getErrors().isEmpty()) {
                     pw.println("###");
                     pw.println("Translation Error(s):");
@@ -117,7 +118,6 @@ public class CoffeeScriptTestDataGenerator {
             pw.println();
         }
         pw.close();
-        LibrarySourceLoader.clearProviders();
         Files.move(tempFile.toPath(), file, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
         System.out.println("Generated " + file.toAbsolutePath().normalize());
     }

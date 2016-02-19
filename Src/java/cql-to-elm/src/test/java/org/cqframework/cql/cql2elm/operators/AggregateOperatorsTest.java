@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.cqframework.cql.cql2elm.LibraryManager;
 
 
 import static org.cqframework.cql.cql2elm.matchers.ConvertsToDecimalFrom.convertsToDecimalFromAlias;
@@ -23,7 +24,7 @@ public class AggregateOperatorsTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        CqlTranslator translator = CqlTranslator.fromStream(AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"));
+        CqlTranslator translator = CqlTranslator.fromStream(AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"), new LibraryManager());
         Library library = translator.toELM();
         defs = new HashMap<>();
         for (ExpressionDef def: library.getStatements().getDef()) {

@@ -135,7 +135,7 @@ public class SemanticTests {
 
     private void runSemanticTest(String testFileName, int expectedErrors) throws IOException {
         File translationTestFile = new File(Cql2ElmVisitorTest.class.getResource(testFileName).getFile());
-        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile);
+        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, new LibraryManager());
         for (CqlTranslatorException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
