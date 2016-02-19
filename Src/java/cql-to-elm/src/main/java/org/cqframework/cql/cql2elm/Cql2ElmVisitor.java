@@ -77,9 +77,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
       err.setMessage(e.getMessage());
       err.setErrorType(ErrorType.SYNTAX);
       if (e.getLocator() != null) {
-        if (e.getLocator().getLibrary() != null) {
-          err.setLibrary(e.getLocator().getLibrary().getId());
-        }
         err.setStartLine(e.getLocator().getStartLine());
         err.setEndLine(e.getLocator().getEndLine());
         err.setStartChar(e.getLocator().getStartChar());

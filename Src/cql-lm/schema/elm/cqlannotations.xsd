@@ -50,11 +50,6 @@
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Locator">
-        <xs:attribute name="library" type="xs:string" use="required">
-          <xs:annotation>
-            <xs:documentation>The line number in the CQL where the error started</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
         <xs:attribute name="message" type="xs:string" use="required">
           <xs:annotation>
             <xs:documentation>A human-readable description of the error</xs:documentation>
@@ -62,8 +57,7 @@
         </xs:attribute>
         <xs:attribute name="errorType" type="ErrorType" use="required">
           <xs:annotation>
-            <xs:documentation>The character position in the line where the error
-              started</xs:documentation>
+            <xs:documentation>The type of error</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="targetIncludeLibraryId" type="xs:string" use="optional">
