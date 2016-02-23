@@ -182,4 +182,4 @@ module.exports.doMultiplication = (a,b) ->
     a.multiplyBy(b)
   else
     [q,d]  = if a instanceof Quantity then [a,b] else [b,a]
-    q.value * d
+    createQuantity(q.value * d, q.unit)
