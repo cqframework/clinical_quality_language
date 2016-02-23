@@ -428,6 +428,15 @@ Translation Error(s):
 ###
 module.exports['DateTimeComponentFrom'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 22,
+         "startChar" : 18,
+         "endLine" : 22,
+         "endChar" : 31,
+         "message" : "Call to operator DateTimeComponentFrom(System.Any) is ambiguous with: \n  - DateTimeComponentFrom(System.Time)\n  - DateTimeComponentFrom(System.DateTime)",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -984,6 +993,15 @@ Translation Error(s):
 ###
 module.exports['TimezoneFrom'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 7,
+         "startChar" : 18,
+         "endLine" : 7,
+         "endChar" : 35,
+         "message" : "Call to operator TimezoneFrom(System.Any) is ambiguous with: \n  - TimezoneFrom(System.Time)\n  - TimezoneFrom(System.DateTime)",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -1216,6 +1234,15 @@ Translation Error(s):
 ###
 module.exports['SameAs'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 32,
+         "startChar" : 23,
+         "endLine" : 32,
+         "endChar" : 29,
+         "message" : "Call to operator SameAs(System.Any,System.Any) is ambiguous with: \n  - SameAs(System.DateTime,System.DateTime)\n  - SameAs(System.Time,System.Time)",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -3788,6 +3815,15 @@ Translation Error(s):
 ###
 module.exports['SameOrAfter'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 39,
+         "startChar" : 23,
+         "endLine" : 39,
+         "endChar" : 35,
+         "message" : "Call to operator SameOrAfter(System.Any,System.Any) is ambiguous with: \n  - SameOrAfter(System.DateTime,System.DateTime)\n  - SameOrAfter(System.Time,System.Time)",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -6969,6 +7005,15 @@ Translation Error(s):
 ###
 module.exports['SameOrBefore'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 39,
+         "startChar" : 23,
+         "endLine" : 39,
+         "endChar" : 36,
+         "message" : "Call to operator SameOrBefore(System.Any,System.Any) is ambiguous with: \n  - SameOrBefore(System.DateTime,System.DateTime)\n  - SameOrBefore(System.Time,System.Time)",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -10147,6 +10192,15 @@ Translation Error(s):
 ###
 module.exports['After'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 36,
+         "startChar" : 23,
+         "endLine" : 36,
+         "endChar" : 27,
+         "message" : "Call to operator After(System.Any,System.Any) is ambiguous with: \n  - After(System.DateTime,System.DateTime)\n  - After(System.Time,System.Time)",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -13046,6 +13100,15 @@ Translation Error(s):
 ###
 module.exports['Before'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 36,
+         "startChar" : 23,
+         "endLine" : 36,
+         "endChar" : 28,
+         "message" : "Call to operator Before(System.Any,System.Any) is ambiguous with: \n  - Before(System.DateTime,System.DateTime)\n  - Before(System.Time,System.Time)",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"

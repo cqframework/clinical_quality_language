@@ -356,6 +356,15 @@ Translation Error(s):
 ###
 module.exports['Using CommonLib'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 10,
+         "startChar" : 19,
+         "endLine" : 10,
+         "endChar" : 36,
+         "message" : "Member given not found for type list<QUICK.HumanName>.",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"

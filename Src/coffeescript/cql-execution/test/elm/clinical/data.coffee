@@ -20,6 +20,15 @@ Translation Error(s):
 ###
 module.exports['ValueSetDef'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 5,
+         "startChar" : 59,
+         "endLine" : 5,
+         "endChar" : 59,
+         "message" : "no viable alternative at input '<EOF>'",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"

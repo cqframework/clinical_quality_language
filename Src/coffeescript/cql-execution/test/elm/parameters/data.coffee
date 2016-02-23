@@ -21,6 +21,15 @@ Translation Error(s):
 ###
 module.exports['ParameterDef'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 6,
+         "startChar" : 110,
+         "endLine" : 6,
+         "endChar" : 110,
+         "message" : "no viable alternative at input '<EOF>'",
+         "errorType" : "syntax",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
