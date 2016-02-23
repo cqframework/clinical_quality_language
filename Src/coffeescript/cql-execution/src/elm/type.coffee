@@ -29,7 +29,21 @@ module.exports.Convert = class Convert extends Expression
     @toType = json.toType
     
   exec: (ctx) ->
-    @execArgs(ctx)
+    arg = @execArgs(ctx)
+    if arg? and typeof arg != 'undefined'
+      strArg = String(arg)
+      switch @toType
+        when "{urn:hl7-org:elm-types:r1}Boolean"
+          if strArg=="true"
+            true
+          else
+            false
+        when "{urn:hl7-org:elm-types:r1}Decimal" then parseFloat(strArg)
+        when "{urn:hl7-org:elm-types:r1}Integer" then parseInt(strArg)
+        else
+          arg
+    else
+      arg
 
 module.exports.Is = class Is extends UnimplementedExpression
 
