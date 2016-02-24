@@ -10,6 +10,10 @@ module.exports.Quantity = class Quantity extends Expression
 
   exec: (ctx) ->
     @
+  
+  toString: () ->
+    "#{@value}#{@unit}"
+  
   sameOrBefore: (other) ->
     if other instanceof Quantity and other.unit == @unit then @value <= other.value else null
 
@@ -29,6 +33,15 @@ clean_unit = (units) ->
 
 module.exports.createQuantity = (value,unit) ->
   new Quantity({value: value, unit: unit})
+  
+module.exports.parseQuantity = (str) ->
+  components = /(\d+\.?\d*)(.+)/.exec str
+  if components? and components[1]? and components[2]
+    value = parseFloat(components[1])
+    unit = components[2].trim()
+    new Quantity({value: value, unit: unit})
+  else
+    null 
 
 module.exports.doAddition = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity

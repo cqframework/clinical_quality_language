@@ -1,6 +1,7 @@
 { Expression, UnimplementedExpression } = require './expression'
 { FunctionRef } = require './reusable'
 { DateTime } = require '../datatypes/datetime'
+{ parseQuantity } = require './quantity'
 
 # TODO: Casting and Conversion needs unit tests!
 
@@ -31,7 +32,7 @@ module.exports.Convert = class Convert extends Expression
   exec: (ctx) ->
     arg = @execArgs(ctx)
     if arg? and typeof arg != 'undefined'
-      strArg = String(arg)
+      strArg = arg.toString()
       switch @toType
         when "{urn:hl7-org:elm-types:r1}Boolean"
           if strArg=="true"
@@ -40,6 +41,8 @@ module.exports.Convert = class Convert extends Expression
             false
         when "{urn:hl7-org:elm-types:r1}Decimal" then parseFloat(strArg)
         when "{urn:hl7-org:elm-types:r1}Integer" then parseInt(strArg)
+        when "{urn:hl7-org:elm-types:r1}String" then strArg
+        when "{urn:hl7-org:elm-types:r1}Quantity" then parseQuantity(strArg)
         else
           arg
     else
