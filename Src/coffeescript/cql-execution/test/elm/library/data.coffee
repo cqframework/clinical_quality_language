@@ -346,25 +346,12 @@ context Patient
 
 define ID: common.InDemographic
 
-define L : Length(Patient.name.given)
+define L : Length(Patient.name[1].given[1])
 define FuncTest : common.foo(2, 5)
 ###
 
-###
-Translation Error(s):
-[10:19, 10:36] Member given not found for type list<QUICK.HumanName>.
-###
 module.exports['Using CommonLib'] = {
    "library" : {
-      "annotation" : [ {
-         "startLine" : 10,
-         "startChar" : 19,
-         "endLine" : 10,
-         "endChar" : 36,
-         "message" : "Member given not found for type list<QUICK.HumanName>.",
-         "errorType" : "syntax",
-         "type" : "CqlToElmError"
-      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -463,7 +450,30 @@ module.exports['Using CommonLib'] = {
             "expression" : {
                "type" : "Length",
                "operand" : {
-                  "type" : "Null"
+                  "type" : "Indexer",
+                  "operand" : [ {
+                     "path" : "given",
+                     "type" : "Property",
+                     "source" : {
+                        "type" : "Indexer",
+                        "operand" : [ {
+                           "path" : "name",
+                           "type" : "Property",
+                           "source" : {
+                              "name" : "Patient",
+                              "type" : "ExpressionRef"
+                           }
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  } ]
                }
             }
          }, {

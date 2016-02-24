@@ -29,7 +29,7 @@ context Patient
 
 define ID: common.InDemographic
 
-define L : Length(Patient.name.given)
+define L : Length(Patient.name[1].given[1])
 define FuncTest : common.foo(2, 5)
 
 

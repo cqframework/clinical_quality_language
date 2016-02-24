@@ -13,23 +13,12 @@ parameter MeasureYear default 2012
 parameter IntParameter Integer
 parameter ListParameter List<String>
 parameter TupleParameter Tuple{a Integer, b String, c Boolean, d List<Integer>, e Tuple{ f String, g Boolean}}
+context Patient
+define foo: "bar"
 ###
 
-###
-Translation Error(s):
-[6:110, 6:110] no viable alternative at input '<EOF>'
-###
 module.exports['ParameterDef'] = {
    "library" : {
-      "annotation" : [ {
-         "startLine" : 6,
-         "startChar" : 110,
-         "endLine" : 6,
-         "endChar" : 110,
-         "message" : "no viable alternative at input '<EOF>'",
-         "errorType" : "syntax",
-         "type" : "CqlToElmError"
-      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -124,6 +113,28 @@ module.exports['ParameterDef'] = {
                      } ]
                   }
                } ]
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "foo",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "bar",
+               "type" : "IdentifierRef"
             }
          } ]
       }
