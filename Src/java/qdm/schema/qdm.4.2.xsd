@@ -1,0 +1,2158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified"
+	attributeFormDefault="unqualified" targetNamespace="urn:healthit-gov:qdm:v4_2"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v4_2">
+	<xs:complexType name="CodeableConcept" />
+	<xs:complexType name="Quantity" />
+
+	<xs:element name="code" type="CodeableConcept" />
+	<xs:complexType name="QDMBaseType">
+		<xs:sequence>
+			<xs:element minOccurs="1" ref="code" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PatientCareExperience">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet this criterion indicate the
+				patient’s care experience, usually measured with a
+				validated survey
+				tool. The most common tool is the
+				Consumer Assessment of Healthcare
+				Providers and Systems.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProviderCareExperience">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet this criterion indicate the
+				provider's
+				experience with availability of resources (e.g.,
+				scheduling,
+				equipment, space, and such consumables as medications).
+				Provider
+				care experience gauges provider satisfaction with key
+				structures,
+				processes, and outcomes in the healthcare delivery
+				system.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CareGoal">
+		<xs:annotation>
+			<xs:documentation>
+				Unlike other QDM datatypes, the Care Goal datatype
+				does not indicate a specific context of use. Instead, to meet this
+				criterion, there must be documentation of a care goal as defined by
+				the Care Goal QDM category and its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="relatedTo" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="targetOutcome" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CommunicationFromPatientToProvider">
+		<xs:annotation>
+			<xs:documentation>
+				To meet criteria using this datatype, the
+				communication indicated by the Communication QDM category and its
+				corresponding value set must be communicated from a patient to a
+				provider.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CommunicationFromProviderToPatient">
+		<xs:annotation>
+			<xs:documentation>
+				To meet criteria using this datatype, the
+				communication indicated by the Communication QDM category and its
+				corresponding value set must be communicated from a provider to a
+				patient.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CommunicationFromProviderToProvider">
+		<xs:annotation>
+			<xs:documentation>
+				To meet criteria using this datatype, the
+				communication indicated by the Communication QDM category and its
+				corresponding value set must be communicated from one provider to
+				another.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DeviceAdverseEvent">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an unexpected or dangerous reaction to a
+				device indicated by the QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DeviceAllergy">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an immunologically mediated reaction that
+				exhibits specificity and recurrence on re-exposure to the offending
+				device indicated by the QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DeviceApplied">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document that the device indicated by the QDM
+				category and its corresponding value set is in use, or impacts or
+				alters the treatment, care plan, or encounter (e.g., an
+				antithrombotic device has been placed on the patient's legs to
+				prevent thromboembolism, or a cardiac pacemaker is in place).
+				NOTE:
+				This datatype uses "removalDatetime" NOT "stopDatetime".
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="removalDatetime" type="xs:dateTime"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="anatomialLocationSite" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+
+					<xs:element name="anatomicalApproachSite" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DeviceIntolerance">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a reaction in specific patients who have a
+				low threshold to the normal reported or expected reactions of the
+				device indicated by the QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DeviceOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an order for the device indicated by the
+				QDM category and its corresponding value set.
+				NOTE: The start and
+				stop datetime of Device, Order reflects the “author time” of the
+				record in the Quality Reporting Document Architecture (QRDA). This
+				corresponds to when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DeviceRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				recommendation to use the device indicated
+				by the QDM category and
+				its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Diagnosis">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the Condition/Diagnosis/Problem and its
+				corresponding value set. The onset datetime corresponds to the
+				implicit start datetime of the datatype and the abatement datetime
+				corresponds to the implicit stop datetime of the datatype. If the
+				abatement datetime is null, then the diagnosis is considered to
+				still be active. When this datatype is used with timing
+				relationships, the criterion is looking for an active diagnosis for
+				the time frame indicated by the timing relationships.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="onsetDatetime" type="xs:dateTime"
+						minOccurs="0" />
+					<xs:element name="abatementDatetime" type="xs:dateTime"
+						minOccurs="0" />
+					<xs:element name="anatomicalLocationSite" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="severity" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DiagnosticStudyAdverseEvent">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				unexpected or dangerous reaction to the
+				diagnostic study indicated
+				by the QDM category and its corresponding
+				value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDosage" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDuration" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DiagnosticStudyIntolerance">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				reaction in specific patients who have a
+				low threshold to the normal
+				reported or expected reactions of the
+				diagnostic study indicated by
+				the QDM category and its corresponding
+				value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDosage" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDuration" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DiagnosticStudyOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				request by a clinician or appropriately
+				licensed care provider to an
+				appropriate provider or organization to
+				perform the diagnostic study
+				indicated by the QDM category and its
+				corresponding value set. The
+				request may be in the form of a
+				consultation or a direct order to
+				the organization that performs the
+				diagnostic study. Diagnostic
+				studies are those that are not performed
+				in the clinical laboratory.
+				Such studies include but are not limited
+				to imaging studies,
+				cardiology studies (electrocardiogram, treadmill
+				stress testing),
+				pulmonary function testing, vascular laboratory
+				testing, and others.
+				NOTE: The start and stop datetime of Device,
+				Order reflects the “author time” of the record in the Quality
+				Reporting Document Architecture (QRDA). This corresponds to when the
+				order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDosage" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDuration" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DiagnosticStudyPerformed">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				completion of the diagnostic study
+				indicated by the QDM category and
+				its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="result" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="status" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDosage" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDuration" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="facilityLocation" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DiagnosticStudyRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				recommendation for a request by a
+				clinician or appropriately
+				licensed care provider to an appropriate
+				provider or organization to
+				perform the diagnostic study indicated by
+				the QDM category and its
+				corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDosage" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="radiationDuration" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EncounterActive">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that an encounter indicated by the QDM
+				category and its
+				corresponding value set is in progress. Keep in mind
+				that when this
+				datatype is used with timing relationships, the
+				criterion is looking
+				for an encounter that was in progress for the
+				time frame indicated
+				by the timing relationships.
+				NOTE: This datatype
+				uses admissionDatetime and dischargeDatetime rather than
+				startDatetime and stopDatetime, respectively.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="admissionDatetime" type="xs:dateTime"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dischargeDatetime" type="xs:dateTime"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="lengthOfStay" type="Quantity"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="facilityLocation" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="facilityLocationArrivalDatetime" type="xs:dateTime"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="facilityLocationDepartureDatetime"
+						type="xs:dateTime" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EncounterOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that an order for the encounter indicated by
+				the QDM category and
+				its corresponding value set has been
+				recommended.
+				NOTE: The start and stop datetime of Device, Order
+				reflects the “author time” of the record in the Quality Reporting
+				Document Architecture (QRDA). This corresponds to when the order was
+				signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="facilityLocation" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EncounterPerformed">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document that the encounter indicated by the QDM
+				category and its corresponding value set has been completed.
+				NOTE:
+				This datatype uses admissionDatetime and dischargeDatetime rather
+				than startDatetime and stopDatetime, respectively.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="admissionDatetime" type="xs:dateTime"
+						minOccurs="1" />
+					<xs:element name="dischargeDatetime" type="xs:dateTime"
+						minOccurs="1" />
+					<xs:element name="lengthOfStay" type="Quantity"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dischargeStatus" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="facilityLocation" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="facilityLocationArrivalDatetime" type="xs:dateTime"
+						minOccurs="0" />
+					<xs:element name="facilityLocationDepartureDatetime"
+						type="xs:dateTime" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="diagnosis" type="Diagnosis" minOccurs="0" />
+					<xs:element name="principalDiagnosis" type="Diagnosis"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EncounterRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the encounter indicated by the QDM
+				category and its
+				corresponding value set has been recommended.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="facilityLocation" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FamilyHistory">
+		<xs:annotation>
+			<xs:documentation>
+				To meet criteria using this datatype, the
+				diagnosis/problem indicated by the FamilyHistory QDM category and
+				its corresponding value set should reflect a diagnosis/problem of a
+				family member. When used in timing relationships, the recorded
+				datetime acts as both the implicit start datetime and implicit stop
+				datetime.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="onsetAge" type="Quantity" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="recordedDatetime" type="xs:dateTime"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="relationship" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FunctionalStatusOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that a request to perform the functional
+				status assessment indicated
+				by the QDM category and its corresponding
+				value set has been
+				completed.
+				NOTE: The start and stop datetime of
+				Device, Order reflects the “author time” of the record in the
+				Quality Reporting Document Architecture (QRDA). This corresponds to
+				when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FunctionalStatusPerformed">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				completion of the functional status
+				assessment indicated by the QDM
+				category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="result" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FunctionalStatusRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				recommendation regarding the functional
+				status assessment indicated
+				by the QDM category and that its
+				corresponding value set has been
+				completed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ImmunizationAdministered">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the vaccine indicated by the QDM
+				category and its corresponding
+				value set was actually administered to
+				the patient.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dose" type="Quantity" maxOccurs="1"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ImmunizationAllergy">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				immunologically mediated reaction that
+				exhibits specificity and
+				recurrence on re-exposure to the offending
+				vaccine indicated by the
+				QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ImmunizationIntolerance">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				reaction in specific patients representing
+				a low threshold to the
+				normal pharmacological action of the vaccine
+				indicated by the QDM
+				category and its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ImmunizationOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				request for the immunization indicated by
+				the QDM category and its
+				corresponding value set.
+				NOTE: The start and
+				stop datetime of Device, Order reflects the “author time” of the
+				record in the Quality Reporting Document Architecture (QRDA). This
+				corresponds to when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="activeDatetime" type="xs:dateTime"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="signedDatetime" type="xs:dateTime"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dose" type="Quantity" maxOccurs="1"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InterventionAdverseEvent">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				unexpected or dangerous reaction to the
+				intervention indicated by
+				the QDM category and its corresponding
+				value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InterventionIntolerance">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				reaction in specific patients representing
+				a low threshold to the
+				normal reported or expected reactions of
+				intervention indicated by
+				the QDM category and its corresponding
+				value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InterventionOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				request to perform the intervention
+				indicated by the QDM category
+				and its corresponding value set.
+				NOTE:
+				The start and stop datetime of Device, Order reflects the “author
+				time” of the record in the Quality Reporting Document Architecture
+				(QRDA). This corresponds to when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InterventionPerformed">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				completion of the intervention indicated
+				by the QDM category and its
+				corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="result" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="status" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InterventionRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				recommendation for the intervention
+				indicated by the QDM category
+				and its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LaboratoryTestAdverseEvent">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				unexpected or dangerous reaction to the
+				laboratory test indicated by
+				the QDM category and its corresponding
+				value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="laboratoryTestPerformed" type="LaboratoryTestPerformed"
+						minOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LaboratoryTestIntolerance">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				reaction in specific patients representing
+				a low threshold to the
+				normal reported or expected reactions of the
+				laboratory test
+				indicated by the QDM category and its corresponding
+				value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="laboratoryTestPerformed" type="LaboratoryTestPerformed"
+						minOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LaboratoryTestOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				request for the laboratory test indicated
+				by the QDM category and
+				its corresponding value set.
+				NOTE: The start
+				and stop datetime of Device, Order reflects the “author time” of the
+				record in the Quality Reporting Document Architecture (QRDA). This
+				corresponds to when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LaboratoryTestPerformed">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				laboratory test indicated by the QDM
+				category and its corresponding
+				value set was performed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="status" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="result" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="referenceRangeHigh" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="referenceRangeLow" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LaboratoryTestRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				recommendation for the laboratory test
+				indicated by the QDM category
+				and its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicationActive">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the medication indicated by the QDM
+				category and its
+				corresponding value set is being taken by the
+				patient. Keep in mind
+				that when this datatype is used with timing
+				relationships, the
+				criterion is looking for a medication being taken
+				for the time frame
+				indicated by the timing relationships.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="dose" type="Quantity" minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="cumulativeMedicationDuration" type="Quantity"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicationAdministered">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the medication indicated by the QDM
+				category and its
+				corresponding value set was actually administered to
+				the patient.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dose" type="Quantity" minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="cumulativeMedicationDuration" type="Quantity"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicationAdverseEffects">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				unexpected or dangerous reaction to the
+				medication indicated by the
+				QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicationAllergy">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				immunologically mediated reaction that
+				exhibits specificity and
+				recurrence on re-exposure to the offending
+				medication indicated by
+				the QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicationDischarge">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the medications indicated by the QDM
+				category and its
+				corresponding value set should be taken by or given
+				to the patient
+				after being discharged from an inpatient encounter.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="refills" type="xs:integer" minOccurs="0" />
+					<xs:element name="dose" type="Quantity" minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="cumulativeMedicationDuration" type="Quantity"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicationDispensed">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that a prescription for the medication
+				indicated by the QDM category
+				and its corresponding value set has
+				been dispensed and provided to
+				the patient or patient proxy. In the
+				ambulatory setting, medications
+				are primarily taken directly by
+				patients and not directly observed.
+				Hence, dispensed is the closest
+				health provider documentation of
+				medication compliance. In settings
+				where patients attest to taking
+				medications in electronic format
+				(perhaps a Personal Health Record),
+				patient attestation of
+				“medication taken” may be available.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="refills" type="xs:integer" minOccurs="0" />
+					<xs:element name="dose" type="Quantity" minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="cumulativeMedicationDuration" type="Quantity"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicationIntolerance">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				reaction in specific patients representing
+				a low threshold to the
+				normal pharmacological action of the
+				medication indicated by the QDM
+				category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MedicationOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				request to a pharmacy to provide the
+				medication indicated by the QDM
+				category and its corresponding value
+				set.
+				NOTE: The start and stop datetime of Device, Order reflects the
+				“author time” of the record in the Quality Reporting Document
+				Architecture (QRDA). This corresponds to when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="activeDatetime" type="xs:dateTime"
+						minOccurs="1" />
+					<xs:element name="signedDatetime" type="xs:dateTime"
+						minOccurs="1" />
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="refills" type="xs:integer" minOccurs="0" />
+					<xs:element name="dose" type="Quantity" minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="cumulativeMedicationDuration" type="Quantity"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PatientCharacteristic">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a characteristic of the patient not
+				represented by one of the more specific Individual Characteristic
+				datatypes.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="startDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="stopDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PatientCharacteristicBirthdate">
+		<xs:annotation>
+			<xs:documentation>
+				The Patient Characteristic Birthdate data element
+				should document the
+				patient’s date of birth.
+				Note: Patient
+				Characteristic Birthdate is fixed to LOINC code 21112-8
+				(Birth date)
+				and therefore cannot be further qualified with a value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="startDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="stopDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PatientCharacteristicClinicalTrialParticipant">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the patient is a clinical trial
+				participant for the clinical
+				trial indicated by the QDM category and
+				its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="startDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="stopDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="reason" type="CodeableConcept"
+				minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PatientCharacteristicEthnicity">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the patient has one or more of the
+				ethnicities indicated by the
+				QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence />
+	</xs:complexType>
+	<xs:complexType name="PatientCharacteristicExpired">
+		<xs:annotation>
+			<xs:documentation>
+				The Patient Characteristic Expired data element
+				should document that
+				the patient is deceased.
+				Note: Patient
+				Characteristic Expired is fixed to SNOMED-CT® code
+				419099009 (Dead)
+				and therefore cannot be further qualified with a
+				value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="date" type="xs:date" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="time" type="xs:time" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="cause" type="CodeableConcept" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PatientCharacteristicPayer">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the patient has one or more of the
+				payers indicated by the QDM
+				category and its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="startDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="stopDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PatientCharacteristicRace">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				patient’s race.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence />
+	</xs:complexType>
+	<xs:complexType name="PatientCharacteristicSex">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the patient has one or more of the
+				payers indicated by the QDM
+				category and its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="startDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="stopDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProviderCharacteristic">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a characteristic of the provider.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="startDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="stopDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PhysicalExamOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				request for the physical exam indicated by
+				the QDM category and its
+				corresponding value set. The datatype is
+				expected to be used to
+				identify orders such as "vital signs,
+				frequency every x hours,” or
+				"pedal pulse check, frequency every 15
+				minutes for x hours."
+				NOTE: startDatetime and
+				stopDatetime have been
+				replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
+				corresponds to when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalLocationSite" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PhysicalExamPerformed">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				completion of the physical exam
+				indicated by the QDM category and
+				its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="result" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalLocationSite" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PhysicalExamRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				recommendation for the physical exam
+				indicated by the QDM category
+				and its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalLocationSite" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcedureAdverseEvent">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				unexpected or dangerous reaction to the
+				procedure indicated by the
+				QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="procedurePerformed" type="ProcedurePerformed"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcedureIntolerance">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				reaction in specific patients representing
+				a low threshold to the
+				normal execution of the procedure indicated by
+				the QDM category and
+				its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="ordinality" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="procedurePerformed" type="ProcedurePerformed"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcedureOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				request for the procedure indicated by the
+				QDM category and its
+				corresponding value set.
+				NOTE: The start and stop
+				datetime of Device, Order reflects the “author time” of the record
+				in the Quality Reporting Document Architecture (QRDA). This
+				corresponds to when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalApproachSite" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalLocationSite" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="ordinality" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="radiationDuration" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcedurePerformed">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				completion of the procedure indicated by
+				the QDM category and its
+				corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="result" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="status" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalApproachSite" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalLocationSite" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="ordinality" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="radiationDuration" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="radiationDosage" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="incisionDatetime" type="xs:dateTime"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProcedureRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				recommendation for the procedure
+				indicated by the QDM category and
+				its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalApproachSite" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="anatomicalLocationSite" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="ordinality" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RiskCategoryAssessment">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				use of tools and calculators (indicated
+				by the QDM category and its
+				corresponding value set) that suggest
+				vulnerabilities for any given
+				patient. This datatype should be used
+				with the QDM Attribute result
+				to specify criteria related to the
+				actual result.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="result" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubstanceAdministered">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document
+				that the substance indicated by the QDM
+				category and its
+				corresponding value set was actually given to the
+				patient.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dose" type="Quantity" minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubstanceAdverseEvent">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				unexpected or dangerous reaction to the
+				substance (e.g., food,
+				environmental agent) indicated by the QDM
+				category and its
+				corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubstanceAllergy">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document an
+				immunologically mediated reaction that
+				exhibits specificity and
+				recurrence on re-exposure to the offending
+				substance indicated by
+				the QDM category and its corresponding value
+				set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubstanceIntolerance">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				reaction in specific patients representing
+				a low threshold to the
+				normal effects of the substance indicated by
+				the QDM category and
+				its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubstanceOrder">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				request for the substance indicated by the
+				QDM category and its
+				corresponding value set.
+				NOTE: The start and stop
+				datetime of Device, Order reflects the “author time” of the record
+				in the Quality Reporting Document Architecture (QRDA). This
+				corresponds to when the order was signed.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="reaction" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="dose" type="Quantity" minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="refills" type="xs:integer"
+						minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubstanceRecommended">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document a
+				recommendation for the substance indicated
+				by the QDM category and
+				its corresponding value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="dose" type="Quantity" minOccurs="0" />
+					<xs:element name="frequency" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="method" type="CodeableConcept"
+						minOccurs="0" />
+					<xs:element name="refills" type="xs:integer"
+						minOccurs="0" />
+					<xs:element name="route" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Symptom">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				symptom and its corresponding value set.
+				The onset datetime
+				corresponds to the implicit start datetime of the
+				datatype and the
+				abatement datetime corresponds to the implicit stop
+				datetime of the
+				datatype. If the abatement datetime is null, then the
+				symptom is
+				considered to still be active. When this datatype is used
+				with
+				timing relationships, the criterion is looking for whether the
+				symptom was active for the time frame indicated by the timing
+				relationships.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="onsetDatetime" type="xs:dateTime"
+						minOccurs="0" />
+					<xs:element name="abatementDatetime" type="xs:dateTime"
+						minOccurs="0" />
+					<xs:element name="severity" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TransferFrom">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				setting, indicated by the QDM category
+				and its corresponding value
+				set, from which a patient is received
+				(e.g., home, acute care
+				hospital, skilled nursing) to the current
+				location.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TransferTo">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet criteria using this
+				datatype should document the
+				setting, indicated by the QDM category
+				and its corresponding value
+				set, to which a patient is released
+				(e.g., home, acute care
+				hospital, skilled nursing) from the current
+				location.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="QDMBaseType">
+				<xs:sequence>
+					<xs:element name="startDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="stopDatetime" type="xs:dateTime"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="negationRationale" type="CodeableConcept"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="reason" type="CodeableConcept"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
