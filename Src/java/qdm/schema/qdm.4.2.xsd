@@ -161,7 +161,6 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<
 					<xs:element name="startDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="stopDatetime" type="xs:dateTime"
