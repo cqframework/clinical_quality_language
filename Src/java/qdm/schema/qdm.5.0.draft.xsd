@@ -1,10 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified"
-	attributeFormDefault="unqualified" targetNamespace="urn:healthit-gov:qdm:v4_2"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v4_2">
+	attributeFormDefault="unqualified" targetNamespace="urn:healthit-gov:qdm:v5_0_draft"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v5_0_draft">
 	<xs:complexType name="CodeableConcept" />
 	<xs:complexType name="Quantity" />
-
+	<xs:complexType name="Interval" >
+			<xs:documentation>
+				This attribute type is new to QDM 5.0.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="startDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1"/>
+			<xs:element name="stopDatetime" type="xs:dateTime"
+				minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Patient">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet this criterion indicate various characteristics of the patient.
+				NOTE: The "characteristic" attribute should be used when no other more specific attribute
+				would be accurate.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="birthDatetime" type="xs:dateTime"
+				minOccurs="0" />
+			<xs:element name="characteristic" type="CodeableConcept"
+				minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="clinicalTrialParticipantReason" type="CodeableConcept"
+				minOccurs="0" />
+			<xs:element name="ethnicity" type="CodeableConcept" minOccurs="0" />
+			<xs:element name="expiredCause" type="CodeableConcept"
+				minOccurs="0" />
+			<xs:element name="expiredDate" type="xs:date" minOccurs="0" />
+			<xs:element name="expiredTime" type="xs:time" minOccurs="0" />
+			<xs:element name="payer" type="CodeableConcept" minOccurs="0" />
+			<xs:element name="race" type="CodeableConcept" minOccurs="0" />
+			<xs:element name="sex" type="CodeableConcept" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Provider">
+		<xs:annotation>
+			<xs:documentation>
+				Data elements that meet this criterion indicate various characteristics of the provider.
+				NOTE: The "characteristic" attribute should be used when no other more specific attribute
+				would be accurate.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="characteristic" type="CodeableConcept"
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:element name="code" type="CodeableConcept" />
 	<xs:complexType name="QDMBaseType">
 		<xs:sequence>
@@ -25,9 +74,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -51,9 +98,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -71,9 +116,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="relatedTo" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -95,9 +138,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						minOccurs="0" />
@@ -117,9 +158,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						minOccurs="0" />
@@ -139,9 +178,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						minOccurs="0" />
@@ -161,10 +198,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -185,9 +219,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -204,14 +236,13 @@
 				alters the treatment, care plan, or encounter (e.g., an
 				antithrombotic device has been placed on the patient's legs to
 				prevent thromboembolism, or a cardiac pacemaker is in place).
-				NOTE:
-				This datatype uses "removalDatetime" NOT "stopDatetime".
+				NOTE: startDatetime has been changed to applicationDatetime
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
+					<xs:element name="applicationDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="removalDatetime" type="xs:dateTime"
 						maxOccurs="1" minOccurs="0" />
@@ -241,9 +272,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -257,18 +286,19 @@
 				Data elements that meet criteria using this
 				datatype should document an order for the device indicated by the
 				QDM category and its corresponding value set.
-				NOTE: The start and
-				stop datetime of Device, Order reflects the “author time” of the
-				record in the Quality Reporting Document Architecture (QRDA). This
+				NOTE: startDatetime and
+				stopDatetime have been replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
 				corresponds to when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -291,9 +321,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -346,9 +374,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -378,9 +404,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -417,18 +441,20 @@
 				stress testing),
 				pulmonary function testing, vascular laboratory
 				testing, and others.
-				NOTE: The start and stop datetime of Device,
-				Order reflects the “author time” of the record in the Quality
-				Reporting Document Architecture (QRDA). This corresponds to when the
-				order was signed.
+				NOTE: startDatetime and
+				stopDatetime have been
+				replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
+				corresponds to when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -457,9 +483,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -498,9 +522,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -530,9 +552,8 @@
 				for an encounter that was in progress for the
 				time frame indicated
 				by the timing relationships.
-				NOTE: This datatype
-				uses admissionDatetime and dischargeDatetime rather than
-				startDatetime and stopDatetime, respectively.
+				NOTE: "length of stay" has been removed, the use of
+				length(interval) is recommended.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -541,8 +562,6 @@
 					<xs:element name="admissionDatetime" type="xs:dateTime"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="dischargeDatetime" type="xs:dateTime"
-						maxOccurs="1" minOccurs="0" />
-					<xs:element name="lengthOfStay" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -565,18 +584,22 @@
 				the QDM category and
 				its corresponding value set has been
 				recommended.
-				NOTE: The start and stop datetime of Device, Order
-				reflects the “author time” of the record in the Quality Reporting
-				Document Architecture (QRDA). This corresponds to when the order was
-				signed.
+				NOTE: startDatetime and
+				stopDatetime have been replaced
+				by authorDatetime corresponding to
+				"author time" of the
+				record in the
+				Quality Reporting Document
+				Architecture
+				(QRDA). This
+				corresponds to
+				when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -594,9 +617,8 @@
 				Data elements that meet criteria using this
 				datatype should document that the encounter indicated by the QDM
 				category and its corresponding value set has been completed.
-				NOTE:
-				This datatype uses admissionDatetime and dischargeDatetime rather
-				than startDatetime and stopDatetime, respectively.
+				NOTE: "length of stay" has been removed, the use of
+				length(interval) is recommended.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -606,8 +628,6 @@
 						minOccurs="1" />
 					<xs:element name="dischargeDatetime" type="xs:dateTime"
 						minOccurs="1" />
-					<xs:element name="lengthOfStay" type="Quantity"
-						maxOccurs="1" minOccurs="0" />
 					<xs:element name="dischargeStatus" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="facilityLocation" type="CodeableConcept"
@@ -638,9 +658,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -670,7 +688,7 @@
 						minOccurs="0" />
 					<xs:element name="recordedDatetime" type="xs:dateTime"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="relationship" type="CodeableConcept"
+					<xs:element name="relationship" type="xs:string"
 						maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -686,18 +704,20 @@
 				by the QDM category and its corresponding
 				value set has been
 				completed.
-				NOTE: The start and stop datetime of
-				Device, Order reflects the “author time” of the record in the
-				Quality Reporting Document Architecture (QRDA). This corresponds to
-				when the order was signed.
+				NOTE: startDatetime and
+				stopDatetime have
+				been replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
+				corresponds to when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -723,9 +743,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -754,9 +772,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -782,9 +798,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -814,9 +828,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -839,9 +851,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -857,10 +867,16 @@
 				request for the immunization indicated by
 				the QDM category and its
 				corresponding value set.
-				NOTE: The start and
-				stop datetime of Device, Order reflects the “author time” of the
-				record in the Quality Reporting Document Architecture (QRDA). This
-				corresponds to when the order was signed.
+				NOTE: startDatetime,
+				stopDatetime, and signedDatetime have been replaced by
+				authorDatetime corresponding to
+				"author time" of the
+				record in the
+				Quality Reporting Document
+				Architecture
+				(QRDA). This
+				corresponds to
+				when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -868,12 +884,8 @@
 				<xs:sequence>
 					<xs:element name="activeDatetime" type="xs:dateTime"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="signedDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
@@ -900,9 +912,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -926,9 +936,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -944,18 +952,19 @@
 				request to perform the intervention
 				indicated by the QDM category
 				and its corresponding value set.
-				NOTE:
-				The start and stop datetime of Device, Order reflects the “author
-				time” of the record in the Quality Reporting Document Architecture
-				(QRDA). This corresponds to when the order was signed.
+				NOTE: startDatetime and
+				stopDatetime have been replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
+				corresponds to when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -978,9 +987,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1007,9 +1014,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1033,13 +1038,11 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="laboratoryTestPerformed" type="LaboratoryTestPerformed"
+					<xs:element name="LaboratoryTestPerformed" type="LaboratoryTestPerformed"
 						minOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -1061,13 +1064,11 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="laboratoryTestPerformed" type="LaboratoryTestPerformed"
+					<xs:element name="LaboratoryTestPerformed" type="LaboratoryTestPerformed"
 						minOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -1081,18 +1082,19 @@
 				request for the laboratory test indicated
 				by the QDM category and
 				its corresponding value set.
-				NOTE: The start
-				and stop datetime of Device, Order reflects the “author time” of the
-				record in the Quality Reporting Document Architecture (QRDA). This
+				NOTE: startDatetime and
+				stopDatetime have been replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
 				corresponds to when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1117,9 +1119,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1152,9 +1152,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1180,21 +1178,19 @@
 				criterion is looking for a medication being taken
 				for the time frame
 				indicated by the timing relationships.
+				NOTE: "cumulative medication duration" has been removed,
+				the use of CMD(interval) is recommended.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="dose" type="Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="route" type="CodeableConcept"
-						minOccurs="0" />
-					<xs:element name="cumulativeMedicationDuration" type="Quantity"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1209,14 +1205,14 @@
 				category and its
 				corresponding value set was actually administered to
 				the patient.
+				NOTE: "cumulative medication duration" has been removed,
+				the use of CMD(interval) is recommended.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1226,8 +1222,6 @@
 					<xs:element name="route" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
-						minOccurs="0" />
-					<xs:element name="cumulativeMedicationDuration" type="Quantity"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1247,9 +1241,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
@@ -1273,9 +1265,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
@@ -1293,14 +1283,14 @@
 				corresponding value set should be taken by or given
 				to the patient
 				after being discharged from an inpatient encounter.
+				NOTE: "cumulative medication duration" has been removed,
+				the use of CMD(interval) is recommended.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1311,8 +1301,6 @@
 					<xs:element name="route" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
-						minOccurs="0" />
-					<xs:element name="cumulativeMedicationDuration" type="Quantity"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1339,14 +1327,14 @@
 				(perhaps a Personal Health Record),
 				patient attestation of
 				“medication taken” may be available.
+				NOTE: "cumulative medication duration" has been removed,
+				the use of CMD(interval) is recommended.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1357,8 +1345,6 @@
 					<xs:element name="route" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
-						minOccurs="0" />
-					<xs:element name="cumulativeMedicationDuration" type="Quantity"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1380,9 +1366,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
@@ -1399,9 +1383,15 @@
 				medication indicated by the QDM
 				category and its corresponding value
 				set.
-				NOTE: The start and stop datetime of Device, Order reflects the
-				“author time” of the record in the Quality Reporting Document
-				Architecture (QRDA). This corresponds to when the order was signed.
+				NOTE: startDatetime, stopDatetime, and signedDatetime
+				have been replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
+				corresponds to when the order was signed.
+				NOTE: "cumulative medication duration" has been removed,
+				the use of CMD(interval) is recommended.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1409,12 +1399,8 @@
 				<xs:sequence>
 					<xs:element name="activeDatetime" type="xs:dateTime"
 						minOccurs="1" />
-					<xs:element name="signedDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="1" />
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="refills" type="xs:integer" minOccurs="0" />
@@ -1427,159 +1413,9 @@
 						minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="cumulativeMedicationDuration" type="Quantity"
-						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="PatientCharacteristic">
-		<xs:annotation>
-			<xs:documentation>
-				Data elements that meet criteria using this
-				datatype should document a characteristic of the patient not
-				represented by one of the more specific Individual Characteristic
-				datatypes.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="startDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="stopDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="PatientCharacteristicBirthdate">
-		<xs:annotation>
-			<xs:documentation>
-				The Patient Characteristic Birthdate data element
-				should document the
-				patient’s date of birth.
-				Note: Patient
-				Characteristic Birthdate is fixed to LOINC code 21112-8
-				(Birth date)
-				and therefore cannot be further qualified with a value
-				set.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="startDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="stopDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="PatientCharacteristicClinicalTrialParticipant">
-		<xs:annotation>
-			<xs:documentation>
-				Data elements that meet criteria using this
-				datatype should document
-				that the patient is a clinical trial
-				participant for the clinical
-				trial indicated by the QDM category and
-				its corresponding value set.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="startDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="stopDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="reason" type="CodeableConcept"
-				minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="PatientCharacteristicEthnicity">
-		<xs:annotation>
-			<xs:documentation>
-				Data elements that meet criteria using this
-				datatype should document
-				that the patient has one or more of the
-				ethnicities indicated by the
-				QDM category and its corresponding value
-				set.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence />
-	</xs:complexType>
-	<xs:complexType name="PatientCharacteristicExpired">
-		<xs:annotation>
-			<xs:documentation>
-				The Patient Characteristic Expired data element
-				should document that
-				the patient is deceased.
-				Note: Patient
-				Characteristic Expired is fixed to SNOMED-CT® code
-				419099009 (Dead)
-				and therefore cannot be further qualified with a
-				value set.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="date" type="xs:date" minOccurs="0"
-				maxOccurs="1" />
-			<xs:element name="time" type="xs:time" minOccurs="0"
-				maxOccurs="1" />
-			<xs:element name="cause" type="CodeableConcept" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="PatientCharacteristicPayer">
-		<xs:annotation>
-			<xs:documentation>
-				Data elements that meet criteria using this
-				datatype should document
-				that the patient has one or more of the
-				payers indicated by the QDM
-				category and its corresponding value set.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="startDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="stopDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="PatientCharacteristicRace">
-		<xs:annotation>
-			<xs:documentation>
-				Data elements that meet criteria using this
-				datatype should document the
-				patient’s race.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence />
-	</xs:complexType>
-	<xs:complexType name="PatientCharacteristicSex">
-		<xs:annotation>
-			<xs:documentation>
-				Data elements that meet criteria using this
-				datatype should document
-				that the patient has one or more of the
-				payers indicated by the QDM
-				category and its corresponding value set.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="startDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="stopDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="ProviderCharacteristic">
-		<xs:annotation>
-			<xs:documentation>
-				Data elements that meet criteria using this
-				datatype should document a characteristic of the provider.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="startDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-			<xs:element name="stopDatetime" type="xs:dateTime"
-				minOccurs="0" maxOccurs="1" />
-		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="PhysicalExamOrder">
 		<xs:annotation>
@@ -1595,8 +1431,7 @@
 				"pedal pulse check, frequency every 15
 				minutes for x hours."
 				NOTE: startDatetime and
-				stopDatetime have been
-				replaced by authorDatetime corresponding to
+				stopDatetime have been replaced by authorDatetime corresponding to
 				"author time" of the
 				record in the Quality Reporting Document
 				Architecture
@@ -1607,9 +1442,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1636,9 +1469,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1667,9 +1498,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1697,13 +1526,11 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="procedurePerformed" type="ProcedurePerformed"
+					<xs:element name="ProcedurePerformed" type="CodeableConcept"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1724,15 +1551,13 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="ordinality" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="procedurePerformed" type="ProcedurePerformed"
+					<xs:element name="ProcedurePerformed" type="CodeableConcept"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1746,18 +1571,19 @@
 				request for the procedure indicated by the
 				QDM category and its
 				corresponding value set.
-				NOTE: The start and stop
-				datetime of Device, Order reflects the “author time” of the record
-				in the Quality Reporting Document Architecture (QRDA). This
+				NOTE: startDatetime and
+				stopDatetime have been replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
 				corresponds to when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1790,9 +1616,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1833,9 +1657,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1871,9 +1693,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1897,9 +1717,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1929,9 +1747,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
@@ -1955,9 +1771,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
@@ -1980,9 +1794,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
@@ -2000,18 +1812,19 @@
 				request for the substance indicated by the
 				QDM category and its
 				corresponding value set.
-				NOTE: The start and stop
-				datetime of Device, Order reflects the “author time” of the record
-				in the Quality Reporting Document Architecture (QRDA). This
+				NOTE: startDatetime and
+				stopDatetime have been replaced by authorDatetime corresponding to
+				"author time" of the
+				record in the Quality Reporting Document
+				Architecture
+				(QRDA). This
 				corresponds to when the order was signed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="authorDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -2024,7 +1837,7 @@
 						minOccurs="0" />
 					<xs:element name="method" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="refills" type="xs:integer"
+					<xs:element name="refills" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="route" type="CodeableConcept"
 						minOccurs="0" />
@@ -2045,9 +1858,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -2058,7 +1869,7 @@
 						minOccurs="0" />
 					<xs:element name="method" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="refills" type="xs:integer"
+					<xs:element name="refills" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="route" type="CodeableConcept"
 						minOccurs="0" />
@@ -2115,14 +1926,12 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
-						minOccurs="0" />
+						maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -2143,14 +1952,12 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="startDatetime" type="xs:dateTime"
-						minOccurs="0" maxOccurs="1" />
-					<xs:element name="stopDatetime" type="xs:dateTime"
+					<xs:element name="interval" type="Interval"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
-						minOccurs="0" />
+						maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
