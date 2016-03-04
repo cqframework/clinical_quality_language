@@ -21,12 +21,12 @@ define InDemographic:
     AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
 define Pharyngitis:
-    ["Diagnosis, Active": "Acute Pharyngitis"] union ["Diagnosis, Active": "Acute Tonsillitis"]
+    ["Diagnosis": "Acute Pharyngitis"] union ["Diagnosis": "Acute Tonsillitis"]
 
 define Antibiotics:
     ["Medication, Order": "Antibiotic Medications"]
 
-define function isRelated(P DiagnosisActive, E EncounterPerformed) :
+define function isRelated(P Diagnosis, E EncounterPerformed) :
     Interval[P."start datetime", P."stop datetime"] includes Interval[E."start datetime", E."stop datetime"]
       or P."start datetime" in Interval[E."start datetime", E."stop datetime"]
 

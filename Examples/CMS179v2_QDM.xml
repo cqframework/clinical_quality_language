@@ -72,17 +72,17 @@
          </expression>
       </def>
       <def name="INRLabResults" context="Patient" accessLevel="Public">
-         <expression xmlns:ns6="urn:healthit-gov:qdm:v4_2" dataType="ns6:LaboratoryTestPerformed" templateId="LaboratoryTestResult" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns6="urn:healthit-gov:qdm:v4_2" dataType="ns6:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
             <codes name="INR" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="BirthDate" context="Patient" accessLevel="Public">
-         <expression xmlns:ns7="urn:healthit-gov:qdm:v4_2" dataType="ns7:PatientCharcteristicBirthdate" templateId="PatientCharcteristicBirthdate" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns7="urn:healthit-gov:qdm:v4_2" dataType="ns7:PatientCharacteristicBirthdate" templateId="PatientCharacteristicBirthdate" xsi:type="Retrieve">
             <codes name="birth date" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="ComputedValueINRPercentTTR" context="Patient" accessLevel="Public">
-         <expression xmlns:ns8="urn:healthit-gov:qdm:v4_2" dataType="ns8:LaboratoryTestPerformed" templateId="LaboratoryTestResult" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns8="urn:healthit-gov:qdm:v4_2" dataType="ns8:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
             <codes name="Computed Value INR percent TTR" xsi:type="ValueSetRef"/>
          </expression>
       </def>
@@ -249,7 +249,10 @@
             </source>
             <where xsi:type="Greater">
                <operand path="value" xsi:type="Property">
-                  <source path="quantitativeResult" scope="L" xsi:type="Property"/>
+                  <source strict="false" xsi:type="As">
+                     <operand path="result" scope="L" xsi:type="Property"/>
+                     <asTypeSpecifier name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                  </source>
                </operand>
                <operand valueType="t:Decimal" value="0.8" xsi:type="Literal"/>
             </where>
@@ -264,13 +267,19 @@
                      <value xsi:type="If">
                         <condition xsi:type="Greater">
                            <operand path="value" xsi:type="Property">
-                              <source path="quantitativeResult" scope="L" xsi:type="Property"/>
+                              <source strict="false" xsi:type="As">
+                                 <operand path="result" scope="L" xsi:type="Property"/>
+                                 <asTypeSpecifier name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                              </source>
                            </operand>
                            <operand valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
                         </condition>
                         <then valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
                         <else path="value" xsi:type="Property">
-                           <source path="quantitativeResult" scope="L" xsi:type="Property"/>
+                           <source strict="false" xsi:type="As">
+                              <operand path="result" scope="L" xsi:type="Property"/>
+                              <asTypeSpecifier name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                           </source>
                         </else>
                      </value>
                   </element>
@@ -279,7 +288,10 @@
                         <operand xsi:type="Subtract">
                            <operand valueType="t:Decimal" value="2.5" xsi:type="Literal"/>
                            <operand path="value" xsi:type="Property">
-                              <source path="quantitativeResult" scope="L" xsi:type="Property"/>
+                              <source strict="false" xsi:type="As">
+                                 <operand path="result" scope="L" xsi:type="Property"/>
+                                 <asTypeSpecifier name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                              </source>
                            </operand>
                         </operand>
                      </value>

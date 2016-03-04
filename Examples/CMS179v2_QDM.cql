@@ -22,9 +22,9 @@ define WarfarinMedications: ["Medication, Active": "Warfarin"]
 define FaceToFaceEncounters: ["Encounter, Performed": "Face-to-Face Interaction"]
 define OfficeVisitEncounters: ["Encounter, Performed": "Office Visit"]
 define ValvularHeartDiseaseDiagnoses: ["Diagnosis": "Valvular Heart Disease"]
-define INRLabResults: ["Laboratory Test, Result": "INR"]
+define INRLabResults: ["Laboratory Test, Performed": "INR"]
 define BirthDate: ["Patient Characteristic Birthdate": "birth date"]
-define ComputedValueINRPercentTTR: ["Laboratory Test, Result": "Computed Value INR percent TTR"]
+define ComputedValueINRPercentTTR: ["Laboratory Test, Performed": "Computed Value INR percent TTR"]
 
 define InDemographic:
 	AgeInYearsAt(start of MeasurementPeriod) >= 18
@@ -58,16 +58,16 @@ define INROutpatientLabResult:
 define INRResultsByDay:
 	INROutpatientLabResult L
 		// QUICK: L.valueQuantity.value > 0.8
-		where L."quantitativeResult".value > 0.8 // TODO: Units?
+		where (L."result" as System.Quantity).value > 0.8 // TODO: Units?
 		return
 			Tuple
 			{
 				// QUICK: resultDate: date from L.appliesDateTime
 				resultDate: date from L."startDatetime",
 				// QUICK: result: if L.valueQuantity.value > 10.0 then 10.0 else L.valueQuantity.value
-				result: if L."quantitativeResult".value > 10.0 then 10.0 else L."quantitativeResult".value, // TODO: Units?
+				result: if (L."result" as System.Quantity).value > 10.0 then 10.0 else (L."result" as System.Quantity).value, // TODO: Units?
 				// QUICK: distanceFromMidpoint: Abs(2.5 - L.valueQuantity.value)
-				distanceFromMidpoint: Abs(2.5 - L."quantitativeResult".value) // TODO: Units?
+				distanceFromMidpoint: Abs(2.5 - (L."result" as System.Quantity).value) // TODO: Units?
 			}
 
 define INRResultsPerDay:
