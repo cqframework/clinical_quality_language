@@ -220,6 +220,9 @@ public class ClassType extends DataType implements NamedType {
         if (other instanceof TupleType) {
             TupleType tupleType = (TupleType)other;
             return getTupleType().equals(tupleType);
+        } else if (other instanceof ClassType) {
+            ClassType classType = (ClassType)other;
+            return getTupleType().equals(classType.getTupleType());            
         }
 
         return false;

@@ -10,6 +10,7 @@ define integerDropDecimal: convert '10.2' to Integer
 define integerInvalid: convert 'abc' to Integer
 define quantityStr: convert '10A' to Quantity
 define quantityStrDecimal: convert '10.0mA' to Quantity
+define dateStr: convert '2015-01-02' to DateTime
 
 // @Test: FromInteger
 define string10: convert 10 to String
@@ -19,3 +20,14 @@ define intInt: convert 10 to Integer
 
 // @Test: FromQuantity
 define quantityStr: convert 10 'A' to String
+define quantityQuantity: convert 10 'A' to Quantity
+
+// @Test: FromBoolean
+define booleanTrueStr: convert true to String
+define booleanFalseStr: convert false to String
+define booleanTrueBool: convert true to Boolean
+define booleanFalseBool: convert false to Boolean
+
+// @Test: FromDateTime
+define dateStr: convert @2015-01-02 to String
+define dateDate: convert @2015-01-02 to DateTime

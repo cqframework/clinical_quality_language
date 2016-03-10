@@ -43,6 +43,7 @@ module.exports.Convert = class Convert extends Expression
         when "{urn:hl7-org:elm-types:r1}Integer" then parseInt(strArg)
         when "{urn:hl7-org:elm-types:r1}String" then strArg
         when "{urn:hl7-org:elm-types:r1}Quantity" then parseQuantity(strArg)
+        when "{urn:hl7-org:elm-types:r1}DateTime" then DateTime.parse(strArg)
         else
           arg
     else

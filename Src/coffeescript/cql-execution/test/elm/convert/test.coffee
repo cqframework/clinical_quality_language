@@ -43,6 +43,12 @@ describe 'FromString', ->
     quantity = @quantityStrDecimal.exec(@ctx)
     quantity.value.should.equal 10.0
     quantity.unit.should.equal 'mA'
+    
+  it "should convert '2015-01-02' to DateTime", ->
+    date = @dateStr.exec(@ctx)
+    date.year.should.equal 2015
+    date.month.should.equal 1
+    date.day.should.equal 2
 
 describe 'FromInteger', ->
   @beforeEach ->
@@ -66,3 +72,38 @@ describe 'FromQuantity', ->
 
   it "should convert 10A to '10A'", ->
     @quantityStr.exec(@ctx).should.equal "10A"
+
+  it "should convert 10A to 10A", ->
+    quantity = @quantityQuantity.exec(@ctx)
+    quantity.value.should.equal 10
+    quantity.unit.should.equal 'A'
+
+describe 'FromBoolean', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should convert true to 'true'", ->
+    @booleanTrueStr.exec(@ctx).should.equal "true"
+
+  it "should convert false to 'false'", ->
+    @booleanFalseStr.exec(@ctx).should.equal "false"
+
+  it "should convert true to true", ->
+    @booleanTrueBool.exec(@ctx).should.equal true
+
+  it "should convert false to false", ->
+    @booleanFalseBool.exec(@ctx).should.equal false
+
+describe 'FromDateTime', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should convert @2015-01-02 to '2015-01-02'", ->
+    @dateStr.exec(@ctx).should.equal "2015-01-02"
+
+  it "should convert @2015-01-02 to @2015-01-02", ->
+    date = @dateDate.exec(@ctx)
+    date.year.should.equal 2015
+    date.month.should.equal 1
+    date.day.should.equal 2
+    
