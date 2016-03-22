@@ -503,11 +503,11 @@ TIME
 //    ;
 
 QUOTEDIDENTIFIER
-    : '"' ( ~[\\"] | '""' )* '"'
+    : '"' (ESC | ~[\\"])* '"'
     ;
 
 STRING
-    : ('\'') ( ~[\\'] | '\'\'' )* ('\'')
+    : '\'' (ESC | ~[\'])* '\''
     ;
 
 WS
@@ -526,3 +526,14 @@ LINE_COMMENT
     :   '//' ~[\r\n]* -> channel(HIDDEN)
     ;
 
+fragment ESC
+    : '\\' (["'\\/fnrt] | UNICODE)    // allow \", \', \\, \/, \f, etc. and \uXXX
+    ;
+
+fragment UNICODE
+    : 'u' HEX HEX HEX HEX
+    ;
+
+fragment HEX
+    : [0-9a-fA-F]
+    ;
