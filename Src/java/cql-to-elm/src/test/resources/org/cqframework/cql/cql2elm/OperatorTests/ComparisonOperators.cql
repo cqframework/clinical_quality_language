@@ -54,13 +54,23 @@ define IntervalNotEqual: Interval[1, 10] <> Interval[1, 10]
 define ListNotEqual: { 1, 2, 3 } <> { 1, 2, 3 }
 define TupleNotEqual: Tuple { Id: 1, Name: 'Joe' } <> Tuple { Id: 1, Name: 'Joe' }
 
-define IntegerMatches: 1 matches 1
-define RealMatches: 1.0 matches 1.0
-define StringMatches: 'Foo' matches 'Foo'
-define DateTimeMatches: DateTime(2015) matches DateTime(2015)
-define TimeMatches: Time(10) matches Time(10)
-define QuantityMatches: 5'mm[Hg]' matches 5'mm[Hg]'
-define IntervalMatches: Interval[1, 10] matches Interval[1, 10]
-define ListMatches: { 1, 2, 3 } matches { 1, 2, 3 }
-define TupleMatches: Tuple { Id: 1, Name: 'Joe' } matches Tuple { Id: 1, Name: 'Joe' }
+define IntegerEquivalent: 1 ~ 1
+define RealEquivalent: 1.0 ~ 1.0
+define StringEquivalent: 'Foo' ~ 'Foo'
+define DateTimeEquivalent: DateTime(2015) ~ DateTime(2015)
+define TimeEquivalent: Time(10) ~ Time(10)
+define QuantityEquivalent: 5'mm[Hg]' ~ 5'mm[Hg]'
+define IntervalEquivalent: Interval[1, 10] ~ Interval[1, 10]
+define ListEquivalent: { 1, 2, 3 } ~ { 1, 2, 3 }
+define TupleEquivalent: Tuple { Id: 1, Name: 'Joe' } ~ Tuple { Id: 1, Name: 'Joe' }
+
+define IntegerNotEquivalent: 1 !~ 1
+define RealNotEquivalent: 1.0 !~ 1.0
+define StringNotEquivalent: 'Foo' !~ 'Foo'
+define DateTimeNotEquivalent: DateTime(2015) !~ DateTime(2015)
+define TimeNotEquivalent: Time(10) !~ Time(10)
+define QuantityNotEquivalent: 5'mm[Hg]' !~ 5'mm[Hg]'
+define IntervalNotEquivalent: Interval[1, 10] !~ Interval[1, 10]
+define ListNotEquivalent: { 1, 2, 3 } !~ { 1, 2, 3 }
+define TupleNotEquivalent: Tuple { Id: 1, Name: 'Joe' } !~ Tuple { Id: 1, Name: 'Joe' }
 
