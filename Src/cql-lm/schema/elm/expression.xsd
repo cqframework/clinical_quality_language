@@ -1054,7 +1054,7 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Indexer operator returns the indexth element in a string or list.
 			
-Indexes in strings and lists are defined to be 1-based.
+Indexes in strings and lists are defined to be 0-based.
 
 If the index is greater than the length of the string or list being indexed, the result is null.
 
@@ -1066,9 +1066,9 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="PositionOf">
 		<xs:annotation>
-			<xs:documentation>The PositionOf operator returns the 1-based index of the given pattern in the given string.
+			<xs:documentation>The PositionOf operator returns the 0-based index of the given pattern in the given string.
 			
-If the pattern is not found, the result is 0.
+If the pattern is not found, the result is -1.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1083,7 +1083,7 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Substring">
 		<xs:annotation>
-			<xs:documentation>The Substring operator returns the string within stringToSub, starting at the 1-based index startIndex, and consisting of length characters.
+			<xs:documentation>The Substring operator returns the string within stringToSub, starting at the 0-based index startIndex, and consisting of length characters.
 			
 If length is ommitted, the substring returned starts at startIndex and continues to the end of stringToSub.
 
@@ -1821,11 +1821,11 @@ If the argument is null, the result is null.</xs:documentation>
 	<!-- Indexer (already defined) -->
 	<xs:complexType name="IndexOf">
 		<xs:annotation>
-			<xs:documentation>The IndexOf operator returns the 1-based index of the given element in the given source list.
+			<xs:documentation>The IndexOf operator returns the 0-based index of the given element in the given source list.
 
 The operator uses equivalence semantics as defined in the Equivalent operator to determine the index. The search is linear, and returns the index of the first element for which the equivalence comparison returns true.
 
-If the list is empty, or no element is found, the result is 0.
+If the list is empty, or no element is found, the result is -1.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
