@@ -50,50 +50,50 @@ parameter MeasurementPeriod Interval<DateTime>
 
 context Patient
 
-define InDemographic:
+define "$InDemographic":
     AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
-define Pharyngitis:
-    [Condition: "Acute Pharyngitis"] union [Condition: "Acute Tonsillitis"]
+define "$Pharyngitis":
+    ["Condition": "Acute Pharyngitis"] union ["Condition": "Acute Tonsillitis"]
 
-define Antibiotics:
-    [MedicationPrescription: "Antibiotic Medications"]
+define "$Antibiotics":
+    ["MedicationPrescription": "Antibiotic Medications"]
 
-define MeasurementPeriodEncounters:
-    [Encounter: "Ambulatory/ED Visit"] E
-        where InDemographic and E.period during MeasurementPeriod
+define "$MeasurementPeriodEncounters":
+    ["Encounter": "Ambulatory/ED Visit"] E
+        where "$InDemographic" and E."period" during MeasurementPeriod
 
-define PharyngitisEncounters:
-    MeasurementPeriodEncounters E
-        with Pharyngitis P such that
-            Interval[P.onsetDateTime, P.abatementDate] includes E.period
-            or P.onsetDateTime in E.period
-        with Antibiotics A such that A.dateWritten 3 days or less after start of E.period
+define "$PharyngitisEncounters":
+    "$MeasurementPeriodEncounters" E
+        with "$Pharyngitis" P such that
+            Interval[P."onsetDateTime", P."abatementDate"] includes E."period"
+            or P."onsetDateTime" in E."period"
+        with "$Antibiotics" A such that A."dateWritten" 3 days or less after start of E."period"
 
-define PharyngitisWithPriorAntibiotics:
-    Pharyngitis P
-        with Antibiotics A such that A.dateWritten 30 days or less before P.onsetDateTime
+define "$PharyngitisWithPriorAntibiotics":
+    "$Pharyngitis" P
+        with "$Antibiotics" A such that A."dateWritten" 30 days or less before P."onsetDateTime"
 
-define ExcludedEncounters:
-    PharyngitisEncounters E
-        with PharyngitisWithPriorAntibiotics P such that
-            Interval[P.onsetDateTime, P.abatementDate] includes E.period
-            or P.onsetDateTime in E.period
+define "$ExcludedEncounters":
+    "$PharyngitisEncounters" E
+        with "$PharyngitisWithPriorAntibiotics" P such that
+            Interval[P."onsetDateTime", P."abatementDate"] includes E."period"
+            or P."onsetDateTime" in E."period"
 
-define StrepTestEncounters:
-    PharyngitisEncounters E
-        with [DiagnosticReport: "Group A Streptococcus Test"] T
-            such that T.result is not null
-                and T.issued in Interval[start of E.period - 3 days, end of E.period + 3 days]
+define "$StrepTestEncounters":
+    "$PharyngitisEncounters" E
+        with ["DiagnosticReport": "Group A Streptococcus Test"] T
+            such that T."result" is not null
+                and T."issued" in Interval[start of E."period" - 3 days, end of E."period" + 3 days]
 
-define IPPCount:
-    Count(PharyngitisEncounters)
+define "$IPPCount":
+    Count("$PharyngitisEncounters")
 
-define DenominatorCount:
-    IPPCount
+define "$DenominatorCount":
+    "$IPPCount"
 
-define DenominatorExclusionsCount:
-    Count(ExcludedEncounters)
+define "$DenominatorExclusionsCount":
+    Count("$ExcludedEncounters")
 
-define NumeratorCount:
-    Count(StrepTestEncounters except ExcludedEncounters)
+define "$NumeratorCount":
+    Count("$StrepTestEncounters" except "$ExcludedEncounters")

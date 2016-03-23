@@ -5,7 +5,7 @@ library CMS146_QDM_MS version '2'
  * instead of multiple single-source queries.
  */
 
-using QDM
+using QDM version '4.2'
 
 valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Acute Tonsillitis": '2.16.840.1.113883.3.464.1003.102.12.1012'
@@ -17,43 +17,46 @@ parameter MeasurementPeriod Interval<DateTime>
 
 context Patient
 
-define InDemographic:
+define "$InDemographic":
     AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
-define EncounterData:
+define "$EncounterData":
     from
-        ["Encounter, Performed": "Ambulatory/ED Visit"] E,
-        (["Diagnosis, Active": "Acute Pharyngitis"] union ["Diagnosis, Active": "Acute Tonsillitis"]) P,
-        ["Medication, Order": "Antibiotic Medications"] A,
-        ["Laboratory Test, Performed": "Group A Streptococcus Test"] T
+        ["EncounterPerformed": "Ambulatory/ED Visit"] E,
+        (["Diagnosis": "Acute Pharyngitis"] union ["Diagnosis": "Acute Tonsillitis"]) P,
+        ["MedicationOrder": "Antibiotic Medications"] A,
+        ["LaboratoryTestPerformed": "Group A Streptococcus Test"] T
     define
-        InMP : Interval[E."start datetime", E."stop datetime"] during MeasurementPeriod,
-        PharyngitisDx : Interval[P."start datetime", P."stop datetime"] includes Interval[E."start datetime", E."stop datetime"]
-            or P."start datetime" in Interval[E."start datetime", E."stop datetime"],
-        PrescribedAntibiotics : A."signed datetime" 3 days or less after E."start datetime"
+        InMP : Interval[E."startDatetime", E."stopDatetime"] during MeasurementPeriod,
+        PharyngitisDx : Interval[P."startDatetime", P."stopDatetime"] includes Interval[E."startDatetime", E."stopDatetime"]
+            or P."startDatetime" in Interval[E."startDatetime", E."stopDatetime"],
+        PrescribedAntibiotics : A."signedDatetime" 3 days or less after E."startDatetime"
     where
-        InDemographic and InMP and PharyngitisDx and PrescribedAntibiotics
-    return {
+        InDemographic and InMP and PharyngitisDx and PrescribedAntibiotics 
+        and E."negationRationale" is not null
+        and A."negationRationale" is not null
+        and T."negationRationale" is not null
+    return Tuple {
         Encounter: E,
-        PriorAntibiotics: A."signed datetime" 30 days or less before P."start datetime",
+        PriorAntibiotics: A."signedDatetime" 30 days or less before P."startDatetime",
         StrepTest: T.result is not null
-            and T."start datetime" in Interval[E."start datetime" - 3 days, E."stop datetime" + 3 days]
+            and T."startDatetime" in Interval[E."startDatetime" - 3 days, E."stopDatetime" + 3 days]
     }
 
-define IPPCount: Count (
-    EncounterData E return E.Encounter
+define "$IPPCount": Count (
+    "$EncounterData" E return E.Encounter
 )
 
-define DenominatorCount: IPPCount
+define "$DenominatorCount": "$IPPCount"
 
-define DenominatorExclusionsCount: Count (
-    EncounterData E
+define "$DenominatorExclusionsCount": Count (
+    "$EncounterData" E
         where E.PriorAntibiotics
         return E.Encounter
 )
 
-define NumeratorCount: Count (
-    EncounterData E
+define "$NumeratorCount": Count (
+    "$EncounterData" E
         where E.StrepTest
             and (not E.PriorAntibiotics or E.PriorAntibiotics is null)
         return E.Encounter

@@ -22,31 +22,33 @@ valueset "Reason for not performing Chlamydia Screening": 'TBD' // Not used in t
 
 context Patient
 
-define InDemographic:
-	AgeInYears() >= 16 and AgeInYears() < 24 and Patient.gender in "Female Administrative Sex"
+define "$InDemographic":
+	AgeInYears() >= 16 and AgeInYears() < 24 and "Patient"."gender" in "Female Administrative Sex"
 
-define SexuallyActive:
-	exists ([Condition: "Other Female Reproductive Conditions"])
-	or exists ([Condition: "Genital Herpes"])
-	or exists ([Condition: "Genococcal Infections and Venereal Diseases"])
-	or exists ([Condition: "Inflammatory Diseases of Female Reproductive Organs"])
-	or exists ([Condition: "Chlamydia"])
-	or exists ([Condition: "HIV"])
-	or exists ([Condition: "Syphilis"])
-	or exists ([Condition: "Complications of Pregnancy, Childbirth and the Puerperium"])
-	or exists ([DiagnosticOrder: "Pregnancy Test"])
-	or exists ([DiagnosticOrder: "Pap Test"])
-	or exists ([DiagnosticOrder: "Lab Tests During Pregnancy"])
-	or exists ([DiagnosticOrder: "Lab Tests for Sexually Transmitted Infections"])
+define "$SexuallyActive":
+	exists (["Condition": "Other Female Reproductive Conditions"])
+	or exists (["Condition": "Genital Herpes"])
+	or exists (["Condition": "Genococcal Infections and Venereal Diseases"])
+	or exists (["Condition": "Inflammatory Diseases of Female Reproductive Organs"])
+	or exists (["Condition": "Chlamydia"])
+	or exists (["Condition": "HIV"])
+	or exists (["Condition": "Syphilis"])
+	or exists (["Condition": "Complications of Pregnancy, Childbirth and the Puerperium"])
+	or exists (["DiagnosticOrder": "Pregnancy Test"])
+	or exists (["DiagnosticOrder": "Pap Test"])
+	or exists (["DiagnosticOrder": "Lab Tests During Pregnancy"])
+	or exists (["DiagnosticOrder": "Lab Tests for Sexually Transmitted Infections"])
 
-define NoScreening:
-  not exists ([DiagnosticReport: "Chlamydia Screening"] R where R.issued during Interval[Today() - 1 years, Today()] and R.result is not null)
-  and not exists ([ProcedureRequest: "Chlamydia Screening"] P where P.orderedOn same day or after Today())
-	and not exists ([Observation: "Reason for not performing Chlamydia Screening"])
+define "$NoScreening":
+  not exists (["DiagnosticReport": "Chlamydia Screening"] R where R."issued" during Interval[Today() - 1 years, Today()] and R."result" is not null)
+  and not exists (["ProcedureRequest": "Chlamydia Screening"] P where P."orderedOn" same day or after Today())
+	and not exists (["Observation": "Reason for not performing Chlamydia Screening"])
 
-define NeedScreening: InDemographic and SexuallyActive and NoScreening
+define "$NeedScreening": "$InDemographic" and "$SexuallyActive" and "$NoScreening"
 
-define ChlamydiaScreeningRequest: ProcedureRequest {
+//The following previously read "ProcedureRequest" where it currently reads "Tuple"
+
+define "$ChlamydiaScreeningRequest": Tuple {
   type: Code '442487003' from "SNOMED" display 'Screening for Chlamydia trachomatis (procedure)',
   status: 'proposed'
   // values for other elements of the request...
