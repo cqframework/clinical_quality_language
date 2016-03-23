@@ -568,19 +568,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIntervalSelector(@NotNull cqlParser.IntervalSelectorContext ctx) {
-        Interval result = of.createInterval()
-                .withLow(parseExpression(ctx.expression(0)))
-                .withLowClosed(ctx.getChild(1).getText().equals("["))
-                .withHigh(parseExpression(ctx.expression(1)))
-                .withHighClosed(ctx.getChild(5).getText().equals("]"));
-
-        DataType pointType = ensureCompatibleTypes(result.getLow().getResultType(), result.getHigh().getResultType());
-        result.setResultType(new IntervalType(pointType));
-
-        result.setLow(ensureCompatible(result.getLow(), pointType));
-        result.setHigh(ensureCompatible(result.getHigh(), pointType));
-
-        return result;
+        return createInterval(parseExpression(ctx.expression(0)), ctx.getChild(1).getText().equals("["),
+                parseExpression(ctx.expression(1)), ctx.getChild(5).getText().equals("]"));
     }
 
     @Override
@@ -1242,18 +1231,28 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression second = parseExpression(ctx.expressionTerm(0));
         Expression third = parseExpression(ctx.expressionTerm(1));
         boolean isProper = ctx.getChild(0).getText().equals("properly");
-        BinaryExpression result = of.createAnd()
-                .withOperand(
-                        (isProper ? of.createGreater() : of.createGreaterOrEqual())
-                                .withOperand(first, second),
-                        (isProper ? of.createLess() : of.createLessOrEqual())
-                                .withOperand(first, third)
-                );
 
-        resolveBinaryCall("System", isProper ? "Greater" : "GreaterOrEqual", (BinaryExpression)result.getOperand().get(0));
-        resolveBinaryCall("System", isProper ? "Less" : "LessOrEqual", (BinaryExpression)result.getOperand().get(1));
-        resolveBinaryCall("System", "And", result);
-        return result;
+        if (first.getResultType() instanceof IntervalType) {
+            BinaryExpression result = isProper ? of.createProperIncludedIn() : of.createIncludedIn()
+                    .withOperand(first, createInterval(second, true, third, true));
+
+            resolveBinaryCall("System", isProper ? "ProperIncludedIn" : "IncludedIn", result);
+            return result;
+        }
+        else {
+            BinaryExpression result = of.createAnd()
+                    .withOperand(
+                            (isProper ? of.createGreater() : of.createGreaterOrEqual())
+                                    .withOperand(first, second),
+                            (isProper ? of.createLess() : of.createLessOrEqual())
+                                    .withOperand(first, third)
+                    );
+
+            resolveBinaryCall("System", isProper ? "Greater" : "GreaterOrEqual", (BinaryExpression) result.getOperand().get(0));
+            resolveBinaryCall("System", isProper ? "Less" : "LessOrEqual", (BinaryExpression) result.getOperand().get(1));
+            resolveBinaryCall("System", "And", result);
+            return result;
+        }
     }
 
     @Override
@@ -3600,6 +3599,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Literal createLiteral(Double value) {
         return createLiteral(String.valueOf(value), "Decimal");
+    }
+
+    private Interval createInterval(Expression low, boolean lowClosed, Expression high, boolean highClosed) {
+        Interval result = of.createInterval()
+                .withLow(low)
+                .withLowClosed(lowClosed)
+                .withHigh(high)
+                .withHighClosed(highClosed);
+
+        DataType pointType = ensureCompatibleTypes(result.getLow().getResultType(), result.getHigh().getResultType());
+        result.setResultType(new IntervalType(pointType));
+
+        result.setLow(ensureCompatible(result.getLow(), pointType));
+        result.setHigh(ensureCompatible(result.getHigh(), pointType));
+
+        return result;
     }
 
     private boolean isBooleanLiteral(Expression expression, Boolean bool) {
