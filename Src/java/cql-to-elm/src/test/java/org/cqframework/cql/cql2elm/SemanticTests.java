@@ -129,6 +129,11 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/InvalidCastExpression.cql", 1);
     }
 
+    @Test
+    public void testForwardReferences() throws IOException {
+        runSemanticTest("OperatorTests/ForwardReferences.cql", 0);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }
