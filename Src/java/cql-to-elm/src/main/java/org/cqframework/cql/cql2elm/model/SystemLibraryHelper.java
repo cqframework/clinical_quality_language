@@ -142,6 +142,8 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Ln", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
 
+        system.add(new Operator("Exp", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+
         // MaxValue<T>() : T
         // MinValue<T>() : T
 

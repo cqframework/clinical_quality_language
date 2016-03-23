@@ -25,6 +25,9 @@ define IntegerIntegerLog: Log(1000, 10)
 define DecimalLn: Ln(1000.0)
 define IntegerLn: Ln(1000)
 
+define DecimalExp: Exp(1000.0)
+define IntegerExp: Exp(1000)
+
 define IntegerModulo: 100 mod 10
 define RealModulo: 100.0 mod 10.0
 //define QuantityIntegerModulo: 100'g/cm3' mod 10

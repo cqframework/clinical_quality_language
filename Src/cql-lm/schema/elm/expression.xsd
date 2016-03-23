@@ -1002,6 +1002,16 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Exp">
+		<xs:annotation>
+			<xs:documentation>The Exp operator returns e raised to the given power.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Log">
 		<xs:annotation>
 			<xs:documentation>The Log operator computes the logarithm of its first argument, using the second argument as the base.
