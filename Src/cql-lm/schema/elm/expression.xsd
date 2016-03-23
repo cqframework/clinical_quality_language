@@ -584,6 +584,135 @@ Conversion between String and DateTime/Time is performed using the ISO-8601 stan
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ToBoolean">
+		<xs:annotation>
+			<xs:documentation>The ToBoolean operator converts the value of its argument to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
+			
+If the input cannot be interpreted as a valid Boolean value, a run-time error is thrown.
+
+If the argument is null the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToConcept">
+		<xs:annotation>
+			<xs:documentation>The ToConcept operator converts a value of type Code to a Concept value with the given Code as its primary and only Code. If the Code has a display value, the resulting Concept will have the same display value.
+			
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToDateTime">
+		<xs:annotation>
+			<xs:documentation>The ToDateTime operator converts the value of its argument to a DateTime value. The operator expects the string to be formatted using the ISO-8601 date/time representation: 
+
+YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+
+In addition, the string must be interpretable as a valid date/time value.
+
+If the input string is not formatted correctly, or does not represent a valid date/time value, a run-time error is thrown.
+
+As with date/time literals, date/time values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToDecimal">
+		<xs:annotation>
+			<xs:documentation>The ToDecimal operator converts the value of its argument to a Decimal value. The operator accepts strings using the following format:
+
+(+|-)?#0(.0#)?
+
+Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit, followed optionally by a decimal point, at least one digit, and any number of additional digits (including none).
+
+Note that the decimal value returned by this operator must be limited in precision and scale to the maximum precision and scale representable for Decimal values within CQL.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, a run-time error is thrown.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToInteger">
+		<xs:annotation>
+			<xs:documentation>The ToInteger operator converts the value of its argument to an Integer value. The operator accepts strings using the following format:
+
+(+|-)?#0
+
+Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit.
+
+Note that the integer value returned by this operator must be a valid value in the range representable for Integer values in CQL.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, a run-time error is thrown.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToQuantity">
+		<xs:annotation>
+			<xs:documentation>The ToQuantity operator converts the value of its argument to a Quantity value. The operator accepts strings using the following format:
+
+(+|-)?#0(.0#)?('&lt;unit&gt;')?
+
+Meaning an optional polarity indicator, followed by any number of digits (including none) followed by at least one digit, optionally followed by a decimal point, at least one digit, and any number of additional digits, all optionally followed by a unit designator as a string literal specifying a valid UCUM unit of measure. Spaces are allowed between the quantity value and the unit designator.
+
+Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL. 
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, a run-time error is thrown.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToString">
+		<xs:annotation>
+			<xs:documentation>The ToString operator converts the value of its argument to a String value. The operator uses the following string representations for each type:
+
+Boolean true|false
+Integer (-)?#0
+Decimal (-)?#0.0#
+Quantity (-)?#0.0# '&lt;unit&gt;'
+DateTime YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+Time	Thh:mm:ss.fff(+|-)hh:mm
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToTime">
+		<xs:annotation>
+			<xs:documentation>The ToTime operator converts the value of its argument to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
+
+Thh:mm:ss.fff(+|-)hh:mm
+
+In addition, the string must be interpretable as a valid time-of-day value.
+
+If the input string is not formatted correctly, or does not represent a valid time-of-day value, a run-time error is thrown.
+
+As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- Comparison Operators -->
 	<xs:complexType name="Equal">
 		<xs:annotation>
