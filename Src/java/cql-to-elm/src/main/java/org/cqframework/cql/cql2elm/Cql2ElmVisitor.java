@@ -1612,10 +1612,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return result;
         }
 
-        DefineClause define = resolveQueryDefine(identifier);
-        if (define != null) {
-            QueryDefineRef result = of.createQueryDefineRef().withName(identifier);
-            result.setResultType(define.getResultType());
+        LetClause let = resolveQueryLet(identifier);
+        if (let != null) {
+            QueryLetRef result = of.createQueryLetRef().withName(identifier);
+            result.setResultType(let.getResultType());
             return result;
         }
 
@@ -2610,9 +2610,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
             try {
 
-                List<DefineClause> dfcx = ctx.defineClause() != null ? (List<DefineClause>) visit(ctx.defineClause()) : null;
+                List<LetClause> dfcx = ctx.letClause() != null ? (List<LetClause>) visit(ctx.letClause()) : null;
                 if (dfcx != null) {
-                    queryContext.addDefineClauses(dfcx);
+                    queryContext.addLetClauses(dfcx);
                 }
 
                 List<RelationshipClause> qicx = new ArrayList<>();
@@ -2656,7 +2656,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 Query query = of.createQuery()
                         .withSource(sources)
-                        .withDefine(dfcx)
+                        .withLet(dfcx)
                         .withRelationship(qicx)
                         .withWhere(where)
                         .withReturn(ret)
@@ -2850,20 +2850,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitDefineClause(@NotNull cqlParser.DefineClauseContext ctx) {
-        List<DefineClause> defineClauseItems = new ArrayList<>();
-        for (cqlParser.DefineClauseItemContext defineClauseItem : ctx.defineClauseItem()) {
-            defineClauseItems.add((DefineClause) visit(defineClauseItem));
+    public Object visitLetClause(@NotNull cqlParser.LetClauseContext ctx) {
+        List<LetClause> letClauseItems = new ArrayList<>();
+        for (cqlParser.LetClauseItemContext letClauseItem : ctx.letClauseItem()) {
+            letClauseItems.add((LetClause) visit(letClauseItem));
         }
-        return defineClauseItems;
+        return letClauseItems;
     }
 
     @Override
-    public Object visitDefineClauseItem(@NotNull cqlParser.DefineClauseItemContext ctx) {
-        DefineClause defineClause = of.createDefineClause().withExpression(parseExpression(ctx.expression()))
+    public Object visitLetClauseItem(@NotNull cqlParser.LetClauseItemContext ctx) {
+        LetClause letClause = of.createLetClause().withExpression(parseExpression(ctx.expression()))
                 .withIdentifier(parseString(ctx.identifier()));
-        defineClause.setResultType(defineClause.getExpression().getResultType());
-        return defineClause;
+        letClause.setResultType(letClause.getExpression().getResultType());
+        return letClause;
     }
 
     @Override
@@ -3640,11 +3640,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return null;
     }
 
-    private DefineClause resolveQueryDefine(String identifier) {
+    private LetClause resolveQueryLet(String identifier) {
         for (QueryContext query : queries) {
-            DefineClause define = query.resolveDefine(identifier);
-            if (define != null) {
-                return define;
+            LetClause let = query.resolveLet(identifier);
+            if (let != null) {
+                return let;
             }
         }
 

@@ -189,7 +189,7 @@ qualifier
     ;
 
 query
-    : sourceClause defineClause? queryInclusionClause* whereClause? returnClause? sortClause?
+    : sourceClause letClause? queryInclusionClause* whereClause? returnClause? sortClause?
     ;
 
 sourceClause
@@ -205,11 +205,11 @@ multipleSourceClause
     : 'from' aliasedQuerySource (',' aliasedQuerySource)*
     ;
 
-defineClause
-    : 'define' defineClauseItem (',' defineClauseItem)*
+letClause
+    : 'let' letClauseItem (',' letClauseItem)*
     ;
 
-defineClauseItem
+letClauseItem
     : identifier ':' expression
     ;
 

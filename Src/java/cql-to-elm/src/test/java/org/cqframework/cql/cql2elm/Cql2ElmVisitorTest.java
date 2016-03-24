@@ -924,12 +924,12 @@ public class Cql2ElmVisitorTest {
     }
 
     @Test
-    public void testQueryThatReturnsDefine() {
+    public void testQueryThatReturnsLet() {
         String cql =
             "using QUICK\n" +
             "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
             "define st : [Encounter: \"Inpatient\"] E\n" +
-            "    define a : 1\n" +
+            "    let a : 1\n" +
             "    return a";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Query query = (Query) def.getExpression();
@@ -950,14 +950,14 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getTemplateId(), is("encounter-qicore-qicore-encounter"));
 
         // Then check the define
-        assertThat(query.getDefine(), hasSize(1));
-        DefineClause dfc = query.getDefine().get(0);
+        assertThat(query.getLet(), hasSize(1));
+        LetClause dfc = query.getLet().get(0);
         assertThat(dfc.getIdentifier(), is("a"));
         assertThat(dfc.getExpression(), literalFor(1));
 
         // Then check the return
-        assertThat(query.getReturn().getExpression(), instanceOf(QueryDefineRef.class));
-        QueryDefineRef qdr = (QueryDefineRef) query.getReturn().getExpression();
+        assertThat(query.getReturn().getExpression(), instanceOf(QueryLetRef.class));
+        QueryLetRef qdr = (QueryLetRef) query.getReturn().getExpression();
         assertThat(qdr.getName(), is("a"));
 
         // Then check the rest

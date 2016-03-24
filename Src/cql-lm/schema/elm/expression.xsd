@@ -2298,9 +2298,9 @@ Property expressions can also be used to access the individual points and closed
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="DefineClause">
+	<xs:complexType name="LetClause">
 		<xs:annotation>
-			<xs:documentation>The DefineClause element allows any number of expression definitions to be introduced within a query context. Defined expressions can be referenced by name within the query context.</xs:documentation>
+			<xs:documentation>The LetClause element allows any number of expression definitions to be introduced within a query context. Defined expressions can be referenced by name within the query context.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
@@ -2417,7 +2417,7 @@ Property expressions can also be used to access the individual points and closed
 			<xs:extension base="Expression">
 				<xs:sequence>
 					<xs:element name="source" type="AliasedQuerySource" minOccurs="1" maxOccurs="unbounded"/>
-					<xs:element name="define" type="DefineClause" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="let" type="LetClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="relationship" type="RelationshipClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="where" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="return" type="ReturnClause" minOccurs="0" maxOccurs="1"/>
@@ -2436,9 +2436,9 @@ Property expressions can also be used to access the individual points and closed
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="QueryDefineRef">
+	<xs:complexType name="QueryLetRef">
 		<xs:annotation>
-			<xs:documentation>The QueryDefineRef expression allows for the reference of a specific define within the context of a query.</xs:documentation>
+			<xs:documentation>The QueryLetRef expression allows for the reference of a specific let definition within the context of a query.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
