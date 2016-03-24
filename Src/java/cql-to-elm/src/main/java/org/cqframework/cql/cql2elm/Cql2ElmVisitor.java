@@ -2525,10 +2525,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 Collapse collapse = of.createCollapse().withOperand(parseExpression(ctx.expression()));
                 resolveUnaryCall("System", "Collapse", collapse);
                 return collapse;
-            case "expand":
-                Expand expand = of.createExpand().withOperand(parseExpression(ctx.expression()));
-                resolveUnaryCall("System", "Expand", expand);
-                return expand;
+            case "flatten":
+                Flatten flatten = of.createFlatten().withOperand(parseExpression(ctx.expression()));
+                resolveUnaryCall("System", "Flatten", flatten);
+                return flatten;
         }
 
         throw new IllegalArgumentException(String.format("Unknown aggregate operator %s.", ctx.getChild(0).getText()));

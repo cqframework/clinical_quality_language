@@ -1983,9 +1983,9 @@ If either argument is null, the result is null.</xs:documentation>
 	<!-- IncludedIn (already defined) -->
 	<!-- ProperIncludes (already defined) -->
 	<!-- ProperIncludedIn (already defined) -->
-	<xs:complexType name="Expand">
+	<xs:complexType name="Flatten">
 		<xs:annotation>
-			<xs:documentation>The Expand operator flattens a list of lists into a single list.
+			<xs:documentation>The Flatten operator flattens a list of lists into a single list.
 			
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>

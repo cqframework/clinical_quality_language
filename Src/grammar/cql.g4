@@ -294,7 +294,7 @@ expressionTerm
     | expressionTerm ('+' | '-') expressionTerm                          # additionExpressionTerm
     | 'if' expression 'then' expression 'else' expression                # ifThenElseExpressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     # caseExpressionTerm
-    | ('distinct' | 'collapse' | 'expand') expression                    # aggregateExpressionTerm
+    | ('distinct' | 'collapse' | 'flatten') expression                   # aggregateExpressionTerm
     ;
 
 caseExpressionItem

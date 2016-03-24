@@ -330,8 +330,8 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Except", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // Exists<T>(list<T>) : Boolean
         system.add(new GenericOperator("Exists", new Signature(new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Expand<T>(list<list<T>>) : list<T>
-        system.add(new GenericOperator("Expand", new Signature(new ListType(new ListType(new TypeParameter("T")))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
+        // Flatten<T>(list<list<T>>) : list<T>
+        system.add(new GenericOperator("Flatten", new Signature(new ListType(new ListType(new TypeParameter("T")))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // First<T>(list<T>) : T
         system.add(new GenericOperator("First", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // In<T>(T, list<T>) : Boolean
