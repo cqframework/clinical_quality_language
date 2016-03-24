@@ -260,7 +260,7 @@ expression
     ;
 
 dateTimePrecision
-    : 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond'
+    : 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond'
     ;
 
 dateTimeComponent
@@ -271,7 +271,7 @@ dateTimeComponent
     ;
 
 pluralDateTimePrecision
-    : 'years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds'
+    : 'years' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds'
     ;
 
 expressionTerm

@@ -1141,6 +1141,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             case "month":
             case "months":
                 return DateTimePrecision.MONTH;
+            case "wk":
+            case "week":
+            case "weeks":
+                return DateTimePrecision.WEEK;
             case "d":
             case "day":
             case "days":
@@ -1187,6 +1191,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 break;
             case "year":
             case "month":
+            case "week":
             case "day":
             case "hour":
             case "minute":
