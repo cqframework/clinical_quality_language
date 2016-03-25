@@ -19,7 +19,7 @@ valueset "Chlamydia Screening": '2.16.840.1.113883.3.464.1003.110.12.1052'
 
 context Patient
 
-define "$Conditions Indicating Sexual Activity":
+define "Conditions Indicating Sexual Activity":
 	["Condition": "Other Female Reproductive Conditions"]
 	union ["Condition": "Genital Herpes"]
     union ["Condition": "Genococcal Infections and Venereal Diseases"]
@@ -29,14 +29,14 @@ define "$Conditions Indicating Sexual Activity":
     union ["Condition": "Syphilis"]
     union ["Condition": "Complications of Pregnancy, Childbirth and the Puerperium"]
 
-define "$Laboratory Tests Indicating Sexual Activity":
+define "Laboratory Tests Indicating Sexual Activity":
     ["DiagnosticOrder": "Pregnancy Test"]
     union ["DiagnosticOrder": "Pap Test"]
     union ["DiagnosticOrder": "Lab Tests During Pregnancy"]
 	union ["DiagnosticOrder": "Lab Tests for Sexually Transmitted Infections"]
 
-define "$Tests Performed For Chlamydia":
+define "Tests Performed For Chlamydia":
 	["DiagnosticReport": "Chlamydia Screening"]
 
-define "$Results Present For Chlamydia Screening":
+define "Results Present For Chlamydia Screening":
     ["DiagnosticReport": "Chlamydia Screening"] R where R."result" is not null

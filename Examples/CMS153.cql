@@ -73,28 +73,28 @@ context Patient
 *  Stratum2 captures 20-23 y.o.'s at start of MeasurementPeriod
 *  who turn 21-24 during MeasurementPeriod.
 */
-define "$InAgeStratum1":
+define "InAgeStratum1":
         AgeInYearsAt(start of MeasurementPeriod) >= 16
     and AgeInYearsAt(start of MeasurementPeriod) < 20
 
-define "$InAgeStratum2":
+define "InAgeStratum2":
         AgeInYearsAt(start of MeasurementPeriod) >= 20
     and AgeInYearsAt(start of MeasurementPeriod) < 24
 
-define "$InPopulationAgeGroup":
-        "$InAgeStratum1"
-    or  "$InAgeStratum2"
+define "InPopulationAgeGroup":
+        "InAgeStratum1"
+    or  "InAgeStratum2"
 
 /*
 *  measured population criterion: patient must be female
 */
-define "$IsFemale": 
+define "IsFemale": 
 	gender in "Patient Characteristic Sex: Female"
 
 /*
 *  measured population criterion: patient must have encounter during MeasurementPeriod
 */	
-define "$HasEncounterInMeasurementPeriod": 
+define "HasEncounterInMeasurementPeriod": 
         exists (["Encounter, Performance": "Encounter, Performed: Office Visit"] E where E."performanceTime" during MeasurementPeriod)
     or  exists (["Encounter, Performance": "Encounter, Performed: Face-to-Face Interaction"] E where E."performanceTime" during MeasurementPeriod)
     or  exists (["Encounter, Performance": "Encounter, Performed: Preventive Care Services - Established Office Visit, 18 and Up"] E where E."performanceTime" during MeasurementPeriod)
@@ -107,7 +107,7 @@ define "$HasEncounterInMeasurementPeriod":
 *  measured population criterion: must be sexually active, which is suggested by
 *  conditions/problems/diagnoses either before or during MeasurementPeriod
 */
-define "$HasHadConditionOfSexualActivity":
+define "HasHadConditionOfSexualActivity":
 	    exists (["Condition": "Diagnosis, Active: Other Female Reproductive Conditions"] C where C."effectiveTime" overlaps MeasurementPeriod)
 	or  exists (["Condition": "Diagnosis, Active: Genital Herpes"] C where C."effectiveTime" overlaps MeasurementPeriod)
 	or  exists (["Condition": "Diagnosis, Active: Genococcal Infections and Venereal Diseases"] C where C."effectiveTime" overlaps MeasurementPeriod)
@@ -121,7 +121,7 @@ define "$HasHadConditionOfSexualActivity":
 *  measured population criterion: must be sexually active, which is suggested by
 *  OCP medication use/administration either before or during MeasurementPeriod
 */
-define "$HasHadMedicationForSexualActivity":
+define "HasHadMedicationForSexualActivity":
         exists (["MedicationTreatment, Performance": "Medication, Active: Contraceptive Medications"] M where M."performanceTime" overlaps MeasurementPeriod)
 
 /*
@@ -134,7 +134,7 @@ define "$HasHadMedicationForSexualActivity":
 *  rather than in anticipation of expectedPerformanceTime, although normally there
 *  should be little difference between these attribute values.
 */ 
-define "$HasMedicationForSexualActivity":
+define "HasMedicationForSexualActivity":
         exists (["MedicationTreatment, Order": "Medication, Order: Contraceptive Medications"] M where M."orderedAtTime" during MeasurementPeriod)
 
 /*
@@ -147,7 +147,7 @@ define "$HasMedicationForSexualActivity":
 *  rather than in anticipation of expectedPerformanceTime, although normally there
 *  should be little difference between these attribute values.
 */
-define "$HasLaboratoryTestForSexualActivity":               	
+define "HasLaboratoryTestForSexualActivity":               	
 	    exists (["LaboratoryTest, Order": "Laboratory Test, Order: Pap Test"] L where L."orderedAtTime" during MeasurementPeriod)
 	or  exists (["LaboratoryTest, Order": "Laboratory Test, Order: Lab Tests During Pregnancy"] L where L."orderedAtTime" during MeasurementPeriod)
 	or  exists (["LaboratoryTest, Order": "Laboratory Test, Order: Lab Tests for Sexually Transmitted Infections"] L where L."orderedAtTime" during MeasurementPeriod)
@@ -160,7 +160,7 @@ define "$HasLaboratoryTestForSexualActivity":
 *  on women of childbearing age regardless of sexual activity status,
 *  for safety and medicolegal reasons
 */
-define "$HasPregnancyTestForSexualActivity":
+define "HasPregnancyTestForSexualActivity":
         exists (["LaboratoryTest, Order": "Laboratory Test, Order: Pregnancy Test"] L
                  without ["MedicationTreatment, Order": "Medication, Order: Isotretinoin"] M
                     such that M."orderedAtTime" occurs 7 days or less after L."orderedAtTime"
@@ -180,7 +180,7 @@ define "$HasPregnancyTestForSexualActivity":
 *  should be little difference between these attribute values;
 *  also N.B.: performanceTime is Period
 */
-define "$HasProcedureForSexualActivity":
+define "HasProcedureForSexualActivity":
     exists (["Procedure, Performance": "Procedure, Performed: Delivery Live Births"] P where P."performanceTime" during MeasurementPeriod)
     or  exists (["Procedure, Performance": "Procedure, Performed: Procedures During Pregnancy"] P where P."performanceTime" during MeasurementPeriod)
     or  exists (["Procedure, Performance": "Procedure, Performed: Procedures Involving Contraceptive Devices"] P where P."performanceTime" during MeasurementPeriod)
@@ -191,35 +191,35 @@ define "$HasProcedureForSexualActivity":
 *  which is suggested by specific conditions, medications, laboratory tests, or procedures
 *  either before or during MeasurementPeriod, as above
 */          
-define "$HasEvidenceOfSexualActivity":
-        "$HasHadConditionOfSexualActivity"
-    or  "$HasHadMedicationForSexualActivity"
-    or  "$HasMedicationForSexualActivity"
-    or  "$HasLaboratoryTestForSexualActivity"
-    or  "$HasPregnancyTestForSexualActivity"  //this accommodates denominator exclusion
-    or  "$HasProcedureForSexualActivity"
+define "HasEvidenceOfSexualActivity":
+        "HasHadConditionOfSexualActivity"
+    or  "HasHadMedicationForSexualActivity"
+    or  "HasMedicationForSexualActivity"
+    or  "HasLaboratoryTestForSexualActivity"
+    or  "HasPregnancyTestForSexualActivity"  //this accommodates denominator exclusion
+    or  "HasProcedureForSexualActivity"
 
 /*
 *  Stratum1 Patient Population = 
 *  Women 16 to 20 years of age who are sexually active 
 *  and who had a visit in the measurement period;
 */
-define "$InStratum1Denominator":
-        "$IsFemale"
-    and "$InAgeStratum1"
-    and "$HasEncounterInMeasurementPeriod"
-    and "$HasEvidenceOfSexualActivity"
+define "InStratum1Denominator":
+        "IsFemale"
+    and "InAgeStratum1"
+    and "HasEncounterInMeasurementPeriod"
+    and "HasEvidenceOfSexualActivity"
 
 /*
 *  Stratum2 Patient Population = 
 *  Women 21 to 24 years of age who are sexually active 
 *  and who had a visit in the measurement period
 */
-define "$InStratum2Denominator":
-        "$IsFemale"
-    and "$InAgeStratum2"
-    and "$HasEncounterInMeasurementPeriod"
-    and "$HasEvidenceOfSexualActivity"
+define "InStratum2Denominator":
+        "IsFemale"
+    and "InAgeStratum2"
+    and "HasEncounterInMeasurementPeriod"
+    and "HasEvidenceOfSexualActivity"
 
 /*
 *  N.B.: Initial Patient Population for measure reporting = 
@@ -232,7 +232,7 @@ define "$InStratum2Denominator":
 *  for numerator criteria: 
 *  identify patients with at least one resulted chlamydia test during the measurement period;
 */    
-define "$HasNumeratorCriteria":
+define "HasNumeratorCriteria":
         exists (["SimpleObservationOccurence": "Laboratory Test, Result: Chlamydia Screening"] L
                  where L."observedAtTime" during MeasurementPeriod
                     and L."value" is not null)
@@ -242,32 +242,32 @@ define "$HasNumeratorCriteria":
 *  with at least one chlamydia test during the measurement period;
 *  identify for each strata and use later for measure population
 */         
-define "$InStratum1Numerator":
-        "$InStratum1Denominator"
-	and "$HasNumeratorCriteria"
+define "InStratum1Numerator":
+        "InStratum1Denominator"
+	and "HasNumeratorCriteria"
 	
-define "$InStratum2Numerator":
-        "$InStratum2Denominator"
-    and "$HasNumeratorCriteria"
+define "InStratum2Numerator":
+        "InStratum2Denominator"
+    and "HasNumeratorCriteria"
 
 context POPULATION
 
 /*
 *  calculate measure denominators and numerators
 */
-define "$Stratum1Denominator": Count(Patient P where "$InStratum1Denominator")
-define "$Stratum1Numerator": Count(Patient P where "$InStratum1Numerator")
+define "Stratum1Denominator": Count(Patient P where "InStratum1Denominator")
+define "Stratum1Numerator": Count(Patient P where "InStratum1Numerator")
 
-define "$Stratum2Denominator": Count(Patient P where "$InStratum2Denominator")
-define "$Stratum2Numerator": Count(Patient P where "$InStratum2Numerator")
+define "Stratum2Denominator": Count(Patient P where "InStratum2Denominator")
+define "Stratum2Numerator": Count(Patient P where "InStratum2Numerator")
 
-define "$MeasureDenominator": "$Stratum1Denominator" + "$Stratum2Denominator"
-define "$MeasureNumerator": "$Stratum1Numerator"   + "$Stratum2Numerator"
+define "MeasureDenominator": "Stratum1Denominator" + "Stratum2Denominator"
+define "MeasureNumerator": "Stratum1Numerator"   + "Stratum2Numerator"
 
 /*
 *  calculate measure scores
 */
-define "$Stratum1Score": Round( ("$Stratum1Numerator" / "$Stratum1Denominator") * 100 )
-define "$Stratum2Score": Round( ("$Stratum2Numerator" / "$Stratum2Denominator") * 100 )
-define "$MeasureScore": Round( ("$MeasureNumerator"  / "$MeasureDenominator")  * 100 )
+define "Stratum1Score": Round( ("Stratum1Numerator" / "Stratum1Denominator") * 100 )
+define "Stratum2Score": Round( ("Stratum2Numerator" / "Stratum2Denominator") * 100 )
+define "MeasureScore": Round( ("MeasureNumerator"  / "MeasureDenominator")  * 100 )
 

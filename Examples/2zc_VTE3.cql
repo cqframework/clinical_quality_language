@@ -40,55 +40,55 @@ parameter Measurement Period default Interval[@2014-01-01, @2015-01-01)
 
 context Patient
 
-define "$Encounters": ["Encounter": "Inpatient"] E where E."period" during Measurement Period
-define "$Warfarin Therapy": ["MedicationAdministration": "Warfarin"]
-define "$Parenteral Therapy": ["MedicationAdministration": "Parenteral Anticoagulation"]
+define "Encounters": ["Encounter": "Inpatient"] E where E."period" during Measurement Period
+define "Warfarin Therapy": ["MedicationAdministration": "Warfarin"]
+define "Parenteral Therapy": ["MedicationAdministration": "Parenteral Anticoagulation"]
 
-define "$Encounters with Warfarin and Parenteral Therapies":
-    "$Encounters" E
-        with "$Warfarin Therapy" W such that W."whenGiven" starts during E."period"
-        with "$Parenteral Therapy" P such that P."whenGiven" starts during E."period"
+define "Encounters with Warfarin and Parenteral Therapies":
+    "Encounters" E
+        with "Warfarin Therapy" W such that W."whenGiven" starts during E."period"
+        with "Parenteral Therapy" P such that P."whenGiven" starts during E."period"
 
-define "$Encounters with overlapping Warfarin and Parenteral Therapies":
-    from "$Encounters" E,
-        "$Warfarin Therapy" W,
-        "$Parenteral Therapy" P
+define "Encounters with overlapping Warfarin and Parenteral Therapies":
+    from "Encounters" E,
+        "Warfarin Therapy" W,
+        "Parenteral Therapy" P
     where W."whenGiven" starts during E."period"
         and P."whenGiven" starts during E."period"
         and duration in days of (W."whenGiven" intersect P."whenGiven") >= 5
 
-define "$Encounters with appropriate overlap therapy":
+define "Encounters with appropriate overlap therapy":
     from
-        "$Encounters" E,
-        "$Warfarin Therapy" W,
-        "$Parenteral Therapy" P
+        "Encounters" E,
+        "Warfarin Therapy" W,
+        "Parenteral Therapy" P
     define
-        "$overlapDuration": duration in days of (W."performanceTime" intersect P."performanceTime"),
-        "$endingINRResult":
+        "overlapDuration": duration in days of (W."performanceTime" intersect P."performanceTime"),
+        "endingINRResult":
             Last(["ObservationResult": "INR Value"] I where I."observedAtTime" during P."performanceTime" sort by I."observedAtTime")
-    where "$overlapDuration" >= 5 and "$endingINRResult" >= 2
-        or "$overlapDuration" >= 5 and "$endingINRResult" < 2 and P."performanceTime" overlaps after E."effectiveTime"
-        or "$overlapDuration" < 5 and P."performanceTime" overlaps after E."effectiveTime"
+    where "overlapDuration" >= 5 and "endingINRResult" >= 2
+        or "overlapDuration" >= 5 and "endingINRResult" < 2 and P."performanceTime" overlaps after E."effectiveTime"
+        or "overlapDuration" < 5 and P."performanceTime" overlaps after E."effectiveTime"
     return E
 
-define "$Patient has no allergy or intolerance to Penicillin":
+define "Patient has no allergy or intolerance to Penicillin":
     not exists (["AllergyOrIntolerance": "Penicillin"])
 
-define "$18 or over":
+define "18 or over":
     AgeInYearsAt(start of Measurement Period) >= 18
 
-define "$Comfort Measures Only":
+define "Comfort Measures Only":
     exists (["Documentation": "Comfort Measures Only Valueset"] Doc where Doc."documentedOn" during Measurement Period)
 
 //NOTE: I don't think "Encounter, Performed" is a QUICK datatype, but I'm not certain.
 
-define "$VTE Diagnosis":
+define "VTE Diagnosis":
     exists (["Condition": "VTE Diagnosis Valueset"] overlaps after ["Encounter, Performed": "Inpatient Encounter Valueset"])
 
-define "$Denominator":
-    "$18 or over"
-        and "$VTE Diagnosis"
-        and "$Warfarin Medication"
+define "Denominator":
+    "18 or over"
+        and "VTE Diagnosis"
+        and "Warfarin Medication"
         // ...
 
 // TODO: Numerator

@@ -21,11 +21,11 @@ parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), D
 
 context Patient
 
-define "$InDemographic":
+define "InDemographic":
 	AgeInYearsAt(start of MeasurementPeriod) >= 16 and AgeInYearsAt(start of MeasurementPeriod) < 24
 		and "Patient"."gender" in "Female Administrative Sex"
 
-define "$SexuallyActive":
+define "SexuallyActive":
 	exists (["Condition": "Other Female Reproductive Conditions"] C where Interval[C."onsetDateTime", C."abatementDate"] overlaps MeasurementPeriod)
 		or exists (["Condition": "Genital Herpes"] C where Interval[C."onsetDateTime", C."abatementDate"] overlaps MeasurementPeriod)
 		or exists (["Condition": "Genococcal Infections and Venereal Diseases"] C where Interval[C."onsetDateTime", C."abatementDate"] overlaps MeasurementPeriod)
@@ -39,23 +39,23 @@ define "$SexuallyActive":
 		or exists (["DiagnosticOrder": "Lab Tests During Pregnancy"] O where Last(O."event" E where E."status" = 'completed')."dateTime" during MeasurementPeriod)
 		or exists (["DiagnosticOrder": "Lab Tests for Sexually Transmitted Infections"] O where Last(O."event" E where E."status" = 'completed')."dateTime" during MeasurementPeriod)
 
-define "$InInitialPopulation":
-	"$InDemographic" and "$SexuallyActive"
+define "InInitialPopulation":
+	"InDemographic" and "SexuallyActive"
 
-define "$InDenominator":
+define "InDenominator":
 	true
 
-define "$InDenominator":
-	"$InInitialPopulation"
+define "InDenominator":
+	"InInitialPopulation"
 
-define "$InNumerator":
+define "InNumerator":
 	exists (["DiagnosticReport": "Chlamydia Screening"] R where R."issued" during MeasurementPeriod and R."result" is not null)
 
-define "$InNumerator":
-	"$InDenominator" and exists (["DiagnosticReport": "Chlamydia Screening"] R where R."diagnosticDateTime" during MeasurementPeriod and R."result" is not null)
+define "InNumerator":
+	"InDenominator" and exists (["DiagnosticReport": "Chlamydia Screening"] R where R."diagnosticDateTime" during MeasurementPeriod and R."result" is not null)
 
 context Population
 
-define "$MeasureScore": (Count(Patient P where "$InInitialPopulation" and "$InDenominator" and "$InNumerator") / Count("Patient" P where "$InInitialPopulation" and "$InDenominator")) * 100
+define "MeasureScore": (Count(Patient P where "InInitialPopulation" and "InDenominator" and "InNumerator") / Count("Patient" P where "InInitialPopulation" and "InDenominator")) * 100
 
-define "$MeasureScore": (Count(Patient P where "$InNumerator") / Count(Patient P where "$InDenominator")) * 100
+define "MeasureScore": (Count(Patient P where "InNumerator") / Count(Patient P where "InDenominator")) * 100

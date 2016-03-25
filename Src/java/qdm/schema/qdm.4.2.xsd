@@ -353,9 +353,9 @@
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDosage" type="CodeableConcept"
+					<xs:element name="radiationDosage" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDuration" type="CodeableConcept"
+					<xs:element name="radiationDuration" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -385,9 +385,9 @@
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="reaction" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDosage" type="CodeableConcept"
+					<xs:element name="radiationDosage" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDuration" type="CodeableConcept"
+					<xs:element name="radiationDuration" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -433,9 +433,9 @@
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDosage" type="CodeableConcept"
+					<xs:element name="radiationDosage" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDuration" type="CodeableConcept"
+					<xs:element name="radiationDuration" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="method" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -468,9 +468,9 @@
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="status" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDosage" type="CodeableConcept"
+					<xs:element name="radiationDosage" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDuration" type="CodeableConcept"
+					<xs:element name="radiationDuration" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="method" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -503,11 +503,9 @@
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="reason" type="CodeableConcept"
+					<xs:element name="radiationDosage" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDosage" type="CodeableConcept"
-						maxOccurs="1" minOccurs="0" />
-					<xs:element name="radiationDuration" type="CodeableConcept"
+					<xs:element name="radiationDuration" type="Quantity"
 						maxOccurs="1" minOccurs="0" />
 					<xs:element name="method" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -617,8 +615,8 @@
 						type="xs:dateTime" minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="diagnosis" type="Diagnosis" minOccurs="0" />
-					<xs:element name="principalDiagnosis" type="Diagnosis"
+					<xs:element name="diagnosis" type="CodeableConcept" minOccurs="0" />
+					<xs:element name="principalDiagnosis" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
@@ -1040,8 +1038,6 @@
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="laboratoryTestPerformed" type="LaboratoryTestPerformed"
-						minOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1068,8 +1064,6 @@
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="laboratoryTestPerformed" type="LaboratoryTestPerformed"
-						minOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1132,9 +1126,9 @@
 						minOccurs="0" />
 					<xs:element name="reason" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="referenceRangeHigh" type="CodeableConcept"
+					<xs:element name="referenceRangeHigh" type="Quantity"
 						minOccurs="0" />
-					<xs:element name="referenceRangeLow" type="CodeableConcept"
+					<xs:element name="referenceRangeLow" type="Quantity"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1310,8 +1304,6 @@
 					<xs:element name="frequency" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="route" type="CodeableConcept"
-						minOccurs="0" />
-					<xs:element name="reason" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="cumulativeMedicationDuration" type="Quantity"
 						minOccurs="0" />
@@ -1704,8 +1696,6 @@
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="procedurePerformed" type="ProcedurePerformed"
-						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1732,8 +1722,6 @@
 					<xs:element name="reaction" type="CodeableConcept"
 						minOccurs="0" />
 					<xs:element name="ordinality" type="CodeableConcept"
-						minOccurs="0" />
-					<xs:element name="procedurePerformed" type="ProcedurePerformed"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1772,7 +1760,7 @@
 						minOccurs="0" />
 					<xs:element name="ordinality" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="radiationDuration" type="CodeableConcept"
+					<xs:element name="radiationDuration" type="Quantity"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -1811,9 +1799,9 @@
 						minOccurs="0" />
 					<xs:element name="ordinality" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="radiationDuration" type="CodeableConcept"
+					<xs:element name="radiationDuration" type="Quantity"
 						minOccurs="0" />
-					<xs:element name="radiationDosage" type="CodeableConcept"
+					<xs:element name="radiationDosage" type="Quantity"
 						minOccurs="0" />
 					<xs:element name="incisionDatetime" type="xs:dateTime"
 						minOccurs="0" />
@@ -1909,8 +1897,6 @@
 						minOccurs="0" />
 					<xs:element name="route" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="reason" type="CodeableConcept"
-						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1986,8 +1972,6 @@
 					<xs:element name="stopDatetime" type="xs:dateTime"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="reaction" type="CodeableConcept"
-						minOccurs="0" />
-					<xs:element name="frequency" type="CodeableConcept"
 						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
@@ -2122,8 +2106,6 @@
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="reason" type="CodeableConcept"
-						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -2150,8 +2132,6 @@
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="CodeableConcept"
 						maxOccurs="1" minOccurs="0" />
-					<xs:element name="reason" type="CodeableConcept"
-						minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

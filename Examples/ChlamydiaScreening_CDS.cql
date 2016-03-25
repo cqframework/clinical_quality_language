@@ -22,10 +22,10 @@ valueset "Reason for not performing Chlamydia Screening": 'TBD' // Not used in t
 
 context Patient
 
-define "$InDemographic":
+define "InDemographic":
 	AgeInYears() >= 16 and AgeInYears() < 24 and "Patient"."gender" in "Female Administrative Sex"
 
-define "$SexuallyActive":
+define "SexuallyActive":
 	exists (["Condition": "Other Female Reproductive Conditions"])
 	or exists (["Condition": "Genital Herpes"])
 	or exists (["Condition": "Genococcal Infections and Venereal Diseases"])
@@ -39,16 +39,16 @@ define "$SexuallyActive":
 	or exists (["DiagnosticOrder": "Lab Tests During Pregnancy"])
 	or exists (["DiagnosticOrder": "Lab Tests for Sexually Transmitted Infections"])
 
-define "$NoScreening":
+define "NoScreening":
   not exists (["DiagnosticReport": "Chlamydia Screening"] R where R."issued" during Interval[Today() - 1 years, Today()] and R."result" is not null)
   and not exists (["ProcedureRequest": "Chlamydia Screening"] P where P."orderedOn" same day or after Today())
 	and not exists (["Observation": "Reason for not performing Chlamydia Screening"])
 
-define "$NeedScreening": "$InDemographic" and "$SexuallyActive" and "$NoScreening"
+define "NeedScreening": "InDemographic" and "SexuallyActive" and "NoScreening"
 
 //The following previously read "ProcedureRequest" where it currently reads "Tuple"
 
-define "$ChlamydiaScreeningRequest": Tuple {
+define "ChlamydiaScreeningRequest": Tuple {
   type: Code '442487003' from "SNOMED" display 'Screening for Chlamydia trachomatis (procedure)',
   status: 'proposed'
   // values for other elements of the request...

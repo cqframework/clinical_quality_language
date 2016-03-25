@@ -17,10 +17,10 @@ parameter MeasurementPeriod Interval<DateTime>
 
 context Patient
 
-define "$InDemographic":
+define "InDemographic":
     AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
-define "$EncounterData":
+define "EncounterData":
     from
         ["EncounterPerformed": "Ambulatory/ED Visit"] E,
         (["Diagnosis": "Acute Pharyngitis"] union ["Diagnosis": "Acute Tonsillitis"]) P,
@@ -43,20 +43,20 @@ define "$EncounterData":
             and T."startDatetime" in Interval[E."startDatetime" - 3 days, E."stopDatetime" + 3 days]
     }
 
-define "$IPPCount": Count (
-    "$EncounterData" E return E.Encounter
+define "IPPCount": Count (
+    "EncounterData" E return E.Encounter
 )
 
-define "$DenominatorCount": "$IPPCount"
+define "DenominatorCount": "IPPCount"
 
-define "$DenominatorExclusionsCount": Count (
-    "$EncounterData" E
+define "DenominatorExclusionsCount": Count (
+    "EncounterData" E
         where E.PriorAntibiotics
         return E.Encounter
 )
 
-define "$NumeratorCount": Count (
-    "$EncounterData" E
+define "NumeratorCount": Count (
+    "EncounterData" E
         where E.StrepTest
             and (not E.PriorAntibiotics or E.PriorAntibiotics is null)
         return E.Encounter

@@ -11,7 +11,7 @@ parameter Measurement Period default Interval[@2014-01-01T00:00:00.0, @2015-01-0
 
 // Identifiers can include spaces and punctuation to make logic more readable
 // Because the result is a set, rather than a criteria definition, the notion of occurrencing is not required
-define "$Long-Term Residential Facility Encounters":
+define "Long-Term Residential Facility Encounters":
     ["EncounterPerformed": "Care Services in Long-Term Residential Facility"] E
         // By always specifying the attribute involved, filtering is explicit, rather than implicit in the model
         with ["Diagnosis": "Heart Failure"] D
@@ -19,7 +19,7 @@ define "$Long-Term Residential Facility Encounters":
         where Interval[E."startDatetime", E."stopDatetime"] during Measurement Period
           and E."negationRationale" is not null
 
-define "$Relevant Encounters":
-    "$Long-Term Residential Facility Encounters"
+define "Relevant Encounters":
+    "Long-Term Residential Facility Encounters"
 //        union "..."
 //        union "..."
