@@ -8,6 +8,7 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.ObjectFactory;
 
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -22,6 +23,7 @@ public class Main {
         OptionParser parser = new OptionParser();
         OptionSpec<File> schemaOpt = parser.accepts("schema").withRequiredArg().ofType(File.class).required();
         OptionSpec<String> modelOpt = parser.accepts("model").withRequiredArg().ofType(String.class);
+        OptionSpec<File> configOpt = parser.accepts("config").withOptionalArg().ofType(File.class);
         OptionSpec<File> outputOpt = parser.accepts("output").withRequiredArg().ofType(File.class);
         OptionSpec<String> normalizePrefixOpt = parser.accepts("normalize-prefix").withRequiredArg().ofType(String.class);
         OptionSpec<ModelImporterOptions.SimpleTypeRestrictionPolicy> stRestrictionsOpt =
@@ -59,7 +61,13 @@ public class Main {
             importerOptions.setNormalizePrefix(normalizePrefixOpt.value(options));
         }
 
-        ModelInfo modelInfo = ModelImporter.fromXsd(schema, importerOptions);
+        ModelInfo config = null;
+        if (configOpt != null) {
+            File configFile = configOpt.value(options);
+            config = JAXB.unmarshal(configFile, ModelInfo.class);
+        }
+
+        ModelInfo modelInfo = ModelImporter.fromXsd(schema, importerOptions, config);
 
         JAXBContext jc = JAXBContext.newInstance(ModelInfo.class);
         Marshaller marshaller = jc.createMarshaller();

@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="CMS55" version="1"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
-      <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
       <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
    </usings>
    <parameters>
       <def name="MeasurementPeriod" accessLevel="Public">
          <default lowClosed="true" highClosed="false" xsi:type="Interval">
             <low xsi:type="DateTime">
-               <year valueType="Integer" value="2014" xsi:type="Literal"/>
-               <month valueType="Integer" value="1" xsi:type="Literal"/>
-               <day valueType="Integer" value="1" xsi:type="Literal"/>
-               <hour valueType="Integer" value="0" xsi:type="Literal"/>
-               <minute valueType="Integer" value="0" xsi:type="Literal"/>
-               <second valueType="Integer" value="0" xsi:type="Literal"/>
-               <millisecond valueType="Integer" value="0" xsi:type="Literal"/>
+               <year valueType="t:Integer" value="2014" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
             </low>
             <high xsi:type="DateTime">
-               <year valueType="Integer" value="2015" xsi:type="Literal"/>
-               <month valueType="Integer" value="1" xsi:type="Literal"/>
-               <day valueType="Integer" value="1" xsi:type="Literal"/>
-               <hour valueType="Integer" value="0" xsi:type="Literal"/>
-               <minute valueType="Integer" value="0" xsi:type="Literal"/>
-               <second valueType="Integer" value="0" xsi:type="Literal"/>
-               <millisecond valueType="Integer" value="0" xsi:type="Literal"/>
+               <year valueType="t:Integer" value="2015" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
             </high>
          </default>
       </def>
@@ -80,8 +80,8 @@
                      </operand>
                   </operand>
                   <operand lowClosed="false" highClosed="true" xsi:type="Interval">
-                     <low valueType="Integer" value="0" xsi:type="Literal"/>
-                     <high valueType="Integer" value="1" xsi:type="Literal"/>
+                     <low valueType="t:Integer" value="0" xsi:type="Literal"/>
+                     <high valueType="t:Integer" value="1" xsi:type="Literal"/>
                   </operand>
                </suchThat>
             </relationship>
@@ -121,8 +121,8 @@
          </expression>
       </def>
       <def name="MeasureScore" context="Population" accessLevel="Public">
-         <expression name="Median" xsi:type="FunctionRef">
-            <operand xsi:type="Query">
+         <expression xsi:type="Median">
+            <source xsi:type="Query">
                <source alias="X">
                   <expression name="MeasureObservation" xsi:type="ExpressionRef"/>
                </source>
@@ -131,7 +131,7 @@
                      <operand name="X" xsi:type="AliasRef"/>
                   </expression>
                </return>
-            </operand>
+            </source>
          </expression>
       </def>
    </statements>

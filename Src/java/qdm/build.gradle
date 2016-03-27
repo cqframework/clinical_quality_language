@@ -7,5 +7,8 @@ generateSources{
         ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/schema/qdm.xsd") {
             arg(line: xjc.args)
         }
+        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/schema/qdm.4.2.xsd") {
+            arg(line: xjc.args)
+        }
     }
 }

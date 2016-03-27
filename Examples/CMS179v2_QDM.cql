@@ -1,60 +1,76 @@
-library CMS179 version '2'
+library CMS179_QDM version '2'
 
 // Warfarin time in therapeutic range
 
-using QUICK
+using QDM // version '4.2'
 
-valueset "Flutter Diagnosis": '2.16.840.1.113883.3.117.1.7.1.202'
-valueset "Warfarin Medication": '2.16.840.1.113883.3.117.1.7.1.232'
+valueset "Atrial Fibrillation/Flutter": '2.16.840.1.113883.3.117.1.7.1.202'
+valueset "Warfarin": '2.16.840.1.113883.3.117.1.7.1.232'
 valueset "Face-to-face Encounter": '2.16.840.1.113883.3.464.1003.101.12.1048'
 valueset "Office Visit": '2.16.840.1.113883.3.464.1003.101.12.1001'
 valueset "Valvular Heart Disease": '2.16.840.1.113883.3.464.1003.104.12.1017'
-valueset "INR Lab Result": '2.16.840.1.113883.3.117.1.7.1.213'
+valueset "INR": '2.16.840.1.113883.3.117.1.7.1.213'
+valueset "birth date": '2.16.840.1.113883.3.560.100.4'
+valueset "Computed Value INR percent TTR": '2.16.840.1.113883.3.464.1003.104.12.1018'
 
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 context Patient
 
-define "FlutterDiagnoses": ["Condition": "Flutter Diagnosis"]
-define "WarfarinMedications": ["MedicationAdministration": "Warfarin Medication"]
-define "FaceToFaceEncounters": ["Encounter": "Face-to-face Encounter"]
-define "OfficeVisitEncounters": ["Encounter": "Office Visit"]
-define "ValvularHeartDiseaseDiagnoses": ["Condition": "Valvular Heart Disease"]
-define "INRLabResults": ["Observation": "INR Lab Result"]
+define "FlutterDiagnoses":["Diagnosis": "Atrial Fibrillation/Flutter"]
+define "WarfarinMedications": ["MedicationActive": "Warfarin"]
+define "FaceToFaceEncounters": ["EncounterPerformed": "Face-to-Face Interaction"] E where E."negationRationale" is not null
+define "OfficeVisitEncounters": ["EncounterPerformed": "Office Visit"] E where E."negationRationale" is not null
+define "ValvularHeartDiseaseDiagnoses": ["Diagnosis": "Valvular Heart Disease"]
+define "INRLabResults": ["LaboratoryTestPerformed": "INR"] L where L."negationRationale" is not null
+define "BirthDate": ["PatientCharacteristicBirthdate": "birth date"]
+define "ComputedValueINRPercentTTR": ["LaboratoryTestPerformed": "Computed Value INR percent TTR"] L where L."negationRationale" is not null
 
 define "InDemographic":
 	AgeInYearsAt(start of MeasurementPeriod) >= 18
 
 define "InpatientEncounters": "FaceToFaceEncounters" union "OfficeVisitEncounters"
-define "ActiveFlutterDiagnoses": "FlutterDiagnoses" F where Interval[F."onsetDateTime", F."abatementDate"] overlaps before MeasurementPeriod
-define "ActiveValvularHeartDiseaseDiagnoses": "ValvularHeartDiseaseDiagnoses" D where Interval[D."onsetDateTime", D."abatementDate"] overlaps before MeasurementPeriod
+
+define "ActiveFlutterDiagnoses":
+	"FlutterDiagnoses" F where Interval[F."onsetDatetime", F."abatementDatetime"] overlaps before MeasurementPeriod
+define "ActiveValvularHeartDiseaseDiagnoses":
+	"ValvularHeartDiseaseDiagnoses" D where Interval[D."onsetDatetime", D."abatementDatetime"] overlaps before MeasurementPeriod
 
 define "LookbackInterval": Interval[start of MeasurementPeriod - 200 days, start of MeasurementPeriod]
 
 define "ActiveWarfarinDuringLookback":
-	"WarfarinMedications" M where M."effectiveTimePeriod" overlaps "LookbackInterval"
+	// QUICK: "WarfarinMedications" M where M."effectiveTimePeriod" overlaps "LookbackInterval"
+	"WarfarinMedications" M where Interval[M."startDatetime", M."stopDatetime"] overlaps "LookbackInterval"
 
 define "WarfarinUsageIntervals":
 	collapse
 		"ActiveWarfarinDuringLookback" M
-			return M."effectiveTimePeriod" intersect "LookbackInterval"
+			// QUICK: return M."effectiveTimePeriod" intersect "LookbackInterval"
+			return Interval[M."startDatetime", M."stopDatetime"] intersect "LookbackInterval"
 
 define "WarfarinUsage": Sum("WarfarinUsageIntervals" I return duration in days of I)
 
 define "INROutpatientLabResult":
 	"INRLabResults" R
-		where not exists ("InpatientEncounters" E where duration in hours of E."period" > 23 and R."appliesDateTime" occurs during E."period")
+		// QUICK: where not exists ("InpatientEncounters" E where duration in hours of Interval[E."admissionDatetime", E."dischargeDatetime"] > 23 and R."appliesDateTime" occurs during Interval[E."admissionDatetime", E."dischargeDatetime"])
+		where not exists ("InpatientEncounters" E where duration in hours of Interval[E."admissionDatetime", E."dischargeDatetime"] > 23 and Interval[R."startDatetime", R."stopDatetime"] occurs during Interval[E."admissionDatetime", E."dischargeDatetime"])
 
 define "INRResultsByDay":
 	"INROutpatientLabResult" L
-		where L."valueQuantity"."value" > 0.8 // TODO: Units?
+		// QUICK: L."valueQuantity"."value" > 0.8
+		where L."result" > 0.8 
 		return
 			Tuple
 			{
-				resultDate: date from L."appliesDateTime",
-				result: if L."valueQuantity"."value" > 10.0 then 10.0 else L."valueQuantity"."value", // TODO: Units?
-				distanceFromMidpoint: Abs(2.5 - L."valueQuantity"."value") // TODO: Units?
+				// QUICK: resultDate: date from L."appliesDateTime"
+				resultDate: date from L."startDatetime",
+				// QUICK: result: if L."valueQuantity"."value" > 10.0 then 10.0 else L."valueQuantity"."value"
+				result: if L."result" > 10.0 then 10.0 else L."result", // TODO: Units?
+				// QUICK: distanceFromMidpoint: Abs(2.5 - L."valueQuantity"."value")
+				distanceFromMidpoint: Abs(2.5 - L."result") // TODO: Units?
 			}
+
+//NOTE: The above Tuple defines an idTag 'result'. Not to be confused with the QDM attribute "result".
 
 define "INRResultsPerDay":
 	(

@@ -1,0 +1,1839 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- 
+           ******************* 
+           QDM Version Used: QDM 4.1.2 
+           *******************  
+        --><QualityMeasureDocument xmlns="urn:hl7-org:v3" xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+         
+      <!--
+            **************************************************************
+            Measure Details Section
+            **************************************************************
+        -->
+         
+      <typeId extension="POQM_HD000001UV02" root="2.16.840.1.113883.1.3"/>
+   <templateId>
+      <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.1.1"/>
+   </templateId>
+   <id root="40280381-4de7-db4d-014d-e8c552e9025f"/>
+   <code code="57024-2" codeSystem="2.16.840.1.113883.6.1">
+      <displayName value="Health Quality Measure Document"/>
+   </code>
+   <title value="Exclusive Breast Milk Feeding"/>
+   <text
+         value="PC-05 Exclusive breast milk feeding during the newborn's entire hospitalization.&#xD;&#xA;&#xD;&#xA;PC-05a Exclusive breast milk feeding during the newborn's entire hospitalization considering mother's choice."/>
+   <statusCode code="COMPLETED"/>
+   <setId root="7d374c6a-3821-4333-a1bc-4531005d77b8"/>
+   <versionNumber value="4.1.000"/>
+   <author>
+      <responsibleParty classCode="ASSIGNED">
+         <representedResponsibleOrganization classCode="ORG" determinerCode="INSTANCE">
+            <id>
+               <item root="1.3.6.1.4.1.33895"/>
+            </id>
+            <name>
+               <item>
+                  <part value="The Joint Commission"/>
+               </item>
+            </name>
+         </representedResponsibleOrganization>
+      </responsibleParty>
+   </author>
+   <custodian>
+      <responsibleParty classCode="ASSIGNED">
+         <representedResponsibleOrganization classCode="ORG" determinerCode="INSTANCE">
+            <id>
+               <item root="1.3.6.1.4.1.33895"/>
+            </id>
+            <name>
+               <item>
+                  <part value="The Joint Commission"/>
+               </item>
+            </name>
+         </representedResponsibleOrganization>
+      </responsibleParty>
+   </custodian>
+   <verifier>
+      <responsibleParty classCode="ASSIGNED">
+         <representedResponsibleOrganization classCode="ORG" determinerCode="INSTANCE">
+            <id>
+               <item root="2.16.840.1.113883.3.560"/>
+            </id>
+            <name>
+               <item>
+                  <part value="National Quality Forum"/>
+               </item>
+            </name>
+         </representedResponsibleOrganization>
+      </responsibleParty>
+   </verifier>
+   <controlVariable>
+      <measurePeriod>
+         <id extension="measureperiod" root="40280381-3d27-5493-013d-4dc3479c6972"/>
+         <code code="MSRTP" codeSystem="2.16.840.1.113883.3.560">
+            <originalText value="Measurement Period"/>
+         </code>
+         <value xsi:type="PIVL_TS">
+            <phase highClosed="true" lowClosed="true">
+               <low value="20150101"/>
+               <width unit="a" value="1" xsi:type="PQ"/>
+            </phase>
+            <period unit="a" value="1"/>
+         </value>
+      </measurePeriod>
+   </controlVariable>
+   <subjectOf>
+      <measureAttribute>
+         <code nullFlavor="OTH">
+            <originalText value="eMeasure Identifier (Measure Authoring Tool)"/>
+         </code>
+         <value mediaType="text/plain" value="9" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code nullFlavor="OTH">
+            <originalText value="NQF Number"/>
+         </code>
+         <value mediaType="text/plain" value="0480" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="COPY" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Copyright"/>
+         </code>
+         <value mediaType="text/plain"
+                value="LOINC(R) is a registered trademark of the Regenstrief Institute.&#xD;&#xA; &#xD;&#xA;This material contains SNOMED Clinical Terms (R) (SNOMED CT[C]) copyright 2004-2014 International Health Terminology Standards Development Organization. All rights reserved."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="DISC" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Disclaimer"/>
+         </code>
+         <value mediaType="text/plain"
+                value="These performance measures are not clinical guidelines and do not establish a standard of medical care, and have not been tested for all potential applications. The measures and specifications are provided without warranty."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="MSRSCORE" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Measure Scoring"/>
+         </code>
+         <value code="PROPOR" codeSystem="2.16.840.1.113883.1.11.20367" xsi:type="CD">
+            <displayName value="Proportion"/>
+         </value>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="MSRTYPE" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Measure Type"/>
+         </code>
+         <value code="PROCESS" codeSystem="2.16.840.1.113883.1.11.20368" xsi:type="CD">
+            <displayName value="PROCESS"/>
+         </value>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="ITMCNT" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Items to count"/>
+         </code>
+         <value extension="EncounterInpatient_EncounterPerformed"
+                root="ea6be543-6718-4a29-a928-c4acc1b20fca"
+                xsi:type="II"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="STRAT" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Stratification"/>
+         </code>
+         <value mediaType="text/plain" value="None" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="MSRADJ" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Risk Adjustment"/>
+         </code>
+         <value mediaType="text/plain" value="None" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="MSRAGG" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Rate Aggregation"/>
+         </code>
+         <value mediaType="text/plain" value="None" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="RAT" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Rationale"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Exclusive breast milk feeding for the first 6 months of neonatal life has long been the expressed goal of World Health Organization (WHO), Department of Health and Human Services (DHHS), American Academy of Pediatrics (AAP) and American College of Obstetricians and Gynecologists (ACOG). ACOG has recently reiterated its position (ACOG, 2007). A recent Cochrane review substantiates the benefits (Kramer et al., 2002). Much evidence has now focused on the prenatal and intrapartum period as critical for the success of exclusive (or any) BF (Centers for Disease Control and Prevention [CDC], 2007; Petrova et al., 2007; Shealy et al., 2005; Taveras et al., 2004). Exclusive breast milk feeding rate during birth hospital stay has been calculated by the California Department of Public Health for the last several years using newborn genetic disease testing data. Healthy People 2010 and the CDC have also been active in promoting this goal."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="CRS" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Clinical Recommendation Statement"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Exclusive breast milk feeding for the first 6 months of neonatal life can result in numerous long-term health benefits for both mother and newborn and is recommended by a number of national and international organizations. Evidence suggests that the prenatal and intrapartum period is critical for the success of exclusive (or any) breast feeding. Therefore, it is recommended that newborns are fed breast milk only from birth to discharge."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="IDUR" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Improvement Notation"/>
+         </code>
+         <value mediaType="text/plain" value="Improvement noted as an increase in the rate"
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="American Academy of Pediatrics. (2005). Section on Breastfeeding. Policy Statement:&#xD;&#xA;Breastfeeding and the Use of Human Milk. Pediatrics.115:496-506."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="American College of Obstetricians and Gynecologists. (Feb. 2007). Committee on Obstetric Practice and Committee on Health Care for Underserved  Women.Breastfeeding: Maternal and Infant Aspects. ACOG Committee Opinion 361."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="California Department of Public Health. (2006). Genetic Disease Branch. California In-&#xD;&#xA;Hospital Breastfeeding as Indicated on the Newborn Screening Test Form, Statewide, County and Hospital of Occurrence: Available at: http://www.cdph.ca.gov/data/statistics/Pages/BreastfeedingStatistics.aspx."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Centers for Disease Control and Prevention. (Aug 3, 2007). Breastfeeding trends and&#xD;&#xA;updated national health objectives for exclusive breastfeeding--United States birth years 2000-2004. MMWR - Morbidity &amp; Mortality Weekly Report. 56(30):760-3."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Centers for Disease Control and Prevention. (2014). Division of Nutrition, Physical Activity and Obesity. Breastfeeding Report Card. Available at: http://www.cdc.gov/breastfeeding/pdf/2014breastfeedingreportcard.pdf"
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Ip, S., Chung, M., Raman, G., et al. (2007). Breastfeeding and maternal and infant health outcomes in developed countries. Rockville, MD: US Department of Health and Human Services. Available at: http://www.ahrq.gov/downloads/pub/evidence/pdf/brfout/brfout.pdf"
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Kramer, M.S. &amp; Kakuma, R. (2002).Optimal duration of exclusive breastfeeding. [107 refs] Cochrane Database of Systematic Reviews. (1):CD003517."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Petrova, A., Hegyi, T., &amp; Mehta, R. (2007). Maternal race/ethnicity and one-month exclusive breastfeeding in association with the in-hospital feeding modality. Breastfeeding Medicine. 2(2):92-8."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Shealy, K.R., Li, R., Benton-Davis, S., &amp; Grummer-Strawn, L.M. (2005).The CDC guide to breastfeeding interventions. Atlanta, GA: US Department of Health and Human Services, CDC. Available at: http://www.cdc.gov/breastfeeding/pdf/breastfeeding_interventions.pdf."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Taveras, E.M., Li, R., Grummer-Strawn, L., Richardson, M., Marshall, R., Rego, V.H.,&#xD;&#xA;Miroshnik, I., &amp; Lieu, T.A. (2004). Opinions and practices of clinicians associated with&#xD;&#xA;continuation of exclusive breastfeeding. Pediatrics. 113(4):e283-90."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="US Department of Health and Human Services. (2007). Healthy People 2010 Midcourse Review. Washington, DC: US Department of Health and Human Services. Available at: http://www.healthypeople.gov/2010/data/midcourse/?visit=1."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="REF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Reference"/>
+         </code>
+         <value mediaType="text/plain"
+                value="World Health Organization. (1991). Indicators for assessing breastfeeding practices. Geneva, Switzerland: World Health Organization. Available at: http://whqlibdoc.who.int/hq/1991/WHO_CDD_SER_91.14.pdf?ua=1."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="DEF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Definition"/>
+         </code>
+         <value mediaType="text/plain" value="None" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="GUIDE" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Guidance"/>
+         </code>
+         <value mediaType="text/plain"
+                value="A discharge to a designated cancer center or children's hospital should be captured as a discharge to an acute care facility.&#xD;&#xA;&#xD;&#xA;The unit of measurement for this measure is an inpatient episode of care. Each distinct hospitalization should be reported, regardless of whether the same patient is admitted for inpatient care more than once during the measurement period. In addition, the eMeasure logic intends to represent events within or surrounding a single occurrence of an inpatient hospitalization."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="TRANF" codeSystem="2.16.840.1.113883.5.4">
+            <displayName value="Transmission Format"/>
+         </code>
+         <value mediaType="text/plain" value="TBD" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="IPOP" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Initial Population"/>
+         </code>
+         <value mediaType="text/plain"
+                value="Single term newborns born in the hospital who did not have a diagnosis of galactosemia, were not subject to parenteral nutrition, and had a length of stay less than or equal to 120 days."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="DENOM" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Denominator"/>
+         </code>
+         <value mediaType="text/plain"
+                value="PC-05 Single term newborns discharged from the hospital.&#xD;&#xA;PC-05a Single term newborns discharged from the hospital."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="DENEX" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Denominator Exclusions"/>
+         </code>
+         <value mediaType="text/plain"
+                value="PC-05 Newborns who were admitted to the Neonatal Intensive Care Unit (NICU), who were transferred to an acute care facility, or who expired during the hospitalization.&#xD;&#xA;PC-05a Newborns who were admitted to the Neonatal Intensive Care Unit (NICU), who were transferred to an acute care facility, who expired during the hospitalization, or whose mothers chose not to exclusively breast feed."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="NUMER" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Numerator"/>
+         </code>
+         <value mediaType="text/plain"
+                value="PC-05 Newborns who were fed breast milk only since birth.&#xD;&#xA;PC-05a Newborns who were fed breast milk only since birth."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="NUMEX" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Numerator Exclusions"/>
+         </code>
+         <value mediaType="text/plain" value="Not applicable" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="DENEXCEP" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Denominator Exceptions"/>
+         </code>
+         <value mediaType="text/plain" value="None" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="MSRPOPL" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Measure Population"/>
+         </code>
+         <value mediaType="text/plain" value="Not applicable" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="MSRPOPLEX" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Measure Population Exclusions"/>
+         </code>
+         <value mediaType="text/plain" value="Not applicable" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code nullFlavor="OTH">
+            <displayName value="Measure Observations"/>
+         </code>
+         <value mediaType="text/plain" value="Not applicable" xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <subjectOf>
+      <measureAttribute>
+         <code code="SDE" codeSystem="2.16.840.1.113883.5.1063">
+            <displayName value="Supplemental Data Elements"/>
+         </code>
+         <value mediaType="text/plain"
+                value="For every patient evaluated by this measure also identify payer, race, ethnicity and sex."
+                xsi:type="ED"/>
+      </measureAttribute>
+   </subjectOf>
+   <componentOf>
+      <qualityMeasureSet classCode="ACT">
+         <id root="c7961271-5199-416c-a56f-21361b6d16b7"/>
+         <title value="eMeasure Perinatal Care (ePC)"/>
+      </qualityMeasureSet>
+   </componentOf>
+   <!--Data Criteria Section-->
+   <component>
+      <dataCriteriaSection>
+         <templateId>
+            <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.2.2"/>
+         </templateId>
+         <code code="57025-9" codeSystem="2.16.840.1.113883.6.1"/>
+         <title value="Data Criteria Section"/>
+         <text>
+            <xml>
+               <item>
+                  <list>
+                     <item>
+                        <content styleCode="Bold">Data Criteria (QDM Variables)</content>
+                        <list>
+                           <item>
+                              <content styleCode="Bold">$EncounterInpatient =</content>
+                              <list>
+                                 <item>"Encounter, Performed: Encounter Inpatient" satisfies all<list>
+                                       <item>(length of stay &lt;= 120 day(s))</item>
+                                       <item>ends during "Measurement Period"</item>
+                                    </list>
+                                 </item>
+                              </list>
+                           </item>
+                        </list>
+                     </item>
+                     <item>
+                        <content styleCode="Bold">Data Criteria (QDM Data Elements)</content>
+                        <list>
+                           <item>"Communication: From Patient to Provider: Feeding Intention-Breast" using "Feeding Intention-Breast SNOMEDCT Value Set (2.16.840.1.113762.1.4.1045.29)"</item>
+                           <item>"Diagnosis, Active: Galactosemia" using "Galactosemia Grouping Value Set (2.16.840.1.113883.3.117.1.7.1.35)"</item>
+                           <item>"Diagnosis, Active: Single Live Birth" using "Single Live Birth SNOMEDCT Value Set (2.16.840.1.113883.3.117.1.7.1.25)"</item>
+                           <item>"Diagnosis, Active: Single Live Born Newborn Born in Hospital" using "Single Live Born Newborn Born in Hospital Grouping Value Set (2.16.840.1.113883.3.117.1.7.1.26)"</item>
+                           <item>"Encounter, Performed: Encounter Inpatient" using "Encounter Inpatient SNOMEDCT Value Set (2.16.840.1.113883.3.666.5.307)"</item>
+                           <item>"Physical Exam, Performed: Estimated Gestational Age at Birth" using "Estimated Gestational Age at Birth SNOMEDCT Value Set (2.16.840.1.113762.1.4.1045.47)"</item>
+                           <item>"Procedure, Performed: Parenteral Nutrition" using "Parenteral Nutrition Grouping Value Set (2.16.840.1.113883.3.117.1.7.1.38)"</item>
+                           <item>"Substance, Administered: Breast Milk" using "Breast Milk SNOMEDCT Value Set (2.16.840.1.113883.3.117.1.7.1.30)"</item>
+                           <item>"Substance, Administered: Dietary Intake Other than Breast Milk" using "Dietary Intake Other than Breast Milk SNOMEDCT Value Set (2.16.840.1.113883.3.117.1.7.1.27)"</item>
+                           <item>Attribute: "Facility location: Neonatal Intensive Care Unit (NICU)" using "Neonatal Intensive Care Unit (NICU) SNOMEDCT Value Set (2.16.840.1.113883.3.117.1.7.1.75)"</item>
+                           <item>Attribute: "Discharge status: Patient Expired" using "Patient Expired SNOMEDCT Value Set (2.16.840.1.113883.3.117.1.7.1.309)"</item>
+                           <item>Attribute: "Discharge status: Discharge To Acute Care Facility" using "Discharge To Acute Care Facility SNOMEDCT Value Set (2.16.840.1.113883.3.117.1.7.1.87)"</item>
+                        </list>
+                     </item>
+                     <item>
+                        <content styleCode="Bold">Supplemental Data Elements</content>
+                        <list>
+                           <item>"Patient Characteristic Ethnicity: Ethnicity" using "Ethnicity CDCREC Value Set (2.16.840.1.114222.4.11.837)"</item>
+                           <item>"Patient Characteristic Payer: Payer" using "Payer SOP Value Set (2.16.840.1.114222.4.11.3591)"</item>
+                           <item>"Patient Characteristic Race: Race" using "Race CDCREC Value Set (2.16.840.1.114222.4.11.836)"</item>
+                           <item>"Patient Characteristic Sex: ONC Administrative Sex" using "ONC Administrative Sex AdministrativeGender Value Set (2.16.840.1.113762.1.4.1)"</item>
+                        </list>
+                     </item>
+                  </list>
+               </item>
+            </xml>
+         </text>
+         <!--Patient Characteristic Birthdate--><entry typeCode="DRIV">
+            <localVariableName value="Birthdate_PatientCharacteristicBirthdate_4N81t"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.54"/>
+               </templateId>
+               <id extension="Birthdate_PatientCharacteristicBirthdate"
+                   root="5673b74f-85bc-4aa2-8ba2-e31483048080"/>
+               <code code="21112-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                  <displayName value="Birth Date"/>
+               </code>
+               <title value="Patient Characteristic Birthdate"/>
+               <statusCode code="COMPLETED"/>
+            </observationCriteria>
+         </entry>
+         <!--Substance, Administered--><entry typeCode="DRIV">
+            <localVariableName value="BreastMilk_SubstanceAdministered_7tf7U"/>
+            <substanceAdministrationCriteria classCode="SBADM" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.73"/>
+               </templateId>
+               <id extension="BreastMilk_SubstanceAdministered"
+                   root="40280381-3d27-5493-013d-4dc3479c696b"/>
+               <code code="416118004" codeSystem="2.16.840.1.113883.6.96">
+                  <displayName value="Administration"/>
+               </code>
+               <title value="Substance, Administered"/>
+               <statusCode code="COMPLETED"/>
+               <participation typeCode="CSM">
+                  <role classCode="ADMM">
+                     <playingMaterial classCode="MAT" determinerCode="KIND">
+                        <code valueSet="2.16.840.1.113883.3.117.1.7.1.30">
+                           <displayName value="Breast Milk SNOMEDCT value set"/>
+                        </code>
+                     </playingMaterial>
+                  </role>
+               </participation>
+            </substanceAdministrationCriteria>
+         </entry>
+         <!--Substance, Administered--><entry typeCode="DRIV">
+            <localVariableName value="DietaryIntakeOtherthanBreastMilk_SubstanceAdministered_79yaE"/>
+            <substanceAdministrationCriteria classCode="SBADM" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.73"/>
+               </templateId>
+               <id extension="DietaryIntakeOtherthanBreastMilk_SubstanceAdministered"
+                   root="40280381-3d27-5493-013d-4dc3479d698a"/>
+               <code code="416118004" codeSystem="2.16.840.1.113883.6.96">
+                  <displayName value="Administration"/>
+               </code>
+               <title value="Substance, Administered"/>
+               <statusCode code="COMPLETED"/>
+               <participation typeCode="CSM">
+                  <role classCode="ADMM">
+                     <playingMaterial classCode="MAT" determinerCode="KIND">
+                        <code valueSet="2.16.840.1.113883.3.117.1.7.1.27">
+                           <displayName value="Dietary Intake Other than Breast Milk SNOMEDCT value set"/>
+                        </code>
+                     </playingMaterial>
+                  </role>
+               </participation>
+            </substanceAdministrationCriteria>
+         </entry>
+         <!--Encounter, Performed--><entry typeCode="DRIV">
+            <localVariableName value="EncounterInpatient_EncounterPerformed_pzDIW"/>
+            <encounterCriteria classCode="ENC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.5"/>
+               </templateId>
+               <id extension="EncounterInpatient_EncounterPerformed"
+                   root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+               <code valueSet="2.16.840.1.113883.3.666.5.307">
+                  <displayName value="Encounter Inpatient SNOMEDCT Value Set"/>
+               </code>
+               <title value="Encounter, Performed"/>
+               <statusCode code="COMPLETED"/>
+            </encounterCriteria>
+         </entry>
+         <!--Communication: From Patient to Provider--><entry typeCode="DRIV">
+            <localVariableName value="FeedingIntention-Breast_Communication:FromPatienttoProvider_hCGKr"/>
+            <actCriteria classCode="ACT" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.8"/>
+               </templateId>
+               <id extension="FeedingIntention-Breast_Communication:FromPatienttoProvider"
+                   root="79f8e63c-3fa6-47df-a051-fd57e0004a5c"/>
+               <code valueSet="2.16.840.1.113762.1.4.1045.29" xsi:type="CD">
+                  <displayName value="Feeding Intention-Breast SNOMEDCT Value Set"/>
+               </code>
+               <title value="Communication: From Patient to Provider"/>
+               <statusCode code="COMPLETED"/>
+		             <participation typeCode="AUT">
+                  <role classCode="PAT"/>
+               </participation>
+		             <participation typeCode="IRCP">
+                  <role classCode="ASSIGNED">
+                     <code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+                        <displayName value="Medical Practitioner"/>
+                     </code>
+                  </role>
+               </participation>
+	           </actCriteria>
+         </entry>
+         <!--Diagnosis, Active--><entry typeCode="DRIV">
+            <localVariableName value="Galactosemia_DiagnosisActive_sXr9o"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.1"/>
+               </templateId>
+               <id extension="Galactosemia_DiagnosisActive"
+                   root="40280381-3d27-5493-013d-4dc3479c696d"/>
+               <code code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                  <displayName value="Diagnosis"/>
+               </code>
+               <title value="Diagnosis, Active"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.113883.3.117.1.7.1.35" xsi:type="CD">
+                  <displayName value="Galactosemia Grouping Value Set"/>
+               </value>
+		             <outboundRelationship typeCode="REFR">
+                  <observationCriteria classCode="OBS" moodCode="EVN">
+                     <templateId>
+                        <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.94"/>
+                        <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.95"/>
+                     </templateId>
+                     <id extension="D454BB8A-256C-4A0C-9AEE-F41B510C59D5"
+                         root="40280381-3d27-5493-013d-4dc3479c696d"/>
+                     <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                        <displayName value="Status"/>
+                     </code>
+                     <title value="Status Active"/>
+                     <value code="55561003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"
+                            xsi:type="CD">
+                        <displayName value="Active"/>
+                     </value>
+                  </observationCriteria>
+               </outboundRelationship>
+	           </observationCriteria>
+         </entry>
+         <!--Procedure, Performed--><entry typeCode="DRIV">
+            <localVariableName value="ParenteralNutrition_ProcedurePerformed_DzAPQ"/>
+            <procedureCriteria classCode="PROC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.67"/>
+               </templateId>
+               <id extension="ParenteralNutrition_ProcedurePerformed"
+                   root="40280381-3d27-5493-013d-4dc3479c696e"/>
+               <code valueSet="2.16.840.1.113883.3.117.1.7.1.38">
+                  <displayName value="Parenteral Nutrition Grouping Value Set"/>
+               </code>
+               <title value="Procedure, Performed"/>
+               <statusCode code="COMPLETED"/>
+            </procedureCriteria>
+         </entry>
+         <!--Diagnosis, Active--><entry typeCode="DRIV">
+            <localVariableName value="SingleLiveBirth_DiagnosisActive_n87UV"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.1"/>
+               </templateId>
+               <id extension="SingleLiveBirth_DiagnosisActive"
+                   root="40280381-3d27-5493-013d-4dc3479d698d"/>
+               <code code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                  <displayName value="Diagnosis"/>
+               </code>
+               <title value="Diagnosis, Active"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.113883.3.117.1.7.1.25" xsi:type="CD">
+                  <displayName value="Single Live Birth SNOMEDCT Value Set"/>
+               </value>
+		             <outboundRelationship typeCode="REFR">
+                  <observationCriteria classCode="OBS" moodCode="EVN">
+                     <templateId>
+                        <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.94"/>
+                        <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.95"/>
+                     </templateId>
+                     <id extension="1F82313B-D5CF-41D2-A8AB-FB51604D6DDC"
+                         root="40280381-3d27-5493-013d-4dc3479d698d"/>
+                     <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                        <displayName value="Status"/>
+                     </code>
+                     <title value="Status Active"/>
+                     <value code="55561003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"
+                            xsi:type="CD">
+                        <displayName value="Active"/>
+                     </value>
+                  </observationCriteria>
+               </outboundRelationship>
+	           </observationCriteria>
+         </entry>
+         <!--Diagnosis, Active--><entry typeCode="DRIV">
+            <localVariableName value="SingleLiveBornNewbornBorninHospital_DiagnosisActive_RoU6g"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.1"/>
+               </templateId>
+               <id extension="SingleLiveBornNewbornBorninHospital_DiagnosisActive"
+                   root="40280381-3d27-5493-013d-4dc3479c6969"/>
+               <code code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                  <displayName value="Diagnosis"/>
+               </code>
+               <title value="Diagnosis, Active"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.113883.3.117.1.7.1.26" xsi:type="CD">
+                  <displayName value="Single Live Born Newborn Born in Hospital Grouping Value Set"/>
+               </value>
+		             <outboundRelationship typeCode="REFR">
+                  <observationCriteria classCode="OBS" moodCode="EVN">
+                     <templateId>
+                        <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.94"/>
+                        <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.95"/>
+                     </templateId>
+                     <id extension="CEF7128A-B62D-4F2F-9C93-F3699ADDA80A"
+                         root="40280381-3d27-5493-013d-4dc3479c6969"/>
+                     <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                        <displayName value="Status"/>
+                     </code>
+                     <title value="Status Active"/>
+                     <value code="55561003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"
+                            xsi:type="CD">
+                        <displayName value="Active"/>
+                     </value>
+                  </observationCriteria>
+               </outboundRelationship>
+	           </observationCriteria>
+         </entry>
+         <!--Encounter, Performed - discharge status With Value Set--><entry typeCode="DRIV">
+            <localVariableName value="EncounterInpatient_EncounterPerformed_dischargestatus_ValueSet_fE8b3"/>
+            <encounterCriteria classCode="ENC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.5"/>
+               </templateId>
+               <id extension="392a76b0-bfbb-4f0e-81c3-767438586dce"
+                   root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+               <code valueSet="2.16.840.1.113883.3.666.5.307">
+                  <displayName value="Encounter Inpatient SNOMEDCT Value Set"/>
+               </code>
+               <title value="Encounter, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <dischargeDispositionCode valueSet="2.16.840.1.113883.3.117.1.7.1.87">
+                  <displayName value="Discharge To Acute Care Facility SNOMEDCT Value Set"/>
+               </dischargeDispositionCode>
+            </encounterCriteria>
+         </entry>
+         <!--Encounter, Performed - facility location With Value Set--><entry typeCode="DRIV">
+            <localVariableName value="EncounterInpatient_EncounterPerformed_facilitylocation_ValueSet_bRnXM"/>
+            <encounterCriteria classCode="ENC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.5"/>
+               </templateId>
+               <id extension="40b1d15b-7f11-4efe-91ef-0b9ecd87fa90"
+                   root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+               <code valueSet="2.16.840.1.113883.3.666.5.307">
+                  <displayName value="Encounter Inpatient SNOMEDCT Value Set"/>
+               </code>
+               <title value="Encounter, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <participation typeCode="LOC">
+                  <role classCode="SDLOC">
+                     <templateId>
+                        <item root="2.16.840.1.113883.10.20.28.3.92"/>
+                     </templateId>
+                     <id>
+                        <item extension="facilitylocation" root="40b1d15b-7f11-4efe-91ef-0b9ecd87fa90"/>
+                     </id>
+                     <code valueSet="2.16.840.1.113883.3.117.1.7.1.75">
+                        <displayName value="Neonatal Intensive Care Unit (NICU) SNOMEDCT Value Set"/>
+                     </code>
+                  </role>
+               </participation>
+            </encounterCriteria>
+         </entry>
+         <!--Encounter, Performed - discharge status With Value Set--><entry typeCode="DRIV">
+            <localVariableName value="EncounterInpatient_EncounterPerformed_dischargestatus_ValueSet_rl9Cl"/>
+            <encounterCriteria classCode="ENC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.5"/>
+               </templateId>
+               <id extension="51e2c9d7-7eeb-4eba-aca8-f2f70a076b77"
+                   root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+               <code valueSet="2.16.840.1.113883.3.666.5.307">
+                  <displayName value="Encounter Inpatient SNOMEDCT Value Set"/>
+               </code>
+               <title value="Encounter, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <dischargeDispositionCode valueSet="2.16.840.1.113883.3.117.1.7.1.309">
+                  <displayName value="Patient Expired SNOMEDCT Value Set"/>
+               </dischargeDispositionCode>
+            </encounterCriteria>
+         </entry>
+         <!--Encounter, Performed - length of stay With Less Than Or Equal To--><entry typeCode="DRIV">
+            <localVariableName value="EncounterInpatient_EncounterPerformed_lengthofstay_LessThanOrEqualTo_Gkwzz"/>
+            <encounterCriteria classCode="ENC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.5"/>
+               </templateId>
+               <id extension="034b9152-ce0d-415c-94b9-3c6e9d3f271e"
+                   root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+               <code valueSet="2.16.840.1.113883.3.666.5.307">
+                  <displayName value="Encounter Inpatient SNOMEDCT Value Set"/>
+               </code>
+               <title value="Encounter, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <lengthOfStayQuantity>
+                  <uncertainRange>
+                     <low nullFlavor="NINF" xsi:type="PQ"/>
+                     <high unit="d" value="120" xsi:type="PQ"/>
+                  </uncertainRange>
+               </lengthOfStayQuantity>
+            </encounterCriteria>
+         </entry>
+         <!--Encounter, Performed - length of stay With Less Than Or Equal To--><entry typeCode="DRIV">
+            <localVariableName value="EncounterInpatient_EncounterPerformed_lengthofstay_LessThanOrEqualTo_TMtTL"/>
+            <encounterCriteria classCode="ENC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.5"/>
+               </templateId>
+               <id extension="034b9152-ce0d-415c-94b9-3c6e9d3f271e"
+                   root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+               <code valueSet="2.16.840.1.113883.3.666.5.307">
+                  <displayName value="Encounter Inpatient SNOMEDCT Value Set"/>
+               </code>
+               <title value="Encounter, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <lengthOfStayQuantity>
+                  <uncertainRange>
+                     <low nullFlavor="NINF" xsi:type="PQ"/>
+                     <high unit="d" value="120" xsi:type="PQ"/>
+                  </uncertainRange>
+               </lengthOfStayQuantity>
+            </encounterCriteria>
+         </entry>
+         <!--Physical Exam, Performed - result With Greater Than Or Equal To--><entry typeCode="DRIV">
+            <localVariableName value="EstimatedGestationalAgeatBirth_PhysicalExamPerformed_result_GreaterThanOrEqualTo_fwCYz"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.62"/>
+               </templateId>
+               <id extension="c34fb4aa-bf6d-4c61-896c-2d327e4ca49b"
+                   root="c8032953-5e10-4e9d-82eb-18e6063f7f39"/>
+               <code code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                  <displayName value="physical examination"/>
+               </code>
+               <title value="Physical Exam, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.113762.1.4.1045.47" xsi:type="CD">
+                  <displayName value="Estimated Gestational Age at Birth SNOMEDCT Value Set"/>
+               </value>
+               <outboundRelationship typeCode="REFR">
+                  <observationCriteria classCode="OBS" moodCode="EVN">
+                     <templateId>
+                        <item root="2.16.840.1.113883.10.20.28.3.101"/>
+                     </templateId>
+                     <id extension="result" root="c34fb4aa-bf6d-4c61-896c-2d327e4ca49b"/>
+                     <code code="394617004" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+                     <title value="result"/>
+                     <value xsi:type="IVL_PQ">
+                        <low unit="wk" value="37" xsi:type="PQ"/>
+                        <high nullFlavor="PINF"/>
+                     </value>
+                  </observationCriteria>
+               </outboundRelationship>
+            </observationCriteria>
+         </entry>
+         <!--Patient Characteristic Ethnicity--><entry typeCode="DRIV">
+            <localVariableName value="Ethnicity_PatientCharacteristicEthnicity_fdlVp"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.56"/>
+               </templateId>
+               <id extension="Ethnicity_PatientCharacteristicEthnicity"
+                   root="40280381-3d27-5493-013d-4dc3479c6965"/>
+               <code code="54133-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                  <displayName value="Ethnicity"/>
+               </code>
+               <title value="Patient Characteristic Ethnicity"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.114222.4.11.837" xsi:type="CD">
+                  <displayName value="Ethnicity CDCREC Value Set"/>
+               </value>
+            </observationCriteria>
+         </entry>
+         <!--Patient Characteristic Sex--><entry typeCode="DRIV">
+            <localVariableName value="ONCAdministrativeSex_PatientCharacteristicSex_RM2eK"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.55"/>
+               </templateId>
+               <id extension="ONCAdministrativeSex_PatientCharacteristicSex"
+                   root="40280381-3d27-5493-013d-4dc3479c6963"/>
+               <code code="263495000" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                  <displayName value="Gender"/>
+               </code>
+               <title value="Patient Characteristic Sex"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.113762.1.4.1" xsi:type="CD">
+                  <displayName value="ONC Administrative Sex AdministrativeGender Value Set"/>
+               </value>
+            </observationCriteria>
+         </entry>
+         <!--Patient Characteristic Payer--><entry typeCode="DRIV">
+            <localVariableName value="Payer_PatientCharacteristicPayer_3ihIR"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item root="2.16.840.1.113883.10.20.28.3.58"/>
+               </templateId>
+               <id extension="Payer_PatientCharacteristicPayer"
+                   root="40280381-3d27-5493-013d-4dc3479c6966"/>
+               <code code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                  <displayName value="Payer"/>
+               </code>
+               <title value="Patient Characteristic Payer"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.114222.4.11.3591" xsi:type="CD">
+                  <displayName value="Payer SOP Value Set"/>
+               </value>
+            </observationCriteria>
+         </entry>
+         <!--Patient Characteristic Race--><entry typeCode="DRIV">
+            <localVariableName value="Race_PatientCharacteristicRace_PFD3C"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item root="2.16.840.1.113883.10.20.28.3.59"/>
+               </templateId>
+               <id extension="Race_PatientCharacteristicRace"
+                   root="40280381-3d27-5493-013d-4dc3479c6964"/>
+               <code code="32624-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                  <displayName value="Race"/>
+               </code>
+               <title value="Patient Characteristic Race"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.114222.4.11.836" xsi:type="CD">
+                  <displayName value="Race CDCREC Value Set"/>
+               </value>
+            </observationCriteria>
+         </entry>
+         <!--Clause 'EncounterInpatient'--><!--entry for Ends During--><entry typeCode="DRIV">
+            <localVariableName value="localVar_EndsDuring_B331B928-A301-4BC5-8635-260B4809FC94"/>
+            <encounterCriteria classCode="ENC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.5"/>
+               </templateId>
+               <id extension="EndsDuring_B331B928-A301-4BC5-8635-260B4809FC94"
+                   root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+               <code valueSet="2.16.840.1.113883.3.666.5.307">
+                  <displayName value="Encounter Inpatient SNOMEDCT Value Set"/>
+               </code>
+               <title value="Encounter, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <temporallyRelatedInformation typeCode="EDU">
+                  <qdm:temporalInformation precisionUnit="min"/>
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="measureperiod" root="40280381-3d27-5493-013d-4dc3479c6972"/>
+                  </criteriaReference>
+               </temporallyRelatedInformation>
+            </encounterCriteria>
+         </entry>
+         <entry typeCode="DRIV">
+            <localVariableName value="qdm_var_SATISFIES ALL_C2BB1366-8342-44EF-963A-7300D35B89E3"/>
+            <grouperCriteria classCode="GROUPER" moodCode="EVN">
+               <templateId>
+                  <item root="2.16.840.1.113883.10.20.28.3.109"/>
+               </templateId>
+               <id extension="qdm_var_SATISFIESALL_C2BB1366-8342-44EF-963A-7300D35B89E3"
+                   root="40B0779A-83D0-4BFD-8B4B-579ADF1CE6FE"/>
+               <!--outBoundRelationship for Encounter Inpatient : Encounter, Performed--><outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="AND"/>
+                  <criteriaReference classCode="ENC" moodCode="EVN">
+                     <id extension="034b9152-ce0d-415c-94b9-3c6e9d3f271e"
+                         root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+                  </criteriaReference>
+               </outboundRelationship>
+               <!--outBoundRelationship for Ends During--><outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="AND"/>
+                  <criteriaReference classCode="ENC" moodCode="EVN">
+                     <id extension="EndsDuring_B331B928-A301-4BC5-8635-260B4809FC94"
+                         root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+                  </criteriaReference>
+               </outboundRelationship>
+            </grouperCriteria>
+         </entry>
+         <!--Clause 'IPP Union of diagnoses'--><!--Clause 'Occurrence A of $EncounterInpatient'--><entry typeCode="DRIV">
+            <grouperCriteria classCode="GROUPER" moodCode="EVN">
+               <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                   root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+               <outboundRelationship typeCode="OCCR">
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="qdm_var_SATISFIESALL_C2BB1366-8342-44EF-963A-7300D35B89E3"
+                         root="40B0779A-83D0-4BFD-8B4B-579ADF1CE6FE"/>
+                  </criteriaReference>
+               </outboundRelationship>
+            </grouperCriteria>
+         </entry>
+         <!--entry for Starts During--><entry typeCode="DRIV">
+            <localVariableName value="localVar_StartsDuring_1313E8DD-5958-4146-A0ED-E3B20BE0101B"/>
+            <grouperCriteria classCode="GROUPER" moodCode="EVN">
+               <id extension="StartsDuring_1313E8DD-5958-4146-A0ED-E3B20BE0101B"
+                   root="7DC2F049-286B-4E65-92F8-0D728A1AFAD3"/>
+               <!--outBoundRelationship for Single Live Birth : Diagnosis, Active--><temporallyRelatedInformation typeCode="SDU">
+                  <qdm:temporalInformation precisionUnit="min"/>
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </temporallyRelatedInformation>
+               <outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="OR"/>
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="SingleLiveBirth_DiagnosisActive"
+                         root="40280381-3d27-5493-013d-4dc3479d698d"/>
+                  </criteriaReference>
+               </outboundRelationship>
+               <!--outBoundRelationship for Single Live Born Newborn Born in Hospital : Diagnosis, Active--><outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="OR"/>
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="SingleLiveBornNewbornBorninHospital_DiagnosisActive"
+                         root="40280381-3d27-5493-013d-4dc3479c6969"/>
+                  </criteriaReference>
+               </outboundRelationship>
+            </grouperCriteria>
+         </entry>
+         <!--Clause 'IPP diagnosis galactosemia'--><!--entry for Starts During--><entry typeCode="DRIV">
+            <localVariableName value="localVar_StartsDuring_A290C034-A684-4A39-998D-331D85947AE9"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.1"/>
+               </templateId>
+               <id extension="StartsDuring_A290C034-A684-4A39-998D-331D85947AE9"
+                   root="0CBC559D-7D0F-4E18-8722-15EA435E190D"/>
+               <code code="282291009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                  <displayName value="Diagnosis"/>
+               </code>
+               <title value="Diagnosis, Active"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.113883.3.117.1.7.1.35" xsi:type="CD">
+                  <displayName value="Galactosemia Grouping Value Set"/>
+               </value>
+		             <temporallyRelatedInformation typeCode="SDU">
+                  <qdm:temporalInformation precisionUnit="min"/>
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </temporallyRelatedInformation>
+               <outboundRelationship typeCode="REFR">
+                  <observationCriteria classCode="OBS" moodCode="EVN">
+                     <templateId>
+                        <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.94"/>
+                        <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.95"/>
+                     </templateId>
+                     <id extension="D454BB8A-256C-4A0C-9AEE-F41B510C59D5"
+                         root="40280381-3d27-5493-013d-4dc3479c696d"/>
+                     <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC">
+                        <displayName value="Status"/>
+                     </code>
+                     <title value="Status Active"/>
+                     <value code="55561003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"
+                            xsi:type="CD">
+                        <displayName value="Active"/>
+                     </value>
+                  </observationCriteria>
+               </outboundRelationship>
+	           </observationCriteria>
+         </entry>
+         <!--Clause 'Den Excl intersection'--><entry typeCode="DRIV">
+            <localVariableName value="SATISFIES ANY_0238D2DD-3433-463D-8A7C-4EB3B3214039"/>
+            <grouperCriteria classCode="GROUPER" moodCode="EVN">
+               <templateId>
+                  <item root="2.16.840.1.113883.10.20.28.3.108"/>
+               </templateId>
+               <id extension="SATISFIESANY_0238D2DD-3433-463D-8A7C-4EB3B3214039"
+                   root="1D3C730D-F056-4847-A96C-EA8CFF4D6EF2"/>
+               <!--outBoundRelationship for Encounter Inpatient : Encounter, Performed--><outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="OR"/>
+                  <criteriaReference classCode="ENC" moodCode="EVN">
+                     <id extension="40b1d15b-7f11-4efe-91ef-0b9ecd87fa90"
+                         root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+                  </criteriaReference>
+               </outboundRelationship>
+               <!--outBoundRelationship for Encounter Inpatient : Encounter, Performed--><outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="OR"/>
+                  <criteriaReference classCode="ENC" moodCode="EVN">
+                     <id extension="51e2c9d7-7eeb-4eba-aca8-f2f70a076b77"
+                         root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+                  </criteriaReference>
+               </outboundRelationship>
+               <!--outBoundRelationship for Encounter Inpatient : Encounter, Performed--><outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="OR"/>
+                  <criteriaReference classCode="ENC" moodCode="EVN">
+                     <id extension="392a76b0-bfbb-4f0e-81c3-767438586dce"
+                         root="ea6be543-6718-4a29-a928-c4acc1b20fca"/>
+                  </criteriaReference>
+               </outboundRelationship>
+            </grouperCriteria>
+         </entry>
+         <entry typeCode="DRIV">
+            <localVariableName value="INTERSECTION_5B8E297D-21E1-4575-BCF6-730B99228A89"/>
+            <grouperCriteria classCode="GROUPER" moodCode="EVN">
+               <id extension="INTERSECTION_5B8E297D-21E1-4575-BCF6-730B99228A89"
+                   root="E4797B23-3379-4F56-9E8B-044DC127DA21"/>
+               <!--outBoundRelationship for Occurrence A of EncounterInpatient--><outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="AND"/>
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </outboundRelationship>
+               <!--outBoundRelationship for SATISFIES ANY--><outboundRelationship typeCode="COMP">
+                  <conjunctionCode code="AND"/>
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="SATISFIESANY_0238D2DD-3433-463D-8A7C-4EB3B3214039"
+                         root="1D3C730D-F056-4847-A96C-EA8CFF4D6EF2"/>
+                  </criteriaReference>
+               </outboundRelationship>
+            </grouperCriteria>
+         </entry>
+         <!--Clause 'IPP Age at birth'--><!--entry for Starts During--><entry typeCode="DRIV">
+            <localVariableName value="localVar_StartsDuring_1849846A-67EA-4F54-A726-B825DA118369"/>
+            <observationCriteria classCode="OBS" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.62"/>
+               </templateId>
+               <id extension="StartsDuring_1849846A-67EA-4F54-A726-B825DA118369"
+                   root="BDBA3867-6AF2-4309-B0B4-629995AA5AAA"/>
+               <code code="5880005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
+                  <displayName value="physical examination"/>
+               </code>
+               <title value="Physical Exam, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <value valueSet="2.16.840.1.113762.1.4.1045.47" xsi:type="CD">
+                  <displayName value="Estimated Gestational Age at Birth SNOMEDCT Value Set"/>
+               </value>
+               <temporallyRelatedInformation typeCode="SDU">
+                  <qdm:temporalInformation precisionUnit="min"/>
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </temporallyRelatedInformation>
+               <outboundRelationship typeCode="REFR">
+                  <observationCriteria classCode="OBS" moodCode="EVN">
+                     <templateId>
+                        <item root="2.16.840.1.113883.10.20.28.3.101"/>
+                     </templateId>
+                     <id extension="result" root="c34fb4aa-bf6d-4c61-896c-2d327e4ca49b"/>
+                     <code code="394617004" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
+                     <title value="result"/>
+                     <value xsi:type="IVL_PQ">
+                        <low unit="wk" value="37" xsi:type="PQ"/>
+                        <high nullFlavor="PINF"/>
+                     </value>
+                  </observationCriteria>
+               </outboundRelationship>
+            </observationCriteria>
+         </entry>
+         <!--Clause 'IPP Procedure parenteral infusion'--><!--entry for Starts During--><entry typeCode="DRIV">
+            <localVariableName value="localVar_StartsDuring_2B1D2420-E43A-4879-A7E1-4933E074DD56"/>
+            <procedureCriteria classCode="PROC" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.67"/>
+               </templateId>
+               <id extension="StartsDuring_2B1D2420-E43A-4879-A7E1-4933E074DD56"
+                   root="D2B70337-EEB1-41FE-AA1D-1DF6282199C1"/>
+               <code valueSet="2.16.840.1.113883.3.117.1.7.1.38">
+                  <displayName value="Parenteral Nutrition Grouping Value Set"/>
+               </code>
+               <title value="Procedure, Performed"/>
+               <statusCode code="COMPLETED"/>
+               <temporallyRelatedInformation typeCode="SDU">
+                  <qdm:temporalInformation precisionUnit="min"/>
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </temporallyRelatedInformation>
+            </procedureCriteria>
+         </entry>
+         <!--Clause 'Numerator breast milk'--><!--entry for Starts During--><entry typeCode="DRIV">
+            <localVariableName value="localVar_StartsDuring_1AD3536C-02A7-43F5-824C-F3789289678F"/>
+            <substanceAdministrationCriteria classCode="SBADM" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.73"/>
+               </templateId>
+               <id extension="StartsDuring_1AD3536C-02A7-43F5-824C-F3789289678F"
+                   root="CE5A651F-782B-4B78-93C0-1BE44D0BA6FD"/>
+               <code code="416118004" codeSystem="2.16.840.1.113883.6.96">
+                  <displayName value="Administration"/>
+               </code>
+               <title value="Substance, Administered"/>
+               <statusCode code="COMPLETED"/>
+               <participation typeCode="CSM">
+                  <role classCode="ADMM">
+                     <playingMaterial classCode="MAT" determinerCode="KIND">
+                        <code valueSet="2.16.840.1.113883.3.117.1.7.1.30">
+                           <displayName value="Breast Milk SNOMEDCT value set"/>
+                        </code>
+                     </playingMaterial>
+                  </role>
+               </participation>
+               <temporallyRelatedInformation typeCode="SDU">
+                  <qdm:temporalInformation precisionUnit="min"/>
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </temporallyRelatedInformation>
+            </substanceAdministrationCriteria>
+         </entry>
+         <!--Clause 'Numerator other'--><!--entry for Starts During--><entry typeCode="DRIV">
+            <localVariableName value="localVar_StartsDuring_92682CDD-9F40-41CD-9741-EC019769FC11"/>
+            <substanceAdministrationCriteria classCode="SBADM" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.73"/>
+               </templateId>
+               <id extension="StartsDuring_92682CDD-9F40-41CD-9741-EC019769FC11"
+                   root="EEC62F77-5266-4827-A7DB-BB9ABE5BFC33"/>
+               <code code="416118004" codeSystem="2.16.840.1.113883.6.96">
+                  <displayName value="Administration"/>
+               </code>
+               <title value="Substance, Administered"/>
+               <statusCode code="COMPLETED"/>
+               <participation typeCode="CSM">
+                  <role classCode="ADMM">
+                     <playingMaterial classCode="MAT" determinerCode="KIND">
+                        <code valueSet="2.16.840.1.113883.3.117.1.7.1.27">
+                           <displayName value="Dietary Intake Other than Breast Milk SNOMEDCT value set"/>
+                        </code>
+                     </playingMaterial>
+                  </role>
+               </participation>
+               <temporallyRelatedInformation typeCode="SDU">
+                  <qdm:temporalInformation precisionUnit="min"/>
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </temporallyRelatedInformation>
+            </substanceAdministrationCriteria>
+         </entry>
+         <!--Clause 'Den Excl2 Communication'--><!--entry for <= 1 hours Starts After Start Of--><entry typeCode="DRIV">
+            <localVariableName value="localVar_less_thn_eql_1hoursStartsAfterStartOf_286FEB79-104D-49DB-AEFF-8DA44E883194"/>
+            <actCriteria classCode="ACT" moodCode="EVN">
+               <templateId>
+                  <item extension="2014-11-24" root="2.16.840.1.113883.10.20.28.3.8"/>
+               </templateId>
+               <id extension="less_thn_eql_1hoursStartsAfterStartOf_286FEB79-104D-49DB-AEFF-8DA44E883194"
+                   root="67CBD79D-C107-4EAA-B55F-CD9DA717B32D"/>
+               <code valueSet="2.16.840.1.113762.1.4.1045.29" xsi:type="CD">
+                  <displayName value="Feeding Intention-Breast SNOMEDCT Value Set"/>
+               </code>
+               <title value="Communication: From Patient to Provider"/>
+               <statusCode code="COMPLETED"/>
+		             <participation typeCode="AUT">
+                  <role classCode="PAT"/>
+               </participation>
+		             <participation typeCode="IRCP">
+                  <role classCode="ASSIGNED">
+                     <code code="158965000" codeSystem="2.16.840.1.113883.6.96">
+                        <displayName value="Medical Practitioner"/>
+                     </code>
+                  </role>
+               </participation>
+	              <temporallyRelatedInformation typeCode="SAS">
+                  <qdm:temporalInformation precisionUnit="min">
+                     <qdm:delta highClosed="true" lowClosed="true">
+                        <low unit="h" value="0"/>
+                        <high unit="h" value="1"/>
+                     </qdm:delta>
+                  </qdm:temporalInformation>
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="Birthdate_PatientCharacteristicBirthdate"
+                         root="5673b74f-85bc-4aa2-8ba2-e31483048080"/>
+                  </criteriaReference>
+               </temporallyRelatedInformation>
+            </actCriteria>
+         </entry>
+      </dataCriteriaSection>
+   </component>
+   <component>
+      <populationCriteriaSection>
+         <templateId>
+            <item root="2.16.840.1.113883.10.20.28.2.1"/>
+         </templateId>
+         <id extension="PopulationCriteria1" root="F945F4F1-ED65-4042-96AF-C932A8EAF697"/>
+         <code code="57026-7" codeSystem="2.16.840.1.113883.6.1"/>
+         <title value="Population Criteria Section"/>
+         <text>
+            <xml>
+               <item>
+                  <list>
+                     <item>
+                        <content styleCode="Bold">Population Criteria</content>
+                        <list>
+                           <item>
+                              <content styleCode="Bold">Initial Population =</content>
+                              <list>
+                                 <item>AND: Occurrence A of $EncounterInpatient</item>
+                                 <item>AND: "Physical Exam, Performed: Estimated Gestational Age at Birth (result &gt;= 37 week(s))" starts during Occurrence A of $EncounterInpatient</item>
+                                 <item>AND: Union of:<list>
+                                       <item>"Diagnosis, Active: Single Live Birth"</item>
+                                       <item>"Diagnosis, Active: Single Live Born Newborn Born in Hospital"</item>
+                                       <item>starts during Occurrence A of $EncounterInpatient</item>
+                                    </list>
+                                 </item>
+                                 <item>AND NOT: "Diagnosis, Active: Galactosemia" starts during Occurrence A of $EncounterInpatient</item>
+                                 <item>AND NOT: "Procedure, Performed: Parenteral Nutrition" starts during Occurrence A of $EncounterInpatient</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Denominator =</content>
+                              <list>
+                                 <item>AND: Initial Population</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Denominator Exclusions =</content>
+                              <list>
+                                 <item>OR: Intersection of:<list>
+                                       <item>Occurrence A of $EncounterInpatient</item>
+                                       <item>"Encounter, Performed: Encounter Inpatient" satisfies any<list>
+                                             <item>(facility location: Neonatal Intensive Care Unit (NICU))</item>
+                                             <item>(discharge status: Patient Expired)</item>
+                                             <item>(discharge status: Discharge To Acute Care Facility)</item>
+                                          </list>
+                                       </item>
+                                    </list>
+                                 </item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Numerator =</content>
+                              <list>
+                                 <item>AND: "Substance, Administered: Breast Milk" starts during Occurrence A of $EncounterInpatient</item>
+                                 <item>AND NOT: "Substance, Administered: Dietary Intake Other than Breast Milk" starts during Occurrence A of $EncounterInpatient</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Numerator Exclusions =</content>
+                              <list>
+                                 <item>None</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Denominator Exceptions =</content>
+                              <list>
+                                 <item>None</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Stratification =</content>
+                              <list>
+                                 <item>None</item>
+                              </list>
+                           </item>
+                        </list>
+                     </item>
+                  </list>
+               </item>
+            </xml>
+         </text>
+         <component typeCode="COMP">
+            <initialPopulationCriteria classCode="OBS" moodCode="EVN">
+               <id extension="initialPopulation" root="A487C868-83A9-4598-9AEC-B50CB6B59D45"/>
+               <code code="IPOP" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="initialPopulation"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="StartsDuring_1849846A-67EA-4F54-A726-B825DA118369"
+                         root="BDBA3867-6AF2-4309-B0B4-629995AA5AAA"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="StartsDuring_1313E8DD-5958-4146-A0ED-E3B20BE0101B"
+                         root="7DC2F049-286B-4E65-92F8-0D728A1AFAD3"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <allFalse>
+                     <precondition typeCode="PRCN">
+                        <criteriaReference classCode="OBS" moodCode="EVN">
+                           <id extension="StartsDuring_A290C034-A684-4A39-998D-331D85947AE9"
+                               root="0CBC559D-7D0F-4E18-8722-15EA435E190D"/>
+                        </criteriaReference>
+                     </precondition>
+                     <precondition typeCode="PRCN">
+                        <criteriaReference classCode="PROC" moodCode="EVN">
+                           <id extension="StartsDuring_2B1D2420-E43A-4879-A7E1-4933E074DD56"
+                               root="D2B70337-EEB1-41FE-AA1D-1DF6282199C1"/>
+                        </criteriaReference>
+                     </precondition>
+                  </allFalse>
+               </precondition>
+            </initialPopulationCriteria>
+         </component>
+         <component typeCode="COMP">
+            <denominatorCriteria classCode="OBS" moodCode="EVN">
+               <id extension="denominator" root="C688C9BD-1A24-4EAB-A64D-BBC366DCFC6C"/>
+               <code code="DENOM" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="denominator"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="initialPopulation" root="A487C868-83A9-4598-9AEC-B50CB6B59D45"/>
+                  </criteriaReference>
+               </precondition>
+            </denominatorCriteria>
+         </component>
+         <component typeCode="COMP">
+            <denominatorExclusionCriteria classCode="OBS" moodCode="EVN">
+               <id extension="denominatorExclusions" root="F1990F1F-63CF-4027-B09A-6323D80C68F3"/>
+               <code code="DENEX" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="denominatorExclusions"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="INTERSECTION_5B8E297D-21E1-4575-BCF6-730B99228A89"
+                         root="E4797B23-3379-4F56-9E8B-044DC127DA21"/>
+                  </criteriaReference>
+               </precondition>
+            </denominatorExclusionCriteria>
+         </component>
+         <component typeCode="COMP">
+            <numeratorCriteria classCode="OBS" moodCode="EVN">
+               <id extension="numerator" root="6DD7F768-F375-4105-8EBA-8FBCDA3DF982"/>
+               <code code="NUMER" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="numerator"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="SBADM" moodCode="EVN">
+                     <id extension="StartsDuring_1AD3536C-02A7-43F5-824C-F3789289678F"
+                         root="CE5A651F-782B-4B78-93C0-1BE44D0BA6FD"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <allFalse>
+                     <precondition typeCode="PRCN">
+                        <criteriaReference classCode="SBADM" moodCode="EVN">
+                           <id extension="StartsDuring_92682CDD-9F40-41CD-9741-EC019769FC11"
+                               root="EEC62F77-5266-4827-A7DB-BB9ABE5BFC33"/>
+                        </criteriaReference>
+                     </precondition>
+                  </allFalse>
+               </precondition>
+            </numeratorCriteria>
+         </component>
+         <component typeCode="COMP">
+            <stratifierCriteria>
+               <id extension="Stratifiers" root="A368C83B-1D26-4A7D-89E7-7C82DFDFAECB"/>
+               <code code="STRAT" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="Stratification"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="Ethnicity_PatientCharacteristicEthnicity"
+                         root="40280381-3d27-5493-013d-4dc3479c6965"/>
+                  </criteriaReference>
+               </precondition>
+               <component typeCode="COMP">
+                  <measureAttribute>
+                     <code code="SDE" codeSystem="2.16.840.1.113883.5.4">
+                        <displayName value="Supplemental Data Element"/>
+                     </code>
+                     <value mediaType="text/plain" value="Supplemental Data Elements" xsi:type="ED"/>
+                  </measureAttribute>
+               </component>
+            </stratifierCriteria>
+         </component>
+         <component typeCode="COMP">
+            <stratifierCriteria>
+               <id extension="Stratifiers" root="41EE906E-6C6C-40CA-A679-D1355B9E7801"/>
+               <code code="STRAT" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="Stratification"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="ONCAdministrativeSex_PatientCharacteristicSex"
+                         root="40280381-3d27-5493-013d-4dc3479c6963"/>
+                  </criteriaReference>
+               </precondition>
+               <component typeCode="COMP">
+                  <measureAttribute>
+                     <code code="SDE" codeSystem="2.16.840.1.113883.5.4">
+                        <displayName value="Supplemental Data Element"/>
+                     </code>
+                     <value mediaType="text/plain" value="Supplemental Data Elements" xsi:type="ED"/>
+                  </measureAttribute>
+               </component>
+            </stratifierCriteria>
+         </component>
+         <component typeCode="COMP">
+            <stratifierCriteria>
+               <id extension="Stratifiers" root="32991EEA-FD8C-4B12-AFE8-1D1659BA0D70"/>
+               <code code="STRAT" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="Stratification"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="Payer_PatientCharacteristicPayer"
+                         root="40280381-3d27-5493-013d-4dc3479c6966"/>
+                  </criteriaReference>
+               </precondition>
+               <component typeCode="COMP">
+                  <measureAttribute>
+                     <code code="SDE" codeSystem="2.16.840.1.113883.5.4">
+                        <displayName value="Supplemental Data Element"/>
+                     </code>
+                     <value mediaType="text/plain" value="Supplemental Data Elements" xsi:type="ED"/>
+                  </measureAttribute>
+               </component>
+            </stratifierCriteria>
+         </component>
+         <component typeCode="COMP">
+            <stratifierCriteria>
+               <id extension="Stratifiers" root="BD3D04A6-96D1-45C8-B01C-7D93EB972750"/>
+               <code code="STRAT" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="Stratification"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="Race_PatientCharacteristicRace"
+                         root="40280381-3d27-5493-013d-4dc3479c6964"/>
+                  </criteriaReference>
+               </precondition>
+               <component typeCode="COMP">
+                  <measureAttribute>
+                     <code code="SDE" codeSystem="2.16.840.1.113883.5.4">
+                        <displayName value="Supplemental Data Element"/>
+                     </code>
+                     <value mediaType="text/plain" value="Supplemental Data Elements" xsi:type="ED"/>
+                  </measureAttribute>
+               </component>
+            </stratifierCriteria>
+         </component>
+      </populationCriteriaSection>
+   </component>
+   <component>
+      <populationCriteriaSection>
+         <templateId>
+            <item root="2.16.840.1.113883.10.20.28.2.1"/>
+         </templateId>
+         <id extension="PopulationCriteria2" root="D47F9542-21CE-4F4F-BFDD-1A07EEE6E487"/>
+         <code code="57026-7" codeSystem="2.16.840.1.113883.6.1"/>
+         <title value="Population Criteria Section"/>
+         <text>
+            <xml>
+               <item>
+                  <list>
+                     <item>
+                        <content styleCode="Bold">Population Criteria</content>
+                        <list>
+                           <item>
+                              <content styleCode="Bold">Initial Population =</content>
+                              <list>
+                                 <item>AND: Occurrence A of $EncounterInpatient</item>
+                                 <item>AND: "Physical Exam, Performed: Estimated Gestational Age at Birth (result &gt;= 37 week(s))" starts during Occurrence A of $EncounterInpatient</item>
+                                 <item>AND: Union of:<list>
+                                       <item>"Diagnosis, Active: Single Live Birth"</item>
+                                       <item>"Diagnosis, Active: Single Live Born Newborn Born in Hospital"</item>
+                                       <item>starts during Occurrence A of $EncounterInpatient</item>
+                                    </list>
+                                 </item>
+                                 <item>AND NOT: "Diagnosis, Active: Galactosemia" starts during Occurrence A of $EncounterInpatient</item>
+                                 <item>AND NOT: "Procedure, Performed: Parenteral Nutrition" starts during Occurrence A of $EncounterInpatient</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Denominator =</content>
+                              <list>
+                                 <item>AND: Initial Population</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Denominator Exclusions =</content>
+                              <list>
+                                 <item>OR: Intersection of:<list>
+                                       <item>Occurrence A of $EncounterInpatient</item>
+                                       <item>"Encounter, Performed: Encounter Inpatient" satisfies any<list>
+                                             <item>(facility location: Neonatal Intensive Care Unit (NICU))</item>
+                                             <item>(discharge status: Patient Expired)</item>
+                                             <item>(discharge status: Discharge To Acute Care Facility)</item>
+                                          </list>
+                                       </item>
+                                    </list>
+                                 </item>
+                                 <item>OR NOT: "Communication: From Patient to Provider: Feeding Intention-Breast" &lt;= 1 hour(s) starts after start of "Birthdate : Patient Characteristic Birthdate"</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Numerator =</content>
+                              <list>
+                                 <item>AND: "Substance, Administered: Breast Milk" starts during Occurrence A of $EncounterInpatient</item>
+                                 <item>AND NOT: "Substance, Administered: Dietary Intake Other than Breast Milk" starts during Occurrence A of $EncounterInpatient</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Numerator Exclusions =</content>
+                              <list>
+                                 <item>None</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Denominator Exceptions =</content>
+                              <list>
+                                 <item>None</item>
+                              </list>
+                           </item>
+                           <item>
+                              <content styleCode="Bold">Stratification =</content>
+                              <list>
+                                 <item>None</item>
+                              </list>
+                           </item>
+                        </list>
+                     </item>
+                  </list>
+               </item>
+            </xml>
+         </text>
+         <component typeCode="COMP">
+            <initialPopulationCriteria classCode="OBS" moodCode="EVN">
+               <id extension="initialPopulation" root="257D53B1-89B9-493C-BD38-E9BD5FD13BC1"/>
+               <code code="IPOP" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="initialPopulation"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="occAof_qdm_var_SATISFIESALL_B29ABC5E-EECE-4F77-B5A1-1E60EA5D33FF"
+                         root="1CE0DE01-C640-4250-858B-959EAB3142E7"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="StartsDuring_1849846A-67EA-4F54-A726-B825DA118369"
+                         root="BDBA3867-6AF2-4309-B0B4-629995AA5AAA"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="StartsDuring_1313E8DD-5958-4146-A0ED-E3B20BE0101B"
+                         root="7DC2F049-286B-4E65-92F8-0D728A1AFAD3"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <allFalse>
+                     <precondition typeCode="PRCN">
+                        <criteriaReference classCode="OBS" moodCode="EVN">
+                           <id extension="StartsDuring_A290C034-A684-4A39-998D-331D85947AE9"
+                               root="0CBC559D-7D0F-4E18-8722-15EA435E190D"/>
+                        </criteriaReference>
+                     </precondition>
+                     <precondition typeCode="PRCN">
+                        <criteriaReference classCode="PROC" moodCode="EVN">
+                           <id extension="StartsDuring_2B1D2420-E43A-4879-A7E1-4933E074DD56"
+                               root="D2B70337-EEB1-41FE-AA1D-1DF6282199C1"/>
+                        </criteriaReference>
+                     </precondition>
+                  </allFalse>
+               </precondition>
+            </initialPopulationCriteria>
+         </component>
+         <component typeCode="COMP">
+            <denominatorCriteria classCode="OBS" moodCode="EVN">
+               <id extension="denominator" root="19719CBA-9F82-4647-843C-D0FC1BDA8EEE"/>
+               <code code="DENOM" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="denominator"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="initialPopulation" root="257D53B1-89B9-493C-BD38-E9BD5FD13BC1"/>
+                  </criteriaReference>
+               </precondition>
+            </denominatorCriteria>
+         </component>
+         <component typeCode="COMP">
+            <denominatorExclusionCriteria classCode="OBS" moodCode="EVN">
+               <id extension="denominatorExclusions" root="E6523BDD-D4FA-4849-9217-F7A3668B1746"/>
+               <code code="DENEX" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="denominatorExclusions"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="GROUPER" moodCode="EVN">
+                     <id extension="INTERSECTION_5B8E297D-21E1-4575-BCF6-730B99228A89"
+                         root="E4797B23-3379-4F56-9E8B-044DC127DA21"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <atLeastOneFalse>
+                     <precondition typeCode="PRCN">
+                        <criteriaReference classCode="ACT" moodCode="EVN">
+                           <id extension="less_thn_eql_1hoursStartsAfterStartOf_286FEB79-104D-49DB-AEFF-8DA44E883194"
+                               root="67CBD79D-C107-4EAA-B55F-CD9DA717B32D"/>
+                        </criteriaReference>
+                     </precondition>
+                  </atLeastOneFalse>
+               </precondition>
+            </denominatorExclusionCriteria>
+         </component>
+         <component typeCode="COMP">
+            <numeratorCriteria classCode="OBS" moodCode="EVN">
+               <id extension="numerator" root="AB070153-6811-452C-8630-0D1A28B85FE6"/>
+               <code code="NUMER" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="numerator"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="SBADM" moodCode="EVN">
+                     <id extension="StartsDuring_1AD3536C-02A7-43F5-824C-F3789289678F"
+                         root="CE5A651F-782B-4B78-93C0-1BE44D0BA6FD"/>
+                  </criteriaReference>
+               </precondition>
+               <precondition typeCode="PRCN">
+                  <allFalse>
+                     <precondition typeCode="PRCN">
+                        <criteriaReference classCode="SBADM" moodCode="EVN">
+                           <id extension="StartsDuring_92682CDD-9F40-41CD-9741-EC019769FC11"
+                               root="EEC62F77-5266-4827-A7DB-BB9ABE5BFC33"/>
+                        </criteriaReference>
+                     </precondition>
+                  </allFalse>
+               </precondition>
+            </numeratorCriteria>
+         </component>
+         <component typeCode="COMP">
+            <stratifierCriteria>
+               <id extension="Stratifiers" root="CB2F5798-5342-4E5F-83FB-6FB9D818661A"/>
+               <code code="STRAT" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="Stratification"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="Ethnicity_PatientCharacteristicEthnicity"
+                         root="40280381-3d27-5493-013d-4dc3479c6965"/>
+                  </criteriaReference>
+               </precondition>
+               <component typeCode="COMP">
+                  <measureAttribute>
+                     <code code="SDE" codeSystem="2.16.840.1.113883.5.4">
+                        <displayName value="Supplemental Data Element"/>
+                     </code>
+                     <value mediaType="text/plain" value="Supplemental Data Elements" xsi:type="ED"/>
+                  </measureAttribute>
+               </component>
+            </stratifierCriteria>
+         </component>
+         <component typeCode="COMP">
+            <stratifierCriteria>
+               <id extension="Stratifiers" root="8183B22F-F391-47D7-B1CF-90B1F6280192"/>
+               <code code="STRAT" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="Stratification"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="ONCAdministrativeSex_PatientCharacteristicSex"
+                         root="40280381-3d27-5493-013d-4dc3479c6963"/>
+                  </criteriaReference>
+               </precondition>
+               <component typeCode="COMP">
+                  <measureAttribute>
+                     <code code="SDE" codeSystem="2.16.840.1.113883.5.4">
+                        <displayName value="Supplemental Data Element"/>
+                     </code>
+                     <value mediaType="text/plain" value="Supplemental Data Elements" xsi:type="ED"/>
+                  </measureAttribute>
+               </component>
+            </stratifierCriteria>
+         </component>
+         <component typeCode="COMP">
+            <stratifierCriteria>
+               <id extension="Stratifiers" root="E753EBEA-1B5B-4926-831A-DD031562E46E"/>
+               <code code="STRAT" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="Stratification"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="Payer_PatientCharacteristicPayer"
+                         root="40280381-3d27-5493-013d-4dc3479c6966"/>
+                  </criteriaReference>
+               </precondition>
+               <component typeCode="COMP">
+                  <measureAttribute>
+                     <code code="SDE" codeSystem="2.16.840.1.113883.5.4">
+                        <displayName value="Supplemental Data Element"/>
+                     </code>
+                     <value mediaType="text/plain" value="Supplemental Data Elements" xsi:type="ED"/>
+                  </measureAttribute>
+               </component>
+            </stratifierCriteria>
+         </component>
+         <component typeCode="COMP">
+            <stratifierCriteria>
+               <id extension="Stratifiers" root="8E659616-D220-4664-9E46-F4224FFD5186"/>
+               <code code="STRAT" codeSystem="2.16.840.1.113883.5.1063"
+                     codeSystemName="HL7 Observation Value">
+                  <displayName value="Stratification"/>
+               </code>
+               <precondition typeCode="PRCN">
+                  <criteriaReference classCode="OBS" moodCode="EVN">
+                     <id extension="Race_PatientCharacteristicRace"
+                         root="40280381-3d27-5493-013d-4dc3479c6964"/>
+                  </criteriaReference>
+               </precondition>
+               <component typeCode="COMP">
+                  <measureAttribute>
+                     <code code="SDE" codeSystem="2.16.840.1.113883.5.4">
+                        <displayName value="Supplemental Data Element"/>
+                     </code>
+                     <value mediaType="text/plain" value="Supplemental Data Elements" xsi:type="ED"/>
+                  </measureAttribute>
+               </component>
+            </stratifierCriteria>
+         </component>
+      </populationCriteriaSection>
+   </component>
+</QualityMeasureDocument>
