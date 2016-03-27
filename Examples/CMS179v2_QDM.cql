@@ -2,7 +2,7 @@ library CMS179_QDM version '2'
 
 // Warfarin time in therapeutic range
 
-using QDM version '4.2'
+using QDM // version '4.2'
 
 valueset "Atrial Fibrillation/Flutter": '2.16.840.1.113883.3.117.1.7.1.202'
 valueset "Warfarin": '2.16.840.1.113883.3.117.1.7.1.232'

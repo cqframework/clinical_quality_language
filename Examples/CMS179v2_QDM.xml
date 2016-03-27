@@ -57,13 +57,31 @@
          </expression>
       </def>
       <def name="FaceToFaceEncounters" context="Patient" accessLevel="Public">
-         <expression xmlns:ns3="urn:healthit-gov:qdm:v4_2" dataType="ns3:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
-            <codes name="Face-to-Face Interaction" xsi:type="IdentifierRef"/>
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression xmlns:ns3="urn:healthit-gov:qdm:v4_2" dataType="ns3:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Face-to-Face Interaction" xsi:type="IdentifierRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="E" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
       <def name="OfficeVisitEncounters" context="Patient" accessLevel="Public">
-         <expression xmlns:ns4="urn:healthit-gov:qdm:v4_2" dataType="ns4:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
-            <codes name="Office Visit" xsi:type="ValueSetRef"/>
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression xmlns:ns4="urn:healthit-gov:qdm:v4_2" dataType="ns4:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Office Visit" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="E" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
       <def name="ValvularHeartDiseaseDiagnoses" context="Patient" accessLevel="Public">
@@ -72,8 +90,17 @@
          </expression>
       </def>
       <def name="INRLabResults" context="Patient" accessLevel="Public">
-         <expression xmlns:ns6="urn:healthit-gov:qdm:v4_2" dataType="ns6:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
-            <codes name="INR" xsi:type="ValueSetRef"/>
+         <expression xsi:type="Query">
+            <source alias="L">
+               <expression xmlns:ns6="urn:healthit-gov:qdm:v4_2" dataType="ns6:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="INR" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="L" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
       <def name="BirthDate" context="Patient" accessLevel="Public">
@@ -82,8 +109,17 @@
          </expression>
       </def>
       <def name="ComputedValueINRPercentTTR" context="Patient" accessLevel="Public">
-         <expression xmlns:ns8="urn:healthit-gov:qdm:v4_2" dataType="ns8:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
-            <codes name="Computed Value INR percent TTR" xsi:type="ValueSetRef"/>
+         <expression xsi:type="Query">
+            <source alias="L">
+               <expression xmlns:ns8="urn:healthit-gov:qdm:v4_2" dataType="ns8:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Computed Value INR percent TTR" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="L" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
       <def name="InDemographic" context="Patient" accessLevel="Public">
@@ -248,11 +284,8 @@
                <expression name="INROutpatientLabResult" xsi:type="ExpressionRef"/>
             </source>
             <where xsi:type="Greater">
-               <operand path="value" xsi:type="Property">
-                  <source strict="false" xsi:type="As">
-                     <operand path="result" scope="L" xsi:type="Property"/>
-                     <asTypeSpecifier name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
-                  </source>
+               <operand asType="t:Decimal" xsi:type="As">
+                  <operand path="result" scope="L" xsi:type="Property"/>
                </operand>
                <operand valueType="t:Decimal" value="0.8" xsi:type="Literal"/>
             </where>
@@ -266,20 +299,14 @@
                   <element name="result">
                      <value xsi:type="If">
                         <condition xsi:type="Greater">
-                           <operand path="value" xsi:type="Property">
-                              <source strict="false" xsi:type="As">
-                                 <operand path="result" scope="L" xsi:type="Property"/>
-                                 <asTypeSpecifier name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
-                              </source>
+                           <operand asType="t:Decimal" xsi:type="As">
+                              <operand path="result" scope="L" xsi:type="Property"/>
                            </operand>
                            <operand valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
                         </condition>
                         <then valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
-                        <else path="value" xsi:type="Property">
-                           <source strict="false" xsi:type="As">
-                              <operand path="result" scope="L" xsi:type="Property"/>
-                              <asTypeSpecifier name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
-                           </source>
+                        <else asType="t:Decimal" xsi:type="As">
+                           <operand path="result" scope="L" xsi:type="Property"/>
                         </else>
                      </value>
                   </element>
@@ -287,11 +314,8 @@
                      <value xsi:type="Abs">
                         <operand xsi:type="Subtract">
                            <operand valueType="t:Decimal" value="2.5" xsi:type="Literal"/>
-                           <operand path="value" xsi:type="Property">
-                              <source strict="false" xsi:type="As">
-                                 <operand path="result" scope="L" xsi:type="Property"/>
-                                 <asTypeSpecifier name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
-                              </source>
+                           <operand asType="t:Decimal" xsi:type="As">
+                              <operand path="result" scope="L" xsi:type="Property"/>
                            </operand>
                         </operand>
                      </value>

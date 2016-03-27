@@ -5,7 +5,7 @@ library CMS146_QDM_MS version '2'
  * instead of multiple single-source queries.
  */
 
-using QDM version '4.2'
+using QDM // version '4.2'
 
 valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Acute Tonsillitis": '2.16.840.1.113883.3.464.1003.102.12.1012'
@@ -27,10 +27,10 @@ define "EncounterData":
         ["MedicationOrder": "Antibiotic Medications"] A,
         ["LaboratoryTestPerformed": "Group A Streptococcus Test"] T
     define
-        InMP : Interval[E."startDatetime", E."stopDatetime"] during MeasurementPeriod,
-        PharyngitisDx : Interval[P."startDatetime", P."stopDatetime"] includes Interval[E."startDatetime", E."stopDatetime"]
-            or P."startDatetime" in Interval[E."startDatetime", E."stopDatetime"],
-        PrescribedAntibiotics : A."signedDatetime" 3 days or less after E."startDatetime"
+        InMP : Interval[E."admissionDatetime", E."dischargeDatetime"] during MeasurementPeriod,
+        PharyngitisDx : Interval[P."onsetDatetime", P."abatementDatetime"] includes Interval[E."admissionDatetime", E."dischargeDatetime"]
+            or P."onsetDatetime" in Interval[E."admissionDatetime", E."dischargeDatetime"],
+        PrescribedAntibiotics : A."signedDatetime" 3 days or less after E."admissionDatetime"
     where
         InDemographic and InMP and PharyngitisDx and PrescribedAntibiotics 
         and E."negationRationale" is not null
@@ -38,9 +38,9 @@ define "EncounterData":
         and T."negationRationale" is not null
     return Tuple {
         Encounter: E,
-        PriorAntibiotics: A."signedDatetime" 30 days or less before P."startDatetime",
+        PriorAntibiotics: A."signedDatetime" 30 days or less before P."onsetDatetime",
         StrepTest: T.result is not null
-            and T."startDatetime" in Interval[E."startDatetime" - 3 days, E."stopDatetime" + 3 days]
+            and T."startDatetime" in Interval[E."admissionDatetime" - 3 days, E."dischargeDatetime" + 3 days]
     }
 
 define "IPPCount": Count (

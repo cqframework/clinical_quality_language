@@ -37,7 +37,7 @@
             <operand xmlns:ns0="urn:healthit-gov:qdm:v4_2" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
          </expression>
       </def>
-      <def name="EncounterInpatient" context="Patient" accessLevel="Public">
+      <def name="$Inpatient Encounter" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
                <expression xmlns:ns1="urn:healthit-gov:qdm:v4_2" dataType="ns1:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
@@ -45,12 +45,19 @@
                </expression>
             </source>
             <where xsi:type="And">
-               <operand xsi:type="LessOrEqual">
-                  <operand precision="Day" xsi:type="DurationBetween">
-                     <operand path="admissionDatetime" scope="E" xsi:type="Property"/>
-                     <operand path="dischargeDatetime" scope="E" xsi:type="Property"/>
+               <operand xsi:type="And">
+                  <operand xsi:type="Not">
+                     <operand xsi:type="IsNull">
+                        <operand path="negationRationale" scope="E" xsi:type="Property"/>
+                     </operand>
                   </operand>
-                  <operand valueType="t:Integer" value="120" xsi:type="Literal"/>
+                  <operand xsi:type="LessOrEqual">
+                     <operand precision="Day" xsi:type="DurationBetween">
+                        <operand path="admissionDatetime" scope="E" xsi:type="Property"/>
+                        <operand path="dischargeDatetime" scope="E" xsi:type="Property"/>
+                     </operand>
+                     <operand valueType="t:Integer" value="120" xsi:type="Literal"/>
+                  </operand>
                </operand>
                <operand xsi:type="In">
                   <operand path="dischargeDatetime" scope="E" xsi:type="Property"/>
@@ -59,20 +66,29 @@
             </where>
          </expression>
       </def>
-      <def name="Gestational Age at Birth &lt;= 37 weeks" context="Patient" accessLevel="Public">
+      <def name="$Gestational Age at Birth &lt;= 37 weeks" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="O">
                <expression xmlns:ns2="urn:healthit-gov:qdm:v4_2" dataType="ns2:PhysicalExamPerformed" templateId="PhysicalExamPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Gestational Age At Birth" xsi:type="IdentifierRef"/>
                </expression>
             </source>
-            <where xsi:type="GreaterOrEqual">
-               <operand path="quantitativeResult" scope="O" xsi:type="Property"/>
-               <operand value="259" unit="days" xsi:type="Quantity"/>
+            <where xsi:type="And">
+               <operand xsi:type="Not">
+                  <operand xsi:type="IsNull">
+                     <operand path="negationRationale" scope="O" xsi:type="Property"/>
+                  </operand>
+               </operand>
+               <operand xsi:type="GreaterOrEqual">
+                  <operand asType="t:Quantity" xsi:type="As">
+                     <operand path="result" scope="O" xsi:type="Property"/>
+                  </operand>
+                  <operand value="259" unit="days" xsi:type="Quantity"/>
+               </operand>
             </where>
          </expression>
       </def>
-      <def name="Live Birth" context="Patient" accessLevel="Public">
+      <def name="$Live Birth" context="Patient" accessLevel="Public">
          <expression xsi:type="Union">
             <operand xmlns:ns3="urn:healthit-gov:qdm:v4_2" dataType="ns3:Diagnosis" templateId="Diagnosis" codeProperty="code" xsi:type="Retrieve">
                <codes name="Single Live Birth" xsi:type="ValueSetRef"/>
@@ -82,23 +98,32 @@
             </operand>
          </expression>
       </def>
-      <def name="Galactosemia Diagnosis" context="Patient" accessLevel="Public">
+      <def name="$Galactosemia Diagnosis" context="Patient" accessLevel="Public">
          <expression xmlns:ns5="urn:healthit-gov:qdm:v4_2" dataType="ns5:Diagnosis" templateId="Diagnosis" codeProperty="code" xsi:type="Retrieve">
             <codes name="Galactosemia" xsi:type="ValueSetRef"/>
          </expression>
       </def>
-      <def name="Parenteral Nutrition Procedure" context="Patient" accessLevel="Public">
-         <expression xmlns:ns6="urn:healthit-gov:qdm:v4_2" dataType="ns6:ProcedurePerformed" templateId="ProcedurePerformed" codeProperty="code" xsi:type="Retrieve">
-            <codes name="Parenteral Nutrition" xsi:type="ValueSetRef"/>
+      <def name="$Parenteral Nutrition Procedure" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="P">
+               <expression xmlns:ns6="urn:healthit-gov:qdm:v4_2" dataType="ns6:ProcedurePerformed" templateId="ProcedurePerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Parenteral Nutrition" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="P" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
-      <def name="Live Birth Infants without Parenteral Nutrition" context="Patient" accessLevel="Public">
+      <def name="$Live Birth Infants without Parenteral Nutrition" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression name="EncounterInpatient" xsi:type="ExpressionRef"/>
+               <expression name="$Inpatient Encounter" xsi:type="ExpressionRef"/>
             </source>
             <relationship alias="G" xsi:type="With">
-               <expression name="Gestational Age at Birth &lt;= 37 weeks" xsi:type="ExpressionRef"/>
+               <expression name="$Gestational Age at Birth &lt;= 37 weeks" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="And">
                   <operand xsi:type="GreaterOrEqual">
                      <operand path="startDatetime" scope="G" xsi:type="Property"/>
@@ -111,7 +136,7 @@
                </suchThat>
             </relationship>
             <relationship alias="B" xsi:type="With">
-               <expression name="Live Birth" xsi:type="ExpressionRef"/>
+               <expression name="$Live Birth" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="And">
                   <operand xsi:type="GreaterOrEqual">
                      <operand path="onsetDatetime" scope="B" xsi:type="Property"/>
@@ -124,7 +149,7 @@
                </suchThat>
             </relationship>
             <relationship alias="D" xsi:type="Without">
-               <expression name="Galactosemia Diagnosis" xsi:type="ExpressionRef"/>
+               <expression name="$Galactosemia Diagnosis" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="And">
                   <operand xsi:type="GreaterOrEqual">
                      <operand path="onsetDatetime" scope="D" xsi:type="Property"/>
@@ -137,7 +162,7 @@
                </suchThat>
             </relationship>
             <relationship alias="P" xsi:type="Without">
-               <expression name="Parenteral Nutrition Procedure" xsi:type="ExpressionRef"/>
+               <expression name="$Parenteral Nutrition Procedure" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="And">
                   <operand xsi:type="GreaterOrEqual">
                      <operand path="startDatetime" scope="P" xsi:type="Property"/>
@@ -151,16 +176,16 @@
             </relationship>
          </expression>
       </def>
-      <def name="InitialPopulation1" context="Patient" accessLevel="Public">
-         <expression name="Live Birth Infants without Parenteral Nutrition" xsi:type="ExpressionRef"/>
+      <def name="$Initial Population 1" context="Patient" accessLevel="Public">
+         <expression name="$Live Birth Infants without Parenteral Nutrition" xsi:type="ExpressionRef"/>
       </def>
-      <def name="Denominator1" context="Patient" accessLevel="Public">
-         <expression name="InitialPopulation1" xsi:type="ExpressionRef"/>
+      <def name="$Denominator 1" context="Patient" accessLevel="Public">
+         <expression name="$Initial Population 1" xsi:type="ExpressionRef"/>
       </def>
-      <def name="DenominatorExclusions1" context="Patient" accessLevel="Public">
+      <def name="$Denominator Exclusions 1" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression name="EncounterInpatient" xsi:type="ExpressionRef"/>
+               <expression name="$Inpatient Encounter" xsi:type="ExpressionRef"/>
             </source>
             <where xsi:type="Or">
                <operand xsi:type="Or">
@@ -180,23 +205,41 @@
             </where>
          </expression>
       </def>
-      <def name="Breast Milk Feeding" context="Patient" accessLevel="Public">
-         <expression xmlns:ns7="urn:healthit-gov:qdm:v4_2" dataType="ns7:SubstanceAdministered" templateId="SubstanceAdministered" codeProperty="code" xsi:type="Retrieve">
-            <codes name="Breast Milk" xsi:type="ValueSetRef"/>
+      <def name="$Breast Milk Feeding" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="S">
+               <expression xmlns:ns7="urn:healthit-gov:qdm:v4_2" dataType="ns7:SubstanceAdministered" templateId="SubstanceAdministered" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Breast Milk" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="S" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
-      <def name="Other Than Breast Milk Feeding" context="Patient" accessLevel="Public">
-         <expression xmlns:ns8="urn:healthit-gov:qdm:v4_2" dataType="ns8:SubstanceAdministered" templateId="SubstanceAdministered" codeProperty="code" xsi:type="Retrieve">
-            <codes name="Dietary Intake Other than Breast Milk" xsi:type="ValueSetRef"/>
+      <def name="$Other Than Breast Milk Feeding" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="S">
+               <expression xmlns:ns8="urn:healthit-gov:qdm:v4_2" dataType="ns8:SubstanceAdministered" templateId="SubstanceAdministered" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Dietary Intake Other than Breast Milk" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="S" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
-      <def name="Numerator1" context="Patient" accessLevel="Public">
+      <def name="$Numerator 1" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression name="EncounterInpatient" xsi:type="ExpressionRef"/>
+               <expression name="$Inpatient Encounter" xsi:type="ExpressionRef"/>
             </source>
             <relationship alias="F" xsi:type="With">
-               <expression name="Breast Milk Feeding" xsi:type="ExpressionRef"/>
+               <expression name="$Breast Milk Feeding" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="And">
                   <operand xsi:type="GreaterOrEqual">
                      <operand path="startDatetime" scope="F" xsi:type="Property"/>
@@ -209,7 +252,7 @@
                </suchThat>
             </relationship>
             <relationship alias="O" xsi:type="Without">
-               <expression name="Other Than Breast Milk Feeding" xsi:type="ExpressionRef"/>
+               <expression name="$Other Than Breast Milk Feeding" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="And">
                   <operand xsi:type="GreaterOrEqual">
                      <operand path="startDatetime" scope="O" xsi:type="Property"/>
@@ -223,22 +266,20 @@
             </relationship>
          </expression>
       </def>
-      <def name="InitialPopulation2" context="Patient" accessLevel="Public">
-         <expression name="Live Birth Infants without Parenteral Nutrition" xsi:type="ExpressionRef"/>
+      <def name="$Initial Population 2" context="Patient" accessLevel="Public">
+         <expression name="$Live Birth Infants without Parenteral Nutrition" xsi:type="ExpressionRef"/>
       </def>
-      <def name="Infant Birth Date" context="Patient" accessLevel="Public">
+      <def name="$Infant Birth Date" context="Patient" accessLevel="Public">
          <expression path="startDatetime" xsi:type="Property">
             <source xsi:type="SingletonFrom">
-               <operand xmlns:ns9="urn:healthit-gov:qdm:v4_2" dataType="ns9:PatientCharcteristic" templateId="PatientCharcteristic" codeProperty="code" xsi:type="Retrieve">
-                  <codes name="Birthdate" xsi:type="IdentifierRef"/>
-               </operand>
+               <operand xmlns:ns9="urn:healthit-gov:qdm:v4_2" dataType="ns9:PatientCharacteristicBirthdate" templateId="PatientCharacteristicBirthdate" xsi:type="Retrieve"/>
             </source>
          </expression>
       </def>
-      <def name="Intention Not To Breast Feed" context="Patient" accessLevel="Public">
+      <def name="$Intention Not To Breast Feed" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression name="EncounterInpatient" xsi:type="ExpressionRef"/>
+               <expression name="$Inpatient Encounter" xsi:type="ExpressionRef"/>
             </source>
             <relationship alias="C" xsi:type="Without">
                <expression xmlns:ns10="urn:healthit-gov:qdm:v4_2" dataType="ns10:CommunicationFromPatientToProvider" templateId="CommunicationFromPatientToProvider" codeProperty="code" xsi:type="Retrieve">
@@ -247,21 +288,21 @@
                <suchThat xsi:type="LessOrEqual">
                   <operand path="startDatetime" scope="C" xsi:type="Property"/>
                   <operand xsi:type="Add">
-                     <operand name="Infant Birth Date" xsi:type="ExpressionRef"/>
+                     <operand name="$Infant Birth Date" xsi:type="ExpressionRef"/>
                      <operand value="1" unit="hour" xsi:type="Quantity"/>
                   </operand>
                </suchThat>
             </relationship>
          </expression>
       </def>
-      <def name="DenominatorExclusions2" context="Patient" accessLevel="Public">
+      <def name="$Denominator Exclusions 2" context="Patient" accessLevel="Public">
          <expression xsi:type="Union">
-            <operand name="DenominatorExclusions1" xsi:type="ExpressionRef"/>
-            <operand name="Intention Not To Breast Feed" xsi:type="ExpressionRef"/>
+            <operand name="$Denominator Exclusions 1" xsi:type="ExpressionRef"/>
+            <operand name="$Intention Not To Breast Feed" xsi:type="ExpressionRef"/>
          </expression>
       </def>
       <def name="Numerator2" context="Patient" accessLevel="Public">
-         <expression name="Numerator1" xsi:type="ExpressionRef"/>
+         <expression name="$Numerator 1" xsi:type="ExpressionRef"/>
       </def>
    </statements>
 </library>

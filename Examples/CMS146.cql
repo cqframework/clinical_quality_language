@@ -1,6 +1,6 @@
 library CMS146 version '3'
 
-using QDM version '4.2'
+using QDM // version '4.2'
 
 include Common version '1' called Common
 
@@ -16,30 +16,30 @@ context Patient
 
 // Region: Initial Population
 
-define "InDemographic":
+define "In Demographic":
   AgeInYearsAt(start of MeasurementPeriod) >= 2
   and AgeInYearsAt(start of MeasurementPeriod) < 18
 
 define "Antibiotics":
-  ["MedicationOrder": "Antibiotic Medications"] M
-     where M."negationRationale" is not null
+  ["Medication, Order": "Antibiotic Medications"] M
+     where M.negationRationale is not null
 
 define "Pharyngitis":
   ["Diagnosis": "Acute Pharyngitis"] union ["Diagnosis": "Acute Tonsillitis"]
 
-define "MeasurementPeriodEncounters":
-  ["EncounterPerformed": "Ambulatory/ED Visit"] E
-    where E."negationRationale" is not null
-      and Interval[E."startDatetime", E."stopDatetime"] during MeasurementPeriod
-      and "InDemographic"
+define "Measurement Period Encounters":
+  ["Encounter, Performed": "Ambulatory/ED Visit"] E
+    where E.negationRationale is not null
+      and Interval[E.admissionDatetime, E.dischargeDatetime] during MeasurementPeriod
+      and "In Demographic"
 
-define "PharyngitisEncountersWithAntibiotics":
-  "MeasurementPeriodEncounters" E
+define "Pharyngitis Encounters With Antibiotics":
+  "Measurement Period Encounters" E
     with "Pharyngitis" P such that Common.includesOrStartsDuring(P, E)
-    with "Antibiotics" A such that A."signedDatetime" 3 days or less after E."startDatetime"
+    with "Antibiotics" A such that A.signedDatetime 3 days or less after E.admissionDatetime
 
-define "InitialPopulation":
-  "PharyngitisEncountersWithAntibiotics"
+define "Initial Population":
+  "Pharyngitis Encounters With Antibiotics"
 
 // EndRegion: Initial Population
 
@@ -51,16 +51,16 @@ define "InitialPopulation":
 
 // Region: Denominator Exclusions
 
-define "PharyngitisWithPriorAntibiotics":
+define "Pharyngitis With Prior Antibiotics":
   "Pharyngitis" P
-    with "Antibiotics" A such that A."signedDatetime" 30 days or less before P."startDatetime"
+    with "Antibiotics" A such that A."signedDatetime" 30 days or less before P."onsetDatetime"
 
-define "ExcludedEncounters":
-  "PharyngitisEncountersWithAntibiotics" E
-    with "PharyngitisWithPriorAntibiotics" P such that Common.includesOrStartsDuring(P, E)
+define "Excluded Encounters":
+  "Pharyngitis Encounters With Antibiotics" E
+    with "Pharyngitis With Prior Antibiotics" P such that Common.includesOrStartsDuring(P, E)
 
 define "DenominatorExclusions":
-  "ExcludedEncounters"
+  "Excluded Encounters"
 
 // EndRegion: Denominator Exclusions
 
@@ -72,15 +72,15 @@ define "DenominatorExclusions":
 
 // Region: Numerator
 
-define "StrepTestEncounters":
-  "PharyngitisEncountersWithAntibiotics" E
-    with ["LaboratoryTestPerformed": "Group A Streptococcus Test"] T
-      such that T."result" is not null
-        and T."negationRationale" is not null
-        and T."startDatetime" in Interval[E."startDatetime" - 3 days, E."stopDatetime" + 3 days]
+define "Strep Test Encounters":
+  "Pharyngitis Encounters With Antibiotics" E
+    with ["Laboratory Test, Performed": "Group A Streptococcus Test"] T
+      such that T.result is not null
+        and T.negationRationale is not null
+        and T.startDatetime in Interval[E.admissionDatetime - 3 days, E.dischargeDatetime + 3 days]
 
 define "Numerator":
-  "StrepTestEncounters"
+  "Strep Test Encounters"
 
 // EndRegion: Numerator
 
