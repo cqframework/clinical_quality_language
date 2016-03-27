@@ -3013,7 +3013,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Expression visitMemberInvocation(@NotNull cqlParser.MemberInvocationContext ctx) {
         String identifier = parseString(ctx.identifier());
         if (!targets.empty()) {
-            return resolveAccessor(targets.peek(), identifier);
+            Expression target = targets.pop();
+            try {
+                return resolveAccessor(target, identifier);
+            }
+            finally {
+                targets.push(target);
+            }
         }
         return resolveIdentifier(identifier);
     }
@@ -3042,20 +3048,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
         if (!targets.empty()) {
-            Expression target = targets.peek();
+            Expression target = targets.pop();
+            try {
+                // If the target is a library reference, resolve as a standard qualified call
+                if (target instanceof LibraryRef) {
+                    return resolveFunction(((LibraryRef)target).getLibraryName(), ctx);
+                }
 
-            // If the target is a library reference, resolve as a standard qualified call
-            if (target instanceof LibraryRef) {
-                return resolveFunction(((LibraryRef)target).getLibraryName(), ctx);
+                // If the target is an expression, resolve as a method invocation
+                if (target instanceof Expression) {
+                    // Need a way to support rewriting method invocations....
+                    throw new IllegalArgumentException("Method rewrite not yet supported.");
+                }
+
+                throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
             }
-
-            // If the target is an expression, resolve as a method invocation
-            if (target instanceof Expression) {
-                // Need a way to support rewriting method invocations....
-                throw new IllegalArgumentException("Method rewrite not yet supported.");
+            finally {
+                targets.push(target);
             }
-
-            throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
         }
 
         // If there is no target, resolve as a system function
