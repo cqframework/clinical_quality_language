@@ -73,39 +73,39 @@ parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), D
 
 context Patient
 
-define InDemographic:
+define "InDemographic":
     AgeInMonthsAt(start of MeasurementPeriod) >= 3
         and AgeInYearsAt(start of MeasurementPeriod) <= 18
 
-define ValidEncounters:
-	[Encounter: "Office Visit"]
-		union [Encounter: "Emergency Department Visit"]
-		union [Encounter: "Preventive Care- Initial Office Visit, 0 to 17"]
-		union [Encounter: "Preventive Care - Established Office Visit, 0 to 17"]
-		union [Encounter: "Hospital Observation Care - Initial"]
-		union [Encounter: "Face-to-Face Interaction"]
+define "ValidEncounters":
+	["Encounter": "Office Visit"]
+		union ["Encounter": "Emergency Department Visit"]
+		union ["Encounter": "Preventive Care- Initial Office Visit, 0 to 17"]
+		union ["Encounter": "Preventive Care - Established Office Visit, 0 to 17"]
+		union ["Encounter": "Hospital Observation Care - Initial"]
+		union ["Encounter": "Face-to-Face Interaction"]
 
-define EncountersDuringMeasurementPeriod:
-	ValidEncounters E where E.period during MeasurementPeriod
+define "EncountersDuringMeasurementPeriod":
+	"ValidEncounters" E where E."period" during MeasurementPeriod
 
-define URIDiagnosis:
-	[Condition: "Upper Respiratory Infection"]
+define "URIDiagnosis":
+	["Condition": "Upper Respiratory Infection"]
 
-define ValidDiagnosis:
-	URIDiagnosis U
-		where exists (EncountersDuringMeasurementPeriod E where U.onsetDateTime during E.period)
-			or exists (ValidEncounters E where Interval[U.onsetDateTime, U.abatementDate] includes E.period)
+define "ValidDiagnosis":
+	"URIDiagnosis" U
+		where exists ("EncountersDuringMeasurementPeriod" E where U."onsetDateTime" during E."period")
+			or exists ("ValidEncounters" E where Interval[U."onsetDateTime", U."abatementDate"] includes E."period")
 
-define InitialPopulation:
-	ValidDiagnosis V
-		where InDemographic
+define "InitialPopulation":
+	"ValidDiagnosis" V
+		where "InDemographic"
 
-define Denominator:
+define "Denominator":
 	true
 
-define Numerator:
-	ValidDiagnosis V where not exists ([MedicationPrescription: "Antibiotic Medications"] M where M.dateWritten occurs 3 days or less after V.onsetDateTime)
+define "Numerator":
+	"ValidDiagnosis" V where not exists (["MedicationPrescription": "Antibiotic Medications"] M where M."dateWritten" occurs 3 days or less after V."onsetDateTime")
 
 context Population
 
-define MeasureScore: (Count(Numerator) / Count(Denominator)) * 100
+define "MeasureScore": (Count("Numerator") / Count("Denominator")) * 100

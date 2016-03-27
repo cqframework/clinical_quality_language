@@ -43,25 +43,26 @@ define "In Demographic":
   AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) <= 17
 
 define "Asthma Encounters":
-  [Encounter: reason in "Asthma"] E
-    where E.class = 'inpatient'
-      and E.length <= 120 days
-      and E.hospitalization.dischargeDisposition in "Home Discharge Disposition"
-      and E.period ends during MeasurementPeriod
+  ["Encounter"] E
+    where E."reason" in "Asthma"
+      and E."class" = 'inpatient'
+      and E."length" <= 120 days
+      and E."hospitalization"."dischargeDisposition" in "Home Discharge Disposition"
+      and E."period" ends during MeasurementPeriod
 
 define "Asthma Encounters with Plan":
   "Asthma Encounters" E
-    with [CommunicationRequest] C
-      such that (C.encounter as Encounter).id = E.id
-        and exists ((C.reason) R where R in "Asthma Management Plan")
-        and exists (((C.sender as Practitioner).practitionerRole) R where R.role in "Doctor")
-        and (C.recipient as Patient).id = (C.subject as Patient).id
+    with ["CommunicationRequest"] C
+      such that (C."encounter" as "Encounter")."id" = E."id"
+        and exists ((C."reason") R where R in "Asthma Management Plan")
+        and exists (((C."sender" as "Practitioner")."practitionerRole") R where R."role" in "Doctor")
+        and (C."recipient" as "Patient")."id" = (C."subject" as "Patient")."id"
 
 define "In Initial Patient Population":
     "In Demographic" and exists ("Asthma Encounters")
 
 context Population
 
-define Denominator: "Asthma Encounters"
+define "Denominator": "Asthma Encounters"
 
-define Numerator: "Asthma Encounters with Plan"
+define "Numerator": "Asthma Encounters with Plan"

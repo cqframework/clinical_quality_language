@@ -32,12 +32,14 @@ public class ModelImporter {
     }
 
     private final XmlSchema schema;
+    private final ModelInfo config;
     private final ModelImporterOptions options;
     private final Map<String, DataType> dataTypes;
     private final Map<String, String> namespaces;
 
-    private ModelImporter(XmlSchema schema, ModelImporterOptions options) {
+    private ModelImporter(XmlSchema schema, ModelImporterOptions options, ModelInfo config) {
         this.schema = schema;
+        this.config = config;
         this.dataTypes = new HashMap<>();
         this.namespaces = new HashMap<>();
 
@@ -57,8 +59,8 @@ public class ModelImporter {
         this.options = tmpOptions;
     }
 
-    public static ModelInfo fromXsd(XmlSchema schema, ModelImporterOptions options) {
-        ModelImporter importer = new ModelImporter(schema, options);
+    public static ModelInfo fromXsd(XmlSchema schema, ModelImporterOptions options, ModelInfo config) {
+        ModelImporter importer = new ModelImporter(schema, options, config);
         return importer.importXsd();
     }
 
@@ -76,6 +78,9 @@ public class ModelImporter {
                 .withName(options.getModel())
                 .withTargetQualifier(new QName(options.getModel().toLowerCase()))
                 .withUrl(schema.getTargetNamespace())
+                .withPatientClassName(config != null ? config.getPatientClassName() : null)
+                .withPatientClassIdentifier(config != null ? config.getPatientClassIdentifier() : null)
+                .withPatientBirthDatePropertyName(config != null ? config.getPatientBirthDatePropertyName() : null)
                 .withTypeInfo(dataTypes.values().stream()
                         .map(this::toTypeInfo)
                         .collect(Collectors.toList()));
@@ -117,9 +122,16 @@ public class ModelImporter {
         if (dataType.getBaseType() != null) {
             result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
         }
-        if (options.getNormalizePrefix() != null && dataType.getName().startsWith(options.getNormalizePrefix())) {
+        if (dataType.getLabel() != null) {
+            result.setLabel(dataType.getLabel());
+        }
+        else if (options.getNormalizePrefix() != null && dataType.getName().startsWith(options.getNormalizePrefix())) {
             result.setLabel(dataType.getName().substring(options.getNormalizePrefix().length()));
         }
+
+        result.setIdentifier(dataType.getIdentifier());
+        result.setRetrievable(dataType.isRetrievable());
+        result.setPrimaryCodePath(dataType.getPrimaryCodePath());
 
         for (ClassTypeElement element : dataType.getElements()) {
             ClassInfoElement cie = new ClassInfoElement()
@@ -304,6 +316,23 @@ public class ModelImporter {
         return resultType;
     }
 
+    private void applyConfig(ClassType classType) {
+        if (config != null) {
+            for (int i = 0; i < config.getTypeInfo().size(); i++) {
+                TypeInfo typeConfig = config.getTypeInfo().get(i);
+                if (typeConfig instanceof ClassInfo) {
+                    ClassInfo classConfig = (ClassInfo)typeConfig;
+                    if (classConfig.getName().equals(classType.getName())) {
+                        classType.setIdentifier(classConfig.getIdentifier());
+                        classType.setLabel(classConfig.getLabel());
+                        classType.setRetrievable(classConfig.isRetrievable());
+                        classType.setPrimaryCodePath(classConfig.getPrimaryCodePath());
+                    }
+                }
+            }
+        }
+    }
+
     private DataType resolveComplexType(XmlSchemaComplexType complexType) {
         if (complexType.isAnonymous()) {
             return null;
@@ -329,6 +358,8 @@ public class ModelImporter {
             // Create and register the type
             ClassType classType = new ClassType(typeName, baseType);
             dataTypes.put(typeName, classType);
+
+            applyConfig(classType);
 
             List<ClassTypeElement> elements = new ArrayList<>();
 

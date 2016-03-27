@@ -5,7 +5,7 @@ library CMS146_QDM version '2'
  * repeated timing logic between the encounter and pharyngitis.
  */
 
-using QDM
+using QDM // version '4.2'
 
 valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Acute Tonsillitis": '2.16.840.1.113883.3.464.1003.102.12.1012'
@@ -17,51 +17,54 @@ parameter MeasurementPeriod Interval<DateTime>
 
 context Patient
 
-define InDemographic:
+define "InDemographic":
     AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
-define Pharyngitis:
-    ["Diagnosis, Active": "Acute Pharyngitis"] union ["Diagnosis, Active": "Acute Tonsillitis"]
+define "Pharyngitis":
+    ["Diagnosis": "Acute Pharyngitis"] union ["Diagnosis": "Acute Tonsillitis"]
 
-define Antibiotics:
-    ["Medication, Order": "Antibiotic Medications"]
+define "Antibiotics":
+    ["MedicationOrder": "Antibiotic Medications"] M
+       where M."negationRationale" is not null
 
-define function isRelated(P DiagnosisActive, E EncounterPerformed) :
-    Interval[P."start datetime", P."stop datetime"] includes Interval[E."start datetime", E."stop datetime"]
-      or P."start datetime" in Interval[E."start datetime", E."stop datetime"]
+define function isRelated(P "Diagnosis", E "EncounterPerformed") :
+    Interval[P."onsetDatetime", P."abatementDatetime"] includes Interval[E."admissionDatetime", E."dischargeDatetime"]
+      or P."onsetDatetime" in Interval[E."admissionDatetime", E."dischargeDatetime"]
 
-define MeasurementPeriodEncounters:
-    ["Encounter, Performed": "Ambulatory/ED Visit"] E
-        where InDemographic
-            and Interval[E."start datetime", E."stop datetime"] during MeasurementPeriod
+define "MeasurementPeriodEncounters":
+    ["EncounterPerformed": "Ambulatory/ED Visit"] E
+        where "InDemographic"
+            and E."negationRationale" is not null
+            and Interval[E."admissionDatetime", E."dischargeDatetime"] during MeasurementPeriod
 
-define PharyngitisEncounters:
-    MeasurementPeriodEncounters E
-        with Pharyngitis P such that isRelated(P, E)
-        with Antibiotics A such that A."signed datetime" 3 days or less after E."start datetime"
+define "PharyngitisEncounters":
+    "MeasurementPeriodEncounters" E
+        with "Pharyngitis" P such that isRelated(P, E)
+        with "Antibiotics" A such that A."signedDatetime" 3 days or less after E."admissionDatetime"
 
-define PharyngitisWithPriorAntibiotics:
-    Pharyngitis P
-        with Antibiotics A such that A."signed datetime" 30 days or less before P."start datetime"
+define "PharyngitisWithPriorAntibiotics":
+    "Pharyngitis" P
+        with "Antibiotics" A such that A."signedDatetime" 30 days or less before P."onsetDatetime"
 
-define ExcludedEncounters:
-    PharyngitisEncounters E
-        with PharyngitisWithPriorAntibiotics P such that isRelated(P, E)
+define "ExcludedEncounters":
+    "PharyngitisEncounters" E
+        with "PharyngitisWithPriorAntibiotics" P such that isRelated(P, E)
 
-define StrepTestEncounters:
-    PharyngitisEncounters E
-        with ["Laboratory Test, Performed": "Group A Streptococcus Test"] T
-            such that T.result is not null
-                and T."start datetime" in Interval[E."start datetime" - 3 days, E."stop datetime" + 3 days]
+define "StrepTestEncounters":
+    "PharyngitisEncounters" E
+        with ["LaboratoryTestPerformed": "Group A Streptococcus Test"] T
+            such that T."negationRationale" is not null
+                and T."result" is not null
+                and T."startDatetime" in Interval[E."admissionDatetime" - 3 days, E."dischargeDatetime" + 3 days]
 
-define IPPCount:
-    Count(PharyngitisEncounters)
+define "IPPCount":
+    Count("PharyngitisEncounters")
 
-define DenominatorCount:
-    IPPCount
+define "DenominatorCount":
+    "IPPCount"
 
-define DenominatorExclusionsCount:
-    Count(ExcludedEncounters)
+define "DenominatorExclusionsCount":
+    Count("ExcludedEncounters")
 
-define NumeratorCount:
-    Count(StrepTestEncounters except ExcludedEncounters)
+define "NumeratorCount":
+    Count("StrepTestEncounters" except "ExcludedEncounters")

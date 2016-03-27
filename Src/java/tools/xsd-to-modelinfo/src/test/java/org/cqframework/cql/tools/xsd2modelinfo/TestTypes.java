@@ -23,7 +23,8 @@ public class TestTypes {
             XmlSchema schema = schemaCol.read(new StreamSource(is));
             ModelInfo modelInfo = ModelImporter.fromXsd(schema, new ModelImporterOptions()
                     .withModel("QUICK")
-                    .withElementRedeclarationPolicy(ModelImporterOptions.ElementRedeclarationPolicy.RENAME_INVALID_REDECLARATIONS));
+                    .withElementRedeclarationPolicy(ModelImporterOptions.ElementRedeclarationPolicy.RENAME_INVALID_REDECLARATIONS),
+                    null);
 
             assertThat(modelInfo.getName(), is("QUICK"));
         }
