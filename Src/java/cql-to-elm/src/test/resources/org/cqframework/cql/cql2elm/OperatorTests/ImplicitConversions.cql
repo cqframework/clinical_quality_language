@@ -1,3 +1,5 @@
+codesystem "http://snomed.info/sct": 'http://snome.info/sct'
+
 // Integer to Decimal
 define ThisShouldWork: 5 = 5.5
 define IntegerDecimalMultiplication: 5 * 5.0
@@ -47,3 +49,7 @@ define ImplicitIntervalConversion: Interval[3.0, 5.0] = Interval[3, 5]
 define NullList: (null as List<System.Any>)[1]
 
 define NullIncluded: (null as List<System.Integer>) properly included in {1, 2, 3, 4, 5}
+
+// Implicit Code To Concept
+define CodeToConcept: Concept { Code 'XYZ' from "http://snomed.info/sct" } = Code { code: 'XYZ', system: 'http://snomed.info/sct' }
+define CodesToConcept: Concept { Code 'XYZ' from "http://snomed.info/sct" } = { Code { code: 'XYZ', system: 'http://snomed.info/sct' } }

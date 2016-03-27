@@ -232,7 +232,7 @@ public class AggregateOperatorsTest {
 
         Query q = (Query) source;
         assertThat(q.getSource(), hasSize(1));
-        assertThat(q.getDefine(), hasSize(0));
+        assertThat(q.getLet(), hasSize(0));
         assertThat(q.getRelationship(), hasSize(0));
         assertThat(q.getSort(), nullValue());
         assertThat(q.getWhere(), nullValue());

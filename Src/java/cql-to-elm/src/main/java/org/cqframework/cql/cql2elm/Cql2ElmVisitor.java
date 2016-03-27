@@ -52,6 +52,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Stack<String> expressionContext = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final Stack<Narrative> narratives = new Stack<>();
+    private final Stack<Expression> targets = new Stack<>();
     private FunctionDef currentFunctionDef = null;
     private int currentToken = -1;
     private int nextLocalId = 1;
@@ -255,7 +256,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
-        if (o instanceof Trackable && tree instanceof ParserRuleContext && !(tree instanceof cqlParser.LogicContext)) {
+        if (o instanceof Trackable && tree instanceof ParserRuleContext && !(tree instanceof cqlParser.LibraryContext)) {
             this.track((Trackable) o, (ParserRuleContext) tree);
         }
         if (o instanceof Expression) {
@@ -276,7 +277,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
     
     @Override
-    public Object visitLogic(@NotNull cqlParser.LogicContext ctx) {
+    public Object visitLibrary(@NotNull cqlParser.LibraryContext ctx) {
         getOrInitializeLibrary();
         translatedLibrary = new TranslatedLibrary();
 
@@ -568,19 +569,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIntervalSelector(@NotNull cqlParser.IntervalSelectorContext ctx) {
-        Interval result = of.createInterval()
-                .withLow(parseExpression(ctx.expression(0)))
-                .withLowClosed(ctx.getChild(1).getText().equals("["))
-                .withHigh(parseExpression(ctx.expression(1)))
-                .withHighClosed(ctx.getChild(5).getText().equals("]"));
-
-        DataType pointType = ensureCompatibleTypes(result.getLow().getResultType(), result.getHigh().getResultType());
-        result.setResultType(new IntervalType(pointType));
-
-        result.setLow(ensureCompatible(result.getLow(), pointType));
-        result.setHigh(ensureCompatible(result.getHigh(), pointType));
-
-        return result;
+        return createInterval(parseExpression(ctx.expression(0)), ctx.getChild(1).getText().equals("["),
+                parseExpression(ctx.expression(1)), ctx.getChild(5).getText().equals("]"));
     }
 
     @Override
@@ -634,10 +624,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitCodeSelector(@NotNull cqlParser.CodeSelectorContext ctx) {
         Code code = of.createCode();
-        code.setCode(parseString(ctx.stringLiteral().STRING()));
+        code.setCode(parseString(ctx.STRING()));
         code.setSystem((CodeSystemRef)visit(ctx.codesystemIdentifier()));
         if (ctx.displayClause() != null) {
-            code.setDisplay(parseString(ctx.displayClause().stringLiteral().STRING()));
+            code.setDisplay(parseString(ctx.displayClause().STRING()));
         }
 
         code.setResultType(resolveTypeName("Code"));
@@ -648,7 +638,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitConceptSelector(@NotNull cqlParser.ConceptSelectorContext ctx) {
         Concept concept = of.createConcept();
         if (ctx.displayClause() != null) {
-            concept.setDisplay(parseString(ctx.displayClause().stringLiteral().STRING()));
+            concept.setDisplay(parseString(ctx.displayClause().STRING()));
         }
 
         for (cqlParser.CodeSelectorContext codeContext : ctx.codeSelector()) {
@@ -944,13 +934,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Expression visitQuantityLiteral(@NotNull cqlParser.QuantityLiteralContext ctx) {
+    public Expression visitNumberLiteral(@NotNull cqlParser.NumberLiteralContext ctx) {
+        return createNumberLiteral(ctx.NUMBER().getText());
+    }
+
+    @Override
+    public Expression visitQuantity(@NotNull cqlParser.QuantityContext ctx) {
         if (ctx.unit() != null) {
             DecimalFormat df = new DecimalFormat("#.#");
             df.setParseBigDecimal(true);
             try {
                 Quantity result = of.createQuantity()
-                        .withValue((BigDecimal) df.parse(ctx.QUANTITY().getText()))
+                        .withValue((BigDecimal) df.parse(ctx.NUMBER().getText()))
                         .withUnit(parseString(ctx.unit()));
                 result.setResultType(resolveTypeName("Quantity"));
                 return result;
@@ -958,13 +953,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 throw new IllegalArgumentException(String.format("Could not parse quantity literal: %s", ctx.getText()), e);
             }
         } else {
-            String quantity = ctx.QUANTITY().getText();
-            DataType resultType = resolveTypeName(quantity.contains(".") ? "Decimal" : "Integer");
-            Literal result = of.createLiteral()
-                    .withValue(quantity)
-                    .withValueType(dataTypeToQName(resultType));
-            result.setResultType(resultType);
-            return result;
+            return createNumberLiteral(ctx.NUMBER().getText());
         }
     }
 
@@ -1152,6 +1141,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             case "month":
             case "months":
                 return DateTimePrecision.MONTH;
+            case "wk":
+            case "week":
+            case "weeks":
+                return DateTimePrecision.WEEK;
             case "d":
             case "day":
             case "days":
@@ -1198,6 +1191,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 break;
             case "year":
             case "month":
+            case "week":
             case "day":
             case "hour":
             case "minute":
@@ -1242,18 +1236,28 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression second = parseExpression(ctx.expressionTerm(0));
         Expression third = parseExpression(ctx.expressionTerm(1));
         boolean isProper = ctx.getChild(0).getText().equals("properly");
-        BinaryExpression result = of.createAnd()
-                .withOperand(
-                        (isProper ? of.createGreater() : of.createGreaterOrEqual())
-                                .withOperand(first, second),
-                        (isProper ? of.createLess() : of.createLessOrEqual())
-                                .withOperand(first, third)
-                );
 
-        resolveBinaryCall("System", isProper ? "Greater" : "GreaterOrEqual", (BinaryExpression)result.getOperand().get(0));
-        resolveBinaryCall("System", isProper ? "Less" : "LessOrEqual", (BinaryExpression)result.getOperand().get(1));
-        resolveBinaryCall("System", "And", result);
-        return result;
+        if (first.getResultType() instanceof IntervalType) {
+            BinaryExpression result = isProper ? of.createProperIncludedIn() : of.createIncludedIn()
+                    .withOperand(first, createInterval(second, true, third, true));
+
+            resolveBinaryCall("System", isProper ? "ProperIncludedIn" : "IncludedIn", result);
+            return result;
+        }
+        else {
+            BinaryExpression result = of.createAnd()
+                    .withOperand(
+                            (isProper ? of.createGreater() : of.createGreaterOrEqual())
+                                    .withOperand(first, second),
+                            (isProper ? of.createLess() : of.createLessOrEqual())
+                                    .withOperand(first, third)
+                    );
+
+            resolveBinaryCall("System", isProper ? "Greater" : "GreaterOrEqual", (BinaryExpression) result.getOperand().get(0));
+            resolveBinaryCall("System", isProper ? "Less" : "LessOrEqual", (BinaryExpression) result.getOperand().get(1));
+            resolveBinaryCall("System", "And", result);
+            return result;
+        }
     }
 
     @Override
@@ -1427,13 +1431,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Expression visitEqualityExpression(@NotNull cqlParser.EqualityExpressionContext ctx) {
         String operator = parseString(ctx.getChild(1));
-        if (operator.equals("matches")) {
-            BinaryExpression matches = of.createMatches().withOperand(
+        if (operator.equals("~") || operator.equals("!~")) {
+            BinaryExpression equivalent = of.createEquivalent().withOperand(
                     parseExpression(ctx.expression(0)),
                     parseExpression(ctx.expression(1)));
 
-            resolveBinaryCall("System", "Matches", matches);
-            return matches;
+            resolveBinaryCall("System", "Equivalent", equivalent);
+            if (!"~".equals(parseString(ctx.getChild(1)))) {
+                Not not = of.createNot().withOperand(equivalent);
+                resolveUnaryCall("System", "Not", not);
+                return not;
+            }
+
+            return equivalent;
         }
         else {
             BinaryExpression equal = of.createEqual().withOperand(
@@ -1577,13 +1587,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
-    @Override
-    public Expression visitAccessorExpressionTerm(@NotNull cqlParser.AccessorExpressionTermContext ctx) {
-        Expression left = parseExpression(ctx.expressionTerm());
-        String memberIdentifier = parseString(ctx.identifier());
-        return resolveAccessor(left, memberIdentifier);
-    }
-
     public Expression resolveIdentifier(String identifier) {
         // An Identifier will always be:
         // 1: The name of an alias
@@ -1607,10 +1610,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return result;
         }
 
-        DefineClause define = resolveQueryDefine(identifier);
-        if (define != null) {
-            QueryDefineRef result = of.createQueryDefineRef().withName(identifier);
-            result.setResultType(define.getResultType());
+        LetClause let = resolveQueryLet(identifier);
+        if (let != null) {
+            QueryLetRef result = of.createQueryLetRef().withName(identifier);
+            result.setResultType(let.getResultType());
             return result;
         }
 
@@ -1691,12 +1694,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Expression visitIdentifierTerm(@NotNull cqlParser.IdentifierTermContext ctx) {
-        String identifier = parseString(ctx.identifier());
-        return resolveIdentifier(identifier);
-    }
-
-    @Override
     public Object visitTerminal(@NotNull TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
@@ -1713,11 +1710,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return text;
-    }
-
-    @Override
-    public Object visitTermExpression(@NotNull cqlParser.TermExpressionContext ctx) {
-        return visit(ctx.expressionTerm());
     }
 
     @Override
@@ -2150,7 +2142,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 return after;
             }
         } else {
-            Quantity quantity = (Quantity)visit(ctx.quantityOffset().quantityLiteral());
+            Quantity quantity = (Quantity)visit(ctx.quantityOffset().quantity());
             Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
             Expression lowerBound = null;
             Expression upperBound = null;
@@ -2301,7 +2293,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
-        Quantity quantity = (Quantity)visit(ctx.quantityLiteral());
+        Quantity quantity = (Quantity)visit(ctx.quantity());
         Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
         Negate negativeQuantityLiteral = of.createNegate().withOperand(createLiteral(quantity.getValue().intValueExact()));
         resolveUnaryCall("System", "Negate", negativeQuantityLiteral);
@@ -2515,10 +2507,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 Collapse collapse = of.createCollapse().withOperand(parseExpression(ctx.expression()));
                 resolveUnaryCall("System", "Collapse", collapse);
                 return collapse;
-            case "expand":
-                Expand expand = of.createExpand().withOperand(parseExpression(ctx.expression()));
-                resolveUnaryCall("System", "Expand", expand);
-                return expand;
+            case "flatten":
+                Flatten flatten = of.createFlatten().withOperand(parseExpression(ctx.expression()));
+                resolveUnaryCall("System", "Flatten", flatten);
+                return flatten;
         }
 
         throw new IllegalArgumentException(String.format("Unknown aggregate operator %s.", ctx.getChild(0).getText()));
@@ -2605,9 +2597,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
             try {
 
-                List<DefineClause> dfcx = ctx.defineClause() != null ? (List<DefineClause>) visit(ctx.defineClause()) : null;
+                List<LetClause> dfcx = ctx.letClause() != null ? (List<LetClause>) visit(ctx.letClause()) : null;
                 if (dfcx != null) {
-                    queryContext.addDefineClauses(dfcx);
+                    queryContext.addLetClauses(dfcx);
                 }
 
                 List<RelationshipClause> qicx = new ArrayList<>();
@@ -2651,7 +2643,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 Query query = of.createQuery()
                         .withSource(sources)
-                        .withDefine(dfcx)
+                        .withLet(dfcx)
                         .withRelationship(qicx)
                         .withWhere(where)
                         .withReturn(ret)
@@ -2845,20 +2837,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitDefineClause(@NotNull cqlParser.DefineClauseContext ctx) {
-        List<DefineClause> defineClauseItems = new ArrayList<>();
-        for (cqlParser.DefineClauseItemContext defineClauseItem : ctx.defineClauseItem()) {
-            defineClauseItems.add((DefineClause) visit(defineClauseItem));
+    public Object visitLetClause(@NotNull cqlParser.LetClauseContext ctx) {
+        List<LetClause> letClauseItems = new ArrayList<>();
+        for (cqlParser.LetClauseItemContext letClauseItem : ctx.letClauseItem()) {
+            letClauseItems.add((LetClause) visit(letClauseItem));
         }
-        return defineClauseItems;
+        return letClauseItems;
     }
 
     @Override
-    public Object visitDefineClauseItem(@NotNull cqlParser.DefineClauseItemContext ctx) {
-        DefineClause defineClause = of.createDefineClause().withExpression(parseExpression(ctx.expression()))
+    public Object visitLetClauseItem(@NotNull cqlParser.LetClauseItemContext ctx) {
+        LetClause letClause = of.createLetClause().withExpression(parseExpression(ctx.expression()))
                 .withIdentifier(parseString(ctx.identifier()));
-        defineClause.setResultType(defineClause.getExpression().getResultType());
-        return defineClause;
+        letClause.setResultType(letClause.getExpression().getResultType());
+        return letClause;
     }
 
     @Override
@@ -2996,13 +2988,43 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitInvocationExpressionTerm(@NotNull cqlParser.InvocationExpressionTermContext ctx) {
+    public Expression visitInvocationExpressionTerm(@NotNull cqlParser.InvocationExpressionTermContext ctx) {
+        Expression left = parseExpression(ctx.expressionTerm());
+        targets.push(left);
+        try {
+            return (Expression)visit(ctx.invocation());
+        }
+        finally {
+            targets.pop();
+        }
+    }
+
+    @Override
+    public Expression visitExternalConstant(@NotNull cqlParser.ExternalConstantContext ctx) {
+        return new IdentifierRef().withName(ctx.getText());
+    }
+
+    @Override
+    public Expression visitThisInvocation(@NotNull cqlParser.ThisInvocationContext ctx) {
+        return new IdentifierRef().withName(ctx.getText());
+    }
+
+    @Override
+    public Expression visitMemberInvocation(@NotNull cqlParser.MemberInvocationContext ctx) {
+        String identifier = parseString(ctx.identifier());
+        if (!targets.empty()) {
+            return resolveAccessor(targets.peek(), identifier);
+        }
+        return resolveIdentifier(identifier);
+    }
+
+    private Expression resolveFunction(String libraryName, @NotNull cqlParser.FunctionContext ctx) {
         FunctionRef fun = of.createFunctionRef()
-                .withLibraryName(parseString(ctx.qualifier()))
+                .withLibraryName(libraryName)
                 .withName(parseString(ctx.identifier()));
 
-        if (ctx.expression() != null) {
-            for (cqlParser.ExpressionContext expressionContext : ctx.expression()) {
+        if (ctx.paramList() != null && ctx.paramList().expression() != null) {
+            for (cqlParser.ExpressionContext expressionContext : ctx.paramList().expression()) {
                 fun.getOperand().add((Expression) visit(expressionContext));
             }
         }
@@ -3015,6 +3037,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun));
 
         return fun;
+    }
+
+    @Override
+    public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
+        if (!targets.empty()) {
+            Expression target = targets.peek();
+
+            // If the target is a library reference, resolve as a standard qualified call
+            if (target instanceof LibraryRef) {
+                return resolveFunction(((LibraryRef)target).getLibraryName(), ctx);
+            }
+
+            // If the target is an expression, resolve as a method invocation
+            if (target instanceof Expression) {
+                // Need a way to support rewriting method invocations....
+                throw new IllegalArgumentException("Method rewrite not yet supported.");
+            }
+
+            throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
+        }
+
+        // If there is no target, resolve as a system function
+        return resolveFunction(null, ctx);
     }
 
     @Override
@@ -3596,6 +3641,31 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return createLiteral(String.valueOf(value), "Decimal");
     }
 
+    private Literal createNumberLiteral(String value) {
+        DataType resultType = resolveTypeName(value.contains(".") ? "Decimal" : "Integer");
+        Literal result = of.createLiteral()
+                .withValue(value)
+                .withValueType(dataTypeToQName(resultType));
+        result.setResultType(resultType);
+        return result;
+    }
+
+    private Interval createInterval(Expression low, boolean lowClosed, Expression high, boolean highClosed) {
+        Interval result = of.createInterval()
+                .withLow(low)
+                .withLowClosed(lowClosed)
+                .withHigh(high)
+                .withHighClosed(highClosed);
+
+        DataType pointType = ensureCompatibleTypes(result.getLow().getResultType(), result.getHigh().getResultType());
+        result.setResultType(new IntervalType(pointType));
+
+        result.setLow(ensureCompatible(result.getLow(), pointType));
+        result.setHigh(ensureCompatible(result.getHigh(), pointType));
+
+        return result;
+    }
+
     private boolean isBooleanLiteral(Expression expression, Boolean bool) {
         boolean ret = false;
         if (expression instanceof Literal) {
@@ -3619,11 +3689,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return null;
     }
 
-    private DefineClause resolveQueryDefine(String identifier) {
+    private LetClause resolveQueryLet(String identifier) {
         for (QueryContext query : queries) {
-            DefineClause define = query.resolveDefine(identifier);
-            if (define != null) {
-                return define;
+            LetClause let = query.resolveLet(identifier);
+            if (let != null) {
+                return let;
             }
         }
 

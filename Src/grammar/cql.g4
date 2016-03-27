@@ -191,7 +191,7 @@ qualifier
     ;
 
 query
-    : sourceClause defineClause? queryInclusionClause* whereClause? returnClause? sortClause?
+    : sourceClause letClause? queryInclusionClause* whereClause? returnClause? sortClause?
     ;
 
 sourceClause
@@ -207,11 +207,11 @@ multipleSourceClause
     : 'from' aliasedQuerySource (',' aliasedQuerySource)*
     ;
 
-defineClause
-    : 'define' defineClauseItem (',' defineClauseItem)*
+letClause
+    : 'let' letClauseItem (',' letClauseItem)*
     ;
 
-defineClauseItem
+letClauseItem
     : identifier ':' expression
     ;
 
@@ -262,11 +262,19 @@ expression
     | expression ('|' | 'union' | 'intersect' | 'except') expression                                #inFixSetExpression
     ;
 
+dateTimePrecision
+    : 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond'
+    ;
+
 dateTimeComponent
     : dateTimePrecision
     | 'date'
     | 'time'
     | 'timezone'
+    ;
+
+pluralDateTimePrecision
+    : 'years' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds'
     ;
 
 expressionTerm
@@ -288,7 +296,7 @@ expressionTerm
     | expressionTerm ('+' | '-') expressionTerm                          #additionExpressionTerm
     | 'if' expression 'then' expression 'else' expression                #ifThenElseExpressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     #caseExpressionTerm
-    | ('distinct' | 'collapse' | 'expand') expression                    #aggregateExpressionTerm
+    | ('distinct' | 'collapse' | 'flatten') expression                   #aggregateExpressionTerm
     ;
 
 caseExpressionItem
@@ -337,6 +345,16 @@ term
     | conceptSelector       #conceptSelectorTerm
     | '(' expression ')'    #parenthesizedTerm
     ;
+
+literal
+        : ('true' | 'false')                                    #booleanLiteral
+        | 'null'                                                #nullLiteral
+        | STRING                                                #stringLiteral
+        | NUMBER                                                #numberLiteral
+        | DATETIME                                              #dateTimeLiteral
+        | TIME                                                  #timeLiteral
+        | quantity                                              #quantityLiteral
+        ;
 
 intervalSelector
     : // TODO: Consider this as an alternative syntax for intervals... (would need to be moved up to expression to make it work)

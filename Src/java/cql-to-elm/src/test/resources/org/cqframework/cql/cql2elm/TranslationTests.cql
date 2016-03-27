@@ -6,8 +6,8 @@ valueset "Female Administrative Sex": '2.16.840.1.113883.3.560.100.2'
 
 context Patient
 
-define EscapedString: 'This string''s escaped'
-define "Escaped""Identifier": 'This identifier''s escaped'
+define EscapedString: 'This string\'s escaped'
+define "Escaped\"Identifier": 'This identifier\'s escaped'
 
 define InDemographic:
     AgeInYears() >= 18

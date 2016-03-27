@@ -121,7 +121,7 @@ public class CqlTranslator {
         errors = new ArrayList<>();
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryManager);
         parser.addErrorListener(new CqlErrorListener(visitor));
-        ParseTree tree = parser.logic();
+        ParseTree tree = parser.library();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);

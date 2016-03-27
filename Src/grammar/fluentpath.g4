@@ -37,8 +37,8 @@ term
         ;
 
 literal
-        : EMPTY                                                 #nullLiteral
-        | BOOL                                                  #booleanLiteral
+        : '{' '}'                                               #nullLiteral
+        | ('true' | 'false')                                    #booleanLiteral
         | STRING                                                #stringLiteral
         | NUMBER                                                #numberLiteral
         | DATETIME                                              #dateTimeLiteral
@@ -102,15 +102,15 @@ identifier
     Lexical rules
 *****************************************************************/
 
-EMPTY
-        // BR: CQL uses curly braces for list selectors, can FluentPath do the same?
-        : '{' '}'
-        ;                      // To create an empty array (and avoid a NULL literal)
+//EMPTY
+//        // BR: CQL uses curly braces for list selectors, can FluentPath do the same?
+//        : '{' '}'
+//        ;                      // To create an empty array (and avoid a NULL literal)
 
-BOOL
-        : 'true'
-        | 'false'
-        ;
+//BOOL
+//        : 'true'
+//        | 'false'
+//        ;
 
 DATETIME
         : '@'
@@ -150,7 +150,7 @@ STRING
 
 // Also allows leading zeroes now (just like CQL and XSD)
 NUMBER
-        : [0-9]+('.' [0-9])?
+        : [0-9]+('.' [0-9]+)?
         ;
 
 // Pipe whitespace to the HIDDEN channel to support retrieving source text through the parser.

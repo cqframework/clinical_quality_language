@@ -3,7 +3,7 @@ define ListDistinct: distinct { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 }
 define ListEqual: { 1, 2, 3 } = { 1, 2, 3 }
 define ListExcept: { 1, 2, 3, 4, 5 } except { 2, 3, 4 }
 define ListExists: exists { 1, 2, 3, 4, 5 }
-define ListExpand: expand { { 1, 2, 3 }, { 4, 5, 6 } }
+define ListFlatten: flatten { { 1, 2, 3 }, { 4, 5, 6 } }
 define ListFirst: First({ 1, 2, 3, 4, 5 })
 define ListIn: 2 in { 1, 2, 3 }
 define ListIncludes: { 1, 2, 3, 4, 5 } includes { 2, 3, 4 }
