@@ -1397,6 +1397,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
+    public Expression visitImpliesExpression(@NotNull cqlParser.ImpliesExpressionContext ctx) {
+        Implies implies = of.createImplies().withOperand(
+                parseExpression(ctx.expression(0)),
+                parseExpression(ctx.expression(1)));
+
+        resolveBinaryCall("System", "Implies", implies);
+        return implies;
+    }
+
     @Override
     public Object visitInFixSetExpression(@NotNull cqlParser.InFixSetExpressionContext ctx) {
         String operator = ctx.getChild(1).getText();
