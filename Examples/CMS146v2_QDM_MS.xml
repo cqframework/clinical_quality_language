@@ -79,7 +79,7 @@
                   <codes name="Group A Streptococcus Test" xsi:type="ValueSetRef"/>
                </expression>
             </source>
-            <define identifier="InMP">
+            <let identifier="InMP">
                <expression xsi:type="IncludedIn">
                   <operand lowClosed="true" highClosed="true" xsi:type="Interval">
                      <low path="admissionDatetime" scope="E" xsi:type="Property"/>
@@ -87,8 +87,8 @@
                   </operand>
                   <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
                </expression>
-            </define>
-            <define identifier="PharyngitisDx">
+            </let>
+            <let identifier="PharyngitisDx">
                <expression xsi:type="Or">
                   <operand xsi:type="Includes">
                      <operand lowClosed="true" highClosed="true" xsi:type="Interval">
@@ -108,8 +108,8 @@
                      </operand>
                   </operand>
                </expression>
-            </define>
-            <define identifier="PrescribedAntibiotics">
+            </let>
+            <let identifier="PrescribedAntibiotics">
                <expression xsi:type="In">
                   <operand precision="Day" xsi:type="DurationBetween">
                      <operand path="signedDatetime" scope="A" xsi:type="Property"/>
@@ -122,7 +122,7 @@
                      <high valueType="t:Integer" value="0" xsi:type="Literal"/>
                   </operand>
                </expression>
-            </define>
+            </let>
             <where xsi:type="And">
                <operand xsi:type="And">
                   <operand xsi:type="And">
@@ -130,11 +130,11 @@
                         <operand xsi:type="And">
                            <operand xsi:type="And">
                               <operand name="InDemographic" xsi:type="ExpressionRef"/>
-                              <operand name="InMP" xsi:type="QueryDefineRef"/>
+                              <operand name="InMP" xsi:type="QueryLetRef"/>
                            </operand>
-                           <operand name="PharyngitisDx" xsi:type="QueryDefineRef"/>
+                           <operand name="PharyngitisDx" xsi:type="QueryLetRef"/>
                         </operand>
-                        <operand name="PrescribedAntibiotics" xsi:type="QueryDefineRef"/>
+                        <operand name="PrescribedAntibiotics" xsi:type="QueryLetRef"/>
                      </operand>
                      <operand xsi:type="Not">
                         <operand xsi:type="IsNull">

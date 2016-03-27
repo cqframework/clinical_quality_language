@@ -58,7 +58,7 @@ define "InpatientEncounters":
 		where E."length" <= 120 days
 			and E."period" ends during MeasurementPeriod
 
-define "EDEncounters:
+define "EDEncounters":
 	["Encounter": "Emergency Department Visit"] ED
 		with "InpatientEncounters" E such that ED."period" ends 1 hour or less before start of E."period"
 
