@@ -5,24 +5,18 @@ grammar fluentpath;
 //prog: line (line)*;
 //line: ID ( '(' expr ')') ':' expr '\r'? '\n';
 
-// Don't see the value of unary +, but would be confusing for CQL users not to have it
-// So, we'll stick to != ?  Will CQL align to that?
-// BR: Is there any reason not to support <>? I'm concerned that it's such a common operator, it will be significant backwards compatibility issue
 expression
         : term                                                      #termExpression
-        // BR: Removed the + here because it is grammatically equivalent but makes it easier to deal with in the tree
         | expression '.' invocation                                 #invocationExpression
         | expression '[' expression ']'                             #indexerExpression
         | ('+' | '-') expression                                    #polarityExpression
-        | expression '^' expression                                 #powerExpression
         | expression ('*' | '/' | 'div' | 'mod') expression         #multiplicativeExpression
         | expression ('+' | '-' ) expression                        #additiveExpression
         | expression '|' expression                                 #unionExpression
-        // | expression 'between' expression 'and' expression         #betweenExpression
         | expression ('<=' | '<' | '>' | '>=') expression           #inequalityExpression
         | expression ('is' | 'as') typeSpecifier                    #typeExpression
-        // BR: What about "cast X as Y"? Needed in FluentPath?
         | expression ('=' | '~' | '!=' | '!~' | '<>') expression    #equalityExpression
+        | expression ('in' | 'contains') expression                 #membershipExpression
         | expression 'and' expression                               #andExpression
         | expression ('or' | 'xor') expression                      #orExpression
         | expression 'implies' expression                           #impliesExpression
@@ -47,14 +41,12 @@ literal
         ;
 
 externalConstant
-        // BR: Why do we need the "%" here? Is it to introduce a separate namespace?
         : '%' identifier
         ;
 
 invocation                          // Terms that can be used after the function/member invocation '.'
         : identifier                                            #memberInvocation
         | function                                              #functionInvocation
-        // BR: Why do we need the "$" here? Isn't it just an identifier?
         | '$this'                                               #thisInvocation
         ;
 
@@ -102,8 +94,9 @@ identifier
     Lexical rules
 *****************************************************************/
 
+// Not sure why, but with these as lexical rules, when the grammar is imported into CQL, they are not correctly recognized
+// Moving the same rules into the literal production rule above corrects the issue
 //EMPTY
-//        // BR: CQL uses curly braces for list selectors, can FluentPath do the same?
 //        : '{' '}'
 //        ;                      // To create an empty array (and avoid a NULL literal)
 
