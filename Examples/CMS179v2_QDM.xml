@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
-   <identifier id="CMS179" version="2"/>
+   <identifier id="CMS179_QDM" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
-      <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_2"/>
    </usings>
    <parameters>
       <def name="MeasurementPeriod" accessLevel="Public">
@@ -31,53 +31,101 @@
       </def>
    </parameters>
    <valueSets>
-      <def name="Flutter Diagnosis" id="2.16.840.1.113883.3.117.1.7.1.202" accessLevel="Public"/>
-      <def name="Warfarin Medication" id="2.16.840.1.113883.3.117.1.7.1.232" accessLevel="Public"/>
+      <def name="Atrial Fibrillation/Flutter" id="2.16.840.1.113883.3.117.1.7.1.202" accessLevel="Public"/>
+      <def name="Warfarin" id="2.16.840.1.113883.3.117.1.7.1.232" accessLevel="Public"/>
       <def name="Face-to-face Encounter" id="2.16.840.1.113883.3.464.1003.101.12.1048" accessLevel="Public"/>
       <def name="Office Visit" id="2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public"/>
       <def name="Valvular Heart Disease" id="2.16.840.1.113883.3.464.1003.104.12.1017" accessLevel="Public"/>
-      <def name="INR Lab Result" id="2.16.840.1.113883.3.117.1.7.1.213" accessLevel="Public"/>
+      <def name="INR" id="2.16.840.1.113883.3.117.1.7.1.213" accessLevel="Public"/>
+      <def name="birth date" id="2.16.840.1.113883.3.560.100.4" accessLevel="Public"/>
+      <def name="Computed Value INR percent TTR" id="2.16.840.1.113883.3.464.1003.104.12.1018" accessLevel="Public"/>
    </valueSets>
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+            <operand xmlns:ns0="urn:healthit-gov:qdm:v4_2" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="FlutterDiagnoses" context="Patient" accessLevel="Public">
-         <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
-            <codes name="Flutter Diagnosis" xsi:type="ValueSetRef"/>
+         <expression xmlns:ns1="urn:healthit-gov:qdm:v4_2" dataType="ns1:Diagnosis" templateId="Diagnosis" codeProperty="code" xsi:type="Retrieve">
+            <codes name="Atrial Fibrillation/Flutter" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="WarfarinMedications" context="Patient" accessLevel="Public">
-         <expression dataType="quick:MedicationAdministration" templateId="medicationadministration-qicore-qicore-medicationadministration" codeProperty="medication.code" xsi:type="Retrieve">
-            <codes name="Warfarin Medication" xsi:type="ValueSetRef"/>
+         <expression xmlns:ns2="urn:healthit-gov:qdm:v4_2" dataType="ns2:MedicationActive" templateId="MedicationActive" codeProperty="code" xsi:type="Retrieve">
+            <codes name="Warfarin" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="FaceToFaceEncounters" context="Patient" accessLevel="Public">
-         <expression dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
-            <codes name="Face-to-face Encounter" xsi:type="ValueSetRef"/>
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression xmlns:ns3="urn:healthit-gov:qdm:v4_2" dataType="ns3:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Face-to-Face Interaction" xsi:type="IdentifierRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="E" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
       <def name="OfficeVisitEncounters" context="Patient" accessLevel="Public">
-         <expression dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
-            <codes name="Office Visit" xsi:type="ValueSetRef"/>
+         <expression xsi:type="Query">
+            <source alias="E">
+               <expression xmlns:ns4="urn:healthit-gov:qdm:v4_2" dataType="ns4:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Office Visit" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="E" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
       <def name="ValvularHeartDiseaseDiagnoses" context="Patient" accessLevel="Public">
-         <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns5="urn:healthit-gov:qdm:v4_2" dataType="ns5:Diagnosis" templateId="Diagnosis" codeProperty="code" xsi:type="Retrieve">
             <codes name="Valvular Heart Disease" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="INRLabResults" context="Patient" accessLevel="Public">
-         <expression dataType="quick:Observation" templateId="observation-qicore-qicore-observation" codeProperty="code" xsi:type="Retrieve">
-            <codes name="INR Lab Result" xsi:type="ValueSetRef"/>
+         <expression xsi:type="Query">
+            <source alias="L">
+               <expression xmlns:ns6="urn:healthit-gov:qdm:v4_2" dataType="ns6:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="INR" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="L" xsi:type="Property"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def name="BirthDate" context="Patient" accessLevel="Public">
+         <expression xmlns:ns7="urn:healthit-gov:qdm:v4_2" dataType="ns7:PatientCharacteristicBirthdate" templateId="PatientCharacteristicBirthdate" xsi:type="Retrieve">
+            <codes name="birth date" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def name="ComputedValueINRPercentTTR" context="Patient" accessLevel="Public">
+         <expression xsi:type="Query">
+            <source alias="L">
+               <expression xmlns:ns8="urn:healthit-gov:qdm:v4_2" dataType="ns8:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <codes name="Computed Value INR percent TTR" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="negationRationale" scope="L" xsi:type="Property"/>
+               </operand>
+            </where>
          </expression>
       </def>
       <def name="InDemographic" context="Patient" accessLevel="Public">
          <expression xsi:type="GreaterOrEqual">
             <operand precision="Year" xsi:type="CalculateAgeAt">
-               <operand path="birthDate" xsi:type="Property">
+               <operand path="birth datetime" xsi:type="Property">
                   <source name="Patient" xsi:type="ExpressionRef"/>
                </operand>
                <operand xsi:type="Start">
@@ -100,8 +148,8 @@
             </source>
             <where xsi:type="OverlapsBefore">
                <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                  <low path="onsetDateTime" scope="F" xsi:type="Property"/>
-                  <high path="abatementDate" scope="F" xsi:type="Property"/>
+                  <low path="onsetDatetime" scope="F" xsi:type="Property"/>
+                  <high path="abatementDatetime" scope="F" xsi:type="Property"/>
                </operand>
                <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
             </where>
@@ -114,8 +162,8 @@
             </source>
             <where xsi:type="OverlapsBefore">
                <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                  <low path="onsetDateTime" scope="D" xsi:type="Property"/>
-                  <high path="abatementDate" scope="D" xsi:type="Property"/>
+                  <low path="onsetDatetime" scope="D" xsi:type="Property"/>
+                  <high path="abatementDatetime" scope="D" xsi:type="Property"/>
                </operand>
                <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
             </where>
@@ -140,7 +188,10 @@
                <expression name="WarfarinMedications" xsi:type="ExpressionRef"/>
             </source>
             <where xsi:type="Overlaps">
-               <operand path="effectiveTimePeriod" scope="M" xsi:type="Property"/>
+               <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                  <low path="startDatetime" scope="M" xsi:type="Property"/>
+                  <high path="stopDatetime" scope="M" xsi:type="Property"/>
+               </operand>
                <operand name="LookbackInterval" xsi:type="ExpressionRef"/>
             </where>
          </expression>
@@ -153,7 +204,10 @@
                </source>
                <return>
                   <expression xsi:type="Intersect">
-                     <operand path="effectiveTimePeriod" scope="M" xsi:type="Property"/>
+                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low path="startDatetime" scope="M" xsi:type="Property"/>
+                        <high path="stopDatetime" scope="M" xsi:type="Property"/>
+                     </operand>
                      <operand name="LookbackInterval" xsi:type="ExpressionRef"/>
                   </expression>
                </return>
@@ -194,17 +248,29 @@
                         <operand xsi:type="Greater">
                            <operand precision="Hour" xsi:type="DurationBetween">
                               <operand xsi:type="Start">
-                                 <operand path="period" scope="E" xsi:type="Property"/>
+                                 <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                                    <low path="admissionDatetime" scope="E" xsi:type="Property"/>
+                                    <high path="dischargeDatetime" scope="E" xsi:type="Property"/>
+                                 </operand>
                               </operand>
                               <operand xsi:type="End">
-                                 <operand path="period" scope="E" xsi:type="Property"/>
+                                 <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                                    <low path="admissionDatetime" scope="E" xsi:type="Property"/>
+                                    <high path="dischargeDatetime" scope="E" xsi:type="Property"/>
+                                 </operand>
                               </operand>
                            </operand>
                            <operand valueType="t:Integer" value="23" xsi:type="Literal"/>
                         </operand>
-                        <operand xsi:type="In">
-                           <operand path="appliesDateTime" scope="R" xsi:type="Property"/>
-                           <operand path="period" scope="E" xsi:type="Property"/>
+                        <operand xsi:type="IncludedIn">
+                           <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <low path="startDatetime" scope="R" xsi:type="Property"/>
+                              <high path="stopDatetime" scope="R" xsi:type="Property"/>
+                           </operand>
+                           <operand lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <low path="admissionDatetime" scope="E" xsi:type="Property"/>
+                              <high path="dischargeDatetime" scope="E" xsi:type="Property"/>
+                           </operand>
                         </operand>
                      </where>
                   </operand>
@@ -218,8 +284,8 @@
                <expression name="INROutpatientLabResult" xsi:type="ExpressionRef"/>
             </source>
             <where xsi:type="Greater">
-               <operand path="value" xsi:type="Property">
-                  <source path="valueQuantity" scope="L" xsi:type="Property"/>
+               <operand asType="t:Decimal" xsi:type="As">
+                  <operand path="result" scope="L" xsi:type="Property"/>
                </operand>
                <operand valueType="t:Decimal" value="0.8" xsi:type="Literal"/>
             </where>
@@ -227,20 +293,20 @@
                <expression xsi:type="Tuple">
                   <element name="resultDate">
                      <value xsi:type="DateFrom">
-                        <operand path="appliesDateTime" scope="L" xsi:type="Property"/>
+                        <operand path="startDatetime" scope="L" xsi:type="Property"/>
                      </value>
                   </element>
                   <element name="result">
                      <value xsi:type="If">
                         <condition xsi:type="Greater">
-                           <operand path="value" xsi:type="Property">
-                              <source path="valueQuantity" scope="L" xsi:type="Property"/>
+                           <operand asType="t:Decimal" xsi:type="As">
+                              <operand path="result" scope="L" xsi:type="Property"/>
                            </operand>
                            <operand valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
                         </condition>
                         <then valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
-                        <else path="value" xsi:type="Property">
-                           <source path="valueQuantity" scope="L" xsi:type="Property"/>
+                        <else asType="t:Decimal" xsi:type="As">
+                           <operand path="result" scope="L" xsi:type="Property"/>
                         </else>
                      </value>
                   </element>
@@ -248,8 +314,8 @@
                      <value xsi:type="Abs">
                         <operand xsi:type="Subtract">
                            <operand valueType="t:Decimal" value="2.5" xsi:type="Literal"/>
-                           <operand path="value" xsi:type="Property">
-                              <source path="valueQuantity" scope="L" xsi:type="Property"/>
+                           <operand asType="t:Decimal" xsi:type="As">
+                              <operand path="result" scope="L" xsi:type="Property"/>
                            </operand>
                         </operand>
                      </value>
