@@ -107,3 +107,24 @@ describe 'FromDateTime', ->
     date.month.should.equal 1
     date.day.should.equal 2
     
+describe 'FromTime', ->
+  @beforeEach ->
+    setup @, data
+
+  it.skip "should convert @T11:57 to '11:57'", ->
+    @timeStr.exec(@ctx).should.equal "11:57"
+
+  it.skip "should convert @T11:57 to @11:57", ->
+    time = @timeTime.exec(@ctx)
+    time.hour.should.equal 11
+    time.minute.should.equal 57
+    
+describe 'FromCode', ->
+  @beforeEach ->
+    setup @, data
+    
+  it.skip "should convert hepB to a concept", ->
+    concept = @codeConcept.exec(@ctx)
+    
+  it.skip "should convert hepB to a code", ->
+    code = @codeCode.exec(@ctx)

@@ -31,3 +31,13 @@ define booleanFalseBool: convert false to Boolean
 // @Test: FromDateTime
 define dateStr: convert @2015-01-02 to String
 define dateDate: convert @2015-01-02 to DateTime
+
+// @Test: FromTime
+define timeStr: convert @T11:57 to String
+define timeTime: convert @T11:57 to Time
+
+// @Test: FromCode
+// define hepB: Code '66071002' from "SNOMED-CT" display 'Type B viral hepatitis'
+// define codeConcept: convert hepB to Concept
+// define codeCode: convert hepB to Code
+define foo: 'bar'

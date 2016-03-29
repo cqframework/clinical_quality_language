@@ -670,3 +670,152 @@ module.exports['FromDateTime'] = {
    }
 }
 
+### FromTime
+library TestSnippet version '1'
+using QUICK
+context Patient
+define timeStr: convert @T11:57 to String
+define timeTime: convert @T11:57 to Time
+###
+
+module.exports['FromTime'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "timeStr",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "toType" : "{urn:hl7-org:elm-types:r1}String",
+               "type" : "Convert",
+               "operand" : {
+                  "type" : "Time",
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "11",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "57",
+                     "type" : "Literal"
+                  }
+               },
+               "toTypeSpecifier" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}String",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         }, {
+            "name" : "timeTime",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "asType" : "{urn:hl7-org:elm-types:r1}Time",
+               "type" : "As",
+               "operand" : {
+                  "type" : "Time",
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "11",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "57",
+                     "type" : "Literal"
+                  }
+               },
+               "asTypeSpecifier" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}Time",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         } ]
+      }
+   }
+}
+
+### FromCode
+library TestSnippet version '1'
+using QUICK
+// define hepB: Code '66071002' from "SNOMED-CT" display 'Type B viral hepatitis'
+// define codeConcept: convert hepB to Concept
+// define codeCode: convert hepB to Code
+context Patient
+define foo: 'bar'
+###
+
+module.exports['FromCode'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "foo",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
+               "value" : "bar",
+               "type" : "Literal"
+            }
+         } ]
+      }
+   }
+}
+
