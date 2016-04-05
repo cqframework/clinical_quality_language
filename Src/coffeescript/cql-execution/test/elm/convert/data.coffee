@@ -19,8 +19,10 @@ define decimalInvalid: convert 'abc' to Decimal
 define integerValid: convert '10' to Integer
 define integerDropDecimal: convert '10.2' to Integer
 define integerInvalid: convert 'abc' to Integer
-define quantityStr: convert '10A' to Quantity
-define quantityStrDecimal: convert '10.0mA' to Quantity
+define quantityStr: convert '10 ''A''' to Quantity
+define posQuantityStr: convert '+10 ''A''' to Quantity
+define negQuantityStr: convert '-10 ''A''' to Quantity
+define quantityStrDecimal: convert '10.0''mA''' to Quantity
 define dateStr: convert '2015-01-02' to DateTime
 ###
 
@@ -215,7 +217,41 @@ module.exports['FromString'] = {
                "type" : "Convert",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "10A",
+                  "value" : "10 'A'",
+                  "type" : "Literal"
+               },
+               "toTypeSpecifier" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         }, {
+            "name" : "posQuantityStr",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "toType" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "type" : "Convert",
+               "operand" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                  "value" : "+10 'A'",
+                  "type" : "Literal"
+               },
+               "toTypeSpecifier" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         }, {
+            "name" : "negQuantityStr",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "toType" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "type" : "Convert",
+               "operand" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                  "value" : "-10 'A'",
                   "type" : "Literal"
                },
                "toTypeSpecifier" : {
@@ -232,7 +268,7 @@ module.exports['FromString'] = {
                "type" : "Convert",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "10.0mA",
+                  "value" : "10.0'mA'",
                   "type" : "Literal"
                },
                "toTypeSpecifier" : {
@@ -379,6 +415,8 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define quantityStr: convert 10 'A' to String
+define negQuantityStr: convert -10 'A' to String
+define posQuantityStr: convert +10 'A' to String
 define quantityQuantity: convert 10 'A' to Quantity
 ###
 
@@ -415,6 +453,43 @@ module.exports['FromQuantity'] = {
             }
          }, {
             "name" : "quantityStr",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "toType" : "{urn:hl7-org:elm-types:r1}String",
+               "type" : "Convert",
+               "operand" : {
+                  "value" : 10,
+                  "unit" : "A",
+                  "type" : "Quantity"
+               },
+               "toTypeSpecifier" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}String",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         }, {
+            "name" : "negQuantityStr",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "toType" : "{urn:hl7-org:elm-types:r1}String",
+               "type" : "Convert",
+               "operand" : {
+                  "type" : "Negate",
+                  "operand" : {
+                     "value" : 10,
+                     "unit" : "A",
+                     "type" : "Quantity"
+                  }
+               },
+               "toTypeSpecifier" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}String",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         }, {
+            "name" : "posQuantityStr",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {

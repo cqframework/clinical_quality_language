@@ -12,7 +12,7 @@ module.exports.Quantity = class Quantity extends Expression
     @
   
   toString: () ->
-    "#{@value}#{@unit}"
+    "#{@value} '#{@unit}'"
   
   sameOrBefore: (other) ->
     if other instanceof Quantity and other.unit == @unit then @value <= other.value else null
@@ -35,7 +35,7 @@ module.exports.createQuantity = (value,unit) ->
   new Quantity({value: value, unit: unit})
   
 module.exports.parseQuantity = (str) ->
-  components = /(\d+\.?\d*)(.+)/.exec str
+  components = /([+|-]?\d+\.?\d*)\s*'(.+)'/.exec str
   if components? and components[1]? and components[2]
     value = parseFloat(components[1])
     unit = components[2].trim()

@@ -34,15 +34,25 @@ describe 'FromString', ->
   it "should convert 'abc' to Integer NaN", ->
     isNaN(@integerInvalid.exec(@ctx)).should.equal true
 
-  it "should convert '10A' to Quantity", ->
+  it "should convert \"10 'A'\" to Quantity", ->
     quantity = @quantityStr.exec(@ctx)
     quantity.value.should.equal 10
-    quantity.unit.should.equal 'A'
+    quantity.unit.should.equal "A"
 
-  it "should convert '10.0mA' to Quantity", ->
+  it "should convert \"+10 'A'\" to Quantity", ->
+    quantity = @posQuantityStr.exec(@ctx)
+    quantity.value.should.equal 10
+    quantity.unit.should.equal "A"
+
+  it "should convert \"-10 'A'\" to Quantity", ->
+    quantity = @negQuantityStr.exec(@ctx)
+    quantity.value.should.equal -10
+    quantity.unit.should.equal "A"
+
+  it "should convert \"10.0'mA'\" to Quantity", ->
     quantity = @quantityStrDecimal.exec(@ctx)
     quantity.value.should.equal 10.0
-    quantity.unit.should.equal 'mA'
+    quantity.unit.should.equal "mA"
     
   it "should convert '2015-01-02' to DateTime", ->
     date = @dateStr.exec(@ctx)
@@ -70,10 +80,16 @@ describe 'FromQuantity', ->
   @beforeEach ->
     setup @, data
 
-  it "should convert 10A to '10A'", ->
-    @quantityStr.exec(@ctx).should.equal "10A"
+  it "should convert \"10 'A'\" to \"10 'A'\"", ->
+    @quantityStr.exec(@ctx).should.equal "10 'A'"
 
-  it "should convert 10A to 10A", ->
+  it "should convert \"+10 'A'\" to \"10 'A'\"", ->
+    @posQuantityStr.exec(@ctx).should.equal "10 'A'"
+
+  it "should convert \"-10 'A'\" to \"10 'A'\"", ->
+    @negQuantityStr.exec(@ctx).should.equal "-10 'A'"
+
+  it "should convert \"10 'A'\" to \"10 'A'\"", ->
     quantity = @quantityQuantity.exec(@ctx)
     quantity.value.should.equal 10
     quantity.unit.should.equal 'A'
