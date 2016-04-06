@@ -417,15 +417,9 @@ define ImpreciseComponentTuple: Tuple {
   Second: second from ImpreciseIdesOfMarch,
   Millisecond: millisecond from ImpreciseIdesOfMarch
 }
-define NullDate: year from null
+define NullDate: year from (null as DateTime)
 ###
 
-###
-Translation Error(s):
-[22:18, 22:31] Call to operator DateTimeComponentFrom(System.Any) is ambiguous with: 
-  - DateTimeComponentFrom(System.Time)
-  - DateTimeComponentFrom(System.DateTime)
-###
 module.exports['DateTimeComponentFrom'] = {
    "library" : {
       "identifier" : {
@@ -693,7 +687,19 @@ module.exports['DateTimeComponentFrom'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "precision" : "Year",
+               "type" : "DateTimeComponentFrom",
+               "operand" : {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }
             }
          } ]
       }
@@ -706,7 +712,7 @@ using QUICK
 context Patient
 define Date: date from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define ImpreciseDate: date from DateTime(2000)
-define NullDate: date from null
+define NullDate: date from (null as DateTime)
 ###
 
 module.exports['DateFrom'] = {
@@ -812,10 +818,14 @@ module.exports['DateFrom'] = {
             "expression" : {
                "type" : "DateFrom",
                "operand" : {
-                  "asType" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "strict" : false,
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -950,6 +960,10 @@ module.exports['TimeFrom'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -965,15 +979,9 @@ context Patient
 define CentralEuropean: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define EasternStandard: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0)
 define DefaultTimezone: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
-define NullDate: timezone from null
+define NullDate: timezone from (null as DateTime)
 ###
 
-###
-Translation Error(s):
-[7:18, 7:35] Call to operator TimezoneFrom(System.Any) is ambiguous with: 
-  - TimezoneFrom(System.Time)
-  - TimezoneFrom(System.DateTime)
-###
 module.exports['TimezoneFrom'] = {
    "library" : {
       "identifier" : {
@@ -1158,7 +1166,18 @@ module.exports['TimezoneFrom'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "TimezoneFrom",
+               "operand" : {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }
             }
          } ]
       }
@@ -1196,16 +1215,10 @@ define SameHourWrongTimezone: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same 
 define ImpreciseHour: DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 15)
 define ImpreciseHourWrongDay: DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 16)
 define NullLeft: null same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as null
-define NullBoth: null same as null
+define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as (null as DateTime)
+define NullBoth: (null as DateTime) same as null
 ###
 
-###
-Translation Error(s):
-[32:23, 32:29] Call to operator SameAs(System.Any,System.Any) is ambiguous with: 
-  - SameAs(System.DateTime,System.DateTime)
-  - SameAs(System.Time,System.Time)
-###
 module.exports['SameAs'] = {
    "library" : {
       "identifier" : {
@@ -3609,6 +3622,10 @@ module.exports['SameAs'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -3703,10 +3720,14 @@ module.exports['SameAs'] = {
                      "type" : "Literal"
                   }
                }, {
-                  "asType" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "strict" : false,
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -3715,7 +3736,28 @@ module.exports['SameAs'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameAs",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               } ]
             }
          } ]
       }
@@ -3761,15 +3803,9 @@ define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) sam
 define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
 define NullLeft: null same or after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after null
-define NullBoth: null same or after null
+define NullBoth: (null as DateTime) same or after null
 ###
 
-###
-Translation Error(s):
-[39:23, 39:35] Call to operator SameOrAfter(System.Any,System.Any) is ambiguous with: 
-  - SameOrAfter(System.DateTime,System.DateTime)
-  - SameOrAfter(System.Time,System.Time)
-###
 module.exports['SameOrAfter'] = {
    "library" : {
       "identifier" : {
@@ -6782,6 +6818,10 @@ module.exports['SameOrAfter'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -6880,6 +6920,10 @@ module.exports['SameOrAfter'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -6888,7 +6932,28 @@ module.exports['SameOrAfter'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameOrAfter",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               } ]
             }
          } ]
       }
@@ -6934,15 +6999,9 @@ define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) sam
 define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
 define NullLeft: null same or before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before null
-define NullBoth: null same or before null
+define NullBoth: (null as DateTime) same or before null
 ###
 
-###
-Translation Error(s):
-[39:23, 39:36] Call to operator SameOrBefore(System.Any,System.Any) is ambiguous with: 
-  - SameOrBefore(System.DateTime,System.DateTime)
-  - SameOrBefore(System.Time,System.Time)
-###
 module.exports['SameOrBefore'] = {
    "library" : {
       "identifier" : {
@@ -9955,6 +10014,10 @@ module.exports['SameOrBefore'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -10053,6 +10116,10 @@ module.exports['SameOrBefore'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -10061,7 +10128,28 @@ module.exports['SameOrBefore'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "SameOrBefore",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               } ]
             }
          } ]
       }
@@ -10104,15 +10192,9 @@ define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) aft
 define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
 define NullLeft: null after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after null
-define NullBoth: null after null
+define NullBoth: (null as DateTime) after null
 ###
 
-###
-Translation Error(s):
-[36:23, 36:27] Call to operator After(System.Any,System.Any) is ambiguous with: 
-  - After(System.DateTime,System.DateTime)
-  - After(System.Time,System.Time)
-###
 module.exports['After'] = {
    "library" : {
       "identifier" : {
@@ -12846,6 +12928,10 @@ module.exports['After'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -12944,6 +13030,10 @@ module.exports['After'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -12952,7 +13042,28 @@ module.exports['After'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "After",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               } ]
             }
          } ]
       }
@@ -12995,15 +13106,9 @@ define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) bef
 define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
 define NullLeft: null before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before null
-define NullBoth: null before null
+define NullBoth: (null as DateTime) before null
 ###
 
-###
-Translation Error(s):
-[36:23, 36:28] Call to operator Before(System.Any,System.Any) is ambiguous with: 
-  - Before(System.DateTime,System.DateTime)
-  - Before(System.Time,System.Time)
-###
 module.exports['Before'] = {
    "library" : {
       "identifier" : {
@@ -15737,6 +15842,10 @@ module.exports['Before'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -15835,6 +15944,10 @@ module.exports['Before'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -15843,7 +15956,28 @@ module.exports['Before'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "Before",
+               "operand" : [ {
+                  "strict" : false,
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "As",
+                  "operand" : {
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               } ]
             }
          } ]
       }

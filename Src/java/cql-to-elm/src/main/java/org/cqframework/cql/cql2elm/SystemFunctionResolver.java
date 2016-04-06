@@ -1,7 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
 
+import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.cqframework.cql.cql2elm.model.invocation.CombineInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.ConvertInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.FirstInvocation;
 import org.cqframework.cql.cql2elm.model.invocation.IndexOfInvocation;
@@ -17,6 +19,7 @@ import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.CalculateAge;
 import org.hl7.elm.r1.CalculateAgeAt;
 import org.hl7.elm.r1.Combine;
+import org.hl7.elm.r1.Convert;
 import org.hl7.elm.r1.DateTime;
 import org.hl7.elm.r1.DateTimePrecision;
 import org.hl7.elm.r1.Expression;
@@ -35,6 +38,7 @@ import org.hl7.elm.r1.Substring;
 import org.hl7.elm.r1.Today;
 import org.hl7.elm.r1.UnaryExpression;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,6 +188,17 @@ public class SystemFunctionResolver {
 
                 case "Substring": {
                     return resolveSubstring(fun);
+                }
+
+                // Type Functions
+                case "ToString":
+                case "ToBoolean":
+                case "ToInteger":
+                case "ToDecimal":
+                case "ToDateTime":
+                case "ToTime":
+                case "ToConcept": {
+                    return resolveConvert(fun);
                 }
             }
         }
@@ -347,6 +362,42 @@ public class SystemFunctionResolver {
         }
         visitor.resolveCall("System", "Substring", new SubstringInvocation(substring));
         return substring;
+    }
+
+    // Type Functions
+
+    private Convert resolveConvert(FunctionRef fun) {
+        checkNumberOfOperands(fun, 1);
+        final Convert convert = of.createConvert().withOperand(fun.getOperand().get(0));
+        final SystemModel sm = visitor.getSystemModel();
+        switch(fun.getName()) {
+            case "ToString":
+                convert.setToType(visitor.dataTypeToQName(sm.getString()));
+                break;
+            case "ToBoolean":
+                convert.setToType(visitor.dataTypeToQName(sm.getBoolean()));
+                break;
+            case "ToInteger":
+                convert.setToType(visitor.dataTypeToQName(sm.getInteger()));
+                break;
+            case "ToDecimal":
+                convert.setToType(visitor.dataTypeToQName(sm.getDecimal()));
+                break;
+            case "ToDateTime":
+                convert.setToType(visitor.dataTypeToQName(sm.getDateTime()));
+                break;
+            case "ToTime":
+                convert.setToType(visitor.dataTypeToQName(sm.getTime()));
+                break;
+            case "ToConcept":
+                convert.setToType(visitor.dataTypeToQName(sm.getConcept()));
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        String.format("Could not resolve call to system operator %s. Unknown conversion type.", fun.getName()));
+        }
+        visitor.resolveCall("System", fun.getName(), new ConvertInvocation(convert));
+        return convert;
     }
 
     // General Function Support

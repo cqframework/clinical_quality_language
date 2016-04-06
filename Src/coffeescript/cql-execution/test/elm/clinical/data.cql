@@ -2,6 +2,7 @@
 valueset "Known": '2.16.840.1.113883.3.464.1003.101.12.1061'
 valueset "Unknown One Arg": '1.2.3.4.5.6.7.8.9'
 valueset "Unknown Two Arg": '1.2.3.4.5.6.7.8.9' version '1'
+define Foo: "Bar"
 
 // @Test: ValueSetRef
 valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.101.12.1001'
