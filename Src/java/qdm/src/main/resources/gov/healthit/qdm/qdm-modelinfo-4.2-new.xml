@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns4:modelInfo name="QDM" url="urn:healthit-gov:qdm:v4_2" targetQualifier="qdm" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalLocationSite" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureIntolerance" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+        <ns4:element name="ordinality" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicSex" baseType="System.Any">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterActive" baseType="QDM.QDMBaseType">
+        <ns4:element name="admissionDatetime" type="System.DateTime"/>
+        <ns4:element name="dischargeDatetime" type="System.DateTime"/>
+        <ns4:element name="lengthOfStay" type="QDM.Quantity"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="facilityLocation" type="QDM.CodeableConcept"/>
+        <ns4:element name="facilityLocationArrivalDatetime" type="System.DateTime"/>
+        <ns4:element name="facilityLocationDepartureDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CareGoal" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="relatedTo" type="QDM.CodeableConcept"/>
+        <ns4:element name="targetOutcome" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristic" baseType="System.Any">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicEthnicity" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicRace" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationAllergy" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FunctionalStatusRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestPerformed" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="status" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="result" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="referenceRangeHigh" type="QDM.Quantity"/>
+        <ns4:element name="referenceRangeLow" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Symptom" baseType="QDM.QDMBaseType">
+        <ns4:element name="onsetDatetime" type="System.DateTime"/>
+        <ns4:element name="abatementDatetime" type="System.DateTime"/>
+        <ns4:element name="severity" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationAdministered" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+        <ns4:element name="frequency" type="QDM.CodeableConcept"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="cumulativeMedicationDuration" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.RiskCategoryAssessment" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="result" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalApproachSite" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalLocationSite" type="QDM.CodeableConcept"/>
+        <ns4:element name="ordinality" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterPerformed" baseType="QDM.QDMBaseType">
+        <ns4:element name="admissionDatetime" type="System.DateTime"/>
+        <ns4:element name="dischargeDatetime" type="System.DateTime"/>
+        <ns4:element name="lengthOfStay" type="QDM.Quantity"/>
+        <ns4:element name="dischargeStatus" type="QDM.CodeableConcept"/>
+        <ns4:element name="facilityLocation" type="QDM.CodeableConcept"/>
+        <ns4:element name="facilityLocationArrivalDatetime" type="System.DateTime"/>
+        <ns4:element name="facilityLocationDepartureDatetime" type="System.DateTime"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="diagnosis" type="QDM.CodeableConcept"/>
+        <ns4:element name="principalDiagnosis" type="QDM.CodeableConcept"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyIntolerance" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+        <ns4:element name="radiationDosage" type="QDM.Quantity"/>
+        <ns4:element name="radiationDuration" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToPatient" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Diagnosis" baseType="QDM.QDMBaseType">
+        <ns4:element name="onsetDatetime" type="System.DateTime"/>
+        <ns4:element name="abatementDatetime" type="System.DateTime"/>
+        <ns4:element name="anatomicalLocationSite" type="QDM.CodeableConcept"/>
+        <ns4:element name="severity" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CodeableConcept" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.TransferFrom" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionIntolerance" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicClinicalTrialParticipant" baseType="System.Any">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyPerformed" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="result" type="QDM.CodeableConcept"/>
+        <ns4:element name="status" type="QDM.CodeableConcept"/>
+        <ns4:element name="radiationDosage" type="QDM.Quantity"/>
+        <ns4:element name="radiationDuration" type="QDM.Quantity"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="facilityLocation" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceAllergy" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureAdverseEvent" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FamilyHistory" baseType="QDM.QDMBaseType">
+        <ns4:element name="onsetAge" type="QDM.Quantity"/>
+        <ns4:element name="recordedDatetime" type="System.DateTime"/>
+        <ns4:element name="relationship" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationAllergy" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationAdverseEffects" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToProvider" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationActive" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+        <ns4:element name="frequency" type="QDM.CodeableConcept"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+        <ns4:element name="cumulativeMedicationDuration" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceAdverseEvent" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="radiationDosage" type="QDM.Quantity"/>
+        <ns4:element name="radiationDuration" type="QDM.Quantity"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationIntolerance" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+        <ns4:element name="frequency" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="refills" type="System.Integer"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicPayer" baseType="System.Any">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicExpired" baseType="System.Any">
+        <ns4:element name="date" type="System.DateTime"/>
+        <ns4:element name="time" type="System.Time"/>
+        <ns4:element name="cause" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestAdverseEvent" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationAdministered" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceAdministered" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+        <ns4:element name="frequency" type="QDM.CodeableConcept"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="facilityLocation" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestIntolerance" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceAdverseEvent" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="facilityLocation" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedurePerformed" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="result" type="QDM.CodeableConcept"/>
+        <ns4:element name="status" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalApproachSite" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalLocationSite" type="QDM.CodeableConcept"/>
+        <ns4:element name="ordinality" type="QDM.CodeableConcept"/>
+        <ns4:element name="radiationDuration" type="QDM.Quantity"/>
+        <ns4:element name="radiationDosage" type="QDM.Quantity"/>
+        <ns4:element name="incisionDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProviderCharacteristic" baseType="System.Any">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalLocationSite" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FunctionalStatusPerformed" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="result" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicBirthdate" baseType="System.Any">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionAdverseEvent" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.QDMBaseType" baseType="System.Any">
+        <ns4:element name="code" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromPatientToProvider" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FunctionalStatusOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceApplied" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="removalDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomialLocationSite" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalApproachSite" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDischarge" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="refills" type="System.Integer"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+        <ns4:element name="frequency" type="QDM.CodeableConcept"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+        <ns4:element name="cumulativeMedicationDuration" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionPerformed" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="result" type="QDM.CodeableConcept"/>
+        <ns4:element name="status" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDispensed" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="refills" type="System.Integer"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+        <ns4:element name="frequency" type="QDM.CodeableConcept"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="cumulativeMedicationDuration" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyAdverseEvent" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+        <ns4:element name="radiationDosage" type="QDM.Quantity"/>
+        <ns4:element name="radiationDuration" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="radiationDosage" type="QDM.Quantity"/>
+        <ns4:element name="radiationDuration" type="QDM.Quantity"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Quantity" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="activeDatetime" type="System.DateTime"/>
+        <ns4:element name="signedDatetime" type="System.DateTime"/>
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceIntolerance" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCareExperience" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.TransferTo" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProviderCareExperience" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceIntolerance" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalApproachSite" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalLocationSite" type="QDM.CodeableConcept"/>
+        <ns4:element name="ordinality" type="QDM.CodeableConcept"/>
+        <ns4:element name="radiationDuration" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationOrder" baseType="QDM.QDMBaseType">
+        <ns4:element name="activeDatetime" type="System.DateTime"/>
+        <ns4:element name="signedDatetime" type="System.DateTime"/>
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="refills" type="System.Integer"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+        <ns4:element name="frequency" type="QDM.CodeableConcept"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="cumulativeMedicationDuration" type="QDM.Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="dose" type="QDM.Quantity"/>
+        <ns4:element name="frequency" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="refills" type="System.Integer"/>
+        <ns4:element name="route" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionRecommended" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamPerformed" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="negationRationale" type="QDM.CodeableConcept"/>
+        <ns4:element name="reason" type="QDM.CodeableConcept"/>
+        <ns4:element name="method" type="QDM.CodeableConcept"/>
+        <ns4:element name="result" type="QDM.CodeableConcept"/>
+        <ns4:element name="anatomicalLocationSite" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceAllergy" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationIntolerance" baseType="QDM.QDMBaseType">
+        <ns4:element name="startDatetime" type="System.DateTime"/>
+        <ns4:element name="stopDatetime" type="System.DateTime"/>
+        <ns4:element name="reaction" type="QDM.CodeableConcept"/>
+    </ns4:typeInfo>
+</ns4:modelInfo>

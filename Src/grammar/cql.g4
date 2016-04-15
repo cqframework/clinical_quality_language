@@ -404,5 +404,9 @@ identifier
     | 'time'
     | 'timezone'
     | 'version'
+    | 'as'
+    | 'is'
+    | 'not'
+    | 'exists'
     ;
 
