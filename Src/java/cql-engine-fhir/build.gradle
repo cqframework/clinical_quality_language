@@ -1,0 +1,9 @@
+// Most build configuration comes from the cql-all parent build!
+
+dependencies {
+    compile group: 'joda-time', name: 'joda-time', version: '2.9.3'
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '1.5-SNAPSHOT'
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '1.5-SNAPSHOT'
+    compile project(':cql-engine')
+}
+

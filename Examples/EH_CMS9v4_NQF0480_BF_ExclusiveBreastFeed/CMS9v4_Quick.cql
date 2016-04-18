@@ -2,9 +2,12 @@ library CMS9 version '4'
 
 using QUICK // version '1'
 
-valueset "From Patient to Provider: Feeding Intention-Breast": '2.16.840.1.113762.1.4.1045.29'
+codesystem "SNOMED-CT": '2.16.840.1.113883.6.96' version '2016A'
+
+valueset "Feeding Intention-Breast": '2.16.840.1.113762.1.4.1045.29'
+valueset "Feeding Intention-Not-To-Breast": 'TBD' // Code '636111000124114' from "SNOMED-CT" display: 'Mother refuses to breastfeed (situation)'
 valueset "Galactosemia": '2.16.840.1.113883.3.117.1.7.1.35'
-valueset "Single Live Birth": '2.16.840.1.113883.3.117.1.7.1.25)'
+valueset "Single Live Birth": '2.16.840.1.113883.3.117.1.7.1.25'
 valueset "Single Live Born Newborn Born in Hospital": '2.16.840.1.113883.3.117.1.7.1.26'
 valueset "Encounter Inpatient": '2.16.840.1.113883.3.666.5.307'
 valueset "Estimated Gestational Age at Birth": '2.16.840.1.113762.1.4.1045.47'
@@ -24,53 +27,53 @@ parameter MeasurementPeriod Interval<DateTime>
 
 context Patient
 
-define "EncounterInpatient":
-  ["Encounter": "Encounter Inpatient"] E
-    where duration in days of E."period" <= 120
-      and end of E."period" in MeasurementPeriod
+define EncounterInpatient:
+  [Encounter: "Encounter Inpatient"] E
+    where duration in days of E.period <= 120
+      and end of E.period in MeasurementPeriod
 
 define "Gestational Age at Birth <= 37 weeks":
-  ["Observation": "Gestational Age At Birth"] O
-    where (singleton from O."component")."valueQuantity" >= 259 days // 37 weeks
+  [Observation: "Gestational Age At Birth"] O
+    where (singleton from O.component).valueQuantity >= 259 days // 37 weeks
 
 define "Single Live Birth":
-  ["Condition": "Single Live Birth"]
-    union ["Condition": "Single Live Born Newborn Born in Hospital"]
+  [Condition: "Single Live Birth"]
+    union [Condition: "Single Live Born Newborn Born in Hospital"]
 
 define "Parenteral Nutrition":
-  ["Procedure": "Parenteral Nutrition"]
+  [Procedure: "Parenteral Nutrition"]
 
 define "Galactosemia Diagnosis":
-  ["Condition": "Galactosemia"]
+  [Condition: "Galactosemia"]
 
 define "Live Birth Infants without Parenteral Nutrition":
-  "EncounterInpatient" E
-    with "Gestational Age at Birth <= 37 weeks" G such that G."effectiveDateTime" in E."period"
-    with "Single Live Birth" B such that B."onsetDateTime" in E."period"
-    without "Galactosemia" D such that D."onsetDateTime" in E."period"
-    without "Parenteral Nutrition" P such that P."performedDateTime" in E."period"
+  EncounterInpatient E
+    with "Gestational Age at Birth <= 37 weeks" G such that G.effectiveDateTime in E.period
+    with "Single Live Birth" B such that B.onsetDateTime in E.period
+    without "Galactosemia" D such that D.onsetDateETime in E.period
+    without "Parenteral Nutrition" P such that P.performedDateTime in E.period
 
 // Region: Initial Population 1
 
-define "InitialPopulation1":
+define InitialPopulation1:
   "Live Birth Infants without Parenteral Nutrition"
 
 // EndRegion: Initial Population 1
 
 // Region: Denominator 1
 
-define "Denominator1":
-  "InitialPopulation1"
+define Denominator1:
+  InitialPopulation1
 
 // EndRegion: Denominator 1
 
 // Region: Denominator Exclusions 1
 
-define "DenominatorExclusions1":
-  "EncounterInpatient" E
-    where exists (E."Location" L where L."type" in "Neonatal Intensive Care Unit (NICU)")
-      or exists (E."hospitalization" H where H."dischargeDisposition" in "Patient Expired")
-      or exists (E."hospitalization" H where H."dischargeDisposition" in "Discharge To Acute Care Facility")
+define DenominatorExclusions1:
+  EncounterInpatient E
+    where exists (E.Location L where L.type in "Neonatal Intensive Care Unit (NICU)")
+      or exists (E.hospitalization H where H.dischargeDisposition in "Patient Expired")
+      or exists (E.hospitalization H where H.dischargeDisposition in "Discharge To Acute Care Facility")
 
 // EndRegion: Denominator Exclusions 1
 
@@ -79,15 +82,16 @@ define "DenominatorExclusions1":
 // TODO: Are these really "MedicationAdministration"?
 // Seems like a stretch but I don't see any other resource in FHIR/QUICK that would be a better fit...
 define "Breast Milk Feeding":
-  ["MedicationAdministration": "Breast Milk"]
+  [MedicationAdministration: "Breast Milk"]
 
 define "Other Than Breast Milk Feeding":
-  ["MedicationAdministration": "Dietary Intake Other than Breast Milk"]
+  [MedicationAdministration: "Dietary Intake Other than Breast Milk"]
 
-define "Numerator1":
-  "EncounterInpatient" E
-    with "Breast Milk Feeding" F such that F."effectiveDateTime" in E."period"
-    without "Other Than Breast Milk Feeding" O such that O."effectiveDateTime" in E."period"
+define Numerator1:
+  EncounterInpatient E
+    with "Breast Milk Feeding" F such that F.effectiveDateTime in E.period
+    without "Other Than Breast Milk Feeding" O such that O.effectiveDateTime in E.period
+    //SCTID: 289081008 Unable to perform breast-feeding (finding)
 
 // EndRegion: Numerator 1
 
@@ -105,7 +109,7 @@ define "Numerator1":
 
 // Region: Initial Population 2
 
-define "InitialPopulation2":
+define InitialPopulation2:
   "Live Birth Infants without Parenteral Nutrition"
 
 // EndRegion: Initial Population 2
@@ -120,25 +124,60 @@ define "InitialPopulation2":
 define "Infant Birth Date":
   ["Patient Characteristic": "Birthdate"]
 
-// TODO: In the QDM, this is expressed as the "absence of an intention to breast feed",
+// Assuming a value set exists
+define "Intention Not To Breast Feed":
+  EncounterInpatient E
+    with [RiskAssessment: "Feeding Intention-Not-To-Breastfeed"] R
+      such that R.date in E.period
+
+define "$Breastfeeding Intention": Code 'breastfeeding-intention' from "http://example.org/dataelements"
+
+// Using the specific code
+define "Intention Not To Breast Feed":
+  EncounterInpatient E
+    with [RiskAssessment: "$Breastfeeding Intention"] R
+      such that R.date in E.period
+
+/* Other options for representing negative breastfeeding intention
+// NOTE: In the QDM, this is expressed as the "absence of an intention to breast feed",
 // but this is not the same as the intended "presence of intention not to breast feed"
 define "Intention Not To Breast Feed":
-  "EncounterInpatient" E
-    without ["Communication": "Feeding Intention-Breast"] C
-      such that C."sender" is Patient
-        and exists (C."recipient" R where R is Practitioner)
-        and C."sent" <= 1 hour after start of "Infant Birth Date"
+  EncounterInpatient E
+    with [Communication] C
+      such that C.sender is Patient
+        and exists (C.recipient R where R is Practitioner)
+        and C.sent <= 1 hour after start of "Infant Birth Date"
+        // NOTE: This code may be temporary (situational?)
+        // Could potentially relate it to the procedure as an assertion to overcome that? May need to be a different code altogether
+        and C.category contains Code '636111000124114' from "SNOMED-CT" display: 'Mother refuses to breastfeed (situation)'
 
-define "DenominatorExclusions2":
-  "DenominatorExclusions1"
+// Single Code Value-set versus inline Code
+define "Intention Not To Breast Feed":
+  EncounterInpatient E
+    with [Communication: "Feeding Intention-Not-To-Breastfeed"]
+      such that C.sender is Patient
+        and exists (C.recipient R where R is Practitioner)
+        and C.sent <= 1 hour after start of "Infant Birth Date"
+
+define "Intention Not To Breast Feed":
+  EncounterInpatient E
+    with [Communication] C
+      such that C.sender is Patient
+        and C.category contains Code '636111000124114' from "SNOMED-CT" display: 'Mother refuses to breastfeed (situation)'
+        and exists (C.recipient R where R is Practitioner)
+        and C.sent <= 1 hour after start of "Infant Birth Date"
+*/
+
+define DenominatorExclusions2:
+  DenominatorExclusions1
     union "Intention Not To Breast Feed"
 
 // EndRegion: Denominator Exclusions 2
 
 // Region: Numerator 2
 
-define "Numerator2":
-  "Numerator1"
+define Numerator2:
+  Numerator1
 
 // EndRegion: Numerator 2
 

@@ -15,6 +15,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import org.cqframework.cql.data.DataProvider;
+import org.cqframework.cql.execution.Context;
+import org.joda.time.Partial;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -641,4 +645,19 @@ public class Retrieve
         return buffer;
     }
 
+    public Object evaluate(Context context) {
+        DataProvider dataProvider = context.resolveDataProvider(this.dataType);
+        Iterable<org.cqframework.cql.runtime.Concept> codes = null;
+        if (this.getCodes() != null) {
+            // TODO: Handle single codes here...
+            codes = (Iterable<org.cqframework.cql.runtime.Concept>)this.getCodes().evaluate(context);
+        }
+        org.cqframework.cql.runtime.Interval<Partial> dateRange = null;
+        if (this.getDateRange() != null) {
+            dateRange = (org.cqframework.cql.runtime.Interval<Partial>)this.getDateRange().evaluate(context);
+        }
+
+        return dataProvider.retrieve(context.getCurrentContext(), getDataType().getLocalPart(), getTemplateId(),
+                getCodeProperty(), codes, getDateProperty(), getDateLowProperty(), getDateHighProperty(), dateRange);
+    }
 }
