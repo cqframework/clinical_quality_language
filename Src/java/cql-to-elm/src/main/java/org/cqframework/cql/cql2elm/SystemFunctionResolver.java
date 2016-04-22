@@ -236,7 +236,7 @@ public class SystemFunctionResolver {
     private Property getPatientBirthDateProperty() {
         Expression source = visitor.resolveIdentifier("Patient");
         Property property = of.createProperty().withSource(source).withPath(visitor.getModel().getModelInfo().getPatientBirthDatePropertyName());
-        property.setResultType(visitor.resolveProperty(source.getResultType(), property.getPath()));
+        property.setResultType(visitor.resolvePath(source.getResultType(), property.getPath()));
         return property;
     }
 
