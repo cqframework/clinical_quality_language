@@ -1,6 +1,6 @@
 package org.cqframework.cql.data.fhir;
 
-import ca.uhn.fhir.model.api.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle;
 import ca.uhn.fhir.rest.client.IGenericClient;
 
 import java.util.Iterator;
@@ -46,7 +46,7 @@ public class FhirBundleCursor implements Iterable<Object> {
          * @return {@code true} if the iteration has more elements
          */
         public boolean hasNext() {
-            return current < results.size() - 1 || results.getLinkNext() != null;
+            return current < results.getEntry().size() - 1;
         }
 
         /**
@@ -57,16 +57,13 @@ public class FhirBundleCursor implements Iterable<Object> {
          */
         public Object next() {
             current++;
-            if (current < results.size()) {
-                return results.getEntries().get(current).getResource();
-            }
-            else {
-                if (results.getLinkNext() != null) {
-                    results = fhirClient.loadPage().next(results).execute();
-                    current = 0;
-                    if (current < results.size()) {
-                        return results.getEntries().get(current).getResource();
-                    }
+            if (current < results.getEntry().size()) {
+                return results.getEntry().get(current).getResource();
+            } else {
+                results = fhirClient.loadPage().next(results).execute();
+                current = 0;
+                if (current < results.getEntry().size()) {
+                    return results.getEntry().get(current).getResource();
                 }
             }
 

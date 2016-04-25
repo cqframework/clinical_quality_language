@@ -5,6 +5,7 @@ import ca.uhn.fhir.rest.client.IGenericClient;
 import org.cqframework.cql.data.DataProvider;
 import org.cqframework.cql.runtime.Concept;
 import org.cqframework.cql.runtime.Interval;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.joda.time.Partial;
 
 /**
@@ -37,7 +38,7 @@ public class FhirDataProvider implements DataProvider {
             // profile (templateId)
             // codes
             // dateRange
-        ca.uhn.fhir.model.api.Bundle results = fhirClient.search().forResource(dataType).execute();
+        Bundle results = fhirClient.search().forResource(dataType).returnBundle(Bundle.class).execute();
         return new FhirBundleCursor(fhirClient, results);
     }
 }
