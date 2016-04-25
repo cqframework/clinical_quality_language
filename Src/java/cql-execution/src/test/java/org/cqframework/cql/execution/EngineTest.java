@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLDecoder;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,20 +17,12 @@ import static org.testng.Assert.fail;
 public class EngineTest {
 
     @Test
-    public void testEngineWithAgeFile() {
+    public void testEngineWithAgeFile() throws UnsupportedEncodingException {
         // Configure the engine with test data
         Engine.setPatientSource(new TestPatientSource());
 
         // Run the sample age script
-        URL fileUrl = EngineTest.class.getResource("age.cql");
-        File file = null;
-        try {
-            String fileLocation = URLDecoder.decode(fileUrl.getFile(),"UTF-8");
-            file = new File(fileLocation);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
+        File file = new File(URLDecoder.decode(EngineTest.class.getResource("age.cql").getFile(),"UTF-8"));
         assertTrue(file.exists(), "age.cql must exist for test to run correctly. ("+ file.toString() + ")");
 
         Results results = null;
