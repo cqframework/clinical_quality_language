@@ -70,4 +70,32 @@ public class CqlLogicalOperatorsTest {
         result = context.resolveExpressionRef(library, "OrAlsoNull").getExpression().evaluate(context);
         assertThat(result, is(nullValue()));
     }
+
+    @Test
+    public void testXOr() throws JAXBException {
+        // load an ELM document into the Execution tree
+        Library library = JAXB.unmarshal(getClass().getResourceAsStream("LogicalOperators.xml"), Library.class);
+
+        Context context = new Context(library);
+        Object result = context.resolveExpressionRef(library, "XOrTrue").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "XOrAlsoTrue").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "XOrFalse").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "XOrAlsoFalse").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "XOrNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "XOrAlsoNull1").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "XOrAlsoNull2").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+    }
 }
