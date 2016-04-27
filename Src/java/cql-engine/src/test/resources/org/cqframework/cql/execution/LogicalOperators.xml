@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+   </usings>
+   <statements>
+      <def name="Patient" context="Population">
+         <expression xsi:type="Null"/>
+      </def>
+      <def name="IsTrue" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="IsFalse" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="IsAlsoFalse" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="IsNull" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="IsAlsoNull" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+
