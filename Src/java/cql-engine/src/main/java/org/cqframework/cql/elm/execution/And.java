@@ -133,8 +133,8 @@ public class And
 
     @Override
     public Object evaluate(Context context) {
-        Boolean left = (Boolean)getOperand().get(0).evaluate(context);
-        Boolean right = (Boolean)getOperand().get(1).evaluate(context);
+        Boolean left = (Boolean) getOperand().get(0).evaluate(context);
+        Boolean right = (Boolean) getOperand().get(1).evaluate(context);
 
         if (left == null || right == null) {
             if ((left != null && left == false) || (right != null && right == false)) {
@@ -146,5 +146,4 @@ public class And
 
         return (left && right);
     }
-
 }

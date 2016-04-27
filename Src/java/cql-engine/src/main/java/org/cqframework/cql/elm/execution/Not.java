@@ -8,29 +8,24 @@
 
 package org.cqframework.cql.elm.execution;
 
-import java.util.Collection;
+import org.cqframework.cql.execution.Context;
+import org.jvnet.jaxb2_commons.lang.*;
+import org.jvnet.jaxb2_commons.lang.ToString;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBToStringStrategy;
-import org.jvnet.jaxb2_commons.lang.ToString;
-import org.jvnet.jaxb2_commons.lang.ToStringStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import java.util.Collection;
 
 
 /**
  * The Not operator returns the logical negation of its argument. If the argument is true, the result is false; if the argument is false, the result is true; otherwise, the result is null.
- * 
+ * <p>
  * <p>Java class for Not complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Not"&gt;
  *   &lt;complexContent&gt;
@@ -39,15 +34,12 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Not", namespace = "urn:hl7-org:elm:r1")
 public class Not
-    extends UnaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends UnaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -58,8 +50,8 @@ public class Not
 
     @Override
     public Not withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -68,7 +60,7 @@ public class Not
 
     @Override
     public Not withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -127,4 +119,9 @@ public class Not
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        Boolean val = (Boolean) getOperand().evaluate(context);
+        return val == null ? null : !val;
+    }
 }
