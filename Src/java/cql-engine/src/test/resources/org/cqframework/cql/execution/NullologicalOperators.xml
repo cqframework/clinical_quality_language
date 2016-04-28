@@ -10,27 +10,27 @@
          <expression xsi:type="Null"/>
       </def>
       <def name="IsNullTrue" context="Population" accessLevel="Public">
-         <expression name="IsNull" xsi:type="FunctionRef">
+         <expression xsi:type="IsNull">
             <operand xsi:type="Null"/>
          </expression>
       </def>
       <def name="IsNullFalseEmptyString" context="Population" accessLevel="Public">
-         <expression name="IsNull" xsi:type="FunctionRef">
+         <expression xsi:type="IsNull">
             <operand valueType="t:String" value="" xsi:type="Literal"/>
          </expression>
       </def>
       <def name="IsNullAlsoFalseAbcString" context="Population" accessLevel="Public">
-         <expression name="IsNull" xsi:type="FunctionRef">
+         <expression xsi:type="IsNull">
             <operand valueType="t:String" value="abc" xsi:type="Literal"/>
          </expression>
       </def>
       <def name="IsNullAlsoFalseNumber1" context="Population" accessLevel="Public">
-         <expression name="IsNull" xsi:type="FunctionRef">
+         <expression xsi:type="IsNull">
             <operand valueType="t:Integer" value="1" xsi:type="Literal"/>
          </expression>
       </def>
       <def name="IsNullAlsoFalseNumberZero" context="Population" accessLevel="Public">
-         <expression name="IsNull" xsi:type="FunctionRef">
+         <expression xsi:type="IsNull">
             <operand valueType="t:Integer" value="0" xsi:type="Literal"/>
          </expression>
       </def>
