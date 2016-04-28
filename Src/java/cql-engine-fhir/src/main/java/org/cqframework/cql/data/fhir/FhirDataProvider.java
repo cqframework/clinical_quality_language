@@ -31,13 +31,13 @@ public class FhirDataProvider implements DataProvider {
     private IGenericClient fhirClient;
 
     public Iterable<Object> retrieve(String context, String dataType, String templateId,
-             String codePath, Iterable<Concept> codes, String datePath, String dateLowPath,
-             String dateHighPath, Interval<Partial> dateRange) {
+                                     String codePath, Iterable<Concept> codes, String datePath, String dateLowPath,
+                                     String dateHighPath, Interval<Partial> dateRange) {
 
         // TODO: Apply filtering based on
-            // profile (templateId)
-            // codes
-            // dateRange
+        // profile (templateId)
+        // codes
+        // dateRange
         Bundle results = fhirClient.search().forResource(dataType).returnBundle(Bundle.class).execute();
         return new FhirBundleCursor(fhirClient, results);
     }
