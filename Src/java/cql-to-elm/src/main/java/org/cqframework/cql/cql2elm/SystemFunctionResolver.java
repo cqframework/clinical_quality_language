@@ -160,6 +160,12 @@ public class SystemFunctionResolver {
                     return resolveNary(fun);
                 }
 
+                case "IsNull":
+                case "IsTrue":
+                case "IsFalse": {
+                    return resolveUnary(fun);
+                }
+
                 // Overloaded Functions
                 case "Length": {
                     return resolveUnary(fun);
