@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="NullologicalOperator" version="1"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+   </usings>
+   <statements>
+      <def name="Patient" context="Population">
+         <expression xsi:type="Null"/>
+      </def>
+      <def name="IsNullTrue" context="Population" accessLevel="Public">
+         <expression name="IsNull" xsi:type="FunctionRef">
+            <operand xsi:type="Null"/>
+         </expression>
+      </def>
+      <def name="IsNullFalseEmptyString" context="Population" accessLevel="Public">
+         <expression name="IsNull" xsi:type="FunctionRef">
+            <operand valueType="t:String" value="" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="IsNullAlsoFalseAbcString" context="Population" accessLevel="Public">
+         <expression name="IsNull" xsi:type="FunctionRef">
+            <operand valueType="t:String" value="abc" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="IsNullAlsoFalseNumber1" context="Population" accessLevel="Public">
+         <expression name="IsNull" xsi:type="FunctionRef">
+            <operand valueType="t:Integer" value="1" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="IsNullAlsoFalseNumberZero" context="Population" accessLevel="Public">
+         <expression name="IsNull" xsi:type="FunctionRef">
+            <operand valueType="t:Integer" value="0" xsi:type="Literal"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+
