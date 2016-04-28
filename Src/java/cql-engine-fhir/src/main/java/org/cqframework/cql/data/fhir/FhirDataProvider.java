@@ -12,24 +12,23 @@ import org.joda.time.Partial;
  * Created by Bryn on 4/16/2016.
  */
 public class FhirDataProvider implements DataProvider {
-    private static FhirContext fhirContext = FhirContext.forDstu3();
-    private IGenericClient fhirClient;
 
     private String endpoint;
-
     public String getEndpoint() {
         return endpoint;
     }
-
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+        fhirContext = FhirContext.forDstu3();
         fhirClient = fhirContext.newRestfulGenericClient(endpoint);
     }
-
     public FhirDataProvider withEndpoint(String endpoint) {
         setEndpoint(endpoint);
         return this;
     }
+
+    private FhirContext fhirContext;
+    private IGenericClient fhirClient;
 
     public Iterable<Object> retrieve(String context, String dataType, String templateId,
                                      String codePath, Iterable<Concept> codes, String datePath, String dateLowPath,
