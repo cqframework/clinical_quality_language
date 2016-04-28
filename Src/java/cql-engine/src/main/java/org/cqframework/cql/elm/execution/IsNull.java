@@ -120,7 +120,6 @@ public class IsNull
 
     @Override
     public Object evaluate(Context context) {
-        int x = 1;
-        return true;
+        return getOperand().evaluate(context) == null;
     }
 }

@@ -6,6 +6,7 @@
 //}
 
 dependencies {
+    testCompile project(':cql-to-elm')
     compile group: 'joda-time', name: 'joda-time', version: '2.9.3'
 }
 
