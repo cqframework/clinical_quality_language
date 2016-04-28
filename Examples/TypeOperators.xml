@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <identifier id="TypeOperator" version="1"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+   </usings>
+   <statements>
+      <def name="Patient" context="Population">
+         <expression xsi:type="Null"/>
+      </def>
+      <def name="StringToTime" context="Population" accessLevel="Public">
+         <expression name="ToTime" xsi:type="FunctionRef">
+            <operand valueType="t:String" value="T14:30:00.0Z" xsi:type="Literal"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

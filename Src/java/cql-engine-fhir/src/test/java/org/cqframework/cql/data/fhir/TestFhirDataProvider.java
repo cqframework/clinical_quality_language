@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.testng.Assert.*;
+
 /**
  * Created by Bryn on 4/16/2016.
  */
@@ -23,8 +25,13 @@ public class TestFhirDataProvider {
         FhirDataProvider provider = new FhirDataProvider().withEndpoint("http://fhirtest.uhn.ca/baseDstu3");
         Iterable<Object> results = provider.retrieve("Patient", "Patient", null, null, null, null, null, null, null);
         List<Patient> patients = new ArrayList<>();
+
+        int resultCount = 0;
         for (Object o : results) {
             patients.add((Patient)o);
+            resultCount++;
         }
+
+        assertTrue(patients.size() == resultCount);
     }
 }

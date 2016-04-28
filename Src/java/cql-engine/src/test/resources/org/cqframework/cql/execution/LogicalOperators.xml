@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+   </usings>
+   <statements>
+      <def name="Patient" context="Population">
+         <expression xsi:type="Null"/>
+      </def>
+      <def name="AndTrue" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="AndFalse" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="AndAlsoFalse" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="AndNull" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="AndAlsoNull" context="Population" accessLevel="Public">
+         <expression xsi:type="And">
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="NotTrue" context="Population" accessLevel="Public">
+         <expression xsi:type="Not">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="NotFalse" context="Population" accessLevel="Public">
+         <expression xsi:type="Not">
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="NotNull" context="Population" accessLevel="Public">
+         <expression xsi:type="Not">
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="OrTrue" context="Population" accessLevel="Public">
+         <expression xsi:type="Or">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="OrAlsoTrue" context="Population" accessLevel="Public">
+         <expression xsi:type="Or">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="OrFalse" context="Population" accessLevel="Public">
+         <expression xsi:type="Or">
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="OrNull" context="Population" accessLevel="Public">
+         <expression xsi:type="Or">
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="OrAlsoNull" context="Population" accessLevel="Public">
+         <expression xsi:type="Or">
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="XOrTrue" context="Population" accessLevel="Public">
+         <expression xsi:type="Xor">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="XOrAlsoTrue" context="Population" accessLevel="Public">
+         <expression xsi:type="Xor">
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="XOrFalse" context="Population" accessLevel="Public">
+         <expression xsi:type="Xor">
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="XOrAlsoFalse" context="Population" accessLevel="Public">
+         <expression xsi:type="Xor">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def name="XOrNull" context="Population" accessLevel="Public">
+         <expression xsi:type="Xor">
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="XOrAlsoNull1" context="Population" accessLevel="Public">
+         <expression xsi:type="Xor">
+            <operand valueType="t:Boolean" value="true" xsi:type="Literal"/>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+      <def name="XOrAlsoNull2" context="Population" accessLevel="Public">
+         <expression xsi:type="Xor">
+            <operand valueType="t:Boolean" value="false" xsi:type="Literal"/>
+            <operand asType="t:Boolean" xsi:type="As">
+               <operand xsi:type="Null"/>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+
