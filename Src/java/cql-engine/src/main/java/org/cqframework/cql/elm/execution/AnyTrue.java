@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
+import java.util.Iterator;
 
 
 /**
@@ -136,6 +137,21 @@ public class AnyTrue
 
     @Override
     public Object evaluate(Context context) {
+        Object src = getSource();
+
+        if(src instanceof List) {
+            java.util.List<Expression> element = ((List)src).getElement();
+            Iterator<Expression> elemsItr = element.iterator();
+            while (elemsItr.hasNext()) {
+                Expression exp = elemsItr.next();
+                Boolean boolVal = (Boolean) exp.evaluate(context);
+
+                if (Boolean.TRUE == boolVal) return true;
+            }
+        }else{
+            return null;
+        }
+
         return false;
     }
 }

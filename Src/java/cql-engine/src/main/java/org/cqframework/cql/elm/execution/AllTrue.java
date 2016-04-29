@@ -137,12 +137,19 @@ public class AllTrue
 
     @Override
     public Object evaluate(Context context) {
-        Iterator<Expression> elemsItr = ((List) getSource()).getElement().iterator();
-        while (elemsItr.hasNext()) {
-            Expression exp = elemsItr.next();
-            Boolean boolVal = (Boolean) exp.evaluate(context);
+        Object src = getSource();
 
-            if(boolVal == null || Boolean.FALSE == boolVal) return false;
+        if(src instanceof List) {
+            java.util.List<Expression> element = ((List)src).getElement();
+            Iterator<Expression> elemsItr = element.iterator();
+            while (elemsItr.hasNext()) {
+                Expression exp = elemsItr.next();
+                Boolean boolVal = (Boolean) exp.evaluate(context);
+
+                if (boolVal == null || Boolean.FALSE == boolVal) return false;
+            }
+        }else{
+            return null;
         }
 
         return true;
