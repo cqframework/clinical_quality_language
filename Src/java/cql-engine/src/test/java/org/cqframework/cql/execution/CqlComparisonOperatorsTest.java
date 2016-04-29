@@ -4,6 +4,9 @@ import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
     static {
         testClass = CqlComparisonOperatorsTest.class;
@@ -16,7 +19,9 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
 
     @Test
     public void testEqual() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result = context.resolveExpressionRef(library, "SimpleAA").getExpression().evaluate(context);
+        assertThat(result, is(true));
     }
 
     @Test
