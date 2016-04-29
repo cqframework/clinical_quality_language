@@ -33,12 +33,12 @@ define ImpreciseComponentTuple: Tuple {
   Second: second from ImpreciseIdesOfMarch,
   Millisecond: millisecond from ImpreciseIdesOfMarch
 }
-define NullDate: year from null
+define NullDate: year from (null as DateTime)
 
 // @Test: DateFrom
 define Date: date from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define ImpreciseDate: date from DateTime(2000)
-define NullDate: date from null
+define NullDate: date from (null as DateTime)
 
 // @Test: TimeFrom
 define Time: time from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
@@ -49,7 +49,7 @@ define NullDate: time from null
 define CentralEuropean: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define EasternStandard: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200, -5.0)
 define DefaultTimezone: timezone from DateTime(2000, 3, 15, 13, 30, 25, 200)
-define NullDate: timezone from null
+define NullDate: timezone from (null as DateTime)
 
 // @Test: SameAs
 define SameYear: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year as DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
@@ -79,8 +79,8 @@ define SameHourWrongTimezone: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same 
 define ImpreciseHour: DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 15)
 define ImpreciseHourWrongDay: DateTime(2000, 3, 15, 13, 30, 25, 200) same hour as DateTime(2000, 3, 16)
 define NullLeft: null same as DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
-define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as null
-define NullBoth: null same as null
+define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same as (null as DateTime)
+define NullBoth: (null as DateTime) same as null
 
 // @Test: SameOrAfter
 define SameYear: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or after DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
@@ -118,7 +118,7 @@ define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) sam
 define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or after DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
 define NullLeft: null same or after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or after null
-define NullBoth: null same or after null
+define NullBoth: (null as DateTime) same or after null
 
 // @Test: SameOrBefore
 define SameYear: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same year or before DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
@@ -156,7 +156,7 @@ define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) sam
 define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same hour or before DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
 define NullLeft: null same or before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) same or before null
-define NullBoth: null same or before null
+define NullBoth: (null as DateTime) same or before null
 
 // @Test: After
 define SameYear: DateTime(2000, 12, 15, 13, 30, 25, 200, +1.0) after year of DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
@@ -191,7 +191,7 @@ define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) aft
 define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after hour of DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
 define NullLeft: null after DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) after null
-define NullBoth: null after null
+define NullBoth: (null as DateTime) after null
 
 // @Test: Before
 define SameYear: DateTime(2000, 10, 15, 13, 30, 25, 200, +1.0) before year of DateTime(2000, 11, 23, 8, 14, 47, 500, +1.0)
@@ -226,7 +226,7 @@ define HourAfterNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) bef
 define HourBeforeNormalizeZones: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before hour of DateTime(2000, 3, 15, 8, 30, 25, 200, -5.0)
 define NullLeft: null before DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NullRight: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) before null
-define NullBoth: null before null
+define NullBoth: (null as DateTime) before null
 
 // @Test: DurationBetween
 define NewYear2013: DateTime(2013, 1, 1, 0, 0, 0, 0)

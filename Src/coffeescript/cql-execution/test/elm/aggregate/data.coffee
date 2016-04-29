@@ -94,18 +94,30 @@ module.exports['Count'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -220,18 +232,30 @@ module.exports['Sum'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -288,18 +312,30 @@ module.exports['Sum'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "value" : 2,
@@ -452,6 +488,10 @@ module.exports['Min'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "type" : "Negate",
@@ -465,6 +505,10 @@ module.exports['Min'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -535,6 +579,10 @@ module.exports['Min'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "type" : "Negate",
@@ -548,6 +596,10 @@ module.exports['Min'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "value" : 2,
@@ -656,12 +708,20 @@ module.exports['Max'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -722,12 +782,20 @@ module.exports['Max'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "value" : 2,
@@ -831,13 +899,16 @@ module.exports['Avg'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -863,12 +934,20 @@ module.exports['Avg'] = {
                            "type" : "As",
                            "operand" : {
                               "type" : "Null"
+                           },
+                           "asTypeSpecifier" : {
+                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                              "type" : "NamedTypeSpecifier"
                            }
                         }, {
                            "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "type" : "As",
                            "operand" : {
                               "type" : "Null"
+                           },
+                           "asTypeSpecifier" : {
+                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                              "type" : "NamedTypeSpecifier"
                            }
                         }, {
                            "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -880,13 +959,16 @@ module.exports['Avg'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -939,12 +1021,20 @@ module.exports['Avg'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "value" : 2,
@@ -970,13 +1060,16 @@ module.exports['Avg'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -1073,13 +1166,16 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -1126,13 +1222,16 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -1220,13 +1319,16 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -1252,12 +1354,20 @@ module.exports['Median'] = {
                            "type" : "As",
                            "operand" : {
                               "type" : "Null"
+                           },
+                           "asTypeSpecifier" : {
+                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                              "type" : "NamedTypeSpecifier"
                            }
                         }, {
                            "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "type" : "As",
                            "operand" : {
                               "type" : "Null"
+                           },
+                           "asTypeSpecifier" : {
+                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                              "type" : "NamedTypeSpecifier"
                            }
                         }, {
                            "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -1269,13 +1379,16 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -1330,13 +1443,16 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -1395,13 +1511,16 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -1423,12 +1542,20 @@ module.exports['Median'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "value" : 2,
@@ -1630,12 +1757,20 @@ module.exports['Mode'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -1787,13 +1922,16 @@ module.exports['Variance'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -2017,13 +2155,16 @@ module.exports['StdDev'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -2141,13 +2282,16 @@ module.exports['PopulationStdDev'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "name" : "ToDecimal",
-                        "libraryName" : "System",
-                        "type" : "FunctionRef",
-                        "operand" : [ {
+                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "Convert",
+                        "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        } ]
+                        },
+                        "toTypeSpecifier" : {
+                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                           "type" : "NamedTypeSpecifier"
+                        }
                      }
                   }
                }
@@ -2278,12 +2422,20 @@ module.exports['AllTrue'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2344,12 +2496,20 @@ module.exports['AllTrue'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2457,12 +2617,20 @@ module.exports['AnyTrue'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -2523,12 +2691,20 @@ module.exports['AnyTrue'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",

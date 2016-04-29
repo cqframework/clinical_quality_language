@@ -7,6 +7,9 @@ module.exports.numerical_sort = (things, direction="asc") ->
     else
       b - a
 
+module.exports.isNull = (value) ->
+  return value==null
+  
 module.exports.typeIsArray  = typeIsArray  = Array.isArray || ( value ) ->
   return {}.toString.call( value ) is '[object Array]'
 
