@@ -1,21 +1,20 @@
 package org.cqframework.cql.execution;
 
-import org.cqframework.cql.elm.execution.Library;
 import org.testng.annotations.Test;
 
-import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-public class CqlLogicalOperatorsTest {
+public class CqlLogicalOperatorsTest extends CqlExecutionTestBase {
+    static {
+        testClass = CqlLogicalOperatorsTest.class;
+    }
+
     @Test
     public void testAnd() throws JAXBException {
-        // load an ELM document into the Execution tree
-        Library library = JAXB.unmarshal(getClass().getResourceAsStream("LogicalOperators.xml"), Library.class);
-
         Context context = new Context(library);
         Object result = context.resolveExpressionRef(library, "AndTrue").getExpression().evaluate(context);
         assertThat(result, is(true));
@@ -35,9 +34,6 @@ public class CqlLogicalOperatorsTest {
 
     @Test
     public void testNot() throws JAXBException {
-        // load an ELM document into the Execution tree
-        Library library = JAXB.unmarshal(getClass().getResourceAsStream("LogicalOperators.xml"), Library.class);
-
         Context context = new Context(library);
         Object result = context.resolveExpressionRef(library, "NotTrue").getExpression().evaluate(context);
         assertThat(result, is(false));
@@ -51,9 +47,6 @@ public class CqlLogicalOperatorsTest {
 
     @Test
     public void testOr() throws JAXBException {
-        // load an ELM document into the Execution tree
-        Library library = JAXB.unmarshal(getClass().getResourceAsStream("LogicalOperators.xml"), Library.class);
-
         Context context = new Context(library);
         Object result = context.resolveExpressionRef(library, "OrTrue").getExpression().evaluate(context);
         assertThat(result, is(true));
@@ -73,9 +66,6 @@ public class CqlLogicalOperatorsTest {
 
     @Test
     public void testXOr() throws JAXBException {
-        // load an ELM document into the Execution tree
-        Library library = JAXB.unmarshal(getClass().getResourceAsStream("LogicalOperators.xml"), Library.class);
-
         Context context = new Context(library);
         Object result = context.resolveExpressionRef(library, "XOrTrue").getExpression().evaluate(context);
         assertThat(result, is(true));

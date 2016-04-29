@@ -35,7 +35,8 @@ public abstract class CqlExecutionTestBase<T> {
             File cqlFile = new File(URLDecoder.decode(testClass.getResource(fileName + ".cql").getFile(), "UTF-8"));
             CqlTranslator translator = CqlTranslator.fromFile(cqlFile, libraryManager, options.toArray(new CqlTranslator.Options[options.size()]));
 
-            xmlFile = File.createTempFile(fileName, ".xml");
+            xmlFile = new File(cqlFile.getParent(), fileName + ".xml");
+            xmlFile.createNewFile();
             try (PrintWriter pw = new PrintWriter(xmlFile, "UTF-8")) {
                 pw.println(translator.toXml());
                 pw.println();
@@ -52,8 +53,8 @@ public abstract class CqlExecutionTestBase<T> {
 
     @AfterClass
     public static void oneTimeTearDown() {
-        if (xmlFile != null) {
-            xmlFile.delete();
-        }
+//        if (xmlFile != null) {
+//            xmlFile.delete();
+//        }
     }
 }
