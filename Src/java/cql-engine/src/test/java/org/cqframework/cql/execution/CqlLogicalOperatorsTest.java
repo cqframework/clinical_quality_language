@@ -12,7 +12,7 @@ public class CqlLogicalOperatorsTest extends CqlExecutionTestBase {
     static {
         testClass = CqlLogicalOperatorsTest.class;
     }
-
+    
     @Test
     public void testAnd() throws JAXBException {
         Context context = new Context(library);
