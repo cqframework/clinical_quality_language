@@ -1,12 +1,12 @@
-library ComparisonOperator version '1'
+library AggregateFunctions version '1'
 
 context Population
 
 //AllTrue
-define AllTrueList : alltrue({true,true})
+define AllTrueList : AllTrue({true,true})
 
 //AnyTrue
-define AnyTrueList : anytrue({true,true})
+define AnyTrueList : AnyTrue({true,true})
 
 //Avg
 

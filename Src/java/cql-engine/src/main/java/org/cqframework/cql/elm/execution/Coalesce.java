@@ -131,19 +131,6 @@ public class Coalesce
         return buffer;
     }
 
-//    private Object getFirstNonNull(Iterable<Expression> iterable, Context context) {
-//        Iterator<Expression> itr = iterable.iterator();
-//        while (itr.hasNext()) {
-//            Expression element = itr.next();
-//            if (element != null) {
-//                Object tmpVal =
-//                return element;
-//            }
-//        }
-//
-//        return null;
-//    }
-
     @Override
     public Object evaluate(Context context) {
         // Object result = null;
