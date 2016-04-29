@@ -1,9 +1,7 @@
 package org.cqframework.cql.execution;
 
 import org.cqframework.cql.data.DataProvider;
-import org.cqframework.cql.elm.execution.ExpressionDef;
-import org.cqframework.cql.elm.execution.Library;
-import org.cqframework.cql.elm.execution.ParameterDef;
+import org.cqframework.cql.elm.execution.*;
 
 import javax.xml.namespace.QName;
 import java.util.HashMap;
@@ -44,6 +42,26 @@ public class Context {
         throw new IllegalArgumentException(String.format("Could not resolve parameter reference '%s'.", name));
     }
 
+    public ValueSetDef resolveValueSetRef(Library library, String name) {
+        for (ValueSetDef valueSetDef : library.getValueSets().getDef()) {
+            if (valueSetDef.getName().equals(name)) {
+                return valueSetDef;
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Could not resolve value set reference '%s'.", name));
+    }
+
+    public CodeSystemDef resolveCodeSystemRef(Library library, String name) {
+        for (CodeSystemDef codeSystemDef : library.getCodeSystems().getDef()) {
+            if (codeSystemDef.getName().equals(name)) {
+                return codeSystemDef;
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Could not resolve code system reference '%s'.", name));
+    }
+
     public Object resolveParameterRef(String library, String name) {
         // TODO: Library parameter resolution
         if (library != null) {
@@ -58,6 +76,15 @@ public class Context {
         Object result = parameterDef.getDefault() != null ? parameterDef.getDefault().evaluate(this) : null;
         parameters.put(name, result);
         return result;
+    }
+
+    public ValueSetDef resolveValueSetRef(String library, String name) {
+        // TODO: Library resolution
+        if (library != null) {
+            throw new IllegalArgumentException("Library resolutuion of value sets is not yet supported.");
+        }
+
+        return resolveValueSetRef(this.library, name);
     }
 
     private Map<String, DataProvider> dataProviders = new HashMap<>();

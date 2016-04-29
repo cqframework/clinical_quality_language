@@ -46,7 +46,8 @@ public class FhirBundleCursor implements Iterable<Object> {
          * @return {@code true} if the iteration has more elements
          */
         public boolean hasNext() {
-            return current < results.getEntry().size() - 1;
+            return current < results.getEntry().size() - 1
+                    || results.getLink(results.LINK_NEXT) != null;
         }
 
         /**

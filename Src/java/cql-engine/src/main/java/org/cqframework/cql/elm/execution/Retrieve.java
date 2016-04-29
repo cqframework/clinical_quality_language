@@ -647,10 +647,19 @@ public class Retrieve
 
     public Object evaluate(Context context) {
         DataProvider dataProvider = context.resolveDataProvider(this.dataType);
-        Iterable<org.cqframework.cql.runtime.Concept> codes = null;
+        Iterable<org.cqframework.cql.runtime.Code> codes = null;
+        String valueSet = null;
         if (this.getCodes() != null) {
             // TODO: Handle single codes here...
-            codes = (Iterable<org.cqframework.cql.runtime.Concept>)this.getCodes().evaluate(context);
+            if (this.getCodes() instanceof ValueSetRef) {
+                ValueSetRef valueSetRef = (ValueSetRef)this.getCodes();
+                ValueSetDef valueSetDef = context.resolveValueSetRef(valueSetRef.getLibraryName(), valueSetRef.getName());
+                // TODO: Handle value set versions.....
+                valueSet = valueSetDef.getId();
+            }
+            else {
+                codes = (Iterable<org.cqframework.cql.runtime.Code>) this.getCodes().evaluate(context);
+            }
         }
         org.cqframework.cql.runtime.Interval<Partial> dateRange = null;
         if (this.getDateRange() != null) {
@@ -658,6 +667,6 @@ public class Retrieve
         }
 
         return dataProvider.retrieve(context.getCurrentContext(), getDataType().getLocalPart(), getTemplateId(),
-                getCodeProperty(), codes, getDateProperty(), getDateLowProperty(), getDateHighProperty(), dateRange);
+                getCodeProperty(), codes, valueSet, getDateProperty(), getDateLowProperty(), getDateHighProperty(), dateRange);
     }
 }
