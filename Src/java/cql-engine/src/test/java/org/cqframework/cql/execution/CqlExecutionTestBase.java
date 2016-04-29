@@ -2,9 +2,11 @@ package org.cqframework.cql.execution;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.elm.execution.Library;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
+import javax.xml.bind.JAXB;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +15,9 @@ import java.util.ArrayList;
 
 public abstract class CqlExecutionTestBase<T> {
     static Class testClass = null;
-    static File xmlFile = null;
+    static Library library = null;
+
+    static private File xmlFile = null;
 
     @BeforeClass
     public static void oneTimeSetUp() {
@@ -39,6 +43,8 @@ public abstract class CqlExecutionTestBase<T> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            library = JAXB.unmarshal(xmlFile, Library.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

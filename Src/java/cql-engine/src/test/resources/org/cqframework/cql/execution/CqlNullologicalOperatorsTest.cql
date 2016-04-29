@@ -2,6 +2,18 @@ library NullologicalOperator version '1'
 
 context Population
 
+//Coalesce
+define CoalesceEmpty : Coalesce()
+define CoalesceNull : Coalesce(null)
+define CoalesceANull : Coalesce('a', null)
+define CoalesceA : Coalesce('a')
+define CoalesceNullA : Coalesce(null, 'a')
+define CoalesceEmptyList : Coalesce({})
+define CoalesceListFirstA : Coalesce({'a', null, null})
+define CoalesceListLastA : Coalesce({null, null, 'a'})
+define CoalesceFirstList : Coalesce({'a'},null, null)
+define CoalesceLastList : Coalesce(null, null, {'a'})
+
 //IsNUll
 define IsNullTrue                   : IsNull(null)
 define IsNullFalseEmptyString       : IsNull('')
