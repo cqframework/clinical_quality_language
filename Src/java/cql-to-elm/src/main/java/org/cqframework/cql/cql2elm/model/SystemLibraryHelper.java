@@ -404,10 +404,10 @@ public class SystemLibraryHelper {
         Operator codeToConcept = new Operator("ToConcept", new Signature(systemModel.getCode()), systemModel.getConcept());
         system.add(codeToConcept);
         system.add(new Conversion(codeToConcept, true));
-
-        Operator codeListToConcept = new Operator("ToConcept", new Signature(new ListType(systemModel.getCode())), systemModel.getConcept());
-        system.add(codeListToConcept);
-        system.add(new Conversion(codeListToConcept, true));
+        // ToConcept(list<Code>)
+        Operator codesToConcept = new Operator("ToConcept", new Signature(new ListType(systemModel.getCode())), systemModel.getConcept());
+        system.add(codesToConcept);
+        system.add(new Conversion(codesToConcept, true));
 
         system.add(new Operator("CalculateAge", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
         system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
