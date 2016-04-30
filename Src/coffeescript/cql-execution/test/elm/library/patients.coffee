@@ -13,7 +13,7 @@ module.exports.p1 = {
         "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
         "resourceType" : "Patient",
         "identifier": [{ "value": "1" }],
-        "name": {"given":["John"], "family": ["Smith"]},
+        "name": [{"given":["John"], "family": ["Smith"]}],
         "gender": "M",
         "birthDate" : "1980-02-17T06:15"}
         }
@@ -35,7 +35,7 @@ module.exports.p2 = {
       "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
       "id" : "2",
       "identifier": [{ "value": "2" }],
-      "name": {"given":["Sally"], "family": ["Smith"]},
+      "name": [{"given":["Sally"], "family": ["Smith"]}],
       "gender": "F",
       "birthDate" : "2007-08-02T11:47"
       }]

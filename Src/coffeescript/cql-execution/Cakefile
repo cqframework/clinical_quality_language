@@ -11,6 +11,8 @@ build = (src, dest, watch = false) ->
     process.stderr.write data.toString()
   coffee.stdout.on 'data', (data) ->
     console.log data.toString()
+  coffee.on 'exit', (code) ->
+    console.log "Completed transpiling #{src} to #{dest}, exit code #{code}"
 
 buildTestData = (watch = false) ->
   args = if watch then [':cql-to-elm:watchTestData'] else [':cql-to-elm:generateTestData']

@@ -326,11 +326,6 @@ where  E.period  included in MeasurementPeriod and C.id = 'http://cqframework.or
 define msQuery: from [Encounter] E, [Condition] C return {E: E, C:C}
 ###
 
-###
-Translation Error(s):
-[5:22, 7:44] type
-[9:23, 10:86] type
-###
 module.exports['MultiSourceQuery'] = {
    "library" : {
       "identifier" : {
@@ -414,14 +409,106 @@ module.exports['MultiSourceQuery'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "dateProperty" : "period",
+                     "type" : "Retrieve",
+                     "dateRange" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }
+               }, {
+                  "alias" : "C",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Condition",
+                     "templateId" : "condition-qicore-qicore-condition",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "C",
+                        "value" : {
+                           "name" : "C",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               }
             }
          }, {
             "name" : "msQueryWhere2",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Null"
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "dateProperty" : "period",
+                     "type" : "Retrieve",
+                     "dateRange" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }
+               }, {
+                  "alias" : "C",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Condition",
+                     "templateId" : "condition-qicore-qicore-condition",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "path" : "id",
+                     "scope" : "C",
+                     "type" : "Property"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "http://cqframework.org/3/2",
+                     "type" : "Literal"
+                  } ]
+               },
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "C",
+                        "value" : {
+                           "name" : "C",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               }
             }
          }, {
             "name" : "msQuery",
