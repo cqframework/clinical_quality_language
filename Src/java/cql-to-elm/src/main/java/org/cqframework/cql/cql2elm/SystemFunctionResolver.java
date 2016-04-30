@@ -198,8 +198,9 @@ public class SystemFunctionResolver {
                 case "ToDecimal":
                 case "ToDateTime":
                 case "ToTime":
+                case "ToQuantity":
                 case "ToConcept": {
-                    return resolveConvert(fun);
+                    return resolveUnary(fun);
                 }
             }
         }
