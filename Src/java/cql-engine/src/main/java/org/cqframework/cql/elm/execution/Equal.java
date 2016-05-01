@@ -8,43 +8,38 @@
 
 package org.cqframework.cql.elm.execution;
 
-import java.util.Collection;
+import org.cqframework.cql.execution.Context;
+import org.jvnet.jaxb2_commons.lang.*;
+import org.jvnet.jaxb2_commons.lang.ToString;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBToStringStrategy;
-import org.jvnet.jaxb2_commons.lang.ToString;
-import org.jvnet.jaxb2_commons.lang.ToStringStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import java.util.Collection;
 
 
 /**
  * The Equal operator returns true if the arguments are equal; false if the arguments are known unequal, and null otherwise. Equality semantics are defined to be value-based.
- * 
+ * <p>
  * For simple types, this means that equality returns true if and only if the result of each argument evaluates to the same value.
- * 
+ * <p>
  * For quantities, this means that the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
- * 
+ * <p>
  * For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements by name are equal.
- * 
+ * <p>
  * For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using the same semantics.
- * 
+ * <p>
  * For interval types, equality returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the interval as determined by the Start and End operators.
- * 
+ * <p>
  * For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.
- * 
+ * <p>
  * If either argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Equal complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Equal"&gt;
  *   &lt;complexContent&gt;
@@ -53,21 +48,18 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Equal", namespace = "urn:hl7-org:elm:r1")
 public class Equal
-    extends BinaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends BinaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
     public Equal withOperand(Expression... values) {
-        if (values!= null) {
-            for (Expression value: values) {
+        if (values != null) {
+            for (Expression value : values) {
                 getOperand().add(value);
             }
         }
@@ -76,7 +68,7 @@ public class Equal
 
     @Override
     public Equal withOperand(Collection<Expression> values) {
-        if (values!= null) {
+        if (values != null) {
             getOperand().addAll(values);
         }
         return this;
@@ -84,8 +76,8 @@ public class Equal
 
     @Override
     public Equal withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -94,7 +86,7 @@ public class Equal
 
     @Override
     public Equal withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -153,4 +145,15 @@ public class Equal
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        Object left = getOperand().get(0).evaluate(context);
+        Object right = getOperand().get(1).evaluate(context);
+
+        if(left == null || right == null) return null;
+
+        if(left.equals(right)) return true;
+
+        return null;
+    }
 }

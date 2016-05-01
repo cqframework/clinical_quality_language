@@ -8,29 +8,24 @@
 
 package org.cqframework.cql.elm.execution;
 
-import java.util.Collection;
+import org.cqframework.cql.execution.Context;
+import org.jvnet.jaxb2_commons.lang.*;
+import org.jvnet.jaxb2_commons.lang.ToString;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBToStringStrategy;
-import org.jvnet.jaxb2_commons.lang.ToString;
-import org.jvnet.jaxb2_commons.lang.ToStringStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import java.util.*;
 
 
 /**
  * The Coalesce operator returns the first non-null result in a list of arguments. If all arguments evaluate to null, the result is null. The static type of the first argument determines the type of the result, and all subsequent arguments must be of that same type.
- * 
+ * <p>
  * <p>Java class for Coalesce complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Coalesce"&gt;
  *   &lt;complexContent&gt;
@@ -39,21 +34,18 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Coalesce", namespace = "urn:hl7-org:elm:r1")
 public class Coalesce
-    extends NaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends NaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
     public Coalesce withOperand(Expression... values) {
-        if (values!= null) {
-            for (Expression value: values) {
+        if (values != null) {
+            for (Expression value : values) {
                 getOperand().add(value);
             }
         }
@@ -62,7 +54,7 @@ public class Coalesce
 
     @Override
     public Coalesce withOperand(Collection<Expression> values) {
-        if (values!= null) {
+        if (values != null) {
             getOperand().addAll(values);
         }
         return this;
@@ -70,8 +62,8 @@ public class Coalesce
 
     @Override
     public Coalesce withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -80,7 +72,7 @@ public class Coalesce
 
     @Override
     public Coalesce withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -139,4 +131,39 @@ public class Coalesce
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        // Object result = null;
+        java.util.List<Expression> operands = getOperand();
+
+        Iterator<Expression> expressions = operands.iterator();
+        while (expressions.hasNext()) {
+            Expression expression = expressions.next();
+            Object tmpVal = expression.evaluate(context);
+            if (tmpVal != null) {
+                return tmpVal;
+            } else {
+                if (expression instanceof List) {
+                    java.util.List tmpList = new ArrayList();
+
+                    Iterator<Expression> elemsItr = ((List) expression).getElement().iterator();
+                    while (elemsItr.hasNext()) {
+                        Expression exp = elemsItr.next();
+                        tmpVal = exp.evaluate(context);
+                        if (tmpVal != null) {
+                            if (operands.size() == 1) {
+                                return tmpVal;
+                            } else {
+                                tmpList.add(tmpVal);
+                            }
+                        }
+                    }
+
+                    return tmpList.size() == 0 ? null : tmpList;
+                }
+            }
+        }
+
+        return null;
+    }
 }

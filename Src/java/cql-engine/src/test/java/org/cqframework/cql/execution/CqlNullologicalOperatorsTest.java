@@ -1,13 +1,13 @@
 package org.cqframework.cql.execution;
 
-import org.cqframework.cql.elm.execution.Library;
 import org.testng.annotations.Test;
 
-import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
+import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
     static {
@@ -15,10 +15,41 @@ public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
     }
 
     @Test
-    public void testIsNull() throws JAXBException {
-        // load an ELM document into the Execution tree
-        Library library = JAXB.unmarshal(xmlFile, Library.class);
+    public void testCoalesce() throws JAXBException {
+        Context context = new Context(library);
+        Object result = context.resolveExpressionRef(library, "CoalesceEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
 
+        result = context.resolveExpressionRef(library, "CoalesceNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "CoalesceA").getExpression().evaluate(context);
+        assertThat(result, is("a"));
+
+        result = context.resolveExpressionRef(library, "CoalesceANull").getExpression().evaluate(context);
+        assertThat(result, is("a"));
+
+        result = context.resolveExpressionRef(library, "CoalesceNullA").getExpression().evaluate(context);
+        assertThat(result, is("a"));
+
+        result = context.resolveExpressionRef(library, "CoalesceEmptyList").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "CoalesceListFirstA").getExpression().evaluate(context);
+        assertThat(result, is("a"));
+
+        result = context.resolveExpressionRef(library, "CoalesceListLastA").getExpression().evaluate(context);
+        assertThat(result, is("a"));
+
+        result = context.resolveExpressionRef(library, "CoalesceFirstList").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList("a")));
+
+        result = context.resolveExpressionRef(library, "CoalesceLastList").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList("a")));
+    }
+
+    @Test
+    public void testIsNull() throws JAXBException {
         Context context = new Context(library);
         Object result = context.resolveExpressionRef(library, "IsNullTrue").getExpression().evaluate(context);
         assertThat(result, is(true));
@@ -38,9 +69,6 @@ public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
 
     @Test
     public void testIsFalse() throws JAXBException {
-        // load an ELM document into the Execution tree
-        Library library = JAXB.unmarshal(xmlFile, Library.class);
-
         Context context = new Context(library);
         Object result = context.resolveExpressionRef(library, "IsFalseFalse").getExpression().evaluate(context);
         assertThat(result, is(true));
@@ -54,9 +82,6 @@ public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
 
     @Test
     public void testIsTrue() throws JAXBException {
-        // load an ELM document into the Execution tree
-        Library library = JAXB.unmarshal(xmlFile, Library.class);
-
         Context context = new Context(library);
         Object result = context.resolveExpressionRef(library, "IsTrueTrue").getExpression().evaluate(context);
         assertThat(result, is(true));

@@ -8,20 +8,16 @@
 
 package org.cqframework.cql.elm.execution;
 
-import java.util.Collection;
+import org.cqframework.cql.execution.Context;
+import org.jvnet.jaxb2_commons.lang.*;
+import org.jvnet.jaxb2_commons.lang.ToString;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBToStringStrategy;
-import org.jvnet.jaxb2_commons.lang.ToString;
-import org.jvnet.jaxb2_commons.lang.ToStringStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import java.util.Collection;
+import java.util.Iterator;
 
 
 /**
@@ -139,4 +135,23 @@ public class AllTrue
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        Object src = getSource();
+
+        if(src instanceof List) {
+            java.util.List<Expression> element = ((List)src).getElement();
+            Iterator<Expression> elemsItr = element.iterator();
+            while (elemsItr.hasNext()) {
+                Expression exp = elemsItr.next();
+                Boolean boolVal = (Boolean) exp.evaluate(context);
+
+                if (boolVal == null || Boolean.FALSE == boolVal) return false;
+            }
+        }else{
+            return null;
+        }
+
+        return true;
+    }
 }

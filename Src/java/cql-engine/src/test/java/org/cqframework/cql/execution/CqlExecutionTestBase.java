@@ -2,9 +2,11 @@ package org.cqframework.cql.execution;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.elm.execution.Library;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
+import javax.xml.bind.JAXB;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +15,9 @@ import java.util.ArrayList;
 
 public abstract class CqlExecutionTestBase<T> {
     static Class testClass = null;
-    static File xmlFile = null;
+    static Library library = null;
+
+    static private File xmlFile = null;
 
     @BeforeClass
     public static void oneTimeSetUp() {
@@ -31,7 +35,8 @@ public abstract class CqlExecutionTestBase<T> {
             File cqlFile = new File(URLDecoder.decode(testClass.getResource(fileName + ".cql").getFile(), "UTF-8"));
             CqlTranslator translator = CqlTranslator.fromFile(cqlFile, libraryManager, options.toArray(new CqlTranslator.Options[options.size()]));
 
-            xmlFile = File.createTempFile(fileName, ".xml");
+            xmlFile = new File(cqlFile.getParent(), fileName + ".xml");
+            xmlFile.createNewFile();
             try (PrintWriter pw = new PrintWriter(xmlFile, "UTF-8")) {
                 pw.println(translator.toXml());
                 pw.println();
@@ -39,6 +44,8 @@ public abstract class CqlExecutionTestBase<T> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            library = JAXB.unmarshal(xmlFile, Library.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,8 +53,8 @@ public abstract class CqlExecutionTestBase<T> {
 
     @AfterClass
     public static void oneTimeTearDown() {
-        if (xmlFile != null) {
-            xmlFile.delete();
-        }
+//        if (xmlFile != null) {
+//            xmlFile.delete();
+//        }
     }
 }
