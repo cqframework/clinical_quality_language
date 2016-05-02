@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for DateTimePrecision.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
@@ -32,7 +32,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
- * 
  */
 @XmlType(name = "DateTimePrecision", namespace = "urn:hl7-org:elm:r1")
 @XmlEnum
@@ -65,7 +64,7 @@ public enum DateTimePrecision {
     }
 
     public static DateTimePrecision fromValue(String v) {
-        for (DateTimePrecision c: DateTimePrecision.values()) {
+        for (DateTimePrecision c : DateTimePrecision.values()) {
             if (c.value.equals(v)) {
                 return c;
             }
