@@ -3,6 +3,7 @@ library TypeOperator version '1'
 context Population
 
 //AS
+define Int1ToString : as<String>(1)
 
 //Convert
 

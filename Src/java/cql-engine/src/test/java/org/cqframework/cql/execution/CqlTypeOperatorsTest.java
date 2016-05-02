@@ -14,7 +14,9 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
 
     @Test
     public void testAS() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result = context.resolveExpressionRef(library, "Int1ToString").getExpression().evaluate(context);
+        assertThat(result, is("2:30PM UTC"));
     }
 
     @Test

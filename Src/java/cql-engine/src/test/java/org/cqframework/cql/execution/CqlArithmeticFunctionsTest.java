@@ -4,9 +4,6 @@ import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     static {
         testClass = CqlArithmeticFunctionsTest.class;
@@ -14,9 +11,7 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
 
     @Test
     public void testAbs() throws JAXBException {
-        Context context = new Context(library);
-        Object result = context.resolveExpressionRef(library, "AllTrueList").getExpression().evaluate(context);
-        assertThat(result, is(true));
+
     }
 
     @Test
