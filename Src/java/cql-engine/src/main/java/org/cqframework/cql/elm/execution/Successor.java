@@ -12,6 +12,8 @@ import java.util.Collection;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -137,4 +139,9 @@ public class Successor
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        Object argument = this.getOperand().evaluate(context);
+        return org.cqframework.cql.runtime.Interval.successor(argument);
+    }
 }

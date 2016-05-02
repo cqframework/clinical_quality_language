@@ -1,5 +1,6 @@
 package org.cqframework.cql.elm.execution;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 
 /**
@@ -7,6 +8,6 @@ import org.cqframework.cql.execution.Context;
  */
 public class Executable {
     public Object evaluate(Context context) {
-        return null;
+        throw new NotImplementedException(String.format("evaluate not implemented for class %s", this.getClass().getSimpleName()));
     }
 }

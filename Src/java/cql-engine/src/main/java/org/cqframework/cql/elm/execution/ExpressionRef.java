@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
+import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -230,4 +232,8 @@ public class ExpressionRef
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        return context.resolveExpressionRef(this.getLibraryName(), this.getName()).getExpression().evaluate(context);
+    }
 }

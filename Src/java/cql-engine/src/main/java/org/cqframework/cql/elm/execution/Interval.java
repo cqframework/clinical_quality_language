@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -460,4 +462,18 @@ public class Interval
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        Object low = getLow() != null ? getLow().evaluate(context) : null;
+        Boolean lowClosed = getLowClosedExpression() != null ? (Boolean)getLowClosedExpression().evaluate(context) : this.lowClosed;
+        Object high = getHigh() != null ? getHigh().evaluate(context) : null;
+        Boolean highClosed = getHighClosedExpression() != null ? (Boolean)getHighClosedExpression().evaluate(context) : this.highClosed;
+
+        // An interval with no boundaries is not an interval
+        if (low == null && high == null) {
+            return null;
+        }
+
+        return new org.cqframework.cql.runtime.Interval(low, lowClosed == null ? true : lowClosed, high, highClosed == null ? true : highClosed);
+    }
 }

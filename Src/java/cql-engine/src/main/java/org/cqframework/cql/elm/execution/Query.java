@@ -15,6 +15,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.commons.lang3.NotImplementedException;
+import org.cqframework.cql.execution.Context;
+import org.cqframework.cql.execution.Variable;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -489,4 +493,66 @@ public class Query
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        // Single-source query with where clause only at this point
+        if (this.getSource().size() != 1) {
+            throw new NotImplementedException("Multi-source queries are not currently implemented.");
+        }
+
+        if (this.getLet().size() != 0) {
+            throw new NotImplementedException("Let clauses within queries are not currently implemented.");
+        }
+
+        if (this.getRelationship().size() != 0) {
+            throw new NotImplementedException("Relationship clauses within queries are not currently implemented.");
+        }
+
+        if (this.getReturn() != null) {
+            throw new NotImplementedException("Return clause within a query is not currently implemented.");
+        }
+
+        if (this.getSort() != null) {
+            throw new NotImplementedException("Sort clause within a query is not currently implemented.");
+        }
+
+        AliasedQuerySource source = this.getSource().get(0);
+        Object sourceObject = source.getExpression().evaluate(context);
+        List<Object> result = new ArrayList();
+        Iterable<Object> sourceData;
+        boolean sourceIsList = sourceObject instanceof Iterable;
+        if (sourceIsList) {
+            sourceData = (Iterable<Object>)sourceObject;
+        }
+        else {
+            ArrayList sourceArrayList = new ArrayList();
+            sourceArrayList.add(sourceObject);
+            sourceData = sourceArrayList;
+        }
+
+        for (Object element : sourceData) {
+            context.push(new Variable().withName(source.getAlias()).withValue(element));
+            try {
+                if (this.getWhere() != null) {
+                    Object satisfiesCondition = this.getWhere().evaluate(context);
+                    if (satisfiesCondition instanceof Boolean && (Boolean)satisfiesCondition) {
+                        result.add(element);
+                    }
+                }
+                else {
+                    result.add(element);
+                }
+            }
+            finally {
+                context.pop();
+            }
+        }
+
+        if (sourceIsList) {
+            return result;
+        }
+        else {
+            return result.size() == 1 ? result.get(0) : null;
+        }
+    }
 }

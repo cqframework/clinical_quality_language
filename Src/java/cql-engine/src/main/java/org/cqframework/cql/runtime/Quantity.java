@@ -29,4 +29,15 @@ public class Quantity {
         setUnit(unit);
         return this;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Quantity)) {
+            return false;
+        }
+
+        Quantity otherQuantity = (Quantity)other;
+        return value.compareTo(otherQuantity.getValue()) == 0
+                && ((unit == null && otherQuantity.getUnit() == null) || unit.equals(otherQuantity.getUnit()));
+    }
 }

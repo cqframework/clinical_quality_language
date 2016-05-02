@@ -12,6 +12,8 @@ import java.util.Collection;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
 import org.jvnet.jaxb2_commons.lang.HashCode;
@@ -133,4 +135,13 @@ public class End
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        org.cqframework.cql.runtime.Interval argument = (org.cqframework.cql.runtime.Interval)this.getOperand().evaluate(context);
+        if (argument != null) {
+            return argument.getEnd();
+        }
+
+        return null;
+    }
 }

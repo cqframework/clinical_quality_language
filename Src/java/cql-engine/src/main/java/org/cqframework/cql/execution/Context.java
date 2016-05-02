@@ -1,5 +1,6 @@
 package org.cqframework.cql.execution;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.data.DataProvider;
 import org.cqframework.cql.elm.execution.*;
 
@@ -15,6 +16,7 @@ public class Context {
 
     private Map<String, Object> parameters = new HashMap<>();
     private Stack<String> currentContext = new Stack<>();
+    private Stack<Variable> stack = new Stack<>();
 
     private Library library;
 
@@ -30,6 +32,15 @@ public class Context {
         }
 
         throw new IllegalArgumentException(String.format("Could not resolve expression reference '%s'.", name));
+    }
+
+    public ExpressionDef resolveExpressionRef(String libraryName, String name) {
+        // TODO: Library resolution of expression refs
+        if (libraryName != null) {
+            throw new NotImplementedException("Library resolution of expression refs is not yet supported.");
+        }
+
+        return resolveExpressionRef(this.library, name);
     }
 
     public ParameterDef resolveParameterRef(Library library, String name) {
@@ -65,7 +76,7 @@ public class Context {
     public Object resolveParameterRef(String library, String name) {
         // TODO: Library parameter resolution
         if (library != null) {
-            throw new IllegalArgumentException("Library resolution of parameters is not yet supported.");
+            throw new NotImplementedException("Library resolution of parameters is not yet supported.");
         }
 
         if (parameters.containsKey(name)) {
@@ -81,7 +92,7 @@ public class Context {
     public ValueSetDef resolveValueSetRef(String library, String name) {
         // TODO: Library resolution
         if (library != null) {
-            throw new IllegalArgumentException("Library resolutuion of value sets is not yet supported.");
+            throw new NotImplementedException("Library resolutuion of value sets is not yet supported.");
         }
 
         return resolveValueSetRef(this.library, name);
@@ -116,5 +127,23 @@ public class Context {
         }
 
         return currentContext.peek();
+    }
+
+    public void push(Variable variable) {
+        stack.push(variable);
+    }
+
+    public Variable resolveVariable(String name) {
+        for (Variable variable : stack) {
+            if (variable.getName().equals(name)) {
+                return variable;
+            }
+        }
+
+        return null;
+    }
+
+    public void pop() {
+        stack.pop();
     }
 }

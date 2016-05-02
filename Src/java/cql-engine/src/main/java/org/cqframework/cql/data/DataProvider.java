@@ -11,5 +11,5 @@ public interface DataProvider {
     // TODO: Enable the use of valuesets, rather than requiring expansion to a list of codes
     Iterable<Object> retrieve(String context, String dataType, String templateId, String codePath,
                               Iterable<Code> codes, String valueSet, String datePath, String dateLowPath, String dateHighPath,
-                              Interval<Partial> dateRange);
+                              Interval dateRange);
 }

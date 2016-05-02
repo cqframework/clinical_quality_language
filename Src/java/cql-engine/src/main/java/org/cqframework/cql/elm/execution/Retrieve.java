@@ -661,9 +661,9 @@ public class Retrieve
                 codes = (Iterable<org.cqframework.cql.runtime.Code>) this.getCodes().evaluate(context);
             }
         }
-        org.cqframework.cql.runtime.Interval<Partial> dateRange = null;
+        org.cqframework.cql.runtime.Interval dateRange = null;
         if (this.getDateRange() != null) {
-            dateRange = (org.cqframework.cql.runtime.Interval<Partial>)this.getDateRange().evaluate(context);
+            dateRange = (org.cqframework.cql.runtime.Interval)this.getDateRange().evaluate(context);
         }
 
         return dataProvider.retrieve(context.getCurrentContext(), getDataType().getLocalPart(), getTemplateId(),
