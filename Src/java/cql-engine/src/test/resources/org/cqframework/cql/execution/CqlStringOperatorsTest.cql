@@ -1,4 +1,4 @@
-library TypeOperator version '1'
+library StringOperator version '1'
 
 context Population
 

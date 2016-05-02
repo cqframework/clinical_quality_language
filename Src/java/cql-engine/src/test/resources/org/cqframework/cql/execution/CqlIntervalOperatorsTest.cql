@@ -2,6 +2,60 @@ library CqlIntervalOperatorsTest version '1'
 
 context Population
 
+//After
+
+//Before
+
+//Collapse
+
+//Contains
+
+//End
+define IntegerIntervalEnd: end of IntegerIntervalTest
+define DecimalIntervalEnd: end of DecimalIntervalTest
+define QuantityIntervalEnd: end of QuantityIntervalTest
+//define DateTimeIntervalEnd: end of DateTimeIntervalTest
+//define TimeIntervalEnd: end of TimeIntervalTest
+
+//Ends
+
+//Equal
+
+//Except
+
+//In
+
+//Includes
+
+//Included In
+
+//Intersect
+
+//Equivalent
+
+//Meets
+
+//NotEqual
+
+//Overlaps
+
+//Properly Includes
+
+//Properly Included In
+
+//Start
+define IntegerIntervalStart: start of IntegerIntervalTest
+define DecimalIntervalStart: start of DecimalIntervalTest
+define QuantityIntervalStart: start of QuantityIntervalTest
+//define DateTimeIntervalStart: start of DateTimeIntervalTest
+//define TimeIntervalStart: start of TimeIntervalTest
+
+//Starts
+
+//Union
+
+//Width
+
 //Interval
 define IntegerIntervalTest: Interval[1, 10]
 define DecimalIntervalTest: Interval[1.0, 10.0]
@@ -37,16 +91,3 @@ define QuantityPredecessor: predecessor of 1.0 'g'
 //define DateTimePredecessor: predecessor of @2016-05-01T00:00:00Z
 //define TimePredecessor: predecessor of @T00:00:00Z
 
-//Start
-define IntegerIntervalStart: start of IntegerIntervalTest
-define DecimalIntervalStart: start of DecimalIntervalTest
-define QuantityIntervalStart: start of QuantityIntervalTest
-//define DateTimeIntervalStart: start of DateTimeIntervalTest
-//define TimeIntervalStart: start of TimeIntervalTest
-
-//End
-define IntegerIntervalEnd: end of IntegerIntervalTest
-define DecimalIntervalEnd: end of DecimalIntervalTest
-define QuantityIntervalEnd: end of QuantityIntervalTest
-//define DateTimeIntervalEnd: end of DateTimeIntervalTest
-//define TimeIntervalEnd: end of TimeIntervalTest

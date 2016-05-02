@@ -13,7 +13,7 @@ define SimpleAA : equal("a","a")
 
 //Less
 
-//LessOrEqual
+//Less Or Equal
 
 //Equivalent
 
