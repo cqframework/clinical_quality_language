@@ -8,22 +8,18 @@
 
 package org.cqframework.cql.elm.execution;
 
-import java.util.Collection;
+import org.apache.commons.lang3.NotImplementedException;
+import org.cqframework.cql.execution.Context;
+import org.jvnet.jaxb2_commons.lang.*;
+import org.jvnet.jaxb2_commons.lang.ToString;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBToStringStrategy;
-import org.jvnet.jaxb2_commons.lang.ToString;
-import org.jvnet.jaxb2_commons.lang.ToStringStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import java.util.Collection;
 
 
 /**
@@ -183,4 +179,8 @@ public class DateTimeComponentFrom
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        throw new NotImplementedException("Evaluate not implemented.");
+    }
 }

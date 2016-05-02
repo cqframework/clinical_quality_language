@@ -133,7 +133,6 @@ public class Coalesce
 
     @Override
     public Object evaluate(Context context) {
-        // Object result = null;
         java.util.List<Expression> operands = getOperand();
 
         Iterator<Expression> expressions = operands.iterator();

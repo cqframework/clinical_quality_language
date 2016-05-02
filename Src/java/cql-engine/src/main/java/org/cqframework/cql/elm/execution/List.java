@@ -8,36 +8,31 @@
 
 package org.cqframework.cql.elm.execution;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import org.cqframework.cql.execution.Context;
+import org.jvnet.jaxb2_commons.lang.*;
+import org.jvnet.jaxb2_commons.lang.ToString;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBToStringStrategy;
-import org.jvnet.jaxb2_commons.lang.ToString;
-import org.jvnet.jaxb2_commons.lang.ToStringStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
-import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
- * The List selector returns a value of type List, whose elements are the result of evaluating the arguments to the List selector, in order. 
- * 			
+ * The List selector returns a value of type List, whose elements are the result of evaluating the arguments to the List selector, in order.
+ * <p>
  * If a typeSpecifier element is provided, the list is of that type. Otherwise, the static type of the first argument determines the type of the resulting list, and each subsequent argument must be of that same type.
- * 			
+ * <p>
  * If any argument is null, the resulting list will have null for that element.
- * 
+ * <p>
  * <p>Java class for List complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="List"&gt;
  *   &lt;complexContent&gt;
@@ -50,18 +45,15 @@ import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "List", namespace = "urn:hl7-org:elm:r1", propOrder = {
-    "typeSpecifier",
-    "element"
+        "typeSpecifier",
+        "element"
 })
 public class List
-    extends Expression
-    implements Equals, HashCode, ToString
-{
+        extends Expression
+        implements Equals, HashCode, ToString {
 
     @XmlElement(namespace = "urn:hl7-org:elm:r1")
     protected TypeSpecifier typeSpecifier;
@@ -70,11 +62,9 @@ public class List
 
     /**
      * Gets the value of the typeSpecifier property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TypeSpecifier }
-     *     
+     *
+     * @return possible object is
+     * {@link TypeSpecifier }
      */
     public TypeSpecifier getTypeSpecifier() {
         return typeSpecifier;
@@ -82,11 +72,9 @@ public class List
 
     /**
      * Sets the value of the typeSpecifier property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TypeSpecifier }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link TypeSpecifier }
      */
     public void setTypeSpecifier(TypeSpecifier value) {
         this.typeSpecifier = value;
@@ -94,25 +82,23 @@ public class List
 
     /**
      * Gets the value of the element property.
-     * 
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the element property.
-     * 
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getElement().add(newItem);
      * </pre>
-     * 
-     * 
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link Expression }
-     * 
-     * 
      */
     public java.util.List<Expression> getElement() {
         if (element == null) {
@@ -127,8 +113,8 @@ public class List
     }
 
     public List withElement(Expression... values) {
-        if (values!= null) {
-            for (Expression value: values) {
+        if (values != null) {
+            for (Expression value : values) {
                 getElement().add(value);
             }
         }
@@ -136,7 +122,7 @@ public class List
     }
 
     public List withElement(Collection<Expression> values) {
-        if (values!= null) {
+        if (values != null) {
             getElement().addAll(values);
         }
         return this;
@@ -144,8 +130,8 @@ public class List
 
     @Override
     public List withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -154,7 +140,7 @@ public class List
 
     @Override
     public List withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -188,9 +174,9 @@ public class List
         }
         {
             java.util.List<Expression> lhsElement;
-            lhsElement = (((this.element!= null)&&(!this.element.isEmpty()))?this.getElement():null);
+            lhsElement = (((this.element != null) && (!this.element.isEmpty())) ? this.getElement() : null);
             java.util.List<Expression> rhsElement;
-            rhsElement = (((that.element!= null)&&(!that.element.isEmpty()))?that.getElement():null);
+            rhsElement = (((that.element != null) && (!that.element.isEmpty())) ? that.getElement() : null);
             if (!strategy.equals(LocatorUtils.property(thisLocator, "element", lhsElement), LocatorUtils.property(thatLocator, "element", rhsElement), lhsElement, rhsElement)) {
                 return false;
             }
@@ -212,7 +198,7 @@ public class List
         }
         {
             java.util.List<Expression> theElement;
-            theElement = (((this.element!= null)&&(!this.element.isEmpty()))?this.getElement():null);
+            theElement = (((this.element != null) && (!this.element.isEmpty())) ? this.getElement() : null);
             currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "element", theElement), currentHashCode, theElement);
         }
         return currentHashCode;
@@ -246,10 +232,14 @@ public class List
         }
         {
             java.util.List<Expression> theElement;
-            theElement = (((this.element!= null)&&(!this.element.isEmpty()))?this.getElement():null);
+            theElement = (((this.element != null) && (!this.element.isEmpty())) ? this.getElement() : null);
             strategy.appendField(locator, this, "element", buffer, theElement);
         }
         return buffer;
     }
 
+    @Override
+    public Object evaluate(Context context) {
+        return null; //TODO: This makes tests pass, but we need to figure out what should actually be done here.
+    }
 }

@@ -208,6 +208,12 @@ public class SystemFunctionResolver {
                 case "ToConcept": {
                     return resolveUnary(fun);
                 }
+
+
+				// Comparison Functions
+				case "Equal": {
+					return resolveBinary(fun);
+                }
             }
         }
 

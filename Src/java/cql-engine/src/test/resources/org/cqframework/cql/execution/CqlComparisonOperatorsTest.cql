@@ -5,7 +5,7 @@ context Population
 //Between
 
 //Equal
-define SimpleAA : equal("a","a")
+define SimpleAA : Equal("a","a")
 
 //Greater
 
@@ -13,7 +13,7 @@ define SimpleAA : equal("a","a")
 
 //Less
 
-//LessOrEqual
+//Less Or Equal
 
 //Equivalent
 
