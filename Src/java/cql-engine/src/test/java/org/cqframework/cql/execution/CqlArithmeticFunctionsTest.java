@@ -5,9 +5,6 @@ import org.testng.annotations.Test;
 import javax.xml.bind.JAXBException;
 
 public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
-    static {
-        //testClass = CqlArithmeticFunctionsTest.class;
-    }
 
     @Test
     public void testAbs() throws JAXBException {

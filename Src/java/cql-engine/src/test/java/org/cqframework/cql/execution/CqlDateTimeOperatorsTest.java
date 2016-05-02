@@ -5,9 +5,6 @@ import org.testng.annotations.Test;
 import javax.xml.bind.JAXBException;
 
 public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
-    static {
-//        testClass = CqlDateTimeOperatorsTest.class;
-    }
 
     @Test
     public void testAdd() throws JAXBException {

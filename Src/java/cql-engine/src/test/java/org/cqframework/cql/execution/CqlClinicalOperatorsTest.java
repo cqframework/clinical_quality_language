@@ -5,9 +5,6 @@ import org.testng.annotations.Test;
 import javax.xml.bind.JAXBException;
 
 public class CqlClinicalOperatorsTest extends CqlExecutionTestBase {
-    static {
-        //testClass = CqlClinicalOperatorsTest.class;
-    }
 
     @Test
     public void testAge() throws JAXBException {
