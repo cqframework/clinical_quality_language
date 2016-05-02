@@ -2,9 +2,43 @@ package org.cqframework.cql.cql2elm;
 
 
 import org.cqframework.cql.cql2elm.model.SystemModel;
-import org.cqframework.cql.cql2elm.model.invocation.*;
-import org.hl7.elm.r1.*;
+import org.cqframework.cql.cql2elm.model.invocation.CombineInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.ConvertInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.FirstInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.IndexOfInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.LastInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.NaryExpressionInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.PositionOfInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.RoundInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.SplitInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.SubstringInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.ZeroOperandExpressionInvocation;
+import org.hl7.elm.r1.AggregateExpression;
+import org.hl7.elm.r1.BinaryExpression;
+import org.hl7.elm.r1.CalculateAge;
+import org.hl7.elm.r1.CalculateAgeAt;
+import org.hl7.elm.r1.Combine;
+import org.hl7.elm.r1.Convert;
+import org.hl7.elm.r1.DateTime;
+import org.hl7.elm.r1.DateTimePrecision;
+import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.First;
+import org.hl7.elm.r1.FunctionRef;
+import org.hl7.elm.r1.IndexOf;
+import org.hl7.elm.r1.Last;
+import org.hl7.elm.r1.NaryExpression;
+import org.hl7.elm.r1.Now;
+import org.hl7.elm.r1.ObjectFactory;
+import org.hl7.elm.r1.PositionOf;
+import org.hl7.elm.r1.Property;
+import org.hl7.elm.r1.Round;
+import org.hl7.elm.r1.Split;
+import org.hl7.elm.r1.Substring;
+import org.hl7.elm.r1.Today;
+import org.hl7.elm.r1.UnaryExpression;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,9 +209,10 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
-                // Comparison Functions
-                case "Equal": {
-                    return resolveBinary(fun);
+
+				// Comparison Functions
+				case "Equal": {
+					return resolveBinary(fun);
                 }
             }
         }
