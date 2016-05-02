@@ -22,7 +22,8 @@ define SimpleFloat1Float1 : Equal(1.0,1.0)
 define SimpleFloat1Float2 : Equal(1.0,2.0)
 define SimpleFloat1Int1 : Equal(1.0,1)
 define SimpleFloat1Int2 : Equal(1.0,2)
-
+define QuantityCM1CM1 : Equal(1'cm',1'cm')
+define QuantityCM1M01 : Equal(1'cm',0.01'm')
 
 //Greater
 

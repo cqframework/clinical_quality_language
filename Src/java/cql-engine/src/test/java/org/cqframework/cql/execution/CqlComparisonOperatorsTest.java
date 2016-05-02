@@ -68,6 +68,12 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
 
         result = context.resolveExpressionRef(library, "SimpleFloat1Int2").getExpression().evaluate(context);
         assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "QuantityCM1CM1").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+//        result = context.resolveExpressionRef(library, "QuantityCM1M01").getExpression().evaluate(context);
+//        assertThat(result, is(true));
     }
 
     @Test
