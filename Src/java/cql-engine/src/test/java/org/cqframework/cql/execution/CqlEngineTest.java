@@ -13,7 +13,7 @@ import static org.hamcrest.Matchers.is;
  */
 public class CqlEngineTest extends CqlExecutionTestBase {
     static {
-        testClass = CqlEngineTest.class;
+//        testClass = CqlEngineTest.class;
     }
     @Test
     public void testMath() throws JAXBException {

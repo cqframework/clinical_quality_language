@@ -6,7 +6,7 @@ import javax.xml.bind.JAXBException;
 
 public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     static {
-        testClass = CqlArithmeticFunctionsTest.class;
+        //testClass = CqlArithmeticFunctionsTest.class;
     }
 
     @Test

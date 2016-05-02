@@ -6,7 +6,7 @@ import javax.xml.bind.JAXBException;
 
 public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
     static {
-        testClass = CqlDateTimeOperatorsTest.class;
+//        testClass = CqlDateTimeOperatorsTest.class;
     }
 
     @Test

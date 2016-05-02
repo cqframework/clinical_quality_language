@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
     static {
-        testClass = CqlNullologicalOperatorsTest.class;
+//        testClass = CqlNullologicalOperatorsTest.class;
     }
 
     @Test

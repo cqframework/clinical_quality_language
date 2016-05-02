@@ -2,7 +2,6 @@ package org.cqframework.cql.execution;
 
 import org.cqframework.cql.runtime.Interval;
 import org.cqframework.cql.runtime.Quantity;
-import org.joda.time.Partial;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -15,7 +14,7 @@ import static org.hamcrest.Matchers.is;
  */
 public class CqlIntervalOperatorsTest extends CqlExecutionTestBase {
     static {
-        testClass = CqlIntervalOperatorsTest.class;
+//        testClass = CqlIntervalOperatorsTest.class;
     }
 
     @Test

@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
     static {
-        testClass = CqlComparisonOperatorsTest.class;
+        //testClass = CqlComparisonOperatorsTest.class;
     }
 
     @Test

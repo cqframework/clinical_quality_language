@@ -8,9 +8,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
+@Test(groups = {"a"})
 public class CqlLogicalOperatorsTest extends CqlExecutionTestBase {
     static {
-        testClass = CqlLogicalOperatorsTest.class;
+//        testClass = CqlLogicalOperatorsTest.class;
     }
     
     @Test

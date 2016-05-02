@@ -6,7 +6,7 @@ import javax.xml.bind.JAXBException;
 
 public class CqlClinicalOperatorsTest extends CqlExecutionTestBase {
     static {
-        testClass = CqlClinicalOperatorsTest.class;
+        //testClass = CqlClinicalOperatorsTest.class;
     }
 
     @Test
