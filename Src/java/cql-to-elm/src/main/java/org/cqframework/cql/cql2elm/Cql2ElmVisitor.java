@@ -1531,7 +1531,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // if left is an Identifier
         // return a new Identifier with left as a qualifier
         // else
-        // return an Identifier for resolution later by a method or accessor
+        // throws an error as an unresolved identifier
 
         if (left instanceof LibraryRef) {
             String libraryName = ((LibraryRef)left).getLibraryName();
@@ -1575,10 +1575,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 return result;
             }
 
-            IdentifierRef identifier = new IdentifierRef();
-            identifier.setLibraryName(libraryName);
-            identifier.setName(memberIdentifier);
-            return identifier;
+            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in library %s.",
+                    memberIdentifier, referencedLibrary.getIdentifier().getId()));
         }
         else if (left instanceof AliasRef) {
             Property result = of.createProperty()
@@ -1605,7 +1603,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // 5: The name of a valueset
         // 6: The name of a codesystem
         // 7: The name of a library
-        // 8: An unresolved identifier that must be resolved later (by a method or accessor)
+        // 8: An unresolved identifier error is thrown
 
         AliasedQuerySource alias = resolveAlias(identifier);
         if (alias != null) {
@@ -1684,9 +1682,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return libraryRef;
         }
 
-        IdentifierRef id = of.createIdentifierRef();
-        id.setName(identifier);
-        return id;
+        throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
     }
 
     public Expression resolveQualifiedIdentifier(List<String> identifiers) {
@@ -3041,12 +3037,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Expression visitExternalConstant(@NotNull cqlParser.ExternalConstantContext ctx) {
-        return new IdentifierRef().withName(ctx.getText());
+        return (Expression)new IdentifierRef().withName(ctx.getText()).withResultType(getSystemModel().getVoid());
     }
 
     @Override
     public Expression visitThisInvocation(@NotNull cqlParser.ThisInvocationContext ctx) {
-        return new IdentifierRef().withName(ctx.getText());
+        return (Expression)new IdentifierRef().withName(ctx.getText()).withResultType(getSystemModel().getVoid());
     }
 
     @Override
