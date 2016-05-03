@@ -140,26 +140,23 @@ public class Coalesce
             Expression expression = expressions.next();
             Object tmpVal = expression.evaluate(context);
             if (tmpVal != null) {
-                return tmpVal;
-            } else {
-                if (expression instanceof List) {
-                    java.util.List tmpList = new ArrayList();
-
-                    Iterator<Expression> elemsItr = ((List) expression).getElement().iterator();
+                if (tmpVal instanceof java.util.List && operands.size() == 1) {
+                    Iterator<Object> elemsItr = ((java.util.List) tmpVal).iterator();
                     while (elemsItr.hasNext()) {
-                        Expression exp = elemsItr.next();
-                        tmpVal = exp.evaluate(context);
-                        if (tmpVal != null) {
-                            if (operands.size() == 1) {
-                                return tmpVal;
-                            } else {
-                                tmpList.add(tmpVal);
+                        Object obj = elemsItr.next();
+                        if (obj != null) {
+                            if (obj instanceof Expression) {
+                                return ((Expression) obj).evaluate(context);
                             }
+
+                            return obj;
                         }
                     }
 
-                    return tmpList.size() == 0 ? null : tmpList;
+                    return null;
                 }
+
+                return tmpVal;
             }
         }
 

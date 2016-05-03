@@ -51,12 +51,6 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
         result = context.resolveExpressionRef(library, "SimpleEqStringAStringB").getExpression().evaluate(context);
         assertThat(result, is(false));
 
-        result = context.resolveExpressionRef(library, "SimpleEqCharACharA").getExpression().evaluate(context);
-        assertThat(result, is(true));
-
-        result = context.resolveExpressionRef(library, "SimpleEqCharACharB").getExpression().evaluate(context);
-        assertThat(result, is(false));
-
         result = context.resolveExpressionRef(library, "SimpleEqFloat1Float1").getExpression().evaluate(context);
         assertThat(result, is(true));
 
@@ -85,31 +79,23 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
 //        result = context.resolveExpressionRef(library, "TupleEqJohn1John2").getExpression().evaluate(context);
 //        assertThat(result, is(false));
 
+        result = context.resolveExpressionRef(library, "ListEqEmptyEmpty").getExpression().evaluate(context);
+        assertThat(result, is(true));
 
-//        result = context.resolveExpressionRef(library, "ListEqEmptyEmpty").getExpression().evaluate(context);
-//        assertThat(result, is(true));
-//
-//        result = context.resolveExpressionRef(library, "ListEq123123").getExpression().evaluate(context);
-//        assertThat(result, is(true));
+        result = context.resolveExpressionRef(library, "ListEqABCABC").getExpression().evaluate(context);
+        assertThat(result, is(true));
 
+        result = context.resolveExpressionRef(library, "ListEqABCAB").getExpression().evaluate(context);
+        assertThat(result, is(false));
 
-//        result = context.resolveExpressionRef(library, "ListEq12312").getExpression().evaluate(context);
-//        assertThat(result, is(false));
-//
-//        result = context.resolveExpressionRef(library, "ListEq123ABC").getExpression().evaluate(context);
-//        assertThat(result, is(false));
-//
-//        result = context.resolveExpressionRef(library, "ListEqABCABC").getExpression().evaluate(context);
-//        assertThat(result, is(true));
-//
-//        result = context.resolveExpressionRef(library, "ListEqABCAB").getExpression().evaluate(context);
-//        assertThat(result, is(false));
-//
-//        result = context.resolveExpressionRef(library, "ListEqABCabc").getExpression().evaluate(context);
-//        assertThat(result, is(false));
-//
-//        result = context.resolveExpressionRef(library, "ListEq123String123").getExpression().evaluate(context);
-//        assertThat(result, is(false));
+        result = context.resolveExpressionRef(library, "ListEqABC123").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "ListEq123ABC").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "ListEq123String123").getExpression().evaluate(context);
+        assertThat(result, is(false));
 
         result = context.resolveExpressionRef(library, "IntervalEq1To101To10").getExpression().evaluate(context);
         assertThat(result, is(true));
@@ -225,12 +211,6 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
         result = context.resolveExpressionRef(library, "SimpleNotEqStringAStringB").getExpression().evaluate(context);
         assertThat(result, is(true));
 
-        result = context.resolveExpressionRef(library, "SimpleNotEqCharACharA").getExpression().evaluate(context);
-        assertThat(result, is(false));
-
-        result = context.resolveExpressionRef(library, "SimpleNotEqCharACharB").getExpression().evaluate(context);
-        assertThat(result, is(true));
-
         result = context.resolveExpressionRef(library, "SimpleNotEqFloat1Float1").getExpression().evaluate(context);
         assertThat(result, is(false));
 
@@ -259,26 +239,23 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
 //        result = context.resolveExpressionRef(library, "TupleNotEqJohn1John2").getExpression().evaluate(context);
 //        assertThat(result, is(true));
 
-//        result = context.resolveExpressionRef(library, "ListNotEqEmptyEmpty").getExpression().evaluate(context);
-//        assertThat(result, is(true));
-//
-//        result = context.resolveExpressionRef(library, "ListNotEqABCABC").getExpression().evaluate(context);
-//        assertThat(result, is(true));
-//
-//        result = context.resolveExpressionRef(library, "ListNotEqABCAB").getExpression().evaluate(context);
-//        assertThat(result, is(true));
-//
-//        result = context.resolveExpressionRef(library, "ListNotEqABC123").getExpression().evaluate(context);
-//        assertThat(result, is(true));
-//
-//        result = context.resolveExpressionRef(library, "ListNotEq123ABC").getExpression().evaluate(context);
-//        assertThat(result, is(true));
-//
-//        result = context.resolveExpressionRef(library, "ListNotEqABCabc").getExpression().evaluate(context);
-//        assertThat(result, is(true));
-//
-//        result = context.resolveExpressionRef(library, "ListNotEq123String123").getExpression().evaluate(context);
-//        assertThat(result, is(true));
+        result = context.resolveExpressionRef(library, "ListNotEqEmptyEmpty").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "ListNotEqABCABC").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "ListNotEqABCAB").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "ListNotEqABC123").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "ListNotEq123ABC").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "ListNotEq123String123").getExpression().evaluate(context);
+        assertThat(result, is(true));
 
         result = context.resolveExpressionRef(library, "IntervalNotEq1To101To10").getExpression().evaluate(context);
         assertThat(result, is(false));
