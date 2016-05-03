@@ -8,10 +8,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
+@Test(groups = {"a"})
 public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
-    static {
-        testClass = CqlAggregateFunctionsTest.class;
-    }
 
     @Test
     public void testAllTrue() throws JAXBException {

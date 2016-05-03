@@ -10,9 +10,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
-    static {
-        testClass = CqlNullologicalOperatorsTest.class;
-    }
 
     @Test
     public void testCoalesce() throws JAXBException {

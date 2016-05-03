@@ -5,9 +5,6 @@ import org.testng.annotations.Test;
 import javax.xml.bind.JAXBException;
 
 public class CqlListOperatorsTest extends CqlExecutionTestBase {
-    static {
-        testClass = CqlListOperatorsTest.class;
-    }
 
     @Test
     public void testContains() throws JAXBException {

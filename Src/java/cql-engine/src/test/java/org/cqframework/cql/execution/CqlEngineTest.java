@@ -12,9 +12,7 @@ import static org.hamcrest.Matchers.is;
  * Created by Bryn on 4/12/2016.
  */
 public class CqlEngineTest extends CqlExecutionTestBase {
-    static {
-        testClass = CqlEngineTest.class;
-    }
+
     @Test
     public void testMath() throws JAXBException {
          // TODO: The matcher here uses .equal, needs to use .compareTo == 0 for BigDecimals...
