@@ -142,6 +142,20 @@ public class Greater
 
     @Override
     public Object evaluate(Context context) {
+        Object left = getOperand().get(0).evaluate(context);
+        Object right = getOperand().get(1).evaluate(context);
+
+        if (left == null || right == null) return null;
+
+        if (left instanceof Number && right instanceof Number) {
+            return Double.compare(((Number) left).doubleValue(), ((Number) right).doubleValue()) > 0;
+        }
+
+        if(left instanceof Comparable){
+            int res =  ((Comparable) left).compareTo(right);
+            return res < 0;
+        }
+
         return false;
     }
 }

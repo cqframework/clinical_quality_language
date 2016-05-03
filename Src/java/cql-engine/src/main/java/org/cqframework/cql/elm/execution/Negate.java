@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -22,17 +21,17 @@ import java.util.Collection;
 
 /**
  * The Negate operator returns the negative of its argument.
- * 			
+ * <p>
  * When negating quantities, the unit is unchanged.
- * 
+ * <p>
  * If the argument is null, the result is null.
- * 
+ * <p>
  * The Negate operator is defined for the Integer, Decimal, and Quantity types.
- * 
+ * <p>
  * <p>Java class for Negate complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Negate"&gt;
  *   &lt;complexContent&gt;
@@ -41,15 +40,12 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Negate", namespace = "urn:hl7-org:elm:r1")
 public class Negate
-    extends UnaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends UnaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -60,8 +56,8 @@ public class Negate
 
     @Override
     public Negate withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -70,7 +66,7 @@ public class Negate
 
     @Override
     public Negate withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -131,6 +127,28 @@ public class Negate
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Object result = operand.evaluate(context);
+
+        if(result instanceof Integer){
+            return -(int)result;
+        }
+
+        if(result instanceof Long){
+            return -(long)result;
+        }
+
+        if(result instanceof Float){
+            return -(float)result;
+        }
+
+        if(result instanceof Number){
+            return -((Number)result).doubleValue();
+        }
+
+        if(result instanceof Quantity){
+            ((Quantity) result).setValue(((Quantity) result).getValue().negate());
+        }
+
+        return result;
     }
 }
