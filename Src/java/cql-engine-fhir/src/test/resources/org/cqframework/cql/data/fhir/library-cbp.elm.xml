@@ -13,6 +13,9 @@
          </parameterTypeSpecifier>
       </def>
    </parameters>
+   <codeSystems>
+      <def name="LOINC" id="http://loinc.org" accessLevel="Public"/>
+   </codeSystems>
    <valueSets>
       <def name="Systolic Blood Pressure" id="Systolic Blood Pressure" accessLevel="Public"/>
       <def name="Diastolic Blood Pressure" id="Diastolic Blood Pressure" accessLevel="Public"/>
@@ -62,11 +65,21 @@
             <operand valueType="t:Integer" value="40" xsi:type="Literal"/>
          </expression>
       </def>
+      <def name="Systolic blood pressure" context="Patient" accessLevel="Public">
+         <expression code="8480-6" display="Systolic blood pressure" xsi:type="Code">
+            <system name="LOINC"/>
+         </expression>
+      </def>
+      <def name="Diastolic blood pressure" context="Patient" accessLevel="Public">
+         <expression code="8462-4" display="Diastolic blood pressure" xsi:type="Code">
+            <system name="LOINC"/>
+         </expression>
+      </def>
       <def name="BP: Systolic" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="O">
                <expression dataType="fhir:Observation" codeProperty="code" dateProperty="effectiveDateTime.value" xsi:type="Retrieve">
-                  <codes name="Systolic Blood Pressure" xsi:type="ValueSetRef"/>
+                  <codes name="Systolic blood pressure" xsi:type="ExpressionRef"/>
                   <dateRange name="Lookback Interval One Year" xsi:type="ExpressionRef"/>
                </expression>
             </source>
@@ -85,7 +98,7 @@
          <expression xsi:type="Query">
             <source alias="O">
                <expression dataType="fhir:Observation" codeProperty="code" dateProperty="effectiveDateTime.value" xsi:type="Retrieve">
-                  <codes name="Diastolic Blood Pressure" xsi:type="ValueSetRef"/>
+                  <codes name="Diastolic blood pressure" xsi:type="ExpressionRef"/>
                   <dateRange name="Lookback Interval One Year" xsi:type="ExpressionRef"/>
                </expression>
             </source>
