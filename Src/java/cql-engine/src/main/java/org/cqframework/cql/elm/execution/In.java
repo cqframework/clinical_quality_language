@@ -200,6 +200,18 @@ public class In
 
     @Override
     public Object evaluate(Context context) {
+        Object testElement = this.getOperand().get(0).evaluate(context);
+        Iterable<Object> list = (Iterable<Object>)this.getOperand().get(1).evaluate(context);
+        if (list == null) {
+            return null;
+        }
+
+        for (Object element : list) {
+            if (org.cqframework.cql.runtime.Value.equivalent(testElement, element)) {
+                return true;
+            }
+        }
+
         return false;
     }
 }

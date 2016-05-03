@@ -52,4 +52,18 @@ public class Code {
         setVersion(version);
         return this;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Code) {
+            Code otherCode = (Code)other;
+            return this.getCode().equals(otherCode.getCode())
+                    && ((this.getSystem() == null && otherCode.getSystem() == null)
+                        || (this.getSystem() != null && this.getSystem().equals(otherCode.getSystem())))
+                    && ((this.getVersion() == null && otherCode.getVersion() == null)
+                        || (this.getVersion() != null && this.getVersion().equals(otherCode.getVersion())));
+        }
+
+        return false;
+    }
 }

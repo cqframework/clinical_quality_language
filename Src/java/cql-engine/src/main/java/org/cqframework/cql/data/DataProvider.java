@@ -12,4 +12,8 @@ public interface DataProvider {
     Iterable<Object> retrieve(String context, String dataType, String templateId, String codePath,
                               Iterable<Code> codes, String valueSet, String datePath, String dateLowPath, String dateHighPath,
                               Interval dateRange);
+
+    String getPackageName();
+
+    Object resolvePath(Object target, String path);
 }

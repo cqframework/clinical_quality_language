@@ -276,6 +276,14 @@ public class Code
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        org.cqframework.cql.runtime.Code code = new org.cqframework.cql.runtime.Code().withCode(this.getCode()).withDisplay(this.getDisplay());
+        CodeSystemRef codeSystemRef = this.getSystem();
+        if (codeSystemRef != null) {
+            CodeSystemDef codeSystemDef = context.resolveCodeSystemRef(codeSystemRef.getLibraryName(), codeSystemRef.getName());
+            code.setSystem(codeSystemDef.getId());
+            code.setVersion(codeSystemDef.getVersion());
+        }
+
+        return code;
     }
 }

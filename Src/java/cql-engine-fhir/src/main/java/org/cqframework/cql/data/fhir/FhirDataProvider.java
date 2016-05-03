@@ -7,9 +7,12 @@ import org.cqframework.cql.data.DataProvider;
 import org.cqframework.cql.runtime.Code;
 import org.cqframework.cql.runtime.Interval;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Enumeration;
 import org.joda.time.Partial;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URLEncoder;
 
 
@@ -17,6 +20,10 @@ import java.net.URLEncoder;
  * Created by Bryn on 4/16/2016.
  */
 public class FhirDataProvider implements DataProvider {
+
+    public FhirDataProvider() {
+        this.packageName = "org.hl7.fhir.dstu3.model";
+    }
 
     private String endpoint;
     public String getEndpoint() {
@@ -30,6 +37,41 @@ public class FhirDataProvider implements DataProvider {
     public FhirDataProvider withEndpoint(String endpoint) {
         setEndpoint(endpoint);
         return this;
+    }
+
+    private String packageName;
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public Object resolvePath(Object target, String path) {
+        if (target == null) {
+            return null;
+        }
+
+        if (target instanceof Enumeration && path.equals("value")) {
+            return ((Enumeration)target).getValueAsString();
+        }
+
+        Class<? extends Object> clazz = target.getClass();
+        try {
+            String accessorMethodName = String.format("%s%s%s", "get", path.substring(0, 1).toUpperCase(), path.substring(1));
+            String elementAccessorMethodName = String.format("%sElement", accessorMethodName);
+            Method accessor = null;
+            try {
+                accessor = clazz.getMethod(elementAccessorMethodName);
+            }
+            catch (NoSuchMethodException e) {
+                accessor = clazz.getMethod(accessorMethodName);
+            }
+            return accessor.invoke(target);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(String.format("Could not determine accessor function for property %s of type %s", path, clazz.getSimpleName()));
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException(String.format("Errors occurred attempting to invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(String.format("Could not invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
+        }
     }
 
     private FhirContext fhirContext;

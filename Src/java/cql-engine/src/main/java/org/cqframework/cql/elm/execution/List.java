@@ -240,6 +240,10 @@ public class List
 
     @Override
     public Object evaluate(Context context) {
-        return null; //TODO: This makes tests pass, but we need to figure out what should actually be done here.
+        ArrayList<Object> result = new ArrayList<Object>();
+        for (Expression element : this.getElement()) {
+            result.add(element.evaluate(context));
+        }
+        return result;
     }
 }

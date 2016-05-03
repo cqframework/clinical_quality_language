@@ -16,6 +16,8 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 
 import javax.xml.bind.annotation.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 
@@ -286,6 +288,19 @@ public class Property
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Object target = null;
+
+        if (this.getSource() != null) {
+            target = getSource().evaluate(context);
+        }
+        else if (this.getScope() != null) {
+            target = context.resolveVariable(this.getScope(), true).getValue();
+        }
+
+        if (target == null) {
+            return null;
+        }
+
+        return context.resolvePath(target, this.getPath());
     }
 }

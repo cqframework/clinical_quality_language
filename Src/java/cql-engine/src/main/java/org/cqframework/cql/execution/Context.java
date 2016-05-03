@@ -5,6 +5,8 @@ import org.cqframework.cql.data.DataProvider;
 import org.cqframework.cql.elm.execution.*;
 
 import javax.xml.namespace.QName;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -73,6 +75,14 @@ public class Context {
         throw new IllegalArgumentException(String.format("Could not resolve code system reference '%s'.", name));
     }
 
+    public CodeSystemDef resolveCodeSystemRef(String library, String name) {
+        if (library != null) {
+            throw new NotImplementedException("Library resolution of code system references is not yet supported.");
+        }
+
+        return resolveCodeSystemRef(this.library, name);
+    }
+
     public Object resolveParameterRef(String library, String name) {
         // TODO: Library parameter resolution
         if (library != null) {
@@ -99,15 +109,26 @@ public class Context {
     }
 
     private Map<String, DataProvider> dataProviders = new HashMap<>();
+    private Map<String, DataProvider> packageMap = new HashMap<>();
 
     public void registerDataProvider(String modelUri, DataProvider dataProvider) {
         dataProviders.put(modelUri, dataProvider);
+        packageMap.put(dataProvider.getPackageName(), dataProvider);
     }
 
     public DataProvider resolveDataProvider(QName dataType) {
         DataProvider dataProvider = dataProviders.get(dataType.getNamespaceURI());
         if (dataProvider == null) {
             throw new IllegalArgumentException(String.format("Could not resolve data provider for model '%s'.", dataType.getNamespaceURI()));
+        }
+
+        return dataProvider;
+    }
+
+    public DataProvider resolveDataProvider(String packageName) {
+        DataProvider dataProvider = packageMap.get(packageName);
+        if (dataProvider == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve data provider for package '%s'.", packageName));
         }
 
         return dataProvider;
@@ -143,7 +164,30 @@ public class Context {
         return null;
     }
 
+    public Variable resolveVariable(String name, boolean mustResolve) {
+        Variable result = resolveVariable(name);
+        if (mustResolve && result == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve variable reference %s", name));
+        }
+
+        return result;
+    }
+
     public void pop() {
         stack.pop();
+    }
+
+    public Object resolvePath(Object target, String path) {
+
+        if (target == null) {
+            return null;
+        }
+
+        // TODO: Path may include .'s and []'s.
+        // For now, assume no qualifiers or indexers...
+        Class<? extends Object> clazz = target.getClass();
+
+        DataProvider dataProvider = resolveDataProvider(clazz.getPackage().getName());
+        return dataProvider.resolvePath(target, path);
     }
 }

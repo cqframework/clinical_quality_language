@@ -29,6 +29,8 @@ valueset "Diastolic Greater Than/Equal To 90": '2.16.840.1.113883.3.464.1004.108
 valueset "Essential Hypertension": '2.16.840.1.113883.3.464.1004.1122'
 */
 
+codesystem "LOINC": 'http://loinc.org'
+
 // Using the DAF profiles, we could also communicate the requirement with value-based filtering
 valueset "Systolic Blood Pressure": 'Systolic Blood Pressure' // TODO: LOINC 8480-6
 valueset "Diastolic Blood Pressure": 'Diastolic Blood Pressure' // TODO: LOINC 8462-4
@@ -78,14 +80,20 @@ define "BP: Diastolic Greater Than/Equal To 90":
 
 */
 
+define "Systolic blood pressure":
+    Code '8480-6' from "LOINC" display 'Systolic blood pressure'
+
+define "Diastolic blood pressure":
+    Code '8462-4' from "LOINC" display 'Diastolic blood pressure'
+
 // Using DAF Profiles (LOINC Code)
 define "BP: Systolic":
-    [Observation: "Systolic Blood Pressure"] O
+    [Observation: "Systolic blood pressure"] O
         where O.status.value in { 'final', 'amended' }
             and O.effectiveDateTime.value during "Lookback Interval One Year"
 
 define "BP: Diastolic":
-    [Observation: "Diastolic Blood Pressure"] O
+    [Observation: "Diastolic blood pressure"] O
         where O.status.value in { 'final', 'amended' }
             and O.effectiveDateTime.value during "Lookback Interval One Year"
 

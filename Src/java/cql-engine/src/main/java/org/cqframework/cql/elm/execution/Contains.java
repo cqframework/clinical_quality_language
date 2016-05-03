@@ -201,6 +201,18 @@ public class Contains
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Iterable<Object> list = (Iterable<Object>)this.getOperand().get(0).evaluate(context);
+        if (list == null) {
+            return null;
+        }
+
+        Object testElement = this.getOperand().get(1).evaluate(context);
+        for (Object element : list) {
+            if (org.cqframework.cql.runtime.Value.equivalent(element, testElement)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

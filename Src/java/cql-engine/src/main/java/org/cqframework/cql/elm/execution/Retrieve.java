@@ -8,6 +8,7 @@
 
 package org.cqframework.cql.elm.execution;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,6 +19,7 @@ import javax.xml.namespace.QName;
 
 import org.cqframework.cql.data.DataProvider;
 import org.cqframework.cql.execution.Context;
+import org.cqframework.cql.runtime.*;
 import org.joda.time.Partial;
 import org.jvnet.jaxb2_commons.lang.Equals;
 import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
@@ -650,7 +652,6 @@ public class Retrieve
         Iterable<org.cqframework.cql.runtime.Code> codes = null;
         String valueSet = null;
         if (this.getCodes() != null) {
-            // TODO: Handle single codes here...
             if (this.getCodes() instanceof ValueSetRef) {
                 ValueSetRef valueSetRef = (ValueSetRef)this.getCodes();
                 ValueSetDef valueSetDef = context.resolveValueSetRef(valueSetRef.getLibraryName(), valueSetRef.getName());
@@ -658,7 +659,22 @@ public class Retrieve
                 valueSet = valueSetDef.getId();
             }
             else {
-                codes = (Iterable<org.cqframework.cql.runtime.Code>) this.getCodes().evaluate(context);
+                Object codesResult = this.getCodes().evaluate(context);
+                if (codesResult instanceof org.cqframework.cql.runtime.Code) {
+                    ArrayList<org.cqframework.cql.runtime.Code> codesList = new ArrayList<org.cqframework.cql.runtime.Code>();
+                    codesList.add((org.cqframework.cql.runtime.Code)codesResult);
+                    codes = codesList;
+                }
+                else if (codesResult instanceof org.cqframework.cql.runtime.Concept) {
+                    ArrayList<org.cqframework.cql.runtime.Code> codesList = new ArrayList<org.cqframework.cql.runtime.Code>();
+                    for (org.cqframework.cql.runtime.Code conceptCode : ((org.cqframework.cql.runtime.Concept)codesResult).getCodes()) {
+                        codesList.add(conceptCode);
+                    }
+                    codes = codesList;
+                }
+                else {
+                    codes = (Iterable<org.cqframework.cql.runtime.Code>) this.getCodes().evaluate(context);
+                }
             }
         }
         org.cqframework.cql.runtime.Interval dateRange = null;
