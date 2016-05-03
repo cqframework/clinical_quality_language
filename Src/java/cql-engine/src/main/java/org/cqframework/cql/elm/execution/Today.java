@@ -8,8 +8,8 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
+import org.joda.time.LocalDate;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
@@ -119,6 +119,6 @@ public class Today
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        return LocalDate.now().toDate();
     }
 }
