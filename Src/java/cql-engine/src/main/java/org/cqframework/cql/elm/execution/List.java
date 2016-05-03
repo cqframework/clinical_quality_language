@@ -240,6 +240,10 @@ public class List
 
     @Override
     public Object evaluate(Context context) {
-        return null; //TODO: This makes tests pass, but we need to figure out what should actually be done here.
+        if(element != null){
+            return getElement();
+        }
+
+        return null;
     }
 }

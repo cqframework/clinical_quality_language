@@ -72,8 +72,47 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
         result = context.resolveExpressionRef(library, "QuantityCM1CM1").getExpression().evaluate(context);
         assertThat(result, is(true));
 
-//        result = context.resolveExpressionRef(library, "QuantityCM1M01").getExpression().evaluate(context);
+        result = context.resolveExpressionRef(library, "QuantityCM1M01").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+//        result = context.resolveExpressionRef(library, "TupleJohnJohn").getExpression().evaluate(context);
 //        assertThat(result, is(true));
+//
+//        result = context.resolveExpressionRef(library, "TupleJohnJane").getExpression().evaluate(context);
+//        assertThat(result, is(false));
+//
+//        result = context.resolveExpressionRef(library, "TupleJohn1John2").getExpression().evaluate(context);
+//        assertThat(result, is(false));
+
+
+        result = context.resolveExpressionRef(library, "ListEmptyEmpty").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "List123123").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+
+//        result = context.resolveExpressionRef(library, "List12312").getExpression().evaluate(context);
+//        assertThat(result, is(false));
+//
+//        result = context.resolveExpressionRef(library, "List123ABC").getExpression().evaluate(context);
+//        assertThat(result, is(false));
+//
+//        result = context.resolveExpressionRef(library, "ListABCABC").getExpression().evaluate(context);
+//        assertThat(result, is(true));
+//
+//        result = context.resolveExpressionRef(library, "ListABCAB").getExpression().evaluate(context);
+//        assertThat(result, is(false));
+//
+//        result = context.resolveExpressionRef(library, "ListABCabc").getExpression().evaluate(context);
+//        assertThat(result, is(false));
+//
+//        result = context.resolveExpressionRef(library, "List123String123").getExpression().evaluate(context);
+//        assertThat(result, is(false));
+
+        //TODO: add interval evaluations
+
+        //TODO: add Date/Time evaluations
     }
 
     @Test

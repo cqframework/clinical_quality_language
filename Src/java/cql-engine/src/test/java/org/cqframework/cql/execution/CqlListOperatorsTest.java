@@ -8,6 +8,9 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
 
     @Test
     public void testContains() throws JAXBException {
+        Context context = new Context(library);
+//        Object result = context.resolveExpressionRef(library, "ListContains").getExpression().evaluate(context);
+//        assertThat(result, is("a"));
     }
 
     @Test
