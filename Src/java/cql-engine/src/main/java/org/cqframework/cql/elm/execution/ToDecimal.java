@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -135,6 +134,16 @@ public class ToDecimal
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Object oper = getOperand().evaluate(context);
+
+        if (oper == null) {
+            return null;
+        }
+
+        if(oper instanceof Number){
+            return ((Number)oper).doubleValue();
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot do an Abs with argument of type '%s'.", oper.getClass().getName()));
     }
 }

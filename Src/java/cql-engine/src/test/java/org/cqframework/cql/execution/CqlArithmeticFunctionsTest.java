@@ -71,8 +71,17 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
         result = context.resolveExpressionRef(library, "Ceiling1D").getExpression().evaluate(context);
         assertThat(result, is(new Double(1)));
 
-        result = context.resolveExpressionRef(library, "CeilingNeg2").getExpression().evaluate(context);
-        assertThat(result, is(new Double(-0)));
+        result = context.resolveExpressionRef(library, "Ceiling1D1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(2)));
+
+        result = context.resolveExpressionRef(library, "CeilingNegD1").getExpression().evaluate(context);
+        assertThat(result, is(-(new Double(0))));
+
+        result = context.resolveExpressionRef(library, "CeilingNeg1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(-1)));
+
+        result = context.resolveExpressionRef(library, "CeilingNeg1D1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(-1)));
     }
 
     /**
@@ -83,14 +92,24 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
-        result = context.resolveExpressionRef(library, "DivideAB").getExpression().evaluate(context);
-        assertThat(result, is(new BigDecimal("2")));
+        result = context.resolveExpressionRef(library, "Divide10").getExpression().evaluate(context);
+        assertThat(result, is(Double.POSITIVE_INFINITY));
 
-//        //Divide
-//        define Divide11: 1 / 1
-//        define Divide1d1d: 1.0 / 1.0
-//        define Divide1Q1: 1'g/cm3' / 1.0
-//        define Divide1Q1Q: 1'g/cm3' / 1'g/cm3'
+        result = context.resolveExpressionRef(library, "Divide01").getExpression().evaluate(context);
+        assertThat(result, is(new Double(0)));
+
+        result = context.resolveExpressionRef(library, "Divide11").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "Divide1d1d").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        //TODO: Un-comment this once Quantity can be added.
+//        result = context.resolveExpressionRef(library, "Divide1Q1").getExpression().evaluate(context);
+//        assertThat(result, is(new Double(1)));
+//
+//        result = context.resolveExpressionRef(library, "Divide1Q1Q").getExpression().evaluate(context);
+//        assertThat(result, is(new Double(1)));
     }
 
     /**
