@@ -12,8 +12,7 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
     @Test
     public void testAS() throws JAXBException {
         Context context = new Context(library);
-        Object result = context.resolveExpressionRef(library, "Int1ToString").getExpression().evaluate(context);
-        //assertThat(result, is("2:30PM UTC"));
+        Object result;
     }
 
     /**
@@ -21,6 +20,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testConvert() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -29,6 +30,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testIs() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -37,6 +40,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testToBoolean() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -45,6 +50,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testToConcept() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -53,6 +60,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testToDateTime() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -61,6 +70,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testToDecimal() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -69,6 +80,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testToInteger() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -77,6 +90,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testToQuantity() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -85,6 +100,8 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testToString() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -94,7 +111,6 @@ public class CqlTypeOperatorsTest extends CqlExecutionTestBase {
     @Test
     public void testToTime() throws JAXBException {
         Context context = new Context(library);
-        Object result = context.resolveExpressionRef(library, "StringToTime").getExpression().evaluate(context);
-        //assertThat(result, is("2:30PM UTC"));
+        Object result;
     }
 }

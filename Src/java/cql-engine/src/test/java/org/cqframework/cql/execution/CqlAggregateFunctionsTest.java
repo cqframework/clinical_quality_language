@@ -78,7 +78,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testAvg() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -86,7 +87,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testCount() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -94,7 +96,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testMax() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -102,7 +105,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testMedian() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -110,7 +114,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testMin() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -118,7 +123,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testMode() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -126,7 +132,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testPopulationStdDev() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -134,7 +141,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testPopulationVariance() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -142,7 +150,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testStdDev() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -150,7 +159,8 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSum() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -158,6 +168,7 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testVariance() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 }

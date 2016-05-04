@@ -11,6 +11,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testCombine() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -19,6 +21,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testConcatenate() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -27,6 +31,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testIndexer() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -35,6 +41,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testLength() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -43,6 +51,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testLower() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -51,6 +61,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testPositionOf() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -59,6 +71,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSplit() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -67,6 +81,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSubstring() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 
@@ -75,6 +91,8 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testUpper() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
 
     }
 }

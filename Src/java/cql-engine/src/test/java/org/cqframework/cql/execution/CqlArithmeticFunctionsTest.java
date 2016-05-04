@@ -11,7 +11,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testAbs() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -19,6 +20,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testAdd() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -26,6 +29,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testCeiling() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -33,6 +38,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testDivide() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -40,6 +47,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testFloor() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -47,6 +56,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testExp() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -54,6 +65,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testLog() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -61,6 +74,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testLn() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -68,6 +83,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testMaximum() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -75,6 +92,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testMinimum() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -82,6 +101,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testModulo() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -89,6 +110,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testMultiply() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -98,11 +121,16 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testNegate() throws JAXBException {
     }
 
+    Context context = new Context(library);
+    Object result;
+
     /**
      * {@link org.cqframework.cql.elm.execution.Predecessor#evaluate(Context)}
      */
     @Test
     public void testPredecessor() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -110,6 +138,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testPower() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -117,6 +147,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testRound() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -124,6 +156,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSubtract() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -131,6 +165,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSuccessor() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -138,6 +174,8 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testTruncate() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -145,5 +183,7 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testTruncatedDivide() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 }

@@ -11,6 +11,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testAdd() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -20,11 +22,16 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
     public void testAfter() throws JAXBException {
     }
 
+    Context context = new Context(library);
+    Object result;
+
     /**
      * {@link org.cqframework.cql.elm.execution.Before#evaluate(Context)}
      */
     @Test
     public void testBefore() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -32,18 +39,26 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testDateTime() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testDateTimeComponentFrom() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testDifference() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testDuration() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -51,6 +66,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testNow() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -58,6 +75,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSameAs() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -65,6 +84,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSameOrAfter() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -72,6 +93,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSameOrBefore() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -79,6 +102,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSubtract() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -86,6 +111,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testTime() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -93,6 +120,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testTimeOfDay() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -100,6 +129,8 @@ public class CqlDateTimeOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testToday() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
 }

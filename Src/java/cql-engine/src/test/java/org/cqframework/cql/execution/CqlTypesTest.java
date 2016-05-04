@@ -10,10 +10,14 @@ import static org.hamcrest.Matchers.is;
 public class CqlTypesTest extends CqlExecutionTestBase {
     @Test
     public void testAny() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testBoolean() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -31,6 +35,8 @@ public class CqlTypesTest extends CqlExecutionTestBase {
      */
     @Test
     public void testConcept() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -38,14 +44,20 @@ public class CqlTypesTest extends CqlExecutionTestBase {
      */
     @Test
     public void testDateTime() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testDecimal() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testInteger() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -53,10 +65,14 @@ public class CqlTypesTest extends CqlExecutionTestBase {
      */
     @Test
     public void testQuantity() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testString() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -64,5 +80,7 @@ public class CqlTypesTest extends CqlExecutionTestBase {
      */
     @Test
     public void testTime() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 }

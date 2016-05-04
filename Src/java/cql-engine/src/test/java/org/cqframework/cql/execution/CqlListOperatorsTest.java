@@ -12,8 +12,7 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
     @Test
     public void testContains() throws JAXBException {
         Context context = new Context(library);
-//        Object result = context.resolveExpressionRef(library, "ListContains").getExpression().evaluate(context);
-//        assertThat(result, is("a"));
+        Object result;
     }
 
     /**
@@ -21,6 +20,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testDistinct() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -28,6 +29,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testEqual() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -35,6 +38,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testExcept() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -42,6 +47,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testExists() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -49,6 +56,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testFlatten() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -56,6 +65,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testFirst() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -63,6 +74,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testIn() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -70,6 +83,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testIncludes() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -77,6 +92,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testIncludedIn() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -84,10 +101,14 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testIndexer() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testIndexerOf() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -95,6 +116,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testIntersect() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -102,6 +125,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testLast() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -109,6 +134,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testLength() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -116,6 +143,8 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testEquivalent() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -123,14 +152,20 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testNotEqual() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testProperlyInclues() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     @Test
     public void testProperlyIncludedIn() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -140,10 +175,15 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
     public void testSingletonFrom() throws JAXBException {
     }
 
+    Context context = new Context(library);
+    Object result;
+
     /**
      * {@link org.cqframework.cql.elm.execution.Union#evaluate(Context)}
      */
     @Test
     public void testUnion() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 }

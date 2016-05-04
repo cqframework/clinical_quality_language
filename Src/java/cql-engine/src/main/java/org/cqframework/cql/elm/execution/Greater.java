@@ -153,7 +153,7 @@ public class Greater
 
         if(left instanceof Comparable){
             int res =  ((Comparable) left).compareTo(right);
-            return res < 0;
+            return res > 0;
         }
 
         return false;

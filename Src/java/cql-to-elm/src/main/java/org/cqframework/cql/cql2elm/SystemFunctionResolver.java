@@ -175,14 +175,14 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
-
                 // Comparison Functions
                 case "Equal":
                 case "NotEqual":
                 case "Greater":
                 case "GreaterOrEqual":
                 case "Less":
-                case "LessOrEqual":{
+                case "LessOrEqual":
+                case "Equivalent":{
                     return resolveBinary(fun);
                 }
             }

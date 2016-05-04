@@ -21,6 +21,8 @@ public class CqlClinicalOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testCalculateAge() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -28,6 +30,8 @@ public class CqlClinicalOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testCalculateAgeAt() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -35,6 +39,8 @@ public class CqlClinicalOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testEqual() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -42,6 +48,8 @@ public class CqlClinicalOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testEquivalent() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -49,6 +57,8 @@ public class CqlClinicalOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testInCodesystem() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 
     /**
@@ -56,5 +66,7 @@ public class CqlClinicalOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testInValueset() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
 }
