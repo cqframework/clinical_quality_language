@@ -126,6 +126,21 @@ public class Ceiling
 
     @Override
     public Object evaluate(Context context) {
-        return false;
+        Object oper = getOperand().evaluate(context);
+
+        if (oper == null) {
+            return null;
+        }
+
+        if(oper instanceof Number){
+            return Math.ceil(((Number)oper).doubleValue());
+        }
+
+        // TODO: Finish implementation of Add
+        // +(Quantity, Quantity)
+        // +(DateTime, Quantity)
+        // +(Time, Quantity)
+
+        throw new IllegalArgumentException(String.format("Cannot do an Abs with argument of type '%s'.", oper.getClass().getName()));
     }
 }

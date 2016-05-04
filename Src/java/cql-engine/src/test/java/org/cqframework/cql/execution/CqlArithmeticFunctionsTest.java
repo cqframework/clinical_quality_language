@@ -65,9 +65,14 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
-//        //Ceiling
-//        define Ceiling1: Ceiling(1)
-//        define Ceiling1D: Ceiling(1.0)
+        result = context.resolveExpressionRef(library, "Ceiling1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "Ceiling1D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "CeilingNeg2").getExpression().evaluate(context);
+        assertThat(result, is(new Double(-0)));
     }
 
     /**

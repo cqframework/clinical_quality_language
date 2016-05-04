@@ -18,6 +18,7 @@ define Add1Q1Q: 1'g/cm3' + 1'g/cm3'
 //Ceiling
 define Ceiling1: Ceiling(1)
 define Ceiling1D: Ceiling(1.0)
+define CeilingNeg2: Ceiling(-2.0)
 
 //Divide
 define Divide11: 1 / 1
@@ -40,7 +41,7 @@ define Divide1Q1Q: 1'g/cm3' / 1'g/cm3'
 //Modulo
 
 //Multiply
-define MultiplyAB : A * B
+define Multiply11 : 1 * 1
 
 //Negate
 
@@ -51,7 +52,7 @@ define MultiplyAB : A * B
 //Round
 
 //Subtract
-define SubtractAB : A - B
+define Subtract11 : 1 - 1
 
 //Successor
 
