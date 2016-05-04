@@ -138,8 +138,6 @@ public class Ceiling
 
         // TODO: Finish implementation of Add
         // +(Quantity, Quantity)
-        // +(DateTime, Quantity)
-        // +(Time, Quantity)
 
         throw new IllegalArgumentException(String.format("Cannot do an Abs with argument of type '%s'.", oper.getClass().getName()));
     }

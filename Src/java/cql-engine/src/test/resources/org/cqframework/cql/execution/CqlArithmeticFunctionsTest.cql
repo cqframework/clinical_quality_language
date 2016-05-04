@@ -32,6 +32,12 @@ define Divide1Q1: 1'g/cm3' / 1.0
 define Divide1Q1Q: 1'g/cm3' / 1'g/cm3'
 
 //Floor
+define Floor1: Floor(1)
+define Floor1D: Floor(1.0)
+define Floor1D1: Floor(1.1)
+define FloorNegD1: Floor(-0.1)
+define FloorNeg1: Floor(-1.0)
+define FloorNeg1D1: Floor(-1.1)
 
 //Exp
 

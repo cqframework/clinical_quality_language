@@ -119,6 +119,24 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testFloor() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "Floor1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "Floor1D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "Floor1D1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "FloorNegD1").getExpression().evaluate(context);
+        assertThat(result, is((new Double(-1))));
+
+        result = context.resolveExpressionRef(library, "FloorNeg1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(-1)));
+
+        result = context.resolveExpressionRef(library, "FloorNeg1D1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(-2)));
     }
 
     /**
