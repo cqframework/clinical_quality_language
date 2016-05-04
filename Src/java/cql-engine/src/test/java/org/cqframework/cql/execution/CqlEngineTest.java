@@ -15,7 +15,7 @@ public class CqlEngineTest extends CqlExecutionTestBase {
 
     @Test
     public void testMath() throws JAXBException {
-         // TODO: The matcher here uses .equal, needs to use .compareTo == 0 for BigDecimals...
+        // TODO: The matcher here uses .equal, needs to use .compareTo == 0 for BigDecimals...
         Context context = new Context(library);
         Object result = context.resolveExpressionRef(library, "Add").getExpression().evaluate(context);
         assertThat(result, is(new BigDecimal("15.0")));
