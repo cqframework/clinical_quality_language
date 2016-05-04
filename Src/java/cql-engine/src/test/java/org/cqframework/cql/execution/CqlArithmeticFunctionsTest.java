@@ -3,9 +3,13 @@ package org.cqframework.cql.execution;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
+import java.math.BigDecimal;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
-
     /**
      * {@link org.cqframework.cql.elm.execution.Abs#evaluate(Context)}
      */
@@ -13,6 +17,25 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testAbs() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "AbsNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "Abs0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(0)));
+
+        result = context.resolveExpressionRef(library, "AbsNeg1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        result = context.resolveExpressionRef(library, "AbsNeg1Dec").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "Abs0Dec").getExpression().evaluate(context);
+        assertThat(result, is(new Double(0)));
+
+        //TODO: Un-comment this once Quantity can be added.
+//        result = context.resolveExpressionRef(library, "Add1D1D").getExpression().evaluate(context);
+//        assertThat(result, is(new BigDecimal("2.0")));
     }
 
     /**
@@ -22,6 +45,16 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testAdd() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "Add11").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(2)));
+
+        result = context.resolveExpressionRef(library, "Add1D1D").getExpression().evaluate(context);
+        assertThat(result, is(new BigDecimal("2.0")));
+
+        //TODO: Un-comment this once Quantity can be added.
+//        result = context.resolveExpressionRef(library, "Add1Q1Q").getExpression().evaluate(context);
+//        assertThat(result, is(new BigDecimal("2")));
     }
 
     /**
@@ -31,6 +64,10 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testCeiling() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+//        //Ceiling
+//        define Ceiling1: Ceiling(1)
+//        define Ceiling1D: Ceiling(1.0)
     }
 
     /**
@@ -40,6 +77,15 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testDivide() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "DivideAB").getExpression().evaluate(context);
+        assertThat(result, is(new BigDecimal("2")));
+
+//        //Divide
+//        define Divide11: 1 / 1
+//        define Divide1d1d: 1.0 / 1.0
+//        define Divide1Q1: 1'g/cm3' / 1.0
+//        define Divide1Q1Q: 1'g/cm3' / 1'g/cm3'
     }
 
     /**
@@ -112,6 +158,9 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testMultiply() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "MultiplyAB").getExpression().evaluate(context);
+        assertThat(result, is(new BigDecimal("50.00")));
     }
 
     /**
@@ -158,6 +207,9 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testSubtract() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "SubtractAB").getExpression().evaluate(context);
+        assertThat(result, is(new BigDecimal("5.0")));
     }
 
     /**
