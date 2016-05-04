@@ -15,6 +15,9 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
         //TODO: This seems to be missing from org.cqframework.cql.elm.execution;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Equal#evaluate(Context)}
+     */
     @Test
     public void testEqual() throws JAXBException {
         Context context = new Context(library);
@@ -118,6 +121,9 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
 //        assertThat(result, is(false));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Greater#evaluate(Context)}
+     */
     @Test
     public void testGreater() throws JAXBException {
         Context context = new Context(library);
@@ -155,26 +161,41 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(false));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.GreaterOrEqual#evaluate(Context)}
+     */
     @Test
     public void testGreaterOrEqual() throws JAXBException {
 
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Less#evaluate(Context)}
+     */
     @Test
     public void testLess() throws JAXBException {
 
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.LessOrEqual#evaluate(Context)}
+     */
     @Test
     public void testLessOrEqual() throws JAXBException {
 
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Equivalent#evaluate(Context)}
+     */
     @Test
     public void testEquivalent() throws JAXBException {
 
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.NotEqual#evaluate(Context)}
+     */
     @Test
     public void testNotEqual() throws JAXBException {
         Context context = new Context(library);
