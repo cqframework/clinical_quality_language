@@ -430,7 +430,7 @@ public class SystemFunctionResolver {
         } catch (Exception e) {
             // Do nothing but fall through
         }
-        return operator;
+        return null;
     }
 
     private BinaryExpression resolveBinary(FunctionRef fun) {
@@ -447,7 +447,7 @@ public class SystemFunctionResolver {
         } catch (Exception e) {
             // Do nothing but fall through
         }
-        return operator;
+        return null;
     }
 
     private NaryExpression resolveNary(FunctionRef fun) {
@@ -463,7 +463,7 @@ public class SystemFunctionResolver {
         } catch (Exception e) {
             // Do nothing but fall through
         }
-        return operator;
+        return null;
     }
 
     private AggregateExpression resolveAggregate(FunctionRef fun) {
@@ -480,7 +480,7 @@ public class SystemFunctionResolver {
         } catch (Exception e) {
             // Do nothing but fall through
         }
-        return operator;
+        return null;
     }
 
     private void checkNumberOfOperands(FunctionRef fun, int expectedOperands) {

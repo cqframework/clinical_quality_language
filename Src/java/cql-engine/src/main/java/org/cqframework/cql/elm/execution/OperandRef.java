@@ -173,6 +173,6 @@ public class OperandRef
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        return context.resolveVariable(this.getName(), true).getValue();
     }
 }

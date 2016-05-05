@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
 
+import static org.cqframework.cql.runtime.Value.ensureIterable;
+
 
 /**
  * The Exists operator returns true if the list contains any elements.
@@ -127,6 +129,15 @@ public class Exists
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Iterable<Object> operand = ensureIterable(this.getOperand().evaluate(context));
+        if (operand == null) {
+            return null;
+        }
+
+        for (Object element : operand) {
+            return true;
+        }
+
+        return false;
     }
 }

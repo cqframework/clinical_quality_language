@@ -1,5 +1,6 @@
 package org.cqframework.cql.runtime;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -72,5 +73,17 @@ public class Value {
         }
 
         return left.equals(right);
+    }
+
+    public static Iterable<Object> ensureIterable(Object source) {
+        if (source instanceof Iterable) {
+            return (Iterable<Object>)source;
+        }
+        else {
+            ArrayList sourceList = new ArrayList();
+            if (source != null)
+                sourceList.add(source);
+            return sourceList;
+        }
     }
 }

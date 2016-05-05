@@ -11,6 +11,7 @@ import org.hl7.fhir.dstu3.model.Enumeration;
 import org.joda.time.Partial;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
@@ -44,6 +45,47 @@ public class FhirDataProvider implements DataProvider {
         return packageName;
     }
 
+    public Class resolveType(String typeName) {
+        try {
+            return Class.forName(String.format("%s.%s", packageName, typeName));
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(String.format("Could not resolve type %s.%s.", packageName, typeName));
+        }
+    }
+
+    private Field getProperty(Class clazz, String path) {
+        try {
+            Field field = clazz.getDeclaredField(path);
+            return field;
+        } catch (NoSuchFieldException e) {
+            throw new IllegalArgumentException(String.format("Could not determine field for path %s of type %s", path, clazz.getSimpleName()));
+        }
+    }
+
+    private Method getReadAccessor(Class clazz, String path) {
+        Field field = getProperty(clazz, path);
+        String accessorMethodName = String.format("%s%s%s", "get", path.substring(0, 1).toUpperCase(), path.substring(1));
+        Method accessor = null;
+        try {
+            accessor = clazz.getMethod(accessorMethodName);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(String.format("Could not determine accessor function for property %s of type %s", path, clazz.getSimpleName()));
+        }
+        return accessor;
+    }
+
+    private Method getWriteAccessor(Class clazz, String path) {
+        Field field = getProperty(clazz, path);
+        String accessorMethodName = String.format("%s%s%s", "set", path.substring(0, 1).toUpperCase(), path.substring(1));
+        Method accessor = null;
+        try {
+            accessor = clazz.getMethod(accessorMethodName, field.getType());
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(String.format("Could not determine accessor function for property %s of type %s", path, clazz.getSimpleName()));
+        }
+        return accessor;
+    }
+
     public Object resolvePath(Object target, String path) {
         if (target == null) {
             return null;
@@ -65,6 +107,25 @@ public class FhirDataProvider implements DataProvider {
                 accessor = clazz.getMethod(accessorMethodName);
             }
             return accessor.invoke(target);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(String.format("Could not determine accessor function for property %s of type %s", path, clazz.getSimpleName()));
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException(String.format("Errors occurred attempting to invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(String.format("Could not invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
+        }
+    }
+
+    public void setValue(Object target, String path, Object value) {
+        if (target == null) {
+            return;
+        }
+
+        Class<? extends Object> clazz = target.getClass();
+        try {
+            String accessorMethodName = String.format("%s%s%s", "set", path.substring(0, 1).toUpperCase(), path.substring(1));
+            Method accessor = clazz.getMethod(accessorMethodName);
+            accessor.invoke(target, value);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(String.format("Could not determine accessor function for property %s of type %s", path, clazz.getSimpleName()));
         } catch (InvocationTargetException e) {
@@ -172,7 +233,7 @@ public class FhirDataProvider implements DataProvider {
             search = fhirClient.search().byUrl(String.format("%s?%s", dataType, params.toString()));
         }
         else {
-            search = fhirClient.search().forResource(dataType);
+            search = fhirClient.search().byUrl(String.format("%s", dataType));
         }
 
         Bundle results = search.returnBundle(Bundle.class).execute();

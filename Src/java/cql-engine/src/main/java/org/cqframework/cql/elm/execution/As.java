@@ -284,11 +284,28 @@ public class As
         return buffer;
     }
 
+    private Class resolveType(Context context) {
+        if (this.getAsTypeSpecifier() != null) {
+            return context.resolveType(this.getAsTypeSpecifier());
+        }
+
+        return context.resolveType(this.getAsType());
+    }
+
     @Override
     public Object evaluate(Context context) {
-        Expression operand = getOperand();
-        if(operand != null){
-
+        Object operand = getOperand().evaluate(context);
+        if (operand != null) {
+            Class clazz = resolveType(context);
+            if (clazz.isAssignableFrom(operand.getClass())) {
+                return operand;
+            }
+            else if (this.isStrict()) {
+                throw new IllegalArgumentException(String.format("Cannot cast an value of type %s as %s.", operand.getClass().getName(), clazz.getName()));
+            }
+            else {
+                return null;
+            }
         }
 
         return null;

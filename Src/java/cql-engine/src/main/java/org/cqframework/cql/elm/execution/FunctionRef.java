@@ -10,6 +10,7 @@ package org.cqframework.cql.elm.execution;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
+import org.cqframework.cql.execution.Variable;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
@@ -207,6 +208,22 @@ public class FunctionRef
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        ArrayList<Object> arguments = new ArrayList<Object>();
+        for (Expression operand : this.getOperand()) {
+            arguments.add(operand.evaluate(context));
+        }
+
+        FunctionDef functionDef = context.resolveFunctionRef(this.getLibraryName(), this.getName(), arguments);
+        context.pushWindow();
+        try {
+            for (int i = 0; i < arguments.size(); i++) {
+                context.push(new Variable().withName(functionDef.getOperand().get(i).getName()).withValue(arguments.get(i)));
+            }
+
+            return functionDef.getExpression().evaluate(context);
+        }
+        finally {
+            context.popWindow();
+        }
     }
 }

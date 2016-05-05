@@ -2,6 +2,7 @@ package org.cqframework.cql.execution;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.data.DataProvider;
+import org.cqframework.cql.data.SystemDataProvider;
 import org.cqframework.cql.elm.execution.*;
 
 import javax.xml.namespace.QName;
@@ -10,6 +11,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.List;
 
 /**
  * Created by Bryn on 4/12/2016.
@@ -18,12 +20,14 @@ public class Context {
 
     private Map<String, Object> parameters = new HashMap<>();
     private Stack<String> currentContext = new Stack<>();
-    private Stack<Variable> stack = new Stack<>();
+    private Stack<Stack<Variable>> windows = new Stack<Stack<Variable>>();
 
     private Library library;
 
     public Context(Library library) {
         this.library = library;
+        pushWindow();
+        registerDataProvider("urn:hl7-org:elm-types:r1", new SystemDataProvider());
     }
 
     public ExpressionDef resolveExpressionRef(Library library, String name) {
@@ -43,6 +47,75 @@ public class Context {
         }
 
         return resolveExpressionRef(this.library, name);
+    }
+
+    public Class resolveType(QName typeName) {
+        DataProvider dataProvider = resolveDataProvider(typeName);
+        return dataProvider.resolveType(typeName.getLocalPart());
+    }
+
+    public Class resolveType(TypeSpecifier typeSpecifier) {
+        if (typeSpecifier instanceof NamedTypeSpecifier) {
+            return resolveType(((NamedTypeSpecifier)typeSpecifier).getName());
+        }
+        else {
+            throw new IllegalArgumentException(String.format("Resolution for %s type specifiers not implemented yet.", typeSpecifier.getClass().getName()));
+        }
+    }
+
+    private Class resolveOperandType(OperandDef operandDef) {
+        if (operandDef.getOperandTypeSpecifier() != null) {
+            return resolveType(operandDef.getOperandTypeSpecifier());
+        }
+        else {
+            return resolveType(operandDef.getOperandType());
+        }
+    }
+
+    private boolean isType(Class argumentType, Class operandType) {
+        return operandType.isAssignableFrom(argumentType);
+    }
+
+    // TODO: Could use some caching here, and potentially some better type resolution structures
+    public FunctionDef resolveFunctionRef(Library library, String name, Iterable<Object> arguments) {
+        for (ExpressionDef expressionDef : library.getStatements().getDef()) {
+            if (expressionDef instanceof FunctionDef) {
+                FunctionDef functionDef = (FunctionDef)expressionDef;
+                if (functionDef.getName().equals(name)) {
+                    java.util.Iterator<OperandDef> operandIterator = functionDef.getOperand().iterator();
+                    java.util.Iterator<Object> argumentIterator = arguments.iterator();
+                    boolean isMatch = true;
+                    while (operandIterator.hasNext()) {
+                        if (argumentIterator.hasNext()) {
+                            OperandDef operandDef = operandIterator.next();
+                            Object argument = argumentIterator.next();
+                            // TODO: This is actually wrong, but to fix this would require preserving type information in the ELM....
+                            isMatch = isType(argument == null ? Object.class : argument.getClass(), resolveOperandType(operandDef));
+                        }
+                        else {
+                            isMatch = false;
+                        }
+                        if (!isMatch) {
+                            break;
+                        }
+                    }
+                    if (isMatch) {
+                        return functionDef;
+                    }
+                }
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Could not resolve call to operator %s.", name));
+    }
+
+    public FunctionDef resolveFunctionRef(String libraryName, String name, Iterable<Object> arguments) {
+        // TODO: Library resolution of function refs
+        if (libraryName != null) {
+            throw new NotImplementedException("Library resolution of function refs is not yet supported.");
+        }
+
+        return resolveFunctionRef(this.library, name, arguments);
     }
 
     public ParameterDef resolveParameterRef(Library library, String name) {
@@ -151,11 +224,11 @@ public class Context {
     }
 
     public void push(Variable variable) {
-        stack.push(variable);
+        getStack().push(variable);
     }
 
     public Variable resolveVariable(String name) {
-        for (Variable variable : stack) {
+        for (Variable variable : getStack()) {
             if (variable.getName().equals(name)) {
                 return variable;
             }
@@ -174,7 +247,19 @@ public class Context {
     }
 
     public void pop() {
-        stack.pop();
+        getStack().pop();
+    }
+
+    public void pushWindow() {
+        windows.push(new Stack<Variable>());
+    }
+
+    public void popWindow() {
+        windows.pop();
+    }
+
+    private Stack<Variable> getStack() {
+        return windows.peek();
     }
 
     public Object resolvePath(Object target, String path) {
@@ -189,5 +274,16 @@ public class Context {
 
         DataProvider dataProvider = resolveDataProvider(clazz.getPackage().getName());
         return dataProvider.resolvePath(target, path);
+    }
+
+    public void setValue(Object target, String path, Object value) {
+        if (target == null) {
+            return;
+        }
+
+        Class<? extends Object> clazz = target.getClass();
+
+        DataProvider dataProvider = resolveDataProvider(clazz.getPackage().getName());
+        dataProvider.setValue(target, path, value);
     }
 }

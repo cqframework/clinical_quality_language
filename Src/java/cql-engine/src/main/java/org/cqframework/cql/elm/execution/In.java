@@ -198,10 +198,7 @@ public class In
         return buffer;
     }
 
-    @Override
-    public Object evaluate(Context context) {
-        Object testElement = this.getOperand().get(0).evaluate(context);
-        Iterable<Object> list = (Iterable<Object>)this.getOperand().get(1).evaluate(context);
+    public static Boolean in(Object testElement, Iterable<Object> list) {
         if (list == null) {
             return null;
         }
@@ -213,5 +210,12 @@ public class In
         }
 
         return false;
+    }
+
+    @Override
+    public Object evaluate(Context context) {
+        Object testElement = this.getOperand().get(0).evaluate(context);
+        Iterable<Object> list = (Iterable<Object>)this.getOperand().get(1).evaluate(context);
+        return in(testElement, list);
     }
 }

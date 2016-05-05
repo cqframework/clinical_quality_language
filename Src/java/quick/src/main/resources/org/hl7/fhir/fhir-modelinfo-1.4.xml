@@ -2403,7 +2403,8 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Extension" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="url" type="System.String"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
+        <ns4:element name="value" type="System.Any"/>
+        <!--ns4:element name="valueBoolean" type="FHIR.boolean"/>
         <ns4:element name="valueInteger" type="FHIR.integer"/>
         <ns4:element name="valueDecimal" type="FHIR.decimal"/>
         <ns4:element name="valueBase64Binary" type="FHIR.base64Binary"/>
@@ -2436,7 +2437,7 @@
         <ns4:element name="valueAddress" type="FHIR.Address"/>
         <ns4:element name="valueContactPoint" type="FHIR.ContactPoint"/>
         <ns4:element name="valueTiming" type="FHIR.Timing"/>
-        <ns4:element name="valueMeta" type="FHIR.Meta"/>
+        <ns4:element name="valueMeta" type="FHIR.Meta"/-->
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ModuleMetadataType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>

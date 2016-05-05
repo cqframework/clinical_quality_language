@@ -17,6 +17,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -127,8 +128,19 @@ public class Distinct
         return buffer;
     }
 
+    public static java.util.List<Object> distinct(Iterable<Object> source) {
+        ArrayList<Object> result = new ArrayList<Object>();
+        for (Object element : source) {
+            if (!In.in(element, result)) {
+                result.add(element);
+            }
+        }
+        return result;
+    }
+
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Object source = this.getOperand().evaluate(context);
+        return distinct((Iterable<Object>)source);
     }
 }
