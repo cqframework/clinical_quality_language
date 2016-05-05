@@ -350,6 +350,39 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testNegate() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "NegateEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "NegateNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "Negate0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(0)));
+
+        result = context.resolveExpressionRef(library, "NegateNeg0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(0)));
+
+        result = context.resolveExpressionRef(library, "Negate1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(-1)));
+
+        result = context.resolveExpressionRef(library, "NegateNeg1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        result = context.resolveExpressionRef(library, "Negate0D").getExpression().evaluate(context);
+        assertThat(result, is(-(new Double(0))));
+
+        result = context.resolveExpressionRef(library, "NegateNeg0D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(0)));
+
+        result = context.resolveExpressionRef(library, "Negate1D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(-1)));
+
+        result = context.resolveExpressionRef(library, "NegateNeg1D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "Negate1CM").getExpression().evaluate(context);
+        assertThat(((org.cqframework.cql.runtime.Quantity)result).getValue(), is(new BigDecimal(1).negate()));
     }
 
     /**

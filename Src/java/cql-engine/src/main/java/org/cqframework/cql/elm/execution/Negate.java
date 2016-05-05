@@ -127,28 +127,31 @@ public class Negate
 
     @Override
     public Object evaluate(Context context) {
-        Object result = operand.evaluate(context);
+        Expression expression = getOperand();
+        if (expression == null) return null;
 
-        if(result instanceof Integer){
-            return -(int)result;
+        Object value = expression.evaluate(context);
+
+        if (value instanceof Integer) {
+            return -(int) value;
         }
 
-        if(result instanceof Long){
-            return -(long)result;
+        if (value instanceof Long) {
+            return -(long) value;
         }
 
-        if(result instanceof Float){
-            return -(float)result;
+        if (value instanceof Float) {
+            return -(float) value;
         }
 
-        if(result instanceof Number){
-            return -((Number)result).doubleValue();
+        if (value instanceof Number) {
+            return -((Number) value).doubleValue();
         }
 
-        if(result instanceof Quantity){
-            ((Quantity) result).setValue(((Quantity) result).getValue().negate());
+        if (value instanceof org.cqframework.cql.runtime.Quantity) {
+            ((org.cqframework.cql.runtime.Quantity) value).setValue(((org.cqframework.cql.runtime.Quantity) value).getValue().negate());
         }
 
-        return result;
+        return value;
     }
 }

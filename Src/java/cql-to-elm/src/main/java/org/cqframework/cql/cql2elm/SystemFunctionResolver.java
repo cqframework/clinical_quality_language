@@ -42,7 +42,9 @@ public class SystemFunctionResolver {
                 case "Floor":
                 case "Exp":
                 case "Ln":
-                case "Truncate": {
+                case "Truncate":
+                case "Negate":
+                case "Modulo": {
                     return resolveUnary(fun);
                 }
 
@@ -182,8 +184,7 @@ public class SystemFunctionResolver {
                 case "GreaterOrEqual":
                 case "Less":
                 case "LessOrEqual":
-                case "Equivalent":
-                case "Modulo":{
+                case "Equivalent": {
                     return resolveBinary(fun);
                 }
             }
@@ -356,7 +357,7 @@ public class SystemFunctionResolver {
         checkNumberOfOperands(fun, 1);
         final Convert convert = of.createConvert().withOperand(fun.getOperand().get(0));
         final SystemModel sm = visitor.getSystemModel();
-        switch(fun.getName()) {
+        switch (fun.getName()) {
             case "ToString":
                 convert.setToType(visitor.dataTypeToQName(sm.getString()));
                 break;

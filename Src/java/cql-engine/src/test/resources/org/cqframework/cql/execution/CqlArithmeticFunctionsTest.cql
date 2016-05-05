@@ -100,6 +100,17 @@ define MultiplyNull: Multiply(null)
 define Multiply1By1 : 1 * 1
 
 //Negate
+define NegateEmpty: Negate()
+define NegateNull: Negate(null)
+define Negate0 : Negate(0)
+define NegateNeg0 : Negate(-0)
+define Negate1 : Negate(1)
+define NegateNeg1 : Negate(-1)
+define Negate0D : Negate(0.0)
+define NegateNeg0D : Negate(-0.0)
+define Negate1D : Negate(1.0)
+define NegateNeg1D : Negate(-1.0)
+define Negate1CM : Negate(1'cm')
 
 //Predecessor
 
