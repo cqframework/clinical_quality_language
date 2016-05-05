@@ -182,7 +182,8 @@ public class SystemFunctionResolver {
                 case "GreaterOrEqual":
                 case "Less":
                 case "LessOrEqual":
-                case "Equivalent":{
+                case "Equivalent":
+                case "Modulo":{
                     return resolveBinary(fun);
                 }
             }

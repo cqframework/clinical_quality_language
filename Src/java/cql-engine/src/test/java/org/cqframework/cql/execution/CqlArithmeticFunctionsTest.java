@@ -298,6 +298,31 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testModulo() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "ModuloEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "ModuloNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "Modulo0By0").getExpression().evaluate(context);
+        assertThat(result, is(Double.NaN));
+
+        result = context.resolveExpressionRef(library, "Modulo4By2").getExpression().evaluate(context);
+        assertThat(result, is(new Double(0)));
+
+        result = context.resolveExpressionRef(library, "Modulo4DBy2D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(0)));
+
+        result = context.resolveExpressionRef(library, "Modulo10By3").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        result = context.resolveExpressionRef(library, "Modulo10DBy3D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
+
+        //TODO: Un-comment this once Quantity can be added.
+//        result = context.resolveExpressionRef(library, "Mode4CMBy2CM").getExpression().evaluate(context);
+//        assertThat(result, is(new Double(0)));
     }
 
     /**
@@ -308,8 +333,14 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
-        result = context.resolveExpressionRef(library, "MultiplyAB").getExpression().evaluate(context);
-        assertThat(result, is(new BigDecimal("50.00")));
+        result = context.resolveExpressionRef(library, "MultiplyEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "MultiplyNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "Multiply1By1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
     }
 
     /**
@@ -317,10 +348,9 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testNegate() throws JAXBException {
+        Context context = new Context(library);
+        Object result;
     }
-
-    Context context = new Context(library);
-    Object result;
 
     /**
      * {@link org.cqframework.cql.elm.execution.Predecessor#evaluate(Context)}

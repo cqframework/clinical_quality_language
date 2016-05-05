@@ -85,9 +85,19 @@ define Ln1000D  : Ln(1000.0)
 //Minimum
 
 //Modulo
+define ModuloEmpty  : Modulo()
+define ModuloNull  : Modulo(null)
+define Modulo0By0  : Modulo(0, 0)
+define Modulo4By2  : Modulo(4, 2)
+define Modulo4DBy2D  : Modulo(4.0, 2.0)
+define Modulo10By3  : Modulo(10, 3)
+define Modulo10DBy3D  : Modulo(10.0, 3.0)
+define Modulo4CMBy2CM  : Modulo(4'cm', 2'cm')
 
 //Multiply
-define Multiply11 : 1 * 1
+define MultiplyEmpty: Multiply()
+define MultiplyNull: Multiply(null)
+define Multiply1By1 : 1 * 1
 
 //Negate
 
