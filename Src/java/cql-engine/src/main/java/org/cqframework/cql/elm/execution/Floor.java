@@ -126,6 +126,22 @@ public class Floor
 
     @Override
     public Object evaluate(Context context) {
-        return false;
+        Expression expression = getOperand();
+        if(expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
+            return null;
+        }
+
+        if(value instanceof Number){
+            return Math.floor(((Number)value).doubleValue());
+        }
+
+        // TODO: Finish implementation of Add
+        // +(Quantity, Quantity)
+
+        throw new IllegalArgumentException(String.format("Cannot do an Abs with argument of type '%s'.", value.getClass().getName()));
     }
 }

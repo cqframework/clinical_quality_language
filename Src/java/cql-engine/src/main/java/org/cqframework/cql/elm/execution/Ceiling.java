@@ -126,6 +126,22 @@ public class Ceiling
 
     @Override
     public Object evaluate(Context context) {
-        return false;
+        Expression expression = getOperand();
+        if(expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
+            return null;
+        }
+
+        if(value instanceof Number){
+            return Math.ceil(((Number)value).doubleValue());
+        }
+
+        // TODO: Finish implementation of Add
+        // +(Quantity, Quantity)
+
+        throw new IllegalArgumentException(String.format("Cannot %s with argument of type '%s'.",this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }

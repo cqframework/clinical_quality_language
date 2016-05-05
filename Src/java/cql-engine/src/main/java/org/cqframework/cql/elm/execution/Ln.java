@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -127,6 +126,22 @@ public class Ln
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Expression expression = getOperand();
+        if(expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
+            return null;
+        }
+
+        if(value instanceof Number){
+            return Math.log(((Number)value).doubleValue());
+        }
+
+        // TODO: Finish implementation of Add
+        // +(Quantity, Quantity)
+
+        throw new IllegalArgumentException(String.format("Cannot %s with argument of type '%s'.",this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }

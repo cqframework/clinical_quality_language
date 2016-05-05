@@ -11,6 +11,9 @@ import static org.hamcrest.Matchers.nullValue;
 @Test(groups = {"a"})
 public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.AllTrue#evaluate(Context)}
+     */
     @Test
     public void testAllTrue() throws JAXBException {
         Context context = new Context(library);
@@ -36,6 +39,9 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
         assertThat(result, is(nullValue()));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.AnyTrue#evaluate(Context)}
+     */
     @Test
     public void testAnyTrue() throws JAXBException {
         Context context = new Context(library);
@@ -67,59 +73,102 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
         assertThat(result, is(nullValue()));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Avg#evaluate(Context)}
+     */
     @Test
     public void testAvg() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Count#evaluate(Context)}
+     */
     @Test
     public void testCount() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Max#evaluate(Context)}
+     */
     @Test
     public void testMax() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Median#evaluate(Context)}
+     */
     @Test
     public void testMedian() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Min#evaluate(Context)}
+     */
     @Test
     public void testMin() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Mode#evaluate(Context)}
+     */
     @Test
     public void testMode() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.StdDev#evaluate(Context)}
+     */
     @Test
     public void testPopulationStdDev() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.PopulationVariance#evaluate(Context)}
+     */
     @Test
     public void testPopulationVariance() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.StdDev#evaluate(Context)}
+     */
     @Test
     public void testStdDev() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Sum#evaluate(Context)}
+     */
     @Test
     public void testSum() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 
-
+    /**
+     * {@link org.cqframework.cql.elm.execution.Variance#evaluate(Context)}
+     */
     @Test
     public void testVariance() throws JAXBException {
-
+        Context context = new Context(library);
+        Object result;
     }
 }

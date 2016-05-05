@@ -11,6 +11,9 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Coalesce#evaluate(Context)}
+     */
     @Test
     public void testCoalesce() throws JAXBException {
         Context context = new Context(library);
@@ -45,6 +48,9 @@ public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(Arrays.asList("a")));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.IsNull#evaluate(Context)}
+     */
     @Test
     public void testIsNull() throws JAXBException {
         Context context = new Context(library);
@@ -64,6 +70,9 @@ public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(false));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.IsFalse#evaluate(Context)}
+     */
     @Test
     public void testIsFalse() throws JAXBException {
         Context context = new Context(library);
@@ -77,6 +86,9 @@ public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(false));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.IsTrue#evaluate(Context)}
+     */
     @Test
     public void testIsTrue() throws JAXBException {
         Context context = new Context(library);

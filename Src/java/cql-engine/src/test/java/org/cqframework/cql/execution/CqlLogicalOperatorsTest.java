@@ -11,6 +11,9 @@ import static org.hamcrest.Matchers.nullValue;
 @Test(groups = {"a"})
 public class CqlLogicalOperatorsTest extends CqlExecutionTestBase {
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.And#evaluate(Context)}
+     */
     @Test
     public void testAnd() throws JAXBException {
         Context context = new Context(library);
@@ -30,6 +33,9 @@ public class CqlLogicalOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(nullValue()));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Not#evaluate(Context)}
+     */
     @Test
     public void testNot() throws JAXBException {
         Context context = new Context(library);
@@ -43,6 +49,9 @@ public class CqlLogicalOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(nullValue()));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Or#evaluate(Context)}
+     */
     @Test
     public void testOr() throws JAXBException {
         Context context = new Context(library);
@@ -62,6 +71,9 @@ public class CqlLogicalOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(nullValue()));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.Xor#evaluate(Context)}
+     */
     @Test
     public void testXOr() throws JAXBException {
         Context context = new Context(library);
