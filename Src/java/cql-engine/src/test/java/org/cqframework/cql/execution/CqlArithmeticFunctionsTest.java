@@ -420,8 +420,14 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
-        result = context.resolveExpressionRef(library, "SubtractAB").getExpression().evaluate(context);
-        assertThat(result, is(new BigDecimal("5.0")));
+        result = context.resolveExpressionRef(library, "SubtractEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SubtractNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "Subtract1And1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(0)));
     }
 
     /**

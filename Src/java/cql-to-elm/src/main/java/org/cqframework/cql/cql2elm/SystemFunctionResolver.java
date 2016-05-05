@@ -43,12 +43,12 @@ public class SystemFunctionResolver {
                 case "Exp":
                 case "Ln":
                 case "Truncate":
-                case "Negate":
-                case "Modulo": {
+                case "Negate": {
                     return resolveUnary(fun);
                 }
 
-                case "Log": {
+                case "Log":
+                case "Modulo": {
                     return resolveBinary(fun);
                 }
 

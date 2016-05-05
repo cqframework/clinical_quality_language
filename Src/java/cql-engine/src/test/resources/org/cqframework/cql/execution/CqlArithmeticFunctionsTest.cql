@@ -119,7 +119,9 @@ define Negate1CM : Negate(1'cm')
 //Round
 
 //Subtract
-define Subtract11 : 1 - 1
+define SubtractEmpty: Subtract()
+define SubtractNull: Subtract(null)
+define Subtract1And1 : 1 - 1
 
 //Successor
 
