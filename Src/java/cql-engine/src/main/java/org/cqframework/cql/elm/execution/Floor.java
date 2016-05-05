@@ -126,19 +126,22 @@ public class Floor
 
     @Override
     public Object evaluate(Context context) {
-        Object oper = getOperand().evaluate(context);
+        Expression expression = getOperand();
+        if(expression == null) return null;
 
-        if (oper == null) {
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
             return null;
         }
 
-        if(oper instanceof Number){
-            return Math.floor(((Number)oper).doubleValue());
+        if(value instanceof Number){
+            return Math.floor(((Number)value).doubleValue());
         }
 
         // TODO: Finish implementation of Add
         // +(Quantity, Quantity)
 
-        throw new IllegalArgumentException(String.format("Cannot do an Abs with argument of type '%s'.", oper.getClass().getName()));
+        throw new IllegalArgumentException(String.format("Cannot do an Abs with argument of type '%s'.", value.getClass().getName()));
     }
 }

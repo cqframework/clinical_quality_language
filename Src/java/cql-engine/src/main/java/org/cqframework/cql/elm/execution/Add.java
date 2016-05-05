@@ -8,23 +8,16 @@
 
 package org.cqframework.cql.elm.execution;
 
-import java.math.BigDecimal;
-import java.util.Collection;
+import org.cqframework.cql.execution.Context;
+import org.jvnet.jaxb2_commons.lang.*;
+import org.jvnet.jaxb2_commons.lang.ToString;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-
-import org.cqframework.cql.execution.Context;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBToStringStrategy;
-import org.jvnet.jaxb2_commons.lang.ToString;
-import org.jvnet.jaxb2_commons.lang.ToStringStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import java.math.BigDecimal;
+import java.util.*;
 
 
 /**
@@ -158,8 +151,11 @@ public class Add
 
     @Override
     public Object evaluate(Context context) {
-        Object left = getOperand().get(0).evaluate(context);
-        Object right = getOperand().get(1).evaluate(context);
+        java.util.List<Expression> expressions = getOperand();
+        if(expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
 
         if (left == null || right == null) {
             return null;
@@ -180,6 +176,6 @@ public class Add
         // +(DateTime, Quantity)
         // +(Time, Quantity)
 
-        throw new IllegalArgumentException(String.format("Cannot Add arguments of type '%s' and '%s'.", left.getClass().getName(), right.getClass().getName()));
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s' and '%s'.", this.getClass().getSimpleName(), left.getClass().getName(), right.getClass().getName()));
     }
 }

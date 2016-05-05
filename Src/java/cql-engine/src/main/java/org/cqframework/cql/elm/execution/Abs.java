@@ -130,26 +130,29 @@ public class Abs
 
     @Override
     public Object evaluate(Context context) {
-        Object oper = getOperand().evaluate(context);
+        Expression expression = getOperand();
+        if(expression == null) return null;
 
-        if (oper == null) {
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
             return null;
         }
 
-        if (oper instanceof Integer) {
-            return Math.abs((Integer)oper);
+        if (value instanceof Integer) {
+            return Math.abs((Integer)value);
         }
 
-        if (oper instanceof Long) {
-            return Math.abs((Long)oper);
+        if (value instanceof Long) {
+            return Math.abs((Long)value);
         }
 
-        if (oper instanceof Float) {
-            return Math.abs((Float)oper);
+        if (value instanceof Float) {
+            return Math.abs((Float)value);
         }
 
-        if(oper instanceof Number){
-            return Math.abs(((Number)oper).doubleValue());
+        if(value instanceof Number){
+            return Math.abs(((Number)value).doubleValue());
         }
 
         // TODO: Finish implementation of Add
@@ -157,6 +160,6 @@ public class Abs
         // +(DateTime, Quantity)
         // +(Time, Quantity)
 
-        throw new IllegalArgumentException(String.format("Cannot do an Abs with argument of type '%s'.", oper.getClass().getName()));
+        throw new IllegalArgumentException(String.format("Cannot %s with argument of type '%s'.",this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }

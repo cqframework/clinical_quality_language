@@ -143,8 +143,11 @@ public class Divide
 
     @Override
     public Object evaluate(Context context) {
-        Object left = getOperand().get(0).evaluate(context);
-        Object right = getOperand().get(1).evaluate(context);
+        java.util.List<Expression> expressions = getOperand();
+        if(expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
 
         if (left == null || right == null) {
             return null;
@@ -163,6 +166,6 @@ public class Divide
         // /(Quantity, Decimal)
         // /(Quantity, Quantity)
 
-        throw new IllegalArgumentException(String.format("Cannot Divide arguments of type '%s' and '%s'.", left.getClass().getName(), right.getClass().getName()));
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s' and '%s'.", this.getClass().getSimpleName(), left.getClass().getName(), right.getClass().getName()));
     }
 }
