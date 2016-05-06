@@ -113,16 +113,16 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
 
         result = context.resolveExpressionRef(library, "LowerNull").getExpression().evaluate(context);
         assertThat(result, is(nullValue()));
-        
+
         result = context.resolveExpressionRef(library, "LowerEmpty").getExpression().evaluate(context);
         assertThat(result, is(""));
-        
+
         result = context.resolveExpressionRef(library, "LowerA").getExpression().evaluate(context);
         assertThat(result, is("a"));
-        
+
         result = context.resolveExpressionRef(library, "LowerB").getExpression().evaluate(context);
         assertThat(result, is("b"));
-        
+
         result = context.resolveExpressionRef(library, "LowerAB").getExpression().evaluate(context);
         assertThat(result, is("ab"));
     }
@@ -175,7 +175,7 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(new String[]{"a,b"}));
 
         result = context.resolveExpressionRef(library, "SplitABComma").getExpression().evaluate(context);
-        assertThat(result, is(new String[]{"a","b"}));
+        assertThat(result, is(new String[]{"a", "b"}));
     }
 
     /**
