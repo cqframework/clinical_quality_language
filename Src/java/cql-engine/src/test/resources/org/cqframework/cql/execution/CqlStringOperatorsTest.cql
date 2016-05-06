@@ -24,6 +24,10 @@ define IndexerAB2 : Indexer('ab', 2)
 define IndexerABNeg1 : Indexer('ab', -1)
 
 //Length
+define LengthNull : Length(null)
+define LengthEmpty : Length('')
+define LengthA : Length('a')
+define LengthAB : Length('ab')
 
 //Lower
 
