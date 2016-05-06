@@ -16,18 +16,19 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 
 /**
  * The Truncate operator returns the integer component of its argument.
- * 
+ * <p>
  * If the argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Truncate complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Truncate"&gt;
  *   &lt;complexContent&gt;
@@ -36,15 +37,12 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Truncate", namespace = "urn:hl7-org:elm:r1")
 public class Truncate
-    extends UnaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends UnaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -55,8 +53,8 @@ public class Truncate
 
     @Override
     public Truncate withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -65,7 +63,7 @@ public class Truncate
 
     @Override
     public Truncate withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -126,6 +124,24 @@ public class Truncate
 
     @Override
     public Object evaluate(Context context) {
-        return false;
+        Expression expression = getOperand();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Number) {
+            Double val = ((Number) value).doubleValue();
+            if(val < 0){
+                return new BigDecimal(val).setScale(0, BigDecimal.ROUND_CEILING).intValue();
+            }else{
+                return new BigDecimal(val).setScale(0, BigDecimal.ROUND_FLOOR).intValue();
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s with argument of type '%s'.", this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }

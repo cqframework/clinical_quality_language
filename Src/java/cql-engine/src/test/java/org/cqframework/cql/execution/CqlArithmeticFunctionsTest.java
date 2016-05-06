@@ -563,6 +563,45 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testTruncate() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "TruncateEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "TruncateNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "Truncate0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(0)));
+
+        result = context.resolveExpressionRef(library, "Truncate0D0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(0)));
+
+        result = context.resolveExpressionRef(library, "Truncate0D1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(0)));
+
+        result = context.resolveExpressionRef(library, "Truncate1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        result = context.resolveExpressionRef(library, "Truncate1D0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        result = context.resolveExpressionRef(library, "Truncate1D1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        result = context.resolveExpressionRef(library, "Truncate1D9").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        result = context.resolveExpressionRef(library, "TruncateNeg1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(-1)));
+
+        result = context.resolveExpressionRef(library, "TruncateNeg1D0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(-1)));
+
+        result = context.resolveExpressionRef(library, "TruncateNeg1D1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(-1)));
+
+        result = context.resolveExpressionRef(library, "TruncateNeg1D9").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(-1)));
     }
 
     /**

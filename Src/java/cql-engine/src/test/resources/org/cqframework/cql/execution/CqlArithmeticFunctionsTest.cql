@@ -165,5 +165,18 @@ define SuccessorOfJan12000: Successor(DateTime(2000,1,1))
 define SuccessorOfNoon: Successor(Time(12,0,0))
 
 //Truncate
+define TruncateEmpty: Truncate()
+define TruncateNull: Truncate(null)
+define Truncate0: Truncate(0)
+define Truncate0D0: Truncate(0.0)
+define Truncate0D1: Truncate(0.1)
+define Truncate1: Truncate(1)
+define Truncate1D0: Truncate(1.0)
+define Truncate1D1: Truncate(1.1)
+define Truncate1D9: Truncate(1.9)
+define TruncateNeg1: Truncate(-1)
+define TruncateNeg1D0: Truncate(-1.0)
+define TruncateNeg1D1: Truncate(-1.1)
+define TruncateNeg1D9: Truncate(-1.9)
 
 //Truncated Divide
