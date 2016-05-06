@@ -44,7 +44,8 @@ public class SystemFunctionResolver {
                 case "Ln":
                 case "Truncate":
                 case "Negate":
-                case "Predecessor": {
+                case "Predecessor":
+                case "Successor": {
                     return resolveUnary(fun);
                 }
 

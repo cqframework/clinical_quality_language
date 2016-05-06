@@ -528,6 +528,32 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testSuccessor() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "SuccessorEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SuccessorNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SuccessorOf0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        result = context.resolveExpressionRef(library, "SuccessorOf1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(2)));
+
+        result = context.resolveExpressionRef(library, "SuccessorOf1D").getExpression().evaluate(context);
+        assertThat(result, is(Interval.successor(new BigDecimal(1.0))));
+
+        //TODO: Come back to this...
+//        result = context.resolveExpressionRef(library, "SuccessorOf101D").getExpression().evaluate(context);
+//        assertThat(result, is(Interval.successor(new BigDecimal(1.01))));
+
+        //TODO: Uncomment once DateTime and Time evaluate has been implemented
+//        result = context.resolveExpressionRef(library, "SuccessorOfJan12000").getExpression().evaluate(context);
+//        assertThat(result, is(new Integer(0)));
+//
+//        result = context.resolveExpressionRef(library, "SuccessorOfNoon").getExpression().evaluate(context);
+//        assertThat(result, is(new Integer(0)));
     }
 
     /**

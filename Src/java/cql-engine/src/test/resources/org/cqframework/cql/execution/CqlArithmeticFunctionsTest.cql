@@ -155,6 +155,14 @@ define SubtractNull: Subtract(null)
 define Subtract1And1 : 1 - 1
 
 //Successor
+define SuccessorEmpty: Successor()
+define SuccessorNull: Successor(null)
+define SuccessorOf0: Successor(0)
+define SuccessorOf1: Successor(1)
+define SuccessorOf1D: Successor(1.0)
+define SuccessorOf101D: Successor(1.01)
+define SuccessorOfJan12000: Successor(DateTime(2000,1,1))
+define SuccessorOfNoon: Successor(Time(12,0,0))
 
 //Truncate
 
