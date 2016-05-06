@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -22,17 +21,17 @@ import java.util.Collection;
 
 /**
  * The Length operator returns the length of its argument.
- * 			
+ * <p>
  * For strings, the length is the number of characters in the string.
- * 
+ * <p>
  * For lists, the length is the number of elements in the list.
- * 
+ * <p>
  * If the argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Length complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Length"&gt;
  *   &lt;complexContent&gt;
@@ -41,15 +40,12 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Length", namespace = "urn:hl7-org:elm:r1")
 public class Length
-    extends UnaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends UnaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -60,8 +56,8 @@ public class Length
 
     @Override
     public Length withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -70,7 +66,7 @@ public class Length
 
     @Override
     public Length withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -131,6 +127,19 @@ public class Length
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Expression expression = getOperand();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof String) {
+            return ((String) value).length();
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s of type '%s'.", this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }
