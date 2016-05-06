@@ -380,7 +380,7 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
         assertThat(result, is(new Double(1)));
 
         result = context.resolveExpressionRef(library, "Negate1CM").getExpression().evaluate(context);
-        assertThat(((org.cqframework.cql.runtime.Quantity)result).getValue(), is(new BigDecimal(1).negate()));
+        assertThat(((org.cqframework.cql.runtime.Quantity) result).getValue(), is(new BigDecimal(1).negate()));
     }
 
     /**
@@ -423,6 +423,39 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testPower() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "PowerEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "PowerNullToNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "Power0To0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(1)));
+
+        result = context.resolveExpressionRef(library, "Power2To2").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(4)));
+
+        result = context.resolveExpressionRef(library, "PowerNeg2To2").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(4)));
+
+        result = context.resolveExpressionRef(library, "Power2ToNeg2").getExpression().evaluate(context);
+        assertThat(result, is(new Double(.25)));
+
+        result = context.resolveExpressionRef(library, "Power2DTo2D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(4)));
+
+        result = context.resolveExpressionRef(library, "PowerNeg2DTo2D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(4)));
+
+        result = context.resolveExpressionRef(library, "Power2DToNeg2D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(.25)));
+
+        result = context.resolveExpressionRef(library, "Power2DTo2").getExpression().evaluate(context);
+        assertThat(result, is(new Double(4)));
+
+        result = context.resolveExpressionRef(library, "Power2To2D").getExpression().evaluate(context);
+        assertThat(result, is(new Double(4)));
     }
 
     /**

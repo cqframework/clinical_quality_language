@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -17,18 +16,19 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 
 /**
  * The Power operator raises the first argument to the power given by the second argument.
- * 
+ * <p>
  * If either argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Power complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Power"&gt;
  *   &lt;complexContent&gt;
@@ -37,21 +37,18 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Power", namespace = "urn:hl7-org:elm:r1")
 public class Power
-    extends BinaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends BinaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
     public Power withOperand(Expression... values) {
-        if (values!= null) {
-            for (Expression value: values) {
+        if (values != null) {
+            for (Expression value : values) {
                 getOperand().add(value);
             }
         }
@@ -60,7 +57,7 @@ public class Power
 
     @Override
     public Power withOperand(Collection<Expression> values) {
-        if (values!= null) {
+        if (values != null) {
             getOperand().addAll(values);
         }
         return this;
@@ -68,8 +65,8 @@ public class Power
 
     @Override
     public Power withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -78,7 +75,7 @@ public class Power
 
     @Override
     public Power withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -139,6 +136,26 @@ public class Power
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        java.util.List<Expression> expressions = getOperand();
+        if (expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
+
+        if (left == null || right == null) {
+            return null;
+        }
+
+        if (left instanceof Integer) {
+            if (right instanceof Integer && (Integer) right >= 0) {
+                return new BigDecimal((Integer) left).pow((Integer) right).intValue();
+            }
+        }
+
+        if (left instanceof Number) {
+            return Math.pow((((Number) left).doubleValue()), ((Number) right).doubleValue());
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s' and '%s'.", this.getClass().getSimpleName(), left.getClass().getName(), right.getClass().getName()));
     }
 }

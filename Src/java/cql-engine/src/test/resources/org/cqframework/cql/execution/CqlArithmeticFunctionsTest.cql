@@ -123,6 +123,17 @@ define PredecessorOfJan12000: Predecessor(DateTime(2000,1,1))
 define PredecessorOfNoon: Predecessor(Time(12,0,0))
 
 //Power
+define PowerEmpty: Power()
+define PowerNullToNull: Power(null, null)
+define Power0To0: Power(0, 0)
+define Power2To2: Power(2, 2)
+define PowerNeg2To2: Power(-2, 2)
+define Power2ToNeg2: Power(2, -2)
+define Power2DTo2D: Power(2.0, 2.0)
+define PowerNeg2DTo2D: Power(-2.0, 2.0)
+define Power2DToNeg2D: Power(2.0, -2.0)
+define Power2DTo2: Power(2.0, 2)
+define Power2To2D: Power(2, 2.0)
 
 //Round
 
