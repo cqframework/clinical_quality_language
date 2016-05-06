@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -24,15 +23,15 @@ import java.util.Collection;
 
 /**
  * The Substring operator returns the string within stringToSub, starting at the 0-based index startIndex, and consisting of length characters.
- * 			
+ * <p>
  * If length is ommitted, the substring returned starts at startIndex and continues to the end of stringToSub.
- * 
+ * <p>
  * If stringToSub or startIndex is null, or startIndex is out of range, the result is null.
- * 
+ * <p>
  * <p>Java class for Substring complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Substring"&gt;
  *   &lt;complexContent&gt;
@@ -46,19 +45,16 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Substring", namespace = "urn:hl7-org:elm:r1", propOrder = {
-    "stringToSub",
-    "startIndex",
-    "length"
+        "stringToSub",
+        "startIndex",
+        "length"
 })
 public class Substring
-    extends Expression
-    implements Equals, HashCode, ToString
-{
+        extends Expression
+        implements Equals, HashCode, ToString {
 
     @XmlElement(namespace = "urn:hl7-org:elm:r1", required = true)
     protected Expression stringToSub;
@@ -69,11 +65,9 @@ public class Substring
 
     /**
      * Gets the value of the stringToSub property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getStringToSub() {
         return stringToSub;
@@ -81,11 +75,9 @@ public class Substring
 
     /**
      * Sets the value of the stringToSub property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setStringToSub(Expression value) {
         this.stringToSub = value;
@@ -93,11 +85,9 @@ public class Substring
 
     /**
      * Gets the value of the startIndex property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getStartIndex() {
         return startIndex;
@@ -105,11 +95,9 @@ public class Substring
 
     /**
      * Sets the value of the startIndex property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setStartIndex(Expression value) {
         this.startIndex = value;
@@ -117,11 +105,9 @@ public class Substring
 
     /**
      * Gets the value of the length property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getLength() {
         return length;
@@ -129,11 +115,9 @@ public class Substring
 
     /**
      * Sets the value of the length property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setLength(Expression value) {
         this.length = value;
@@ -156,8 +140,8 @@ public class Substring
 
     @Override
     public Substring withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -166,7 +150,7 @@ public class Substring
 
     @Override
     public Substring withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -285,6 +269,38 @@ public class Substring
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Object stringObj = this.getStringToSub();
+        Object startIndexObj = this.getStartIndex();
+        Object lengthObj = this.getLength();
+
+        if (stringObj == null || startIndexObj == null) {
+            return null;
+        }
+
+        Object stringVal = ((Expression) stringObj).evaluate(context);
+        Object startIndexVal = ((Expression) startIndexObj).evaluate(context);
+        Object lengthVal = lengthObj == null ? null : ((Expression) lengthObj).evaluate(context);
+
+        if (stringVal == null || startIndexVal == null || (startIndexVal instanceof Integer) == false) {
+            return null;
+        }
+
+        if (stringVal instanceof String) {
+            if ((int) startIndexVal < 0 || (int) startIndexVal >= ((String) stringVal).length()) {
+                return null;
+            }
+
+            if(lengthVal != null && lengthVal instanceof Integer && (int) startIndexVal + (int) lengthVal >= ((String) stringVal).length()){
+                lengthVal = 0;
+            }
+
+            if(lengthVal != null && lengthVal instanceof Integer && (int)lengthVal > 0){
+                return ((String) stringVal).substring((int) startIndexVal, (int) startIndexVal + (int) lengthVal);
+            }else{
+                return ((String) stringVal).substring((int) startIndexVal);
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s'.", this.getClass().getSimpleName(), stringObj.getClass().getName()));
     }
 }
