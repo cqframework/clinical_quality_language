@@ -45,7 +45,7 @@ public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(Arrays.asList("a")));
 
         result = context.resolveExpressionRef(library, "CoalesceLastList").getExpression().evaluate(context);
-        assertThat(result, is(Arrays.asList("a")));
+        assertThat(result, is(Arrays.asList("a,b")));
     }
 
     /**
