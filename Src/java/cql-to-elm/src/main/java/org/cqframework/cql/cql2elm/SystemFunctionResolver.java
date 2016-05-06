@@ -51,7 +51,8 @@ public class SystemFunctionResolver {
 
                 case "Log":
                 case "Modulo":
-                case "Power": {
+                case "Power":
+                case "TruncatedDivide": {
                     return resolveBinary(fun);
                 }
 
