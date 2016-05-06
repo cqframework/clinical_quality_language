@@ -147,11 +147,15 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
+                // String Functions
+                case "Indexer": {
+                    return resolveBinary(fun);
+                }
+
                 case "Concatenate": {
                     return resolveNary(fun);
                 }
 
-                // String Functions
                 case "Combine": {
                     return resolveCombine(fun);
                 }

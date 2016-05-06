@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -22,17 +21,17 @@ import java.util.Collection;
 
 /**
  * The Indexer operator returns the indexth element in a string or list.
- * 			
+ * <p>
  * Indexes in strings and lists are defined to be 0-based.
- * 
+ * <p>
  * If the index is greater than the length of the string or list being indexed, the result is null.
- * 
+ * <p>
  * If either argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Indexer complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Indexer"&gt;
  *   &lt;complexContent&gt;
@@ -41,21 +40,18 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Indexer", namespace = "urn:hl7-org:elm:r1")
 public class Indexer
-    extends BinaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends BinaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
     public Indexer withOperand(Expression... values) {
-        if (values!= null) {
-            for (Expression value: values) {
+        if (values != null) {
+            for (Expression value : values) {
                 getOperand().add(value);
             }
         }
@@ -64,7 +60,7 @@ public class Indexer
 
     @Override
     public Indexer withOperand(Collection<Expression> values) {
-        if (values!= null) {
+        if (values != null) {
             getOperand().addAll(values);
         }
         return this;
@@ -72,8 +68,8 @@ public class Indexer
 
     @Override
     public Indexer withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -82,7 +78,7 @@ public class Indexer
 
     @Override
     public Indexer withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -143,6 +139,26 @@ public class Indexer
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        java.util.List<Expression> expressions = getOperand();
+        if (expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
+
+        if (left == null || right == null) {
+            return null;
+        }
+
+        if (left instanceof String) {
+            if (right instanceof Integer) {
+                if((int)right < 0 || (int)right >= ((String)left).length()){
+                    return null;
+                }
+
+                return "" + ((String) left).charAt((int) right);
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s' and '%s'.", this.getClass().getSimpleName(), left.getClass().getName(), right.getClass().getName()));
     }
 }
