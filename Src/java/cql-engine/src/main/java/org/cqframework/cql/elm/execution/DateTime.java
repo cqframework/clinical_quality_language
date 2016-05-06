@@ -8,9 +8,9 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
-import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
@@ -551,8 +551,9 @@ public class DateTime
             timeBuffer.append(".").append(milliSecond);
         }
 
-        org.joda.time.DateTime newDate = ISODateTimeFormat.dateTime().parseDateTime(timeBuffer.toString());
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+        org.joda.time.DateTime newDate = formatter.parseDateTime(timeBuffer.toString());
 
-        throw new NotImplementedException("Evaluate not implemented.");
+        return newDate.toDate();
     }
 }

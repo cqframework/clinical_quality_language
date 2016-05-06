@@ -136,6 +136,18 @@ define Power2DTo2: Power(2.0, 2)
 define Power2To2D: Power(2, 2.0)
 
 //Round
+define RoundEmpty: Round()
+define RoundNull: Round(null)
+define Round1: Round(1)
+define Round0D5: Round(0.5)
+define Round0D4: Round(0.4)
+define RoundNeg0D5: Round(-0.5)
+define RoundNeg0D4: Round(-0.4)
+define RoundNeg0D6: Round(-0.6)
+define RoundNeg1D1: Round(-1.1)
+define RoundNeg1D5: Round(-1.5)
+define RoundNeg1D6: Round(-1.6)
+
 
 //Subtract
 define SubtractEmpty: Subtract()

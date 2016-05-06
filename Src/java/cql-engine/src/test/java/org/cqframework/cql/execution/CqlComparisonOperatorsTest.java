@@ -475,7 +475,9 @@ public class CqlComparisonOperatorsTest extends CqlExecutionTestBase {
     @Test
     public void testNotEqual() throws JAXBException {
         Context context = new Context(library);
-        Object result = context.resolveExpressionRef(library, "SimpleNotEqTrueTrue").getExpression().evaluate(context);
+        Object result;
+
+        result = context.resolveExpressionRef(library, "SimpleNotEqTrueTrue").getExpression().evaluate(context);
         assertThat(result, is(false));
 
         result = context.resolveExpressionRef(library, "SimpleNotEqTrueFalse").getExpression().evaluate(context);
