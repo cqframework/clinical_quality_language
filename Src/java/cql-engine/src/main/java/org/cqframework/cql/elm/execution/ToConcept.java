@@ -9,6 +9,7 @@
 package org.cqframework.cql.elm.execution;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -127,6 +128,16 @@ public class ToConcept
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        org.cqframework.cql.runtime.Concept result = new org.cqframework.cql.runtime.Concept();
+        Object source = getOperand().evaluate(context);
+        if (source instanceof Iterable) {
+            for (Object code : (Iterable<Object>)source) {
+                result.withCode((org.cqframework.cql.runtime.Code)code);
+            }
+        }
+        else {
+            result.withCode((org.cqframework.cql.runtime.Code)source);
+        }
+        return result;
     }
 }

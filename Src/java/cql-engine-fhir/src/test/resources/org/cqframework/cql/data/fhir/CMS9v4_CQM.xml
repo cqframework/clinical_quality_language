@@ -437,8 +437,10 @@
                   </source>
                   <where xsi:type="And">
                      <operand xsi:type="Equal">
-                        <operand path="url" scope="Extension" xsi:type="Property"/>
-                        <operand valueType="t:String" value="http://example.org/extensions/riskassesssment-type" xsi:type="Literal"/>
+                        <operand path="value" xsi:type="Property">
+                           <source path="url" scope="Extension" xsi:type="Property"/>
+                        </operand>
+                        <operand valueType="t:String" value="http://example.org/extensions/riskassessment-type" xsi:type="Literal"/>
                      </operand>
                      <operand xsi:type="Equal">
                         <operand name="ToConcept" xsi:type="FunctionRef">

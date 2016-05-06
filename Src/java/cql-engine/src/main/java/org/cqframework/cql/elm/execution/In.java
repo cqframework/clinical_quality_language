@@ -198,7 +198,7 @@ public class In
         return buffer;
     }
 
-    public static Boolean in(Object testElement, Iterable<Object> list) {
+    public static Boolean in(Object testElement, Iterable<? extends Object> list) {
         if (list == null) {
             return null;
         }

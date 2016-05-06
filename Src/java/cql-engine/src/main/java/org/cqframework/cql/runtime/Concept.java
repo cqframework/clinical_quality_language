@@ -1,5 +1,7 @@
 package org.cqframework.cql.runtime;
 
+import org.cqframework.cql.elm.execution.In;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +38,20 @@ public class Concept {
     public Concept withCode(Code code) {
         codes.add(code);
         return this;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        // Concept equality is defined as
+        if (other instanceof Concept) {
+            Concept otherConcept = (Concept)other;
+            for (Code code : this.getCodes()) {
+                if (In.in(code, otherConcept.getCodes())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

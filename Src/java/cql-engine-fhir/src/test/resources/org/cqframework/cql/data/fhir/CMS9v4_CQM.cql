@@ -171,7 +171,7 @@ define "Breastfeeding Intention Assessment":
   [RiskAssessment] Assessment
     where exists (
         Assessment.extension Extension
-            where Extension.url = 'http://example.org/extensions/riskassesssment-type'
+            where Extension.url.value = 'http://example.org/extensions/riskassessment-type'
               and ToConcept(Extension.value as FHIR.CodeableConcept) = "Breastfeeding Intention Code"
     )
 
