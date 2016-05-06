@@ -139,7 +139,7 @@ public class Floor
             return Math.floor(((Number)value).doubleValue());
         }
 
-        // TODO: Finish implementation of Add
+        // TODO: Finish implementation
         // +(Quantity, Quantity)
 
         throw new IllegalArgumentException(String.format("Cannot do an Abs with argument of type '%s'.", value.getClass().getName()));

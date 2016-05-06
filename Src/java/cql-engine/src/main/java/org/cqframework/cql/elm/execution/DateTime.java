@@ -10,6 +10,7 @@ package org.cqframework.cql.elm.execution;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
+import org.joda.time.format.ISODateTimeFormat;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
@@ -24,15 +25,15 @@ import java.util.Collection;
 
 /**
  * The DateTime operator constructs a date/time value from the given components.
- * 			
+ * <p>
  * At least one component other than timezoneOffset must be specified, and no component may be specified at a precision below an unspecified precision. For example, hour may be null, but if it is, minute, second, and millisecond must all be null as well.
- * 
+ * <p>
  * If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.
- * 
+ * <p>
  * <p>Java class for DateTime complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="DateTime"&gt;
  *   &lt;complexContent&gt;
@@ -51,24 +52,21 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DateTime", namespace = "urn:hl7-org:elm:r1", propOrder = {
-    "year",
-    "month",
-    "day",
-    "hour",
-    "minute",
-    "second",
-    "millisecond",
-    "timezoneOffset"
+        "year",
+        "month",
+        "day",
+        "hour",
+        "minute",
+        "second",
+        "millisecond",
+        "timezoneOffset"
 })
 public class DateTime
-    extends Expression
-    implements Equals, HashCode, ToString
-{
+        extends Expression
+        implements Equals, HashCode, ToString {
 
     @XmlElement(namespace = "urn:hl7-org:elm:r1", required = true)
     protected Expression year;
@@ -89,11 +87,9 @@ public class DateTime
 
     /**
      * Gets the value of the year property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getYear() {
         return year;
@@ -101,11 +97,9 @@ public class DateTime
 
     /**
      * Sets the value of the year property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setYear(Expression value) {
         this.year = value;
@@ -113,11 +107,9 @@ public class DateTime
 
     /**
      * Gets the value of the month property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getMonth() {
         return month;
@@ -125,11 +117,9 @@ public class DateTime
 
     /**
      * Sets the value of the month property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setMonth(Expression value) {
         this.month = value;
@@ -137,11 +127,9 @@ public class DateTime
 
     /**
      * Gets the value of the day property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getDay() {
         return day;
@@ -149,11 +137,9 @@ public class DateTime
 
     /**
      * Sets the value of the day property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setDay(Expression value) {
         this.day = value;
@@ -161,11 +147,9 @@ public class DateTime
 
     /**
      * Gets the value of the hour property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getHour() {
         return hour;
@@ -173,11 +157,9 @@ public class DateTime
 
     /**
      * Sets the value of the hour property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setHour(Expression value) {
         this.hour = value;
@@ -185,11 +167,9 @@ public class DateTime
 
     /**
      * Gets the value of the minute property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getMinute() {
         return minute;
@@ -197,11 +177,9 @@ public class DateTime
 
     /**
      * Sets the value of the minute property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setMinute(Expression value) {
         this.minute = value;
@@ -209,11 +187,9 @@ public class DateTime
 
     /**
      * Gets the value of the second property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getSecond() {
         return second;
@@ -221,11 +197,9 @@ public class DateTime
 
     /**
      * Sets the value of the second property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setSecond(Expression value) {
         this.second = value;
@@ -233,11 +207,9 @@ public class DateTime
 
     /**
      * Gets the value of the millisecond property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getMillisecond() {
         return millisecond;
@@ -245,11 +217,9 @@ public class DateTime
 
     /**
      * Sets the value of the millisecond property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setMillisecond(Expression value) {
         this.millisecond = value;
@@ -257,11 +227,9 @@ public class DateTime
 
     /**
      * Gets the value of the timezoneOffset property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getTimezoneOffset() {
         return timezoneOffset;
@@ -269,11 +237,9 @@ public class DateTime
 
     /**
      * Sets the value of the timezoneOffset property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setTimezoneOffset(Expression value) {
         this.timezoneOffset = value;
@@ -321,8 +287,8 @@ public class DateTime
 
     @Override
     public DateTime withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -331,7 +297,7 @@ public class DateTime
 
     @Override
     public DateTime withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -545,6 +511,48 @@ public class DateTime
 
     @Override
     public Object evaluate(Context context) {
+        Expression field = null;
+        String year = (field = (Expression) this.getYear()) == null ? null : ((Integer) field.evaluate(context)).toString();
+        if (year == null) return null;
+        if (year.length() < 4) {
+            throw new IllegalArgumentException("Must use 4 digits for year.");
+        }
+
+        String month = (field = (Expression) this.getMonth()) == null ? null : ((Integer) field.evaluate(context)).toString();
+        String day = (field = (Expression) this.getDay()) == null ? null : ((Integer) field.evaluate(context)).toString();
+        String hour = (field = (Expression) this.getHour()) == null ? null : ((Integer) field.evaluate(context)).toString();
+        String minute = (field = (Expression) this.getMinute()) == null ? null : ((Integer) field.evaluate(context)).toString();
+        String second = (field = (Expression) this.getSecond()) == null ? null : ((Integer) field.evaluate(context)).toString();
+        String milliSecond = (field = (Expression) this.getMillisecond()) == null ? null : ((Integer) field.evaluate(context)).toString();
+        String tzOffset = (field = (Expression) this.getTimezoneOffset()) == null ? null : ((Integer) field.evaluate(context)).toString();
+
+        StringBuffer timeBuffer = new StringBuffer(year);
+        if (month != null) {
+            timeBuffer.append("-").append(String.format("%0"+ (2 - month.length() )+"d%s",0 ,month));
+        }
+
+        if (day != null) {
+            timeBuffer.append("-").append(String.format("%0"+ (2 - day.length() )+"d%s",0 ,day));
+        }
+
+        if (hour != null) {
+            timeBuffer.append("T").append(hour);
+        }
+
+        if (minute != null) {
+            timeBuffer.append(":").append(minute);
+        }
+
+        if (second != null) {
+            timeBuffer.append(":").append(second);
+        }
+
+        if (milliSecond != null) {
+            timeBuffer.append(".").append(milliSecond);
+        }
+
+        org.joda.time.DateTime newDate = ISODateTimeFormat.dateTime().parseDateTime(timeBuffer.toString());
+
         throw new NotImplementedException("Evaluate not implemented.");
     }
 }

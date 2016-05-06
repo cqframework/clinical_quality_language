@@ -171,7 +171,7 @@ public class Add
             return ((BigDecimal)left).add((BigDecimal)right);
         }
 
-        // TODO: Finish implementation of Add
+        // TODO: Finish implementation
         // +(Quantity, Quantity)
         // +(DateTime, Quantity)
         // +(Time, Quantity)

@@ -213,30 +213,29 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
         result = context.resolveExpressionRef(library, "LogEmpty").getExpression().evaluate(context);
         assertThat(result, is(nullValue()));
 
+        result = context.resolveExpressionRef(library, "LogEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
         result = context.resolveExpressionRef(library, "LogNullNull").getExpression().evaluate(context);
         assertThat(result, is(nullValue()));
 
-        result = context.resolveExpressionRef(library, "Log1Null").getExpression().evaluate(context);
+        result = context.resolveExpressionRef(library, "Log1BaseNull").getExpression().evaluate(context);
         assertThat(result, is(nullValue()));
 
-        result = context.resolveExpressionRef(library, "Log00").getExpression().evaluate(context);
-        assertThat(result, is(Double.NaN));
+        result = context.resolveExpressionRef(library, "Log1Base1").getExpression().evaluate(context);
+        assertThat(result, is(new Double(0)));
 
-        result = context.resolveExpressionRef(library, "LogNeg00").getExpression().evaluate(context);
-        assertThat(result, is(Double.NaN));
+        result = context.resolveExpressionRef(library, "Log1Base2").getExpression().evaluate(context);
+        assertThat(result, is(new Double(0)));
 
-        result = context.resolveExpressionRef(library, "Log10").getExpression().evaluate(context);
-        assertThat(result, is(-(new Double(0))));
+        result = context.resolveExpressionRef(library, "Log1Base100").getExpression().evaluate(context);
+        assertThat(result, is(new Double(0)));
 
-        result = context.resolveExpressionRef(library, "LogNeg10").getExpression().evaluate(context);
-        assertThat(result, is(Double.NaN));
+        result = context.resolveExpressionRef(library, "Log16Base2").getExpression().evaluate(context);
+        assertThat(result, is(new Double(4)));
 
-        //TODO: Fix these / figure numbers I can really test.
-//        result = context.resolveExpressionRef(library, "Log100010").getExpression().evaluate(context);
-//        assertThat(result, is(Double.POSITIVE_INFINITY));
-//
-//        result = context.resolveExpressionRef(library, "Log1000D10").getExpression().evaluate(context);
-//        assertThat(result, is(Double.POSITIVE_INFINITY));
+        result = context.resolveExpressionRef(library, "LogD125Base2").getExpression().evaluate(context);
+        assertThat(result, is(new Double(-3)));
     }
 
     /**
@@ -259,18 +258,17 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
         result = context.resolveExpressionRef(library, "LnNeg0").getExpression().evaluate(context);
         assertThat(result, is(Double.NEGATIVE_INFINITY));
 
-        //TODO: Fix these / figure numbers I can really test.
-//        result = context.resolveExpressionRef(library, "Ln1").getExpression().evaluate(context);
-//        assertThat(result, is(Math.exp(new Double(1))));
-//
-//        result = context.resolveExpressionRef(library, "LnNeg1").getExpression().evaluate(context);
-//        assertThat(result, is(Math.exp(new Double(-1))));
-//
-//        result = context.resolveExpressionRef(library, "Ln1000").getExpression().evaluate(context);
-//        assertThat(result, is(Double.POSITIVE_INFINITY));
-//
-//        result = context.resolveExpressionRef(library, "Ln1000D").getExpression().evaluate(context);
-//        assertThat(result, is(Double.POSITIVE_INFINITY));
+        result = context.resolveExpressionRef(library, "Ln1").getExpression().evaluate(context);
+        assertThat(result, is(Math.log(new Double(1))));
+
+        result = context.resolveExpressionRef(library, "LnNeg1").getExpression().evaluate(context);
+        assertThat(result, is(Math.log(new Double(-1))));
+
+        result = context.resolveExpressionRef(library, "Ln1000").getExpression().evaluate(context);
+        assertThat(result, is(Math.log(new Integer(1000))));
+
+        result = context.resolveExpressionRef(library, "Ln1000D").getExpression().evaluate(context);
+        assertThat(result, is(Math.log(new Double(1000))));
     }
 
     /**
@@ -392,6 +390,30 @@ public class CqlArithmeticFunctionsTest extends CqlExecutionTestBase {
     public void testPredecessor() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "PredecessorEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "PredecessorNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "PredecessorOf0").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(-1)));
+
+        result = context.resolveExpressionRef(library, "PredecessorOf1").getExpression().evaluate(context);
+        assertThat(result, is(new Integer(0)));
+
+        result = context.resolveExpressionRef(library, "PredecessorOf1D").getExpression().evaluate(context);
+        assertThat(result, is(Math.nextDown(new Double(1))));
+
+        result = context.resolveExpressionRef(library, "PredecessorOf101D").getExpression().evaluate(context);
+        assertThat(result, is(Math.nextDown(new Double(1.01))));
+
+        result = context.resolveExpressionRef(library, "PredecessorOfJan12000").getExpression().evaluate(context);
+        assertThat(result, is(""));
+
+        result = context.resolveExpressionRef(library, "PredecessorOfNoon").getExpression().evaluate(context);
+        assertThat(result, is(new Double(1)));
     }
 
     /**

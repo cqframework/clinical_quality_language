@@ -151,7 +151,7 @@ public class Modulo
         }
 
         if (left instanceof Number) {
-            return ((Number)left).doubleValue() % ((Number)right).doubleValue();
+            return Math.IEEEremainder(((Number)left).doubleValue(), ((Number)right).doubleValue());
         }
 
         // TODO: Finish implementation of Divide

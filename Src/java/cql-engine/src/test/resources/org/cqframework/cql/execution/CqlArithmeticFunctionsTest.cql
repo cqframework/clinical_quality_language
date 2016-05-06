@@ -62,20 +62,20 @@ define Exp1000D  : Exp(1000.0)
 //Log
 define LogEmpty  : Log()
 define LogNullNull  : Log(null, null)
-define Log1Null  : Log(1, null)
-define Log00  : Log(0, 0)
-define LogNeg00  : Log(-0, 0)
-define Log10  : Log(1, 0)
-define LogNeg10  : Log(-1, 0)
-define Log100010  : Log(1000, 10)
-define Log1000D10  : Log(1000.0, 10)
+define Log1BaseNull  : Log(1, null)
+define Log1Base1  : Log(1, 1)
+define Log1Base2  : Log(1, 2)
+define Log1Base100  : Log(1, 100)
+define Log16Base2  : Log(16, 2)
+define LogD125Base2  : Log(0.125, 2)
+
 
 //Ln
 define LnEmpty  : Ln()
 define LnNull  : Ln(null)
 define Ln0  : Ln(0)
 define LnNeg0  : Ln(-0)
-define Ln1  : Ln(25)
+define Ln1  : Ln(1)
 define LnNeg1  : Ln(-1)
 define Ln1000  : Ln(1000)
 define Ln1000D  : Ln(1000.0)
@@ -113,6 +113,14 @@ define NegateNeg1D : Negate(-1.0)
 define Negate1CM : Negate(1'cm')
 
 //Predecessor
+define PredecessorEmpty: Predecessor()
+define PredecessorNull: Predecessor(null)
+define PredecessorOf0: Predecessor(0)
+define PredecessorOf1: Predecessor(1)
+define PredecessorOf1D: Predecessor(1.0)
+define PredecessorOf101D: Predecessor(1.01)
+define PredecessorOfJan12000: Predecessor(DateTime(2000,1,1))
+define PredecessorOfNoon: Predecessor(Time(12,0,0))
 
 //Power
 

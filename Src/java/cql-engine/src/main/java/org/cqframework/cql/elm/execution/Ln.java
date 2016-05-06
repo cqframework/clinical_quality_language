@@ -139,7 +139,7 @@ public class Ln
             return Math.log(((Number)value).doubleValue());
         }
 
-        // TODO: Finish implementation of Add
+        // TODO: Finish implementation
         // +(Quantity, Quantity)
 
         throw new IllegalArgumentException(String.format("Cannot %s with argument of type '%s'.",this.getClass().getSimpleName(), value.getClass().getName()));
