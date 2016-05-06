@@ -8,22 +8,15 @@
 
 package org.cqframework.cql.elm.execution;
 
-import java.util.Collection;
+import org.cqframework.cql.execution.Context;
+import org.jvnet.jaxb2_commons.lang.*;
+import org.jvnet.jaxb2_commons.lang.ToString;
+import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-
-import org.cqframework.cql.execution.Context;
-import org.jvnet.jaxb2_commons.lang.Equals;
-import org.jvnet.jaxb2_commons.lang.EqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.HashCode;
-import org.jvnet.jaxb2_commons.lang.HashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBEqualsStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBHashCodeStrategy;
-import org.jvnet.jaxb2_commons.lang.JAXBToStringStrategy;
-import org.jvnet.jaxb2_commons.lang.ToString;
-import org.jvnet.jaxb2_commons.lang.ToStringStrategy;
-import org.jvnet.jaxb2_commons.locator.ObjectLocator;
+import java.util.Collection;
 
 
 /**
@@ -141,7 +134,49 @@ public class Predecessor
 
     @Override
     public Object evaluate(Context context) {
-        Object argument = this.getOperand().evaluate(context);
-        return org.cqframework.cql.runtime.Interval.predecessor(argument);
+        Expression expression = getOperand();
+        if(expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
+            return null;
+        }
+
+        return org.cqframework.cql.runtime.Interval.predecessor(value);
+
+//        //Integer, Decimal, DateTime, and Time
+//        if(value instanceof Integer){
+//            Integer val =(Integer)value;
+//            if(val == Integer.MIN_VALUE) {
+//                throw new IllegalArgumentException("Value must be larger than the MIN_VALUE");
+//            }
+//
+//            return Math.decrementExact(val);
+//        }
+//
+//        if(value instanceof Long){
+//            Long val =(Long)value;
+//            if(val == Long.MIN_VALUE) {
+//                throw new IllegalArgumentException("Value must be larger than the MIN_VALUE");
+//            }
+//
+//            return Math.decrementExact(val);
+//        }
+//
+//        if(value instanceof Number){
+//            Double val =((Number)value).doubleValue();
+//
+//            if(val == Double.MIN_VALUE) {
+//                throw new IllegalArgumentException("Value must be larger than the MIN_VALUE");
+//            }
+//
+//            return Math.nextDown(val);
+//        }
+//
+//
+//        //TODO: Implement DateTime and Time
+//
+//        throw new IllegalArgumentException(String.format("Cannot %s with argument of type '%s'.",this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }

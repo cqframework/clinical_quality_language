@@ -23,15 +23,15 @@ import java.util.Collection;
 
 /**
  * The Round operator returns the nearest integer to its argument. The semantics of round are defined as a traditional round, meaning that a decimal value of 0.5 or higher will round to 1.
- * 
+ * <p>
  * If the argument is null, the result is null.
- * 
+ * <p>
  * Precision determines the decimal place at which the rounding will occur. If precision is not specified or null, 0 is assumed.
- * 
+ * <p>
  * <p>Java class for Round complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Round"&gt;
  *   &lt;complexContent&gt;
@@ -44,18 +44,15 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Round", namespace = "urn:hl7-org:elm:r1", propOrder = {
-    "operand",
-    "precision"
+        "operand",
+        "precision"
 })
 public class Round
-    extends Expression
-    implements Equals, HashCode, ToString
-{
+        extends Expression
+        implements Equals, HashCode, ToString {
 
     @XmlElement(namespace = "urn:hl7-org:elm:r1", required = true)
     protected Expression operand;
@@ -64,11 +61,9 @@ public class Round
 
     /**
      * Gets the value of the operand property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getOperand() {
         return operand;
@@ -76,11 +71,9 @@ public class Round
 
     /**
      * Sets the value of the operand property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setOperand(Expression value) {
         this.operand = value;
@@ -88,11 +81,9 @@ public class Round
 
     /**
      * Gets the value of the precision property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getPrecision() {
         return precision;
@@ -100,11 +91,9 @@ public class Round
 
     /**
      * Sets the value of the precision property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setPrecision(Expression value) {
         this.precision = value;
@@ -122,8 +111,8 @@ public class Round
 
     @Override
     public Round withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -132,7 +121,7 @@ public class Round
 
     @Override
     public Round withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -232,6 +221,19 @@ public class Round
 
     @Override
     public Object evaluate(Context context) {
-        return false;
+        Expression expression = getOperand();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
+            return null;
+        }
+
+        if(value instanceof Number){
+            return new Double(Math.round(((Number)value).doubleValue()));
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s with argument of type '%s'.", this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }
