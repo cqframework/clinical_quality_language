@@ -155,7 +155,7 @@ public class Abs
             return Math.abs(((Number)value).doubleValue());
         }
 
-        // TODO: Finish implementation of Add
+        // TODO: Finish implementation
         // +(Quantity, Quantity)
         // +(DateTime, Quantity)
         // +(Time, Quantity)

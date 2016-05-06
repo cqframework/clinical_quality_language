@@ -24,7 +24,7 @@ public class CqlNullologicalOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(nullValue()));
 
         result = context.resolveExpressionRef(library, "CoalesceA").getExpression().evaluate(context);
-        assertThat(result, is("a"));
+        assertThat(result, is(nullValue()));
 
         result = context.resolveExpressionRef(library, "CoalesceANull").getExpression().evaluate(context);
         assertThat(result, is("a"));

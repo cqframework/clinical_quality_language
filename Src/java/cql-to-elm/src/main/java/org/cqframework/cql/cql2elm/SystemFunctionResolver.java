@@ -43,12 +43,16 @@ public class SystemFunctionResolver {
                 case "Exp":
                 case "Ln":
                 case "Truncate":
-                case "Negate": {
+                case "Negate":
+                case "Predecessor":
+                case "Successor": {
                     return resolveUnary(fun);
                 }
 
                 case "Log":
-                case "Modulo": {
+                case "Modulo":
+                case "Power":
+                case "TruncatedDivide": {
                     return resolveBinary(fun);
                 }
 
@@ -141,6 +145,10 @@ public class SystemFunctionResolver {
                 // Overloaded Functions
                 case "Length": {
                     return resolveUnary(fun);
+                }
+
+                case "Concatenate": {
+                    return resolveNary(fun);
                 }
 
                 // String Functions

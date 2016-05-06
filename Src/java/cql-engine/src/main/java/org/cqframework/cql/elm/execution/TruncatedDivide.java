@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -17,6 +16,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 
@@ -141,6 +141,36 @@ public class TruncatedDivide
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        java.util.List<Expression> expressions = getOperand();
+        if (expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
+
+        if (left == null || right == null) {
+            return null;
+        }
+
+        if (left instanceof Integer) {
+            if (right instanceof Integer) {
+                int val = (Integer) left / (Integer) right;
+                if(val < 0){
+                    return new BigDecimal(val).setScale(0, BigDecimal.ROUND_CEILING).intValue();
+                }else{
+                    return new BigDecimal(val).setScale(0, BigDecimal.ROUND_FLOOR).intValue();
+                }
+            }
+        }
+
+        if (left instanceof Number) {
+            Double val = ((Number) left).doubleValue() / ((Number) right).doubleValue();
+            if(val < 0){
+                return new BigDecimal(val).setScale(0, BigDecimal.ROUND_CEILING).doubleValue();
+            }else{
+                return new BigDecimal(val).setScale(0, BigDecimal.ROUND_FLOOR).doubleValue();
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s' and '%s'.", this.getClass().getSimpleName(), left.getClass().getName(), right.getClass().getName()));
     }
 }

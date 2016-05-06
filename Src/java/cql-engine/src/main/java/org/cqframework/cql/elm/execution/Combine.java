@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -20,17 +19,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
+import java.util.Iterator;
 
 
 /**
  * The Combine operator combines a list of strings, optionally separating each string with the given separator.
- * 
+ * <p>
  * If either argument is null, or any element in the source list of strings is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Combine complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Combine"&gt;
  *   &lt;complexContent&gt;
@@ -43,18 +43,15 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Combine", namespace = "urn:hl7-org:elm:r1", propOrder = {
-    "source",
-    "separator"
+        "source",
+        "separator"
 })
 public class Combine
-    extends Expression
-    implements Equals, HashCode, ToString
-{
+        extends Expression
+        implements Equals, HashCode, ToString {
 
     @XmlElement(namespace = "urn:hl7-org:elm:r1", required = true)
     protected Expression source;
@@ -63,11 +60,9 @@ public class Combine
 
     /**
      * Gets the value of the source property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getSource() {
         return source;
@@ -75,11 +70,9 @@ public class Combine
 
     /**
      * Sets the value of the source property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setSource(Expression value) {
         this.source = value;
@@ -87,11 +80,9 @@ public class Combine
 
     /**
      * Gets the value of the separator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getSeparator() {
         return separator;
@@ -99,11 +90,9 @@ public class Combine
 
     /**
      * Sets the value of the separator property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setSeparator(Expression value) {
         this.separator = value;
@@ -121,8 +110,8 @@ public class Combine
 
     @Override
     public Combine withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -131,7 +120,7 @@ public class Combine
 
     @Override
     public Combine withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -231,6 +220,26 @@ public class Combine
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Object sourceVal = this.getSource().evaluate(context);
+        String separator = this.getSeparator() == null ? "" : (String) this.getSeparator().evaluate(context);
+
+        if (sourceVal == null) {
+            return null;
+        } else {
+            if (sourceVal instanceof java.util.List) {
+                StringBuffer buffer = new StringBuffer("");
+                Iterator iterator = ((java.util.List) sourceVal).iterator();
+                while (iterator.hasNext()) {
+                    buffer.append(iterator.next().toString());
+                    if (iterator.hasNext() && separator.length() > 0) {
+                        buffer.append(separator);
+                    }
+                }
+
+                return buffer.toString();
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s'.", this.getClass().getSimpleName(), sourceVal.getClass().getName()));
     }
 }

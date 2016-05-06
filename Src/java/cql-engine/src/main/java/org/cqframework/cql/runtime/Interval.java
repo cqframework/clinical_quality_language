@@ -1,7 +1,6 @@
 package org.cqframework.cql.runtime;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.joda.time.Partial;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -132,7 +131,7 @@ public class Interval {
             return null;
         }
         else if (value instanceof Integer) {
-            return ((Integer)value) + 1;
+            return ((Integer)value) - 1;
         }
         else if (value instanceof BigDecimal) {
             return ((BigDecimal)value).subtract(new BigDecimal("0.00000001"));

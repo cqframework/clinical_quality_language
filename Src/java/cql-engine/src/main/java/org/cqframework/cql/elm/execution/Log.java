@@ -21,13 +21,13 @@ import java.util.Collection;
 
 /**
  * The Log operator computes the logarithm of its first argument, using the second argument as the base.
- * 
+ * <p>
  * If either argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Log complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Log"&gt;
  *   &lt;complexContent&gt;
@@ -36,21 +36,18 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Log", namespace = "urn:hl7-org:elm:r1")
 public class Log
-    extends BinaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends BinaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
     public Log withOperand(Expression... values) {
-        if (values!= null) {
-            for (Expression value: values) {
+        if (values != null) {
+            for (Expression value : values) {
                 getOperand().add(value);
             }
         }
@@ -59,7 +56,7 @@ public class Log
 
     @Override
     public Log withOperand(Collection<Expression> values) {
-        if (values!= null) {
+        if (values != null) {
             getOperand().addAll(values);
         }
         return this;
@@ -67,8 +64,8 @@ public class Log
 
     @Override
     public Log withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -77,7 +74,7 @@ public class Log
 
     @Override
     public Log withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -139,7 +136,7 @@ public class Log
     @Override
     public Object evaluate(Context context) {
         java.util.List<Expression> expressions = getOperand();
-        if(expressions.size() == 0) return null;
+        if (expressions.size() == 0) return null;
 
         Object left = expressions.get(0).evaluate(context);
         Object right = expressions.get(1).evaluate(context);
@@ -149,7 +146,14 @@ public class Log
         }
 
         if (left instanceof Number) {
-            return Math.log(((Number)left).doubleValue()) / Math.log(((Number)right).doubleValue());
+            Double base = Math.log(((Number) right).doubleValue());
+            Double value = Math.log(((Number) left).doubleValue());
+
+            if (base == 0) {
+                return value;
+            }
+
+            return value / base;
         }
 
         // TODO: Finish implementation of Divide
