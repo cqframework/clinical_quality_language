@@ -30,6 +30,11 @@ define LengthA : Length('a')
 define LengthAB : Length('ab')
 
 //Lower
+define LowerNull : Lower(null)
+define LowerEmpty : Lower('')
+define LowerA : Lower('A')
+define LowerB : Lower('b')
+define LowerAB : Lower('Ab')
 
 //PositionOf
 
@@ -38,4 +43,8 @@ define LengthAB : Length('ab')
 //Substring
 
 //Upper
-
+define UpperNull : Upper(null)
+define UpperEmpty : Upper('')
+define UpperA : Upper('a')
+define UpperB : Upper('B')
+define UpperAB : Upper('aB')
