@@ -147,6 +147,10 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
+                case "Concatenate": {
+                    return resolveNary(fun);
+                }
+
                 // String Functions
                 case "Combine": {
                     return resolveCombine(fun);

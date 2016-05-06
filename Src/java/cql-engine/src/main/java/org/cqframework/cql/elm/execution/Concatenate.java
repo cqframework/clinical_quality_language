@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -139,6 +138,20 @@ public class Concatenate
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        java.util.List<Expression> expressions = getOperand();
+        if (expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
+
+        if (left == null || right == null) {
+            return null;
+        }
+
+        if(left instanceof String && right instanceof String){
+            return ((String)left).concat((String)right);
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s' and '%s'.", this.getClass().getSimpleName(), left.getClass().getName(), right.getClass().getName()));
     }
 }
