@@ -19,6 +19,7 @@
    <valueSets>
       <def name="Systolic Blood Pressure" id="Systolic Blood Pressure" accessLevel="Public"/>
       <def name="Diastolic Blood Pressure" id="Diastolic Blood Pressure" accessLevel="Public"/>
+      <def name="Essential Hypertension" id="2.16.840.1.113883.3.464.1004.1122" accessLevel="Public"/>
    </valueSets>
    <statements>
       <def name="Patient" context="Patient">
@@ -53,17 +54,7 @@
          </expression>
       </def>
       <def name="In Demographic" context="Patient" accessLevel="Public">
-         <expression xsi:type="GreaterOrEqual">
-            <operand precision="Year" xsi:type="CalculateAgeAt">
-               <operand path="birthDate.value" xsi:type="Property">
-                  <source name="Patient" xsi:type="ExpressionRef"/>
-               </operand>
-               <operand xsi:type="Start">
-                  <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
-               </operand>
-            </operand>
-            <operand valueType="t:Integer" value="40" xsi:type="Literal"/>
-         </expression>
+         <expression valueType="t:Boolean" value="true" xsi:type="Literal"/>
       </def>
       <def name="Systolic blood pressure" context="Patient" accessLevel="Public">
          <expression code="8480-6" display="Systolic blood pressure" xsi:type="Code">
@@ -220,7 +211,7 @@
          <expression xsi:type="Query">
             <source alias="H">
                <expression dataType="fhir:Condition" codeProperty="code" dateProperty="onsetDateTime.value" xsi:type="Retrieve">
-                  <codes name="Essential Hypertension" xsi:type="IdentifierRef"/>
+                  <codes name="Essential Hypertension" xsi:type="ValueSetRef"/>
                   <dateRange name="Lookback Interval Three Years" xsi:type="ExpressionRef"/>
                </expression>
             </source>

@@ -138,6 +138,11 @@ public class FhirDataProvider implements DataProvider {
     private FhirContext fhirContext;
     private IGenericClient fhirClient;
 
+    // TODO: It would be nice not to have to expose this, but I needed it in the MeasureEvaluator....
+    public IGenericClient getFhirClient() {
+        return fhirClient;
+    }
+
     private String URLEncode(String url) {
         try {
             return URLEncoder.encode(url, "UTF-8");
@@ -146,7 +151,7 @@ public class FhirDataProvider implements DataProvider {
         }
     }
 
-    public Iterable<Object> retrieve(String context, String dataType, String templateId,
+    public Iterable<Object> retrieve(String context, Object contextValue, String dataType, String templateId,
                                      String codePath, Iterable<Code> codes, String valueSet, String datePath, String dateLowPath,
                                      String dateHighPath, Interval dateRange) {
 
@@ -175,6 +180,14 @@ public class FhirDataProvider implements DataProvider {
 
         if (codePath == null && (codes != null || valueSet != null)) {
             throw new IllegalArgumentException("A code path must be provided when filtering on codes or a valueset.");
+        }
+
+        if (context == "Patient" && contextValue != null) {
+            if (params.length() > 0) {
+                params.append("&");
+            }
+
+            params.append(String.format("%s=%s", getPatientSearchParam(dataType), URLEncode((String)contextValue)));
         }
 
         if (codePath != null && !codePath.equals("")) {
@@ -238,6 +251,15 @@ public class FhirDataProvider implements DataProvider {
 
         Bundle results = search.returnBundle(Bundle.class).execute();
         return new FhirBundleCursor(fhirClient, results);
+    }
+
+    private String getPatientSearchParam(String dataType) {
+        switch (dataType) {
+            case "Observation":
+            case "RiskAssessment":
+                return "subject";
+            default: return "patient";
+        }
     }
 
     private String convertPathToSearchParam(String dataType, String codePath) {

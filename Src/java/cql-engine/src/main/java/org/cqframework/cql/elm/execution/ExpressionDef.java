@@ -335,6 +335,16 @@ public class ExpressionDef
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        if (this.getContext() != null) {
+            context.enterContext(this.getContext());
+        }
+        try {
+            return this.getExpression().evaluate(context);
+        }
+        finally {
+            if (this.getContext() != null) {
+                context.exitContext();
+            }
+        }
     }
 }

@@ -234,6 +234,6 @@ public class ExpressionRef
 
     @Override
     public Object evaluate(Context context) {
-        return context.resolveExpressionRef(this.getLibraryName(), this.getName()).getExpression().evaluate(context);
+        return context.resolveExpressionRef(this.getLibraryName(), this.getName()).evaluate(context);
     }
 }

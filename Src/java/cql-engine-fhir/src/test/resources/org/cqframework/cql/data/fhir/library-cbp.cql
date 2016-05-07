@@ -47,7 +47,8 @@ define "Lookback Interval Three Years":
 
 // TODO: Need to verify the demographic here
 define "In Demographic":
-    AgeInYearsAt(start of MeasurementPeriod) >= 40
+    true
+    //AgeInYearsAt(start of MeasurementPeriod) >= 40
 
 // Blood Pressure
 

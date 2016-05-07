@@ -27,7 +27,7 @@ public class TestFhirDataProvider {
     @Test
     public void testPatientRetrieve() {
         FhirDataProvider provider = new FhirDataProvider().withEndpoint("http://fhirtest.uhn.ca/baseDstu3");
-        Iterable<Object> results = provider.retrieve("Patient", "Patient", null, null, null, null, null, null, null, null);
+        Iterable<Object> results = provider.retrieve("Patient", null, "Patient", null, null, null, null, null, null, null, null);
         List<Patient> patients = new ArrayList<>();
 
         int resultCount = 0;

@@ -682,7 +682,7 @@ public class Retrieve
             dateRange = (org.cqframework.cql.runtime.Interval)this.getDateRange().evaluate(context);
         }
 
-        return dataProvider.retrieve(context.getCurrentContext(), getDataType().getLocalPart(), getTemplateId(),
+        return dataProvider.retrieve(context.getCurrentContext(), context.getCurrentContextValue(), getDataType().getLocalPart(), getTemplateId(),
                 getCodeProperty(), codes, valueSet, getDateProperty(), getDateLowProperty(), getDateHighProperty(), dateRange);
     }
 }

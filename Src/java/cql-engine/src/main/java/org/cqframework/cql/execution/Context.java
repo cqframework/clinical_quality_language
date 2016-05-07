@@ -20,6 +20,7 @@ public class Context {
 
     private Map<String, Object> parameters = new HashMap<>();
     private Stack<String> currentContext = new Stack<>();
+    private Map<String, Object> contextValues = new HashMap<>();
     private Stack<Stack<Variable>> windows = new Stack<Stack<Variable>>();
 
     private Library library;
@@ -221,6 +222,19 @@ public class Context {
         }
 
         return currentContext.peek();
+    }
+
+    public void setContextValue(String context, Object contextValue) {
+        contextValues.put(context, contextValue);
+    }
+
+    public Object getCurrentContextValue() {
+        String context = getCurrentContext();
+        if (context != null && this.contextValues.containsKey(context)) {
+            return this.contextValues.get(context);
+        }
+
+        return null;
     }
 
     public void push(Variable variable) {
