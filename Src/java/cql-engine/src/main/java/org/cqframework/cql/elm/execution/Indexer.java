@@ -16,6 +16,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -156,6 +157,19 @@ public class Indexer
                 }
 
                 return "" + ((String) left).charAt((int) right);
+            }
+        }
+
+        if (left instanceof Iterable) {
+            if (right instanceof Integer) {
+                ArrayList leftList = new ArrayList();
+                ((Iterable) left).forEach(leftList::add);
+
+                if((int)right < 0 || (int)right >=  leftList.size()){
+                    return null;
+                }
+
+                return leftList.get((int)right);
             }
         }
 

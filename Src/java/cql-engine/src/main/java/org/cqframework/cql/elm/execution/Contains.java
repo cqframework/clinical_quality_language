@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -201,14 +200,18 @@ public class Contains
 
     @Override
     public Object evaluate(Context context) {
-        Iterable<Object> list = (Iterable<Object>)this.getOperand().get(0).evaluate(context);
-        if (list == null) {
+        java.util.List<Expression> expressions = getOperand();
+        if(expressions.size() == 0) return null;
+
+        Object list = expressions.get(0).evaluate(context);
+        if (list == null || (list instanceof Iterable) == false) {
             return null;
         }
 
-        Object testElement = this.getOperand().get(1).evaluate(context);
-        for (Object element : list) {
-            if (org.cqframework.cql.runtime.Value.equivalent(element, testElement)) {
+        Object toFind = expressions.get(1).evaluate(context);
+        Iterable<Object> tmpList = (Iterable<Object>)list;
+        for (Object element : tmpList) {
+            if (org.cqframework.cql.runtime.Value.equivalent(element, toFind)) {
                 return true;
             }
         }

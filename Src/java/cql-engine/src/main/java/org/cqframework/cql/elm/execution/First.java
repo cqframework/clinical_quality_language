@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -227,6 +226,19 @@ public class First
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Expression expression = getSource();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null || value instanceof Iterable ==  false) {
+            return null;
+        }
+
+        for (Object element : (Iterable)value) {
+            return element;
+        }
+
+        return null;
     }
 }

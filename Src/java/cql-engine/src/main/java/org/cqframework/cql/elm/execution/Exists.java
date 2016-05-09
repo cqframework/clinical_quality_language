@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -18,8 +17,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
-
-import static org.cqframework.cql.runtime.Value.ensureIterable;
 
 
 /**
@@ -129,12 +126,16 @@ public class Exists
 
     @Override
     public Object evaluate(Context context) {
-        Iterable<Object> operand = ensureIterable(this.getOperand().evaluate(context));
-        if (operand == null) {
+        Expression expression = getOperand();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null || value instanceof Iterable == false) {
             return null;
         }
 
-        for (Object element : operand) {
+        for (Object element : (Iterable)value) {
             return true;
         }
 
