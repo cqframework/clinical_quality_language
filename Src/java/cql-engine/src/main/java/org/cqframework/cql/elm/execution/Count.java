@@ -136,6 +136,20 @@ public class Count
 
     @Override
     public Object evaluate(Context context) {
-        return false;
+        Expression expression = getSource();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null || value instanceof Iterable == false) {
+            return null;
+        }
+
+        int count = 0;
+        for (Object val : (Iterable) value) {
+            if (val != null) count++;
+        }
+
+        return count;
     }
 }
