@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -17,26 +16,27 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Collection;
 
 
 /**
  * The Except operator returns the set difference of the two arguments.
- * 			
+ * <p>
  * This operator has two overloads:
- * 	List, List
- * 	Interval, Interval
- * 
+ * List, List
+ * Interval, Interval
+ * <p>
  * For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equivalence semantics.
- * 
+ * <p>
  * For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null.
- * 
+ * <p>
  * If either argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Except complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Except"&gt;
  *   &lt;complexContent&gt;
@@ -45,21 +45,18 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Except", namespace = "urn:hl7-org:elm:r1")
 public class Except
-    extends BinaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends BinaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
     public Except withOperand(Expression... values) {
-        if (values!= null) {
-            for (Expression value: values) {
+        if (values != null) {
+            for (Expression value : values) {
                 getOperand().add(value);
             }
         }
@@ -68,7 +65,7 @@ public class Except
 
     @Override
     public Except withOperand(Collection<Expression> values) {
-        if (values!= null) {
+        if (values != null) {
             getOperand().addAll(values);
         }
         return this;
@@ -76,8 +73,8 @@ public class Except
 
     @Override
     public Except withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -86,7 +83,7 @@ public class Except
 
     @Override
     public Except withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -147,6 +144,28 @@ public class Except
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        java.util.List<Expression> expressions = getOperand();
+        if (expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
+
+        if (left == null || right == null || left instanceof Iterable == false || right instanceof Iterable == false) {
+            return null;
+        }
+
+        ArrayList leftList = new ArrayList();
+        ((Iterable) left).forEach(leftList::add);
+
+        if(leftList.size() == 0){
+            return leftList;
+        }
+
+        ArrayList rightList = new ArrayList();
+        ((Iterable) right).forEach(rightList::add);
+
+        leftList.removeAll(rightList);
+
+        return leftList;
     }
 }

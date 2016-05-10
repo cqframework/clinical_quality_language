@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -17,7 +16,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -127,6 +126,28 @@ public class Flatten
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Expression expression = getOperand();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+        if (value == null || value instanceof Iterable == false) {
+            return null;
+        }
+
+        return flattenLists((Iterable)value);
+    }
+
+    private java.util.List flattenLists(Iterable value) {
+        ArrayList resultList = new ArrayList();
+        for (Object element : (Iterable)value) {
+            if(element instanceof Iterable){
+                java.util.List flatList =flattenLists((Iterable)element);
+                flatList.forEach(resultList::add);
+            }
+            else{
+                resultList.add(element);
+            }
+        }
+        return resultList;
     }
 }

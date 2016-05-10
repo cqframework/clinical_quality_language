@@ -127,6 +127,19 @@ public class Upper
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Expression expression = getOperand();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof String) {
+            return ((String) value).toUpperCase();
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s with argument of type '%s'.", this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }

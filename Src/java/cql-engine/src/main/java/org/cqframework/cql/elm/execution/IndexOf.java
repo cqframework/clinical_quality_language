@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -19,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -235,6 +235,27 @@ public class IndexOf
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Object sourceExp = this.getSource();
+        Object elementExp = this.getElement();
+
+        if(sourceExp == null || elementExp == null){
+            return null;
+        }
+
+        Object sourceVal = ((Expression)sourceExp).evaluate(context);
+        if(sourceVal == null){
+            return null;
+        }
+
+        Object elementVal = ((Expression)elementExp).evaluate(context);
+
+        if(sourceVal instanceof Iterable){
+            ArrayList sourceList = new ArrayList();
+            ((Iterable) sourceVal).forEach(sourceList::add);
+
+            return sourceList.indexOf(elementVal);
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s'.", this.getClass().getSimpleName(), sourceExp.getClass().getName()));
     }
 }

@@ -131,6 +131,20 @@ public class SystemFunctionResolver {
                     return resolveLast(fun);
                 }
 
+                case "Contains":
+                case "Except":
+                case "In":
+                case "Includes":
+                case "IncludedIn": {
+                    return resolveBinary(fun);
+                }
+
+                case "Distinct":
+                case "Exists":
+                case "Flatten": {
+                    return resolveUnary(fun);
+                }
+
                 // Nullological Functions
                 case "Coalesce": {
                     return resolveNary(fun);
@@ -147,11 +161,15 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
+                // String Functions
+                case "Indexer": {
+                    return resolveBinary(fun);
+                }
+
                 case "Concatenate": {
                     return resolveNary(fun);
                 }
 
-                // String Functions
                 case "Combine": {
                     return resolveCombine(fun);
                 }

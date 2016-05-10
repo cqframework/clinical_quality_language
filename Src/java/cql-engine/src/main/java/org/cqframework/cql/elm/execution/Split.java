@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -24,15 +23,15 @@ import java.util.Collection;
 
 /**
  * The Split operator splits a string into a list of strings using a separator.
- * 
+ * <p>
  * If the stringToSplit argument is null, the result is null.
- * 
+ * <p>
  * If the stringToSplit argument does not contain any appearances of the separator, the result is a list of strings containing one element that is the value of the stringToSplit argument.
- * 
+ * <p>
  * <p>Java class for Split complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Split"&gt;
  *   &lt;complexContent&gt;
@@ -45,18 +44,15 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Split", namespace = "urn:hl7-org:elm:r1", propOrder = {
-    "stringToSplit",
-    "separator"
+        "stringToSplit",
+        "separator"
 })
 public class Split
-    extends Expression
-    implements Equals, HashCode, ToString
-{
+        extends Expression
+        implements Equals, HashCode, ToString {
 
     @XmlElement(namespace = "urn:hl7-org:elm:r1", required = true)
     protected Expression stringToSplit;
@@ -65,11 +61,9 @@ public class Split
 
     /**
      * Gets the value of the stringToSplit property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getStringToSplit() {
         return stringToSplit;
@@ -77,11 +71,9 @@ public class Split
 
     /**
      * Sets the value of the stringToSplit property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setStringToSplit(Expression value) {
         this.stringToSplit = value;
@@ -89,11 +81,9 @@ public class Split
 
     /**
      * Gets the value of the separator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getSeparator() {
         return separator;
@@ -101,11 +91,9 @@ public class Split
 
     /**
      * Sets the value of the separator property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setSeparator(Expression value) {
         this.separator = value;
@@ -123,8 +111,8 @@ public class Split
 
     @Override
     public Split withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -133,7 +121,7 @@ public class Split
 
     @Override
     public Split withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -233,6 +221,28 @@ public class Split
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Object stringObj = this.getStringToSplit();
+        Object separatorObj = this.getSeparator();
+
+        if (stringObj == null) {
+            return null;
+        }
+
+        Object stringVal = ((Expression) stringObj).evaluate(context);
+        Object separatorVal = separatorObj == null ? null : ((Expression) separatorObj).evaluate(context);
+
+        if ( stringVal == null) {
+            return null;
+        }
+
+        if (stringVal instanceof String) {
+            if(separatorVal == null){
+                return new String[]{(String)stringVal};
+            }else {
+                return ((String) stringVal).split((String)separatorVal);
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Cannot %s arguments of type '%s'.", this.getClass().getSimpleName(), stringObj.getClass().getName()));
     }
 }

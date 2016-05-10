@@ -60,6 +60,26 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
+        result = context.resolveExpressionRef(library, "IndexerNullNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "IndexerANull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "IndexerNull1").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "IndexerAB0").getExpression().evaluate(context);
+        assertThat(result, is("a"));
+
+        result = context.resolveExpressionRef(library, "IndexerAB1").getExpression().evaluate(context);
+        assertThat(result, is("b"));
+
+        result = context.resolveExpressionRef(library, "IndexerAB2").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "IndexerABNeg1").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
     }
 
     /**
@@ -70,6 +90,17 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
+        result = context.resolveExpressionRef(library, "LengthNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "LengthEmpty").getExpression().evaluate(context);
+        assertThat(result, is(0));
+
+        result = context.resolveExpressionRef(library, "LengthA").getExpression().evaluate(context);
+        assertThat(result, is(1));
+
+        result = context.resolveExpressionRef(library, "LengthAB").getExpression().evaluate(context);
+        assertThat(result, is(2));
     }
 
     /**
@@ -80,6 +111,20 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
+        result = context.resolveExpressionRef(library, "LowerNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "LowerEmpty").getExpression().evaluate(context);
+        assertThat(result, is(""));
+
+        result = context.resolveExpressionRef(library, "LowerA").getExpression().evaluate(context);
+        assertThat(result, is("a"));
+
+        result = context.resolveExpressionRef(library, "LowerB").getExpression().evaluate(context);
+        assertThat(result, is("b"));
+
+        result = context.resolveExpressionRef(library, "LowerAB").getExpression().evaluate(context);
+        assertThat(result, is("ab"));
     }
 
     /**
@@ -90,6 +135,23 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
+        result = context.resolveExpressionRef(library, "PositionOfNullNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "PositionOfANull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "PositionOfNullA").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "PositionOfAInAB").getExpression().evaluate(context);
+        assertThat(result, is(0));
+
+        result = context.resolveExpressionRef(library, "PositionOfBInAB").getExpression().evaluate(context);
+        assertThat(result, is(1));
+
+        result = context.resolveExpressionRef(library, "PositionOfCInAB").getExpression().evaluate(context);
+        assertThat(result, is(-1));
     }
 
     /**
@@ -100,6 +162,20 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
+        result = context.resolveExpressionRef(library, "SplitNullNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SplitNullComma").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SplitABNull").getExpression().evaluate(context);
+        assertThat(result, is(new String[]{"a,b"}));
+
+        result = context.resolveExpressionRef(library, "SplitABDash").getExpression().evaluate(context);
+        assertThat(result, is(new String[]{"a,b"}));
+
+        result = context.resolveExpressionRef(library, "SplitABComma").getExpression().evaluate(context);
+        assertThat(result, is(new String[]{"a", "b"}));
     }
 
     /**
@@ -110,6 +186,35 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
+        result = context.resolveExpressionRef(library, "SubstringNullNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SubstringANull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SubstringNull1").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SubstringAB0").getExpression().evaluate(context);
+        assertThat(result, is("ab"));
+
+        result = context.resolveExpressionRef(library, "SubstringAB1").getExpression().evaluate(context);
+        assertThat(result, is("b"));
+
+        result = context.resolveExpressionRef(library, "SubstringAB2").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SubstringABNeg1").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SubstringAB0To1").getExpression().evaluate(context);
+        assertThat(result, is("a"));
+
+        result = context.resolveExpressionRef(library, "SubstringABC1To1").getExpression().evaluate(context);
+        assertThat(result, is("b"));
+
+        result = context.resolveExpressionRef(library, "SubstringAB0To3").getExpression().evaluate(context);
+        assertThat(result, is("ab"));
     }
 
     /**
@@ -120,5 +225,19 @@ public class CqlStringOperatorsTest extends CqlExecutionTestBase {
         Context context = new Context(library);
         Object result;
 
+        result = context.resolveExpressionRef(library, "UpperNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "UpperEmpty").getExpression().evaluate(context);
+        assertThat(result, is(""));
+
+        result = context.resolveExpressionRef(library, "UpperA").getExpression().evaluate(context);
+        assertThat(result, is("A"));
+
+        result = context.resolveExpressionRef(library, "UpperB").getExpression().evaluate(context);
+        assertThat(result, is("B"));
+
+        result = context.resolveExpressionRef(library, "UpperAB").getExpression().evaluate(context);
+        assertThat(result, is("AB"));
     }
 }
