@@ -7,10 +7,7 @@ import org.hl7.fhir.dstu3.model.Patient;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXB;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLDecoder;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,9 +25,9 @@ public class TestFhirMeasureEvaluator {
 
         Context context = new Context(library);
 
-        FhirDataProvider provider = new FhirDataProvider().withEndpoint("http://fhirtest.uhn.ca/baseDstu3");
+        //FhirDataProvider provider = new FhirDataProvider().withEndpoint("http://fhirtest.uhn.ca/baseDstu3");
         //FhirDataProvider provider = new FhirDataProvider().withEndpoint("http://fhir3.healthintersections.com.au/open/");
-        //FhirDataProvider provider = new FhirDataProvider().withEndpoint("http://wildfhir.aegis.net/fhir");
+        FhirDataProvider provider = new FhirDataProvider().withEndpoint("http://wildfhir.aegis.net/fhir");
         context.registerDataProvider("http://hl7.org/fhir", provider);
 
         xmlFile = new File(URLDecoder.decode(TestFhirLibrary.class.getResource("measure-cbp.xml").getFile(), "UTF-8"));
@@ -54,5 +51,7 @@ public class TestFhirMeasureEvaluator {
         if (report.getEvaluatedResources() == null) {
             throw new RuntimeException("EvaluatedResources is null");
         }
+
+        System.out.println(String.format("Bundle url: %s", report.getEvaluatedResources().getReference()));
     }
 }

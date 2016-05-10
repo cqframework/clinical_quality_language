@@ -8,10 +8,9 @@ import org.joda.time.Partial;
  * Created by Bryn on 4/15/2016.
  */
 public interface DataProvider {
-    // TODO: Enable the use of valuesets, rather than requiring expansion to a list of codes
     Iterable<Object> retrieve(String context, Object contextValue, String dataType, String templateId, String codePath,
-                              Iterable<Code> codes, String valueSet, String datePath, String dateLowPath, String dateHighPath,
-                              Interval dateRange);
+              Iterable<Code> codes, String valueSet, String datePath, String dateLowPath, String dateHighPath,
+              Interval dateRange);
 
     String getPackageName();
 

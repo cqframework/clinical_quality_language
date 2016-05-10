@@ -26,7 +26,7 @@ valueset "ONC Administrative Sex AdministrativeGender": '2.16.840.1.113762.1.4.1
 
 parameter "Measurement Period" Interval<DateTime>
 
-// NOTE: The patient in context is the infant, not the mother
+// NOTE: The patient in context is the mother, not the infant
 context Patient
 
 define function ToInterval(period FHIR.Period):
@@ -58,6 +58,10 @@ define "Single Live Birth Condition":
     where Condition.clinicalStatus.value = 'active'
       and Condition.verificationStatus.value = 'confirmed'
 
+define "Infant Birth Date":
+  Last("Single Live Birth Condition").abatementDateTime.value
+
+// TODO: Is this really recorded for the mother?
 define "Parenteral Nutrition Procedure":
   [Procedure: "Parenteral Nutrition"] Procedure
     where Procedure.status.value = 'completed'
@@ -77,7 +81,7 @@ define "Live Birth Infants without Parenteral Nutrition":
 // Region: Initial Population 1
 
 define "Initial Population 1":
-  "Live Birth Infants without Parenteral Nutrition"
+  exists "Live Birth Infants without Parenteral Nutrition"
 
 // EndRegion: Initial Population 1
 
