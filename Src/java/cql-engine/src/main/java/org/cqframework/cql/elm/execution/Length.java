@@ -140,6 +140,19 @@ public class Length
             return ((String) value).length();
         }
 
+        if (value instanceof Iterable) {
+            if (value instanceof java.util.List) {
+                return ((java.util.List) value).size();
+            } else {
+                int size = 0;
+                for(Object curr : (Iterable) value)
+                {
+                    size++;
+                }
+                return size;
+            }
+        }
+
         throw new IllegalArgumentException(String.format("Cannot %s of type '%s'.", this.getClass().getSimpleName(), value.getClass().getName()));
     }
 }

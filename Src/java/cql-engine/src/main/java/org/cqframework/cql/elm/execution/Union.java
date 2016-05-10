@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -17,26 +16,27 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Collection;
 
 
 /**
  * The Union operator returns the union of its arguments.
- * 			
+ * <p>
  * This operator has two overloads:
- * 	List
- * 	Interval
- * 
+ * List
+ * Interval
+ * <p>
  * For the list overload, this operator returns a list with all elements from both arguments.
- * 
- * For the interval overload, this operator returns the interval that starts at the earliest starting point in either argument, and ends at the latest starting point in either argument. If the arguments do not overlap or meet, this operator returns null. 
- * 
+ * <p>
+ * For the interval overload, this operator returns the interval that starts at the earliest starting point in either argument, and ends at the latest starting point in either argument. If the arguments do not overlap or meet, this operator returns null.
+ * <p>
  * If either argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Union complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Union"&gt;
  *   &lt;complexContent&gt;
@@ -45,21 +45,18 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Union", namespace = "urn:hl7-org:elm:r1")
 public class Union
-    extends BinaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends BinaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
     public Union withOperand(Expression... values) {
-        if (values!= null) {
-            for (Expression value: values) {
+        if (values != null) {
+            for (Expression value : values) {
                 getOperand().add(value);
             }
         }
@@ -68,7 +65,7 @@ public class Union
 
     @Override
     public Union withOperand(Collection<Expression> values) {
-        if (values!= null) {
+        if (values != null) {
             getOperand().addAll(values);
         }
         return this;
@@ -76,8 +73,8 @@ public class Union
 
     @Override
     public Union withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -86,7 +83,7 @@ public class Union
 
     @Override
     public Union withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -147,6 +144,33 @@ public class Union
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        java.util.List<Expression> expressions = getOperand();
+        if (expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
+
+        if (left == null || right == null || left instanceof Iterable == false || right instanceof Iterable == false) {
+            return null;
+        }
+
+        ArrayList leftList = null;
+        if (left instanceof java.util.List) {
+            leftList = new ArrayList((java.util.List) left);
+        } else {
+            leftList = new ArrayList();
+            ((Iterable) left).forEach(leftList::add);
+        }
+
+        ArrayList rightList = null;
+        if (right instanceof java.util.List) {
+            rightList = new ArrayList((java.util.List) right);
+        } else {
+            rightList = new ArrayList();
+            ((Iterable) right).forEach(rightList::add);
+        }
+
+        leftList.addAll(rightList);
+        return leftList;
     }
 }

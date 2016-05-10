@@ -15,7 +15,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 
 import javax.xml.bind.annotation.*;
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -235,8 +235,13 @@ public class First
             return null;
         }
 
-        for (Object element : (Iterable)value) {
-            return element;
+        if(value instanceof java.util.List){
+            return ((java.util.List)value).size() > 0 ? ((java.util.List)value).get(0) : null;
+        }
+        else {
+            for (Object element : (Iterable)value) {
+                return element;
+            }
         }
 
         return null;

@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -22,11 +21,11 @@ import java.util.Collection;
 
 /**
  * The SingletonFrom expression extracts a single element from the source list. If the source list is empty, the result is null. If the source list contains one element, that element is returned. If the list contains more than one element, a run-time error is thrown. If the source list is null, the result is null.
- * 
+ * <p>
  * <p>Java class for SingletonFrom complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="SingletonFrom"&gt;
  *   &lt;complexContent&gt;
@@ -35,15 +34,12 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SingletonFrom", namespace = "urn:hl7-org:elm:r1")
 public class SingletonFrom
-    extends UnaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends UnaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -54,8 +50,8 @@ public class SingletonFrom
 
     @Override
     public SingletonFrom withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -64,7 +60,7 @@ public class SingletonFrom
 
     @Override
     public SingletonFrom withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -125,6 +121,32 @@ public class SingletonFrom
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Expression expression = getOperand();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null || value instanceof Iterable == false) {
+            return null;
+        }
+
+        if (value instanceof java.util.List) {
+            if (((java.util.List) value).size() > 1) {
+                throw new IllegalArgumentException("The list must contain at least one element in order to use SingletonFrom");
+            }
+
+            return ((java.util.List) value).size() == 0 ? null : ((java.util.List) value).get(0);
+        } else {
+            Object result = null;
+            for (Object element : (Iterable) value) {
+                if (result == null) {
+                    result = element;
+                } else {
+                    throw new IllegalArgumentException("The list must contain at least one element in order to use SingletonFrom");
+                }
+            }
+
+            return result;
+        }
     }
 }

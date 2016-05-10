@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -21,13 +20,13 @@ import java.util.Collection;
 
 /**
  * The Last operator returns the last element in a list. If the order by attribute is specified, the list is sorted by that ordering prior to returning the last element.
- * 			
+ * <p>
  * If the argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Last complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Last"&gt;
  *   &lt;complexContent&gt;
@@ -40,17 +39,14 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Last", namespace = "urn:hl7-org:elm:r1", propOrder = {
-    "source"
+        "source"
 })
 public class Last
-    extends Expression
-    implements Equals, HashCode, ToString
-{
+        extends Expression
+        implements Equals, HashCode, ToString {
 
     @XmlElement(namespace = "urn:hl7-org:elm:r1", required = true)
     protected Expression source;
@@ -59,11 +55,9 @@ public class Last
 
     /**
      * Gets the value of the source property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     * {@link Expression }
      */
     public Expression getSource() {
         return source;
@@ -71,11 +65,9 @@ public class Last
 
     /**
      * Sets the value of the source property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setSource(Expression value) {
         this.source = value;
@@ -83,11 +75,9 @@ public class Last
 
     /**
      * Gets the value of the orderBy property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getOrderBy() {
         return orderBy;
@@ -95,11 +85,9 @@ public class Last
 
     /**
      * Sets the value of the orderBy property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setOrderBy(String value) {
         this.orderBy = value;
@@ -117,8 +105,8 @@ public class Last
 
     @Override
     public Last withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -127,7 +115,7 @@ public class Last
 
     @Override
     public Last withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -227,6 +215,25 @@ public class Last
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        Expression expression = getSource();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null || value instanceof Iterable == false) {
+            return null;
+        }
+
+        Object result = null;
+        if (value instanceof java.util.List) {
+            result = ((java.util.List) value).size() > 0 ? ((java.util.List) value).get(((java.util.List) value).size() - 1) : null;
+        } else {
+            for (Object element : (Iterable) value) {
+                result = element;
+            }
+        }
+
+
+        return result;
     }
 }
