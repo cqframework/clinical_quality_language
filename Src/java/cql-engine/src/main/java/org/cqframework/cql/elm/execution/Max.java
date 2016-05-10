@@ -8,6 +8,7 @@
 
 package org.cqframework.cql.elm.execution;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -21,17 +22,17 @@ import java.util.Collection;
 
 /**
  * The Max operator returns the maximum element in the source.
- * 
+ * <p>
  * If a path is specified, elements with no value for the property specified by the path are ignored.
- * 
+ * <p>
  * If the source contains no non-null elements, null is returned.
- * 
+ * <p>
  * If the source is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Max complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Max"&gt;
  *   &lt;complexContent&gt;
@@ -40,15 +41,12 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Max", namespace = "urn:hl7-org:elm:r1")
 public class Max
-    extends AggregateExpression
-    implements Equals, HashCode, ToString
-{
+        extends AggregateExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -65,8 +63,8 @@ public class Max
 
     @Override
     public Max withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -75,7 +73,7 @@ public class Max
 
     @Override
     public Max withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -136,6 +134,34 @@ public class Max
 
     @Override
     public Object evaluate(Context context) {
-        return false;
+        Expression expression = getSource();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null || value instanceof Iterable == false) {
+            return null;
+        }
+
+        Object max = null;
+        for (Object val : (Iterable) value) {
+            if (val instanceof Integer) {
+                Integer tmpVal = ((Integer) val).intValue();
+                if (max == null || tmpVal.compareTo((Integer) max) > 0) max = tmpVal;
+            } else if (val instanceof Long) {
+                Long tmpVal = ((Long) val).longValue();
+                if (max == null || tmpVal.compareTo((Long) max) > 0) max = tmpVal;
+            } else if (val instanceof Number) {
+                Double tmpVal = ((Number) val).doubleValue();
+                if (max == null || tmpVal.compareTo((double) max) > 0) max = tmpVal;
+            } else if (val instanceof String) {
+                String tmpVal = ((String) val);
+                if (max == null || tmpVal.compareTo((String) max) > 0) max = tmpVal;
+            } else if (val instanceof Quantity) {
+                throw new NotImplementedException("Quantity has not been implemented yet.");
+            }
+        }
+
+        return max;
     }
 }

@@ -21,17 +21,17 @@ import java.util.Collection;
 
 /**
  * The Avg operator returns the average of the elements in source.
- * 			
+ * <p>
  * If a path is specified, elements with no value for the property specified by the path are ignored.
- * 			
+ * <p>
  * If the source contains no non-null elements, null is returned.
- * 
+ * <p>
  * If the source is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Avg complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Avg"&gt;
  *   &lt;complexContent&gt;
@@ -40,15 +40,12 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Avg", namespace = "urn:hl7-org:elm:r1")
 public class Avg
-    extends AggregateExpression
-    implements Equals, HashCode, ToString
-{
+        extends AggregateExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -65,8 +62,8 @@ public class Avg
 
     @Override
     public Avg withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -75,7 +72,7 @@ public class Avg
 
     @Override
     public Avg withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -136,6 +133,24 @@ public class Avg
 
     @Override
     public Object evaluate(Context context) {
-        return false;
+        Expression expression = getSource();
+        if (expression == null) return null;
+
+        Object value = expression.evaluate(context);
+
+        if (value == null || value instanceof Iterable == false) {
+            return null;
+        }
+
+        int numCount = 0;
+        Double sum = 0.0;
+        for (Object num : (Iterable) value) {
+            if (num != null && (num instanceof Number || num instanceof Quantity)) {
+                numCount++;
+                sum += num instanceof Number ? ((Number) num).doubleValue() : ((Quantity) num).getValue().doubleValue();
+            }
+        }
+
+        return sum / numCount;
     }
 }

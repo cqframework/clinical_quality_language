@@ -17,7 +17,9 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
     @Test
     public void testAllTrue() throws JAXBException {
         Context context = new Context(library);
-        Object result = context.resolveExpressionRef(library, "AllTrueAllTrue").getExpression().evaluate(context);
+        Object result;
+
+        result = context.resolveExpressionRef(library, "AllTrueAllTrue").getExpression().evaluate(context);
         assertThat(result, is(true));
 
         result = context.resolveExpressionRef(library, "AllTrueTrueFirst").getExpression().evaluate(context);
@@ -36,7 +38,7 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
         assertThat(result, is(false));
 
         result = context.resolveExpressionRef(library, "AllTrueEmptyList").getExpression().evaluate(context);
-        assertThat(result, is(nullValue()));
+        assertThat(result, is(true));
     }
 
     /**
@@ -45,7 +47,19 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
     @Test
     public void testAnyTrue() throws JAXBException {
         Context context = new Context(library);
-        Object result = context.resolveExpressionRef(library, "AnyTrueAllTrue").getExpression().evaluate(context);
+        Object result;
+
+        result = context.resolveExpressionRef(library, "AnyTrueNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "AnyTrueEmptyList").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        //TODO: Figure out why this is throwing from AliasRef.evaluate.
+//        result = context.resolveExpressionRef(library, "AnyTrueNullList").getExpression().evaluate(context);
+//        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "AnyTrueAllTrue").getExpression().evaluate(context);
         assertThat(result, is(true));
 
         result = context.resolveExpressionRef(library, "AnyTrueAllFalse").getExpression().evaluate(context);
@@ -68,9 +82,6 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
 
         result = context.resolveExpressionRef(library, "AnyTrueNullFirstThenFalse").getExpression().evaluate(context);
         assertThat(result, is(false));
-
-        result = context.resolveExpressionRef(library, "AnyTrueEmptyList").getExpression().evaluate(context);
-        assertThat(result, is(nullValue()));
     }
 
     /**
@@ -80,6 +91,15 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
     public void testAvg() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "Avg12Null3").getExpression().evaluate(context);
+        assertThat(result, is(2.0));
+
+        result = context.resolveExpressionRef(library, "Avg22").getExpression().evaluate(context);
+        assertThat(result, is(2.0));
+
+        result = context.resolveExpressionRef(library, "Avg12").getExpression().evaluate(context);
+        assertThat(result, is(1.5));
     }
 
     /**
@@ -89,6 +109,21 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
     public void testCount() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "CountEmptyList").getExpression().evaluate(context);
+        assertThat(result, is(0));
+
+        result = context.resolveExpressionRef(library, "CountNullNull").getExpression().evaluate(context);
+        assertThat(result, is(0));
+
+        result = context.resolveExpressionRef(library, "Count12Null3").getExpression().evaluate(context);
+        assertThat(result, is(3));
+
+        result = context.resolveExpressionRef(library, "Count22").getExpression().evaluate(context);
+        assertThat(result, is(2));
+
+        result = context.resolveExpressionRef(library, "CountAB").getExpression().evaluate(context);
+        assertThat(result, is(2));
     }
 
     /**
@@ -98,6 +133,22 @@ public class CqlAggregateFunctionsTest extends CqlExecutionTestBase {
     public void testMax() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "Max12Null3").getExpression().evaluate(context);
+        assertThat(result, is(3.0));
+
+        result = context.resolveExpressionRef(library, "Max12").getExpression().evaluate(context);
+        assertThat(result, is(2));
+
+        result = context.resolveExpressionRef(library, "MaxAB").getExpression().evaluate(context);
+        assertThat(result, is("b"));
+
+        //TODO: Update these once Quantity compare has been implemented.
+//        result = context.resolveExpressionRef(library, "Max1CM2CM").getExpression().evaluate(context);
+//        assertThat(result, is("b"));
+//
+//        result = context.resolveExpressionRef(library, "Max1M2CM").getExpression().evaluate(context);
+//        assertThat(result, is("b"));
     }
 
     /**

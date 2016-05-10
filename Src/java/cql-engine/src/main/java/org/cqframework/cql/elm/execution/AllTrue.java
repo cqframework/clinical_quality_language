@@ -17,22 +17,21 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
-import java.util.Iterator;
 
 
 /**
  * The AllTrue operator returns true if all the non-null elements in source are true.
- * 			
+ * <p>
  * If a path is specified, elements with no value for the property specified by the path are ignored.
- * 
+ * <p>
  * If the source contains no non-null elements, true is returned.
- * 
+ * <p>
  * If the source is null, the result is null.
- * 
+ * <p>
  * <p>Java class for AllTrue complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="AllTrue"&gt;
  *   &lt;complexContent&gt;
@@ -41,15 +40,12 @@ import java.util.Iterator;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AllTrue", namespace = "urn:hl7-org:elm:r1")
 public class AllTrue
-    extends AggregateExpression
-    implements Equals, HashCode, ToString
-{
+        extends AggregateExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -66,8 +62,8 @@ public class AllTrue
 
     @Override
     public AllTrue withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -76,7 +72,7 @@ public class AllTrue
 
     @Override
     public AllTrue withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -137,19 +133,18 @@ public class AllTrue
 
     @Override
     public Object evaluate(Context context) {
-        Object src = getSource();
+        Expression expression = getSource();
+        if (expression == null) return null;
 
-        if(src instanceof List) {
-            java.util.List<Expression> element = ((List)src).getElement();
-            Iterator<Expression> elemsItr = element.iterator();
-            while (elemsItr.hasNext()) {
-                Expression exp = elemsItr.next();
-                Boolean boolVal = (Boolean) exp.evaluate(context);
+        Object value = expression.evaluate(context);
 
-                if (boolVal == null || Boolean.FALSE == boolVal) return false;
-            }
-        }else{
+        if (value == null || value instanceof Iterable == false) {
             return null;
+        }
+
+        for (Object val : (Iterable) value) {
+            Boolean boolVal = (Boolean) val;
+            if (boolVal == null || Boolean.FALSE == boolVal) return false;
         }
 
         return true;
