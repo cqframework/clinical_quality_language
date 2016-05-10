@@ -135,13 +135,18 @@ public class SystemFunctionResolver {
                 case "Except":
                 case "In":
                 case "Includes":
-                case "IncludedIn": {
+                case "IncludedIn":
+                case "Intersect":
+                case "ProperIncludes":
+                case "ProperIncludedIn":
+                case "Union": {
                     return resolveBinary(fun);
                 }
 
                 case "Distinct":
                 case "Exists":
-                case "Flatten": {
+                case "Flatten":
+                case "SingletonFrom": {
                     return resolveUnary(fun);
                 }
 

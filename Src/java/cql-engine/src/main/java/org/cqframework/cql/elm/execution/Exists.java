@@ -21,13 +21,13 @@ import java.util.Collection;
 
 /**
  * The Exists operator returns true if the list contains any elements.
- * 
+ * <p>
  * If the argument is null, the result is null.
- * 
+ * <p>
  * <p>Java class for Exists complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="Exists"&gt;
  *   &lt;complexContent&gt;
@@ -36,15 +36,12 @@ import java.util.Collection;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Exists", namespace = "urn:hl7-org:elm:r1")
 public class Exists
-    extends UnaryExpression
-    implements Equals, HashCode, ToString
-{
+        extends UnaryExpression
+        implements Equals, HashCode, ToString {
 
 
     @Override
@@ -55,8 +52,8 @@ public class Exists
 
     @Override
     public Exists withAnnotation(Object... values) {
-        if (values!= null) {
-            for (Object value: values) {
+        if (values != null) {
+            for (Object value : values) {
                 getAnnotation().add(value);
             }
         }
@@ -65,7 +62,7 @@ public class Exists
 
     @Override
     public Exists withAnnotation(Collection<Object> values) {
-        if (values!= null) {
+        if (values != null) {
             getAnnotation().addAll(values);
         }
         return this;
@@ -135,8 +132,12 @@ public class Exists
             return null;
         }
 
-        for (Object element : (Iterable)value) {
-            return true;
+        if (value instanceof java.util.List) {
+            return ((java.util.List) value).size() > 0;
+        } else {
+            for (Object element : (Iterable) value) {
+                return true;
+            }
         }
 
         return false;

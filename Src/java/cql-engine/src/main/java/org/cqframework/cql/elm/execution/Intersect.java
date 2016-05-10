@@ -8,7 +8,6 @@
 
 package org.cqframework.cql.elm.execution;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.cqframework.cql.execution.Context;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.lang.ToString;
@@ -17,6 +16,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -147,6 +147,38 @@ public class Intersect
 
     @Override
     public Object evaluate(Context context) {
-        throw new NotImplementedException("Evaluate not implemented.");
+        java.util.List<Expression> expressions = getOperand();
+        if (expressions.size() == 0) return null;
+
+        Object left = expressions.get(0).evaluate(context);
+        Object right = expressions.get(1).evaluate(context);
+
+        if (left == null || right == null || left instanceof Iterable == false || right instanceof Iterable == false) {
+            return null;
+        }
+
+        ArrayList leftList = null;
+        if (left instanceof java.util.List) {
+            leftList = new ArrayList((java.util.List)left);
+        } else {
+            leftList = new ArrayList();
+            ((Iterable) left).forEach(leftList::add);
+        }
+
+        if (leftList.size() == 0) {
+            return leftList;
+        }
+
+        ArrayList rightList = null;
+        if (right instanceof java.util.List) {
+            rightList = new ArrayList((java.util.List)right);
+        } else {
+            rightList = new ArrayList();
+            ((Iterable) right).forEach(rightList::add);
+        }
+
+        leftList.retainAll(rightList);
+
+        return leftList;
     }
 }

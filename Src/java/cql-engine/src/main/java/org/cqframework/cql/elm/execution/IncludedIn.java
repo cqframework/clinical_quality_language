@@ -18,8 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -213,11 +212,21 @@ public class IncludedIn
             return null;
         }
 
-        ArrayList leftList = new ArrayList();
-        ((Iterable) left).forEach(leftList::add);
+        ArrayList leftList = null;
+        if(left instanceof java.util.List){
+            leftList = new ArrayList((java.util.List)left);
+        }else  {
+            leftList = new ArrayList();
+            ((Iterable) left).forEach(leftList::add);
+        }
 
-        ArrayList rightList = new ArrayList();
-        ((Iterable) right).forEach(rightList::add);
+        ArrayList rightList = null;
+        if(right instanceof java.util.List){
+            rightList = new ArrayList((java.util.List)right);
+        }else  {
+            rightList = new ArrayList();
+            ((Iterable) right).forEach(rightList::add);
+        }
 
         return rightList.containsAll(leftList);
     }

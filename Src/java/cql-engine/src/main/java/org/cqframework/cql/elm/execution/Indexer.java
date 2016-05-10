@@ -16,8 +16,7 @@ import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -162,8 +161,13 @@ public class Indexer
 
         if (left instanceof Iterable) {
             if (right instanceof Integer) {
-                ArrayList leftList = new ArrayList();
-                ((Iterable) left).forEach(leftList::add);
+                ArrayList leftList = null;
+                if(left instanceof java.util.List){
+                    leftList = new ArrayList((java.util.List)left);
+                }else  {
+                    leftList = new ArrayList();
+                    ((Iterable) left).forEach(leftList::add);
+                }
 
                 if((int)right < 0 || (int)right >=  leftList.size()){
                     return null;

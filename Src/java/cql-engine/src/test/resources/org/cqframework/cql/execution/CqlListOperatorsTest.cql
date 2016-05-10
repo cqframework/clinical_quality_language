@@ -57,12 +57,14 @@ define In3And12: In(3, {1, 2})
 //Includes
 define IncludesEmptyAndEmpty: Includes({}, {})
 define IncludesListNullAndListNull: Includes({null}, {null})
+define Includes123AndEmpty: Includes({1, 2, 3}, {})
 define Includes123And2: Includes({1, 2, 3}, {2})
 define Includes123And4: Includes({1, 2, 3}, {4})
 
 //IncludedIn
 define IncludedInEmptyAndEmpty: IncludedIn({}, {})
 define IncludedInListNullAndListNull: IncludedIn({null}, {null})
+define IncludedInEmptyAnd123: IncludedIn({}, {1, 2, 3})
 define IncludedIn2And123: IncludedIn({2}, {1, 2, 3})
 define IncludedIn4And123: IncludedIn({4}, {1, 2, 3})
 
@@ -82,33 +84,61 @@ define IndexOf2In12 : IndexOf({1, 2}, 2)
 define IndexOf3In12 : IndexOf({1, 2}, 3)
 
 //Intersect
-define ListIntersect: { 1, 2, 3, 4, 5 } intersect { 3, 4, 5, 6, 7 }
+define IntersectEmptyListAndEmptyList: Intersect({}, {})
+define Intersect1234And23: Intersect({ 1, 2, 3, 4 }, { 2, 3 })
+define Intersect23And1234: Intersect({2, 3}, { 1, 2, 3, 4 })
 
 //Last
-define ListLast: Last({ 1, 2, 3 })
+define LastEmpty: Last({})
+define LastNull1: Last({null, 1})
+define Last1Null: Last({1, null})
+define Last12: Last({1, 2})
 
 //Length
-define ListLength: Length( { 1, 2, 3, 4, 5 })
-
-//ProperlyInclues
-define ListProperIncludes: { 1, 2, 3, 4, 5 } properly includes { 2, 3, 4 }
-
-//ProperlyIncludedIn
-define ListProperIncludedIn: { 2, 3, 4 } properly included in { 1, 2, 3, 4, 5 }
-
-//SingletonFrom
-define ListSingletonFrom: singleton from { 1 }
-
-//Union
-define ListUnion: { 1, 2, 3 } union { 4, 5, 6 }
+define LengthEmpty: Length({})
+define LengthNull1: Length({null, 1})
+define Length1Null: Length({1, null})
+define Length12: Length({1, 2})
 
 //Equivalent
-define StringListEqual: { 'x', 'y', 'z' } = { 'x', 'y', 'z' }
-define IntegerListEqual: { 1, 2, 3, 4, 5 } = { 1, 2, 3, 4, 5 }
-define EqualTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } = List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} }
+define EquivalentEmptyAndEmpty          : Equivalent({}, {})
+define EquivalentABCAndABC              : Equivalent({ 'a', 'b', 'c' }, { 'a', 'b', 'c' })
+define EquivalentABCAndAB               : Equivalent({ 'a', 'b', 'c' }, { 'a', 'b' })
+define EquivalentABCAnd123              : Equivalent({ 'a', 'b', 'c' }, { 1, 2, 3 })
+define Equivalent123AndABC              : Equivalent({ 1, 2, 3 }, { 'a', 'b', 'c' })
+define Equivalent123AndString123        : Equivalent({ 1, 2, 3 },  { '1', '2', '3' })
 
 //NotEqual
-define UnequalTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } = List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
+define NotEqualEmptyAndEmpty : NotEqual({}, {})
+define NotEqualABCAndABC : NotEqual({ 'a', 'b', 'c' }, { 'a', 'b', 'c' })
+define NotEqualABCAndAB : NotEqual({ 'a', 'b', 'c' }, { 'a', 'b' })
+define NotEqualABCAnd123: NotEqual({ 'a', 'b', 'c' }, { 1, 2, 3 })
+define NotEqual123AndABC: NotEqual({ 1, 2, 3 }, { 'a', 'b', 'c' })
+define NotEqual123AndString123:  NotEqual({ 1, 2, 3 },  { '1', '2', '3' })
 
+//ProperlyInclues
+define ProperIncludesEmptyAndEmpty:       ProperIncludes({}, {})
+define ProperIncludesListNullAndListNull: ProperIncludes({null}, {null})
+define ProperIncludes123AndEmpty: ProperIncludes({1, 2, 3}, {})
+define ProperIncludes123And2: ProperIncludes({1, 2, 3}, {2})
+define ProperIncludes123And4: ProperIncludes({1, 2, 3}, {4})
 
+//ProperlyIncludedIn
+define ProperIncludedInEmptyAndEmpty: ProperIncludedIn({}, {})
+define ProperIncludedInListNullAndListNull: ProperIncludedIn({null}, {null})
+define ProperIncludedInEmptyAnd123: ProperIncludedIn({}, {1, 2, 3})
+define ProperIncludedIn2And123: ProperIncludedIn({2}, {1, 2, 3})
+define ProperIncludedIn4And123: ProperIncludedIn({4}, {1, 2, 3})
 
+//SingletonFrom
+define SingletonFromEmpty: SingletonFrom({})
+define SingletonFromListNull: SingletonFrom({null})
+define SingletonFrom1: SingletonFrom({1})
+define SingletonFrom12: SingletonFrom({1, 2})
+
+//Union
+define UnionEmptyAndEmpty: Union({}, {})
+define UnionListNullAndListNull: Union({null}, {null})
+define Union123AndEmpty: Union({1, 2, 3}, {})
+define Union123And2: Union({1, 2, 3}, {2})
+define Union123And4: Union({1, 2, 3}, {4})

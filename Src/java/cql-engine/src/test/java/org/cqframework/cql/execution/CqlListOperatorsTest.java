@@ -1,5 +1,6 @@
 package org.cqframework.cql.execution;
 
+import org.eclipse.persistence.jpa.jpql.Assert;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
@@ -7,8 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class CqlListOperatorsTest extends CqlExecutionTestBase {
 
@@ -205,6 +205,9 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
         result = context.resolveExpressionRef(library, "IncludesListNullAndListNull").getExpression().evaluate(context);
         assertThat(result, is(true));
 
+        result = context.resolveExpressionRef(library, "Includes123AndEmpty").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
         result = context.resolveExpressionRef(library, "Includes123And2").getExpression().evaluate(context);
         assertThat(result, is(true));
 
@@ -224,6 +227,9 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
         assertThat(result, is(true));
 
         result = context.resolveExpressionRef(library, "IncludedInListNullAndListNull").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "IncludedInEmptyAnd123").getExpression().evaluate(context);
         assertThat(result, is(true));
 
         result = context.resolveExpressionRef(library, "IncludedIn2And123").getExpression().evaluate(context);
@@ -292,6 +298,15 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
     public void testIntersect() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "IntersectEmptyListAndEmptyList").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList()));
+
+        result = context.resolveExpressionRef(library, "Intersect1234And23").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList(2, 3)));
+
+        result = context.resolveExpressionRef(library, "Intersect23And1234").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList(2, 3)));
     }
 
     /**
@@ -301,6 +316,18 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
     public void testLast() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "LastEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "LastNull1").getExpression().evaluate(context);
+        assertThat(result, is(1));
+
+        result = context.resolveExpressionRef(library, "Last1Null").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "Last12").getExpression().evaluate(context);
+        assertThat(result, is(2));
     }
 
     /**
@@ -310,6 +337,18 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
     public void testLength() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "LengthEmpty").getExpression().evaluate(context);
+        assertThat(result, is(0));
+
+        result = context.resolveExpressionRef(library, "LengthNull1").getExpression().evaluate(context);
+        assertThat(result, is(2));
+
+        result = context.resolveExpressionRef(library, "Length1Null").getExpression().evaluate(context);
+        assertThat(result, is(2));
+
+        result = context.resolveExpressionRef(library, "Length12").getExpression().evaluate(context);
+        assertThat(result, is(2));
     }
 
     /**
@@ -319,6 +358,24 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
     public void testEquivalent() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "EquivalentEmptyAndEmpty").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "EquivalentABCAndABC").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "EquivalentABCAndAB").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "EquivalentABCAnd123").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "Equivalent123AndABC").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "Equivalent123AndString123").getExpression().evaluate(context);
+        assertThat(result, is(false));
     }
 
     /**
@@ -328,18 +385,72 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
     public void testNotEqual() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "NotEqualEmptyAndEmpty").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "NotEqualABCAndABC").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "NotEqualABCAndAB").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "NotEqualABCAnd123").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "NotEqual123AndABC").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "NotEqual123AndString123").getExpression().evaluate(context);
+        assertThat(result, is(true));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.ProperIncludes#evaluate(Context)}
+     */
     @Test
     public void testProperlyInclues() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "ProperIncludesEmptyAndEmpty").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "ProperIncludesListNullAndListNull").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "ProperIncludes123AndEmpty").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "ProperIncludes123And2").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "ProperIncludes123And4").getExpression().evaluate(context);
+        assertThat(result, is(false));
     }
 
+    /**
+     * {@link org.cqframework.cql.elm.execution.ProperIncludedIn#evaluate(Context)}
+     */
     @Test
     public void testProperlyIncludedIn() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "ProperIncludedInEmptyAndEmpty").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "ProperIncludedInListNullAndListNull").getExpression().evaluate(context);
+        assertThat(result, is(false));
+
+        result = context.resolveExpressionRef(library, "ProperIncludedInEmptyAnd123").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "ProperIncludedIn2And123").getExpression().evaluate(context);
+        assertThat(result, is(true));
+
+        result = context.resolveExpressionRef(library, "ProperIncludedIn4And123").getExpression().evaluate(context);
+        assertThat(result, is(false));
     }
 
     /**
@@ -347,10 +458,25 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
      */
     @Test
     public void testSingletonFrom() throws JAXBException {
-    }
+        Context context = new Context(library);
+        Object result;
 
-    Context context = new Context(library);
-    Object result;
+        result = context.resolveExpressionRef(library, "SingletonFromEmpty").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SingletonFromListNull").getExpression().evaluate(context);
+        assertThat(result, is(nullValue()));
+
+        result = context.resolveExpressionRef(library, "SingletonFrom1").getExpression().evaluate(context);
+        assertThat(result, is(1));
+
+        try {
+            result = context.resolveExpressionRef(library, "SingletonFrom12").getExpression().evaluate(context);
+            Assert.fail("List with more than one element should throw an exception");
+        } catch (IllegalArgumentException ex) {
+            assertThat(ex, isA(IllegalArgumentException.class));
+        }
+    }
 
     /**
      * {@link org.cqframework.cql.elm.execution.Union#evaluate(Context)}
@@ -359,5 +485,20 @@ public class CqlListOperatorsTest extends CqlExecutionTestBase {
     public void testUnion() throws JAXBException {
         Context context = new Context(library);
         Object result;
+
+        result = context.resolveExpressionRef(library, "UnionEmptyAndEmpty").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList()));
+
+        result = context.resolveExpressionRef(library, "UnionListNullAndListNull").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList(null, null)));
+
+        result = context.resolveExpressionRef(library, "Union123AndEmpty").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList(1, 2, 3)));
+
+        result = context.resolveExpressionRef(library, "Union123And2").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList(1, 2, 3, 2)));
+
+        result = context.resolveExpressionRef(library, "Union123And4").getExpression().evaluate(context);
+        assertThat(result, is(Arrays.asList(1, 2, 3, 4)));
     }
 }

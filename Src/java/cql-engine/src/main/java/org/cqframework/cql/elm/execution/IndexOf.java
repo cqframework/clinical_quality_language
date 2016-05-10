@@ -18,8 +18,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -250,8 +249,13 @@ public class IndexOf
         Object elementVal = ((Expression)elementExp).evaluate(context);
 
         if(sourceVal instanceof Iterable){
-            ArrayList sourceList = new ArrayList();
-            ((Iterable) sourceVal).forEach(sourceList::add);
+            ArrayList sourceList = null;
+            if(sourceVal instanceof java.util.List){
+                sourceList = new ArrayList((java.util.List)sourceVal);
+            }else  {
+                sourceList = new ArrayList();
+                ((Iterable) sourceVal).forEach(sourceList::add);
+            }
 
             return sourceList.indexOf(elementVal);
         }
