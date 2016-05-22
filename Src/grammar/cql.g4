@@ -252,7 +252,7 @@ expression
     | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       # differenceBetweenExpression
     | expression ('<=' | '<' | '>' | '>=') expression                                               # inequalityExpression
     | expression intervalOperatorPhrase expression                                                  # timingExpression
-    | expression ('=' | '<>' | '~' | '!~' ) expression                                               # equalityExpression
+    | expression ('=' | '!=' | '~' | '!~' ) expression                                              # equalityExpression
     | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression                         # membershipExpression
     | expression 'and' expression                                                                   # andExpression
     | expression ('or' | 'xor') expression                                                          # orExpression

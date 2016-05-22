@@ -134,7 +134,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testNotEqualExpression() {
-        ExpressionDef def = (ExpressionDef)visitData("define st : 1 <> 2");
+        ExpressionDef def = (ExpressionDef)visitData("define st : 1 != 2");
         Not not = (Not)def.getExpression();
         Equal equal = (Equal)not.getOperand();
         Expression left = equal.getOperand().get(0);

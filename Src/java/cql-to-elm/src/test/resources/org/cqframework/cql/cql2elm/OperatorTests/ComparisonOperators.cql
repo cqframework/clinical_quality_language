@@ -44,15 +44,15 @@ define DateTimeGreaterOrEqual: DateTime(2014, 1, 1) >= DateTime(2015, 1, 1)
 define TimeGreaterOrEqual: Time(11, 0, 0) > Time(10, 0, 0)
 define QuantityGreaterOrEqual: 4'g/cm3' >= 5'g/cm3'
 
-define IntegerNotEqual: 1 <> 1
-define RealNotEqual: 1.0 <> 1.0
-define StringNotEqual: 'Alpha' <> 'Omega'
-define DateTimeNotEqual: DateTime(2014, 1, 1) <> DateTime(2014, 1, 1)
-define TimeNotEqual: Time(10, 0, 0) <> Time(11, 0, 0)
-define QuantityNotEqual: 5'mm[Hg]' <> 5'mm[Hg]'
-define IntervalNotEqual: Interval[1, 10] <> Interval[1, 10]
-define ListNotEqual: { 1, 2, 3 } <> { 1, 2, 3 }
-define TupleNotEqual: Tuple { Id: 1, Name: 'Joe' } <> Tuple { Id: 1, Name: 'Joe' }
+define IntegerNotEqual: 1 != 1
+define RealNotEqual: 1.0 != 1.0
+define StringNotEqual: 'Alpha' != 'Omega'
+define DateTimeNotEqual: DateTime(2014, 1, 1) != DateTime(2014, 1, 1)
+define TimeNotEqual: Time(10, 0, 0) != Time(11, 0, 0)
+define QuantityNotEqual: 5'mm[Hg]' != 5'mm[Hg]'
+define IntervalNotEqual: Interval[1, 10] != Interval[1, 10]
+define ListNotEqual: { 1, 2, 3 } != { 1, 2, 3 }
+define TupleNotEqual: Tuple { Id: 1, Name: 'Joe' } != Tuple { Id: 1, Name: 'Joe' }
 
 define IntegerEquivalent: 1 ~ 1
 define RealEquivalent: 1.0 ~ 1.0
