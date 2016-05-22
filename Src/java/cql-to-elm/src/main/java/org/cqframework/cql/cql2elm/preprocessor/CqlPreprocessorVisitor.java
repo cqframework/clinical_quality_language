@@ -41,7 +41,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
-        usingDefinition.setName((String)visit(ctx.identifier()));
+        usingDefinition.setName((String)visit(ctx.modelIdentifier()));
         if (ctx.versionSpecifier() != null) {
             usingDefinition.setVersion((String)visit(ctx.versionSpecifier()));
         }

@@ -314,7 +314,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public UsingDef visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
-        Model model = getModel(parseString(ctx.identifier()), parseString(ctx.versionSpecifier()));
+        Model model = getModel(parseString(ctx.modelIdentifier()), parseString(ctx.versionSpecifier()));
         return translatedLibrary.resolveUsingRef(model.getModelInfo().getName());
     }
 

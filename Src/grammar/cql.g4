@@ -24,7 +24,7 @@ libraryDefinition
     ;
 
 usingDefinition
-    : 'using' identifier ('version' versionSpecifier)?
+    : 'using' modelIdentifier ('version' versionSpecifier)?
     ;
 
 includeDefinition
