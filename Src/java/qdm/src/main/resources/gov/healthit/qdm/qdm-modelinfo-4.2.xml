@@ -36,7 +36,7 @@
         <ns4:element name="relatedTo" type="System.Concept"/>
         <ns4:element name="targetOutcome" type="System.Concept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristic" retrievable="true" baseType="System.Any" label="Patient Characteristic" identifier="PatientCharacteristic">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristic" identifier="PatientCharacteristic" label="Patient Characteristic" retrievable="true" baseType="System.Any">
         <ns4:element name="startDatetime" type="System.DateTime"/>
         <ns4:element name="stopDatetime" type="System.DateTime"/>
     </ns4:typeInfo>
@@ -112,7 +112,6 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyIntolerance" identifier="DiagnosticStudyIntolerance" label="Diagnostic Study, Intolerance" retrievable="true" primaryCodePath="code" baseType="QDM.QDMBaseType">
         <ns4:element name="startDatetime" type="System.DateTime"/>
         <ns4:element name="stopDatetime" type="System.DateTime"/>
-        <ns4:element name="negationRationale" type="System.Concept"/>
         <ns4:element name="reaction" type="System.Concept"/>
         <ns4:element name="radiationDosage" type="System.Quantity"/>
         <ns4:element name="radiationDuration" type="System.Quantity"/>
@@ -128,7 +127,6 @@
         <ns4:element name="anatomicalLocationSite" type="System.Concept"/>
         <ns4:element name="severity" type="System.Concept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Concept" retrievable="false" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.TransferFrom" identifier="TransferFrom" label="Transfer From" retrievable="true" primaryCodePath="code" baseType="QDM.QDMBaseType">
         <ns4:element name="startDatetime" type="System.DateTime"/>
         <ns4:element name="stopDatetime" type="System.DateTime"/>
@@ -188,6 +186,7 @@
         <ns4:element name="stopDatetime" type="System.DateTime"/>
         <ns4:element name="reaction" type="System.Concept"/>
     </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Concept" retrievable="false" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationAdverseEffects" identifier="MedicationAdverseEffects" label="Medication, Adverse Effects" retrievable="true" primaryCodePath="code" baseType="QDM.QDMBaseType">
         <ns4:element name="startDatetime" type="System.DateTime"/>
         <ns4:element name="stopDatetime" type="System.DateTime"/>
@@ -350,6 +349,7 @@
         <ns4:element name="stopDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Concept"/>
     </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="System.Any" retrievable="false" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FunctionalStatusOrder" identifier="FunctionalStatusOrder" label="Functional Status, Order" retrievable="true" primaryCodePath="code" baseType="QDM.QDMBaseType">
         <ns4:element name="startDatetime" type="System.DateTime"/>
         <ns4:element name="stopDatetime" type="System.DateTime"/>
@@ -379,7 +379,6 @@
         <ns4:element name="dose" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Concept"/>
         <ns4:element name="route" type="System.Concept"/>
-        <ns4:element name="cumulativeMedicationDuration" type="System.Quantity"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionPerformed" identifier="InterventionPerformed" label="Intervention, Performed" retrievable="true" primaryCodePath="code" baseType="QDM.QDMBaseType">
         <ns4:element name="startDatetime" type="System.DateTime"/>
@@ -404,13 +403,11 @@
         <ns4:element name="dose" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Concept"/>
         <ns4:element name="route" type="System.Concept"/>
-        <ns4:element name="reason" type="System.Concept"/>
         <ns4:element name="cumulativeMedicationDuration" type="System.Quantity"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyAdverseEvent" identifier="DiagnosticStudyAdverseEvent" label="Diagnostic Study, Adverse Event" retrievable="true" primaryCodePath="code" baseType="QDM.QDMBaseType">
         <ns4:element name="startDatetime" type="System.DateTime"/>
         <ns4:element name="stopDatetime" type="System.DateTime"/>
-        <ns4:element name="negationRationale" type="System.Concept"/>
         <ns4:element name="reaction" type="System.Concept"/>
         <ns4:element name="radiationDosage" type="System.Quantity"/>
         <ns4:element name="radiationDuration" type="System.Quantity"/>
