@@ -2266,7 +2266,7 @@ If the source is null, the result is null.</xs:documentation>
 			
 If the result of evaluating source is null, the result is null.
 
-The path attribute may include qualifiers (.) and indexers ([x]). Indexers must be literal integer or string values.
+The path attribute may include qualifiers (.) and indexers ([x]). Indexers must be literal integer values.
 			
 If the path attribute contains qualifiers or indexers, each qualifier or indexer is traversed to obtain the actual value. If the object of the property access at any point in traversing the path is null, the result is null.
 
