@@ -464,6 +464,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public CodeRef visitCodeIdentifier(@NotNull cqlParser.CodeIdentifierContext ctx) {
+        String libraryName = parseString(ctx.libraryIdentifier());
+        String name = parseString(ctx.identifier());
+        CodeDef def;
+        if (libraryName != null) {
+            def = resolveLibrary(libraryName).resolveCodeRef(name);
+            checkAccessLevel(libraryName, name, def.getAccessLevel());
+        }
+        else {
+            def = translatedLibrary.resolveCodeRef(name);
+        }
+
+        if (def == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve reference to code %s.", name));
+        }
+
+        return (CodeRef)of.createCodeRef()
+                .withLibraryName(libraryName)
+                .withName(name)
+                .withResultType(def.getResultType());
+    }
+
+    @Override
     public ValueSetDef visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
         ValueSetDef vs = of.createValueSetDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
@@ -480,6 +503,49 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         addToLibrary(vs);
 
         return vs;
+    }
+
+    @Override
+    public CodeDef visitCodeDefinition(@NotNull cqlParser.CodeDefinitionContext ctx) {
+        CodeDef cd = of.createCodeDef()
+                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                .withName(parseString(ctx.identifier()))
+                .withId(parseString(ctx.codeId()));
+
+        if (ctx.codesystemIdentifier() != null) {
+            cd.setCodeSystem((CodeSystemRef)visit(ctx.codesystemIdentifier()));
+        }
+
+        if (ctx.displayClause() != null) {
+            cd.setDisplay(parseString(ctx.displayClause().stringLiteral().STRING()));
+        }
+
+        cd.setResultType(resolveTypeName("Code"));
+        addToLibrary(cd);
+
+        return cd;
+    }
+
+    @Override
+    public ConceptDef visitConceptDefinition(@NotNull cqlParser.ConceptDefinitionContext ctx) {
+        ConceptDef cd = of.createConceptDef()
+                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                .withName(parseString(ctx.identifier()));
+
+        if (ctx.codeIdentifier() != null) {
+            for (cqlParser.CodeIdentifierContext ci : ctx.codeIdentifier()) {
+                cd.getCode().add((CodeRef)visit(ci));
+            }
+        }
+
+        if (ctx.displayClause() != null) {
+            cd.setDisplay(parseString(ctx.displayClause().stringLiteral().STRING()));
+        }
+
+        cd.setResultType(resolveTypeName("Concept"));
+        addToLibrary(cd);
+
+        return cd;
     }
 
     @Override
@@ -1510,7 +1576,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Expression resolveAccessor(Expression left, String memberIdentifier) {
         // if left is a LibraryRef
         // if right is an identifier
-        // right may be an ExpressionRef, a CodeSystemRef, a ValueSetRef, or a ParameterRef -- need to resolve on the referenced library
+        // right may be an ExpressionRef, a CodeSystemRef, a ValueSetRef, a CodeRef, a ConceptRef, or a ParameterRef -- need to resolve on the referenced library
         // if left is an ExpressionRef
         // if right is an identifier
         // return a Property with the ExpressionRef as source and identifier as Path
@@ -1566,6 +1632,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 return result;
             }
 
+            if (element instanceof CodeDef) {
+                checkAccessLevel(libraryName, memberIdentifier, ((CodeDef)element).getAccessLevel());
+                CodeRef result = of.createCodeRef()
+                        .withLibraryName(libraryName)
+                        .withName(memberIdentifier);
+                result.setResultType(element.getResultType());
+                return result;
+            }
+
+            if (element instanceof ConceptDef) {
+                checkAccessLevel(libraryName, memberIdentifier, ((ConceptDef)element).getAccessLevel());
+                ConceptRef result = of.createConceptRef()
+                        .withLibraryName(libraryName)
+                        .withName(memberIdentifier);
+                result.setResultType(element.getResultType());
+                return result;
+            }
+
             IdentifierRef identifier = new IdentifierRef();
             identifier.setLibraryName(libraryName);
             identifier.setName(memberIdentifier);
@@ -1602,8 +1686,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // 4: The name of a parameter
         // 5: The name of a valueset
         // 6: The name of a codesystem
-        // 7: The name of a library
-        // 8: An unresolved identifier that must be resolved later (by a method or accessor)
+        // 7: The name of a code
+        // 8: The name of a concept
+        // 9: The name of a library
+        // 10: An unresolved identifier that must be resolved later (by a method or accessor)
 
         AliasedQuerySource alias = resolveAlias(identifier);
         if (alias != null) {
@@ -1674,6 +1760,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             codesystemRef.setResultType(element.getResultType());
             return codesystemRef;
 
+        }
+
+        if (element instanceof CodeDef) {
+            CodeRef codeRef = of.createCodeRef().withName(((CodeDef)element).getName());
+            codeRef.setResultType(element.getResultType());
+            return codeRef;
+        }
+
+        if (element instanceof ConceptDef) {
+            ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef)element).getName());
+            conceptRef.setResultType(element.getResultType());
+            return conceptRef;
         }
 
         if (element instanceof IncludeDef) {
@@ -3685,6 +3783,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         library.getValueSets().getDef().add(vs);
 
         translatedLibrary.add(vs);
+    }
+
+    private void addToLibrary(CodeDef cd) {
+        if (library.getCodes() == null) {
+            library.setCodes(of.createLibraryCodes());
+        }
+        library.getCodes().getDef().add(cd);
+
+        translatedLibrary.add(cd);
+    }
+
+    private void addToLibrary(ConceptDef cd) {
+        if (library.getConcepts() == null) {
+            library.setConcepts(of.createLibraryConcepts());
+        }
+        library.getConcepts().getDef().add(cd);
+
+        translatedLibrary.add(cd);
     }
 
     private void addToLibrary(ParameterDef paramDef) {

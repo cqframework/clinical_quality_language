@@ -46,6 +46,16 @@ public class TranslatedLibrary {
         namespace.put(valueset.getName(), valueset);
     }
 
+    public void add(CodeDef code) {
+        checkNamespace(code.getName());
+        namespace.put(code.getName(), code);
+    }
+
+    public void add(ConceptDef concept) {
+        checkNamespace(concept.getName());
+        namespace.put(concept.getName(), concept);
+    }
+
     public void add(ParameterDef parameter) {
         checkNamespace(parameter.getName());
         namespace.put(parameter.getName(), parameter);
@@ -134,6 +144,24 @@ public class TranslatedLibrary {
         Element element = resolve(identifier);
         if (element instanceof ValueSetDef) {
             return (ValueSetDef)element;
+        }
+
+        return null;
+    }
+
+    public CodeDef resolveCodeRef(String identifier) {
+        Element element = resolve(identifier);
+        if (element instanceof CodeDef) {
+            return (CodeDef)element;
+        }
+
+        return null;
+    }
+
+    public ConceptDef resolveConceptRef(String identifier) {
+        Element element = resolve(identifier);
+        if (element instanceof ConceptDef) {
+            return (ConceptDef)element;
         }
 
         return null;

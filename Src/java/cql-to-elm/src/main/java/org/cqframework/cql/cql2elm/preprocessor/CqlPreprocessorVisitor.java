@@ -68,6 +68,24 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitCodeDefinition(@NotNull cqlParser.CodeDefinitionContext ctx) {
+        CodeDefinitionInfo codeDefinition = new CodeDefinitionInfo();
+        codeDefinition.setName((String)visit(ctx.identifier()));
+        codeDefinition.setDefinition(ctx);
+        libraryInfo.addCodeDefinition(codeDefinition);
+        return codeDefinition;
+    }
+
+    @Override
+    public Object visitConceptDefinition(@NotNull cqlParser.ConceptDefinitionContext ctx) {
+        ConceptDefinitionInfo conceptDefinition = new ConceptDefinitionInfo();
+        conceptDefinition.setName((String)visit(ctx.identifier()));
+        conceptDefinition.setDefinition(ctx);
+        libraryInfo.addConceptDefinition(conceptDefinition);
+        return conceptDefinition;
+    }
+
+    @Override
     public Object visitParameterDefinition(@NotNull cqlParser.ParameterDefinitionContext ctx) {
         ParameterDefinitionInfo parameterDefinition = new ParameterDefinitionInfo();
         parameterDefinition.setName((String)visit(ctx.identifier()));

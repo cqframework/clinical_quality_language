@@ -333,7 +333,7 @@ public class Cql2ElmVisitorTest {
         String cql = "codesystem \"SNOMED-CT:2014\" : 'SNOMED-CT' version '2014'\n" +
                 "codesystem \"ICD-9:2014\" : 'ICD-9' version '2014'\n" +
                 "valueset \"Female Administrative Sex\" : '2.16.840.1.113883.3.560.100.2' version '1'\n" +
-                "    codesystems ( \"SNOMED-CT:2014\", \"ICD-9:2014\" )\n" +
+                "    codesystems { \"SNOMED-CT:2014\", \"ICD-9:2014\" }\n" +
                 "define X : 1";
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);

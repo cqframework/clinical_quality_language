@@ -11,6 +11,8 @@ logic
 	includeDefinition*
 	codesystemDefinition*
 	valuesetDefinition*
+	codeDefinition*
+	conceptDefinition*
 	parameterDefinition*
 	statement+
 	;
@@ -53,7 +55,7 @@ valuesetDefinition
     ;
 
 codesystems
-    : 'codesystems' '(' codesystemIdentifier (',' codesystemIdentifier)* ')'
+    : 'codesystems' '{' codesystemIdentifier (',' codesystemIdentifier)* '}'
     ;
 
 codesystemIdentifier
@@ -62,6 +64,18 @@ codesystemIdentifier
 
 libraryIdentifier
     : identifier
+    ;
+
+codeDefinition
+    : accessModifier? 'code' identifier ':' codeId 'from' codesystemIdentifier displayClause?
+    ;
+
+conceptDefinition
+    : accessModifier? 'concept' identifier ':' '{' codeIdentifier (',' codeIdentifier)* '}' displayClause?
+    ;
+
+codeIdentifier
+    : (libraryIdentifier '.')? identifier
     ;
 
 codesystemId
@@ -73,6 +87,10 @@ valuesetId
     ;
 
 versionSpecifier
+    : STRING
+    ;
+
+codeId
     : STRING
     ;
 
@@ -425,7 +443,9 @@ identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
     // Include here any keyword that should not be a reserved word
     | 'Code'
+    | 'code'
     | 'Concept'
+    | 'concept'
     | 'date'
     | 'display'
     | 'time'
