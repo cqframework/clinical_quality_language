@@ -518,7 +518,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (ctx.displayClause() != null) {
-            cd.setDisplay(parseString(ctx.displayClause().stringLiteral().STRING()));
+            cd.setDisplay(parseString(ctx.displayClause().STRING()));
         }
 
         cd.setResultType(resolveTypeName("Code"));
@@ -540,7 +540,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (ctx.displayClause() != null) {
-            cd.setDisplay(parseString(ctx.displayClause().stringLiteral().STRING()));
+            cd.setDisplay(parseString(ctx.displayClause().STRING()));
         }
 
         cd.setResultType(resolveTypeName("Concept"));
