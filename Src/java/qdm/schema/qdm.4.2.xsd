@@ -300,7 +300,6 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDosage" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0" maxOccurs="1"/>
@@ -326,7 +325,6 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDosage" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0" maxOccurs="1"/>
@@ -1089,7 +1087,6 @@
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="Concept" minOccurs="0"/>
 					<xs:element name="route" type="Concept" minOccurs="0"/>
-					<xs:element name="cumulativeMedicationDuration" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1127,7 +1124,6 @@
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="Concept" minOccurs="0"/>
 					<xs:element name="route" type="Concept" minOccurs="0"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
 					<xs:element name="cumulativeMedicationDuration" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>

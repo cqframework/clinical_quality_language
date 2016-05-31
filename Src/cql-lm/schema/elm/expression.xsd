@@ -460,7 +460,7 @@ If any argument is null, the resulting list will have null for that element.</xs
 	</xs:complexType>
 	<xs:complexType name="If">
 		<xs:annotation>
-			<xs:documentation>The If operator evaluates a condition, and returns the then argument if the condition evaluates to true; otherwise the result of the else argument is returned. The static type of the then argument determines the result type of the conditional, and the else argument must be of that same type.</xs:documentation>
+			<xs:documentation>The If operator evaluates a condition, and returns the then argument if the condition evaluates to true; if the condition evaluates to false or null, the result of the else argument is returned. The static type of the then argument determines the result type of the conditional, and the else argument must be of that same type.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -877,7 +877,7 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Multiply operator performs numeric multiplication of its arguments.
 			
-For multiplication operations involving quantities, the input quantities must be of the same dimension (not necessarily the same units), and the resulting quantity will have the appropriate unit.
+For multiplication operations involving quantities, the resulting quantity will have the appropriate unit.
 
 If either argument is null, the result is null.
 
@@ -891,7 +891,7 @@ The Multiply operator is defined for the Integer, Decimal and Quantity types.</x
 		<xs:annotation>
 			<xs:documentation>The Divide operator performs numeric division of its arguments. Note that the result type of Divide is Decimal, even if its arguments are of type Integer. For integer division, use the truncated divide operator.
 			
-For division operations involving quantities, the input quantities must be in compatible dimensions (not necessarily the same units), and the resulting quantity will have the appropriate unit.
+For division operations involving quantities, the resulting quantity will have the appropriate unit.
 
 If either argument is null, the result is null.
 
@@ -2274,7 +2274,7 @@ If the source is null, the result is null.</xs:documentation>
 			
 If the result of evaluating source is null, the result is null.
 
-The path attribute may include qualifiers (.) and indexers ([x]). Indexers must be literal integer or string values.
+The path attribute may include qualifiers (.) and indexers ([x]). Indexers must be literal integer values.
 			
 If the path attribute contains qualifiers or indexers, each qualifier or indexer is traversed to obtain the actual value. If the object of the property access at any point in traversing the path is null, the result is null.
 

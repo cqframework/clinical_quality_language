@@ -13,6 +13,8 @@ library
 	includeDefinition*
 	codesystemDefinition*
 	valuesetDefinition*
+	codeDefinition*
+	conceptDefinition*
 	parameterDefinition*
 	statement+
 	;
@@ -26,7 +28,7 @@ libraryDefinition
     ;
 
 usingDefinition
-    : 'using' identifier ('version' versionSpecifier)?
+    : 'using' modelIdentifier ('version' versionSpecifier)?
     ;
 
 includeDefinition
@@ -55,7 +57,7 @@ valuesetDefinition
     ;
 
 codesystems
-    : 'codesystems' '(' codesystemIdentifier (',' codesystemIdentifier)* ')'
+    : 'codesystems' '{' codesystemIdentifier (',' codesystemIdentifier)* '}'
     ;
 
 codesystemIdentifier
@@ -64,6 +66,18 @@ codesystemIdentifier
 
 libraryIdentifier
     : identifier
+    ;
+
+codeDefinition
+    : accessModifier? 'code' identifier ':' codeId 'from' codesystemIdentifier displayClause?
+    ;
+
+conceptDefinition
+    : accessModifier? 'concept' identifier ':' '{' codeIdentifier (',' codeIdentifier)* '}' displayClause?
+    ;
+
+codeIdentifier
+    : (libraryIdentifier '.')? identifier
     ;
 
 codesystemId
@@ -75,6 +89,10 @@ valuesetId
     ;
 
 versionSpecifier
+    : STRING
+    ;
+
+codeId
     : STRING
     ;
 
@@ -254,7 +272,7 @@ expression
     | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       #differenceBetweenExpression
     | expression ('<=' | '<' | '>' | '>=') expression                                               #inequalityExpression
     | expression intervalOperatorPhrase expression                                                  #timingExpression
-    | expression ('=' | '<>' | '!=' | '~' | '!~') expression                                        #equalityExpression
+    | expression ('=' | '!=' | '~' | '!~') expression                                               #equalityExpression
     | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression                         #membershipExpression
     | expression 'and' expression                                                                   #andExpression
     | expression ('or' | 'xor') expression                                                          #orExpression
@@ -398,7 +416,9 @@ identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
     // Include here any keyword that should not be a reserved word
     | 'Code'
+    | 'code'
     | 'Concept'
+    | 'concept'
     | 'date'
     | 'display'
     | 'time'
