@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'eclipse'
 
     group = 'info.cqframework'
-    version = '0.2-SNAPSHOT'
+    version = '1.0.0'
 }
 
 subprojects {
@@ -254,7 +254,7 @@ idea {
     iws {
       withXml { provider ->
         def props = provider.node.component.find { it.@name == 'PropertiesComponent' }
-        
+
         def propMap = [
           '$PROJECT_DIR$/../grammar/cql.g4::/output-dir' : '$PROJECT_DIR$/cql/src/generated/java',
           '$PROJECT_DIR$/../grammar/cql.g4::/lib-dir' : '$PROJECT_DIR$/../grammar',
