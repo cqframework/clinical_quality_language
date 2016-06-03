@@ -74,6 +74,20 @@ subprojects {
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
     }
+    
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+    
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
 }
 
 configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm', 'cql-execution']}) {
@@ -141,39 +155,21 @@ configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm', 'cql-execution
  */
 configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm', 'qdm']}) {
     apply plugin: 'maven'
-
-    gradle.taskGraph.whenReady {taskGraph ->
-        if (taskGraph.hasTask('uploadArchives')) {
-            task javadocJar(type: Jar) {
-                classifier = 'javadoc'
-                from javadoc
-            }
-
-            task sourcesJar(type: Jar) {
-                classifier = 'sources'
-                from sourceSets.main.allSource
-            }
-
-            artifacts {
-                archives javadocJar, sourcesJar
-            }
-
-            apply plugin: 'signing'
-            signing {
-                sign configurations.archives
-            }
-            uploadArchives.repositories.mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            }
-        }
+    apply plugin: 'signing'
+    
+    signing {
+        required { gradle.taskGraph.hasTask(uploadArchives) }
+        sign configurations.archives
     }
 
     uploadArchives {
         repositories {
             mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                
                 /* Use these to test locally (but don't forget to comment out others!)
-                repository(url: "file://${buildDir}/build/repo")
-                snapshotRepository(url: "file://${buildDir}/build/ssRepo")
+                repository(url: "file://${buildDir}/repo")
+                snapshotRepository(url: "file://${buildDir}/ssRepo")
                 */
 
                 repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
@@ -224,6 +220,8 @@ configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm', 
             }
         }
     }
+    uploadArchives.dependsOn javadocJar
+    uploadArchives.dependsOn sourcesJar
 }
 
 task wrapper(type: Wrapper) {
