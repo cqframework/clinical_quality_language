@@ -321,16 +321,6 @@ public interface ElmVisitor<T, C> {
     T visitXor(Xor elm, C context);
 
     /**
-     * Visit a Implies. This method will be called for
-     * every node in the tree that is a Implies.
-     *
-     * @param elm the ELM tree
-     * @param context the context passed to the visitor
-     * @return the visitor result
-     */
-    T visitImplies(Implies elm, C context);
-
-    /**
      * Visit a Not. This method will be called for
      * every node in the tree that is a Not.
      *

@@ -241,7 +241,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Except) return visitExcept((Except)elm, context);
         else if (elm instanceof Greater) return visitGreater((Greater)elm, context);
         else if (elm instanceof GreaterOrEqual) return visitGreaterOrEqual((GreaterOrEqual)elm, context);
-        else if (elm instanceof Implies) return visitImplies((Implies)elm, context);
         else if (elm instanceof In) return visitIn((In)elm, context);
         else if (elm instanceof IncludedIn) return visitIncludedIn((IncludedIn)elm, context);
         else if (elm instanceof Includes) return visitIncludes((Includes)elm, context);
@@ -576,18 +575,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitXor(Xor elm, C context) {
-        return null;
-    }
-
-    /**
-     * Visit a Implies. This method will be called for
-     * every node in the tree that is a Implies.
-     *
-     * @param elm     the ELM tree
-     * @param context the context passed to the visitor
-     * @return the visitor result
-     */
-    public T visitImplies(Implies elm, C context) {
         return null;
     }
 
