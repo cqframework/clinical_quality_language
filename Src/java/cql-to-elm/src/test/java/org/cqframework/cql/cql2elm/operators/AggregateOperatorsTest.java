@@ -240,7 +240,7 @@ public class AggregateOperatorsTest {
         assertThat(aqs.getExpression(), listOfLiterals(1, 2, 3, 4, 5));
         String alias = aqs.getAlias();
         assertThat(q.getReturn().isDistinct(), is(false));
-        assertThat(q.getReturn().getExpression(), instanceOf(Convert.class));
+        assertThat(q.getReturn().getExpression(), instanceOf(ToDecimal.class));
         assertThat(q.getReturn().getExpression(), convertsToDecimalFromAlias(alias));
     }
 

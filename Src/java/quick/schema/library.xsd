@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2011+, HL7, Inc.
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification, 
+  are permitted provided that the following conditions are met:
+  
+   * Redistributions of source code must retain the above copyright notice, this 
+     list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice, 
+     this list of conditions and the following disclaimer in the documentation 
+     and/or other materials provided with the distribution.
+   * Neither the name of HL7 nor the names of its contributors may be used to 
+     endorse or promote products derived from this software without specific 
+     prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+  POSSIBILITY OF SUCH DAMAGE.
+  
+
+  Generated on Thu, Mar 31, 2016 08:01+1100 for FHIR v1.4.0 
+
+  Note: the schemas &amp; schematrons do not contain all of the rules about what makes resources
+  valid. Implementers will still need to be familiar with the content of the specification and with
+  any profiles that apply to the resources in order to make a conformant implementation.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
+  <xs:include schemaLocation="fhir-base.xsd"/>
+  <xs:element name="Library" type="Library">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Library resource provides a representation container for knowledge artifact component definitions. It is effectively an exposure of the header information for a CQL/ELM library.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Library">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Library resource provides a representation container for knowledge artifact component definitions. It is effectively an exposure of the header information for a CQL/ELM library.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="DomainResource">
+        <xs:sequence>
+          <xs:element name="moduleMetadata" minOccurs="0" maxOccurs="1" type="ModuleMetadata">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The metadata for the library, including publishing, life-cycle, version, documentation, and supporting evidence.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="model" type="Library.Model" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A model element describes the model and version used by the library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="library" type="Library.Library" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A library element describes a library referenced by this library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="codeSystem" type="Library.CodeSystem" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A code system definition used within the library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="valueSet" type="Library.ValueSet" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A value set definition referenced by the library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="ParameterDefinition">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The parameter element defines parameters used by the library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="dataRequirement" minOccurs="0" maxOccurs="unbounded" type="DataRequirement">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The dataRequirement element specifies a data requirement used by some expression within the library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="document" minOccurs="1" maxOccurs="1" type="Attachment">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The content of the library as an Attachment. The content may be a reference to a url, or may be directly embedded as a base-64 string. Either way, the content is expected to be a CQL or ELM document.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Library.Model">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Library resource provides a representation container for knowledge artifact component definitions. It is effectively an exposure of the header information for a CQL/ELM library.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The name element defines the local name of the model as used within the library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The identifier element specifies the global, non-version-specific identifier for the model.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The version element, if present, identifies the specific version of the model to be used. If no version is specified, the most recent published version of the model is implied.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Library.Library">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Library resource provides a representation container for knowledge artifact component definitions. It is effectively an exposure of the header information for a CQL/ELM library.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The name element defines the local name of the referenced library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The identifier element specifies the global, non-version-specific identifier for the library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The version element, if present, identifies the specific version of the library to be used. If no version is specified, the most recent published version of the library is implied.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:choice minOccurs="0" maxOccurs="1" >
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The content of the referenced library as an Attachment, or a reference to the Library resource. If the document is an attachment, it may be a reference to a url from which the library document may be retrieved, or it may be directly embedded as a base-64 string. Either way, the content is expected to be a CQL or ELM document.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="documentAttachment" type="Attachment"/>
+            <xs:element name="documentReference" type="Reference"/>
+          </xs:choice>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Library.CodeSystem">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Library resource provides a representation container for knowledge artifact component definitions. It is effectively an exposure of the header information for a CQL/ELM library.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The name element specifies the local name of the code system as used within the library. This name is also used when the code system is referenced from a value set element to determine the version of the code system to be used when computed the expansion of the value set definition.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The identifier element specifies the global, non-version-specific identifier for the code system.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The version element, if present, identifies the specific version of the library to be used. If no code system is specified, the most recent published version of the code system is implied.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Library.ValueSet">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Library resource provides a representation container for knowledge artifact component definitions. It is effectively an exposure of the header information for a CQL/ELM library.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The name element specifies the local name of the value set used within the library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The identifier element specifies the global, non-version-specific identifier for the value set.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="version" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The version element, if present, determines the specific version of the value set definition that is used by the library. If no version is specified, the latest published version of the value set definition is implied.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="codeSystem" minOccurs="0" maxOccurs="unbounded" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The codeSystem element determines which code system binding to use to compute the expansion of the value set definition. The codeSystem element specified here will correspond to a code system element, which is used to determine the code system version.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

@@ -27,101 +27,116 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
+  Generated on Thu, Mar 31, 2016 08:01+1100 for FHIR v1.4.0 
+
+  Note: the schemas &amp; schematrons do not contain all of the rules about what makes resources
+  valid. Implementers will still need to be familiar with the content of the specification and with
+  any profiles that apply to the resources in order to make a conformant implementation.
+
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="ProcessRequest" type="ProcessRequest">
     <xs:annotation>
-      <xs:documentation>This resource provides the target, request and response, and action details for an action to be performed by the target on or about existing resources.</xs:documentation>
+      <xs:documentation xml:lang="en">This resource provides the target, request and response, and action details for an action to be performed by the target on or about existing resources.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="ProcessRequest">
     <xs:annotation>
-      <xs:documentation>This resource provides the target, request and response, and action details for an action to be performed by the target on or about existing resources.</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+      <xs:documentation xml:lang="en">This resource provides the target, request and response, and action details for an action to be performed by the target on or about existing resources.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
           <xs:element name="action" minOccurs="1" maxOccurs="1" type="ActionList">
             <xs:annotation>
-              <xs:documentation>The type of procesing action being requested, for example Reversal, Readjudication, StatusRequest,PendedRequest.</xs:documentation>
+              <xs:documentation xml:lang="en">The type of processing action being requested, for example Reversal, Readjudication, StatusRequest,PendedRequest.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
-              <xs:documentation>The ProcessRequest Business Identifier.</xs:documentation>
+              <xs:documentation xml:lang="en">The ProcessRequest business identifier.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="ruleset" minOccurs="0" maxOccurs="1" type="Coding">
             <xs:annotation>
-              <xs:documentation>The version of the style of resource contents. This should be mapped to the allowable profiles for this and supporting resources.</xs:documentation>
+              <xs:documentation xml:lang="en">The version of the style of resource contents. This should be mapped to the allowable profiles for this and supporting resources.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="originalRuleset" minOccurs="0" maxOccurs="1" type="Coding">
             <xs:annotation>
-              <xs:documentation>The style (standard) and version of the original material which was converted into this resource.</xs:documentation>
+              <xs:documentation xml:lang="en">The style (standard) and version of the original material which was converted into this resource.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="created" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
-              <xs:documentation>The date when this resource was created.</xs:documentation>
+              <xs:documentation xml:lang="en">The date when this resource was created.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="target" minOccurs="0" maxOccurs="1" type="Reference">
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>The organization which is target  of the request.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="provider" minOccurs="0" maxOccurs="1" type="Reference">
+              <xs:documentation xml:lang="en">The organization which is the target of the request.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="targetIdentifier" type="Identifier"/>
+            <xs:element name="targetReference" type="Reference"/>
+          </xs:choice>
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>The practitioner who is responsible for the action specified in thise request.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="organization" minOccurs="0" maxOccurs="1" type="Reference">
+              <xs:documentation xml:lang="en">The practitioner who is responsible for the action specified in thise request.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="providerIdentifier" type="Identifier"/>
+            <xs:element name="providerReference" type="Reference"/>
+          </xs:choice>
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>The organization which is responsible for the action speccified in thise request.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="request" minOccurs="0" maxOccurs="1" type="Reference">
+              <xs:documentation xml:lang="en">The organization which is responsible for the action speccified in thise request.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="organizationIdentifier" type="Identifier"/>
+            <xs:element name="organizationReference" type="Reference"/>
+          </xs:choice>
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>Reference of resource which is the target or subject of this action.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="response" minOccurs="0" maxOccurs="1" type="Reference">
+              <xs:documentation xml:lang="en">Reference of resource which is the target or subject of this action.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="requestIdentifier" type="Identifier"/>
+            <xs:element name="requestReference" type="Reference"/>
+          </xs:choice>
+          <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>Reference of a prior response to resource which is the target or subject of this action.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
+              <xs:documentation xml:lang="en">Reference of a prior response to resource which is the target or subject of this action.</xs:documentation>
+            </xs:annotation>
+            <xs:element name="responseIdentifier" type="Identifier"/>
+            <xs:element name="responseReference" type="Reference"/>
+          </xs:choice>
           <xs:element name="nullify" minOccurs="0" maxOccurs="1" type="boolean">
             <xs:annotation>
-              <xs:documentation>If true remove all history excluding audit.</xs:documentation>
+              <xs:documentation xml:lang="en">If true remove all history excluding audit.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="reference" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>A reference to supply which authenticates the process.</xs:documentation>
+              <xs:documentation xml:lang="en">A reference to supply which authenticates the process.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="item" type="ProcessRequest.Item" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>List of top level items to be re-adjudicated, if none specified then the entire submission is re-adjudicated.</xs:documentation>
+              <xs:documentation xml:lang="en">List of top level items to be re-adjudicated, if none specified then the entire submission is re-adjudicated.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="include" minOccurs="0" maxOccurs="unbounded" type="string">
             <xs:annotation>
-              <xs:documentation>Names of resource types to include.</xs:documentation>
+              <xs:documentation xml:lang="en">Names of resource types to include.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="exclude" minOccurs="0" maxOccurs="unbounded" type="string">
             <xs:annotation>
-              <xs:documentation>Names of resource types to exclude.</xs:documentation>
+              <xs:documentation xml:lang="en">Names of resource types to exclude.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="period" minOccurs="0" maxOccurs="1" type="Period">
             <xs:annotation>
-              <xs:documentation>A period of time during which the fulfilling resources would have been created.</xs:documentation>
+              <xs:documentation xml:lang="en">A period of time during which the fulfilling resources would have been created.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -130,14 +145,14 @@
   </xs:complexType>
   <xs:complexType name="ProcessRequest.Item">
     <xs:annotation>
-      <xs:documentation>This resource provides the target, request and response, and action details for an action to be performed by the target on or about existing resources.</xs:documentation>
+      <xs:documentation xml:lang="en">This resource provides the target, request and response, and action details for an action to be performed by the target on or about existing resources.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
           <xs:element name="sequenceLinkId" minOccurs="1" maxOccurs="1" type="integer">
             <xs:annotation>
-              <xs:documentation>A service line number.</xs:documentation>
+              <xs:documentation xml:lang="en">A service line number.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -146,32 +161,12 @@
   </xs:complexType>
   <xs:simpleType name="ActionList-list">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="cancel">
-        <xs:annotation>
-          <xs:documentation>Cancel, Reverse or nullify the target resource.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="poll">
-        <xs:annotation>
-          <xs:documentation>Check for previously un-read/ not-retrieved resources.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="reprocess">
-        <xs:annotation>
-          <xs:documentation>Re-process the target resource.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="status">
-        <xs:annotation>
-          <xs:documentation>Retrieve the processing status of the target resource.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="ActionList">
     <xs:annotation>
-      <xs:documentation>List of allowable action which this resource can request</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+      <xs:documentation xml:lang="en">List of allowable action which this resource can request.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Element">

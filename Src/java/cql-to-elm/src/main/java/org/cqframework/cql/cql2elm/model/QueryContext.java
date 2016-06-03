@@ -1,7 +1,9 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.cqframework.cql.elm.tracking.DataType;
 import org.cqframework.cql.elm.tracking.ListType;
 import org.hl7.elm.r1.AliasedQuerySource;
+import org.hl7.elm.r1.ByColumn;
 import org.hl7.elm.r1.LetClause;
 
 import java.util.Collection;
@@ -62,6 +64,28 @@ public class QueryContext {
 
     public boolean inSourceClause() {
         return inSourceClauseValue;
+    }
+
+    private boolean inSortClauseValue;
+    public void enterSortClause() {
+        inSortClauseValue = true;
+    }
+
+    public void exitSortClause() {
+        inSortClauseValue = false;
+    }
+
+    public boolean inSortClause() {
+        return inSortClauseValue;
+    }
+
+    private DataType resultElementType;
+    public DataType getResultElementType() {
+        return resultElementType;
+    }
+
+    public void setResultElementType(DataType resultElementType) {
+        this.resultElementType = resultElementType;
     }
 
     private boolean referencesPatientContextValue;

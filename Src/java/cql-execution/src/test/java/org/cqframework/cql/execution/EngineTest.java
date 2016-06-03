@@ -1,25 +1,30 @@
 package org.cqframework.cql.execution;
 
-import java.io.File;
-
-import org.testng.annotations.Test;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 public class EngineTest {
 
     @Test
-    public void testEngineWithAgeFile() {
+    public void testEngineWithAgeFile() throws UnsupportedEncodingException {
         // Configure the engine with test data
         Engine.setPatientSource(new TestPatientSource());
 
         // Run the sample age script
-        File file = new File(EngineTest.class.getResource("age.cql").getFile());
+        File file = new File(URLDecoder.decode(EngineTest.class.getResource("age.cql").getFile(),"UTF-8"));
+        assertTrue(file.exists(), "age.cql must exist for test to run correctly. ("+ file.toString() + ")");
+
         Results results = null;
         try {
             results = Engine.executeCql(file);

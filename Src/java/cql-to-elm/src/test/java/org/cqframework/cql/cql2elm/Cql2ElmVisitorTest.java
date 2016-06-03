@@ -914,12 +914,8 @@ public class Cql2ElmVisitorTest {
         // Finally test sort
         SortClause sort = query.getSort();
         assertThat(sort.getBy(), hasSize(1));
-        // TODO: Confirm this should not be ByColumn
-        ByExpression sortBy = (ByExpression) sort.getBy().get(0);
-        // TODO: Should this really be using Identifier class here?
-        IdentifierRef id = (IdentifierRef) sortBy.getExpression();
-        assertThat(id.getName(), is("lengthOfStay"));
-        assertThat(id.getLibraryName(), is(nullValue()));
+        ByColumn sortBy = (ByColumn)sort.getBy().get(0);
+        assertThat(sortBy.getPath(), is("lengthOfStay"));
         assertThat(sortBy.getDirection(), is(SortDirection.DESC));
     }
 

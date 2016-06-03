@@ -4,17 +4,13 @@ import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.hl7.elm.r1.AliasRef;
-import org.hl7.elm.r1.Convert;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.Literal;
-import org.hl7.elm.r1.ObjectFactory;
+import org.hl7.elm.r1.*;
 
 import javax.xml.namespace.QName;
 
 public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression> {
     private Object expectedArg;
-    private Convert expectedValue;
+    private ToDecimal expectedValue;
 
     public ConvertsToDecimalFrom(Integer i) {
         super();
@@ -27,9 +23,7 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
                 .withValue(String.valueOf(i));
 
         QName expectedTypeName = new QName("urn:hl7-org:elm-types:r1", "Decimal");
-        expectedValue = of.createConvert()
-                .withToType(expectedTypeName)
-                .withToTypeSpecifier(of.createNamedTypeSpecifier().withName(expectedTypeName))
+        expectedValue = of.createToDecimal()
                 .withOperand(integerLiteral);
     }
 
@@ -38,23 +32,20 @@ public class ConvertsToDecimalFrom extends TypeSafeDiagnosingMatcher<Expression>
 
         expectedArg = a;
         ObjectFactory of = new ObjectFactory();
-        QName expectedTypeName = new QName("urn:hl7-org:elm-types:r1", "Decimal");
-        expectedValue = of.createConvert()
-                .withToType(expectedTypeName)
-                .withToTypeSpecifier(of.createNamedTypeSpecifier().withName(expectedTypeName))
+        expectedValue = of.createToDecimal()
                 .withOperand(a);
     }
 
     @Override
     protected boolean matchesSafely(Expression item, Description mismatchDescription) {
-        if (! (item instanceof Convert)) {
+        if (! (item instanceof ToDecimal)) {
             mismatchDescription.appendText("had wrong ELM class type: ").appendText(item.getClass().getName());
             return false;
         }
 
-        Convert convert = (Convert) item;
-        if (! expectedValue.equals(convert)) {
-            mismatchDescription.appendText("had wrong conversion: ").appendValue(convert);
+        ToDecimal toDecimal = (ToDecimal) item;
+        if (! expectedValue.equals(toDecimal)) {
+            mismatchDescription.appendText("had wrong conversion: ").appendValue(toDecimal);
             return false;
         }
 

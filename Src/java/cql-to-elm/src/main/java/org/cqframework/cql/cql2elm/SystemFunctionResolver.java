@@ -2,43 +2,9 @@ package org.cqframework.cql.cql2elm;
 
 
 import org.cqframework.cql.cql2elm.model.SystemModel;
-import org.cqframework.cql.cql2elm.model.invocation.CombineInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.ConvertInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.FirstInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.IndexOfInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.LastInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.NaryExpressionInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.PositionOfInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.RoundInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.SplitInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.SubstringInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.ZeroOperandExpressionInvocation;
-import org.hl7.elm.r1.AggregateExpression;
-import org.hl7.elm.r1.BinaryExpression;
-import org.hl7.elm.r1.CalculateAge;
-import org.hl7.elm.r1.CalculateAgeAt;
-import org.hl7.elm.r1.Combine;
-import org.hl7.elm.r1.Convert;
-import org.hl7.elm.r1.DateTime;
-import org.hl7.elm.r1.DateTimePrecision;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.First;
-import org.hl7.elm.r1.FunctionRef;
-import org.hl7.elm.r1.IndexOf;
-import org.hl7.elm.r1.Last;
-import org.hl7.elm.r1.NaryExpression;
-import org.hl7.elm.r1.Now;
-import org.hl7.elm.r1.ObjectFactory;
-import org.hl7.elm.r1.PositionOf;
-import org.hl7.elm.r1.Property;
-import org.hl7.elm.r1.Round;
-import org.hl7.elm.r1.Split;
-import org.hl7.elm.r1.Substring;
-import org.hl7.elm.r1.Today;
-import org.hl7.elm.r1.UnaryExpression;
+import org.cqframework.cql.cql2elm.model.invocation.*;
+import org.hl7.elm.r1.*;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,11 +42,17 @@ public class SystemFunctionResolver {
                 case "Floor":
                 case "Exp":
                 case "Ln":
-                case "Truncate": {
+                case "Truncate":
+                case "Negate":
+                case "Predecessor":
+                case "Successor": {
                     return resolveUnary(fun);
                 }
 
-                case "Log": {
+                case "Log":
+                case "Modulo":
+                case "Power":
+                case "TruncatedDivide": {
                     return resolveBinary(fun);
                 }
 
@@ -159,9 +131,34 @@ public class SystemFunctionResolver {
                     return resolveLast(fun);
                 }
 
+                case "Contains":
+                case "Except":
+                case "In":
+                case "Includes":
+                case "IncludedIn":
+                case "Intersect":
+                case "ProperIncludes":
+                case "ProperIncludedIn":
+                case "Union": {
+                    return resolveBinary(fun);
+                }
+
+                case "Distinct":
+                case "Exists":
+                case "Flatten":
+                case "SingletonFrom": {
+                    return resolveUnary(fun);
+                }
+
                 // Nullological Functions
                 case "Coalesce": {
                     return resolveNary(fun);
+                }
+
+                case "IsNull":
+                case "IsTrue":
+                case "IsFalse": {
+                    return resolveUnary(fun);
                 }
 
                 // Overloaded Functions
@@ -170,6 +167,14 @@ public class SystemFunctionResolver {
                 }
 
                 // String Functions
+                case "Indexer": {
+                    return resolveBinary(fun);
+                }
+
+                case "Concatenate": {
+                    return resolveNary(fun);
+                }
+
                 case "Combine": {
                     return resolveCombine(fun);
                 }
@@ -201,6 +206,17 @@ public class SystemFunctionResolver {
                 case "ToQuantity":
                 case "ToConcept": {
                     return resolveUnary(fun);
+                }
+
+                // Comparison Functions
+                case "Equal":
+                case "NotEqual":
+                case "Greater":
+                case "GreaterOrEqual":
+                case "Less":
+                case "LessOrEqual":
+                case "Equivalent": {
+                    return resolveBinary(fun);
                 }
             }
         }
@@ -252,7 +268,7 @@ public class SystemFunctionResolver {
     private Property getPatientBirthDateProperty() {
         Expression source = visitor.resolveIdentifier("Patient");
         Property property = of.createProperty().withSource(source).withPath(visitor.getModel().getModelInfo().getPatientBirthDatePropertyName());
-        property.setResultType(visitor.resolveProperty(source.getResultType(), property.getPath()));
+        property.setResultType(visitor.resolvePath(source.getResultType(), property.getPath()));
         return property;
     }
 
@@ -372,7 +388,7 @@ public class SystemFunctionResolver {
         checkNumberOfOperands(fun, 1);
         final Convert convert = of.createConvert().withOperand(fun.getOperand().get(0));
         final SystemModel sm = visitor.getSystemModel();
-        switch(fun.getName()) {
+        switch (fun.getName()) {
             case "ToString":
                 convert.setToType(visitor.dataTypeToQName(sm.getString()));
                 break;
@@ -418,7 +434,7 @@ public class SystemFunctionResolver {
         } catch (Exception e) {
             // Do nothing but fall through
         }
-        return operator;
+        return null;
     }
 
     private BinaryExpression resolveBinary(FunctionRef fun) {
@@ -435,7 +451,7 @@ public class SystemFunctionResolver {
         } catch (Exception e) {
             // Do nothing but fall through
         }
-        return operator;
+        return null;
     }
 
     private NaryExpression resolveNary(FunctionRef fun) {
@@ -451,7 +467,7 @@ public class SystemFunctionResolver {
         } catch (Exception e) {
             // Do nothing but fall through
         }
-        return operator;
+        return null;
     }
 
     private AggregateExpression resolveAggregate(FunctionRef fun) {
@@ -468,7 +484,7 @@ public class SystemFunctionResolver {
         } catch (Exception e) {
             // Do nothing but fall through
         }
-        return operator;
+        return null;
     }
 
     private void checkNumberOfOperands(FunctionRef fun, int expectedOperands) {

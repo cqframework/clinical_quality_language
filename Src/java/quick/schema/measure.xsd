@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Copyright (c) 2011+, HL7, Inc.
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification, 
+  are permitted provided that the following conditions are met:
+  
+   * Redistributions of source code must retain the above copyright notice, this 
+     list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above copyright notice, 
+     this list of conditions and the following disclaimer in the documentation 
+     and/or other materials provided with the distribution.
+   * Neither the name of HL7 nor the names of its contributors may be used to 
+     endorse or promote products derived from this software without specific 
+     prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+  POSSIBILITY OF SUCH DAMAGE.
+  
+
+  Generated on Thu, Mar 31, 2016 08:01+1100 for FHIR v1.4.0 
+
+  Note: the schemas &amp; schematrons do not contain all of the rules about what makes resources
+  valid. Implementers will still need to be familiar with the content of the specification and with
+  any profiles that apply to the resources in order to make a conformant implementation.
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
+  <xs:include schemaLocation="fhir-base.xsd"/>
+  <xs:element name="Measure" type="Measure">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Measure resource provides the definition of a quality measure.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Measure">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Measure resource provides the definition of a quality measure.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="DomainResource">
+        <xs:sequence>
+          <xs:element name="moduleMetadata" minOccurs="0" maxOccurs="1" type="ModuleMetadata">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The metadata for the measure, including publishing, life-cycle, version, documentation, and supporting evidence.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="library" minOccurs="0" maxOccurs="unbounded" type="Reference">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A reference to a Library resource containing the formal logic used by the measure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="disclaimer" minOccurs="0" maxOccurs="1" type="markdown">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A disclaimer for the use of the measure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="scoring" minOccurs="0" maxOccurs="1" type="MeasureScoring">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The measure scoring type, e.g. proportion, CV.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="type" minOccurs="0" maxOccurs="unbounded" type="MeasureType">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The measure type, e.g. process, outcome.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="riskAdjustment" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A description of the risk adjustment factors that may impact the resulting score for the measure and how they may be accounted for when computing and reporting measure results.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="rateAggregation" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A description of the rate aggregation for the measure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="rationale" minOccurs="0" maxOccurs="1" type="markdown">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The rationale for the measure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="clinicalRecommendationStatement" minOccurs="0" maxOccurs="1" type="markdown">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The clinical recommendation statement for the measure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="improvementNotation" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">Improvement notation for the measure, e.g. higher score indicates better quality.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="definition" minOccurs="0" maxOccurs="1" type="markdown">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A narrative description of the complete measure calculation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="guidance" minOccurs="0" maxOccurs="1" type="markdown">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">Additional guidance for the measure including how it can be used in a clinical context, and the intent of the measure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="set" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The measure set, e.g. Preventive Care and Screening.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="group" type="Measure.Group" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A group of population criteria for the measure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="supplementalData" type="Measure.SupplementalData" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The supplemental data criteria for the measure report, specified as either the name of a valid CQL expression within a referenced library, or a valid FHIR Resource Path.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Measure.Group">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Measure resource provides the definition of a quality measure.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A unique identifier for the group. This identifier will used to report data for the group in the measure report.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">Optional name or short description of this group.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The human readable description of this population group.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="population" type="Measure.Population" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A population criteria for the measure.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="stratifier" type="Measure.Stratifier" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The stratifier criteria for the measure report, specified as either the name of a valid CQL expression defined within a referenced library, or a valid FHIR Resource Path.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Measure.Population">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Measure resource provides the definition of a quality measure.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="type" minOccurs="1" maxOccurs="1" type="MeasurePopulationType">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The type of population criteria.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A unique identifier for the population criteria. This identifier is used to report data against this criteria within the measure report.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="name" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">Optional name or short description of this population.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="description" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The human readable description of this population criteria.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="criteria" minOccurs="1" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The name of a valid referenced CQL expression (may be namespaced) that defines this population criteria.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Measure.Stratifier">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Measure resource provides the definition of a quality measure.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The identifier for the stratifier used to coordinate the reported data back to this stratifier.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="criteria" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The criteria for the stratifier. This must be the name of an expression defined within a referenced library.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="path" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The path to an element that defines the stratifier, specified as a valid FHIR resource path.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Measure.SupplementalData">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The Measure resource provides the definition of a quality measure.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="BackboneElement">
+        <xs:sequence>
+          <xs:element name="identifier" minOccurs="1" maxOccurs="1" type="Identifier">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">An identifier for the supplemental data.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="usage" minOccurs="0" maxOccurs="unbounded" type="MeasureDataUsage">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">An indicator of the intended usage for the supplemental data element. Supplemental data indicates the data is additional information requested to augment the measure information. Risk adjustment factor indicates the data is additional information used to calculate risk adjustment factors when applying a risk model to the measure calculation.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="criteria" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The criteria for the supplemental data. This must be the name of a valid expression defined within a referenced library, and defines the data to be returned for this element.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="path" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The supplemental data to be supplied as part of the measure response, specified as a valid FHIR Resource Path.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="MeasureType-list">
+    <xs:restriction base="xs:string">
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="MeasureType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The type of measure</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="MeasureType-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="MeasureDataUsage-list">
+    <xs:restriction base="xs:string">
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="MeasureDataUsage">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The intended usage for supplemental data elements in the measure</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="MeasureDataUsage-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="MeasurePopulationType-list">
+    <xs:restriction base="xs:string">
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="MeasurePopulationType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The type of population</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="MeasurePopulationType-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="MeasureScoring-list">
+    <xs:restriction base="xs:string">
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="MeasureScoring">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">The scoring type of the measure</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="MeasureScoring-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

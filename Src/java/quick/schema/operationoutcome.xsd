@@ -27,26 +27,31 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
+  Generated on Thu, Mar 31, 2016 08:01+1100 for FHIR v1.4.0 
+
+  Note: the schemas &amp; schematrons do not contain all of the rules about what makes resources
+  valid. Implementers will still need to be familiar with the content of the specification and with
+  any profiles that apply to the resources in order to make a conformant implementation.
+
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="OperationOutcome" type="OperationOutcome">
     <xs:annotation>
-      <xs:documentation>A collection of error, warning or information messages that result from a system action.</xs:documentation>
+      <xs:documentation xml:lang="en">A collection of error, warning or information messages that result from a system action.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="OperationOutcome">
     <xs:annotation>
-      <xs:documentation>A collection of error, warning or information messages that result from a system action.</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+      <xs:documentation xml:lang="en">A collection of error, warning or information messages that result from a system action.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
           <xs:element name="issue" type="OperationOutcome.Issue" minOccurs="1" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>An error, warning or information message that results from a system action.</xs:documentation>
+              <xs:documentation xml:lang="en">An error, warning or information message that results from a system action.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -55,63 +60,68 @@
   </xs:complexType>
   <xs:complexType name="OperationOutcome.Issue">
     <xs:annotation>
-      <xs:documentation>A collection of error, warning or information messages that result from a system action.</xs:documentation>
+      <xs:documentation xml:lang="en">A collection of error, warning or information messages that result from a system action.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
           <xs:element name="severity" minOccurs="1" maxOccurs="1" type="IssueSeverity">
             <xs:annotation>
-              <xs:documentation>Indicates whether the issue indicates a variation from successful processing.</xs:documentation>
+              <xs:documentation xml:lang="en">Indicates whether the issue indicates a variation from successful processing.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="code" minOccurs="1" maxOccurs="1" type="CodeableConcept">
+          <xs:element name="code" minOccurs="1" maxOccurs="1" type="IssueType">
             <xs:annotation>
-              <xs:documentation>Describes the type of the issue.</xs:documentation>
+              <xs:documentation xml:lang="en">Describes the type of the issue. The system that creates an OperationOutcome SHALL choose the most applicable code from the IssueType value set, and may additional provide its own code for the error in the details element.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="details" minOccurs="0" maxOccurs="1" type="string">
+          <xs:element name="details" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>Additional diagnostic information about the issue.  Typically, this may be a description of how a value is erroneous, or a stck dump to help trace the issue.</xs:documentation>
+              <xs:documentation xml:lang="en">Additional details about the error. This may be a text description of the error, or a system code that identifies the error.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="diagnostics" minOccurs="0" maxOccurs="1" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">Additional diagnostic information about the issue.  Typically, this may be a description of how a value is erroneous, or a stack dump to help trace the issue.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="location" minOccurs="0" maxOccurs="unbounded" type="string">
             <xs:annotation>
-              <xs:documentation>A simple XPath limited to element names, repetition indicators and the default child access that identifies one of the elements in the resource that caused this issue to be raised.</xs:documentation>
+              <xs:documentation xml:lang="en">A simple XPath limited to element names, repetition indicators and the default child access that identifies one of the elements in the resource that caused this issue to be raised.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="expression" minOccurs="0" maxOccurs="unbounded" type="string">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">A simple FluentPath limited to element names, repetition indicators and the default child access that identifies one of the elements in the resource that caused this issue to be raised.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:simpleType name="IssueType-list">
+    <xs:restriction base="xs:string">
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="IssueType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">A code that describes the type of issue.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="Element">
+        <xs:attribute name="value" type="IssueType-list" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
   <xs:simpleType name="IssueSeverity-list">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="fatal">
-        <xs:annotation>
-          <xs:documentation>The issue caused the action to fail, and no further checking could be performed.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="error">
-        <xs:annotation>
-          <xs:documentation>The issue is sufficiently important to cause the action to fail.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="warning">
-        <xs:annotation>
-          <xs:documentation>The issue is not important enough to cause the action to fail, but may cause it to be performed suboptimally or in a way that is not as desired.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="information">
-        <xs:annotation>
-          <xs:documentation>The issue has no relation to the degree of success of the action.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="IssueSeverity">
     <xs:annotation>
-      <xs:documentation>How the issue affects the success of the action</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+      <xs:documentation xml:lang="en">How the issue affects the success of the action.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Element">
