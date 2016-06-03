@@ -14,7 +14,6 @@ public class SystemLibraryHelper {
         system.add(new Operator("And", new Signature(systemModel.getBoolean(), systemModel.getBoolean()), systemModel.getBoolean()));
         system.add(new Operator("Or", new Signature(systemModel.getBoolean(), systemModel.getBoolean()), systemModel.getBoolean()));
         system.add(new Operator("Xor", new Signature(systemModel.getBoolean(), systemModel.getBoolean()), systemModel.getBoolean()));
-        system.add(new Operator("Implies", new Signature(systemModel.getBoolean(), systemModel.getBoolean()), systemModel.getBoolean()));
         system.add(new Operator("Not", new Signature(systemModel.getBoolean()), systemModel.getBoolean()));
 
         // Nullological Operators

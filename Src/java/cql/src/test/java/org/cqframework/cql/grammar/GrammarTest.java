@@ -20,7 +20,7 @@ public class GrammarTest {
     @Test
     public void ageAt() {
         ParseTree tree = parseToTree("define inIPP : AgeAt(start of MeasurementPeriod) < 18");
-        LibraryContext logic = (LibraryContext) tree.getPayload();
+        LogicContext logic = (LogicContext) tree.getPayload();
 
         ExpressionDefinitionContext def = logic.statement(0).expressionDefinition();
         assertEquals("inIPP", def.identifier().IDENTIFIER().toString());
@@ -28,13 +28,11 @@ public class GrammarTest {
         InequalityExpressionContext cmpExpr = (InequalityExpressionContext) def.expression();
         assertEquals("<", cmpExpr.getChild(1).getText());
 
-        TermExpressionContext termExpression = (TermExpressionContext) cmpExpr.expression(0);
-        TermExpressionTermContext termExpressionTerm = (TermExpressionTermContext) termExpression.expressionTerm();
-        InvocationTermContext invocationTerm = (InvocationTermContext)termExpressionTerm.term();
-        FunctionInvocationContext functionInvocation = (FunctionInvocationContext)invocationTerm.invocation();
-        assertEquals("AgeAt", functionInvocation.function().identifier().IDENTIFIER().getText());
+        TermExpressionContext methodExpr = (TermExpressionContext) cmpExpr.expression(0);
+        InvocationExpressionTermContext methodExpressionTerm = (InvocationExpressionTermContext)methodExpr.expressionTerm();
+        assertEquals("AgeAt", methodExpressionTerm.identifier().getText());
 
-        TermExpressionContext argExpression = (TermExpressionContext) functionInvocation.function().paramList().expression(0);
+        TermExpressionContext argExpression = (TermExpressionContext) methodExpressionTerm.expression(0);
         TimeBoundaryExpressionTermContext argExpressionTerm = (TimeBoundaryExpressionTermContext) argExpression.expressionTerm();
         assertEquals("start", argExpressionTerm.getChild(0).getText());
         assertEquals("MeasurementPeriod", argExpressionTerm.expressionTerm().getText());
@@ -48,6 +46,6 @@ public class GrammarTest {
         CommonTokenStream tokens = new CommonTokenStream(new cqlLexer(input));
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
-        return parser.library();
+        return parser.logic();
     }
 }
