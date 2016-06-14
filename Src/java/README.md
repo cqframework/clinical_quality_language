@@ -11,15 +11,14 @@ It contains the following sub-projects:
 # Building the Project
 
 This project uses the [Gradle](http://www.gradle.org/) build system.  A gradle wrapper, which automatically downloads
-and uses an instance of gradle, is provided for convenience.  To build the project, install the JDK, clone this 
+and uses an instance of gradle, is provided for convenience.  To build the project, install the [Java SE Development
+Kit 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (a.k.a. JDK 1.8), clone this 
 repository, then execute this command from within this directory:
 
     ./gradlew build
 
 This will generate and build the ANTLR4 CQL artifacts, the JAXB QUICK artifacts, and the JAXB ELM artifacts.
 It will also build and test the corresponding code libraries and applications.
-
-Note you do not need to install Gradle, as the gradlew build will automatically download the required files for you.
 
 To clean up the build artifacts:
 
