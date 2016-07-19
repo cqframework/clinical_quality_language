@@ -12,9 +12,8 @@
 	<xs:complexType name="AssessmentPerformed">
 		<xs:annotation>
 			<xs:documentation>
-				Data elements that meet criteria using this datatype 
-				should document completion of the assessment indicated 
-				by the QDM category and its corresponding value set.
+				Data elements that meet criteria using this datatype should 
+				document completion of the assessment indicated by the QDM category and its corresponding value set.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
