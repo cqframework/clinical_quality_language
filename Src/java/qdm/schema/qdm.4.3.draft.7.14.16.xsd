@@ -3,7 +3,7 @@
 	<xs:complexType name="Concept"/>
 	<xs:complexType name="Any"/>
 	<xs:complexType name="Quantity"/>
-	<xs:element name="code" type="Concept"/>
+	<xs:element name="code" type="Code"/>
 	<xs:complexType name="QDMBaseType">
 		<xs:sequence>
 			<xs:element ref="code" minOccurs="1"/>
@@ -22,9 +22,9 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="method" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="method" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="result" type="Any" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -52,9 +52,9 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="method" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="method" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -73,8 +73,8 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relatedTo" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="targetOutcome" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relatedTo" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="targetOutcome" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -93,7 +93,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -112,7 +112,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -131,7 +131,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -150,7 +150,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -170,7 +170,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -193,10 +193,10 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="removalDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="anatomialLocationSite" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="anatomicalApproachSite" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="anatomialLocationSite" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="anatomicalApproachSite" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -216,7 +216,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -238,8 +238,8 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -259,8 +259,8 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -284,8 +284,8 @@
 				<xs:sequence>
 					<xs:element name="onsetDatetime" type="xs:dateTime" minOccurs="0"/>
 					<xs:element name="abatementDatetime" type="xs:dateTime" minOccurs="0"/>
-					<xs:element name="anatomicalLocationSite" type="Concept" minOccurs="0"/>
-					<xs:element name="severity" type="Concept" minOccurs="0"/>
+					<xs:element name="anatomicalLocationSite" type="Code" minOccurs="0"/>
+					<xs:element name="severity" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -306,7 +306,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDosage" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
@@ -331,7 +331,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDosage" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
@@ -372,11 +372,11 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDosage" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="method" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="method" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -396,14 +396,14 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="result" type="Any" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="status" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="status" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDosage" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="method" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="facilityLocation" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="method" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="facilityLocation" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -436,10 +436,10 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDosage" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="method" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="method" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -469,8 +469,8 @@
 					<xs:element name="admissionDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dischargeDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="lengthOfStay" type="Quantity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="facilityLocation" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="facilityLocation" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="facilityLocationArrivalDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="facilityLocationDepartureDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
@@ -497,9 +497,9 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="facilityLocation" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="facilityLocation" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -520,14 +520,14 @@
 					<xs:element name="admissionDatetime" type="xs:dateTime" minOccurs="1"/>
 					<xs:element name="dischargeDatetime" type="xs:dateTime" minOccurs="1"/>
 					<xs:element name="lengthOfStay" type="Quantity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="dischargeStatus" type="Concept" minOccurs="0"/>
-					<xs:element name="facilityLocation" type="Concept" minOccurs="0"/>
+					<xs:element name="dischargeStatus" type="Code" minOccurs="0"/>
+					<xs:element name="facilityLocation" type="Code" minOccurs="0"/>
 					<xs:element name="facilityLocationArrivalDatetime" type="xs:dateTime" minOccurs="0"/>
 					<xs:element name="facilityLocationDepartureDatetime" type="xs:dateTime" minOccurs="0"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
-					<xs:element name="diagnosis" type="Concept" minOccurs="0"/>
-					<xs:element name="principalDiagnosis" type="Concept" minOccurs="0"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
+					<xs:element name="diagnosis" type="Code" minOccurs="0"/>
+					<xs:element name="principalDiagnosis" type="Code" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -556,9 +556,9 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="facilityLocation" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="facilityLocation" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -579,7 +579,7 @@
 				<xs:sequence>
 					<xs:element name="onsetAge" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="recordedDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relationship" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relationship" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -600,9 +600,9 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="route" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="route" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -626,7 +626,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -648,7 +648,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -675,9 +675,9 @@
 					<xs:element name="signedDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="route" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="route" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -699,7 +699,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -722,7 +722,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reaction" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -747,8 +747,8 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -768,10 +768,10 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="result" type="Any" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="status" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="status" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -801,8 +801,8 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -823,7 +823,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -846,7 +846,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -871,9 +871,9 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -893,11 +893,11 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="status" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="status" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
 					<xs:element name="result" type="Any" minOccurs="0"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
 					<xs:element name="referenceRangeHigh" type="Quantity" minOccurs="0"/>
 					<xs:element name="referenceRangeLow" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
@@ -930,9 +930,9 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -959,8 +959,8 @@
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
-					<xs:element name="frequency" type="Concept" minOccurs="0"/>
-					<xs:element name="route" type="Concept" minOccurs="0"/>
+					<xs:element name="frequency" type="Code" minOccurs="0"/>
+					<xs:element name="route" type="Code" minOccurs="0"/>
 					<xs:element name="cumulativeMedicationDuration" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -982,11 +982,11 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
-					<xs:element name="frequency" type="Concept" minOccurs="0"/>
-					<xs:element name="route" type="Concept" minOccurs="0"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
+					<xs:element name="frequency" type="Code" minOccurs="0"/>
+					<xs:element name="route" type="Code" minOccurs="0"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
 					<xs:element name="cumulativeMedicationDuration" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -1008,7 +1008,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1031,7 +1031,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1053,11 +1053,11 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
-					<xs:element name="frequency" type="Concept" minOccurs="0"/>
-					<xs:element name="route" type="Concept" minOccurs="0"/>
+					<xs:element name="frequency" type="Code" minOccurs="0"/>
+					<xs:element name="route" type="Code" minOccurs="0"/>
 					<xs:element name="cumulativeMedicationDuration" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -1091,12 +1091,12 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
-					<xs:element name="frequency" type="Concept" minOccurs="0"/>
-					<xs:element name="route" type="Concept" minOccurs="0"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
+					<xs:element name="frequency" type="Code" minOccurs="0"/>
+					<xs:element name="route" type="Code" minOccurs="0"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
 					<xs:element name="cumulativeMedicationDuration" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -1120,7 +1120,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1147,13 +1147,13 @@
 					<xs:element name="signedDatetime" type="xs:dateTime" minOccurs="1"/>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
-					<xs:element name="frequency" type="Concept" minOccurs="0"/>
-					<xs:element name="route" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
+					<xs:element name="frequency" type="Code" minOccurs="0"/>
+					<xs:element name="route" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
 					<xs:element name="cumulativeMedicationDuration" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -1225,7 +1225,7 @@
 		<xs:sequence>
 			<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="reason" type="Concept" minOccurs="0"/>
+			<xs:element name="reason" type="Code" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="PatientCharacteristicEthnicity">
@@ -1257,7 +1257,7 @@
 		<xs:sequence>
 			<xs:element name="date" type="xs:date" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="time" type="xs:time" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="cause" type="Concept" minOccurs="0"/>
+			<xs:element name="cause" type="Code" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="PatientCharacteristicPayer">
@@ -1365,10 +1365,10 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
-					<xs:element name="anatomicalLocationSite" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
+					<xs:element name="anatomicalLocationSite" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1388,11 +1388,11 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
 					<xs:element name="result" type="Any" minOccurs="0"/>
-					<xs:element name="anatomicalLocationSite" type="Concept" minOccurs="0"/>
+					<xs:element name="anatomicalLocationSite" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1422,10 +1422,10 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
-					<xs:element name="anatomicalLocationSite" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
+					<xs:element name="anatomicalLocationSite" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1446,7 +1446,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1468,8 +1468,8 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
-					<xs:element name="ordinality" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
+					<xs:element name="ordinality" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1494,12 +1494,12 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
-					<xs:element name="anatomicalApproachSite" type="Concept" minOccurs="0"/>
-					<xs:element name="anatomicalLocationSite" type="Concept" minOccurs="0"/>
-					<xs:element name="ordinality" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
+					<xs:element name="anatomicalApproachSite" type="Code" minOccurs="0"/>
+					<xs:element name="anatomicalLocationSite" type="Code" minOccurs="0"/>
+					<xs:element name="ordinality" type="Code" minOccurs="0"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
@@ -1520,14 +1520,14 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
 					<xs:element name="result" type="Any" minOccurs="0"/>
-					<xs:element name="status" type="Concept" minOccurs="0"/>
-					<xs:element name="anatomicalApproachSite" type="Concept" minOccurs="0"/>
-					<xs:element name="anatomicalLocationSite" type="Concept" minOccurs="0"/>
-					<xs:element name="ordinality" type="Concept" minOccurs="0"/>
+					<xs:element name="status" type="Code" minOccurs="0"/>
+					<xs:element name="anatomicalApproachSite" type="Code" minOccurs="0"/>
+					<xs:element name="anatomicalLocationSite" type="Code" minOccurs="0"/>
+					<xs:element name="ordinality" type="Code" minOccurs="0"/>
 					<xs:element name="radiationDuration" type="Quantity" minOccurs="0"/>
 					<xs:element name="radiationDosage" type="Quantity" minOccurs="0"/>
 					<xs:element name="incisionDatetime" type="xs:dateTime" minOccurs="0"/>
@@ -1560,12 +1560,12 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
-					<xs:element name="anatomicalApproachSite" type="Concept" minOccurs="0"/>
-					<xs:element name="anatomicalLocationSite" type="Concept" minOccurs="0"/>
-					<xs:element name="ordinality" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
+					<xs:element name="anatomicalApproachSite" type="Code" minOccurs="0"/>
+					<xs:element name="anatomicalLocationSite" type="Code" minOccurs="0"/>
+					<xs:element name="ordinality" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1586,10 +1586,10 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
-					<xs:element name="frequency" type="Concept" minOccurs="0"/>
-					<xs:element name="route" type="Concept" minOccurs="0"/>
+					<xs:element name="frequency" type="Code" minOccurs="0"/>
+					<xs:element name="route" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1611,7 +1611,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1634,7 +1634,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1656,7 +1656,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reaction" type="Concept" minOccurs="0"/>
+					<xs:element name="reaction" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1681,13 +1681,13 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
-					<xs:element name="frequency" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
+					<xs:element name="frequency" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
-					<xs:element name="route" type="Concept" minOccurs="0"/>
+					<xs:element name="route" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1716,13 +1716,13 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="Concept" minOccurs="0"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="reason" type="Code" minOccurs="0"/>
 					<xs:element name="dose" type="Quantity" minOccurs="0"/>
-					<xs:element name="frequency" type="Concept" minOccurs="0"/>
-					<xs:element name="method" type="Concept" minOccurs="0"/>
+					<xs:element name="frequency" type="Code" minOccurs="0"/>
+					<xs:element name="method" type="Code" minOccurs="0"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
-					<xs:element name="route" type="Concept" minOccurs="0"/>
+					<xs:element name="route" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1748,7 +1748,7 @@
 				<xs:sequence>
 					<xs:element name="onsetDatetime" type="xs:dateTime" minOccurs="0"/>
 					<xs:element name="abatementDatetime" type="xs:dateTime" minOccurs="0"/>
-					<xs:element name="severity" type="Concept" minOccurs="0"/>
+					<xs:element name="severity" type="Code" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1771,7 +1771,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1794,7 +1794,7 @@
 				<xs:sequence>
 					<xs:element name="startDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="stopDatetime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="Concept" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="negationRationale" type="Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
