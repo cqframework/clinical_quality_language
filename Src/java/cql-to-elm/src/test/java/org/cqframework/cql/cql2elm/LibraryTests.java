@@ -47,4 +47,15 @@ public class LibraryTests {
         }
     }
 
+    @Test
+    public void testDuplicateExpressionLibrary() {
+        CqlTranslator translator = null;
+        try {
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/DuplicateExpressionLibrary.cql"), libraryManager);
+            assertThat(translator.getErrors().size(), is(1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
