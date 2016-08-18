@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="CMS146" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
-      <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
       <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
    </usings>
    <parameters>
       <def name="MeasurementPeriod" accessLevel="Public">
          <parameterTypeSpecifier xsi:type="IntervalTypeSpecifier">
-            <pointType name="DateTime" xsi:type="NamedTypeSpecifier"/>
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
          </parameterTypeSpecifier>
       </def>
    </parameters>
@@ -37,7 +37,7 @@
                      <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
                   </operand>
                </operand>
-               <operand valueType="Integer" value="2" xsi:type="Literal"/>
+               <operand valueType="t:Integer" value="2" xsi:type="Literal"/>
             </operand>
             <operand xsi:type="Less">
                <operand precision="Year" xsi:type="CalculateAgeAt">
@@ -48,7 +48,7 @@
                      <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
                   </operand>
                </operand>
-               <operand valueType="Integer" value="18" xsi:type="Literal"/>
+               <operand valueType="t:Integer" value="18" xsi:type="Literal"/>
             </operand>
          </expression>
       </def>
@@ -115,9 +115,9 @@
                   </operand>
                   <operand lowClosed="true" highClosed="false" xsi:type="Interval">
                      <low xsi:type="Negate">
-                        <operand valueType="Integer" value="3" xsi:type="Literal"/>
+                        <operand valueType="t:Integer" value="3" xsi:type="Literal"/>
                      </low>
-                     <high valueType="Integer" value="0" xsi:type="Literal"/>
+                     <high valueType="t:Integer" value="0" xsi:type="Literal"/>
                   </operand>
                </suchThat>
             </relationship>
@@ -136,8 +136,8 @@
                      <operand path="onsetDateTime" scope="P" xsi:type="Property"/>
                   </operand>
                   <operand lowClosed="false" highClosed="true" xsi:type="Interval">
-                     <low valueType="Integer" value="0" xsi:type="Literal"/>
-                     <high valueType="Integer" value="30" xsi:type="Literal"/>
+                     <low valueType="t:Integer" value="0" xsi:type="Literal"/>
+                     <high valueType="t:Integer" value="30" xsi:type="Literal"/>
                   </operand>
                </suchThat>
             </relationship>
@@ -203,24 +203,24 @@
          </expression>
       </def>
       <def name="IPPCount" context="Patient" accessLevel="Public">
-         <expression name="Count" xsi:type="FunctionRef">
-            <operand name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
+         <expression xsi:type="Count">
+            <source name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
          </expression>
       </def>
       <def name="DenominatorCount" context="Patient" accessLevel="Public">
          <expression name="IPPCount" xsi:type="ExpressionRef"/>
       </def>
       <def name="DenominatorExclusionsCount" context="Patient" accessLevel="Public">
-         <expression name="Count" xsi:type="FunctionRef">
-            <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
+         <expression xsi:type="Count">
+            <source name="ExcludedEncounters" xsi:type="ExpressionRef"/>
          </expression>
       </def>
       <def name="NumeratorCount" context="Patient" accessLevel="Public">
-         <expression name="Count" xsi:type="FunctionRef">
-            <operand xsi:type="Except">
+         <expression xsi:type="Count">
+            <source xsi:type="Except">
                <operand name="StrepTestEncounters" xsi:type="ExpressionRef"/>
                <operand name="ExcludedEncounters" xsi:type="ExpressionRef"/>
-            </operand>
+            </source>
          </expression>
       </def>
    </statements>

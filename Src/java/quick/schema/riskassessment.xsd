@@ -27,66 +27,76 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
+  Generated on Thu, Mar 31, 2016 08:01+1100 for FHIR v1.4.0 
+
+  Note: the schemas &amp; schematrons do not contain all of the rules about what makes resources
+  valid. Implementers will still need to be familiar with the content of the specification and with
+  any profiles that apply to the resources in order to make a conformant implementation.
+
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="RiskAssessment" type="RiskAssessment">
     <xs:annotation>
-      <xs:documentation>An assessment of the likely outcome(s) for a patient or other subject as well as the likelihood of each outcome.</xs:documentation>
+      <xs:documentation xml:lang="en">An assessment of the likely outcome(s) for a patient or other subject as well as the likelihood of each outcome.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="RiskAssessment">
     <xs:annotation>
-      <xs:documentation>An assessment of the likely outcome(s) for a patient or other subject as well as the likelihood of each outcome.</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+      <xs:documentation xml:lang="en">An assessment of the likely outcome(s) for a patient or other subject as well as the likelihood of each outcome.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
           <xs:element name="subject" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>The patient or group the risk assessment applies to.</xs:documentation>
+              <xs:documentation xml:lang="en">The patient or group the risk assessment applies to.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="date" minOccurs="0" maxOccurs="1" type="dateTime">
             <xs:annotation>
-              <xs:documentation>The date (and possibly time) the risk assessment was performed.</xs:documentation>
+              <xs:documentation xml:lang="en">The date (and possibly time) the risk assessment was performed.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="condition" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>For assessments or prognosis specific to a particular condition, indicates the condition being assessed.</xs:documentation>
+              <xs:documentation xml:lang="en">For assessments or prognosis specific to a particular condition, indicates the condition being assessed.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="encounter" minOccurs="0" maxOccurs="1" type="Reference">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The encounter where the assessment was performed.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="performer" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>The provider or software application that performed the assessment.</xs:documentation>
+              <xs:documentation xml:lang="en">The provider or software application that performed the assessment.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="identifier" minOccurs="0" maxOccurs="1" type="Identifier">
             <xs:annotation>
-              <xs:documentation>Business identifier assigned to the risk assessment.</xs:documentation>
+              <xs:documentation xml:lang="en">Business identifier assigned to the risk assessment.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="method" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>The algorithm, processs or mechanism used to evaluate the risk.</xs:documentation>
+              <xs:documentation xml:lang="en">The algorithm, process or mechanism used to evaluate the risk.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="basis" minOccurs="0" maxOccurs="unbounded" type="Reference">
             <xs:annotation>
-              <xs:documentation>Indicates the source data considered as part of the assessment (FamilyHistory, Observations, Procedures, Conditions, etc.).</xs:documentation>
+              <xs:documentation xml:lang="en">Indicates the source data considered as part of the assessment (FamilyHistory, Observations, Procedures, Conditions, etc.).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="prediction" type="RiskAssessment.Prediction" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>Describes the expected outcome for the subject.</xs:documentation>
+              <xs:documentation xml:lang="en">Describes the expected outcome for the subject.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="mitigation" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>A description of the steps that might be taken to reduce the identified risk(s).</xs:documentation>
+              <xs:documentation xml:lang="en">A description of the steps that might be taken to reduce the identified risk(s).</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -95,19 +105,19 @@
   </xs:complexType>
   <xs:complexType name="RiskAssessment.Prediction">
     <xs:annotation>
-      <xs:documentation>An assessment of the likely outcome(s) for a patient or other subject as well as the likelihood of each outcome.</xs:documentation>
+      <xs:documentation xml:lang="en">An assessment of the likely outcome(s) for a patient or other subject as well as the likelihood of each outcome.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
           <xs:element name="outcome" minOccurs="1" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>One of the potential outcomes for the patient (e.g. remission, death,  a particular condition).</xs:documentation>
+              <xs:documentation xml:lang="en">One of the potential outcomes for the patient (e.g. remission, death,  a particular condition).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>How likely is the outcome (in the specified timeframe).</xs:documentation>
+              <xs:documentation xml:lang="en">How likely is the outcome (in the specified timeframe).</xs:documentation>
             </xs:annotation>
             <xs:element name="probabilityDecimal" type="decimal"/>
             <xs:element name="probabilityRange" type="Range"/>
@@ -115,19 +125,19 @@
           </xs:choice>
           <xs:element name="relativeRisk" minOccurs="0" maxOccurs="1" type="decimal">
             <xs:annotation>
-              <xs:documentation>Indicates the risk for this particular subject (with their specific characteristics) divided by the risk of the population in general.  (Numbers greater than 1 = higher risk than the population, numbers less than 1 = lower risk.).</xs:documentation>
+              <xs:documentation xml:lang="en">Indicates the risk for this particular subject (with their specific characteristics) divided by the risk of the population in general.  (Numbers greater than 1 = higher risk than the population, numbers less than 1 = lower risk.).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>Indicates the period of time or age range of the subject to which the specified probability applies.</xs:documentation>
+              <xs:documentation xml:lang="en">Indicates the period of time or age range of the subject to which the specified probability applies.</xs:documentation>
             </xs:annotation>
             <xs:element name="whenPeriod" type="Period"/>
             <xs:element name="whenRange" type="Range"/>
           </xs:choice>
           <xs:element name="rationale" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Additional information explaining the basis for the prediction.</xs:documentation>
+              <xs:documentation xml:lang="en">Additional information explaining the basis for the prediction.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

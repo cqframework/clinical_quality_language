@@ -11,6 +11,8 @@ logic
 	includeDefinition*
 	codesystemDefinition*
 	valuesetDefinition*
+	codeDefinition*
+	conceptDefinition*
 	parameterDefinition*
 	statement+
 	;
@@ -24,7 +26,7 @@ libraryDefinition
     ;
 
 usingDefinition
-    : 'using' identifier ('version' versionSpecifier)?
+    : 'using' modelIdentifier ('version' versionSpecifier)?
     ;
 
 includeDefinition
@@ -53,7 +55,7 @@ valuesetDefinition
     ;
 
 codesystems
-    : 'codesystems' '(' codesystemIdentifier (',' codesystemIdentifier)* ')'
+    : 'codesystems' '{' codesystemIdentifier (',' codesystemIdentifier)* '}'
     ;
 
 codesystemIdentifier
@@ -62,6 +64,18 @@ codesystemIdentifier
 
 libraryIdentifier
     : identifier
+    ;
+
+codeDefinition
+    : accessModifier? 'code' identifier ':' codeId 'from' codesystemIdentifier displayClause?
+    ;
+
+conceptDefinition
+    : accessModifier? 'concept' identifier ':' '{' codeIdentifier (',' codeIdentifier)* '}' displayClause?
+    ;
+
+codeIdentifier
+    : (libraryIdentifier '.')? identifier
     ;
 
 codesystemId
@@ -73,6 +87,10 @@ valuesetId
     ;
 
 versionSpecifier
+    : STRING
+    ;
+
+codeId
     : STRING
     ;
 
@@ -189,7 +207,7 @@ qualifier
     ;
 
 query
-    : sourceClause defineClause? queryInclusionClause* whereClause? returnClause? sortClause?
+    : sourceClause letClause? queryInclusionClause* whereClause? returnClause? sortClause?
     ;
 
 sourceClause
@@ -205,11 +223,11 @@ multipleSourceClause
     : 'from' aliasedQuerySource (',' aliasedQuerySource)*
     ;
 
-defineClause
-    : 'define' defineClauseItem (',' defineClauseItem)*
+letClause
+    : 'let' letClauseItem (',' letClauseItem)*
     ;
 
-defineClauseItem
+letClauseItem
     : identifier ':' expression
     ;
 
@@ -252,7 +270,7 @@ expression
     | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       # differenceBetweenExpression
     | expression ('<=' | '<' | '>' | '>=') expression                                               # inequalityExpression
     | expression intervalOperatorPhrase expression                                                  # timingExpression
-    | expression ('=' | '<>' | 'matches' ) expression                                               # equalityExpression
+    | expression ('=' | '!=' | '~' | '!~' ) expression                                              # equalityExpression
     | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression                         # membershipExpression
     | expression 'and' expression                                                                   # andExpression
     | expression ('or' | 'xor') expression                                                          # orExpression
@@ -260,7 +278,7 @@ expression
     ;
 
 dateTimePrecision
-    : 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond'
+    : 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second' | 'millisecond'
     ;
 
 dateTimeComponent
@@ -271,7 +289,7 @@ dateTimeComponent
     ;
 
 pluralDateTimePrecision
-    : 'years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds'
+    : 'years' | 'months' | 'weeks' | 'days' | 'hours' | 'minutes' | 'seconds' | 'milliseconds'
     ;
 
 expressionTerm
@@ -294,7 +312,7 @@ expressionTerm
     | expressionTerm ('+' | '-') expressionTerm                          # additionExpressionTerm
     | 'if' expression 'then' expression 'else' expression                # ifThenElseExpressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     # caseExpressionTerm
-    | ('distinct' | 'collapse' | 'expand') expression                    # aggregateExpressionTerm
+    | ('distinct' | 'collapse' | 'flatten') expression                   # aggregateExpressionTerm
     ;
 
 caseExpressionItem
@@ -425,7 +443,9 @@ identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
     // Include here any keyword that should not be a reserved word
     | 'Code'
+    | 'code'
     | 'Concept'
+    | 'concept'
     | 'date'
     | 'display'
     | 'time'
@@ -503,11 +523,11 @@ TIME
 //    ;
 
 QUOTEDIDENTIFIER
-    : '"' ( ~[\\"] | '""' )* '"'
+    : '"' (ESC | ~[\\"])* '"'
     ;
 
 STRING
-    : ('\'') ( ~[\\'] | '\'\'' )* ('\'')
+    : '\'' (ESC | ~[\'])* '\''
     ;
 
 WS
@@ -519,10 +539,21 @@ NEWLINE
     ;
 
 COMMENT
-    : '/*' .*? '*/' -> skip
+    : '/*' .*? '*/' -> channel(HIDDEN)
     ;
 
 LINE_COMMENT
-    :   '//' ~[\r\n]* -> skip
+    :   '//' ~[\r\n]* -> channel(HIDDEN)
     ;
 
+fragment ESC
+    : '\\' (["'\\/fnrt] | UNICODE)    // allow \", \', \\, \/, \f, etc. and \uXXX
+    ;
+
+fragment UNICODE
+    : 'u' HEX HEX HEX HEX
+    ;
+
+fragment HEX
+    : [0-9a-fA-F]
+    ;

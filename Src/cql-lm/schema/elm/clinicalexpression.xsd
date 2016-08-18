@@ -29,7 +29,7 @@ The following changes were made since the informative ballot in September 2014:
 	<xs:include schemaLocation="expression.xsd"/>
 	<xs:complexType name="Retrieve">
 		<xs:annotation>
-			<xs:documentation>The retrieve expression defines clinical data that will be used by the artifact. This expression allows clinically relevant filtering criteria to be provided in well-defined and computable way. This operation defines the integration boundary for artifacts. The result of a retrieve is defined to return the same data for subsequent invocations within the same evaluation request. This means in particular that patient data updates made during the evaluation request are not visible to the artifact. In effect, the patient data is a snapshot of the data as of the start of the evaluation. This ensures strict deterministic and functional behavior of the artifact, and allows the implementation engine freedom to cache intermediate results in order to improve performance.</xs:documentation>
+			<xs:documentation>The retrieve expression defines clinical data that will be used by the artifact. This expression allows clinically relevant filtering criteria to be provided in a well-defined and computable way. This operation defines the integration boundary for artifacts. The result of a retrieve is defined to return the same data for subsequent invocations within the same evaluation request. This means in particular that patient data updates made during the evaluation request are not visible to the artifact. In effect, the patient data is a snapshot of the data as of the start of the evaluation. This ensures strict deterministic and functional behavior of the artifact, and allows the implementation engine freedom to cache intermediate results in order to improve performance.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -164,6 +164,65 @@ Note that the recommended approach to statically binding to an expansion set is 
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="CodeDef">
+		<xs:annotation>
+			<xs:documentation>The CodeDef type defines a code identifier that can then be used to reference single codes anywhere within an expression.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="codeSystem" type="CodeSystemRef" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The code system that contains the code being referenced.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name of the code used for reference.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="id" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The unique identifier of the code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="display" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>An optional display string used to describe the code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConceptDef">
+		<xs:annotation>
+			<xs:documentation>The ConceptDef type defines a concept identifier that can then be used to reference single concepts anywhere within an expression.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="code" type="CodeRef" minOccurs="1" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>A code that makes up the concept. All codes within a given concept must be synonyms.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name of the concept used for reference.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="display" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>An optional display string used to describe the concept.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="CodeSystemRef">
 		<xs:annotation>
 			<xs:documentation>The CodeSystemRef expression allows a previously defined named code system to be referenced within an expression. Conceptually, referencing a code system returns the set of codes in the code system. Note that this operation should almost never be performed in practice. Code system references are allowed in order to allow for testing of code membership in a particular code system.</xs:documentation>
@@ -178,6 +237,28 @@ Note that the recommended approach to statically binding to an expansion set is 
 	<xs:complexType name="ValueSetRef">
 		<xs:annotation>
 			<xs:documentation>The ValueSetRef expression allows a previously defined named value set to be referenced within an expression. Conceptually, referencing a value set returns the expansion set for the value set as a list of codes.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CodeRef">
+		<xs:annotation>
+			<xs:documentation>The CodeRef expression allows a previously defined code to be referenced within an expression.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConceptRef">
+		<xs:annotation>
+			<xs:documentation>The ConceptRef expression allows a previously defined concept to be referenced within an expression.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">

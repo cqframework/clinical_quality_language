@@ -33,6 +33,8 @@ define YearExpression: 1 year
 define YearsExpression: 10 years
 define MonthExpression: 1 month
 define MonthsExpression: 10 months
+define WeekExpression: 1 week
+define WeeksExpression: 10 weeks
 define DayExpression: 1 day
 define DaysExpression: 10 days
 define HourExpression: 1 hour

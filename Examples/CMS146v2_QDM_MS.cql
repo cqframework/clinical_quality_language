@@ -26,7 +26,7 @@ define "EncounterData":
         (["Diagnosis": "Acute Pharyngitis"] union ["Diagnosis": "Acute Tonsillitis"]) P,
         ["MedicationOrder": "Antibiotic Medications"] A,
         ["LaboratoryTestPerformed": "Group A Streptococcus Test"] T
-    define
+    let
         InMP : Interval[E."admissionDatetime", E."dischargeDatetime"] during MeasurementPeriod,
         PharyngitisDx : Interval[P."onsetDatetime", P."abatementDatetime"] includes Interval[E."admissionDatetime", E."dischargeDatetime"]
             or P."onsetDatetime" in Interval[E."admissionDatetime", E."dischargeDatetime"],

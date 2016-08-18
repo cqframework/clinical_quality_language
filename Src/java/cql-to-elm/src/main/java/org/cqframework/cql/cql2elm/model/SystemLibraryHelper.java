@@ -94,8 +94,8 @@ public class SystemLibraryHelper {
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
         system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-        // Matches<T>(T, T) : Boolean
-        system.add(new GenericOperator("Matches", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equivalent<T>(T, T) : Boolean
+        system.add(new GenericOperator("Equivalent", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         system.add(new Operator("Less", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
@@ -141,6 +141,8 @@ public class SystemLibraryHelper {
         system.add(new Operator("Log", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
 
         system.add(new Operator("Ln", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+
+        system.add(new Operator("Exp", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
 
         // MaxValue<T>() : T
         // MinValue<T>() : T
@@ -328,8 +330,8 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Except", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // Exists<T>(list<T>) : Boolean
         system.add(new GenericOperator("Exists", new Signature(new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Expand<T>(list<list<T>>) : list<T>
-        system.add(new GenericOperator("Expand", new Signature(new ListType(new ListType(new TypeParameter("T")))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
+        // Flatten<T>(list<list<T>>) : list<T>
+        system.add(new GenericOperator("Flatten", new Signature(new ListType(new ListType(new TypeParameter("T")))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // First<T>(list<T>) : T
         system.add(new GenericOperator("First", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // In<T>(T, list<T>) : Boolean
@@ -404,7 +406,7 @@ public class SystemLibraryHelper {
         // ToConcept(list<Code>)
         Operator codesToConcept = new Operator("ToConcept", new Signature(new ListType(systemModel.getCode())), systemModel.getConcept());
         system.add(codesToConcept);
-        system.add(new Conversion(codesToConcept, false)); // TODO: Spec does not say if this is implicit (DSTU comment #827)
+        system.add(new Conversion(codesToConcept, true));
 
         system.add(new Operator("CalculateAge", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
         system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));

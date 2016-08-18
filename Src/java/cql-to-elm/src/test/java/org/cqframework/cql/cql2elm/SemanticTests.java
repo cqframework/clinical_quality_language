@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -129,12 +130,17 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/InvalidCastExpression.cql", 1);
     }
 
+    @Test
+    public void testForwardReferences() throws IOException {
+        runSemanticTest("OperatorTests/ForwardReferences.cql", 0);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }
 
     private void runSemanticTest(String testFileName, int expectedErrors) throws IOException {
-        File translationTestFile = new File(Cql2ElmVisitorTest.class.getResource(testFileName).getFile());
+        File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
         CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, new LibraryManager());
         for (CqlTranslatorException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",

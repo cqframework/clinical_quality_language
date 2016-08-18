@@ -160,10 +160,10 @@
                               <operand path="issued" scope="R" xsi:type="Property"/>
                               <operand lowClosed="true" highClosed="true" xsi:type="Interval">
                                  <low xsi:type="Subtract">
-                                    <operand name="Today" xsi:type="FunctionRef"/>
+                                    <operand xsi:type="Today"/>
                                     <operand value="1" unit="years" xsi:type="Quantity"/>
                                  </low>
-                                 <high name="Today" xsi:type="FunctionRef"/>
+                                 <high xsi:type="Today"/>
                               </operand>
                            </operand>
                            <operand xsi:type="Not">
@@ -185,7 +185,7 @@
                         </source>
                         <where precision="Day" xsi:type="SameOrAfter">
                            <operand path="orderedOn" scope="P" xsi:type="Property"/>
-                           <operand name="Today" xsi:type="FunctionRef"/>
+                           <operand xsi:type="Today"/>
                         </where>
                      </operand>
                   </operand>
@@ -210,12 +210,10 @@
          </expression>
       </def>
       <def name="ChlamydiaScreeningRequest" context="Patient" accessLevel="Public">
-         <expression classType="quick:ProcedureRequest" xsi:type="Instance">
+         <expression xsi:type="Tuple">
             <element name="type">
-               <value name="ToConcept" libraryName="System" xsi:type="FunctionRef">
-                  <operand code="442487003" display="Screening for Chlamydia trachomatis (procedure)" xsi:type="Code">
-                     <system name="SNOMED"/>
-                  </operand>
+               <value code="442487003" display="Screening for Chlamydia trachomatis (procedure)" xsi:type="Code">
+                  <system name="SNOMED"/>
                </value>
             </element>
             <element name="status">

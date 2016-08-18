@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="ChlamydiaScreening_CQM" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
-      <def localIdentifier="System" uri="urn:hl7-org:elm:r1"/>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
       <def localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
    </usings>
    <parameters>
       <def name="MeasurementPeriod" accessLevel="Public">
          <default lowClosed="true" highClosed="false" xsi:type="Interval">
-            <low name="DateTime" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="2013" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            <low xsi:type="DateTime">
+               <year valueType="t:Integer" value="2013" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
             </low>
-            <high name="DateTime" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="2014" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="1" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
-               <operand valueType="Integer" value="0" xsi:type="Literal"/>
+            <high xsi:type="DateTime">
+               <year valueType="t:Integer" value="2014" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
             </high>
          </default>
       </def>
@@ -64,7 +64,7 @@
                         <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
                      </operand>
                   </operand>
-                  <operand valueType="Integer" value="16" xsi:type="Literal"/>
+                  <operand valueType="t:Integer" value="16" xsi:type="Literal"/>
                </operand>
                <operand xsi:type="Less">
                   <operand precision="Year" xsi:type="CalculateAgeAt">
@@ -75,7 +75,7 @@
                         <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
                      </operand>
                   </operand>
-                  <operand valueType="Integer" value="24" xsi:type="Literal"/>
+                  <operand valueType="t:Integer" value="24" xsi:type="Literal"/>
                </operand>
             </operand>
             <operand xsi:type="InValueSet">
@@ -242,21 +242,21 @@
                            </source>
                            <where xsi:type="In">
                               <operand path="dateTime" xsi:type="Property">
-                                 <source name="Last" xsi:type="FunctionRef">
-                                    <operand xsi:type="Query">
+                                 <source xsi:type="Last">
+                                    <source xsi:type="Query">
                                        <source alias="E">
                                           <expression path="event" scope="O" xsi:type="Property"/>
                                        </source>
                                        <where xsi:type="Equal">
                                           <operand path="status" scope="E" xsi:type="Property"/>
-                                          <operand valueType="String" value="completed" xsi:type="Literal"/>
+                                          <operand valueType="t:String" value="completed" xsi:type="Literal"/>
                                        </where>
                                        <sort>
                                           <by direction="asc" xsi:type="ByExpression">
                                              <expression path="dateTime" scope="E" xsi:type="Property"/>
                                           </by>
                                        </sort>
-                                    </operand>
+                                    </source>
                                  </source>
                               </operand>
                               <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
@@ -273,21 +273,21 @@
                         </source>
                         <where xsi:type="In">
                            <operand path="dateTime" xsi:type="Property">
-                              <source name="Last" xsi:type="FunctionRef">
-                                 <operand xsi:type="Query">
+                              <source xsi:type="Last">
+                                 <source xsi:type="Query">
                                     <source alias="E">
                                        <expression path="event" scope="O" xsi:type="Property"/>
                                     </source>
                                     <where xsi:type="Equal">
                                        <operand path="status" scope="E" xsi:type="Property"/>
-                                       <operand valueType="String" value="completed" xsi:type="Literal"/>
+                                       <operand valueType="t:String" value="completed" xsi:type="Literal"/>
                                     </where>
                                     <sort>
                                        <by direction="asc" xsi:type="ByExpression">
                                           <expression path="dateTime" scope="E" xsi:type="Property"/>
                                        </by>
                                     </sort>
-                                 </operand>
+                                 </source>
                               </source>
                            </operand>
                            <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
@@ -304,16 +304,16 @@
                      </source>
                      <where xsi:type="In">
                         <operand path="dateTime" xsi:type="Property">
-                           <source name="Last" xsi:type="FunctionRef">
-                              <operand xsi:type="Query">
+                           <source xsi:type="Last">
+                              <source xsi:type="Query">
                                  <source alias="E">
                                     <expression path="event" scope="O" xsi:type="Property"/>
                                  </source>
                                  <where xsi:type="Equal">
                                     <operand path="status" scope="E" xsi:type="Property"/>
-                                    <operand valueType="String" value="completed" xsi:type="Literal"/>
+                                    <operand valueType="t:String" value="completed" xsi:type="Literal"/>
                                  </where>
-                              </operand>
+                              </source>
                            </source>
                         </operand>
                         <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
@@ -330,16 +330,16 @@
                   </source>
                   <where xsi:type="In">
                      <operand path="dateTime" xsi:type="Property">
-                        <source name="Last" xsi:type="FunctionRef">
-                           <operand xsi:type="Query">
+                        <source xsi:type="Last">
+                           <source xsi:type="Query">
                               <source alias="E">
                                  <expression path="event" scope="O" xsi:type="Property"/>
                               </source>
                               <where xsi:type="Equal">
                                  <operand path="status" scope="E" xsi:type="Property"/>
-                                 <operand valueType="String" value="completed" xsi:type="Literal"/>
+                                 <operand valueType="t:String" value="completed" xsi:type="Literal"/>
                               </where>
-                           </operand>
+                           </source>
                         </source>
                      </operand>
                      <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
@@ -355,7 +355,7 @@
          </expression>
       </def>
       <def name="InDenominator" context="Patient" accessLevel="Public">
-         <expression valueType="Boolean" value="true" xsi:type="Literal"/>
+         <expression valueType="t:Boolean" value="true" xsi:type="Literal"/>
       </def>
       <def name="InNumerator" context="Patient" accessLevel="Public">
          <expression xsi:type="Exists">
@@ -383,8 +383,8 @@
          <expression xsi:type="Multiply">
             <operand xsi:type="Divide">
                <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
-                  <operand name="Count" xsi:type="FunctionRef">
-                     <operand xsi:type="Query">
+                  <operand xsi:type="Count">
+                     <source xsi:type="Query">
                         <source alias="P">
                            <expression name="Patient" xsi:type="ExpressionRef"/>
                         </source>
@@ -395,12 +395,12 @@
                            </operand>
                            <operand name="InNumerator" xsi:type="ExpressionRef"/>
                         </where>
-                     </operand>
+                     </source>
                   </operand>
                </operand>
                <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
-                  <operand name="Count" xsi:type="FunctionRef">
-                     <operand xsi:type="Query">
+                  <operand xsi:type="Count">
+                     <source xsi:type="Query">
                         <source alias="P">
                            <expression name="Patient" xsi:type="ExpressionRef"/>
                         </source>
@@ -408,12 +408,12 @@
                            <operand name="InInitialPopulation" xsi:type="ExpressionRef"/>
                            <operand name="InDenominator" xsi:type="ExpressionRef"/>
                         </where>
-                     </operand>
+                     </source>
                   </operand>
                </operand>
             </operand>
             <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
-               <operand valueType="Integer" value="100" xsi:type="Literal"/>
+               <operand valueType="t:Integer" value="100" xsi:type="Literal"/>
             </operand>
          </expression>
       </def>

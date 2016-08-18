@@ -15,6 +15,7 @@ public class ModelInfoLoader {
         registerModelInfoProvider(new VersionedIdentifier().withId("QUICK").withVersion("1"), new QuickModelInfoProvider());
         //registerModelInfoProvider(new VersionedIdentifier().withId("ADL").withVersion("1"), new AdlModelInfoProvider());
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.1.2"), new QdmModelInfoProvider());
+        registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.4"), new FhirModelInfoProvider());
     }
 
     public static ModelInfoProvider getModelInfoProvider(VersionedIdentifier modelIdentifier) {

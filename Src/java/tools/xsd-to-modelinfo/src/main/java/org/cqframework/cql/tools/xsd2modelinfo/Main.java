@@ -64,7 +64,9 @@ public class Main {
         ModelInfo config = null;
         if (configOpt != null) {
             File configFile = configOpt.value(options);
-            config = JAXB.unmarshal(configFile, ModelInfo.class);
+            if (configFile != null) {
+                config = JAXB.unmarshal(configFile, ModelInfo.class);
+            }
         }
 
         ModelInfo modelInfo = ModelImporter.fromXsd(schema, importerOptions, config);

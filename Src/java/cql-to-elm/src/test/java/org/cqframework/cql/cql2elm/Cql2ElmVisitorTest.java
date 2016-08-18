@@ -134,7 +134,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testNotEqualExpression() {
-        ExpressionDef def = (ExpressionDef)visitData("define st : 1 <> 2");
+        ExpressionDef def = (ExpressionDef)visitData("define st : 1 != 2");
         Not not = (Not)def.getExpression();
         Equal equal = (Equal)not.getOperand();
         Expression left = equal.getOperand().get(0);
@@ -333,7 +333,7 @@ public class Cql2ElmVisitorTest {
         String cql = "codesystem \"SNOMED-CT:2014\" : 'SNOMED-CT' version '2014'\n" +
                 "codesystem \"ICD-9:2014\" : 'ICD-9' version '2014'\n" +
                 "valueset \"Female Administrative Sex\" : '2.16.840.1.113883.3.560.100.2' version '1'\n" +
-                "    codesystems ( \"SNOMED-CT:2014\", \"ICD-9:2014\" )\n" +
+                "    codesystems { \"SNOMED-CT:2014\", \"ICD-9:2014\" }\n" +
                 "define X : 1";
         Library l = visitLibrary(cql);
         ValueSetDef def = l.getValueSets().getDef().get(0);
@@ -914,22 +914,18 @@ public class Cql2ElmVisitorTest {
         // Finally test sort
         SortClause sort = query.getSort();
         assertThat(sort.getBy(), hasSize(1));
-        // TODO: Confirm this should not be ByColumn
-        ByExpression sortBy = (ByExpression) sort.getBy().get(0);
-        // TODO: Should this really be using Identifier class here?
-        IdentifierRef id = (IdentifierRef) sortBy.getExpression();
-        assertThat(id.getName(), is("lengthOfStay"));
-        assertThat(id.getLibraryName(), is(nullValue()));
+        ByColumn sortBy = (ByColumn)sort.getBy().get(0);
+        assertThat(sortBy.getPath(), is("lengthOfStay"));
         assertThat(sortBy.getDirection(), is(SortDirection.DESC));
     }
 
     @Test
-    public void testQueryThatReturnsDefine() {
+    public void testQueryThatReturnsLet() {
         String cql =
             "using QUICK\n" +
             "valueset \"Inpatient\" : '2.16.840.1.113883.3.666.5.307'\n" +
             "define st : [Encounter: \"Inpatient\"] E\n" +
-            "    define a : 1\n" +
+            "    let a : 1\n" +
             "    return a";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         Query query = (Query) def.getExpression();
@@ -950,14 +946,14 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getTemplateId(), is("encounter-qicore-qicore-encounter"));
 
         // Then check the define
-        assertThat(query.getDefine(), hasSize(1));
-        DefineClause dfc = query.getDefine().get(0);
+        assertThat(query.getLet(), hasSize(1));
+        LetClause dfc = query.getLet().get(0);
         assertThat(dfc.getIdentifier(), is("a"));
         assertThat(dfc.getExpression(), literalFor(1));
 
         // Then check the return
-        assertThat(query.getReturn().getExpression(), instanceOf(QueryDefineRef.class));
-        QueryDefineRef qdr = (QueryDefineRef) query.getReturn().getExpression();
+        assertThat(query.getReturn().getExpression(), instanceOf(QueryLetRef.class));
+        QueryLetRef qdr = (QueryLetRef) query.getReturn().getExpression();
         assertThat(qdr.getName(), is("a"));
 
         // Then check the rest

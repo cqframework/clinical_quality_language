@@ -27,84 +27,94 @@
   POSSIBILITY OF SUCH DAMAGE.
   
 
-  Generated on Fri, Apr 3, 2015 14:24+1100 for FHIR v0.5.0 
+  Generated on Thu, Mar 31, 2016 08:01+1100 for FHIR v1.4.0 
+
+  Note: the schemas &amp; schematrons do not contain all of the rules about what makes resources
+  valid. Implementers will still need to be familiar with the content of the specification and with
+  any profiles that apply to the resources in order to make a conformant implementation.
+
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://hl7.org/fhir" xmlns:xhtml="http://www.w3.org/1999/xhtml" targetNamespace="http://hl7.org/fhir" elementFormDefault="qualified" version="1.0">
   <xs:include schemaLocation="fhir-base.xsd"/>
   <xs:element name="Condition" type="Condition">
     <xs:annotation>
-      <xs:documentation>Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a Diagnosis during an Encounter; populating a problem List or a Summary Statement, such as a Discharge Summary.</xs:documentation>
+      <xs:documentation xml:lang="en">Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a diagnosis during an encounter; populating a problem list or a summary statement, such as a discharge summary.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="Condition">
     <xs:annotation>
-      <xs:documentation>Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a Diagnosis during an Encounter; populating a problem List or a Summary Statement, such as a Discharge Summary.</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+      <xs:documentation xml:lang="en">Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a diagnosis during an encounter; populating a problem list or a summary statement, such as a discharge summary.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="DomainResource">
         <xs:sequence>
           <xs:element name="identifier" minOccurs="0" maxOccurs="unbounded" type="Identifier">
             <xs:annotation>
-              <xs:documentation>This records identifiers associated with this condition that are defined by business processed and/ or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).</xs:documentation>
+              <xs:documentation xml:lang="en">This records identifiers associated with this condition that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropriate (e.g. in CDA documents, or in written / printed documentation).</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="patient" minOccurs="1" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>Indicates the patient who the condition record is associated with.</xs:documentation>
+              <xs:documentation xml:lang="en">Indicates the patient who the condition record is associated with.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="encounter" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>Encounter during which the condition was first asserted.</xs:documentation>
+              <xs:documentation xml:lang="en">Encounter during which the condition was first asserted.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="asserter" minOccurs="0" maxOccurs="1" type="Reference">
             <xs:annotation>
-              <xs:documentation>Person who takes responsibility for asserting the existence of the condition as part of the electronic record.</xs:documentation>
+              <xs:documentation xml:lang="en">Individual who is making the condition statement.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="dateAsserted" minOccurs="0" maxOccurs="1" type="date">
+          <xs:element name="dateRecorded" minOccurs="0" maxOccurs="1" type="date">
             <xs:annotation>
-              <xs:documentation>Estimated or actual date the condition/problem/diagnosis was first detected/suspected.</xs:documentation>
+              <xs:documentation xml:lang="en">A date, when  the Condition statement was documented.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="code" minOccurs="1" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>Identification of the condition, problem or diagnosis.</xs:documentation>
+              <xs:documentation xml:lang="en">Identification of the condition, problem or diagnosis.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="category" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A category assigned to the condition. E.g. complaint | symptom | finding | diagnosis.</xs:documentation>
+              <xs:documentation xml:lang="en">A category assigned to the condition.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="clinicalStatus" minOccurs="1" maxOccurs="1" type="ConditionClinicalStatus">
+          <xs:element name="clinicalStatus" minOccurs="0" maxOccurs="1" type="code">
             <xs:annotation>
-              <xs:documentation>The clinical status of the condition.</xs:documentation>
+              <xs:documentation xml:lang="en">The clinical status of the condition.</xs:documentation>
+           </xs:annotation>
+          </xs:element>
+          <xs:element name="verificationStatus" minOccurs="1" maxOccurs="1" type="ConditionVerificationStatus">
+            <xs:annotation>
+              <xs:documentation xml:lang="en">The verification status to support the clinical status of the condition.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="severity" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A subjective assessment of the severity of the condition as evaluated by the clinician.</xs:documentation>
+              <xs:documentation xml:lang="en">A subjective assessment of the severity of the condition as evaluated by the clinician.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>Estimated or actual date or date-time  the condition began, in the opinion of the clinician.</xs:documentation>
+              <xs:documentation xml:lang="en">Estimated or actual date or date-time  the condition began, in the opinion of the clinician.</xs:documentation>
             </xs:annotation>
             <xs:element name="onsetDateTime" type="dateTime"/>
-            <xs:element name="onsetAge" type="Age"/>
+            <xs:element name="onsetQuantity" type="Age"/>
             <xs:element name="onsetPeriod" type="Period"/>
             <xs:element name="onsetRange" type="Range"/>
             <xs:element name="onsetString" type="string"/>
           </xs:choice>
           <xs:choice minOccurs="0" maxOccurs="1" >
             <xs:annotation>
-              <xs:documentation>The date or estimated date that the condition resolved or went into remission. This is called &quot;abatement&quot; because of the many overloaded connotations associated with &quot;remission&quot; or &quot;resolution&quot; - Conditions are never really resolved, but they can abate.</xs:documentation>
+              <xs:documentation xml:lang="en">The date or estimated date that the condition resolved or went into remission. This is called &quot;abatement&quot; because of the many overloaded connotations associated with &quot;remission&quot; or &quot;resolution&quot; - Conditions are never really resolved, but they can abate.</xs:documentation>
             </xs:annotation>
-            <xs:element name="abatementDate" type="date"/>
-            <xs:element name="abatementAge" type="Age"/>
+            <xs:element name="abatementDateTime" type="dateTime"/>
+            <xs:element name="abatementQuantity" type="Age"/>
             <xs:element name="abatementBoolean" type="boolean"/>
             <xs:element name="abatementPeriod" type="Period"/>
             <xs:element name="abatementRange" type="Range"/>
@@ -112,32 +122,22 @@
           </xs:choice>
           <xs:element name="stage" type="Condition.Stage" minOccurs="0" maxOccurs="1">
             <xs:annotation>
-              <xs:documentation>Clinical stage or grade of a condition. May include formal severity assessments.</xs:documentation>
+              <xs:documentation xml:lang="en">Clinical stage or grade of a condition. May include formal severity assessments.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="evidence" type="Condition.Evidence" minOccurs="0" maxOccurs="unbounded">
             <xs:annotation>
-              <xs:documentation>Supporting Evidence / manifestations that are the basis on which this condition is suspected or confirmed.</xs:documentation>
+              <xs:documentation xml:lang="en">Supporting Evidence / manifestations that are the basis on which this condition is suspected or confirmed.</xs:documentation>
            </xs:annotation>
           </xs:element>
-          <xs:element name="location" type="Condition.Location" minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="bodySite" minOccurs="0" maxOccurs="unbounded" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>The anatomical location where this condition manifests itself.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="dueTo" type="Condition.DueTo" minOccurs="0" maxOccurs="unbounded">
-            <xs:annotation>
-              <xs:documentation>Further conditions, problems, diagnoses, procedures or events or the substance that caused/triggered this Condition.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="occurredFollowing" type="Condition.OccurredFollowing" minOccurs="0" maxOccurs="unbounded">
-            <xs:annotation>
-              <xs:documentation>Further conditions, problems, diagnoses, procedures or events or the substance that preceded this Condition.</xs:documentation>
+              <xs:documentation xml:lang="en">The anatomical location where this condition manifests itself.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="notes" minOccurs="0" maxOccurs="1" type="string">
             <xs:annotation>
-              <xs:documentation>Additional information about the Condition. This is a general notes/comments entry  for description of the Condition, its diagnosis and prognosis.</xs:documentation>
+              <xs:documentation xml:lang="en">Additional information about the Condition. This is a general notes/comments entry  for description of the Condition, its diagnosis and prognosis.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -146,19 +146,19 @@
   </xs:complexType>
   <xs:complexType name="Condition.Stage">
     <xs:annotation>
-      <xs:documentation>Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a Diagnosis during an Encounter; populating a problem List or a Summary Statement, such as a Discharge Summary.</xs:documentation>
+      <xs:documentation xml:lang="en">Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a diagnosis during an encounter; populating a problem list or a summary statement, such as a discharge summary.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
           <xs:element name="summary" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A simple summary of the stage such as &quot;Stage 3&quot;. The determination of the stage is disease-specific.</xs:documentation>
+              <xs:documentation xml:lang="en">A simple summary of the stage such as &quot;Stage 3&quot;. The determination of the stage is disease-specific.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="assessment" minOccurs="0" maxOccurs="unbounded" type="Reference">
             <xs:annotation>
-              <xs:documentation>Reference to a formal record of the evidence on which the staging assessment is based.</xs:documentation>
+              <xs:documentation xml:lang="en">Reference to a formal record of the evidence on which the staging assessment is based.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
@@ -167,127 +167,37 @@
   </xs:complexType>
   <xs:complexType name="Condition.Evidence">
     <xs:annotation>
-      <xs:documentation>Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a Diagnosis during an Encounter; populating a problem List or a Summary Statement, such as a Discharge Summary.</xs:documentation>
+      <xs:documentation xml:lang="en">Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a diagnosis during an encounter; populating a problem list or a summary statement, such as a discharge summary.</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="BackboneElement">
         <xs:sequence>
           <xs:element name="code" minOccurs="0" maxOccurs="1" type="CodeableConcept">
             <xs:annotation>
-              <xs:documentation>A manifestation or symptom that led to the recording of this condition.</xs:documentation>
+              <xs:documentation xml:lang="en">A manifestation or symptom that led to the recording of this condition.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="detail" minOccurs="0" maxOccurs="unbounded" type="Reference">
             <xs:annotation>
-              <xs:documentation>Links to other relevant information, including pathology reports.</xs:documentation>
+              <xs:documentation xml:lang="en">Links to other relevant information, including pathology reports.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:complexType name="Condition.Location">
-    <xs:annotation>
-      <xs:documentation>Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a Diagnosis during an Encounter; populating a problem List or a Summary Statement, such as a Discharge Summary.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="BackboneElement">
-        <xs:sequence>
-          <xs:choice minOccurs="0" maxOccurs="1" >
-            <xs:annotation>
-              <xs:documentation>Code that identifies the structural location.</xs:documentation>
-            </xs:annotation>
-            <xs:element name="siteCodeableConcept" type="CodeableConcept"/>
-            <xs:element name="siteReference" type="Reference"/>
-          </xs:choice>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="Condition.DueTo">
-    <xs:annotation>
-      <xs:documentation>Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a Diagnosis during an Encounter; populating a problem List or a Summary Statement, such as a Discharge Summary.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="BackboneElement">
-        <xs:sequence>
-          <xs:element name="code" minOccurs="0" maxOccurs="1" type="CodeableConcept">
-            <xs:annotation>
-              <xs:documentation>Code that identifies the target of this relationship. The code takes the place of a detailed instance target.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="target" minOccurs="0" maxOccurs="1" type="Reference">
-            <xs:annotation>
-              <xs:documentation>Target of the relationship.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="Condition.OccurredFollowing">
-    <xs:annotation>
-      <xs:documentation>Use to record detailed information about conditions, problems or diagnoses recognized by a clinician. There are many uses including: recording a Diagnosis during an Encounter; populating a problem List or a Summary Statement, such as a Discharge Summary.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="BackboneElement">
-        <xs:sequence>
-          <xs:element name="code" minOccurs="0" maxOccurs="1" type="CodeableConcept">
-            <xs:annotation>
-              <xs:documentation>Code that identifies the target of this relationship. The code takes the place of a detailed instance target.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-          <xs:element name="target" minOccurs="0" maxOccurs="1" type="Reference">
-            <xs:annotation>
-              <xs:documentation>Target of the relationship.</xs:documentation>
-           </xs:annotation>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:simpleType name="ConditionClinicalStatus-list">
+  <xs:simpleType name="ConditionVerificationStatus-list">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="provisional">
-        <xs:annotation>
-          <xs:documentation>This is a tentative diagnosis - still a candidate that is under consideration.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="working">
-        <xs:annotation>
-          <xs:documentation>The patient is being treated on the basis that this is the condition, but it is still not confirmed.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="confirmed">
-        <xs:annotation>
-          <xs:documentation>There is sufficient diagnostic and/or clinical evidence to treat this as a confirmed condition.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="refuted">
-        <xs:annotation>
-          <xs:documentation>This condition has been ruled out by diagnostic and clinical evidence.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="entered-in-error">
-        <xs:annotation>
-          <xs:documentation>The statement was entered in error and Is not valid.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="unknown">
-        <xs:annotation>
-          <xs:documentation>The condition status is unknown.  Note that &quot;unknown&quot; is a value of last resort and every attempt should be made to provide a meaningful value other than &quot;unknown&quot;.</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
-  <xs:complexType name="ConditionClinicalStatus">
+  <xs:complexType name="ConditionVerificationStatus">
     <xs:annotation>
-      <xs:documentation>The clinical status of the Condition or diagnosis</xs:documentation>
-      <xs:documentation>If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
+      <xs:documentation xml:lang="en">The verification status to support or decline the clinical status of the condition or diagnosis.</xs:documentation>
+      <xs:documentation xml:lang="en">If the element is present, it must have either a @value, an @id, or extensions</xs:documentation>
     </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Element">
-        <xs:attribute name="value" type="ConditionClinicalStatus-list" use="optional"/>
+        <xs:attribute name="value" type="ConditionVerificationStatus-list" use="optional"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

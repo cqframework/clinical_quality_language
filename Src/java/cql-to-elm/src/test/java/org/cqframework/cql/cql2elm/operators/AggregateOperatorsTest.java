@@ -232,7 +232,7 @@ public class AggregateOperatorsTest {
 
         Query q = (Query) source;
         assertThat(q.getSource(), hasSize(1));
-        assertThat(q.getDefine(), hasSize(0));
+        assertThat(q.getLet(), hasSize(0));
         assertThat(q.getRelationship(), hasSize(0));
         assertThat(q.getSort(), nullValue());
         assertThat(q.getWhere(), nullValue());
@@ -240,7 +240,7 @@ public class AggregateOperatorsTest {
         assertThat(aqs.getExpression(), listOfLiterals(1, 2, 3, 4, 5));
         String alias = aqs.getAlias();
         assertThat(q.getReturn().isDistinct(), is(false));
-        assertThat(q.getReturn().getExpression(), instanceOf(Convert.class));
+        assertThat(q.getReturn().getExpression(), instanceOf(ToDecimal.class));
         assertThat(q.getReturn().getExpression(), convertsToDecimalFromAlias(alias));
     }
 

@@ -41,7 +41,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
-        usingDefinition.setName((String)visit(ctx.identifier()));
+        usingDefinition.setName((String)visit(ctx.modelIdentifier()));
         if (ctx.versionSpecifier() != null) {
             usingDefinition.setVersion((String)visit(ctx.versionSpecifier()));
         }
@@ -65,6 +65,24 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         valuesetDefinition.setDefinition(ctx);
         libraryInfo.addValuesetDefinition(valuesetDefinition);
         return valuesetDefinition;
+    }
+
+    @Override
+    public Object visitCodeDefinition(@NotNull cqlParser.CodeDefinitionContext ctx) {
+        CodeDefinitionInfo codeDefinition = new CodeDefinitionInfo();
+        codeDefinition.setName((String)visit(ctx.identifier()));
+        codeDefinition.setDefinition(ctx);
+        libraryInfo.addCodeDefinition(codeDefinition);
+        return codeDefinition;
+    }
+
+    @Override
+    public Object visitConceptDefinition(@NotNull cqlParser.ConceptDefinitionContext ctx) {
+        ConceptDefinitionInfo conceptDefinition = new ConceptDefinitionInfo();
+        conceptDefinition.setName((String)visit(ctx.identifier()));
+        conceptDefinition.setDefinition(ctx);
+        libraryInfo.addConceptDefinition(conceptDefinition);
+        return conceptDefinition;
     }
 
     @Override

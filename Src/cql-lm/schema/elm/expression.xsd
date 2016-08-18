@@ -452,7 +452,7 @@ If any argument is null, the resulting list will have null for that element.</xs
 	</xs:complexType>
 	<xs:complexType name="If">
 		<xs:annotation>
-			<xs:documentation>The If operator evaluates a condition, and returns the then argument if the condition evaluates to true; otherwise the result of the else argument is returned. The static type of the then argument determines the result type of the conditional, and the else argument must be of that same type.</xs:documentation>
+			<xs:documentation>The If operator evaluates a condition, and returns the then argument if the condition evaluates to true; if the condition evaluates to false or null, the result of the else argument is returned. The static type of the then argument determines the result type of the conditional, and the else argument must be of that same type.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -584,6 +584,135 @@ Conversion between String and DateTime/Time is performed using the ISO-8601 stan
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ToBoolean">
+		<xs:annotation>
+			<xs:documentation>The ToBoolean operator converts the value of its argument to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
+			
+If the input cannot be interpreted as a valid Boolean value, a run-time error is thrown.
+
+If the argument is null the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToConcept">
+		<xs:annotation>
+			<xs:documentation>The ToConcept operator converts a value of type Code to a Concept value with the given Code as its primary and only Code. If the Code has a display value, the resulting Concept will have the same display value.
+			
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToDateTime">
+		<xs:annotation>
+			<xs:documentation>The ToDateTime operator converts the value of its argument to a DateTime value. The operator expects the string to be formatted using the ISO-8601 date/time representation: 
+
+YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+
+In addition, the string must be interpretable as a valid date/time value.
+
+If the input string is not formatted correctly, or does not represent a valid date/time value, a run-time error is thrown.
+
+As with date/time literals, date/time values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToDecimal">
+		<xs:annotation>
+			<xs:documentation>The ToDecimal operator converts the value of its argument to a Decimal value. The operator accepts strings using the following format:
+
+(+|-)?#0(.0#)?
+
+Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit, followed optionally by a decimal point, at least one digit, and any number of additional digits (including none).
+
+Note that the decimal value returned by this operator must be limited in precision and scale to the maximum precision and scale representable for Decimal values within CQL.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, a run-time error is thrown.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToInteger">
+		<xs:annotation>
+			<xs:documentation>The ToInteger operator converts the value of its argument to an Integer value. The operator accepts strings using the following format:
+
+(+|-)?#0
+
+Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit.
+
+Note that the integer value returned by this operator must be a valid value in the range representable for Integer values in CQL.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, a run-time error is thrown.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToQuantity">
+		<xs:annotation>
+			<xs:documentation>The ToQuantity operator converts the value of its argument to a Quantity value. The operator accepts strings using the following format:
+
+(+|-)?#0(.0#)?('&lt;unit&gt;')?
+
+Meaning an optional polarity indicator, followed by any number of digits (including none) followed by at least one digit, optionally followed by a decimal point, at least one digit, and any number of additional digits, all optionally followed by a unit designator as a string literal specifying a valid UCUM unit of measure. Spaces are allowed between the quantity value and the unit designator.
+
+Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL. 
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, a run-time error is thrown.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToString">
+		<xs:annotation>
+			<xs:documentation>The ToString operator converts the value of its argument to a String value. The operator uses the following string representations for each type:
+
+Boolean true|false
+Integer (-)?#0
+Decimal (-)?#0.0#
+Quantity (-)?#0.0# '&lt;unit&gt;'
+DateTime YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+Time	Thh:mm:ss.fff(+|-)hh:mm
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToTime">
+		<xs:annotation>
+			<xs:documentation>The ToTime operator converts the value of its argument to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
+
+Thh:mm:ss.fff(+|-)hh:mm
+
+In addition, the string must be interpretable as a valid time-of-day value.
+
+If the input string is not formatted correctly, or does not represent a valid time-of-day value, a run-time error is thrown.
+
+As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- Comparison Operators -->
 	<xs:complexType name="Equal">
 		<xs:annotation>
@@ -591,7 +720,7 @@ Conversion between String and DateTime/Time is performed using the ISO-8601 stan
 
 For simple types, this means that equality returns true if and only if the result of each argument evaluates to the same value.
 
-For quantities, this means that the dimensions of each quantity must match, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For quantities, this means that the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
 
 For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements by name are equal.
 
@@ -607,23 +736,23 @@ If either argument is null, the result is null.</xs:documentation>
 			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="Matches">
+	<xs:complexType name="Equivalent">
 		<xs:annotation>
-			<xs:documentation>The Matches operator returns true if the arguments are the same value, or if they are both null; and false otherwise.
+			<xs:documentation>The Equivalent operator returns true if the arguments are the same value, or if they are both null; and false otherwise.
 
-For tuple types, this means that two tuple values match if and only if the tuples are of the same type, and the values for all elements by name match.
+For tuple types, this means that two tuple values are equivalent if and only if the tuples are of the same type, and the values for all elements by name are equivalent.
 
-For list types, this means that two lists match if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements match.
+For list types, this means that two lists are equivalent if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equivalent.
 
-For interval types, this means that two intervals match if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators match.
+For interval types, this means that two intervals are equivalent if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators are equivalent.
 
-For Code values, matching is defined based on the code, system, and verrsion elements only. The display element is ignored for the purposes of determining Code matching.
+For Code values, equivalence is defined based on the code, system, and verrsion elements only. The display element is ignored for the purposes of determining Code equivalence.
 
-For Concept values, matching is defined as a non-empty intersection of the codes in each Concept.
+For Concept values, equivalence is defined as a non-empty intersection of the codes in each Concept.
 
 Note that this operator will always return true or false, even if either or both of its arguments are null or contain null components.
 
-This operator, and the corresponding notion of matching, are used throughout ELM to define the behavior of membership and containment operators such as In, Contains, Includes, IndexOf, and others. This provides consistent and intuitive behavior in the presence of missing information in list and membership contexts.</xs:documentation>
+This operator, and the corresponding notion of equivalence, are used throughout ELM to define the behavior of membership and containment operators such as In, Contains, Includes, IndexOf, and others. This provides consistent and intuitive behavior in the presence of missing information in list and membership contexts.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -643,7 +772,7 @@ The NotEqual operator is a shorthand for invocation of logical negation of the E
 		<xs:annotation>
 			<xs:documentation>The Less operator returns true if the first argument is less than the second argument.
 			
-For comparisons involving quantities, the dimensions of each quantity must match, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
 
 If either argument is null, the result is null.
 
@@ -657,7 +786,7 @@ The Less operator is defined for the Integer, Decimal, String, DateTime, Time, a
 		<xs:annotation>
 			<xs:documentation>The Greater operator returns true if the first argument is greater than the second argument.
 
-For comparisons involving quantities, the dimensions of each quantity must match, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
 
 If either argument is null, the result is null.
 
@@ -671,7 +800,7 @@ The Greater operator is defined for the Integer, Decimal, String, DateTime, Time
 		<xs:annotation>
 			<xs:documentation>The LessOrEqual operator returns true if the first argument is less than or equal to the second argument.
 
-For comparisons involving quantities, the dimensions of each quantity must match, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
 
 If either argument is null, the result is null.
 
@@ -685,7 +814,7 @@ The LessOrEqual operator is defined for the Integer, Decimal, String, DateTime, 
 		<xs:annotation>
 			<xs:documentation>The GreaterOrEqual operator returns true if the first argument is greater than or equal to the second argument.
 
-For comparisons involving quantities, the dimensions of each quantity must match, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
 
 If either argument is null, the result is null.
 
@@ -700,7 +829,7 @@ The GreaterOrEqual operator is defined for the Integer, Decimal, String, DateTim
 		<xs:annotation>
 			<xs:documentation>The Add operator performs numeric addition of its arguments.
 			
-When adding quantities, the dimensions of each quantity must match, but not necessarily the unit. For example, units of 'cm' and 'm' can be added, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input.
+When adding quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be added, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input.
 			
 The Add operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be added to a DateTime or Time using this operator.
 
@@ -722,7 +851,7 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Subtract operator performs numeric subtraction of its arguments.
 			
-When subtracting quantities, the dimensions of each quantity must match, but not necessarily the unit. For example, units of 'cm' and 'm' can be subtracted, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input.
+When subtracting quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be subtracted, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input.
 
 The Subtract operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be subtracted from a DateTime or Time using this operator.
 
@@ -740,7 +869,7 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Multiply operator performs numeric multiplication of its arguments.
 			
-For multiplication operations involving quantities, the input quantities must be of the same dimension (not necessarily the same units), and the resulting quantity will have the appropriate unit.
+For multiplication operations involving quantities, the resulting quantity will have the appropriate unit.
 
 If either argument is null, the result is null.
 
@@ -754,7 +883,7 @@ The Multiply operator is defined for the Integer, Decimal and Quantity types.</x
 		<xs:annotation>
 			<xs:documentation>The Divide operator performs numeric division of its arguments. Note that the result type of Divide is Decimal, even if its arguments are of type Integer. For integer division, use the truncated divide operator.
 			
-For division operations involving quantities, the input quantities must be in compatible dimensions (not necessarily the same units), and the resulting quantity will have the appropriate unit.
+For division operations involving quantities, the resulting quantity will have the appropriate unit.
 
 If either argument is null, the result is null.
 
@@ -866,6 +995,16 @@ Precision determines the decimal place at which the rounding will occur. If prec
 	<xs:complexType name="Ln">
 		<xs:annotation>
 			<xs:documentation>The Ln operator computes the natural logarithm of its argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Exp">
+		<xs:annotation>
+			<xs:documentation>The Exp operator returns e raised to the given power.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1054,7 +1193,7 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Indexer operator returns the indexth element in a string or list.
 			
-Indexes in strings and lists are defined to be 1-based.
+Indexes in strings and lists are defined to be 0-based.
 
 If the index is greater than the length of the string or list being indexed, the result is null.
 
@@ -1066,9 +1205,9 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="PositionOf">
 		<xs:annotation>
-			<xs:documentation>The PositionOf operator returns the 1-based index of the given pattern in the given string.
+			<xs:documentation>The PositionOf operator returns the 0-based index of the given pattern in the given string.
 			
-If the pattern is not found, the result is 0.
+If the pattern is not found, the result is -1.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1083,7 +1222,7 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Substring">
 		<xs:annotation>
-			<xs:documentation>The Substring operator returns the string within stringToSub, starting at the 1-based index startIndex, and consisting of length characters.
+			<xs:documentation>The Substring operator returns the string within stringToSub, starting at the 0-based index startIndex, and consisting of length characters.
 			
 If length is ommitted, the substring returned starts at startIndex and continues to the end of stringToSub.
 
@@ -1092,9 +1231,9 @@ If stringToSub or startIndex is null, or startIndex is out of range, the result 
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:sequence>
-					<xs:element name="stringToSub" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="startIndex" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="length" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="stringToSub" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="startIndex" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="length" type="Expression" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1357,7 +1496,7 @@ There are two overloads of this operator:
 	List, T : The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 	
-For the List, T overload, this operator returns true if the given element is in the list, using matching semantics.
+For the List, T overload, this operator returns true if the given element is in the list, using equivalence semantics.
 
 For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true.
 
@@ -1378,7 +1517,7 @@ There are two overloads of this operator:
 	List, T: The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 	
-For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using matching semantics.
+For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equivalence semantics.
 
 For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.
 			</xs:documentation>
@@ -1398,7 +1537,7 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns true if the given element is in the given list, using matching semantics.
+For the T, List overload, this operator returns true if the given element is in the given list, using equivalence semantics.
 
 For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true.
 
@@ -1419,7 +1558,7 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using matching semantics.
+For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equivalence semantics.
 
 For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators.</xs:documentation>
 		</xs:annotation>
@@ -1438,7 +1577,7 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using matching semantics.
+For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equivalence semantics.
 
 For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval.
 
@@ -1461,7 +1600,7 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 	
-For the List, List overload, this operator returns true if every element in the first list is included in the second list, using matching semantics.
+For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equivalence semantics.
 
 For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval.
 
@@ -1484,7 +1623,7 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 	
-For the List, List overload, this operator returns true if the first list includes every element of the second list, using matching semantics, and first list is strictly larger.
+For the List, List overload, this operator returns true if the first list includes every element of the second list, using equivalence semantics, and first list is strictly larger.
 
 For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal.
 
@@ -1507,7 +1646,7 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if every element of the first list is included in the second list, using matching semantics, and the first list is strictly smaller.
+For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equivalence semantics, and the first list is strictly smaller.
 
 For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal.
 
@@ -1718,7 +1857,7 @@ This operator has two overloads:
 	List
 	Interval
 
-For the list overload, this operator returns a list with the elements that appear in both lists, using matching semantics.
+For the list overload, this operator returns a list with the elements that appear in both lists, using equivalence semantics.
 
 For the interval overload, this operator returns the interval that defines the overlapping portion of both arguments. If the arguments do not overlap, this operator returns null.
 
@@ -1736,7 +1875,7 @@ This operator has two overloads:
 	List, List
 	Interval, Interval
 
-For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using matching semantics.
+For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equivalence semantics.
 
 For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null.
 
@@ -1821,11 +1960,11 @@ If the argument is null, the result is null.</xs:documentation>
 	<!-- Indexer (already defined) -->
 	<xs:complexType name="IndexOf">
 		<xs:annotation>
-			<xs:documentation>The IndexOf operator returns the 1-based index of the given element in the given source list.
+			<xs:documentation>The IndexOf operator returns the 0-based index of the given element in the given source list.
 
-The operator uses matching semantics as defined in the Matches operator to determine the index. The search is linear, and returns the index of the first element for which the matching comparison returns true.
+The operator uses equivalence semantics as defined in the Equivalent operator to determine the index. The search is linear, and returns the index of the first element for which the equivalence comparison returns true.
 
-If the list is empty, or no element is found, the result is 0.
+If the list is empty, or no element is found, the result is -1.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1844,9 +1983,9 @@ If either argument is null, the result is null.</xs:documentation>
 	<!-- IncludedIn (already defined) -->
 	<!-- ProperIncludes (already defined) -->
 	<!-- ProperIncludedIn (already defined) -->
-	<xs:complexType name="Expand">
+	<xs:complexType name="Flatten">
 		<xs:annotation>
-			<xs:documentation>The Expand operator flattens a list of lists into a single list.
+			<xs:documentation>The Flatten operator flattens a list of lists into a single list.
 			
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1891,7 +2030,7 @@ If the element argument evaluates to null for some item in the source list, the 
 		<xs:annotation>
 			<xs:documentation>The Distinct operator takes a list of elements and returns a list containing only the unique elements within the input. For example, given the list of integers { 1, 1, 1, 2, 2, 3, 4, 4 }, the result of Distinct would be { 1, 2, 3, 4 }.
 			
-The operator uses matching comparison semantics as defined in the Matches operator.
+The operator uses equivalence comparison semantics as defined in the Equivalent operator.
 
 If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2126,6 +2265,8 @@ If the source is null, the result is null.</xs:documentation>
 			<xs:documentation>The Property operator returns the value of the property on source specified by the path attribute.
 			
 If the result of evaluating source is null, the result is null.
+
+The path attribute may include qualifiers (.) and indexers ([x]). Indexers must be literal integer values.
 			
 If the path attribute contains qualifiers or indexers, each qualifier or indexer is traversed to obtain the actual value. If the object of the property access at any point in traversing the path is null, the result is null.
 
@@ -2157,9 +2298,9 @@ Property expressions can also be used to access the individual points and closed
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="DefineClause">
+	<xs:complexType name="LetClause">
 		<xs:annotation>
-			<xs:documentation>The DefineClause element allows any number of expression definitions to be introduced within a query context. Defined expressions can be referenced by name within the query context.</xs:documentation>
+			<xs:documentation>The LetClause element allows any number of expression definitions to be introduced within a query context. Defined expressions can be referenced by name within the query context.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
@@ -2276,7 +2417,7 @@ Property expressions can also be used to access the individual points and closed
 			<xs:extension base="Expression">
 				<xs:sequence>
 					<xs:element name="source" type="AliasedQuerySource" minOccurs="1" maxOccurs="unbounded"/>
-					<xs:element name="define" type="DefineClause" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="let" type="LetClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="relationship" type="RelationshipClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="where" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="return" type="ReturnClause" minOccurs="0" maxOccurs="1"/>
@@ -2295,9 +2436,9 @@ Property expressions can also be used to access the individual points and closed
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="QueryDefineRef">
+	<xs:complexType name="QueryLetRef">
 		<xs:annotation>
-			<xs:documentation>The QueryDefineRef expression allows for the reference of a specific define within the context of a query.</xs:documentation>
+			<xs:documentation>The QueryLetRef expression allows for the reference of a specific let definition within the context of a query.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">

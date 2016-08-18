@@ -1,15 +1,17 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.cqframework.cql.elm.tracking.DataType;
 import org.cqframework.cql.elm.tracking.ListType;
 import org.hl7.elm.r1.AliasedQuerySource;
-import org.hl7.elm.r1.DefineClause;
+import org.hl7.elm.r1.ByColumn;
+import org.hl7.elm.r1.LetClause;
 
 import java.util.Collection;
 import java.util.HashMap;
 
 public class QueryContext {
     private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
-    private final HashMap<String, DefineClause> defines = new HashMap<>();
+    private final HashMap<String, LetClause> lets = new HashMap<>();
 
     public void addQuerySources(Collection<AliasedQuerySource> sources) {
         for (AliasedQuerySource source : sources) {
@@ -28,22 +30,22 @@ public class QueryContext {
         sources.remove(source.getAlias());
     }
 
-    public void addDefineClauses(Collection<DefineClause> defines) {
-        for (DefineClause define : defines) {
-            addDefineClause(define);
+    public void addLetClauses(Collection<LetClause> lets) {
+        for (LetClause let : lets) {
+            addLetClause(let);
         }
     }
 
-    public void addDefineClause(DefineClause define) {
-        defines.put(define.getIdentifier(), define);
+    public void addLetClause(LetClause let) {
+        lets.put(let.getIdentifier(), let);
     }
 
     public AliasedQuerySource resolveAlias(String identifier) {
         return sources.get(identifier);
     }
 
-    public DefineClause resolveDefine(String identifier) {
-        return defines.get(identifier);
+    public LetClause resolveLet(String identifier) {
+        return lets.get(identifier);
     }
 
     private boolean isSingularValue = true;
@@ -62,6 +64,28 @@ public class QueryContext {
 
     public boolean inSourceClause() {
         return inSourceClauseValue;
+    }
+
+    private boolean inSortClauseValue;
+    public void enterSortClause() {
+        inSortClauseValue = true;
+    }
+
+    public void exitSortClause() {
+        inSortClauseValue = false;
+    }
+
+    public boolean inSortClause() {
+        return inSortClauseValue;
+    }
+
+    private DataType resultElementType;
+    public DataType getResultElementType() {
+        return resultElementType;
+    }
+
+    public void setResultElementType(DataType resultElementType) {
+        this.resultElementType = resultElementType;
     }
 
     private boolean referencesPatientContextValue;
