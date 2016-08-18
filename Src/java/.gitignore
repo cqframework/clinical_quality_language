@@ -1,4 +1,5 @@
 .gradle
+.idea
 cql-all.iws
 cql-all.iml
 cql-all.ipr
